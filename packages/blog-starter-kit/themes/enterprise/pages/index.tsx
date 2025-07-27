@@ -4,19 +4,20 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useState } from 'react';
-import { Waypoint } from 'react-waypoint';
-import { Button } from '../components/button';
+import { useState, useEffect } from 'react';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
-import { Header } from '../components/header';
-import { HeroPost } from '../components/hero-post';
-import { ArticleSVG, ChevronDownSVG } from '../components/icons';
+import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
 import { MorePosts } from '../components/more-posts';
 import { Navbar } from '../components/navbar';
-import { SecondaryPost } from '../components/secondary-post';
+import ModernHero from '../components/modern-hero';
+import ModernHeader from '../components/modern-header';
+import ModernPostCard from '../components/modern-post-card';
+import FeaturedPostCard from '../components/featured-post-card';
+import ModernNewsletter from '../components/modern-newsletter';
+import EnhancedPagination from '../components/enhanced-pagination';
 import {
 	MorePostsByPublicationDocument,
 	MorePostsByPublicationQuery,
@@ -40,46 +41,86 @@ type Props = {
 	publication: PublicationFragment;
 	initialAllPosts: PostFragment[];
 	initialPageInfo: PageInfo;
+	initialTotalPosts: number;
 };
 
-export default function Index({ publication, initialAllPosts, initialPageInfo }: Props) {
+export default function Index({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
 	const [allPosts, setAllPosts] = useState<PostFragment[]>(initialAllPosts);
 	const [pageInfo, setPageInfo] = useState<Props['initialPageInfo']>(initialPageInfo);
 	const [loadedMore, setLoadedMore] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [totalPosts, setTotalPosts] = useState(initialTotalPosts);
+	const [initialPosts] = useState<PostFragment[]>(initialAllPosts);
+	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+
+	// Intersection Observer for scroll animations
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						setVisibleSections(prev => new Set([...prev, entry.target.id]));
+					}
+				});
+			},
+			{ 
+				threshold: 0.1,
+				rootMargin: '0px 0px -50px 0px'
+			}
+		);
+
+		// Observe all sections
+		const sections = document.querySelectorAll('[data-animate-section]');
+		sections.forEach((section) => {
+			observer.observe(section);
+		});
+
+		return () => {
+			sections.forEach((section) => {
+				observer.unobserve(section);
+			});
+		};
+	}, []);
 
 	const loadMore = async () => {
-		const data = await request<MorePostsByPublicationQuery, MorePostsByPublicationQueryVariables>(
-			GQL_ENDPOINT,
-			MorePostsByPublicationDocument,
-			{
-				first: 10,
-				host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-				after: pageInfo.endCursor,
-			},
-		);
-		if (!data.publication) {
-			return;
-		}
-		const newPosts = data.publication.posts.edges.map((edge) => edge.node);
+		if (isLoading) return;
+		
+		setIsLoading(true);
+		try {
+			const data = await request<MorePostsByPublicationQuery, MorePostsByPublicationQueryVariables>(
+				GQL_ENDPOINT,
+				MorePostsByPublicationDocument,
+				{
+					first: 10,
+					host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+					after: pageInfo.endCursor,
+				},
+			);
+			if (!data.publication) {
+				return;
+			}
+					const newPosts = data.publication.posts.edges.map((edge) => edge.node);
 		setAllPosts([...allPosts, ...newPosts]);
 		setPageInfo(data.publication.posts.pageInfo);
+		setTotalPosts(data.publication.posts.totalDocuments);
 		setLoadedMore(true);
+		} catch (error) {
+			console.error('Error loading more posts:', error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
-	const firstPost = allPosts[0];
-	const secondaryPosts = allPosts.slice(1, 4).map((post) => {
-		return (
-			<SecondaryPost
-				key={post.id}
-				title={post.title}
-				coverImage={post.coverImage?.url || DEFAULT_COVER}
-				date={post.publishedAt}
-				slug={post.slug}
-				excerpt={post.brief}
-			/>
-		);
-	});
-	const morePosts = allPosts.slice(4);
+	const returnToFirstPage = () => {
+		setAllPosts(initialPosts);
+		setPageInfo(initialPageInfo);
+		setLoadedMore(false);
+		setTotalPosts(initialTotalPosts);
+	};
+
+	const morePosts = allPosts.slice(7);
+
+	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
 
 	return (
 		<AppProvider publication={publication}>
@@ -120,67 +161,193 @@ export default function Index({ publication, initialAllPosts, initialPageInfo }:
 						}}
 					/>
 				</Head>
-				<Header />
-				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
-					<Navbar />
+				<ModernHeader publication={publication} />
+				
+				{/* Modern Hero Section */}
+				{allPosts.length > 0 && (
+					<div 
+						id="hero-section"
+						data-animate-section
+						className={`transition-all duration-1000 ease-out ${
+							isSectionVisible('hero-section') 
+								? 'opacity-100 translate-y-0' 
+								: 'opacity-0 translate-y-8'
+						}`}
+					>
+						<ModernHero
+							title={publication.displayTitle || publication.title || "Welcome to Our Blog"}
+							subtitle="Technology & Development"
+							description="Exploring the intersection of code, creativity, and innovation. From web development to system architecture, discover insights that drive modern technology forward."
+							ctaText="Read Latest Post"
+							ctaLink={`/${allPosts[0].slug}`}
+							imageUrl="/assets/hero/hero-image.jpg"
+						/>
+					</div>
+				)}
 
+				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
+					{/* Navbar Section */}
+					<div 
+						id="navbar-section"
+						data-animate-section
+						className={`transition-all duration-700 ease-out ${
+							isSectionVisible('navbar-section') 
+								? 'opacity-100 translate-y-0' 
+								: 'opacity-0 translate-y-6'
+						}`}
+					>
+						<Navbar />
+					</div>
+
+					{/* Empty State */}
 					{allPosts.length === 0 && (
-						<div className="grid grid-cols-1 py-20 lg:grid-cols-3">
+						<div 
+							id="empty-state-section"
+							data-animate-section
+							className={`grid grid-cols-1 py-20 lg:grid-cols-3 transition-all duration-800 ease-out ${
+								isSectionVisible('empty-state-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
 							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-slate-700 dark:text-neutral-400 lg:col-start-2">
-								<div className="w-20">
+								<div className="w-20 animate-fade-in-up">
 									<ArticleSVG clasName="stroke-current" />
 								</div>
-								<p className="text-xl font-semibold ">
+								<p className="text-xl font-semibold animate-fade-in-up animation-delay-200">
 									Hang tight! We&apos;re drafting the first article.
 								</p>
 							</div>
 						</div>
 					)}
 
-					<div className="grid items-start gap-6 xl:grid-cols-2">
-						<div className="col-span-1">
-							{firstPost && (
-								<HeroPost
-									title={firstPost.title}
-									coverImage={firstPost.coverImage?.url || DEFAULT_COVER}
-									date={firstPost.publishedAt}
-									slug={firstPost.slug}
-									excerpt={firstPost.brief}
-								/>
-							)}
-						</div>
-						<div className="col-span-1 flex flex-col gap-6">{secondaryPosts}</div>
-					</div>
-
+					{/* Featured Post Section */}
 					{allPosts.length > 0 && (
-						<div className="bg-primary-50 grid grid-cols-4 rounded-lg px-5 py-5 dark:bg-neutral-900 md:py-10">
-							<div className="col-span-full md:col-span-2 md:col-start-2">
-								<h2 className="text-primary-600 dark:text-primary-500 mb-5 text-center text-lg font-semibold">
-									Subscribe to our newsletter for updates and changelog.
-								</h2>
-								<SubscribeForm />
-							</div>
-						</div>
-					)}
-
-					{morePosts.length > 0 && (
-						<>
-							<MorePosts context="home" posts={morePosts} />
-							{!loadedMore && pageInfo.hasNextPage && pageInfo.endCursor && (
-								<div className="flex w-full flex-row items-center justify-center">
-									<Button
-										onClick={loadMore}
-										type="outline"
-										icon={<ChevronDownSVG className="h-5 w-5 stroke-current" />}
-										label="Load more posts"
+						<div 
+							id="featured-section"
+							data-animate-section
+							className={`space-y-12 transition-all duration-900 ease-out ${
+								isSectionVisible('featured-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							{/* Featured Post */}
+							<div className="space-y-6">
+								<div className="flex items-center gap-3 animate-fade-in-up">
+									<h2 className="text-2xl font-bold">Featured Post</h2>
+									<div className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
+										Featured
+									</div>
+								</div>
+								<div className="w-full animate-fade-in-up animation-delay-300">
+									<FeaturedPostCard
+										title={allPosts[0].title}
+										excerpt={allPosts[0].brief}
+										coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
+										date={allPosts[0].publishedAt}
+										slug={allPosts[0].slug}
+										readTime="5 min read"
+										tags={["Featured", "Technology", "Insights"]}
 									/>
 								</div>
+							</div>
+
+							{/* Latest Posts Grid */}
+							{allPosts.length > 1 && (
+								<div 
+									id="latest-posts-section"
+									data-animate-section
+									className={`space-y-6 transition-all duration-1000 ease-out ${
+										isSectionVisible('latest-posts-section') 
+											? 'opacity-100 translate-y-0' 
+											: 'opacity-0 translate-y-8'
+									}`}
+								>
+									<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
+									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+										{allPosts.slice(1, 7).map((post, index) => (
+											<div 
+												key={post.id}
+												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
+													index === 0 ? 'animation-delay-200' :
+													index === 1 ? 'animation-delay-300' :
+													index === 2 ? 'animation-delay-400' :
+													index === 3 ? 'animation-delay-500' :
+													index === 4 ? 'animation-delay-600' :
+													'animation-delay-700'
+												}`}
+											>
+												<ModernPostCard
+													title={post.title}
+													excerpt={post.brief}
+													coverImage={post.coverImage?.url || DEFAULT_COVER}
+													date={post.publishedAt}
+													slug={post.slug}
+													readTime="3 min read"
+													tags={["Technology", "Development"]}
+												/>
+											</div>
+										))}
+									</div>
+								</div>
 							)}
-							{loadedMore && pageInfo.hasNextPage && pageInfo.endCursor && (
-								<Waypoint onEnter={loadMore} bottomOffset={'10%'} />
-							)}
-						</>
+						</div>
 					)}
+
+					{/* Modern Newsletter Section */}
+					{allPosts.length > 0 && (
+						<div 
+							id="newsletter-section"
+							data-animate-section
+							className={`py-8 transition-all duration-1100 ease-out ${
+								isSectionVisible('newsletter-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							<ModernNewsletter
+								title="Stay updated with our newsletter"
+								description="Get the latest posts and updates delivered to your inbox."
+							/>
+						</div>
+					)}
+
+					{/* More Posts Section */}
+					{morePosts.length > 0 && (
+						<div 
+							id="more-posts-section"
+							data-animate-section
+							className={`transition-all duration-1200 ease-out ${
+								isSectionVisible('more-posts-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							<MorePosts context="home" posts={morePosts} />
+						</div>
+					)}
+
+					{/* Enhanced Pagination */}
+					<div 
+						id="pagination-section"
+						data-animate-section
+						className={`transition-all duration-1300 ease-out ${
+							isSectionVisible('pagination-section') 
+								? 'opacity-100 translate-y-0' 
+								: 'opacity-0 translate-y-8'
+						}`}
+					>
+						<EnhancedPagination
+							pageInfo={pageInfo}
+							onLoadMore={loadMore}
+							onReturnToFirst={returnToFirstPage}
+							isLoading={isLoading}
+							hasMorePosts={!!(pageInfo.hasNextPage && pageInfo.endCursor)}
+							currentPostsCount={allPosts.length}
+							totalPosts={totalPosts}
+						/>
+					</div>
 				</Container>
 				<Footer />
 			</Layout>
@@ -211,6 +378,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 			publication,
 			initialAllPosts,
 			initialPageInfo: publication.posts.pageInfo,
+			initialTotalPosts: publication.posts.totalDocuments,
 		},
 		revalidate: 1,
 	};

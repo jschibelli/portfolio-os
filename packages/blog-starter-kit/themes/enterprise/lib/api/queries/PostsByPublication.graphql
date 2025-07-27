@@ -18,6 +18,7 @@ query PostsByPublication($host: String!, $first: Int!, $after: String) {
 query MorePostsByPublication($host: String!, $first: Int!, $after: String) {
 	publication(host: $host) {
 		posts(first: $first, after: $after) {
+			totalDocuments
 			edges {
 				node {
 					...Post

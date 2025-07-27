@@ -104,6 +104,7 @@ fragment Publication on Publication {
 		youtube
 		linkedin
 		mastodon
+		bluesky
 	}
 	integrations {
 		umamiWebsiteUUID

@@ -1,4 +1,5 @@
 import ArticleSVG from './ArticleSVG';
+import BlueskySVG from './BlueskySVG';
 import ChevronDownSVG from './ChevronDownSVG';
 import ExternalArrowSVG from './ExternalArrowSVG';
 import GithubSVG from './GithubSVG';
@@ -11,6 +12,7 @@ import XSVG from './XSVG';
 
 export {
 	ArticleSVG,
+	BlueskySVG,
 	ChevronDownSVG,
 	ExternalArrowSVG,
 	GithubSVG,

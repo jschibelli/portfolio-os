@@ -1,5 +1,5 @@
 import { PostFragment } from '../generated/graphql';
-import { PostPreview } from './post-preview';
+import ModernPostCard from './modern-post-card';
 
 type Props = {
 	posts: PostFragment[];
@@ -14,19 +14,17 @@ export const MorePosts = ({ posts, context }: Props) => {
 					More Posts
 				</h2>
 			)}
-			<div className="grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
+			<div className="grid items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
 				{posts.map((post) => (
-					<PostPreview
+					<ModernPostCard
 						key={post.slug}
 						title={post.title}
-						coverImage={post.coverImage?.url}
+						coverImage={post.coverImage?.url || ''}
 						date={post.publishedAt}
-						author={{
-							name: post.author.name,
-							profilePicture: post.author.profilePicture,
-						}}
 						slug={post.slug}
 						excerpt={post.brief}
+						readTime="3 min read"
+						tags={["Technology", "Development"]}
 					/>
 				))}
 			</div>

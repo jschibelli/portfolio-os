@@ -13,37 +13,47 @@ module.exports = {
 				success: '#0070f3',
 				cyan: '#79FFE1',
 				primary: colors.blue,
+				background: 'hsl(var(--background))',
+				foreground: 'hsl(var(--foreground))',
+				card: {
+					DEFAULT: 'hsl(var(--card))',
+					foreground: 'hsl(var(--card-foreground))',
+				},
+				popover: {
+					DEFAULT: 'hsl(var(--popover))',
+					foreground: 'hsl(var(--popover-foreground))',
+				},
+				secondary: {
+					DEFAULT: 'hsl(var(--secondary))',
+					foreground: 'hsl(var(--secondary-foreground))',
+				},
+				muted: {
+					DEFAULT: 'hsl(var(--muted))',
+					foreground: 'hsl(var(--muted-foreground))',
+				},
+				accent: {
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))',
+				},
+				destructive: {
+					DEFAULT: 'hsl(var(--destructive))',
+					foreground: 'hsl(var(--destructive-foreground))',
+				},
+				border: 'hsl(var(--border))',
+				input: 'hsl(var(--input))',
+				ring: 'hsl(var(--ring))',
+				brand: {
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+				},
+				chart: {
+					'1': 'hsl(var(--chart-1))',
+					'2': 'hsl(var(--chart-2))',
+					'3': 'hsl(var(--chart-3))',
+					'4': 'hsl(var(--chart-4))',
+					'5': 'hsl(var(--chart-5))',
+				},
 			},
-			typography: () => ({
-				DEFAULT: {
-				  css: {
-					'div[data-node-type="callout"]': {
-					  display: 'flex',
-					  'justify-content': 'flex-start',
-					  'align-items': 'flex-start',
-					  'background-color': '#F8FAFC',
-					  border: '1px solid #E2E8F0',
-					  padding: ' 1rem 1.5rem',
-					  gap: '0.5rem',
-					  'border-radius': '0.5rem',
-					  margin: '1rem 0',
-					  'word-break': 'break-word',
-					},
-					'div[data-node-type="callout-emoji"]': {
-					  background: '#E2E8F0',
-					  'border-radius': '0.5rem',
-					  minWidth: '1.75rem',
-					  width: '1.75rem',
-					  height: '1.5rem',
-					  display: 'flex',
-					  'margin-top': '0.3rem',
-					  'justify-content': 'center',
-					  'align-items': 'center',
-					  'font-size': '1rem',
-					}
-				  },
-				}
-			}),
 			spacing: {
 				28: '7rem',
 			},
@@ -67,7 +77,15 @@ module.exports = {
 				sm: '0 5px 10px rgba(0, 0, 0, 0.12)',
 				md: '0 8px 30px rgba(0, 0, 0, 0.12)',
 			},
+			borderRadius: {
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)',
+			},
 		},
 	},
-	plugins: [require('@tailwindcss/typography')],
+	plugins: [
+		require('@tailwindcss/typography'), 
+		require('tailwindcss-animate')
+	],
 };

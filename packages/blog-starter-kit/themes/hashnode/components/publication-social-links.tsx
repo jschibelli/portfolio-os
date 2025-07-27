@@ -10,6 +10,7 @@ import {
   YoutubeSVG,
   LinkedinSVG,
   MastodonSVG,
+  BlueskySVG,
 } from './icons/svgs';
 import PublicationSocialLinkItem from './publication-social-link-item';
 
@@ -55,6 +56,10 @@ function PublicationSocialLinks(props: Props) {
       icon: <MastodonSVG className="h-5 w-5 fill-current" />,
       labelText: 'Find me on Mastodon, external website, opens in new tab',
     },
+    bluesky: {
+      icon: <BlueskySVG className="h-5 w-5 fill-current" />,
+      labelText: 'Find me on Bluesky, external website, opens in new tab',
+    },
   };
 
   return (
@@ -67,7 +72,8 @@ function PublicationSocialLinks(props: Props) {
         links.website ||
         links.hashnode ||
         links.youtube ||
-        links.linkedin) ? (
+        links.linkedin ||
+        links.bluesky) ? (
         <div
           className={twJoin(
             'blog-social-media-section',

@@ -6,139 +6,138 @@ import { SocialLinks } from './social-links';
 export const Footer = () => {
 	const { publication } = useAppContext();
 	const PUBLICATION_LOGO = publication.preferences.logo;
+	const currentYear = new Date().getFullYear();
+	
 	return (
-		<footer className="border-t py-20 dark:border-neutral-800 ">
-			<Container className="px-5">
-				{PUBLICATION_LOGO ? (
-					<div className="mb-20 flex w-full flex-row justify-center">
-						<Link
-							href={'/'}
-							aria-label={`${publication.title} home page`}
-							className="flex flex-row items-center gap-5"
-						>
-							<img className="block w-40" src={PUBLICATION_LOGO} alt={publication.title} />
-						</Link>
+		<footer className="relative border-t bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950">
+			{/* Decorative gradient overlay */}
+			<div className="absolute inset-0 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-neutral-800/50"></div>
+			
+			<Container className="relative px-5 py-16">
+				{/* Main footer content */}
+				<div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
+					{/* Brand section */}
+					<div className="lg:col-span-2">
+						{PUBLICATION_LOGO ? (
+							<div className="mb-6">
+								<Link
+									href={'/'}
+									aria-label={`${publication.title} home page`}
+									className="inline-block transition-transform hover:scale-105"
+								>
+									<img className="h-12 w-auto" src={PUBLICATION_LOGO} alt={publication.title} />
+								</Link>
+							</div>
+						) : (
+							<div className="mb-6">
+								<h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+									{publication.title}
+								</h3>
+								<p className="mt-2 text-slate-600 dark:text-slate-400 max-w-md">
+									{publication.descriptionSEO || "Sharing insights on technology, design, and innovation"}
+								</p>
+							</div>
+						)}
+						
+						{/* Social links */}
+						<div className="mb-8">
+							<SocialLinks />
+						</div>
 					</div>
-				) : (
-					<p className="mb-20 text-center text-xl font-semibold text-slate-900 dark:text-slate-50 md:text-4xl">
-						{publication.title}
-					</p>
-				)}
-				<div className="grid w-full grid-cols-3 gap-5 md:grid-cols-6 lg:grid-cols-5">
-					<div className="col-span-1 grid grid-cols-4 gap-5 md:col-span-4 lg:col-span-3">
-						<div className="col-span-full md:col-span-2 lg:col-span-1">
-							<p className="mb-2 font-semibold text-slate-600 dark:text-neutral-200">
-								Stay in touch
-							</p>
-							<ul className="flex flex-col gap-1 text-slate-700 dark:text-neutral-300">
+
+					{/* Quick links */}
+					<div className="space-y-8">
+						<div>
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+								Connect
+							</h4>
+							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
 								<li>
-									<a href="#" className="hover:underline">
-										Contact us
+									<a href="mailto:hello@example.com" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										Get in touch
 									</a>
 								</li>
 								<li>
-									<a href="#" className="hover:underline">
-										Book a demo
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
+									<a href="/newsletter" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										Newsletter
 									</a>
 								</li>
 								<li>
-									<a href="#" className="hover:underline">
-										Slack
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div className="col-span-full md:col-span-2 lg:col-span-1">
-							<p className="mb-2 font-semibold text-slate-600 dark:text-neutral-200">Resources</p>
-							<ul className="flex flex-col gap-1 text-slate-700 dark:text-neutral-300">
-								<li>
-									<a href="#" className="hover:underline">
-										Community
+									<a href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										About me
 									</a>
 								</li>
 								<li>
-									<a href="#" className="hover:underline">
-										Use Cases
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Source Code
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Blog
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div className="col-span-full md:col-span-2 lg:col-span-1">
-							<p className="mb-2 font-semibold text-slate-600 dark:text-neutral-200">Product</p>
-							<ul className="flex flex-col gap-1 text-slate-700 dark:text-neutral-300">
-								<li>
-									<a href="#" className="hover:underline">
-										Pricing
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Documentation
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Integrations
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Support
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div className="col-span-1">
-							<p className="mb-2 font-semibold text-slate-600 dark:text-neutral-200">Other links</p>
-							<ul className="flex flex-col gap-1 text-slate-700 dark:text-neutral-300">
-								<li>
-									<a href="#" className="hover:underline">
-										Events
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Careers
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										Newsroom
-									</a>
-								</li>
-								<li>
-									<a href="#" className="hover:underline">
-										About us
+									<a href="/portfolio" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										Portfolio
 									</a>
 								</li>
 							</ul>
 						</div>
 					</div>
-					<div className="col-span-2 flex flex-col items-end gap-5 text-right text-slate-600 dark:text-neutral-300 md:text-left">
-						<SocialLinks />
-						<p>&copy; 2023 Company Inc.</p>
-						<p>
-							<a href="#" className="hover:underline">
-								Privacy Policy
-							</a>{' '}
-							·{' '}
-							<a href="#" className="hover:underline">
+
+					{/* Resources */}
+					<div className="space-y-8">
+						<div>
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+								Resources
+							</h4>
+							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+								<li>
+									<a href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										All posts
+									</a>
+								</li>
+								<li>
+									<a href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										Series
+									</a>
+								</li>
+								<li>
+									<a href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										Topics
+									</a>
+								</li>
+								<li>
+									<a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+										RSS Feed
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				{/* Bottom section */}
+				<div className="mt-12 border-t border-slate-200 dark:border-neutral-800 pt-8">
+					<div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+						<div className="text-sm text-slate-600 dark:text-slate-400">
+							<p>&copy; {currentYear} {publication.title}. All rights reserved.</p>
+						</div>
+						
+						<div className="flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
+							<a href="/privacy" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+								Privacy
+							</a>
+							<a href="/terms" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 								Terms
+							</a>
+							<a href="/cookies" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+								Cookies
+							</a>
+						</div>
+					</div>
+					
+					<div className="mt-4 text-center text-xs text-slate-500 dark:text-slate-500">
+						<p>
+							Exclusively Built by{' '}
+							<a 
+								href="https://schibelli.dev" 
+								target="_blank" 
+								rel="noopener noreferrer"
+								className="underline transition-colors hover:text-slate-700 dark:hover:text-slate-300"
+							>
+								John Schibelli
 							</a>
 						</p>
 					</div>

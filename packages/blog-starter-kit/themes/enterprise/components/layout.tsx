@@ -1,3 +1,4 @@
+import { ThemeProvider } from 'next-themes';
 import { Analytics } from './analytics';
 import { Integrations } from './integrations';
 import { Meta } from './meta';
@@ -9,14 +10,14 @@ type Props = {
 
 export const Layout = ({ children }: Props) => {
 	return (
-		<>
+		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 			<Meta />
 			<Scripts />
-			<div className="min-h-screen bg-white dark:bg-neutral-950">
+			<div className="min-h-screen bg-background">
 				<main>{children}</main>
 			</div>
 			<Analytics />
 			<Integrations />
-		</>
+		</ThemeProvider>
 	);
 };

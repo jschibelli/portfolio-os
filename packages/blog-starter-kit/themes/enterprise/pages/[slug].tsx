@@ -8,10 +8,10 @@ import Link from 'next/link';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
-import { Header } from '../components/header';
+import ModernHeader from '../components/modern-header';
 import { Layout } from '../components/layout';
 import { MarkdownToHtml } from '../components/markdown-to-html';
-import { PostHeader } from '../components/post-header';
+import { ModernPostHeader } from '../components/modern-post-header';
 import { PostTOC } from '../components/post-toc';
 import {
 	PageByPublicationDocument,
@@ -126,7 +126,7 @@ const Post = ({ publication, post }: PostProps) => {
 				/>
 				<style dangerouslySetInnerHTML={{ __html: highlightJsMonokaiTheme }}></style>
 			</Head>
-			<PostHeader
+			<ModernPostHeader
 				title={post.title}
 				coverImage={post.coverImage?.url}
 				date={post.publishedAt}
@@ -135,9 +135,19 @@ const Post = ({ publication, post }: PostProps) => {
 			/>
 			{post.features.tableOfContents.isEnabled && post.features?.tableOfContents?.items?.length > 0 && <PostTOC />}
 			<MarkdownToHtml contentMarkdown={post.content.markdown} />
-			{(post.tags ?? []).length > 0 && (
+			{post.tags && post.tags.length > 0 && (
 				<div className="mx-auto w-full px-5 text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
-					<ul className="flex flex-row flex-wrap items-center gap-2">{tagsList}</ul>
+					<div className="flex flex-wrap gap-2 justify-center">
+						{post.tags.map((tag) => (
+							<Link
+								key={tag.id}
+								href={`/tag/${tag.slug}`}
+								className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+							>
+								#{tag.slug}
+							</Link>
+						))}
+					</div>
 				</div>
 			)}
 			<AboutAuthor />
@@ -167,7 +177,7 @@ export default function PostOrPage(props: Props) {
 	return (
 		<AppProvider publication={publication} post={maybePost} page={maybePage}>
 			<Layout>
-				<Header />
+				<ModernHeader publication={publication} />
 				<Container className="pt-10">
 					<article className="flex flex-col items-start gap-10 pb-10">
 						{props.type === 'post' && <Post {...props} />}

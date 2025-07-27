@@ -34,6 +34,7 @@ fragment Publication on Publication {
 		github
 		linkedin
 		hashnode
+		bluesky
 	}
 	integrations {
 		umamiWebsiteUUID
