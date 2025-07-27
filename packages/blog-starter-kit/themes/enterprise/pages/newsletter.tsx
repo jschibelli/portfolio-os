@@ -278,7 +278,7 @@ export default function NewsletterPage({ publication, recentPosts }: Props) {
                           Almost there!
                         </h3>
                         <p className="text-muted-foreground">
-                          We've sent a confirmation email to your inbox. Please check your email and click the confirmation link to complete your subscription.
+                          We&apos;ve sent a confirmation email to your inbox. Please check your email and click the confirmation link to complete your subscription.
                         </p>
                       </div>
                     </div>
@@ -376,7 +376,7 @@ export default function NewsletterPage({ publication, recentPosts }: Props) {
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-4'
                   }`}>
-                    Here's what you can expect in our newsletter
+                    Here&apos;s what you can expect in our newsletter
                   </p>
                 </div>
                 

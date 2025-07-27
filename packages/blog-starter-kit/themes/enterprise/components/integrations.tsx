@@ -92,7 +92,7 @@ export function Integrations() {
 			transport_url: 'https://ping.hashnode.com',
 			first_party_collection: true,
 		});
-	}, []);
+	}, [gaTrackingID]);
 
 	return (
 		<>

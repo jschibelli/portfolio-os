@@ -58,19 +58,19 @@ export const Footer = () => {
 									</a>
 								</li>
 								<li>
-									<a href="/newsletter" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/newsletter" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										Newsletter
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										About me
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a href="/portfolio" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/portfolio" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										Portfolio
-									</a>
+									</Link>
 								</li>
 							</ul>
 						</div>
@@ -84,19 +84,19 @@ export const Footer = () => {
 							</h4>
 							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
 								<li>
-									<a href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										All posts
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										Series
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 										Topics
-									</a>
+									</Link>
 								</li>
 								<li>
 									<a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
@@ -116,15 +116,15 @@ export const Footer = () => {
 						</div>
 						
 						<div className="flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
-							<a href="/privacy" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							<Link href="/privacy" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 								Privacy
-							</a>
-							<a href="/terms" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							</Link>
+							<Link href="/terms" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 								Terms
-							</a>
-							<a href="/cookies" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							</Link>
+							<Link href="/cookies" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
 								Cookies
-							</a>
+							</Link>
 						</div>
 					</div>
 					

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
@@ -129,7 +130,7 @@ export default function PortfolioPage({ publication }: Props) {
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-4'
               }`}>
-                Case studies and recent projects I've built or contributed to
+                Case studies and recent projects I&apos;ve built or contributed to
               </p>
             </div>
           </Section>
@@ -180,14 +181,14 @@ export default function PortfolioPage({ publication }: Props) {
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-4'
                   }`}>
-                    Let's Build Something Amazing Together
+                    Let&apos;s Build Something Amazing Together
                   </h2>
                   <p className={`text-muted-foreground mb-6 animate-fade-in-up animation-delay-400 ${
                     isSectionVisible('portfolio-cta-section') 
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-4'
                   }`}>
-                    Ready to start your next project? I'm always excited to work on new challenges and bring ideas to life.
+                    Ready to start your next project? I&apos;m always excited to work on new challenges and bring ideas to life.
                   </p>
                   <div className={`flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-500 ${
                     isSectionVisible('portfolio-cta-section') 
@@ -200,12 +201,12 @@ export default function PortfolioPage({ publication }: Props) {
                     >
                       Get In Touch
                     </a>
-                    <a
+                    <Link
                       href="/about"
                       className="inline-flex items-center justify-center px-6 py-3 text-sm font-medium text-foreground bg-background border border-border hover:bg-muted rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg"
                     >
                       Learn More About Me
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

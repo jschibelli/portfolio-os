@@ -43,7 +43,7 @@ function CustomImage(props: Props) {
 
   if (isGif || !isHashnodeCDNImage) {
     // restOfTheProps will contain all props excluding the next/image props
-    return <img {...restOfTheProps} alt={alt} src={src || originalSrc} />;
+    return <img {...restOfTheProps} alt={alt || ''} src={src || originalSrc} />;
   }
 
   // Notes we are passing whole props object here

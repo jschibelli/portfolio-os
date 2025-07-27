@@ -217,7 +217,7 @@ export default function EnhancedPagination({
             <div className="h-full w-full rounded-full bg-primary transition-all duration-1000 ease-out" />
           </div>
           <p className="text-lg font-semibold text-foreground transition-all duration-300">
-            You've reached the end!
+            You&apos;ve reached the end!
           </p>
           <p className="text-sm text-muted-foreground transition-all duration-300">
             All {currentPostsCount} posts have been loaded
