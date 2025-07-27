@@ -67,7 +67,7 @@ function PublicationSubscribeStandOut() {
         Subscribe to {publication!.isTeam ? 'our' : 'my'} newsletter
       </h3>
       <p className="mb-5 text-center text-lg text-slate-700 dark:text-slate-300 md:w-2/3 md:text-xl">
-        Read articles from {<strong>{publication!.title}</strong> || 'this blog'} directly inside your inbox. Subscribe
+        Read articles from <strong>{publication!.title}</strong> directly inside your inbox. Subscribe
         to the newsletter, and don&apos;t miss out.
       </p>
       {!state.subscribed && (

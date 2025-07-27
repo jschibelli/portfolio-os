@@ -58,12 +58,12 @@ function PostView(props: any) {
                     src={resizeImage(post.coverImage, {
                         w: 1600,
                         h: 840,
-                        ...(!post.coverImage?.isPortrait ?? false ? { c: 'thumb' } : { fill: 'blur' }),
+                        ...(post.coverImage?.isPortrait ? { fill: 'blur' } : { c: 'thumb' }),
                     })}
                     blurDataURL={getBlurHash(
                         resizeImage(post.coverImage, {
                         ...blurImageDimensions,
-                        ...(!post.coverImage?.isPortrait ?? false ? { c: 'thumb' } : { fill: 'blur' }),
+                        ...(post.coverImage?.isPortrait ? { fill: 'blur' } : { c: 'thumb' }),
                         }),
                     )}
                     width={1600}
@@ -137,12 +137,12 @@ function PostView(props: any) {
                     src={resizeImage(post.coverImage, {
                         w: 1600,
                         h: 840,
-                        ...(!post.coverImage?.isPortrait ?? false ? { c: 'thumb' } : { fill: 'blur' }),
+                        ...(post.coverImage?.isPortrait ? { fill: 'blur' } : { c: 'thumb' }),
                     })}
                     blurDataURL={getBlurHash(
                         resizeImage(post.coverImage, {
                         ...blurImageDimensions,
-                        ...(!post.coverImage?.isPortrait ?? false ? { c: 'thumb' } : { fill: 'blur' }),
+                        ...(post.coverImage?.isPortrait ? { fill: 'blur' } : { c: 'thumb' }),
                         }),
                     )}
                     width={1600}

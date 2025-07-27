@@ -68,19 +68,19 @@ function PublicationFooter(props: any) {
               </h4>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                 <li>
-                  <a href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+                  <Link href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
                     All posts
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+                  <Link href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
                     Series
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+                  <Link href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
                     Topics
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
@@ -109,9 +109,9 @@ function PublicationFooter(props: any) {
                   </a>
                 </li>
                 <li>
-                  <a href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+                  <Link href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="mailto:hello@example.com" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
