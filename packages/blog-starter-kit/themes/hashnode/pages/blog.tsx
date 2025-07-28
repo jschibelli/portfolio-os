@@ -34,10 +34,10 @@ const NoPostsImage = ({ alt = '' }) => {
 	);
 };
 
-export default function Index(props: any) {
+export default function Blog(props: any) {
 	const { publication } = props;
 
-	// Mock posts data for demonstration - only show 3 posts for homepage
+	// Mock posts data for demonstration
 	const mockPosts = {
 		edges: [
 			{
@@ -102,7 +102,7 @@ export default function Index(props: any) {
 			<Layout>
 				<Head>
 					<title>
-						{publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
+						{publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} - Blog
 					</title>
 					<meta
 						name="description"
@@ -113,7 +113,7 @@ export default function Index(props: any) {
 					<meta property="twitter:card" content="summary_large_image" />
 					<meta
 						property="twitter:title"
-						content={publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
+						content={`${publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} - Blog`}
 					/>
 					<meta
 						property="twitter:description"
@@ -139,57 +139,22 @@ export default function Index(props: any) {
 				<CustomNavigation publication={publication} />
 				<div>
 					{postsToBeRendered.edges.length > 0 ? (
-						<FeaturedPosts
-							posts={postsToBeRendered.edges.map((p: any) => p.node).slice(0, 3)}
-							publication={publication}
-						/>
-					) : null}
-
-					{publication.about?.html ? (
-						<div
-							className="blog-author-container border-b dark:border-slate-800"
-						>
-							<div
-								className={twJoin(
-									'blog-author-area feed-width mx-auto md:w-3/4 lg:w-2/3',
-									'px-4 lg:px-8',
-								)}
-							>
-								<PublicationMeta
-									author={publication.author}
-									aboutHTML={publication.about.html}
-									isTeam={publication.isTeam}
-								/>
-							</div>
-						</div>
-					) : null}
-
-					<div className="blog-content-area feed-width mx-auto md:w-2/3">
-						<div>
-							{postsToBeRendered.edges.length === 0 ? (
-								<>
-									<div className="min-h-30 my-10 flex w-full flex-col items-center px-6 dark:border-slate-800">
-										<div className="block">
-											<NoPostsImage alt="No Posts" />
-										</div>
-									</div>
-								</>
-							) : null}
-						</div>
-					</div>
-
-					{postsToBeRendered.edges.length > 3 && postsToBeRendered.edges.length <= 6 ? (
 						<ModernLayoutPosts
 							publication={publication}
-							posts={{
-								edges: postsToBeRendered.edges.slice(3, 6), // Only show next 3 posts
-								pageInfo: postsToBeRendered.pageInfo
-							}}
-							fetchMore={() => {}} // Disable fetch more since we only want 3 posts
+							posts={postsToBeRendered}
+							fetchMore={() => {}}
 							fetchedOnce={true}
 							fetching={false}
 						/>
-					) : null}
+					) : (
+						<div className="blog-content-area feed-width mx-auto md:w-2/3">
+							<div className="min-h-30 my-10 flex w-full flex-col items-center px-6 dark:border-slate-800">
+								<div className="block">
+									<NoPostsImage alt="No Posts" />
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
 				{publication ? (
 					<PublicationFooter
@@ -225,9 +190,6 @@ export const getStaticProps = async () => {
 		},
 		isTeam: false,
 		imprint: null,
-		about: {
-			html: '<p>Welcome to our blog! We share insights about web development, design, and technology.</p>',
-		},
 	};
 
 	return {
@@ -236,4 +198,4 @@ export const getStaticProps = async () => {
 		},
 		revalidate: 1,
 	};
-};
+}; 

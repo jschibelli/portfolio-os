@@ -1,6 +1,7 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { resizeImage } from '@starter-kit/utils/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { PublicationNavbarItem } from '../generated/graphql';
 import { useAppContext } from './contexts/appContext';
 import { ToggleTheme } from './toggle-theme';
@@ -13,10 +14,14 @@ function hasUrl(
 
 export const PersonalHeader = () => {
 	const { publication } = useAppContext();
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const navbarItems = publication.preferences.navbarItems.filter(hasUrl);
-	const visibleItems = navbarItems.slice(0, 2);
-	const hiddenItems = navbarItems.slice(2);
+	const blogItem = { label: 'Blog', url: '/blog' };
+	const servicesItem = { label: 'Services', url: '/services' };
+	const allItems = [blogItem, servicesItem, ...navbarItems];
+	const visibleItems = allItems.slice(0, 2);
+	const hiddenItems = allItems.slice(2);
 
 	const navList = (
 		<ul className="flex list-none flex-row items-center gap-4 text-xs font-semibold uppercase tracking-tight text-neutral-600 dark:text-neutral-300">
@@ -61,7 +66,7 @@ export const PersonalHeader = () => {
 	);
 
 	return (
-		<header className="grid grid-cols-2 items-center gap-5 ">
+		<header className="grid grid-cols-2 items-center gap-5">
 			<div className="col-span-full md:col-span-1">
 				<div className="flex justify-between">
 					<h1>
@@ -88,15 +93,42 @@ export const PersonalHeader = () => {
 				</div>
 			</div>
 			<div className="col-span-full flex flex-row items-center justify-between gap-4 md:col-span-1 md:justify-end">
-				<nav>{navList}</nav>
+				{/* Desktop Navigation */}
+				<nav className="hidden md:block">{navList}</nav>
+				
+				{/* Mobile Menu Button */}
+				<button
+					className="md:hidden"
+					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+					aria-label="Toggle mobile menu"
+				>
+					<svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+					</svg>
+				</button>
+				
 				<ToggleTheme className="hidden md:block" />
-				{/* <Button
-          label=""
-          type="outline"
-          className="!p-2"
-          icon={<NewsletterPlusSVG className="w-5 h-5 fill-current" />}
-        /> */}
 			</div>
+			
+			{/* Mobile Menu */}
+			{isMobileMenuOpen && (
+				<div className="col-span-full md:hidden">
+					<div className="mt-4 rounded-lg border bg-white p-4 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+						<nav className="flex flex-col space-y-2">
+							{allItems.map((item) => (
+								<a
+									key={item.url}
+									href={item.url}
+									className="block rounded px-3 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
+									onClick={() => setIsMobileMenuOpen(false)}
+								>
+									{item.label}
+								</a>
+							))}
+						</nav>
+					</div>
+				</div>
+			)}
 		</header>
 	);
 };

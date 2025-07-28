@@ -4,6 +4,7 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
+import { Waypoint } from 'react-waypoint';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
@@ -11,6 +12,9 @@ import { Layout } from '../components/layout';
 import { MinimalPosts } from '../components/minimal-posts';
 import { CustomNavigation } from '../../../components/custom-navigation';
 import {
+	MorePostsByPublicationDocument,
+	MorePostsByPublicationQuery,
+	MorePostsByPublicationQueryVariables,
 	PageInfoFragment,
 	PostFragment,
 	PostsByPublicationDocument,
@@ -27,13 +31,34 @@ type Props = {
 	initialPageInfo: PageInfoFragment;
 };
 
-export default function Index({ publication, initialPosts, initialPageInfo }: Props) {
+export default function Blog({ publication, initialPosts, initialPageInfo }: Props) {
 	const [posts, setPosts] = useState<PostFragment[]>(initialPosts);
+	const [pageInfo, setPageInfo] = useState<Props['initialPageInfo']>(initialPageInfo);
+	const [loadedMore, setLoadedMore] = useState(false);
+
+	const loadMore = async () => {
+		const data = await request<MorePostsByPublicationQuery, MorePostsByPublicationQueryVariables>(
+			GQL_ENDPOINT,
+			MorePostsByPublicationDocument,
+			{
+				first: 20,
+				host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+				after: pageInfo.endCursor,
+			},
+		);
+		if (!data.publication) {
+			return;
+		}
+		const newPosts = data.publication.posts.edges.map((edge) => edge.node);
+		setPosts([...posts, ...newPosts]);
+		setPageInfo(data.publication.posts.pageInfo);
+		setLoadedMore(true);
+	};
 	return (
 		<AppProvider publication={publication}>
 			<Layout>
 				<Head>
-					<title>{publication.title}</title>
+					<title>{publication.title} - Blog</title>
 					<meta
 						name="description"
 						content={
@@ -41,7 +66,7 @@ export default function Index({ publication, initialPosts, initialPageInfo }: Pr
 						}
 					/>
 					<meta property="twitter:card" content="summary_large_image"/>
-					<meta property="twitter:title" content={publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} />
+					<meta property="twitter:title" content={`${publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} - Blog`} />
 					<meta property="twitter:description" content={publication.descriptionSEO || publication.title || `${publication.author.name}'s Blog`} />
 					<meta
 						property="og:image"
@@ -58,9 +83,17 @@ export default function Index({ publication, initialPosts, initialPageInfo }: Pr
 						}}
 					/>
 				</Head>
+				<CustomNavigation publication={publication} />
 				<Container className="mx-auto flex max-w-3xl flex-col items-stretch gap-10 px-5 py-10">
-					<CustomNavigation publication={publication} />
-					{posts.length > 0 && <MinimalPosts context="home" posts={posts.slice(0, 3)} />}
+					{posts.length > 0 && <MinimalPosts context="home" posts={posts} />}
+					{!loadedMore && pageInfo.hasNextPage && pageInfo.endCursor && (
+						<button onClick={loadMore}>
+							Load more
+						</button>
+					)}
+					{loadedMore && pageInfo.hasNextPage && pageInfo.endCursor && (
+						<Waypoint onEnter={loadMore} bottomOffset={'10%'} />
+					)}
 
 					<Footer />
 				</Container>
@@ -95,4 +128,4 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 		},
 		revalidate: 1,
 	};
-};
+}; 

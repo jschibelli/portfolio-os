@@ -10,18 +10,16 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
-import { MorePosts } from '../components/more-posts';
-import { Navbar } from '../components/navbar';
+import { Search } from '../components/searchbar';
+import { SocialLinks } from '../components/social-links';
+
+import { CustomNavigation } from '../../../components/custom-navigation';
 import ModernHero from '../components/modern-hero';
-import ModernHeader from '../components/modern-header';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
 import ModernNewsletter from '../components/modern-newsletter';
-import EnhancedPagination from '../components/enhanced-pagination';
+
 import {
-	MorePostsByPublicationDocument,
-	MorePostsByPublicationQuery,
-	MorePostsByPublicationQueryVariables,
 	PageInfo,
 	PostFragment,
 	PostsByPublicationDocument,
@@ -45,12 +43,7 @@ type Props = {
 };
 
 export default function Index({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
-	const [allPosts, setAllPosts] = useState<PostFragment[]>(initialAllPosts);
-	const [pageInfo, setPageInfo] = useState<Props['initialPageInfo']>(initialPageInfo);
-	const [loadedMore, setLoadedMore] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [totalPosts, setTotalPosts] = useState(initialTotalPosts);
-	const [initialPosts] = useState<PostFragment[]>(initialAllPosts);
+	const [allPosts] = useState<PostFragment[]>(initialAllPosts);
 	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
 	// Intersection Observer for scroll animations
@@ -82,43 +75,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 		};
 	}, []);
 
-	const loadMore = async () => {
-		if (isLoading) return;
-		
-		setIsLoading(true);
-		try {
-			const data = await request<MorePostsByPublicationQuery, MorePostsByPublicationQueryVariables>(
-				GQL_ENDPOINT,
-				MorePostsByPublicationDocument,
-				{
-					first: 10,
-					host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-					after: pageInfo.endCursor,
-				},
-			);
-			if (!data.publication) {
-				return;
-			}
-					const newPosts = data.publication.posts.edges.map((edge) => edge.node);
-		setAllPosts([...allPosts, ...newPosts]);
-		setPageInfo(data.publication.posts.pageInfo);
-		setTotalPosts(data.publication.posts.totalDocuments);
-		setLoadedMore(true);
-		} catch (error) {
-			console.error('Error loading more posts:', error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const returnToFirstPage = () => {
-		setAllPosts(initialPosts);
-		setPageInfo(initialPageInfo);
-		setLoadedMore(false);
-		setTotalPosts(initialTotalPosts);
-	};
-
-	const morePosts = allPosts.slice(7);
+	const morePosts = allPosts.slice(4);
 
 	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
 
@@ -161,7 +118,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						}}
 					/>
 				</Head>
-				<ModernHeader publication={publication} />
+				<CustomNavigation publication={publication} />
 				
 				{/* Modern Hero Section */}
 				{allPosts.length > 0 && (
@@ -180,7 +137,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 							description="Exploring the intersection of code, creativity, and innovation. From web development to system architecture, discover insights that drive modern technology forward."
 							ctaText="Read Latest Post"
 							ctaLink={`/${allPosts[0].slug}`}
-							imageUrl="/assets/hero/hero-image.jpg"
+							imageUrl="/assets/hero/hero-image.webp"
 						/>
 					</div>
 				)}
@@ -196,7 +153,10 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 								: 'opacity-0 translate-y-6'
 						}`}
 					>
-						<Navbar />
+						<div className="grid grid-cols-1 items-center gap-5 pt-5 text-sm md:grid-cols-2">
+							<Search />
+							<SocialLinks />
+						</div>
 					</div>
 
 					{/* Empty State */}
@@ -266,16 +226,13 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 								>
 									<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
 									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-										{allPosts.slice(1, 7).map((post, index) => (
+										{allPosts.slice(1, 4).map((post, index) => (
 											<div 
 												key={post.id}
 												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
 													index === 0 ? 'animation-delay-200' :
 													index === 1 ? 'animation-delay-300' :
-													index === 2 ? 'animation-delay-400' :
-													index === 3 ? 'animation-delay-500' :
-													index === 4 ? 'animation-delay-600' :
-													'animation-delay-700'
+													'animation-delay-400'
 												}`}
 											>
 												<ModernPostCard
@@ -313,41 +270,9 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						</div>
 					)}
 
-					{/* More Posts Section */}
-					{morePosts.length > 0 && (
-						<div 
-							id="more-posts-section"
-							data-animate-section
-							className={`transition-all duration-1200 ease-out ${
-								isSectionVisible('more-posts-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<MorePosts context="home" posts={morePosts} />
-						</div>
-					)}
 
-					{/* Enhanced Pagination */}
-					<div 
-						id="pagination-section"
-						data-animate-section
-						className={`transition-all duration-1300 ease-out ${
-							isSectionVisible('pagination-section') 
-								? 'opacity-100 translate-y-0' 
-								: 'opacity-0 translate-y-8'
-						}`}
-					>
-						<EnhancedPagination
-							pageInfo={pageInfo}
-							onLoadMore={loadMore}
-							onReturnToFirst={returnToFirstPage}
-							isLoading={isLoading}
-							hasMorePosts={!!(pageInfo.hasNextPage && pageInfo.endCursor)}
-							currentPostsCount={allPosts.length}
-							totalPosts={totalPosts}
-						/>
-					</div>
+
+
 				</Container>
 				<Footer />
 			</Layout>

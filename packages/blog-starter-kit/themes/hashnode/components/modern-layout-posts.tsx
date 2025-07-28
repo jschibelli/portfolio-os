@@ -21,7 +21,7 @@ const PublicationPosts = (props: {
   const { posts, publication, fetchMore, fetching, fetchedOnce } = props;
   const { edges, pageInfo } = posts;
 
-  const slicedPosts = edges.map((edge) => edge.node).slice(3);
+  const slicedPosts = edges.map((edge) => edge.node);
 
   return (
     <div className="blog-articles-area mx-auto mt-10 dark:border-slate-800">

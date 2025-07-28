@@ -6,11 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import classNames from 'classnames';
-// import '../styles/navigation-menu.css';
 
-
-
-interface ModernHeaderProps {
+interface WorkingHeaderProps {
   publication: {
     title: string;
     displayTitle?: string | null;
@@ -20,38 +17,53 @@ interface ModernHeaderProps {
   };
 }
 
-export default function ModernHeader({ publication }: ModernHeaderProps) {
+const ListItem = React.forwardRef(
+  ({ className, children, title, ...props }: any, forwardedRef: any) => (
+    <li>
+      <NavigationMenu.Link asChild>
+        <Link
+          className={classNames("ListItemLink", className)}
+          {...props}
+          ref={forwardedRef}
+        >
+          <div className="ListItemHeading">{title}</div>
+          <p className="ListItemText">{children}</p>
+        </Link>
+      </NavigationMenu.Link>
+    </li>
+  ),
+);
+ListItem.displayName = 'ListItem';
+
+export default function WorkingHeader({ publication }: WorkingHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 relative">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
-              {publication.logo?.url ? (
-                <img
-                  src={publication.logo.url}
-                  alt={publication.displayTitle || publication.title}
-                  className="h-8 w-8 rounded-lg"
-                />
-              ) : (
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
-                    {(publication.displayTitle || publication.title).charAt(0)}
-                  </span>
-                </div>
-              )}
-              <span className="font-bold text-xl">
-                {publication.displayTitle || publication.title}
-              </span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center space-x-2">
+            {publication.logo?.url ? (
+              <img
+                src={publication.logo.url}
+                alt={publication.displayTitle || publication.title}
+                className="h-8 w-8 rounded-lg"
+              />
+            ) : (
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">
+                  {(publication.displayTitle || publication.title).charAt(0)}
+                </span>
+              </div>
+            )}
+            <span className="font-bold text-xl">
+              {publication.displayTitle || publication.title}
+            </span>
+          </Link>
 
-          {/* Navigation */}
-          <div className="flex-1 flex justify-center">
-            <NavigationMenu.Root className="NavigationMenuRoot hidden md:flex">
+          {/* Desktop Navigation */}
+          <NavigationMenu.Root className="NavigationMenuRoot hidden md:flex">
             <NavigationMenu.List className="NavigationMenuList">
               <NavigationMenu.Item>
                 <NavigationMenu.Link asChild className="NavigationMenuLink">
@@ -143,7 +155,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               <NavigationMenu.Viewport className="NavigationMenuViewport" />
             </div>
           </NavigationMenu.Root>
-          </div>
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
@@ -154,7 +165,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
             
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 rounded-md hover:bg-accent transition-colors"
+              className="md:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
@@ -167,80 +178,73 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
         
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <div 
-              className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            {/* Menu */}
-            <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border/40 shadow-lg z-50">
-              <div className="px-4 py-6">
-                <nav className="flex flex-col space-y-4">
+          <div className="md:hidden">
+            <div className="border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-4">
+              <nav className="flex flex-col space-y-4">
                 <Link 
                   href="/" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
+                  className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Home
                 </Link>
                 <Link 
                   href="/blog" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
+                  className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Blog
                 </Link>
                 
                 {/* Services Section */}
-                <div className="space-y-3">
-                  <div className="text-base font-semibold text-foreground px-4">Services</div>
-                  <div className="space-y-2">
+                <div className="space-y-2">
+                  <div className="text-sm font-semibold text-foreground">Services</div>
+                  <div className="pl-4 space-y-2">
                     <Link 
                       href="/services" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       All Services
                     </Link>
                     <Link 
                       href="/services/web-development" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Web Development
                     </Link>
                     <Link 
                       href="/services/mobile-development" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Mobile Development
                     </Link>
                     <Link 
                       href="/services/cloud-solutions" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Cloud Solutions
                     </Link>
                     <Link 
                       href="/services/ui-ux-design" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       UI/UX Design
                     </Link>
                     <Link 
                       href="/services/consulting" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Technical Consulting
                     </Link>
                     <Link 
                       href="/services/maintenance-support" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
+                      className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Maintenance & Support
@@ -250,21 +254,21 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                 
                 <Link 
                   href="/about" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
+                  className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   About
                 </Link>
                 <Link 
                   href="/portfolio" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
+                  className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Portfolio
                 </Link>
                 <Link 
                   href="/newsletter" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
+                  className="text-sm font-medium transition-colors hover:text-primary"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Newsletter
@@ -272,27 +276,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               </nav>
             </div>
           </div>
-          </>
         )}
       </div>
     </header>
   );
-}
-
-const ListItem = React.forwardRef(
-  ({ className, children, title, ...props }: any, forwardedRef: any) => (
-    <li>
-      <NavigationMenu.Link asChild>
-        <Link
-          className={classNames("ListItemLink", className)}
-          {...props}
-          ref={forwardedRef}
-        >
-          <div className="ListItemHeading">{title}</div>
-          <p className="ListItemText">{children}</p>
-        </Link>
-      </NavigationMenu.Link>
-    </li>
-  ),
-);
-ListItem.displayName = 'ListItem'; 
+} 

@@ -19,8 +19,11 @@ export const Header = () => {
 	const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>();
 	const { publication } = useAppContext();
 	const navbarItems = publication.preferences.navbarItems.filter(hasUrl);
-	const visibleItems = navbarItems.slice(0, 3);
-	const hiddenItems = navbarItems.slice(3);
+	const blogItem = { label: 'Blog', url: '/blog' };
+	const servicesItem = { label: 'Services', url: '/services' };
+	const allItems = [blogItem, servicesItem, ...navbarItems];
+	const visibleItems = allItems.slice(0, 3);
+	const hiddenItems = allItems.slice(3);
 
 	const toggleSidebar = () => {
 		setIsSidebarVisible((prevVisibility) => !prevVisibility);

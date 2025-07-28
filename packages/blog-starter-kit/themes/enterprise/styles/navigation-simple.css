@@ -1,0 +1,133 @@
+/* Simple Navigation Menu Styles */
+.NavigationMenuRoot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.NavigationMenuList {
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  list-style: none;
+  margin: 0;
+}
+
+.NavigationMenuTrigger,
+.NavigationMenuLink {
+  padding: 8px 12px;
+  outline: none;
+  user-select: none;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 4px;
+  font-size: 15px;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  display: block;
+  transition: all 150ms ease;
+}
+
+.NavigationMenuTrigger:hover,
+.NavigationMenuLink:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.NavigationMenuTrigger[data-state='open'],
+.NavigationMenuLink[data-active] {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.NavigationMenuContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--radix-navigation-menu-viewport-width);
+  height: var(--radix-navigation-menu-viewport-height);
+  transform-origin: var(--radix-navigation-menu-viewport-transform-origin);
+  animation: scaleIn 150ms ease;
+}
+
+.NavigationMenuViewport {
+  position: relative;
+  transform-origin: top center;
+  margin-top: 10px;
+  width: var(--radix-navigation-menu-viewport-width);
+  height: var(--radix-navigation-menu-viewport-height);
+  background: hsl(var(--background));
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid hsl(var(--border));
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: rotateX(-30deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0deg) scale(1);
+  }
+}
+
+/* Mobile menu animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .NavigationMenuRoot {
+    display: none;
+  }
+  
+  /* Ensure mobile menu has proper z-index */
+  .mobile-menu-container {
+    z-index: 50;
+  }
+  
+  /* Improve mobile menu backdrop */
+  .mobile-menu-container > div:first-child {
+    backdrop-filter: blur(4px);
+  }
+  
+  /* Smooth mobile menu transitions */
+  .mobile-menu-container > div:last-child {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Ensure proper stacking context for mobile menu */
+@media (max-width: 768px) {
+  header {
+    z-index: 60;
+  }
+  
+  .mobile-menu-container {
+    z-index: 50;
+  }
+} 

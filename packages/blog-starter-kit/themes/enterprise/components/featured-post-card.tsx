@@ -107,8 +107,8 @@ export default function FeaturedPostCard({
                   {excerpt}
                 </p>
                 
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex gap-2 flex-wrap">
                     {tags.slice(0, 3).map((tag, index) => (
                       <Badge 
                         key={index} 

@@ -20,7 +20,7 @@ export default function ModernHero({
   description,
   ctaText = "Get Started",
   ctaLink = "#",
-  imageUrl = "/assets/hero/hero-image.jpg"
+  imageUrl = "/assets/hero/hero-image.webp"
 }: ModernHeroProps) {
   const [isVisible, setIsVisible] = useState(false);
 

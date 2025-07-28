@@ -1,6 +1,8 @@
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import '../styles/index.css';
+import '../styles/navigation-demo.css';
+import '../styles/navigation-simple.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	useEffect(() => {
