@@ -3,10 +3,7 @@ import Head from 'next/head';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import NavigationDemo from '../components/navigation-demo';
 import ModernHeader from '../components/modern-header';
-import SimpleHeader from '../components/simple-header';
-import WorkingHeader from '../components/working-header';
 
 interface Props {
   publication: any;
