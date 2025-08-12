@@ -4,7 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import ModernHeader from '../components/modern-header';
 import ModernHero from '../components/modern-hero';
 import ModernPostCard from '../components/modern-post-card';
-import ModernNewsletter from '../components/modern-newsletter';
+import NewsletterCTA from '../components/newsletter-cta';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -155,7 +155,11 @@ export default function TestModern() {
           {/* Newsletter */}
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold">Newsletter Component</h3>
-            <ModernNewsletter />
+            					<NewsletterCTA 
+						title="Stay updated with our newsletter"
+						showNewsletterForm={true}
+						className="py-16"
+					/>
           </div>
         </div>
       </Container>

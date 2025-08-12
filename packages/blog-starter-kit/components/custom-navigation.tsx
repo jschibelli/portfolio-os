@@ -64,7 +64,6 @@ ListItem.displayName = 'ListItem';
 
 export function CustomNavigation({ publication, className }: CustomNavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [isServicesOpen, setIsServicesOpen] = React.useState(false);
 
   // Close mobile menu when clicking outside
   React.useEffect(() => {
@@ -80,7 +79,6 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      setIsServicesOpen(false);
     }
 
     return () => {
@@ -136,58 +134,9 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <NavigationMenu.Trigger className="NavigationMenuTrigger">
-                  <span className="flex items-center text-xs md:text-sm font-medium transition-colors hover:text-primary">
-                    Services
-                    <ChevronDownIcon className="CaretDown ml-1 h-3 w-3 md:h-4 md:w-4" />
-                  </span>
-                </NavigationMenu.Trigger>
-                <NavigationMenu.Content className="NavigationMenuContent">
-                  <ul className="List one">
-                    <li style={{ gridRow: "span 3" }}>
-                      <NavigationMenu.Link asChild>
-                        <Link className="Callout" href="/services">
-                          <div className="CalloutHeading">All Services</div>
-                          <p className="CalloutText">
-                            Explore our comprehensive range of technology services.
-                          </p>
-                        </Link>
-                      </NavigationMenu.Link>
-                    </li>
-                    <ListItem href="/services/web-development" title="Web Development">
-                      Modern web applications with React and Next.js.
-                    </ListItem>
-                    <ListItem href="/services/mobile-development" title="Mobile Development">
-                      Native and cross-platform mobile applications.
-                    </ListItem>
-                    <ListItem href="/services/cloud-solutions" title="Cloud Solutions">
-                      Scalable cloud infrastructure and DevOps.
-                    </ListItem>
-                    <ListItem href="/services/ui-ux-design" title="UI/UX Design">
-                      User-centered design solutions.
-                    </ListItem>
-                    <ListItem href="/services/consulting" title="Technical Consulting">
-                      Expert guidance and strategy.
-                    </ListItem>
-                    <ListItem href="/services/maintenance-support" title="Maintenance & Support">
-                      Ongoing support and maintenance services.
-                    </ListItem>
-                  </ul>
-                </NavigationMenu.Content>
-              </NavigationMenu.Item>
-              
-              <NavigationMenu.Item>
                 <NavigationMenu.Link asChild className="NavigationMenuLink">
                   <Link href="/about" className="text-xs md:text-sm font-medium transition-colors hover:text-primary">
                     About
-                  </Link>
-                </NavigationMenu.Link>
-              </NavigationMenu.Item>
-              
-              <NavigationMenu.Item>
-                <NavigationMenu.Link asChild className="NavigationMenuLink">
-                  <Link href="/portfolio" className="text-xs md:text-sm font-medium transition-colors hover:text-primary">
-                    Portfolio
                   </Link>
                 </NavigationMenu.Link>
               </NavigationMenu.Item>
@@ -219,8 +168,10 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
             </Button>
             
             {/* Mobile Menu Button */}
-            <button
-              className="mobile-menu-container md:hidden p-2 rounded-md hover:bg-accent transition-colors relative z-50"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mobile-menu-container md:hidden relative z-50"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
@@ -245,7 +196,7 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
                   )}
                 />
               </div>
-            </button>
+            </Button>
           </div>
         </div>
         
@@ -282,90 +233,12 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
                   Blog
                 </Link>
                 
-                {/* Services Section - Collapsible */}
-                <div className="space-y-2">
-                  <button
-                    className="w-full flex items-center justify-between text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
-                    onClick={() => setIsServicesOpen(!isServicesOpen)}
-                    aria-expanded={isServicesOpen}
-                  >
-                    <span>Services</span>
-                    <ChevronDownIcon 
-                      className={cn(
-                        "h-4 w-4 transition-transform duration-200",
-                        isServicesOpen ? "rotate-180" : ""
-                      )} 
-                    />
-                  </button>
-                  
-                  {isServicesOpen && (
-                    <div className="pl-4 space-y-2 border-l border-border/40 ml-4">
-                      <Link 
-                        href="/services" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        All Services
-                      </Link>
-                      <Link 
-                        href="/services/web-development" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Web Development
-                      </Link>
-                      <Link 
-                        href="/services/mobile-development" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Mobile Development
-                      </Link>
-                      <Link 
-                        href="/services/cloud-solutions" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Cloud Solutions
-                      </Link>
-                      <Link 
-                        href="/services/ui-ux-design" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        UI/UX Design
-                      </Link>
-                      <Link 
-                        href="/services/consulting" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Technical Consulting
-                      </Link>
-                      <Link 
-                        href="/services/maintenance-support" 
-                        className="block text-base text-muted-foreground hover:text-primary transition-colors py-2 px-4 rounded-md hover:bg-accent"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Maintenance & Support
-                      </Link>
-                    </div>
-                  )}
-                </div>
-                
                 <Link 
                   href="/about" 
                   className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   About
-                </Link>
-                <Link 
-                  href="/portfolio" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Portfolio
                 </Link>
                 <Link 
                   href="/newsletter" 

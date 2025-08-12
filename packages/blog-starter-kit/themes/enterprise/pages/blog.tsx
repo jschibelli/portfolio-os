@@ -16,7 +16,7 @@ import ModernHero from '../components/modern-hero';
 import { CustomNavigation } from '../../../components/custom-navigation';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
-import ModernNewsletter from '../components/modern-newsletter';
+import NewsletterCTA from '../components/newsletter-cta';
 import EnhancedPagination from '../components/enhanced-pagination';
 import {
 	MorePostsByPublicationDocument,

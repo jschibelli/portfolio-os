@@ -70,58 +70,9 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               </NavigationMenu.Item>
               
               <NavigationMenu.Item>
-                <NavigationMenu.Trigger className="NavigationMenuTrigger">
-                  <span className="flex items-center text-sm font-medium transition-colors hover:text-primary">
-                    Services
-                    <ChevronDownIcon className="CaretDown ml-1 h-4 w-4" />
-                  </span>
-                </NavigationMenu.Trigger>
-                <NavigationMenu.Content className="NavigationMenuContent">
-                  <ul className="List one">
-                    <li style={{ gridRow: "span 3" }}>
-                      <NavigationMenu.Link asChild>
-                        <Link className="Callout" href="/services">
-                          <div className="CalloutHeading">All Services</div>
-                          <p className="CalloutText">
-                            Explore our comprehensive range of technology services.
-                          </p>
-                        </Link>
-                      </NavigationMenu.Link>
-                    </li>
-                    <ListItem href="/services/web-development" title="Web Development">
-                      Modern web applications with React and Next.js.
-                    </ListItem>
-                    <ListItem href="/services/mobile-development" title="Mobile Development">
-                      Native and cross-platform mobile applications.
-                    </ListItem>
-                    <ListItem href="/services/cloud-solutions" title="Cloud Solutions">
-                      Scalable cloud infrastructure and DevOps.
-                    </ListItem>
-                    <ListItem href="/services/ui-ux-design" title="UI/UX Design">
-                      User-centered design solutions.
-                    </ListItem>
-                    <ListItem href="/services/consulting" title="Technical Consulting">
-                      Expert guidance and strategy.
-                    </ListItem>
-                    <ListItem href="/services/maintenance-support" title="Maintenance & Support">
-                      Ongoing support and maintenance services.
-                    </ListItem>
-                  </ul>
-                </NavigationMenu.Content>
-              </NavigationMenu.Item>
-              
-              <NavigationMenu.Item>
                 <NavigationMenu.Link asChild className="NavigationMenuLink">
                   <Link href="/about" className="text-sm font-medium transition-colors hover:text-primary">
                     About
-                  </Link>
-                </NavigationMenu.Link>
-              </NavigationMenu.Item>
-              
-              <NavigationMenu.Item>
-                <NavigationMenu.Link asChild className="NavigationMenuLink">
-                  <Link href="/portfolio" className="text-sm font-medium transition-colors hover:text-primary">
-                    Portfolio
                   </Link>
                 </NavigationMenu.Link>
               </NavigationMenu.Item>
@@ -153,15 +104,17 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
             </Button>
             
             {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 rounded-md hover:bg-accent transition-colors"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle mobile menu"
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
         
@@ -192,75 +145,12 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                   Blog
                 </Link>
                 
-                {/* Services Section */}
-                <div className="space-y-3">
-                  <div className="text-base font-semibold text-foreground px-4">Services</div>
-                  <div className="space-y-2">
-                    <Link 
-                      href="/services" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      All Services
-                    </Link>
-                    <Link 
-                      href="/services/web-development" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Web Development
-                    </Link>
-                    <Link 
-                      href="/services/mobile-development" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Mobile Development
-                    </Link>
-                    <Link 
-                      href="/services/cloud-solutions" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Cloud Solutions
-                    </Link>
-                    <Link 
-                      href="/services/ui-ux-design" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      UI/UX Design
-                    </Link>
-                    <Link 
-                      href="/services/consulting" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Technical Consulting
-                    </Link>
-                    <Link 
-                      href="/services/maintenance-support" 
-                      className="block text-base text-muted-foreground hover:text-primary transition-colors py-3 px-4 rounded-md hover:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Maintenance & Support
-                    </Link>
-                  </div>
-                </div>
-                
                 <Link 
                   href="/about" 
                   className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   About
-                </Link>
-                <Link 
-                  href="/portfolio" 
-                  className="text-base font-medium transition-colors hover:text-primary py-3 px-4 rounded-md hover:bg-accent"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Portfolio
                 </Link>
                 <Link 
                   href="/newsletter" 

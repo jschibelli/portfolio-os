@@ -6,6 +6,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
 import { CustomNavigation } from '../../../components/custom-navigation';
 import { PublicationByHostDocument } from '../generated/graphql';
+import { Button } from '../components/ui/button';
 
 interface Props {
   publication: any;
@@ -162,12 +163,13 @@ export default function NewsletterPage({ publication }: Props) {
                   </label>
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground font-semibold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors"
+                  size="lg"
+                  className="w-full"
                 >
                   Subscribe to Newsletter
-                </button>
+                </Button>
               </form>
             </div>
           </div>

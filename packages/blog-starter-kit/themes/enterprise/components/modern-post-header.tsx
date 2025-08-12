@@ -12,6 +12,7 @@ import { twJoin } from 'tailwind-merge';
 import { useState } from 'react';
 import ProfileImage from './profile-image';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 type Author = Pick<User, 'username' | 'name' | 'profilePicture'>;
@@ -67,13 +68,15 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 						))}
 						
 						{post.coAuthors && post.coAuthors.length > 0 && (
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={openCoAuthorModal}
 								style={{ zIndex: post.coAuthors?.length }}
-								className="relative -ml-3 flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-slate-100 bg-slate-100 px-1 group-hover:border-slate-200 dark:border-slate-800 dark:bg-slate-600 dark:text-white group-hover:dark:border-slate-700 md:hidden"
+								className="relative -ml-3 h-10 w-10 rounded-full border-2 border-slate-100 bg-slate-100 group-hover:border-slate-200 dark:border-slate-800 dark:bg-slate-600 dark:text-white group-hover:dark:border-slate-700 md:hidden"
 							>
 								<p className="truncate text-xs font-normal">+{post.coAuthors.length}</p>
-							</button>
+							</Button>
 						)}
 						
 						<div className="flex flex-col items-start">
@@ -86,9 +89,10 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 								</a>
 							)}
 							{post.coAuthors && post.coAuthors.length > 0 && (
-								<button
+								<Button
+									variant="ghost"
 									onClick={openCoAuthorModal}
-									className="text-left font-semibold text-slate-600 hover:text-primary transition-colors dark:text-white"
+									className="text-left font-semibold text-slate-600 hover:text-primary transition-colors dark:text-white p-0 h-auto"
 								>
 									<span>{post.author.name}</span>
 									{post.coAuthors && (
@@ -98,7 +102,7 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 											with {post.coAuthors.length} co-author{post.coAuthors.length === 1 ? '' : 's'}
 										</span>
 									)}
-								</button>
+								</Button>
 							)}
 						</div>
 					</div>
