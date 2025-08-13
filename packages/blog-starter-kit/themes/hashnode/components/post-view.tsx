@@ -117,7 +117,7 @@ function PostView(props: any) {
                     >
                     <span>{moment(new Date(post.publishedAt)).format('MMM D, YYYY')}</span>
                     </Link>
-                    {(post?.publication?.features.readTime.isEnabled) && (
+                    {(post?.publication?.features?.readTime?.isEnabled) && (
                     <>
                         <span className="mx-3 block font-bold text-slate-500">&middot;</span>
                         <p className="flex flex-row items-center text-slate-700 dark:text-slate-400">

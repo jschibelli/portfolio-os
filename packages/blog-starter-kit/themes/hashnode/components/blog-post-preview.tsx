@@ -24,7 +24,7 @@ function BlogPostPreview(props: {
   const postURL = `/${post.slug}`;
   const {
     preferences: { layout },
-    features,
+    features = { readTime: { isEnabled: false }, viewCount: { isEnabled: false } },
   } = publication;
 
   const postCoverImageURL = post.coverImage?.url ?? getDefaultPostCoverImageUrl();
