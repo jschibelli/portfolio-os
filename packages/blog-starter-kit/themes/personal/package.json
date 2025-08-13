@@ -16,6 +16,8 @@
 		"@radix-ui/react-popover": "^1.0.7",
 		"@starter-kit/utils": "workspace:*",
 		"@tailwindcss/typography": "^0.5.10",
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^1.13.2",
 		"@vercel/og": "^0.5.18",
 		"date-fns": "^2.30.0",
 		"graphql-request": "^6.1.0",

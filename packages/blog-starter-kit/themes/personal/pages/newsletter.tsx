@@ -3,7 +3,7 @@ import Head from 'next/head';
 import request from 'graphql-request';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {

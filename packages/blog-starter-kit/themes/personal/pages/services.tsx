@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useAppContext } from '../components/contexts/appContext';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 import { ToggleTheme } from '../components/toggle-theme';
 
 interface Props {

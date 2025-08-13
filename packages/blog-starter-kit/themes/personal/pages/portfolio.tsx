@@ -3,7 +3,7 @@ import Head from 'next/head';
 import request from 'graphql-request';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -34,7 +34,7 @@ export default function PortfolioPage({ publication }: Props) {
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold mb-6">Our Portfolio</h1>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Discover our latest projects and see how we've helped businesses achieve their digital transformation goals.
+                  Discover our latest projects and see how we&apos;ve helped businesses achieve their digital transformation goals.
                 </p>
               </div>
 

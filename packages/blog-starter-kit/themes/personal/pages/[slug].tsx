@@ -230,25 +230,11 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) 
 };
 
 export async function getStaticPaths() {
-	const data = await request(
-		process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT,
-		SlugPostsByPublicationDocument,
-		{
-			first: 10,
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-		},
-	);
-
-	const postSlugs = (data.publication?.posts.edges ?? []).map((edge) => edge.node.slug);
-
+	// Temporarily disabled to fix build issues
+	// TODO: Re-enable once environment variables are properly configured
+	
 	return {
-		paths: postSlugs.map((slug) => {
-			return {
-				params: {
-					slug: slug,
-				},
-			};
-		}),
+		paths: [],
 		fallback: 'blocking',
 	};
 }
