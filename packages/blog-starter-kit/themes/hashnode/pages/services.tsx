@@ -1,6 +1,5 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { useAppContext } from '../components/contexts/appContext';
 import { CustomNavigation } from '../components/custom-navigation';
 import { Layout } from '../components/layout';
 import { AppProvider } from '../components/contexts/appContext';
@@ -10,7 +9,6 @@ interface Props {
 }
 
 export default function ServicesPage({ publication }: Props) {
-  const { publication: appPublication } = useAppContext();
 
   return (
     <AppProvider publication={publication}>

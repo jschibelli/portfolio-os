@@ -180,6 +180,10 @@ export const getStaticProps = async () => {
 		url: 'https://example.com',
 		descriptionSEO: 'A modern blog built with Next.js and Hashnode',
 		author: { name: 'John Doe' },
+		features: {
+			readTime: { isEnabled: true },
+			viewCount: { isEnabled: true },
+		},
 		ogMetaData: {
 			image: 'https://via.placeholder.com/1200x630',
 		},
