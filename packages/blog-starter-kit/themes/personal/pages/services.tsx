@@ -201,7 +201,7 @@ export default function ServicesPage({ publication }: Props) {
             <div className="text-center">
               <h2 className="text-2xl font-bold text-black dark:text-white mb-4">Ready to Get Started?</h2>
               <p className="text-neutral-600 dark:text-neutral-300 mb-8">
-                Let's discuss your project requirements and find the perfect solution for your needs.
+                Let&apos;s discuss your project requirements and find the perfect solution for your needs.
               </p>
               <a
                 href="mailto:contact@example.com"

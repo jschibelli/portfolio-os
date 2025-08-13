@@ -19,7 +19,7 @@ importers:
         version: 2.5.1
       next:
         specifier: ^13.4.19
-        version: 13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 13.5.11(@babel/core@7.28.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -224,7 +224,7 @@ importers:
         specifier: ^0.5.10
         version: 0.5.16(tailwindcss@3.4.17)
       '@urql/exchange-graphcache':
-        specifier: 6.1.4
+        specifier: ^6.1.4
         version: 6.1.4(graphql@16.11.0)
       '@vercel/og':
         specifier: ^0.5.18
@@ -232,6 +232,9 @@ importers:
       clipboard:
         specifier: ^2.0.8
         version: 2.0.11
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       cuid:
         specifier: ^2.1.8
         version: 2.1.8
@@ -261,10 +264,10 @@ importers:
         version: 3.7.3
       next-axiom:
         specifier: 0.18.0
-        version: 0.18.0(next@13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        version: 0.18.0(next@13.5.11(@babel/core@7.28.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       next-urql:
-        specifier: 5.0.2
-        version: 5.0.2(react@18.3.1)(urql@4.0.4(graphql@16.11.0)(react@18.3.1))
+        specifier: ^5.0.2
+        version: 5.0.2(react@18.3.1)(urql@5.0.0(@urql/core@5.2.0(graphql@16.11.0))(react@18.3.1))
       react-perfect-scrollbar:
         specifier: ^1.5.8
         version: 1.5.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -290,8 +293,8 @@ importers:
         specifier: ^1.13.2
         version: 1.14.0
       urql:
-        specifier: 4.0.4
-        version: 4.0.4(graphql@16.11.0)(react@18.3.1)
+        specifier: ^5.0.0
+        version: 5.0.0(@urql/core@5.2.0(graphql@16.11.0))(react@18.3.1)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -1715,9 +1718,6 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
-
-  '@urql/core@4.3.0':
-    resolution: {integrity: sha512-wT+FeL8DG4x5o6RfHEnONNFVDM3616ouzATMYUClB6CB+iIu2mwfBKd7xSUxYOZmwtxna5/hDRQdMl3nbQZlnw==}
 
   '@urql/core@5.2.0':
     resolution: {integrity: sha512-/n0ieD0mvvDnVAXEQgX/7qJiVcvYvNkOHeBvkwtylfjydar123caCXcl58PXFY11oU1oquJocVXHxLAbtv4x1A==}
@@ -4518,9 +4518,10 @@ packages:
   urlpattern-polyfill@10.1.0:
     resolution: {integrity: sha512-IGjKp/o0NL3Bso1PymYURCJxMPNAf/ILOpendP9f5B6e1rTJgdgiOvgfoT8VxCAdY+Wisb9uhGaJJf3yZ2V9nw==}
 
-  urql@4.0.4:
-    resolution: {integrity: sha512-C5P4BMnAsk+rbytCWglit5ijXbIKXsa9wofSGPbuMyJKsDdL+9GfipS362Nff/Caag+eYOK5W+sox8fwEILT6Q==}
+  urql@5.0.0:
+    resolution: {integrity: sha512-eFu3CS1VREcsFOEaFl90ohB/LRyZ8nFzEqUDbXTWGaycfdrCoiGOA3stYiCOTODHxx418PqSEc7QCXU1q+qhFA==}
     peerDependencies:
+      '@urql/core': ^6.0.0
       react: '>= 16.8.0'
 
   use-callback-ref@1.3.3:
@@ -6112,13 +6113,6 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
-
-  '@urql/core@4.3.0(graphql@16.11.0)':
-    dependencies:
-      '@0no-co/graphql.web': 1.1.2(graphql@16.11.0)
-      wonka: 6.3.5
-    transitivePeerDependencies:
-      - graphql
 
   '@urql/core@5.2.0(graphql@16.11.0)':
     dependencies:
@@ -8146,9 +8140,9 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-axiom@0.18.0(next@13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+  next-axiom@0.18.0(next@13.5.11(@babel/core@7.28.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
     dependencies:
-      next: 13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 13.5.11(@babel/core@7.28.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       whatwg-fetch: 3.6.20
 
   next-themes@0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
@@ -8156,13 +8150,13 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  next-urql@5.0.2(react@18.3.1)(urql@4.0.4(graphql@16.11.0)(react@18.3.1)):
+  next-urql@5.0.2(react@18.3.1)(urql@5.0.0(@urql/core@5.2.0(graphql@16.11.0))(react@18.3.1)):
     dependencies:
       react: 18.3.1
       react-ssr-prepass: 1.6.0(react@18.3.1)
-      urql: 4.0.4(graphql@16.11.0)(react@18.3.1)
+      urql: 5.0.0(@urql/core@5.2.0(graphql@16.11.0))(react@18.3.1)
 
-  next@13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@13.5.11(@babel/core@7.28.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 13.5.11
       '@swc/helpers': 0.5.2
@@ -8171,7 +8165,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.1(react@18.3.1)
+      styled-jsx: 5.1.1(@babel/core@7.28.0)(react@18.3.1)
       watchpack: 2.4.0
     optionalDependencies:
       '@next/swc-darwin-arm64': 13.5.9
@@ -9046,10 +9040,12 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.2
 
-  styled-jsx@5.1.1(react@18.3.1):
+  styled-jsx@5.1.1(@babel/core@7.28.0)(react@18.3.1):
     dependencies:
       client-only: 0.0.1
       react: 18.3.1
+    optionalDependencies:
+      '@babel/core': 7.28.0
 
   stylis@4.3.6: {}
 
@@ -9332,13 +9328,11 @@ snapshots:
 
   urlpattern-polyfill@10.1.0: {}
 
-  urql@4.0.4(graphql@16.11.0)(react@18.3.1):
+  urql@5.0.0(@urql/core@5.2.0(graphql@16.11.0))(react@18.3.1):
     dependencies:
-      '@urql/core': 4.3.0(graphql@16.11.0)
+      '@urql/core': 5.2.0(graphql@16.11.0)
       react: 18.3.1
       wonka: 6.3.5
-    transitivePeerDependencies:
-      - graphql
 
   use-callback-ref@1.3.3(@types/react@18.3.23)(react@18.3.1):
     dependencies:

@@ -110,7 +110,7 @@ export default function AboutPage({ publication }: Props) {
 
                 <h2>Get In Touch</h2>
                 <p>
-                  Ready to start your next project? Let's discuss how we can help bring your ideas to life.
+                  Ready to start your next project? Let&apos;s discuss how we can help bring your ideas to life.
                 </p>
                 <div className="text-center mt-8">
                   <a

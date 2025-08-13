@@ -1,7 +1,7 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useAppContext } from '../components/contexts/appContext';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 import { Layout } from '../components/layout';
 import { AppProvider } from '../components/contexts/appContext';
 
@@ -185,7 +185,7 @@ export default function ServicesPage({ publication }: Props) {
                   <div className="text-center">
                     <h2 className="text-2xl font-bold mb-4">Ready to Get Started?</h2>
                     <p className="text-slate-600 dark:text-slate-300 mb-6">
-                      Let's discuss your project requirements and find the perfect solution for your needs.
+                      Let&apos;s discuss your project requirements and find the perfect solution for your needs.
                     </p>
                     <a
                       href="mailto:contact@example.com"

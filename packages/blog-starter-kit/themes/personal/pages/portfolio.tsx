@@ -140,9 +140,9 @@ export default function PortfolioPage({ publication }: Props) {
 
                 <div className="text-center mt-12">
                   <h2 className="text-3xl font-bold mb-6">Ready to Start Your Project?</h2>
-                  <p className="text-xl text-muted-foreground mb-8">
-                    Let's discuss how we can help bring your vision to life with cutting-edge technology solutions.
-                  </p>
+                                  <p className="text-xl text-muted-foreground mb-8">
+                  Let&apos;s discuss how we can help bring your vision to life with cutting-edge technology solutions.
+                </p>
                   <a
                     href="mailto:contact@example.com"
                     className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"

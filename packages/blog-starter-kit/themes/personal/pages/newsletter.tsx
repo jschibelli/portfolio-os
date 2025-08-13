@@ -156,7 +156,7 @@ export default function NewsletterPage({ publication }: Props) {
                   </form>
                 </div>
 
-                <h2>What You'll Get</h2>
+                <h2>What You&apos;ll Get</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-8">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
