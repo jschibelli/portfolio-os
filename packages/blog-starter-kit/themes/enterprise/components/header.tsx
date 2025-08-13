@@ -20,8 +20,7 @@ export const Header = () => {
 	const { publication } = useAppContext();
 	const navbarItems = publication.preferences.navbarItems.filter(hasUrl);
 	const blogItem = { label: 'Blog', url: '/blog' };
-	const servicesItem = { label: 'Services', url: '/services' };
-	const allItems = [blogItem, servicesItem, ...navbarItems];
+	const allItems = [blogItem, ...navbarItems];
 	const visibleItems = allItems.slice(0, 3);
 	const hiddenItems = allItems.slice(3);
 

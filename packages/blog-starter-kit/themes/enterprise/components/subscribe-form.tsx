@@ -1,5 +1,6 @@
 import request from 'graphql-request';
 import { useRef, useState } from 'react';
+import { Button } from './ui/button';
 import {
 	SubscribeToNewsletterDocument,
 	SubscribeToNewsletterMutation,
@@ -49,13 +50,14 @@ export const SubscribeForm = () => {
 						placeholder="john@doe.com"
 						className="focus:outline-primary-600 dark:focus:outline-primary-500 left-3 top-3 w-full rounded-full p-3 text-base text-black outline-none dark:bg-neutral-950 dark:text-neutral-50"
 					/>
-					<button
+					<Button
 						disabled={requestInProgress}
 						onClick={subscribe}
-						className="bg-primary-600 dark:bg-primary-600 absolute right-3 top-3 rounded-full px-3 py-2 text-white disabled:cursor-not-allowed disabled:opacity-80"
+						size="sm"
+						className="absolute right-3 top-3 rounded-full"
 					>
 						Subscribe
-					</button>
+					</Button>
 				</div>
 			)}
 			{status === 'PENDING' && (

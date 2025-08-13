@@ -224,14 +224,17 @@ importers:
         specifier: ^0.5.10
         version: 0.5.16(tailwindcss@3.4.17)
       '@urql/exchange-graphcache':
-        specifier: 6.1.4
-        version: 6.1.4(graphql@16.11.0)
+        specifier: 4.0.0
+        version: 4.0.0
       '@vercel/og':
         specifier: ^0.5.18
         version: 0.5.20
       clipboard:
         specifier: ^2.0.8
         version: 2.0.11
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       cuid:
         specifier: ^2.1.8
         version: 2.1.8
@@ -263,8 +266,8 @@ importers:
         specifier: 0.18.0
         version: 0.18.0(next@13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       next-urql:
-        specifier: 5.0.2
-        version: 5.0.2(react@18.3.1)(urql@4.0.4(graphql@16.11.0)(react@18.3.1))
+        specifier: 3.0.0
+        version: 3.0.0(react@18.3.1)(urql@4.0.4(react@18.3.1))
       react-perfect-scrollbar:
         specifier: ^1.5.8
         version: 1.5.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -291,7 +294,7 @@ importers:
         version: 1.14.0
       urql:
         specifier: 4.0.4
-        version: 4.0.4(graphql@16.11.0)(react@18.3.1)
+        version: 4.0.4(react@18.3.1)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -383,6 +386,9 @@ importers:
       '@vercel/og':
         specifier: ^0.5.18
         version: 0.5.20
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
@@ -410,6 +416,9 @@ importers:
       remark-html:
         specifier: ^15.0.1
         version: 15.0.2
+      tailwind-merge:
+        specifier: ^1.13.2
+        version: 1.14.0
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -1722,8 +1731,10 @@ packages:
   '@urql/core@5.2.0':
     resolution: {integrity: sha512-/n0ieD0mvvDnVAXEQgX/7qJiVcvYvNkOHeBvkwtylfjydar123caCXcl58PXFY11oU1oquJocVXHxLAbtv4x1A==}
 
-  '@urql/exchange-graphcache@6.1.4':
-    resolution: {integrity: sha512-GQ1scnYjMVoUHrPoYOlw3ZfU2nXuLTEhWhKzPquhZz87GliVpZPuFMf+o64cI1dKy9xDlbU7aQnKiSaGeT248w==}
+  '@urql/exchange-graphcache@4.0.0':
+    resolution: {integrity: sha512-UuLyR2tuy28KFmcMzD0aU3hWEa62H8Yfo9rBVAaXPxvGUD8g0Bq3NXUGLBvXxKMZcodn7AjYeVBlfPCHth9awA==}
+    peerDependencies:
+      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
 
   '@vercel/og@0.5.20':
     resolution: {integrity: sha512-zi+ZXSx/peXA+1lq7s/5Vzmm/TTfTSf/5P1qNYnh42+7X+pZmahWoXt0i7SWiq3WagfsNUNA4hUDapDiHRoXqA==}
@@ -3442,11 +3453,11 @@ packages:
       react: ^16.8 || ^17 || ^18
       react-dom: ^16.8 || ^17 || ^18
 
-  next-urql@5.0.2:
-    resolution: {integrity: sha512-/ntMdlDNhduT1xmnZ0ZgH9Vtbaz/Gnx5VdTyExHjRqKpKnqZU49vHiik/qctscwFnPBVTRNxQ1BjhrOtfsm8oQ==}
+  next-urql@3.0.0:
+    resolution: {integrity: sha512-7sT5jLo7XqdVDRP43oo3KJf1c49cnytTcVXIiPuZInfUt5wL4Mri/33MbCF0dFFKNeYE3LluGrKV55uR7sNAWA==}
     peerDependencies:
       react: '>=16.8.0'
-      urql: ^4.0.0
+      urql: ^2.0.0
 
   next@13.5.11:
     resolution: {integrity: sha512-WUPJ6WbAX9tdC86kGTu92qkrRdgRqVrY++nwM+shmWQwmyxt4zhZfR59moXSI4N8GDYCBY3lIAqhzjDd4rTC8Q==}
@@ -4621,6 +4632,9 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
+  wonka@4.0.15:
+    resolution: {integrity: sha512-U0IUQHKXXn6PFo9nqsHphVCE5m3IntqZNB9Jjn7EB1lrR7YTDY3YWgFvEvwniTzXSvOH/XMzAZaIfJF/LvHYXg==}
+
   wonka@6.3.5:
     resolution: {integrity: sha512-SSil+ecw6B4/Dm7Pf2sAshKQ5hWFvfyGlfPbEd6A14dOH6VDjrmbY86u6nZvy9omGwwIPFR8V41+of1EezgoUw==}
 
@@ -4708,9 +4722,7 @@ packages:
 
 snapshots:
 
-  '@0no-co/graphql.web@1.1.2(graphql@16.11.0)':
-    optionalDependencies:
-      graphql: 16.11.0
+  '@0no-co/graphql.web@1.1.2': {}
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -6113,27 +6125,24 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@urql/core@4.3.0(graphql@16.11.0)':
+  '@urql/core@4.3.0':
     dependencies:
-      '@0no-co/graphql.web': 1.1.2(graphql@16.11.0)
+      '@0no-co/graphql.web': 1.1.2
       wonka: 6.3.5
     transitivePeerDependencies:
       - graphql
 
-  '@urql/core@5.2.0(graphql@16.11.0)':
+  '@urql/core@5.2.0':
     dependencies:
-      '@0no-co/graphql.web': 1.1.2(graphql@16.11.0)
+      '@0no-co/graphql.web': 1.1.2
       wonka: 6.3.5
     transitivePeerDependencies:
       - graphql
 
-  '@urql/exchange-graphcache@6.1.4(graphql@16.11.0)':
+  '@urql/exchange-graphcache@4.0.0':
     dependencies:
-      '@0no-co/graphql.web': 1.1.2(graphql@16.11.0)
-      '@urql/core': 5.2.0(graphql@16.11.0)
-      wonka: 6.3.5
-    transitivePeerDependencies:
-      - graphql
+      '@urql/core': 5.2.0
+      wonka: 4.0.15
 
   '@vercel/og@0.5.20':
     dependencies:
@@ -8156,11 +8165,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  next-urql@5.0.2(react@18.3.1)(urql@4.0.4(graphql@16.11.0)(react@18.3.1)):
+  next-urql@3.0.0(react@18.3.1)(urql@4.0.4(react@18.3.1)):
     dependencies:
       react: 18.3.1
       react-ssr-prepass: 1.6.0(react@18.3.1)
-      urql: 4.0.4(graphql@16.11.0)(react@18.3.1)
+      urql: 4.0.4(react@18.3.1)
 
   next@13.5.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
@@ -9332,9 +9341,9 @@ snapshots:
 
   urlpattern-polyfill@10.1.0: {}
 
-  urql@4.0.4(graphql@16.11.0)(react@18.3.1):
+  urql@4.0.4(react@18.3.1):
     dependencies:
-      '@urql/core': 4.3.0(graphql@16.11.0)
+      '@urql/core': 4.3.0
       react: 18.3.1
       wonka: 6.3.5
     transitivePeerDependencies:
@@ -9457,6 +9466,8 @@ snapshots:
   which@2.0.2:
     dependencies:
       isexe: 2.0.0
+
+  wonka@4.0.15: {}
 
   wonka@6.3.5: {}
 

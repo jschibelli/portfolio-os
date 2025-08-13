@@ -3,7 +3,7 @@ import Head from 'next/head';
 import request from 'graphql-request';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -34,7 +34,7 @@ export default function PortfolioPage({ publication }: Props) {
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold mb-6">Our Portfolio</h1>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                  Discover our latest projects and see how we've helped businesses achieve their digital transformation goals.
+                  Discover our latest projects and see how we&apos;ve helped businesses achieve their digital transformation goals.
                 </p>
               </div>
 
@@ -140,9 +140,9 @@ export default function PortfolioPage({ publication }: Props) {
 
                 <div className="text-center mt-12">
                   <h2 className="text-3xl font-bold mb-6">Ready to Start Your Project?</h2>
-                  <p className="text-xl text-muted-foreground mb-8">
-                    Let's discuss how we can help bring your vision to life with cutting-edge technology solutions.
-                  </p>
+                                  <p className="text-xl text-muted-foreground mb-8">
+                  Let&apos;s discuss how we can help bring your vision to life with cutting-edge technology solutions.
+                </p>
                   <a
                     href="mailto:contact@example.com"
                     className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"

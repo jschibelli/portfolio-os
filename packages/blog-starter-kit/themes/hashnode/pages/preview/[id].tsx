@@ -13,12 +13,12 @@ import {
 	DraftByIdQuery,
 	DraftByIdQueryVariables,
 	DraftFragment,
-	Post,
 	PublicationByHostDocument,
 	PublicationByHostQuery,
 	PublicationByHostQueryVariables,
 	PublicationFragment,
 } from '../../generated/graphql';
+import type { Post } from '../../generated/graphql';
 import PublicationFooter from '../../components/publication-footer';
 import { useRef } from 'react';
 import { twJoin } from 'tailwind-merge';

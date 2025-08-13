@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { cn } from '../themes/enterprise/lib/utils';
-import { Button } from '../themes/enterprise/components/ui/button';
-import { ThemeToggle } from '../themes/enterprise/components/ui/theme-toggle';
+import { cn } from '../lib/utils';
 
 interface CustomNavigationProps {
   publication: any;
@@ -61,6 +59,66 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = 'ListItem';
+
+// Simple Button component for hashnode theme
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: 'default' | 'ghost';
+    size?: 'sm' | 'icon';
+  }
+>(({ className, variant = 'default', size = 'sm', ...props }, ref) => {
+  const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  
+  const variantClasses = {
+    default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90 hover:shadow-md',
+    ghost: 'hover:bg-accent hover:text-accent-foreground'
+  };
+  
+  const sizeClasses = {
+    sm: 'h-9 px-4 py-2',
+    icon: 'h-9 w-9'
+  };
+
+  return (
+    <button
+      ref={ref}
+      className={cn(baseClasses, variantClasses[variant], sizeClasses[size], className)}
+      {...props}
+    />
+  );
+});
+Button.displayName = 'Button';
+
+// Simple ThemeToggle component for hashnode theme
+function ThemeToggle() {
+  const [theme, setTheme] = React.useState('light');
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+  };
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+    >
+      {theme === 'light' ? (
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      ) : (
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      )}
+    </Button>
+  );
+}
 
 export function CustomNavigation({ publication, className }: CustomNavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -261,4 +319,4 @@ export function CustomNavigation({ publication, className }: CustomNavigationPro
       </div>
     </header>
   );
-} 
+}

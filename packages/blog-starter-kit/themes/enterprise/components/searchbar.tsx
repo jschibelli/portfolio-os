@@ -77,70 +77,75 @@ export const Search = () => {
 			<Link
 				key={post.id}
 				href={postURL}
-				className="flex flex-row items-center gap-5 px-4 py-2 hover:bg-slate-50 focus:outline-1 dark:hover:bg-neutral-800"
+				className="flex flex-row items-start gap-4 p-4 hover:bg-slate-50 focus:outline-none focus:bg-slate-50 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 transition-colors duration-200"
 			>
-				<div className="flex flex-col gap-1">
-					<strong className="text-base">{post.title}</strong>
-					<span className="text-slate-600 dark:text-neutral-300">
-						{post.brief.length > 140 ? post.brief.substring(0, 140) + '…' : post.brief}
+				<div className="flex flex-col gap-2 flex-1 min-w-0">
+					<strong className="text-lg font-semibold text-slate-900 dark:text-neutral-100 leading-tight">
+						{post.title}
+					</strong>
+					<span className="text-slate-600 dark:text-neutral-300 text-sm leading-relaxed">
+						{post.brief.length > 120 ? post.brief.substring(0, 120) + '…' : post.brief}
 					</span>
 				</div>
-				<div className="w-56">
-					<CoverImage
-						title={post.title}
-						src={resizeImage(
-							post.coverImage?.url,
-							{
-								w: 400,
-								h: 210,
-								c: 'thumb',
-							},
-							DEFAULT_COVER,
-						)}
-					/>
+				<div className="w-24 h-16 flex-shrink-0 rounded-lg overflow-hidden">
+					<div className="w-full h-full">
+						<CoverImage
+							title={post.title}
+							src={resizeImage(
+								post.coverImage?.url,
+								{
+									w: 96,
+									h: 64,
+									c: 'thumb',
+								},
+								DEFAULT_COVER,
+							)}
+						/>
+					</div>
 				</div>
 			</Link>
 		);
 	});
 
 	return (
-		<div className="relative col-span-1">
+		<div className="relative w-full">
 			<input
 				type="text"
 				ref={searchInputRef}
 				onKeyUp={escapeSearchOnESC}
 				onChange={updateSearchQuery}
 				placeholder="Search blog posts…"
-				className="w-full rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-base focus:bg-transparent dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 dark:placeholder:text-neutral-400 dark:hover:bg-neutral-950"
+				className="w-full rounded-full border border-slate-200 bg-slate-50 px-6 py-4 text-lg focus:bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 dark:placeholder:text-neutral-400 dark:hover:bg-neutral-950"
 			/>
 			{query && (
 				<>
 					{isSearching && (
-						<div className="top-100 absolute left-0 z-10 mt-1 flex w-full flex-col items-stretch overflow-hidden rounded-lg border bg-white p-1 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50">
-							<div className="flex animate-pulse flex-col gap-1 p-4">
-								<div className="h-8 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
+						<div className="absolute left-0 right-0 z-50 mt-2 flex w-full flex-col items-stretch overflow-hidden rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50 min-h-[300px] max-h-[500px] overflow-y-auto">
+							<div className="flex animate-pulse flex-col gap-3 p-4">
+								<div className="h-6 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-2/3 rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 							</div>
-							<div className="flex animate-pulse flex-col gap-1 p-4">
-								<div className="h-8 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
+							<div className="flex animate-pulse flex-col gap-3 p-4">
+								<div className="h-6 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-2/3 rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 							</div>
-							<div className="flex animate-pulse flex-col gap-1 p-4">
-								<div className="h-8 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
+							<div className="flex animate-pulse flex-col gap-3 p-4">
+								<div className="h-6 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-2/3 rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 							</div>
 						</div>
 					)}
 					{searchResults.length > 0 && !isSearching && (
-						<div className="top-100 absolute left-0 z-10 mt-1 flex w-full flex-col items-stretch overflow-hidden rounded-lg border bg-white p-1 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50">
-							<h3 className="px-4 py-2 font-medium text-slate-500 dark:text-neutral-400">
+						<div className="absolute left-0 right-0 z-50 mt-2 flex w-full flex-col items-stretch overflow-hidden rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50 min-h-[200px] max-h-[500px] overflow-y-auto">
+							<h3 className="px-4 py-3 font-semibold text-slate-700 dark:text-neutral-300 border-b border-slate-200 dark:border-neutral-700">
 								Found {searchResults.length} results
 							</h3>
-							<hr className="dark:border-neutral-800" />
-							{searchResultsList}
+							<div className="divide-y divide-slate-200 dark:divide-neutral-700">
+								{searchResultsList}
+							</div>
 						</div>
 					)}
 				</>

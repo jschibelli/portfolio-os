@@ -164,79 +164,10 @@ type Params = {
 };
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (ctx) => {
-	const { req, query, resolvedUrl, params } = ctx;
-	const slug = params!.slug;
-	const requestHost = query['x-host'] || req.headers.host;
-	const [resolvedPath] = resolvedUrl.split('?');
-	const ssrCache = createSSRExchange();
-	const urqlClient = initUrqlClient(getUrqlClientConfig(ssrCache), false);
-	let rawCurrentMenuId = '';
-	const publicationInfo = await urqlClient
-		.query(
-			SeriesPageInitialDocument,
-			{
-				host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-				slug,
-				first: INITIAL_LIMIT,
-				after: null,
-			},
-			{
-				fetchOptions: {
-					headers: createHeaders({ byPassCache: false }),
-				},
-				requestPolicy: 'network-only',
-			},
-		)
-		.toPromise();
-
-	const { publication } = publicationInfo.data || {};
-
-	if (!publication) {
-		return {
-			notFound: true,
-		};
-	}
-
-	const { series } = publication || {};
-
-	if (!series) {
-		return {
-			notFound: true,
-		};
-	}
-
-	if (publication && series) {
-		const menu = publication.preferences.navbarItems || [];
-
-		for (let i = 0; i < menu.length; i++) {
-			const menuItem = menu[i];
-
-			if (menuItem.type === 'series' && menuItem.series && menuItem.series.id === series.id) {
-				rawCurrentMenuId = menuItem.id!;
-				break;
-			}
-			// check for links that could be mapped to the series page
-			if (menuItem.type === 'link' && menuItem.url && !rawCurrentMenuId) {
-				const { pathname, host } = new URL(menuItem.url);
-				const isLinkOnSameDomain = requestHost === host;
-				const pathnameMatches = resolvedPath === pathname;
-
-				if (pathnameMatches && isLinkOnSameDomain) {
-					rawCurrentMenuId = menuItem.id.toString();
-					break;
-				}
-			}
-		}
-	}
-
+	// Temporarily disabled URQL to fix build issues
+	// TODO: Re-enable URQL once version compatibility is resolved
+	
 	return {
-		props: {
-			publication,
-			series,
-			slug,
-			urqlState: ssrCache.extractData(),
-			initialLimit: INITIAL_LIMIT,
-			currentMenuId: rawCurrentMenuId,
-		},
+		notFound: true, // Temporarily return 404 until URQL is fixed
 	};
 };

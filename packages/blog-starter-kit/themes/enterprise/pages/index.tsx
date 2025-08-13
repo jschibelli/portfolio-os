@@ -10,14 +10,13 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
-import { Search } from '../components/searchbar';
 import { SocialLinks } from '../components/social-links';
 
 import { CustomNavigation } from '../../../components/custom-navigation';
 import ModernHero from '../components/modern-hero';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
-import ModernNewsletter from '../components/modern-newsletter';
+import NewsletterCTA from '../components/newsletter-cta';
 
 import {
 	PageInfo,
@@ -143,18 +142,17 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 				)}
 
 				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
-					{/* Navbar Section */}
+					{/* Social Links Section */}
 					<div 
-						id="navbar-section"
+						id="social-links-section"
 						data-animate-section
 						className={`transition-all duration-700 ease-out ${
-							isSectionVisible('navbar-section') 
+							isSectionVisible('social-links-section') 
 								? 'opacity-100 translate-y-0' 
 								: 'opacity-0 translate-y-6'
 						}`}
 					>
-						<div className="grid grid-cols-1 items-center gap-5 pt-5 text-sm md:grid-cols-2">
-							<Search />
+						<div className="flex justify-center">
 							<SocialLinks />
 						</div>
 					</div>
@@ -252,7 +250,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						</div>
 					)}
 
-					{/* Modern Newsletter Section */}
+					{/* Newsletter CTA Section */}
 					{allPosts.length > 0 && (
 						<div 
 							id="newsletter-section"
@@ -263,9 +261,10 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									: 'opacity-0 translate-y-8'
 							}`}
 						>
-							<ModernNewsletter
+							<NewsletterCTA 
 								title="Stay updated with our newsletter"
-								description="Get the latest posts and updates delivered to your inbox."
+								showNewsletterForm={true}
+								className="py-16"
 							/>
 						</div>
 					)}

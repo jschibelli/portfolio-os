@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 
 interface Props {
   publication: any;
@@ -40,7 +40,7 @@ export default function AboutPage({ publication }: Props) {
                 <h2>Our Mission</h2>
                 <p>
                   To empower businesses with cutting-edge technology solutions that drive growth, efficiency, and innovation. 
-                  We believe in creating software that not only meets today's needs but anticipates tomorrow's challenges.
+                  We believe in creating software that not only meets today&apos;s needs but anticipates tomorrow&apos;s challenges.
                 </p>
 
                 <h2>Our Values</h2>
@@ -52,7 +52,7 @@ export default function AboutPage({ publication }: Props) {
                       </svg>
                     </div>
                     <h3 className="text-xl font-semibold mb-2">Innovation</h3>
-                    <p className="text-muted-foreground">Pushing the boundaries of what's possible with technology</p>
+                    <p className="text-muted-foreground">Pushing the boundaries of what&apos;s possible with technology</p>
                   </div>
                   <div className="text-center">
                     <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -110,7 +110,7 @@ export default function AboutPage({ publication }: Props) {
 
                 <h2>Get In Touch</h2>
                 <p>
-                  Ready to start your next project? Let's discuss how we can help bring your ideas to life.
+                  Ready to start your next project? Let&apos;s discuss how we can help bring your ideas to life.
                 </p>
                 <div className="text-center mt-8">
                   <a

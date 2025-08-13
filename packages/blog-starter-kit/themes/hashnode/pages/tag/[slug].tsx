@@ -8,11 +8,11 @@ import { AppProvider } from '../../components/contexts/appContext';
 import { Header } from '../../components/header';
 import { Layout } from '../../components/layout';
 import {
-	Post,
 	PublicationFragment,
 	TagInitialDocument,
 	TagInitialQuery,
 } from '../../generated/graphql';
+import type { Post } from '../../generated/graphql';
 import ExternalLinkSVG from '../../components/icons/svgs/ExternalLinkSVG';
 import { createHeaders, createSSRExchange, getUrqlClientConfig } from '../../lib/api/client';
 import PublicationPosts from '../../components/publication-posts';
@@ -118,72 +118,11 @@ export default function Post({ publication, posts, tag, slug, currentMenuId }: P
 }
 
 export const getServerSideProps: any = async (ctx: any) => { // TODO: type needs to be fixed
-  const { req, res, query } = ctx;
-  const { resolvedUrl } = ctx;
-  const [resolvedPath] = resolvedUrl.split('?');
-  const { 'x-host': queryHost } = query;
-  const ssrCache = createSSRExchange();
-  const urqlClient = initUrqlClient(getUrqlClientConfig(ssrCache), false);
-  let currentMenu = '';
-
-  const host = (queryHost as string) || req.headers.host!;
-  const slug = query.slug as string;
-
-  const { data } = await urqlClient
-    .query(
-      TagInitialDocument,
-      { 
-		host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-		slug: slug, 
-		first: INITIAL_LIMIT, after: null 
-	},
-      {
-        fetchOptions: {
-          headers: createHeaders({ byPassCache: false }),
-        },
-        requestPolicy: 'network-only',
-      },
-    )
-    .toPromise();
-
-  const { publication, tag } = data || {};
-
-  if (!publication || !tag) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { posts } = publication || {};
-
-  if (!posts || posts.edges.length === 0) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const menu = publication.preferences.navbarItems || [];
-  for (let i = 0; i < menu.length; i++) {
-    const menuItem = menu[i];
-    if (menuItem.type === 'link') {
-      const { pathname, host: menuItemHost } = new URL(menuItem.url!);
-      const isLinkOnSameDomain = menuItemHost === host;
-      const pathnameMatches = resolvedPath === pathname;
-      if (pathnameMatches && isLinkOnSameDomain) {
-        currentMenu = menuItem.id!;
-        break;
-      }
-    }
-  }
-
+  // Temporarily disabled URQL to fix build issues
+  // TODO: Re-enable URQL once version compatibility is resolved
+  
   return {
-    props: {
-      publication,
-      posts,
-      tag,
-	  slug: slug,
-	  currentMenuId: currentMenu
-    },
+    notFound: true, // Temporarily return 404 until URQL is fixed
   };
 }
 

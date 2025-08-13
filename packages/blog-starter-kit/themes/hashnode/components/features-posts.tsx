@@ -120,7 +120,7 @@ const FeaturedPosts = (props: {
                     {post.author.name}
                   </a>
                   <div className="blog-article-card-article-meta flex flex-row text-sm">
-                    {publication.features.readTime.isEnabled && post.readTimeInMinutes ? (
+                    {publication?.features?.readTime?.isEnabled && post.readTimeInMinutes ? (
                       <p className="text-slate-500 dark:text-slate-400">
                         <Link
                           href={postURL}
@@ -133,10 +133,10 @@ const FeaturedPosts = (props: {
                         </Link>
                       </p>
                     ) : null}
-                    {post.readTimeInMinutes && Number(post.views) > 0 && publication.features.viewCount.isEnabled && (
+                    {post.readTimeInMinutes && Number(post.views) > 0 && publication?.features?.viewCount?.isEnabled && (
                       <p className="mx-2 font-bold text-slate-500 dark:text-slate-400">&middot;</p>
                     )}
-                    {Number(post.views) > 0 && publication.features.viewCount.isEnabled && (
+                    {Number(post.views) > 0 && publication?.features?.viewCount?.isEnabled && (
                       <>
                         <p className="text-slate-500 dark:text-slate-400">
                           <Link

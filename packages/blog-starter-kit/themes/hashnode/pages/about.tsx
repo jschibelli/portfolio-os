@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import { CustomNavigation } from '../components/custom-navigation';
 
 interface Props {
   publication: any;
