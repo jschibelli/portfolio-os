@@ -4,29 +4,26 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
-import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
-import { SocialLinks } from '../components/social-links';
-
 import { CustomNavigation } from '../../../components/custom-navigation';
 import ModernHero from '../components/modern-hero';
-import ModernPostCard from '../components/modern-post-card';
-import FeaturedPostCard from '../components/featured-post-card';
 import NewsletterCTA from '../components/newsletter-cta';
-
-import {
-	PageInfo,
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { 
+	PublicationFragment,
 	PostFragment,
 	PostsByPublicationDocument,
 	PostsByPublicationQuery,
 	PostsByPublicationQueryVariables,
-	PublicationFragment,
 } from '../generated/graphql';
-import { DEFAULT_COVER } from '../utils/const';
+import { ArrowRightIcon, CodeIcon, CloudIcon, SmartphoneIcon, PaletteIcon, UsersIcon, WrenchIcon } from 'lucide-react';
 
 const SubscribeForm = dynamic(() =>
 	import('../components/subscribe-form').then((mod) => mod.SubscribeForm),
@@ -36,13 +33,10 @@ const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
 type Props = {
 	publication: PublicationFragment;
-	initialAllPosts: PostFragment[];
-	initialPageInfo: PageInfo;
-	initialTotalPosts: number;
+	recentPosts: PostFragment[];
 };
 
-export default function Index({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
-	const [allPosts] = useState<PostFragment[]>(initialAllPosts);
+export default function Home({ publication, recentPosts }: Props) {
 	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
 	// Intersection Observer for scroll animations
@@ -74,42 +68,86 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 		};
 	}, []);
 
-	const morePosts = allPosts.slice(4);
-
 	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
+
+	const services = [
+		{
+			icon: <CodeIcon className="h-8 w-8" />,
+			title: "Web Development",
+			description: "Modern, responsive web applications built with cutting-edge technologies.",
+			href: "/services/web-development",
+			color: "from-blue-500 to-blue-600"
+		},
+		{
+			icon: <SmartphoneIcon className="h-8 w-8" />,
+			title: "Mobile Development",
+			description: "Native and cross-platform mobile apps for iOS and Android.",
+			href: "/services/mobile-development",
+			color: "from-green-500 to-green-600"
+		},
+		{
+			icon: <CloudIcon className="h-8 w-8" />,
+			title: "Cloud Solutions",
+			description: "Scalable cloud infrastructure and DevOps solutions.",
+			href: "/services/cloud-solutions",
+			color: "from-purple-500 to-purple-600"
+		},
+		{
+			icon: <PaletteIcon className="h-8 w-8" />,
+			title: "UI/UX Design",
+			description: "Beautiful, intuitive user interfaces and user experience design.",
+			href: "/services/ui-ux-design",
+			color: "from-pink-500 to-pink-600"
+		},
+		{
+			icon: <UsersIcon className="h-8 w-8" />,
+			title: "Consulting",
+			description: "Strategic technology consulting and project management.",
+			href: "/services/consulting",
+			color: "from-orange-500 to-orange-600"
+		},
+		{
+			icon: <WrenchIcon className="h-8 w-8" />,
+			title: "Maintenance & Support",
+			description: "Ongoing maintenance, updates, and technical support.",
+			href: "/services/maintenance-support",
+			color: "from-red-500 to-red-600"
+		}
+	];
 
 	return (
 		<AppProvider publication={publication}>
 			<Layout>
 				<Head>
 					<title>
-						{publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
+						{publication.displayTitle || publication.title || 'Professional Development Services'}
 					</title>
 					<meta
 						name="description"
 						content={
-							publication.descriptionSEO || publication.title || `${publication.author.name}'s Blog`
+							publication.descriptionSEO || "Professional web development, mobile apps, cloud solutions, and technology consulting services."
 						}
 					/>
 					<meta property="twitter:card" content="summary_large_image" />
 					<meta
 						property="twitter:title"
-						content={publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
+						content={publication.displayTitle || publication.title || 'Professional Development Services'}
 					/>
 					<meta
 						property="twitter:description"
 						content={
-							publication.descriptionSEO || publication.title || `${publication.author.name}'s Blog`
+							publication.descriptionSEO || "Professional web development, mobile apps, cloud solutions, and technology consulting services."
 						}
 					/>
-					<meta
-						property="og:image"
-						content={publication.ogMetaData.image || getAutogeneratedPublicationOG(publication)}
-					/>
-					<meta
-						property="twitter:image"
-						content={publication.ogMetaData.image || getAutogeneratedPublicationOG(publication)}
-					/>
+					<meta property="twitter:image" content={getAutogeneratedPublicationOG(publication)} />
+					<meta property="og:image" content={getAutogeneratedPublicationOG(publication)} />
+					<meta property="og:image:width" content="1200" />
+					<meta property="og:image:height" content="630" />
+					<meta property="og:title" content={publication.displayTitle || publication.title} />
+					<meta property="og:description" content={publication.descriptionSEO || publication.title} />
+					<meta property="og:type" content="website" />
+					<meta property="og:url" content={publication.url} />
+					<link rel="canonical" href={publication.url} />
 					<script
 						type="application/ld+json"
 						dangerouslySetInnerHTML={{
@@ -117,162 +155,148 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						}}
 					/>
 				</Head>
+
 				<CustomNavigation publication={publication} />
-				
-				{/* Modern Hero Section */}
-				{allPosts.length > 0 && (
-					<div 
-						id="hero-section"
-						data-animate-section
-						className={`transition-all duration-1000 ease-out ${
-							isSectionVisible('hero-section') 
-								? 'opacity-100 translate-y-0' 
-								: 'opacity-0 translate-y-8'
-						}`}
-					>
-						<ModernHero
-							title={publication.displayTitle || publication.title || "Welcome to Our Blog"}
-							subtitle="Technology & Development"
-							description="Exploring the intersection of code, creativity, and innovation. From web development to system architecture, discover insights that drive modern technology forward."
-							ctaText="Read Latest Post"
-							ctaLink={`/${allPosts[0].slug}`}
-							imageUrl="/assets/hero/hero-image.webp"
-						/>
-					</div>
-				)}
 
-				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
-					{/* Social Links Section */}
-					<div 
-						id="social-links-section"
-						data-animate-section
-						className={`transition-all duration-700 ease-out ${
-							isSectionVisible('social-links-section') 
-								? 'opacity-100 translate-y-0' 
-								: 'opacity-0 translate-y-6'
-						}`}
-					>
-						<div className="flex justify-center">
-							<SocialLinks />
-						</div>
-					</div>
-
-					{/* Empty State */}
-					{allPosts.length === 0 && (
-						<div 
-							id="empty-state-section"
-							data-animate-section
-							className={`grid grid-cols-1 py-20 lg:grid-cols-3 transition-all duration-800 ease-out ${
-								isSectionVisible('empty-state-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-slate-700 dark:text-neutral-400 lg:col-start-2">
-								<div className="w-20 animate-fade-in-up">
-									<ArticleSVG clasName="stroke-current" />
+				{/* Hero Section */}
+				<section className="relative overflow-hidden py-20 lg:py-32">
+					<div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-white to-stone-100 dark:from-stone-950 dark:via-stone-900 dark:to-stone-800 opacity-70" />
+					<Container className="relative">
+						<div className="grid items-center gap-12 lg:grid-cols-2">
+							<div className="space-y-8">
+								<Badge variant="outline" className="w-fit">
+									Professional Development Services
+								</Badge>
+								<h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+									Building the Future,{' '}
+									<span className="bg-gradient-to-r from-stone-900 to-stone-600 bg-clip-text text-transparent dark:from-stone-100 dark:to-stone-400">
+										One Line at a Time
+									</span>
+								</h1>
+								<p className="text-xl text-muted-foreground max-w-[600px] leading-relaxed">
+									Professional web development, mobile applications, cloud solutions, and technology consulting. 
+									Let&apos;s turn your ideas into reality.
+								</p>
+								<div className="flex flex-col gap-4 sm:flex-row">
+									<Button size="lg" className="group w-fit font-semibold px-8 py-3 text-base" asChild>
+										<Link href="/portfolio">
+											View Portfolio
+											<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+										</Link>
+									</Button>
+									<Button size="lg" variant="outline" className="group w-fit font-medium px-8 py-3 text-base" asChild>
+										<Link href="/services">
+											Our Services
+										</Link>
+									</Button>
 								</div>
-								<p className="text-xl font-semibold animate-fade-in-up animation-delay-200">
-									Hang tight! We&apos;re drafting the first article.
+							</div>
+							<div className="relative">
+								<div className="aspect-square rounded-2xl bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-800 p-8">
+									<div className="h-full w-full rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900 flex items-center justify-center">
+										<CodeIcon className="h-24 w-24 text-stone-600 dark:text-stone-400" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</Container>
+				</section>
+
+				{/* Services Section */}
+				<section id="services" data-animate-section className="py-20 lg:py-32">
+					<Container>
+						<div className="text-center space-y-4 mb-16">
+							<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+								Our Services
+							</h2>
+							<p className="text-xl text-muted-foreground max-w-[600px] mx-auto">
+								Comprehensive technology solutions to help your business grow and succeed in the digital age.
+							</p>
+						</div>
+						<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+							{services.map((service, index) => (
+								<Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
+									<CardHeader>
+										<div className={`w-16 h-16 rounded-lg bg-gradient-to-br ${service.color} flex items-center justify-center text-white mb-4`}>
+											{service.icon}
+										</div>
+										<CardTitle className="text-xl">{service.title}</CardTitle>
+										<CardDescription className="text-base">
+											{service.description}
+										</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<Button variant="ghost" className="group w-full justify-between" asChild>
+											<Link href={service.href}>
+												Learn More
+												<ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+											</Link>
+										</Button>
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					</Container>
+				</section>
+
+				{/* Recent Blog Posts Section */}
+				{recentPosts.length > 0 && (
+					<section id="blog" data-animate-section className="py-20 lg:py-32 bg-stone-50 dark:bg-stone-900/50">
+						<Container>
+							<div className="text-center space-y-4 mb-16">
+								<h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+									Latest Insights
+								</h2>
+								<p className="text-xl text-muted-foreground max-w-[600px] mx-auto">
+									Stay updated with the latest in technology, development, and industry insights.
 								</p>
 							</div>
-						</div>
-					)}
-
-					{/* Featured Post Section */}
-					{allPosts.length > 0 && (
-						<div 
-							id="featured-section"
-							data-animate-section
-							className={`space-y-12 transition-all duration-900 ease-out ${
-								isSectionVisible('featured-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							{/* Featured Post */}
-							<div className="space-y-6">
-								<div className="flex items-center gap-3 animate-fade-in-up">
-									<h2 className="text-2xl font-bold">Featured Post</h2>
-									<div className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
-										Featured
-									</div>
-								</div>
-								<div className="w-full animate-fade-in-up animation-delay-300">
-									<FeaturedPostCard
-										title={allPosts[0].title}
-										excerpt={allPosts[0].brief}
-										coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
-										date={allPosts[0].publishedAt}
-										slug={allPosts[0].slug}
-										readTime="5 min read"
-										tags={["Featured", "Technology", "Insights"]}
-									/>
-								</div>
-							</div>
-
-							{/* Latest Posts Grid */}
-							{allPosts.length > 1 && (
-								<div 
-									id="latest-posts-section"
-									data-animate-section
-									className={`space-y-6 transition-all duration-1000 ease-out ${
-										isSectionVisible('latest-posts-section') 
-											? 'opacity-100 translate-y-0' 
-											: 'opacity-0 translate-y-8'
-									}`}
-								>
-									<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
-									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-										{allPosts.slice(1, 4).map((post, index) => (
-											<div 
-												key={post.id}
-												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
-													index === 0 ? 'animation-delay-200' :
-													index === 1 ? 'animation-delay-300' :
-													'animation-delay-400'
-												}`}
-											>
-												<ModernPostCard
-													title={post.title}
-													excerpt={post.brief}
-													coverImage={post.coverImage?.url || DEFAULT_COVER}
-													date={post.publishedAt}
-													slug={post.slug}
-													readTime="3 min read"
-													tags={["Technology", "Development"]}
-												/>
+							<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+								{recentPosts.slice(0, 3).map((post) => (
+									<Card key={post.id} className="group hover:shadow-lg transition-all duration-300 hover:scale-105">
+										<CardHeader>
+											<CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+												<Link href={`/${post.slug}`}>
+													{post.title}
+												</Link>
+											</CardTitle>
+											<CardDescription className="line-clamp-3">
+												{post.brief}
+											</CardDescription>
+										</CardHeader>
+										<CardContent>
+											<div className="flex items-center justify-between text-sm text-muted-foreground">
+												<span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+												<Button variant="ghost" size="sm" className="group" asChild>
+													<Link href={`/${post.slug}`}>
+														Read More
+														<ArrowRightIcon className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
+													</Link>
+												</Button>
 											</div>
-										))}
-									</div>
-								</div>
-							)}
-						</div>
-					)}
+										</CardContent>
+									</Card>
+								))}
+							</div>
+							<div className="text-center mt-12">
+								<Button size="lg" variant="outline" asChild>
+									<Link href="/blog">
+										View All Posts
+										<ArrowRightIcon className="ml-2 h-4 w-4" />
+									</Link>
+								</Button>
+							</div>
+						</Container>
+					</section>
+				)}
 
-					{/* Newsletter CTA Section */}
-					{allPosts.length > 0 && (
-						<div 
-							id="newsletter-section"
-							data-animate-section
-							className={`py-8 transition-all duration-1100 ease-out ${
-								isSectionVisible('newsletter-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<NewsletterCTA 
-								title="Stay updated with our newsletter"
-								showNewsletterForm={true}
-								className="py-16"
-							/>
-						</div>
-					)}
+				{/* Newsletter Section */}
+				<NewsletterCTA 
+					title="Stay Updated"
+					showNewsletterForm={true}
+					className="py-20 lg:py-32"
+				/>
 
-
-
-
-				</Container>
 				<Footer />
 			</Layout>
 		</AppProvider>
@@ -280,30 +304,56 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-	const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
-		GQL_ENDPOINT,
-		PostsByPublicationDocument,
-		{
-			first: 10,
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-		},
-	);
+	if (!GQL_ENDPOINT) {
+		throw new Error('GQL_ENDPOINT is not defined');
+	}
 
-	const publication = data.publication;
-	if (!publication) {
+	try {
+		const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
+			GQL_ENDPOINT,
+			PostsByPublicationDocument,
+			{
+				first: 10,
+				host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+			},
+		);
+
+		if (!data.publication) {
+			return {
+				notFound: true,
+			};
+		}
+
+		const publication = data.publication;
+		const recentPosts = data.publication.posts.edges.map((edge) => edge.node);
+
 		return {
-			notFound: true,
+			props: {
+				publication,
+				recentPosts,
+			},
+			revalidate: 1,
+		};
+	} catch (error) {
+		console.error('Error fetching data:', error);
+		return {
+			props: {
+				publication: {
+					id: 'demo',
+					title: 'Demo Publication',
+					displayTitle: 'Demo Publication',
+					descriptionSEO: 'Professional development services',
+					url: 'https://example.com',
+					preferences: {
+						logo: null,
+					},
+					author: {
+						name: 'Demo Author',
+					},
+				} as any,
+				recentPosts: [],
+			},
+			revalidate: 1,
 		};
 	}
-	const initialAllPosts = publication.posts.edges.map((edge) => edge.node);
-
-	return {
-		props: {
-			publication,
-			initialAllPosts,
-			initialPageInfo: publication.posts.pageInfo,
-			initialTotalPosts: publication.posts.totalDocuments,
-		},
-		revalidate: 1,
-	};
 };

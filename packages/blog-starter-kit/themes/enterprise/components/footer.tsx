@@ -23,9 +23,9 @@ export const Footer = () => {
 	};
 
 	return (
-		<footer className="relative border-t bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950">
+		<footer className="relative border-t bg-gradient-to-br from-stone-50 via-white to-stone-100 dark:from-stone-950 dark:via-stone-900 dark:to-stone-800">
 			{/* Decorative gradient overlay */}
-			<div className="absolute inset-0 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-neutral-800/50"></div>
+			<div className="absolute inset-0 bg-gradient-to-t from-stone-100/50 to-transparent dark:from-stone-800/50"></div>
 			
 			<Container className="relative px-5 py-16">
 				{/* Main footer content - Hidden on mobile and tablet */}

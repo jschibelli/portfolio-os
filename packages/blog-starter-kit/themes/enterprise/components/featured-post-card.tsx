@@ -56,7 +56,7 @@ export default function FeaturedPostCard({
       }`}
     >
       <Link href={`/${slug}`} className="group block">
-        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] border-border/50 hover:border-primary/30 bg-card/50 hover:bg-card">
+        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] border border-border/50 hover:border-primary/30 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-xl">
           <div className="grid gap-0 lg:grid-cols-2">
             {/* Image Section */}
             <div className="relative overflow-hidden">

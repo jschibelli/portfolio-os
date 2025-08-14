@@ -56,7 +56,7 @@ export default function ModernPostCard({
       }`}
     >
       <Link href={`/${slug}`} className="group block">
-        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-xl hover:scale-[1.02] border-border/50 hover:border-primary/30 bg-card/50 hover:bg-card">
+        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-xl hover:scale-[1.02] border border-border/50 hover:border-primary/30 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-lg">
           <div className="relative overflow-hidden">
             <Screenshot
               srcLight={coverImage}

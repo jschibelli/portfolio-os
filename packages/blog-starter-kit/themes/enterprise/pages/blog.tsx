@@ -10,18 +10,15 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
-import { MorePosts } from '../components/more-posts';
-import { Navbar } from '../components/navbar';
-import ModernHero from '../components/modern-hero';
+import { SocialLinks } from '../components/social-links';
+
 import { CustomNavigation } from '../../../components/custom-navigation';
+import ModernHero from '../components/modern-hero';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
 import NewsletterCTA from '../components/newsletter-cta';
-import EnhancedPagination from '../components/enhanced-pagination';
+
 import {
-	MorePostsByPublicationDocument,
-	MorePostsByPublicationQuery,
-	MorePostsByPublicationQueryVariables,
 	PageInfo,
 	PostFragment,
 	PostsByPublicationDocument,
@@ -44,13 +41,8 @@ type Props = {
 	initialTotalPosts: number;
 };
 
-export default function Blog({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
-	const [allPosts, setAllPosts] = useState<PostFragment[]>(initialAllPosts);
-	const [pageInfo, setPageInfo] = useState<Props['initialPageInfo']>(initialPageInfo);
-	const [loadedMore, setLoadedMore] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [totalPosts, setTotalPosts] = useState(initialTotalPosts);
-	const [initialPosts] = useState<PostFragment[]>(initialAllPosts);
+export default function Index({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
+	const [allPosts] = useState<PostFragment[]>(initialAllPosts);
 	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
 	// Intersection Observer for scroll animations
@@ -82,43 +74,7 @@ export default function Blog({ publication, initialAllPosts, initialPageInfo, in
 		};
 	}, []);
 
-	const loadMore = async () => {
-		if (isLoading) return;
-		
-		setIsLoading(true);
-		try {
-			const data = await request<MorePostsByPublicationQuery, MorePostsByPublicationQueryVariables>(
-				GQL_ENDPOINT,
-				MorePostsByPublicationDocument,
-				{
-					first: 10,
-					host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-					after: pageInfo.endCursor,
-				},
-			);
-			if (!data.publication) {
-				return;
-			}
-			const newPosts = data.publication.posts.edges.map((edge) => edge.node);
-			setAllPosts([...allPosts, ...newPosts]);
-			setPageInfo(data.publication.posts.pageInfo);
-			setTotalPosts(data.publication.posts.totalDocuments);
-			setLoadedMore(true);
-		} catch (error) {
-			console.error('Error loading more posts:', error);
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const returnToFirstPage = () => {
-		setAllPosts(initialPosts);
-		setPageInfo(initialPageInfo);
-		setLoadedMore(false);
-		setTotalPosts(initialTotalPosts);
-	};
-
-	const morePosts = allPosts.slice(7);
+	const morePosts = allPosts.slice(4);
 
 	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
 
@@ -127,7 +83,7 @@ export default function Blog({ publication, initialAllPosts, initialPageInfo, in
 			<Layout>
 				<Head>
 					<title>
-						{publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} - Blog
+						{publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
 					</title>
 					<meta
 						name="description"
@@ -138,7 +94,7 @@ export default function Blog({ publication, initialAllPosts, initialPageInfo, in
 					<meta property="twitter:card" content="summary_large_image" />
 					<meta
 						property="twitter:title"
-						content={`${publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'} - Blog`}
+						content={publication.displayTitle || publication.title || 'Hashnode Blog Starter Kit'}
 					/>
 					<meta
 						property="twitter:description"
@@ -163,125 +119,159 @@ export default function Blog({ publication, initialAllPosts, initialPageInfo, in
 				</Head>
 				<CustomNavigation publication={publication} />
 				
-				<Container className="mx-auto max-w-7xl px-4 py-8">
-					{/* Featured Post Section */}
-					{allPosts.length > 0 && (
-						<div 
-							id="featured-post-section"
-							data-animate-section
-							className={`mb-12 transition-all duration-1000 ease-out ${
-								isSectionVisible('featured-post-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<h2 className="mb-8 text-3xl font-bold">Featured Post</h2>
-							<FeaturedPostCard
-								title={allPosts[0].title}
-								excerpt={allPosts[0].brief}
-								coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
-								date={allPosts[0].publishedAt}
-								slug={allPosts[0].slug}
-								readTime="5 min read"
-								tags={["Featured", "Technology"]}
-							/>
-						</div>
-					)}
-
-					{/* No Posts State */}
-					{allPosts.length === 0 && (
-						<div 
-							id="no-posts-section"
-							data-animate-section
-							className={`text-center transition-all duration-1000 ease-out ${
-								isSectionVisible('no-posts-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<div className="mx-auto max-w-md">
-								<ArticleSVG className="mx-auto h-24 w-24 text-gray-400" />
-								<h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">No posts yet</h3>
-								<p className="mt-2 text-gray-600 dark:text-gray-400">Check back soon for new content!</p>
-							</div>
-						</div>
-					)}
-
-					{/* Latest Posts Section */}
-					{allPosts.length > 1 && (
-						<div 
-							id="latest-posts-section"
-							data-animate-section
-							className={`space-y-6 transition-all duration-1000 ease-out ${
-								isSectionVisible('latest-posts-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
-							<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-								{allPosts.slice(1, 7).map((post, index) => (
-									<div 
-										key={post.id}
-										className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
-											index === 0 ? 'animation-delay-200' :
-											index === 1 ? 'animation-delay-300' :
-											index === 2 ? 'animation-delay-400' :
-											index === 3 ? 'animation-delay-500' :
-											index === 4 ? 'animation-delay-600' :
-											'animation-delay-700'
-										}`}
-									>
-										<ModernPostCard
-											title={post.title}
-											excerpt={post.brief}
-											coverImage={post.coverImage?.url || DEFAULT_COVER}
-											date={post.publishedAt}
-											slug={post.slug}
-											readTime="3 min read"
-											tags={["Technology", "Development"]}
-										/>
-									</div>
-								))}
-							</div>
-						</div>
-					)}
-
-					{/* More Posts Section */}
-					{morePosts.length > 0 && (
-						<div 
-							id="more-posts-section"
-							data-animate-section
-							className={`transition-all duration-1200 ease-out ${
-								isSectionVisible('more-posts-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
-							}`}
-						>
-							<MorePosts context="home" posts={morePosts} />
-						</div>
-					)}
-
-					{/* Enhanced Pagination */}
+				{/* Modern Hero Section */}
+				{allPosts.length > 0 && (
 					<div 
-						id="pagination-section"
+						id="hero-section"
 						data-animate-section
-						className={`transition-all duration-1300 ease-out ${
-							isSectionVisible('pagination-section') 
+						className={`transition-all duration-1000 ease-out ${
+							isSectionVisible('hero-section') 
 								? 'opacity-100 translate-y-0' 
 								: 'opacity-0 translate-y-8'
 						}`}
 					>
-						<EnhancedPagination
-							pageInfo={pageInfo}
-							onLoadMore={loadMore}
-							onReturnToFirst={returnToFirstPage}
-							isLoading={isLoading}
-							hasMorePosts={!!(pageInfo.hasNextPage && pageInfo.endCursor)}
-							currentPostsCount={allPosts.length}
-							totalPosts={totalPosts}
+						<ModernHero
+							title="The Developer's Lens"
+							subtitle="Technology & Development"
+							description="Unfiltered perspectives on code, creativity, and the constant evolution of technology."
+							ctaText="Read Latest Post"
+							ctaLink={`/${allPosts[0].slug}`}
+							imageUrl="/assets/hero/hero-image.webp"
 						/>
 					</div>
+				)}
+
+				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
+					{/* Social Links Section */}
+					<div 
+						id="social-links-section"
+						data-animate-section
+						className={`transition-all duration-700 ease-out ${
+							isSectionVisible('social-links-section') 
+								? 'opacity-100 translate-y-0' 
+								: 'opacity-0 translate-y-6'
+						}`}
+					>
+						<div className="flex justify-center">
+							<SocialLinks />
+						</div>
+					</div>
+
+					{/* Empty State */}
+					{allPosts.length === 0 && (
+						<div 
+							id="empty-state-section"
+							data-animate-section
+							className={`grid grid-cols-1 py-20 lg:grid-cols-3 transition-all duration-800 ease-out ${
+								isSectionVisible('empty-state-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-slate-700 dark:text-neutral-400 lg:col-start-2">
+								<div className="w-20 animate-fade-in-up">
+									<ArticleSVG clasName="stroke-current" />
+								</div>
+								<p className="text-xl font-semibold animate-fade-in-up animation-delay-200">
+									Hang tight! We&apos;re drafting the first article.
+								</p>
+							</div>
+						</div>
+					)}
+
+					{/* Featured Post Section */}
+					{allPosts.length > 0 && (
+						<div 
+							id="featured-section"
+							data-animate-section
+							className={`space-y-12 transition-all duration-900 ease-out ${
+								isSectionVisible('featured-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							{/* Featured Post */}
+							<div className="space-y-6">
+								<div className="flex items-center gap-3 animate-fade-in-up">
+									<h2 className="text-2xl font-bold">Featured Post</h2>
+									<div className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
+										Featured
+									</div>
+								</div>
+								<div className="w-full animate-fade-in-up animation-delay-300">
+									<FeaturedPostCard
+										title={allPosts[0].title}
+										excerpt={allPosts[0].brief}
+										coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
+										date={allPosts[0].publishedAt}
+										slug={allPosts[0].slug}
+										readTime="5 min read"
+										tags={["Featured", "Technology", "Insights"]}
+									/>
+								</div>
+							</div>
+
+							{/* Latest Posts Grid */}
+							{allPosts.length > 1 && (
+								<div 
+									id="latest-posts-section"
+									data-animate-section
+									className={`space-y-6 transition-all duration-1000 ease-out ${
+										isSectionVisible('latest-posts-section') 
+											? 'opacity-100 translate-y-0' 
+											: 'opacity-0 translate-y-8'
+									}`}
+								>
+									<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
+									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+										{allPosts.slice(1, 4).map((post, index) => (
+											<div 
+												key={post.id}
+												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
+													index === 0 ? 'animation-delay-200' :
+													index === 1 ? 'animation-delay-300' :
+													'animation-delay-400'
+												}`}
+											>
+												<ModernPostCard
+													title={post.title}
+													excerpt={post.brief}
+													coverImage={post.coverImage?.url || DEFAULT_COVER}
+													date={post.publishedAt}
+													slug={post.slug}
+													readTime="3 min read"
+													tags={["Technology", "Development"]}
+												/>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
+					)}
+
+					{/* Newsletter CTA Section */}
+					{allPosts.length > 0 && (
+						<div 
+							id="newsletter-section"
+							data-animate-section
+							className={`py-8 transition-all duration-1100 ease-out ${
+								isSectionVisible('newsletter-section') 
+									? 'opacity-100 translate-y-0' 
+									: 'opacity-0 translate-y-8'
+							}`}
+						>
+							<NewsletterCTA 
+								title="Stay updated with our newsletter"
+								showNewsletterForm={true}
+								className="py-16"
+							/>
+						</div>
+					)}
+
+
+
+
 				</Container>
 				<Footer />
 			</Layout>
@@ -316,4 +306,4 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 		},
 		revalidate: 1,
 	};
-}; 
+};

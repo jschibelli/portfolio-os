@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Glow from '@/components/ui/glow';
 import { Mockup, MockupFrame } from '@/components/ui/mockup';
 import Screenshot from '@/components/ui/screenshot';
 
@@ -47,16 +46,24 @@ export default function ModernHero({
   }, []);
 
   return (
-    <div className="hero-container relative overflow-hidden bg-background py-12">
-      <Glow variant="top" className={`opacity-50 transition-all duration-1000 ${isVisible ? 'animate-appear-zoom' : 'opacity-0 scale-95'}`} />
+    <div className="hero-container relative overflow-hidden py-12">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/assets/hero/hero-bg1.png)',
+        }}
+      />
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/40" />
       
-      <div className="container mx-auto px-4">
-        <div className="grid items-center gap-4 lg:grid-cols-2">
+      <div className="relative container mx-auto px-4">
+        <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
           {/* Content Section */}
-          <div className={`space-y-6 transition-all duration-1000 ease-out ${
+          <div className={`space-y-8 transition-all duration-1000 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <h2 className={`text-sm font-medium text-muted-foreground uppercase tracking-wider transition-all duration-700 delay-200 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}>
@@ -69,13 +76,13 @@ export default function ModernHero({
               </h1>
             </div>
             
-            <p className={`text-lg text-muted-foreground max-w-[600px] leading-relaxed transition-all duration-700 delay-400 ${
+            <p className={`text-lg text-muted-foreground max-w-[600px] mx-auto leading-relaxed transition-all duration-700 delay-400 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               {description}
             </p>
             
-            <div className={`flex flex-col gap-4 sm:flex-row transition-all duration-700 delay-500 ${
+            <div className={`flex flex-col gap-4 sm:flex-row justify-center transition-all duration-700 delay-500 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}>
               <Button 
@@ -98,30 +105,6 @@ export default function ModernHero({
                   View All Posts
                 </Link>
               </Button>
-            </div>
-          </div>
-
-          {/* Visual Section */}
-          <div className={`flex justify-center lg:justify-end transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <div className="relative group">
-              <Mockup type="responsive" className="w-full max-w-2xl transition-all duration-500 group-hover:scale-105">
-                <MockupFrame size="large" className="p-0">
-                  <Screenshot
-                    srcLight={imageUrl}
-                    alt="Blog Preview"
-                    width={600}
-                    height={400}
-                    className="w-full h-auto rounded-lg transition-all duration-500 group-hover:scale-105"
-                  />
-                </MockupFrame>
-              </Mockup>
-              
-              {/* Enhanced floating accents */}
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/20 rounded-full animate-pulse transition-all duration-300 group-hover:scale-125" />
-              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-accent/30 rounded-full animate-pulse transition-all duration-300 group-hover:scale-125" style={{ animationDelay: '1s' }} />
-              <div className="absolute top-1/2 -right-4 w-2 h-2 bg-secondary/40 rounded-full animate-pulse transition-all duration-300 group-hover:scale-150" style={{ animationDelay: '0.5s' }} />
             </div>
           </div>
         </div>
