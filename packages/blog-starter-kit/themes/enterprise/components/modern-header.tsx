@@ -63,6 +63,12 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               Blog
             </Link>
             <Link 
+              href="/work" 
+              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
+            >
+              Work
+            </Link>
+            <Link 
               href="/about" 
               className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
             >
@@ -135,6 +141,12 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                       className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
                     >
                       Blog
+                    </Link>
+                    <Link 
+                      href="/work" 
+                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
+                    >
+                      Work
                     </Link>
                     <Link 
                       href="/about" 
