@@ -4,7 +4,7 @@
       "title": "Zeus E-Commerce Platform",
       "slug": "zeus-ecommerce-platform",
       "description": "A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration.",
-      "image": "/images/zeus-ecom.png",
+      "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
       "tags": ["Next.js", "Tailwind CSS", "Stripe", "Headless CMS"],
       "liveUrl": "https://zeus.shop",
       "caseStudyUrl": "/case-studies/zeus-ecommerce-platform"
@@ -14,7 +14,7 @@
       "title": "SynaplyAI – Real-Time AI Collaboration Platform",
       "slug": "synaplyai",
       "description": "A multi-tenant AI content platform featuring token-level conflict resolution and real-time collaboration. Built with Next.js, Prisma, and Framer Motion.",
-      "image": "/images/synaplyai.png",
+      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
       "tags": ["Next.js", "TypeScript", "Prisma", "Framer Motion", "AI"],
       "liveUrl": "https://synaply.ai",
       "caseStudyUrl": "/case-studies/synaplyai"
@@ -24,7 +24,7 @@
       "title": "ContentHub CMS Redesign",
       "slug": "contenthub-cms-redesign",
       "description": "Led frontend redesign for a SaaS CMS, focusing on accessibility and performance. Delivered pixel-perfect UIs using LaunchUI, integrated internationalization and improved onboarding flows.",
-      "image": "/images/contenthub.png",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
       "tags": ["React", "LaunchUI", "Accessibility", "i18n"],
       "liveUrl": "https://contenthub.io",
       "caseStudyUrl": "/case-studies/contenthub-cms-redesign"

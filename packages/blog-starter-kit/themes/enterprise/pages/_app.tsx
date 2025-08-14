@@ -1,8 +1,8 @@
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
+import { ThemeProvider } from 'next-themes';
 import '../styles/index.css';
-import '../styles/navigation-demo.css';
-import '../styles/navigation-simple.css';
+
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	useEffect(() => {
@@ -13,5 +13,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 			i.style.height = `${parseInt(newHeight)}px`;
 		};
 	}, []);
-	return <Component {...pageProps} />;
+	return (
+		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+			<Component {...pageProps} />
+		</ThemeProvider>
+	);
 }

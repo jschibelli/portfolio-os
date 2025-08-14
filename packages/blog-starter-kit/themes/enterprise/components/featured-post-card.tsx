@@ -56,7 +56,7 @@ export default function FeaturedPostCard({
       }`}
     >
       <Link href={`/${slug}`} className="group block">
-        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] border border-border/50 hover:border-primary/30 bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-xl">
+        <Card className="group overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] border border-stone-200 dark:border-stone-800 hover:border-stone-400 dark:hover:border-stone-600 bg-white dark:bg-stone-900 shadow-xl">
           <div className="grid gap-0 lg:grid-cols-2">
             {/* Image Section */}
             <div className="relative overflow-hidden">
@@ -88,7 +88,7 @@ export default function FeaturedPostCard({
             <div className="flex flex-col justify-center p-8">
               <CardHeader className="p-0 pb-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-300 group-hover:text-primary">
+                  <div className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400 transition-all duration-300 group-hover:text-stone-900 dark:group-hover:text-stone-100">
                     <time dateTime={date}>
                       {format(new Date(date), 'MMM dd, yyyy')}
                     </time>
@@ -96,14 +96,14 @@ export default function FeaturedPostCard({
                     <span>{readTime}</span>
                   </div>
                   
-                  <h3 className="text-2xl lg:text-3xl font-bold leading-tight group-hover:text-primary transition-all duration-300 group-hover:scale-[1.02]">
+                  <h3 className="text-2xl lg:text-3xl font-bold leading-tight text-stone-900 dark:text-stone-100 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-all duration-300 group-hover:scale-[1.02]">
                     {title}
                   </h3>
                 </div>
               </CardHeader>
               
               <CardContent className="p-0">
-                <p className="text-muted-foreground text-lg leading-relaxed mb-6 transition-all duration-300 group-hover:text-foreground">
+                <p className="text-stone-600 dark:text-stone-400 text-lg leading-relaxed mb-6 transition-all duration-300 group-hover:text-stone-800 dark:group-hover:text-stone-200">
                   {excerpt}
                 </p>
                 
@@ -113,14 +113,14 @@ export default function FeaturedPostCard({
                       <Badge 
                         key={index} 
                         variant="outline" 
-                        className="text-sm transition-all duration-300 group-hover:bg-primary/10 group-hover:border-primary/30"
+                        className="text-sm border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 transition-all duration-300 group-hover:bg-stone-100 dark:group-hover:bg-stone-800 group-hover:border-stone-400 dark:group-hover:border-stone-500"
                       >
                         {tag}
                       </Badge>
                     ))}
                   </div>
                   
-                  <div className="text-sm font-semibold text-primary group-hover:translate-x-2 transition-all duration-300 flex items-center gap-1">
+                  <div className="text-sm font-semibold text-stone-700 dark:text-stone-300 group-hover:text-stone-900 dark:group-hover:text-stone-100 group-hover:translate-x-2 transition-all duration-300 flex items-center gap-1">
                     <span>Read full article</span>
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </div>

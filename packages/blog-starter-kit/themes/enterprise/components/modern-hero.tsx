@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ArrowRightIcon } from 'lucide-react';
 import { Mockup, MockupFrame } from '@/components/ui/mockup';
 import Screenshot from '@/components/ui/screenshot';
 
@@ -97,12 +98,12 @@ export default function ModernHero({
               </Button>
               <Button 
                 size="lg" 
-                variant="outline" 
-                className="group w-fit font-medium px-8 py-3 text-base border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg" 
+                className="group w-fit font-semibold px-8 py-3 text-base bg-white text-stone-900 hover:bg-stone-100 transition-all duration-300 hover:scale-105 hover:shadow-xl" 
                 asChild
               >
                 <Link href="/blog">
-                  View All Posts
+                  Read the Blog
+                  <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </div>

@@ -44,10 +44,10 @@ export const Footer = () => {
 							</div>
 						) : (
 							<div className="mb-6">
-								<h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+								<h3 className="text-2xl font-bold text-stone-900 dark:text-stone-50">
 									{publication.title}
 								</h3>
-								<p className="mt-3 text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
+								<p className="mt-3 text-stone-600 dark:text-stone-400 max-w-md leading-relaxed">
 									{publication.descriptionSEO || "Sharing insights on technology, design, and innovation. Building the future, one line of code at a time."}
 								</p>
 							</div>
@@ -55,7 +55,7 @@ export const Footer = () => {
 						
 						{/* Newsletter Signup */}
 						<div className="mb-8">
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Stay Updated
 							</h4>
 							<form onSubmit={handleNewsletterSignup} className="space-y-3">
@@ -82,7 +82,7 @@ export const Footer = () => {
 
 						{/* Social links */}
 						<div className="mb-8">
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Follow Us
 							</h4>
 							<SocialLinks />
@@ -92,33 +92,33 @@ export const Footer = () => {
 					{/* Quick links */}
 					<div className="lg:col-span-2">
 						<div>
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Connect
 							</h4>
-							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+							<ul className="space-y-3 text-sm text-stone-600 dark:text-stone-400">
 								<li>
-									<a href="mailto:hello@example.com" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50 flex items-center gap-2">
+									<a href="mailto:hello@example.com" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50 flex items-center gap-2">
 										<MailIcon className="h-4 w-4" />
 										Get in touch
 									</a>
 								</li>
 								<li>
-									<Link href="/newsletter" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/newsletter" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Newsletter
 									</Link>
 								</li>
 								<li>
-									<Link href="/about" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/about" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										About me
 									</Link>
 								</li>
 								<li>
-									<Link href="/portfolio" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/portfolio" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Portfolio
 									</Link>
 								</li>
 								<li>
-									<Link href="/services" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/services" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Services
 									</Link>
 								</li>
@@ -129,32 +129,32 @@ export const Footer = () => {
 					{/* Resources */}
 					<div className="lg:col-span-2">
 						<div>
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Resources
 							</h4>
-							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+							<ul className="space-y-3 text-sm text-stone-600 dark:text-stone-400">
 								<li>
-									<Link href="/blog" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/blog" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										All posts
 									</Link>
 								</li>
 								<li>
-									<Link href="/series" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/series" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Series
 									</Link>
 								</li>
 								<li>
-									<Link href="/tags" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/tags" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Topics
 									</Link>
 								</li>
 								<li>
-									<a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										RSS Feed
 									</a>
 								</li>
 								<li>
-									<Link href="/case-studies" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/case-studies" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Case Studies
 									</Link>
 								</li>
@@ -165,27 +165,27 @@ export const Footer = () => {
 					{/* Services */}
 					<div className="lg:col-span-2">
 						<div>
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Services
 							</h4>
-							<ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+							<ul className="space-y-3 text-sm text-stone-600 dark:text-stone-400">
 								<li>
-									<Link href="/services/web-development" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/services/web-development" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Web Development
 									</Link>
 								</li>
 								<li>
-									<Link href="/services/mobile-development" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/services/mobile-development" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Mobile Development
 									</Link>
 								</li>
 								<li>
-									<Link href="/services/cloud-solutions" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/services/cloud-solutions" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Cloud Solutions
 									</Link>
 								</li>
 								<li>
-									<Link href="/services/consulting" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<Link href="/services/consulting" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										Consulting
 									</Link>
 								</li>
@@ -196,19 +196,19 @@ export const Footer = () => {
 					{/* Contact Info */}
 					<div className="lg:col-span-2">
 						<div>
-							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-50">
+							<h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-stone-900 dark:text-stone-50">
 								Contact
 							</h4>
-							<div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+							<div className="space-y-3 text-sm text-stone-600 dark:text-stone-400">
 								<div className="flex items-start gap-2">
 									<MailIcon className="h-4 w-4 mt-0.5 flex-shrink-0" />
-									<a href="mailto:hello@example.com" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<a href="mailto:hello@example.com" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										hello@example.com
 									</a>
 								</div>
 								<div className="flex items-start gap-2">
 									<PhoneIcon className="h-4 w-4 mt-0.5 flex-shrink-0" />
-									<a href="tel:+1234567890" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+									<a href="tel:+1234567890" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 										+1 (234) 567-890
 									</a>
 								</div>
@@ -222,36 +222,36 @@ export const Footer = () => {
 				</div>
 
 				{/* Bottom section - Always visible */}
-				<div className="mt-12 border-t border-slate-200 dark:border-neutral-800 pt-8">
+				<div className="mt-12 border-t border-stone-200 dark:border-neutral-800 pt-8">
 					<div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-						<div className="text-sm text-slate-600 dark:text-slate-400">
+						<div className="text-sm text-stone-600 dark:text-stone-400">
 							<p>&copy; {currentYear} {publication.title}. All rights reserved.</p>
 						</div>
 						
-						<div className="flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
-							<Link href="/privacy" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+						<div className="flex items-center gap-6 text-sm text-stone-600 dark:text-stone-400">
+							<Link href="/privacy" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 								Privacy
 							</Link>
-							<Link href="/terms" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							<Link href="/terms" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 								Terms
 							</Link>
-							<Link href="/cookies" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							<Link href="/cookies" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 								Cookies
 							</Link>
-							<Link href="/sitemap" className="transition-colors hover:text-slate-900 dark:hover:text-slate-50">
+							<Link href="/sitemap" className="transition-colors hover:text-stone-900 dark:hover:text-stone-50">
 								Sitemap
 							</Link>
 						</div>
 					</div>
 					
-					<div className="mt-4 text-center text-xs text-slate-500 dark:text-slate-500">
+					<div className="mt-4 text-center text-xs text-stone-500 dark:text-stone-500">
 						<p>
 							Exclusively Built by{' '}
 							<a 
 								href="https://schibelli.dev" 
 								target="_blank" 
 								rel="noopener noreferrer"
-								className="underline transition-colors hover:text-slate-700 dark:hover:text-slate-300"
+								className="underline transition-colors hover:text-stone-700 dark:hover:text-stone-300"
 							>
 								John Schibelli
 							</a>

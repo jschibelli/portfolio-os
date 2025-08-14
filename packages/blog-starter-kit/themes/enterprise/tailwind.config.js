@@ -82,10 +82,31 @@ module.exports = {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)',
 			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+			},
+			keyframes: {
+				scroll: {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' },
+				},
+			},
+			animation: {
+				'scroll': 'scroll 30s linear infinite',
+				'paused': 'none',
+			},
+			transitionProperty: {
+				'animation-play-state': 'animation-play-state',
+			},
+			animationPlayState: {
+				'paused': 'paused',
+				'running': 'running',
+			},
 		},
 	},
 	plugins: [
 		require('@tailwindcss/typography'), 
-		require('tailwindcss-animate')
+		require('tailwindcss-animate'),
+		require('@tailwindcss/line-clamp')
 	],
 };

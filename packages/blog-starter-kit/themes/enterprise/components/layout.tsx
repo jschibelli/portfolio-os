@@ -1,5 +1,5 @@
 import { ThemeProvider } from 'next-themes';
-import { Analytics } from './analytics';
+// import { AnalyticsSafe } from './analytics-safe';
 import { Integrations } from './integrations';
 import { Meta } from './meta';
 import { Scripts } from './scripts';
@@ -16,7 +16,7 @@ export const Layout = ({ children }: Props) => {
 			<div className="min-h-screen bg-background">
 				<main>{children}</main>
 			</div>
-			<Analytics />
+			{/* <AnalyticsSafe /> */}
 			<Integrations />
 		</ThemeProvider>
 	);

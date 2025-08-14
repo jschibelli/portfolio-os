@@ -3,19 +3,32 @@ import { useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useAppContext } from './contexts/appContext';
+
+// Declare gtag for TypeScript
+declare global {
+	interface Window {
+		gtag: (...args: any[]) => void;
+	}
+}
 const GA_TRACKING_ID = 'G-72XG3F8LNJ'; // This is Hashnode's GA tracking ID
 const isProd = process.env.NEXT_PUBLIC_MODE === 'production';
+const isDev = process.env.NODE_ENV === 'development';
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_URL || '';
 
 export const Analytics = () => {
 	const { publication, post, series, page } = useAppContext();
 
 	const _sendPageViewsToHashnodeGoogleAnalytics = useCallback(() => {
-		// @ts-ignore
-		window.gtag('config', GA_TRACKING_ID, {
-			transport_url: 'https://ping.hashnode.com',
-			first_party_collection: true,
-		});
+		// Check if gtag exists and is a function
+		if (typeof window !== 'undefined' && window.gtag && typeof window.gtag === 'function') {
+			// @ts-ignore
+			window.gtag('config', GA_TRACKING_ID, {
+				transport_url: 'https://ping.hashnode.com',
+				first_party_collection: true,
+			});
+		} else {
+			console.warn('Google Analytics (gtag) not available');
+		}
 	}, []);
 
 	const _sendViewsToHashnodeInternalAnalytics = useCallback(async () => {
@@ -130,7 +143,17 @@ export const Analytics = () => {
 	}, [publication.id, post?.id, series?.id, page?.id]);
 
 	useEffect(() => {
+		// Skip analytics in development mode
+		if (isDev) {
+			console.log('Analytics disabled in development mode');
+			return;
+		}
+		
+		// Skip analytics if not in production
 		if (!isProd) return;
+		
+		// Only run analytics in browser environment
+		if (typeof window === 'undefined') return;
 
 		_sendPageViewsToHashnodeGoogleAnalytics();
 		_sendViewsToHashnodeInternalAnalytics();

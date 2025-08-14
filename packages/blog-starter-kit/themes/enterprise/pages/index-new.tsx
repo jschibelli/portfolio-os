@@ -19,11 +19,6 @@ import SkillsTicker from '../components/skills-ticker';
 import CTABanner from '../components/cta-banner';
 import LatestPosts from '../components/latest-posts';
 
-// Import navigation and footer
-import ModernHeader from '../components/modern-header';
-import { Footer } from '../components/footer';
-import { AppProvider } from '../components/contexts/appContext';
-
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
 type Props = {
@@ -33,7 +28,7 @@ type Props = {
 
 export default function Home({ publication, recentPosts }: Props) {
 	return (
-		<AppProvider publication={publication}>
+		<>
 			<Head>
 				<title>
 					{publication.displayTitle || publication.title || 'John Schibelli - Senior Front-End Developer'}
@@ -72,9 +67,6 @@ export default function Home({ publication, recentPosts }: Props) {
 				/>
 			</Head>
 
-			{/* Navigation */}
-			<ModernHeader publication={publication} />
-
 			{/* Homepage Sections in order */}
 			<main>
 				{/* 1. Hero Section */}
@@ -95,10 +87,7 @@ export default function Home({ publication, recentPosts }: Props) {
 				{/* 6. Latest Posts Teaser */}
 				<LatestPosts />
 			</main>
-
-			{/* Footer */}
-			<Footer />
-		</AppProvider>
+		</>
 	);
 }
 

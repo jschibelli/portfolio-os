@@ -12,7 +12,7 @@ import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
 import { SocialLinks } from '../components/social-links';
 
-import { CustomNavigation } from '../../../components/custom-navigation';
+import ModernHeader from '../components/modern-header';
 import ModernHero from '../components/modern-hero';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
@@ -117,7 +117,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						}}
 					/>
 				</Head>
-				<CustomNavigation publication={publication} />
+				<ModernHeader publication={publication} />
 				
 				{/* Modern Hero Section */}
 				{allPosts.length > 0 && (
@@ -168,7 +168,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									: 'opacity-0 translate-y-8'
 							}`}
 						>
-							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-slate-700 dark:text-neutral-400 lg:col-start-2">
+							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 dark:text-stone-400 lg:col-start-2">
 								<div className="w-20 animate-fade-in-up">
 									<ArticleSVG clasName="stroke-current" />
 								</div>
@@ -193,8 +193,8 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 							{/* Featured Post */}
 							<div className="space-y-6">
 								<div className="flex items-center gap-3 animate-fade-in-up">
-									<h2 className="text-2xl font-bold">Featured Post</h2>
-									<div className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
+									<h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Featured Post</h2>
+									<div className="px-3 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
 										Featured
 									</div>
 								</div>
@@ -222,7 +222,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 											: 'opacity-0 translate-y-8'
 									}`}
 								>
-									<h2 className="text-2xl font-bold animate-fade-in-up">Latest Posts</h2>
+									<h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 animate-fade-in-up">Latest Posts</h2>
 									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 										{allPosts.slice(1, 4).map((post, index) => (
 											<div 
