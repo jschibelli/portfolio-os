@@ -47,7 +47,7 @@ export default function ModernHero({
   }, []);
 
   return (
-    <div className="hero-container relative overflow-hidden py-8 md:py-12 lg:py-16">
+    <div className="hero-container relative overflow-hidden py-12 md:py-16 min-h-[400px]">
       {/* Background image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -59,7 +59,7 @@ export default function ModernHero({
       <div className="absolute inset-0 bg-black/40" />
       
       <div className="relative container mx-auto px-4">
-        <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto min-h-[50vh] md:min-h-[60vh]">
+        <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
                     {/* Content Section */}
           <div className={`space-y-6 transition-all duration-1000 ease-out ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'

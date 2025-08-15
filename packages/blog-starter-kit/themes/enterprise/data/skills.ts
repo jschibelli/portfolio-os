@@ -5,40 +5,41 @@ export interface Skill {
 }
 
 export const skills: Skill[] = [
-  // Languages & Frameworks
+  // Languages & Scripting
   { name: 'JavaScript (ES6+)', icon: '⚡', category: 'Languages' },
   { name: 'TypeScript', icon: '🔷', category: 'Languages' },
-  { name: 'React', icon: '⚛️', category: 'Frameworks' },
-  { name: 'Next.js', icon: '▲', category: 'Frameworks' },
   { name: 'PHP', icon: '🐘', category: 'Languages' },
-  { name: 'SQL', icon: '🗄️', category: 'Languages' },
+  { name: 'HTML5', icon: '🌐', category: 'Languages' },
+  { name: 'CSS3', icon: '🎨', category: 'Languages' },
+  { name: 'Sass/SCSS', icon: '💅', category: 'Languages' },
   
-  // Styling & UI
-  { name: 'Tailwind CSS', icon: '🎨', category: 'Styling' },
-  { name: 'shadcn/ui', icon: '🧩', category: 'UI' },
-  { name: 'Framer Motion', icon: '🎬', category: 'Animation' },
+  // Front-End
+  { name: 'React', icon: '⚛️', category: 'Front-End' },
+  { name: 'Next.js', icon: '▲', category: 'Front-End' },
+  { name: 'AngularJS', icon: '🅰️', category: 'Front-End' },
+  { name: 'Tailwind CSS', icon: '🎨', category: 'Front-End' },
   
-  // Backend & APIs
-  { name: 'Node.js', icon: '🟢', category: 'Backend' },
-  { name: 'REST APIs', icon: '🌐', category: 'APIs' },
+  // Back-End & APIs
+  { name: 'Node.js', icon: '🟢', category: 'Back-End' },
+  { name: 'Express', icon: '🚂', category: 'Back-End' },
+  { name: 'Nest.js', icon: '🪺', category: 'Back-End' },
   { name: 'GraphQL', icon: '🔵', category: 'APIs' },
-  { name: 'Prisma', icon: '🔧', category: 'Database' },
-  { name: 'Contentful', icon: '📝', category: 'CMS' },
-  { name: 'Hashnode', icon: '📰', category: 'CMS' },
+  { name: 'REST', icon: '🌐', category: 'APIs' },
+  { name: 'JSON', icon: '📄', category: 'APIs' },
   
-  // AI & Automation
-  { name: 'OpenAI API', icon: '🤖', category: 'AI' },
-  { name: 'Claude AI', icon: '🧠', category: 'AI' },
+  // Testing
   { name: 'Playwright', icon: '🎭', category: 'Testing' },
+  { name: 'Jest', icon: '🧪', category: 'Testing' },
   
-  // Tools & Platforms
-  { name: 'Git', icon: '📚', category: 'Version Control' },
-  { name: 'GitHub', icon: '🐙', category: 'Platforms' },
-  { name: 'Vercel', icon: '▲', category: 'Platforms' },
+  // CI/CD & DevOps
+  { name: 'GitHub Actions', icon: '⚙️', category: 'DevOps' },
   { name: 'Docker', icon: '🐳', category: 'DevOps' },
-  { name: 'Monday.com', icon: '📅', category: 'Project Management' },
+  { name: 'Kubernetes', icon: '☸️', category: 'DevOps' },
+  { name: 'Vercel', icon: '▲', category: 'DevOps' },
   
-  // Design & Collaboration
-  { name: 'Figma', icon: '🎨', category: 'Design' },
-  { name: 'Storybook', icon: '📖', category: 'Development' }
+  // Databases & CMS
+  { name: 'SQL Server', icon: '🗄️', category: 'Databases' },
+  { name: 'MySQL', icon: '🐬', category: 'Databases' },
+  { name: 'WordPress', icon: '📝', category: 'CMS' },
+  { name: 'Contentful', icon: '📝', category: 'CMS' }
 ];

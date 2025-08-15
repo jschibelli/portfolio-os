@@ -14,12 +14,14 @@ export default function Intro() {
           className="max-w-4xl mx-auto"
         >
           <div className="flex flex-col md:flex-row items-start gap-8">
-            {/* Avatar/Monogram */}
+            {/* Profile Image */}
             <div className="flex-shrink-0">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-stone-600 to-stone-800 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white text-2xl md:text-3xl font-bold tracking-wider">
-                  JS
-                </span>
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden shadow-lg">
+                <img
+                  src="/assets/hero/profile.png"
+                  alt="John Schibelli - Senior Frontend Developer"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
 
@@ -30,15 +32,14 @@ export default function Intro() {
               </h2>
               <div className="prose prose-stone dark:prose-invert max-w-none">
                 <p className="text-lg text-stone-700 dark:text-stone-300 leading-relaxed">
-                  I&apos;m a senior front-end developer with over 8 years of experience building 
-                  modern web applications. I specialize in React, Next.js, and TypeScript, 
-                  with a passion for creating accessible, performant, and user-centered experiences. 
-                  My expertise extends to AI-driven development workflows and helping teams 
-                  leverage cutting-edge technologies to deliver exceptional digital products.
+                  I&apos;m a senior front-end developer with over 15 years of experience building 
+                  scalable, high-performance web apps and company websites. I specialize in React, Next.js, TypeScript, and Tailwind CSS 
+                  with a strong focus on accessibility, SEO, and client success. 
+                  I&apos;m the technical lead behind IntraWeb Technologies&apos; digital presence and AI-driven content collaboration tooling (SynaplyAI).
                 </p>
                 <p className="text-lg text-stone-700 dark:text-stone-300 leading-relaxed">
-                  When I&apos;m not coding, you&apos;ll find me writing about development best practices, 
-                  contributing to open source projects, or exploring the latest in AI and automation tools.
+                  Based in Towaco, NJ, I&apos;ve delivered custom WordPress and Shopify builds, incubated AI-powered collaboration tools, 
+                  and built enterprise UIs for financial platforms. My expertise spans from modern React applications to legacy system integrations.
                 </p>
               </div>
             </div>

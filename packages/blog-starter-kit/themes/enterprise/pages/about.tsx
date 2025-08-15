@@ -43,75 +43,106 @@ type Props = {
 
 export default function About({ publication }: Props) {
 	const skills = {
-		'Frontend': ['React', 'Next.js', 'TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'Redux', 'Context API'],
-		'Backend': ['Node.js', 'Express', 'Python', 'PostgreSQL', 'MongoDB', 'REST APIs', 'GraphQL'],
-		'Tools & Platforms': ['Git', 'Docker', 'AWS', 'Vercel', 'Figma', 'Jira', 'Slack', 'VS Code'],
-		'AI & ML': ['OpenAI API', 'LangChain', 'Vector Databases', 'Prompt Engineering', 'AI Integration'],
-		'Testing': ['Jest', 'React Testing Library', 'Cypress', 'Playwright', 'Unit Testing']
+		'Languages & Scripting': ['JavaScript (ES6+)', 'TypeScript', 'PHP', 'HTML5', 'CSS3', 'Sass/SCSS'],
+		'Front-End': ['React', 'Next.js', 'AngularJS', 'Tailwind CSS'],
+		'Back-End & APIs': ['Node.js', 'Express', 'Nest.js', 'GraphQL', 'REST', 'JSON'],
+		'Testing': ['Playwright', 'Jest'],
+		'CI/CD & DevOps': ['GitHub Actions', 'Docker', 'Kubernetes', 'Vercel'],
+		'Databases & CMS': ['SQL Server', 'MySQL', 'WordPress (Custom Themes & Plugins)', 'Contentful']
 	};
 
 	const experience = [
 		{
-			title: 'Senior Frontend Developer',
-			company: 'Tech Company',
-			period: '2022 - Present',
-			location: 'Remote',
-			description: 'Lead frontend development for enterprise applications using React, Next.js, and TypeScript. Implemented AI-driven features and optimized performance.',
+			title: 'Senior Front-End Developer',
+			company: 'IntraWeb Technology',
+			period: '2020 - Present',
+			location: 'Montville, NJ',
+			description: 'Lead front-end for company site and client projects; incubated SynaplyAI.',
 			achievements: [
-				'Reduced page load times by 40% through code splitting and optimization',
-				'Implemented AI-powered search functionality using OpenAI API',
-				'Mentored junior developers and established coding standards',
-				'Led migration from legacy React to Next.js 13+ with App Router'
+				'Built the IntraWeb Technologies website with Next.js, React, TypeScript, and Tailwind CSS; shipped an accessible, SEO-optimized presence.',
+				'Delivered custom WordPress and Shopify builds emphasizing mobile performance and SEO for clients including KAL Design.',
+				'Scoped requirements, owned timelines, and served as primary client liaison to ensure quality delivery and satisfaction.',
+				'Incubated SynaplyAI (multi-tenant AI content collaboration) with front-end architecture, OpenAI integrations, real-time collab editing, and adaptive AI content generation.'
 			]
 		},
 		{
-			title: 'Full Stack Developer',
-			company: 'Digital Agency',
-			period: '2020 - 2022',
-			location: 'New York, NY',
-			description: 'Built custom web applications for clients across various industries. Collaborated with design and marketing teams.',
+			title: 'Full-Stack Developer',
+			company: 'ColorStreet',
+			period: '2024',
+			location: 'Totowa, NJ',
+			description: 'Contributed to e-commerce platform quality and integrations.',
 			achievements: [
-				'Developed 15+ client websites and applications',
-				'Integrated third-party APIs and payment systems',
-				'Improved client satisfaction scores by 25%',
-				'Implemented responsive design patterns and accessibility standards'
+				'Implemented automated UI testing with Playwright, improving reliability across releases.',
+				'Integrated and validated Nest.js APIs; ensured stable data flow and interface alignment.',
+				'Partnered with QA, design, and product to support sprint delivery and UI improvements.'
 			]
 		},
 		{
-			title: 'Frontend Developer',
-			company: 'Startup',
-			period: '2018 - 2020',
-			location: 'Northern New Jersey',
-			description: 'Built user-facing features and improved application performance. Worked in agile environment with cross-functional teams.',
+			title: 'Senior Front-End Developer',
+			company: 'Executive Five Star',
+			period: '2016 - 2020',
+			location: 'Montville, NJ',
+			description: 'Owned front-end for the company\'s car service site and online booking.',
 			achievements: [
-				'Built responsive user interfaces for mobile and desktop',
-				'Implemented state management with Redux and Context API',
-				'Contributed to open source projects and documentation',
-				'Optimized bundle sizes and improved Core Web Vitals'
+				'Developed and maintained the primary WordPress site with improved usability and mobile responsiveness.',
+				'Integrated Limo Anywhere API for real-time reservations and back-office sync.',
+				'Streamlined dispatch workflows by connecting booking front-end to internal systems.'
+			]
+		},
+		{
+			title: 'Front-End Developer',
+			company: 'Robert Half Technology',
+			period: '2013 - 2016',
+			location: 'Parsippany, NJ',
+			description: 'Built enterprise UIs and internal tooling in JavaScript ecosystems.',
+			achievements: [
+				'Developed UIs for internal financial platforms using JavaScript, jQuery, and Bootstrap to improve reporting workflows.',
+				'Built interactive presentation tools for pharmaceutical clients using Veeva CRM and HTML5.',
+				'Delivered front-end features aligned with enterprise UX guidelines in Agile cycles.',
+				'Led multiple internal WordPress projects and mentored junior developers on front-end best practices.'
+			]
+		},
+		{
+			title: 'Web Developer (Contract)',
+			company: 'Level-Nine Creative',
+			period: '2009 - 2013',
+			location: 'Merritt Island, FL',
+			description: 'Delivered custom WordPress sites for small businesses and agencies.',
+			achievements: [
+				'Designed and developed custom websites using WordPress, PHP, JavaScript, and CSS.',
+				'Built reusable UI components for responsive, cross-browser performance.',
+				'Customized themes/plugins to support marketing workflows and SEO.'
+			]
+		},
+		{
+			title: 'Web Development Program Director',
+			company: 'Anthem Institute',
+			period: '2005 - 2009',
+			location: 'Parsippany, NJ',
+			description: 'Led curriculum and instruction across multiple campuses.',
+			achievements: [
+				'Taught HTML, CSS, JavaScript, PHP, and MySQL; built industry-ready skills.',
+				'Managed a team of 8 instructors across 4 campuses; ensured curriculum alignment.',
+				'Oversaw accreditation compliance; partnered with Pearson VUE for certification programs.'
 			]
 		}
 	];
 
 	const education = [
 		{
-			degree: 'Bachelor of Science in Computer Science',
-			school: 'University Name',
-			period: '2014 - 2018',
+			degree: 'Web & Graphic Design',
+			school: 'The Chubb Institute',
+			period: '2004',
 			location: 'New Jersey',
-			description: 'Focused on software engineering, algorithms, and web development fundamentals.'
+			description: 'Diploma in Web & Graphic Design'
 		}
 	];
 
 	const certifications = [
 		{
-			name: 'AWS Certified Developer',
-			issuer: 'Amazon Web Services',
-			year: '2023'
-		},
-		{
-			name: 'React Developer Certification',
-			issuer: 'Meta',
-			year: '2022'
+			name: '15+ Years Experience',
+			issuer: 'Web Development',
+			year: '2005-2025'
 		}
 	];
 
@@ -148,7 +179,7 @@ export default function About({ publication }: Props) {
 			<main className="min-h-screen bg-white dark:bg-stone-950">
 				{/* Hero Section */}
 				<section 
-					className="py-12 md:py-16 relative bg-stone-50 dark:bg-stone-900 overflow-hidden"
+					className="py-12 md:py-16 relative bg-stone-50 dark:bg-stone-900 overflow-hidden min-h-[400px]"
 					style={{
 						backgroundImage: 'url(/assets/hero/hero-bg.png)',
 						backgroundSize: 'cover',
@@ -190,21 +221,21 @@ export default function About({ publication }: Props) {
 										John Schibelli
 									</h1>
 									<p className="text-xl md:text-2xl lg:text-3xl text-stone-600 dark:text-stone-400 mb-4">
-										Senior Frontend Developer
+										Senior Front-End Developer
 									</p>
 									<p className="text-base md:text-lg text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
-										Passionate about creating exceptional user experiences with modern web technologies. 
-										Specializing in React, Next.js, TypeScript, and AI-driven development.
+										Senior Front-End Developer with 15+ years of experience building scalable, high-performance web apps and company websites. 
+										Skilled in React, Next.js, TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and client success.
 									</p>
 									
 									<div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4 text-sm text-stone-500 dark:text-stone-400 mb-6">
 										<div className="flex items-center gap-2">
 											<MapPinIcon className="w-4 h-4" />
-											<span>Northern New Jersey</span>
+											<span>Towaco, NJ</span>
 										</div>
 										<div className="flex items-center gap-2">
 											<BriefcaseIcon className="w-4 h-4" />
-											<span>8+ Years Experience</span>
+											<span>15+ Years Experience</span>
 										</div>
 										<div className="flex items-center gap-2">
 											<CalendarIcon className="w-4 h-4" />
@@ -254,9 +285,10 @@ export default function About({ publication }: Props) {
 							<h2 className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4">
 								What I Do
 							</h2>
-							<p className="text-lg md:text-xl text-stone-600 dark:text-stone-400 leading-relaxed">
-								I specialize in creating exceptional user experiences using React, Next.js, TypeScript, and modern web technologies. 
-								My focus is on building scalable, performant applications that delight users and drive business results.
+														<p className="text-lg md:text-xl text-stone-600 dark:text-stone-400 leading-relaxed">
+								Senior Front-End Developer with 15+ years of experience building scalable, high-performance web apps and company websites. 
+								Skilled in React, Next.js, TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and client success. 
+								Technical lead behind IntraWeb Technologies&apos; digital presence and AI-driven content collaboration tooling (SynaplyAI).
 							</p>
 						</motion.div>
 					</Container>
@@ -416,20 +448,20 @@ export default function About({ publication }: Props) {
 												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Development Philosophy</h4>
 												<p className="text-stone-600 dark:text-stone-400">
 													I believe in writing clean, maintainable code and staying up-to-date with the latest industry best practices. 
-													I'm passionate about AI-driven development and finding innovative ways to improve the development workflow.
+													I&apos;m passionate about AI-driven development and finding innovative ways to improve the development workflow.
 												</p>
 											</div>
 											<div>
 												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Work Style</h4>
 												<p className="text-stone-600 dark:text-stone-400">
 													I thrive in collaborative environments and believe in the power of clear communication. 
-													I'm committed to delivering high-quality solutions that exceed expectations while meeting deadlines.
+													I&apos;m committed to delivering high-quality solutions that exceed expectations while meeting deadlines.
 												</p>
 											</div>
 											<div>
 												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Continuous Learning</h4>
 												<p className="text-stone-600 dark:text-stone-400">
-													When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, 
+													When I&apos;m not coding, you&apos;ll find me exploring new technologies, contributing to open source projects, 
 													or sharing knowledge with the developer community.
 												</p>
 											</div>
@@ -453,11 +485,11 @@ export default function About({ publication }: Props) {
 						>
 							<div className="bg-stone-50 dark:bg-stone-800 rounded-lg p-8 shadow-sm border border-stone-200 dark:border-stone-700">
 								<h2 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-4">
-									Let's Work Together
+									Let&apos;s Work Together
 								</h2>
 								<p className="text-lg text-stone-600 dark:text-stone-400 mb-8">
-									I'm available for freelance projects and consulting opportunities. Whether you need a complete application 
-									built from scratch or help optimizing an existing codebase, I'd love to hear about your project.
+									I&apos;m available for freelance projects and consulting opportunities. Whether you need a complete application 
+									built from scratch or help optimizing an existing codebase, I&apos;d love to hear about your project.
 								</p>
 								<div className="flex flex-col sm:flex-row gap-4 justify-center">
 									<Button 

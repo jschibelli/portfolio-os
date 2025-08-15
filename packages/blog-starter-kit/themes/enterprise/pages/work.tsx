@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import request from 'graphql-request';
 import { motion } from 'framer-motion';
 import { Container } from '../components/container';
@@ -54,7 +55,19 @@ export default function WorkPage({ publication }: Props) {
         
         <main className="min-h-screen bg-white dark:bg-stone-950">
           {/* Hero Section */}
-          <section className="py-20 bg-gradient-to-br from-stone-50 to-stone-100 dark:from-stone-900 dark:to-stone-800">
+                    <section
+            className="py-12 md:py-16 relative bg-stone-50 dark:bg-stone-900 overflow-hidden min-h-[400px]"
+            style={{
+              backgroundImage: 'url(/assets/hero/hero-bg2.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            {/* Background Overlay */}
+            <div className="absolute inset-0 bg-stone-50/70 dark:bg-stone-900/70 z-0"></div>
+            {/* Content Overlay */}
+            <div className="relative z-10">
             <Container className="px-4">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -85,6 +98,7 @@ export default function WorkPage({ publication }: Props) {
                 </div>
               </motion.div>
             </Container>
+            </div>
           </section>
 
           {/* Featured Projects Section */}
@@ -228,7 +242,7 @@ export default function WorkPage({ publication }: Props) {
                   Ready to Start Your Project?
                 </h2>
                 <p className="text-xl text-stone-300 mb-8">
-                  Let's discuss how we can help bring your vision to life with cutting-edge technology solutions.
+                  Let&apos;s discuss how we can help bring your vision to life with cutting-edge technology solutions.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
@@ -236,10 +250,10 @@ export default function WorkPage({ publication }: Props) {
                     className="bg-white text-stone-900 hover:bg-stone-100 font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
                     asChild
                   >
-                    <a href="/about">
+                    <Link href="/about">
                       Get In Touch
                       <ArrowRightIcon className="ml-2 h-5 w-5" />
-                    </a>
+                    </Link>
                   </Button>
                   <Button
                     size="lg"
@@ -247,10 +261,10 @@ export default function WorkPage({ publication }: Props) {
                     className="border-white text-white hover:bg-white hover:text-stone-900 font-semibold px-8 py-4 text-lg transition-all duration-300"
                     asChild
                   >
-                    <a href="/blog">
+                    <Link href="/blog">
                       Read Our Blog
                       <ExternalLinkIcon className="ml-2 h-5 w-5" />
-                    </a>
+                    </Link>
                   </Button>
                 </div>
               </motion.div>

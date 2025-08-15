@@ -14,12 +14,7 @@ import {
   MailIcon, 
   MapPinIcon, 
   ClockIcon, 
-  SendIcon,
-  FacebookSVG, 
-  GithubSVG, 
-  LinkedinSVG, 
-  BlueskySVG, 
-  RssSVG 
+  SendIcon
 } from 'lucide-react';
 import { FacebookSVG as FacebookIcon, GithubSVG as GithubIcon, LinkedinSVG as LinkedinIcon, BlueskySVG as BlueskyIcon, RssSVG as RssIcon } from '../components/icons';
 import { useState } from 'react';
@@ -86,7 +81,19 @@ export default function ContactPage({ publication }: Props) {
         
         <main className="min-h-screen bg-white dark:bg-stone-950">
           {/* Hero Section */}
-          <section className="py-20 bg-gradient-to-br from-stone-50 to-stone-100 dark:from-stone-900 dark:to-stone-800">
+          <section 
+            className="py-12 md:py-16 relative bg-stone-50 dark:bg-stone-900 overflow-hidden min-h-[400px]"
+            style={{
+              backgroundImage: 'url(/assets/hero/hero-bg4.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            {/* Background Overlay */}
+            <div className="absolute inset-0 bg-stone-50/70 dark:bg-stone-900/70 z-0"></div>
+            {/* Content Overlay */}
+            <div className="relative z-10">
             <Container className="px-4">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -94,11 +101,11 @@ export default function ContactPage({ publication }: Props) {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-center max-w-4xl mx-auto"
               >
-                <h1 className="text-5xl md:text-6xl font-bold text-stone-900 dark:text-stone-100 mb-6">
-                  Let's Work Together
-                </h1>
+                                 <h1 className="text-5xl md:text-6xl font-bold text-stone-900 dark:text-stone-100 mb-6">
+                   Let&apos;s Work Together
+                 </h1>
                 <p className="text-xl md:text-2xl text-stone-600 dark:text-stone-400 mb-8 leading-relaxed">
-                  Ready to bring your vision to life? I'm here to help you create exceptional digital experiences.
+                                     Ready to bring your vision to life? I&apos;m here to help you create exceptional digital experiences.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
                   <div className="flex items-center gap-2">
@@ -116,6 +123,7 @@ export default function ContactPage({ publication }: Props) {
                 </div>
               </motion.div>
             </Container>
+            </div>
           </section>
 
           {/* Contact Form & Info Section */}
@@ -135,7 +143,7 @@ export default function ContactPage({ publication }: Props) {
                       Start Your Project
                     </h2>
                     <p className="text-lg text-stone-600 dark:text-stone-400">
-                      Tell me about your project and I'll get back to you within 24 hours.
+                      Tell me about your project and I&apos;ll get back to you within 24 hours.
                     </p>
                   </div>
 
@@ -154,7 +162,7 @@ export default function ContactPage({ publication }: Props) {
                             Message Sent!
                           </h3>
                           <p className="text-green-700 dark:text-green-300">
-                            Thank you for reaching out. I'll get back to you within 24 hours.
+                            Thank you for reaching out. I&apos;ll get back to you within 24 hours.
                           </p>
                         </div>
                       </div>

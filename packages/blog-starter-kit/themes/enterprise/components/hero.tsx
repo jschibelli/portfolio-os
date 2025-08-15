@@ -7,7 +7,7 @@ import { ArrowRightIcon } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative py-12 md:py-16 flex items-center justify-center overflow-hidden min-h-[400px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -43,14 +43,14 @@ export default function Hero() {
           </motion.h1>
 
           {/* Subhead */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="text-lg md:text-xl lg:text-2xl text-stone-300 font-medium"
-          >
-            React · Next.js · TypeScript · AI-Driven Development
-          </motion.p>
+                     <motion.p
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+             className="text-lg md:text-xl lg:text-2xl text-stone-300 font-medium"
+           >
+             React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
+           </motion.p>
 
           {/* CTA Buttons */}
           <motion.div

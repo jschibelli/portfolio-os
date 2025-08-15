@@ -6,7 +6,7 @@ import { Container } from '../../components/container';
 import { AppProvider } from '../../components/contexts/appContext';
 import { CoverImage } from '../../components/cover-image';
 import { Footer } from '../../components/footer';
-import { Header } from '../../components/header';
+import ModernHeader from '../../components/modern-header';
 import { Layout } from '../../components/layout';
 import { MorePosts } from '../../components/more-posts';
 import {
@@ -34,7 +34,7 @@ export default function Post({ series, publication, posts }: Props) {
 				<Head>
 					<title>{title}</title>
 				</Head>
-				<Header />
+				<ModernHeader publication={publication} />
 				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
 					<div
 						className={`${

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Container } from '../../components/container';
 import { AppProvider } from '../../components/contexts/appContext';
 import { Footer } from '../../components/footer';
-import { Header } from '../../components/header';
+import ModernHeader from '../../components/modern-header';
 import { Layout } from '../../components/layout';
 import { MarkdownToHtml } from '../../components/markdown-to-html';
 import { PostHeader } from '../../components/post-header';
@@ -47,7 +47,7 @@ export default function Post({ publication, post }: Props) {
 	return (
 		<AppProvider publication={publication}>
 			<Layout>
-				<Header />
+				<ModernHeader publication={publication} />
 				<Container className="pt-10">
 					<article className="flex flex-col items-start gap-10 pb-10">
 						<Head>

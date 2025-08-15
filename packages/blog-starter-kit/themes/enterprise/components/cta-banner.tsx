@@ -83,7 +83,7 @@ export default function CTABanner() {
               <div className="text-sm text-stone-300">Client Satisfaction</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-2">8+</div>
+              <div className="text-2xl font-bold text-white mb-2">15+</div>
               <div className="text-sm text-stone-300">Years Experience</div>
             </div>
           </motion.div>
