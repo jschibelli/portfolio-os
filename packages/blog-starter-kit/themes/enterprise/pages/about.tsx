@@ -4,6 +4,7 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { 
 	PublicationFragment,
 	PostsByPublicationDocument,
@@ -13,6 +14,26 @@ import {
 import { AppProvider } from '../components/contexts/appContext';
 import ModernHeader from '../components/modern-header';
 import { Footer } from '../components/footer';
+import { Container } from '../components/container';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { 
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '../components/ui/accordion';
+import { 
+	BriefcaseIcon, 
+	GraduationCapIcon, 
+	BracketsIcon, 
+	MapPinIcon,
+	CalendarIcon,
+	ArrowRightIcon,
+	StarIcon,
+	LightbulbIcon,
+	BookOpenIcon
+} from 'lucide-react';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
@@ -21,6 +42,79 @@ type Props = {
 };
 
 export default function About({ publication }: Props) {
+	const skills = {
+		'Frontend': ['React', 'Next.js', 'TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'Redux', 'Context API'],
+		'Backend': ['Node.js', 'Express', 'Python', 'PostgreSQL', 'MongoDB', 'REST APIs', 'GraphQL'],
+		'Tools & Platforms': ['Git', 'Docker', 'AWS', 'Vercel', 'Figma', 'Jira', 'Slack', 'VS Code'],
+		'AI & ML': ['OpenAI API', 'LangChain', 'Vector Databases', 'Prompt Engineering', 'AI Integration'],
+		'Testing': ['Jest', 'React Testing Library', 'Cypress', 'Playwright', 'Unit Testing']
+	};
+
+	const experience = [
+		{
+			title: 'Senior Frontend Developer',
+			company: 'Tech Company',
+			period: '2022 - Present',
+			location: 'Remote',
+			description: 'Lead frontend development for enterprise applications using React, Next.js, and TypeScript. Implemented AI-driven features and optimized performance.',
+			achievements: [
+				'Reduced page load times by 40% through code splitting and optimization',
+				'Implemented AI-powered search functionality using OpenAI API',
+				'Mentored junior developers and established coding standards',
+				'Led migration from legacy React to Next.js 13+ with App Router'
+			]
+		},
+		{
+			title: 'Full Stack Developer',
+			company: 'Digital Agency',
+			period: '2020 - 2022',
+			location: 'New York, NY',
+			description: 'Built custom web applications for clients across various industries. Collaborated with design and marketing teams.',
+			achievements: [
+				'Developed 15+ client websites and applications',
+				'Integrated third-party APIs and payment systems',
+				'Improved client satisfaction scores by 25%',
+				'Implemented responsive design patterns and accessibility standards'
+			]
+		},
+		{
+			title: 'Frontend Developer',
+			company: 'Startup',
+			period: '2018 - 2020',
+			location: 'Northern New Jersey',
+			description: 'Built user-facing features and improved application performance. Worked in agile environment with cross-functional teams.',
+			achievements: [
+				'Built responsive user interfaces for mobile and desktop',
+				'Implemented state management with Redux and Context API',
+				'Contributed to open source projects and documentation',
+				'Optimized bundle sizes and improved Core Web Vitals'
+			]
+		}
+	];
+
+	const education = [
+		{
+			degree: 'Bachelor of Science in Computer Science',
+			school: 'University Name',
+			period: '2014 - 2018',
+			location: 'New Jersey',
+			description: 'Focused on software engineering, algorithms, and web development fundamentals.'
+		}
+	];
+
+	const certifications = [
+		{
+			name: 'AWS Certified Developer',
+			issuer: 'Amazon Web Services',
+			year: '2023'
+		},
+		{
+			name: 'React Developer Certification',
+			issuer: 'Meta',
+			year: '2022'
+		}
+	];
+
 	return (
 		<AppProvider publication={publication}>
 			<Head>
@@ -51,49 +145,346 @@ export default function About({ publication }: Props) {
 
 			<ModernHeader publication={publication} />
 
-			<main className="min-h-screen bg-background">
-				<div className="container mx-auto px-4 py-16">
-					<div className="max-w-4xl mx-auto">
-						<h1 className="text-4xl font-bold text-foreground mb-8">About John Schibelli</h1>
-						
-						<div className="prose prose-lg dark:prose-invert max-w-none">
-							<p className="text-xl text-muted-foreground mb-8">
-								Senior Front-End Developer with over 8 years of experience building modern web applications.
-							</p>
-							
-							<h2 className="text-2xl font-semibold text-foreground mb-4">What I Do</h2>
-							<p className="text-muted-foreground mb-6">
+			<main className="min-h-screen bg-white dark:bg-stone-950">
+				{/* Hero Section */}
+				<section 
+					className="py-12 md:py-16 relative bg-stone-50 dark:bg-stone-900 overflow-hidden"
+					style={{
+						backgroundImage: 'url(/assets/hero/hero-bg.png)',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+						backgroundRepeat: 'no-repeat'
+					}}
+				>
+					{/* Background Overlay */}
+					<div className="absolute inset-0 bg-stone-50/70 dark:bg-stone-900/70 z-0"></div>
+					{/* Content Overlay */}
+					<div className="relative z-10">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+							className="max-w-5xl mx-auto"
+						>
+							<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+								{/* Profile Image */}
+								<div className="lg:col-span-1 flex justify-center">
+									<div className="relative">
+										<div className="w-48 h-48 md:w-56 md:h-56 lg:w-52 lg:h-52 rounded-full overflow-hidden bg-gradient-to-br from-stone-200 to-stone-300 dark:from-stone-700 dark:to-stone-600">
+											<img
+												src="/assets/hero/profile.png"
+												alt="John Schibelli - Senior Frontend Developer"
+												className="w-full h-full object-cover"
+											/>
+										</div>
+										<div className="absolute -bottom-1 -right-1 w-12 h-12 md:w-14 md:h-14 bg-stone-900 dark:bg-stone-100 rounded-full flex items-center justify-center">
+											<BracketsIcon className="w-6 h-6 md:w-7 md:h-7 text-white dark:text-stone-900" />
+										</div>
+									</div>
+								</div>
+
+								{/* Hero Content */}
+								<div className="lg:col-span-2 text-center lg:text-left">
+									<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+										John Schibelli
+									</h1>
+									<p className="text-xl md:text-2xl lg:text-3xl text-stone-600 dark:text-stone-400 mb-4">
+										Senior Frontend Developer
+									</p>
+									<p className="text-base md:text-lg text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
+										Passionate about creating exceptional user experiences with modern web technologies. 
+										Specializing in React, Next.js, TypeScript, and AI-driven development.
+									</p>
+									
+									<div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4 text-sm text-stone-500 dark:text-stone-400 mb-6">
+										<div className="flex items-center gap-2">
+											<MapPinIcon className="w-4 h-4" />
+											<span>Northern New Jersey</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<BriefcaseIcon className="w-4 h-4" />
+											<span>8+ Years Experience</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CalendarIcon className="w-4 h-4" />
+											<span>Available for Projects</span>
+										</div>
+									</div>
+
+									<div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+										<Button 
+											size="lg"
+											className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200"
+											asChild
+										>
+											<Link href="/contact">
+												Get In Touch
+												<ArrowRightIcon className="ml-2 h-4 w-4" />
+											</Link>
+										</Button>
+										<Button 
+											size="lg"
+											variant="outline"
+											className="border-stone-300 dark:border-stone-600"
+											asChild
+										>
+											<Link href="/work">
+												View My Work
+											</Link>
+										</Button>
+									</div>
+								</div>
+							</div>
+						</motion.div>
+					</Container>
+					</div>
+				</section>
+
+				{/* Professional Summary */}
+				<section className="py-16 bg-white dark:bg-stone-950">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+							viewport={{ once: true }}
+							className="max-w-4xl mx-auto text-center"
+						>
+							<h2 className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+								What I Do
+							</h2>
+							<p className="text-lg md:text-xl text-stone-600 dark:text-stone-400 leading-relaxed">
 								I specialize in creating exceptional user experiences using React, Next.js, TypeScript, and modern web technologies. 
 								My focus is on building scalable, performant applications that delight users and drive business results.
 							</p>
-							
-							<h2 className="text-2xl font-semibold text-foreground mb-4">My Approach</h2>
-							<p className="text-muted-foreground mb-6">
-								I believe in writing clean, maintainable code and staying up-to-date with the latest industry best practices. 
-								I&apos;m passionate about AI-driven development and finding innovative ways to improve the development workflow.
-							</p>
-							
-							<h2 className="text-2xl font-semibold text-foreground mb-4">Let&apos;s Work Together</h2>
-							<p className="text-muted-foreground mb-6">
-								I&apos;m available for freelance projects and consulting opportunities. Whether you need a complete application 
-								built from scratch or help optimizing an existing codebase, I&apos;d love to hear about your project.
-							</p>
-							
-							<div className="mt-12 p-6 bg-muted rounded-lg">
-								<h3 className="text-xl font-semibold text-foreground mb-4">Get In Touch</h3>
-								<p className="text-muted-foreground mb-4">
-									Ready to start your next project? Let&apos;s discuss how I can help bring your vision to life.
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Resume Accordion Section */}
+				<section className="py-20 bg-stone-50 dark:bg-stone-900">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+							viewport={{ once: true }}
+							className="max-w-4xl mx-auto"
+						>
+							<div className="text-center mb-12">
+								<h2 className="text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+									Professional Background
+								</h2>
+								<p className="text-lg text-stone-600 dark:text-stone-400">
+									Explore my experience, skills, and qualifications
 								</p>
-								<Link 
-									href="/contact" 
-									className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-								>
-									Contact Me
-								</Link>
 							</div>
-						</div>
-					</div>
-				</div>
+
+							<Accordion type="single" collapsible className="w-full space-y-4">
+								{/* Experience */}
+								<AccordionItem value="experience" className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 transition-all duration-300 hover:shadow-md hover:border-stone-300 dark:hover:border-stone-600">
+									<AccordionTrigger className="px-6 py-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200 rounded-t-lg">
+										<div className="flex items-center gap-3">
+											<BriefcaseIcon className="w-5 h-5 text-stone-600 dark:text-stone-400 transition-colors duration-200" />
+											<span className="text-lg font-semibold">Professional Experience</span>
+										</div>
+									</AccordionTrigger>
+									<AccordionContent className="px-6">
+										<div className="space-y-8">
+											{experience.map((job, index) => (
+												<div key={index} className="border-l-4 border-stone-200 dark:border-stone-600 pl-6">
+													<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															{job.title}
+														</h3>
+														<div className="text-sm text-stone-500 dark:text-stone-400 mt-1 sm:mt-0">
+															{job.period}
+														</div>
+													</div>
+													<div className="flex items-center gap-2 text-stone-600 dark:text-stone-400 mb-3">
+														<span className="font-medium">{job.company}</span>
+														<span>•</span>
+														<span>{job.location}</span>
+													</div>
+													<p className="text-stone-600 dark:text-stone-400 mb-4">
+														{job.description}
+													</p>
+													<ul className="space-y-2">
+														{job.achievements.map((achievement, idx) => (
+															<li key={idx} className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-400">
+																<StarIcon className="w-3 h-3 text-stone-400 dark:text-stone-500 mt-1 flex-shrink-0" />
+																{achievement}
+															</li>
+														))}
+													</ul>
+												</div>
+											))}
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+
+								{/* Skills */}
+								<AccordionItem value="skills" className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 transition-all duration-300 hover:shadow-md hover:border-stone-300 dark:hover:border-stone-600">
+									<AccordionTrigger className="px-6 py-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200 rounded-t-lg">
+										<div className="flex items-center gap-3">
+											<LightbulbIcon className="w-5 h-5 text-stone-600 dark:text-stone-400 transition-colors duration-200" />
+											<span className="text-lg font-semibold">Skills & Technologies</span>
+										</div>
+									</AccordionTrigger>
+									<AccordionContent className="px-6">
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+											{Object.entries(skills).map(([category, skillList]) => (
+												<div key={category} className="space-y-3">
+													<h4 className="font-semibold text-stone-900 dark:text-stone-100">
+														{category}
+													</h4>
+													<div className="flex flex-wrap gap-2">
+														{skillList.map((skill) => (
+															<Badge 
+																key={skill}
+																variant="secondary" 
+																className="bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-600"
+															>
+																{skill}
+															</Badge>
+														))}
+													</div>
+												</div>
+											))}
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+
+								{/* Education */}
+								<AccordionItem value="education" className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 transition-all duration-300 hover:shadow-md hover:border-stone-300 dark:hover:border-stone-600">
+									<AccordionTrigger className="px-6 py-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200 rounded-t-lg">
+										<div className="flex items-center gap-3">
+											<GraduationCapIcon className="w-5 h-5 text-stone-600 dark:text-stone-400 transition-colors duration-200" />
+											<span className="text-lg font-semibold">Education & Certifications</span>
+										</div>
+									</AccordionTrigger>
+									<AccordionContent className="px-6">
+										<div className="space-y-6">
+											{education.map((edu, index) => (
+												<div key={index} className="border-l-4 border-stone-200 dark:border-stone-600 pl-6">
+													<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+														<h4 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+															{edu.degree}
+														</h4>
+														<div className="text-sm text-stone-500 dark:text-stone-400 mt-1 sm:mt-0">
+															{edu.period}
+														</div>
+													</div>
+													<div className="flex items-center gap-2 text-stone-600 dark:text-stone-400 mb-2">
+														<span>{edu.school}</span>
+														<span>•</span>
+														<span>{edu.location}</span>
+													</div>
+													<p className="text-sm text-stone-600 dark:text-stone-400">
+														{edu.description}
+													</p>
+												</div>
+											))}
+											
+											<div className="pt-4 border-t border-stone-200 dark:border-stone-600">
+												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">Certifications</h4>
+												<div className="space-y-2">
+													{certifications.map((cert, index) => (
+														<div key={index} className="flex items-center justify-between">
+															<span className="text-stone-600 dark:text-stone-400">{cert.name}</span>
+															<span className="text-sm text-stone-500 dark:text-stone-500">{cert.year}</span>
+														</div>
+													))}
+												</div>
+											</div>
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+
+								{/* Approach */}
+								<AccordionItem value="approach" className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 transition-all duration-300 hover:shadow-md hover:border-stone-300 dark:hover:border-stone-600">
+									<AccordionTrigger className="px-6 py-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors duration-200 rounded-t-lg">
+										<div className="flex items-center gap-3">
+											<BookOpenIcon className="w-5 h-5 text-stone-600 dark:text-stone-400 transition-colors duration-200" />
+											<span className="text-lg font-semibold">My Approach & Philosophy</span>
+										</div>
+									</AccordionTrigger>
+									<AccordionContent className="px-6">
+										<div className="space-y-4">
+											<div>
+												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Development Philosophy</h4>
+												<p className="text-stone-600 dark:text-stone-400">
+													I believe in writing clean, maintainable code and staying up-to-date with the latest industry best practices. 
+													I'm passionate about AI-driven development and finding innovative ways to improve the development workflow.
+												</p>
+											</div>
+											<div>
+												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Work Style</h4>
+												<p className="text-stone-600 dark:text-stone-400">
+													I thrive in collaborative environments and believe in the power of clear communication. 
+													I'm committed to delivering high-quality solutions that exceed expectations while meeting deadlines.
+												</p>
+											</div>
+											<div>
+												<h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">Continuous Learning</h4>
+												<p className="text-stone-600 dark:text-stone-400">
+													When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, 
+													or sharing knowledge with the developer community.
+												</p>
+											</div>
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+							</Accordion>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* CTA Section */}
+				<section className="py-20 bg-white dark:bg-stone-950">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+							viewport={{ once: true }}
+							className="max-w-4xl mx-auto text-center"
+						>
+							<div className="bg-stone-50 dark:bg-stone-800 rounded-lg p-8 shadow-sm border border-stone-200 dark:border-stone-700">
+								<h2 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+									Let's Work Together
+								</h2>
+								<p className="text-lg text-stone-600 dark:text-stone-400 mb-8">
+									I'm available for freelance projects and consulting opportunities. Whether you need a complete application 
+									built from scratch or help optimizing an existing codebase, I'd love to hear about your project.
+								</p>
+								<div className="flex flex-col sm:flex-row gap-4 justify-center">
+									<Button 
+										size="lg"
+										className="bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200"
+										asChild
+									>
+										<Link href="/contact">
+											Start a Project
+											<ArrowRightIcon className="ml-2 h-4 w-4" />
+										</Link>
+									</Button>
+									<Button 
+										size="lg"
+										variant="outline"
+										className="border-stone-300 dark:border-stone-600"
+										asChild
+									>
+										<Link href="/work">
+											View My Work
+										</Link>
+									</Button>
+								</div>
+							</div>
+						</motion.div>
+					</Container>
+				</section>
 			</main>
 
 			<Footer />

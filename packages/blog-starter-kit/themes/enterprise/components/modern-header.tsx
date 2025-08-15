@@ -10,6 +10,7 @@ import {
   SheetTrigger 
 } from './ui/sheet';
 import { Menu } from 'lucide-react';
+import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from './icons';
 
 interface ModernHeaderProps {
   publication: {
@@ -29,18 +30,12 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center space-x-2">
-              {publication.logo?.url ? (
+              {publication.logo?.url && (
                 <img
                   src={publication.logo.url}
                   alt={publication.displayTitle || publication.title}
                   className="h-8 w-8 rounded-lg"
                 />
-              ) : (
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-stone-600 to-stone-700 dark:from-stone-400 dark:to-stone-500 flex items-center justify-center">
-                  <span className="text-white dark:text-stone-900 font-bold text-sm">
-                    {(publication.displayTitle || publication.title).charAt(0)}
-                  </span>
-                </div>
               )}
               <span className="font-bold text-xl text-stone-900 dark:text-stone-100">
                 {publication.displayTitle || publication.title}
@@ -57,16 +52,16 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               Home
             </Link>
             <Link 
-              href="/blog" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Blog
-            </Link>
-            <Link 
               href="/work" 
               className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
             >
               Work
+            </Link>
+            <Link 
+              href="/blog" 
+              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
+            >
+              Blog
             </Link>
             <Link 
               href="/about" 
@@ -75,10 +70,10 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
               About
             </Link>
             <Link 
-              href="/newsletter" 
+              href="/contact" 
               className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
             >
-              Newsletter
+              Contact
             </Link>
           </nav>
 
@@ -108,18 +103,12 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                 <SheetHeader>
                   <SheetTitle className="text-left">
                     <Link href="/" className="flex items-center space-x-2">
-                      {publication.logo?.url ? (
+                      {publication.logo?.url && (
                         <img
                           src={publication.logo.url}
                           alt={publication.displayTitle || publication.title}
                           className="h-6 w-6 rounded"
                         />
-                      ) : (
-                        <div className="h-6 w-6 rounded bg-gradient-to-br from-stone-600 to-stone-700 dark:from-stone-400 dark:to-stone-500 flex items-center justify-center">
-                          <span className="text-white dark:text-stone-900 font-bold text-xs">
-                            {(publication.displayTitle || publication.title).charAt(0)}
-                          </span>
-                        </div>
                       )}
                       <span className="font-bold text-lg text-stone-900 dark:text-stone-100">
                         {publication.displayTitle || publication.title}
@@ -137,16 +126,16 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                       Home
                     </Link>
                     <Link 
-                      href="/blog" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Blog
-                    </Link>
-                    <Link 
                       href="/work" 
                       className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
                     >
                       Work
+                    </Link>
+                    <Link 
+                      href="/blog" 
+                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
+                    >
+                      Blog
                     </Link>
                     <Link 
                       href="/about" 
@@ -155,19 +144,71 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
                       About
                     </Link>
                     <Link 
-                      href="/newsletter" 
+                      href="/contact" 
                       className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
                     >
-                      Newsletter
+                      Contact
                     </Link>
                   </nav>
                   
                   <div className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
-                    <Button 
-                      className="w-full bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200"
-                    >
-                      Subscribe to Newsletter
-                    </Button>
+                    <div className="flex items-center justify-center gap-4">
+                      {/* Facebook */}
+                      <a
+                        href="https://facebook.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Find us on Facebook, external website, opens in new tab"
+                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      >
+                        <FacebookSVG className="h-5 w-5" />
+                      </a>
+                      
+                      {/* GitHub */}
+                      <a
+                        href="https://github.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Find us on Github, external website, opens in new tab"
+                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      >
+                        <GithubSVG className="h-5 w-5 stroke-current" />
+                      </a>
+
+                      {/* LinkedIn */}
+                      <a
+                        href="https://linkedin.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Find us on Linkedin, external website, opens in new tab"
+                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      >
+                        <LinkedinSVG className="h-5 w-5 stroke-current" />
+                      </a>
+
+                      {/* Bluesky */}
+                      <a
+                        href="https://bsky.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Find us on Bluesky, external website, opens in new tab"
+                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      >
+                        <BlueskySVG className="h-5 w-5 stroke-current" />
+                      </a>
+
+                      {/* RSS Feed */}
+                      <Link
+                        prefetch={false}
+                        href={`/rss.xml`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open blog XML Feed, opens in new tab"
+                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+                      >
+                        <RssSVG className="h-5 w-5 stroke-current" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </SheetContent>

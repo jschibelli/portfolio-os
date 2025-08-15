@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import ModernHeader from '../components/modern-header';
 
 interface Props {
   publication: any;
@@ -26,7 +26,7 @@ export default function ServicesPage({ publication }: Props) {
           <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Services`} />
           <meta name="twitter:description" content="Professional services and solutions we offer" />
         </Head>
-        <CustomNavigation publication={publication} />
+        <ModernHeader publication={publication} />
         
         <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
           {/* Services Hero Section */}

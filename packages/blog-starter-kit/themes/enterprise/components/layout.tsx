@@ -10,7 +10,7 @@ type Props = {
 
 export const Layout = ({ children }: Props) => {
 	return (
-		<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+		<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
 			<Meta />
 			<Scripts />
 			<div className="min-h-screen bg-background">

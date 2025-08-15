@@ -105,76 +105,78 @@ export default function CTA({
     <Section className={cn("group relative overflow-hidden", className)}>
       {/* Subtle background for newsletter section */}
       <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-stone-50 to-white dark:from-stone-800 dark:via-stone-900 dark:to-stone-950 opacity-40" />
-      <div className="relative max-w-container z-10 mx-auto flex flex-col items-center gap-6 text-center sm:gap-8">
-        <h2 className="max-w-[640px] text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
+      <div className="relative max-w-container z-10 mx-auto flex flex-col items-center gap-4 text-center sm:gap-6 lg:gap-8 px-4 sm:px-6 lg:px-8">
+        <h2 className="max-w-[640px] text-2xl leading-tight font-semibold sm:text-3xl md:text-4xl lg:text-5xl sm:leading-tight">
           {title}
         </h2>
         
         {showNewsletterForm && !status ? (
-          <div className="flex flex-col gap-4 w-full max-w-md">
-            <div className="flex gap-3">
+          <div className="flex flex-col gap-4 w-full max-w-md sm:max-w-lg lg:max-w-xl">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
                 onKeyPress={handleKeyPress}
                 placeholder="Email address"
-                className="flex-1 rounded-lg border border-input bg-background px-4 py-3 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all duration-300 hover:border-primary/50 focus:border-primary"
+                className="flex-1 rounded-lg border border-input bg-background px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all duration-300 hover:border-primary/50 focus:border-primary"
                 disabled={requestInProgress}
               />
-                          <Button 
-              onClick={subscribe}
-              disabled={requestInProgress || !email.trim()}
-              variant="default"
-              size="lg"
-              className="group w-fit font-medium px-8 py-3 text-base border-2 border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300 hover:scale-105 hover:shadow-lg"
-            >
-              {requestInProgress ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Subscribing...
-                </div>
-              ) : (
-                <span className="transition-all duration-300 group-hover:translate-x-1">
-                  Subscribe
-                </span>
-              )}
-            </Button>
+              <Button 
+                onClick={subscribe}
+                disabled={requestInProgress || !email.trim()}
+                variant="default"
+                size="lg"
+                className="group w-full sm:w-fit font-medium px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base border-2 border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
+                {requestInProgress ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 sm:h-4 sm:w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    <span className="hidden sm:inline">Subscribing...</span>
+                    <span className="sm:hidden">...</span>
+                  </div>
+                ) : (
+                  <span className="transition-all duration-300 group-hover:translate-x-1">
+                    Subscribe
+                  </span>
+                )}
+              </Button>
             </div>
             
             {error && (
-              <div className="text-red-600 text-sm text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+              <div className="text-red-600 text-xs sm:text-sm text-center bg-red-50 dark:bg-red-900/20 p-2 sm:p-3 rounded-md">
                 {error}
               </div>
             )}
             
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs text-muted-foreground text-center px-2 sm:px-0">
               No spam, unsubscribe at any time. We respect your privacy.
             </p>
           </div>
         ) : status === 'PENDING' ? (
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center space-y-3 sm:space-y-4 px-4 sm:px-0">
+            <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-green-600 mb-2">
+              <h3 className="text-lg sm:text-xl font-semibold text-green-600 mb-2">
                 Almost there!
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 We&apos;ve sent a confirmation email to your inbox. Please check your email and click the confirmation link to complete your subscription.
               </p>
             </div>
           </div>
         ) : buttons !== false && buttons.length > 0 ? (
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 w-full sm:w-auto">
             {buttons.map((button, index) => (
               <Button
                 key={index}
                 variant={button.variant || "default"}
                 size="lg"
+                className="w-full sm:w-auto"
                 asChild
               >
                 <a href={button.href}>

@@ -4,7 +4,7 @@ import request from 'graphql-request';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import ModernHeader from '../components/modern-header';
 import { PublicationByHostDocument } from '../generated/graphql';
 import { Button } from '../components/ui/button';
 
@@ -28,7 +28,7 @@ export default function NewsletterPage({ publication }: Props) {
           <meta name="twitter:title" content={`${publication.displayTitle || publication.title} - Newsletter`} />
           <meta name="twitter:description" content="Subscribe to our newsletter for the latest insights and updates" />
         </Head>
-        <CustomNavigation publication={publication} />
+        <ModernHeader publication={publication} />
         
         <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
           {/* Newsletter Hero Section */}

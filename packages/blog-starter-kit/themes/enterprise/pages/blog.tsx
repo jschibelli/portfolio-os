@@ -4,19 +4,20 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
-import { SocialLinks } from '../components/social-links';
 
 import ModernHeader from '../components/modern-header';
 import ModernHero from '../components/modern-hero';
 import ModernPostCard from '../components/modern-post-card';
 import FeaturedPostCard from '../components/featured-post-card';
 import NewsletterCTA from '../components/newsletter-cta';
+import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from '../components/icons';
 
 import {
 	PageInfo,
@@ -134,28 +135,77 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 							title="The Developer's Lens"
 							subtitle="Technology & Development"
 							description="Unfiltered perspectives on code, creativity, and the constant evolution of technology."
-							ctaText="Read Latest Post"
-							ctaLink={`/${allPosts[0].slug}`}
 							imageUrl="/assets/hero/hero-image.webp"
 						/>
 					</div>
 				)}
 
-				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
-					{/* Social Links Section */}
-					<div 
-						id="social-links-section"
-						data-animate-section
-						className={`transition-all duration-700 ease-out ${
-							isSectionVisible('social-links-section') 
-								? 'opacity-100 translate-y-0' 
-								: 'opacity-0 translate-y-6'
-						}`}
-					>
+				{/* Social Media Icons - Right under the hero */}
+				<div className="py-8 bg-white dark:bg-stone-950">
+					<Container className="px-5">
 						<div className="flex justify-center">
-							<SocialLinks />
+							<div className="flex items-center gap-4">
+								{/* Facebook */}
+								<a
+									href="https://facebook.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Facebook, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+								>
+									<FacebookSVG className="h-5 w-5" />
+								</a>
+								
+								{/* GitHub */}
+								<a
+									href="https://github.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Github, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+								>
+									<GithubSVG className="h-5 w-5 stroke-current" />
+								</a>
+
+								{/* LinkedIn */}
+								<a
+									href="https://linkedin.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Linkedin, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+								>
+									<LinkedinSVG className="h-5 w-5 stroke-current" />
+								</a>
+
+								{/* Bluesky */}
+								<a
+									href="https://bsky.app"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Bluesky, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+								>
+									<BlueskySVG className="h-5 w-5 stroke-current" />
+								</a>
+
+								{/* RSS Feed */}
+								<Link
+									prefetch={false}
+									href={`/rss.xml`}
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Open blog XML Feed, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+								>
+									<RssSVG className="h-5 w-5 stroke-current" />
+								</Link>
+							</div>
 						</div>
-					</div>
+					</Container>
+				</div>
+
+				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
 
 					{/* Empty State */}
 					{allPosts.length === 0 && (
@@ -170,7 +220,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 						>
 							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 dark:text-stone-400 lg:col-start-2">
 								<div className="w-20 animate-fade-in-up">
-									<ArticleSVG clasName="stroke-current" />
+									<ArticleSVG className="stroke-current" />
 								</div>
 								<p className="text-xl font-semibold animate-fade-in-up animation-delay-200">
 									Hang tight! We&apos;re drafting the first article.

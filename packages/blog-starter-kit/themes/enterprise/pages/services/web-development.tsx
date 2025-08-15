@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Container } from '../../components/container';
 import { AppProvider } from '../../components/contexts/appContext';
 import { Layout } from '../../components/layout';
-import { CustomNavigation } from '../../../../components/custom-navigation';
+import ModernHeader from '../../components/modern-header';
 import { Button } from '../../components/ui/button';
 
 interface Props {
@@ -27,7 +27,7 @@ export default function WebDevelopmentPage({ publication }: Props) {
           <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Web Development`} />
           <meta name="twitter:description" content="Custom web development services using modern technologies like React, Next.js, and full-stack solutions" />
         </Head>
-        <CustomNavigation publication={publication} />
+        <ModernHeader publication={publication} />
         
         <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
           {/* Hero Section */}

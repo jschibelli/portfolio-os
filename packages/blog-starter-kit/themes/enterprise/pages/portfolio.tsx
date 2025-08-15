@@ -4,7 +4,7 @@ import request from 'graphql-request';
 import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
-import { CustomNavigation } from '../../../components/custom-navigation';
+import ModernHeader from '../components/modern-header';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -27,7 +27,7 @@ export default function PortfolioPage({ publication }: Props) {
           <meta name="twitter:title" content={`${publication.displayTitle || publication.title} - Portfolio`} />
           <meta name="twitter:description" content="Explore our latest projects and case studies" />
         </Head>
-        <CustomNavigation publication={publication} />
+        <ModernHeader publication={publication} />
         
         <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
           {/* Portfolio Hero Section */}

@@ -2,6 +2,7 @@ import ArticleSVG from './ArticleSVG';
 import BlueskySVG from './BlueskySVG';
 import ChevronDownSVG from './ChevronDownSVG';
 import ExternalArrowSVG from './ExternalArrowSVG';
+import FacebookSVG from './FacebookSVG';
 import GithubSVG from './GithubSVG';
 import HashnodeSVG from './HashnodeSVG';
 import LinkedinSVG from './LinkedinSVG';
@@ -15,6 +16,7 @@ export {
 	BlueskySVG,
 	ChevronDownSVG,
 	ExternalArrowSVG,
+	FacebookSVG,
 	GithubSVG,
 	HashnodeSVG,
 	LinkedinSVG,

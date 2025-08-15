@@ -26,6 +26,7 @@
 		"@radix-ui/react-slot": "^1.2.3",
 		"@radix-ui/react-switch": "^1.2.6",
 		"@radix-ui/react-tabs": "^1.1.13",
+		"@radix-ui/react-accordion": "^1.2.1",
 		"@starter-kit/utils": "workspace:*",
 		"@tailwindcss/typography": "^0.5.10",
 		"@vercel/og": "^0.5.18",
