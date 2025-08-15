@@ -14,6 +14,7 @@ import {
 import { AppProvider } from '../components/contexts/appContext';
 import ModernHeader from '../components/modern-header';
 import { Footer } from '../components/footer';
+import Chatbot from '../components/chatbot';
 import { Container } from '../components/container';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -520,6 +521,9 @@ export default function About({ publication }: Props) {
 			</main>
 
 			<Footer />
+			
+			{/* Chatbot */}
+			<Chatbot />
 		</AppProvider>
 	);
 }

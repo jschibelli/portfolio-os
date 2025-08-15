@@ -1,5 +1,6 @@
 import SimpleNavigation from "@/components/ui/SimpleNavigation";
 import SimpleFooter from "@/components/ui/SimpleFooter";
+import Chatbot from "@/components/ui/Chatbot";
 
 export const metadata = {
   title: "Blog | John Schibelli",
@@ -93,6 +94,7 @@ export default function BlogPage() {
         </section>
       </main>
       <SimpleFooter />
+      <Chatbot />
     </>
   );
 }

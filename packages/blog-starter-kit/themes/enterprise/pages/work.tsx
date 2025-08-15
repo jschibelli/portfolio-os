@@ -8,6 +8,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
+import Chatbot from '../components/chatbot';
 import { PublicationByHostDocument } from '../generated/graphql';
 import ProjectCard, { Project } from '../components/project-card';
 import { Button } from '../components/ui/button';
@@ -272,6 +273,9 @@ export default function WorkPage({ publication }: Props) {
           </section>
         </main>
         <Footer />
+        
+        {/* Chatbot */}
+        <Chatbot />
       </Layout>
     </AppProvider>
   );
