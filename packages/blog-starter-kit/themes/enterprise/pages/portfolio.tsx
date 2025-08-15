@@ -5,6 +5,7 @@ import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
+import Chatbot from '../components/ui/Chatbot';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -210,6 +211,7 @@ export default function PortfolioPage({ publication }: Props) {
             </a>
           </div>
         </Container>
+        <Chatbot />
       </Layout>
     </AppProvider>
   );

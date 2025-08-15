@@ -23,7 +23,7 @@ import LatestPosts from '../components/latest-posts';
 import ModernHeader from '../components/modern-header';
 import { Footer } from '../components/footer';
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/chatbot';
+import Chatbot from '../components/ui/Chatbot';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 

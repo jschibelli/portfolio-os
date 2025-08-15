@@ -4,6 +4,7 @@ import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
+import Chatbot from '../components/ui/Chatbot';
 
 interface Props {
   publication: any;
@@ -245,6 +246,7 @@ export default function ServicesPage({ publication }: Props) {
             </a>
           </div>
         </Container>
+        <Chatbot />
       </Layout>
     </AppProvider>
   );

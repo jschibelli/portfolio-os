@@ -7,6 +7,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
+import Chatbot from '../components/ui/Chatbot';
 import { PublicationByHostDocument } from '../generated/graphql';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -410,6 +411,7 @@ export default function ContactPage({ publication }: Props) {
           </section>
         </main>
         <Footer />
+        <Chatbot />
       </Layout>
     </AppProvider>
   );
