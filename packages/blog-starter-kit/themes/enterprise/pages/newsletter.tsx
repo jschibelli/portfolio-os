@@ -5,6 +5,7 @@ import { Container } from '../components/container';
 import { AppProvider } from '../components/contexts/appContext';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
+import Chatbot from '../components/ui/Chatbot';
 import { PublicationByHostDocument } from '../generated/graphql';
 import { Button } from '../components/ui/button';
 
@@ -247,6 +248,7 @@ export default function NewsletterPage({ publication }: Props) {
             </div>
           </div>
         </Container>
+        <Chatbot />
       </Layout>
     </AppProvider>
   );

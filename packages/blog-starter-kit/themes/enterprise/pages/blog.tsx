@@ -11,6 +11,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { ArticleSVG } from '../components/icons';
 import { Layout } from '../components/layout';
+import Chatbot from '../components/ui/Chatbot';
 
 import ModernHeader from '../components/modern-header';
 import ModernHero from '../components/modern-hero';
@@ -324,6 +325,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 
 				</Container>
 				<Footer />
+				<Chatbot />
 			</Layout>
 		</AppProvider>
 	);

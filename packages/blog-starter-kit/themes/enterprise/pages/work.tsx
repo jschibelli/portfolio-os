@@ -8,7 +8,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import { Footer } from '../components/footer';
 import { Layout } from '../components/layout';
 import ModernHeader from '../components/modern-header';
-import Chatbot from '../components/chatbot';
+import Chatbot from '../components/ui/Chatbot';
 import { PublicationByHostDocument } from '../generated/graphql';
 import ProjectCard, { Project } from '../components/project-card';
 import { Button } from '../components/ui/button';

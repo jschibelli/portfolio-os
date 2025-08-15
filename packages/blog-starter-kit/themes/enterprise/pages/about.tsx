@@ -14,7 +14,7 @@ import {
 import { AppProvider } from '../components/contexts/appContext';
 import ModernHeader from '../components/modern-header';
 import { Footer } from '../components/footer';
-import Chatbot from '../components/chatbot';
+import Chatbot from '../components/ui/Chatbot';
 import { Container } from '../components/container';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';

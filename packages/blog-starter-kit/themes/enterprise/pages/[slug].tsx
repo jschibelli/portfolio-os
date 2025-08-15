@@ -13,6 +13,7 @@ import { Layout } from '../components/layout';
 import { MarkdownToHtml } from '../components/markdown-to-html';
 import { ModernPostHeader } from '../components/modern-post-header';
 import { PostTOC } from '../components/post-toc';
+import Chatbot from '../components/ui/Chatbot';
 import {
 	PageByPublicationDocument,
 	PostFullFragment,
@@ -185,6 +186,7 @@ export default function PostOrPage(props: Props) {
 					</article>
 				</Container>
 				<Footer />
+				<Chatbot />
 			</Layout>
 		</AppProvider>
 	);
