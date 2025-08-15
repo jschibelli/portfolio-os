@@ -1,6 +1,7 @@
 import SimpleNavigation from "@/components/ui/SimpleNavigation";
 import SimpleFooter from "@/components/ui/SimpleFooter";
 import SimpleHero from "@/components/ui/SimpleHero";
+import Chatbot from "@/components/ui/Chatbot";
 
 export const metadata = {
   title: "John Schibelli - Senior Front-End Developer",
@@ -15,6 +16,7 @@ export default function HomePage() {
         <SimpleHero />
       </main>
       <SimpleFooter />
+      <Chatbot />
     </>
   );
 }
