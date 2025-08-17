@@ -17,14 +17,14 @@ export default function MobileDevelopmentPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - Mobile Development
+            {publication.displayTitle || publication.title || 'John Schibelli'} - Mobile Development
           </title>
           <meta name="description" content="Native and cross-platform mobile application development for iOS and Android" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Mobile Development`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Mobile Development`} />
           <meta property="og:description" content="Native and cross-platform mobile application development for iOS and Android" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services/mobile-development`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Mobile Development`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Mobile Development`} />
           <meta name="twitter:description" content="Native and cross-platform mobile application development for iOS and Android" />
         </Head>
         <ModernHeader publication={publication} />
@@ -227,11 +227,11 @@ export default function MobileDevelopmentPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Professional mobile development services for iOS and Android',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

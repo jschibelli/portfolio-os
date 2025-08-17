@@ -418,25 +418,61 @@ export default function ContactPage({ publication }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const data = await request(
-    process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT,
-    PublicationByHostDocument,
-    {
-      host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-    },
-  );
+  const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+  	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+  
+  try {
+    const data = await request(
+      GQL_ENDPOINT,
+      PublicationByHostDocument,
+      {
+        host: host,
+      },
+    );
 
-  const publication = data.publication;
-  if (!publication) {
+    const publication = data.publication;
+    if (!publication) {
+      return {
+        notFound: true,
+      };
+    }
+
     return {
-      notFound: true,
+      props: {
+        publication,
+      },
+      revalidate: 1,
+    };
+  } catch (error) {
+    console.error('Error fetching publication data:', error);
+    // Return a fallback response to prevent the build from failing
+    return {
+      props: {
+        publication: {
+          id: 'fallback',
+          title: 'John Schibelli - Senior Front-End Developer',
+          displayTitle: 'John Schibelli - Senior Front-End Developer',
+          descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
+          					url: 'https://mindware.hashnode.dev',
+          posts: {
+            totalDocuments: 0
+          },
+          preferences: {
+            logo: null
+          },
+          author: {
+            name: 'John Schibelli',
+            profilePicture: null
+          },
+          followersCount: 0,
+          isTeam: false,
+          favicon: null,
+          ogMetaData: {
+            image: null
+          }
+        } as any,
+      },
+      revalidate: 1,
     };
   }
-
-  return {
-    props: {
-      publication,
-    },
-    revalidate: 1,
-  };
 };

@@ -86,33 +86,45 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) 
 	if (!params) {
 		throw new Error('No params');
 	}
-	const data = await request<SeriesPostsByPublicationQuery, SeriesPostsByPublicationQueryVariables>(
-		process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT,
-		SeriesPostsByPublicationDocument,
-		{
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-			first: 20,
-			seriesSlug: params.slug,
-		},
-	);
+	
+	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+	
+	try {
+		const data = await request<SeriesPostsByPublicationQuery, SeriesPostsByPublicationQueryVariables>(
+			GQL_ENDPOINT,
+			SeriesPostsByPublicationDocument,
+			{
+				host: host,
+				first: 20,
+				seriesSlug: params.slug,
+			},
+		);
 
-	const publication = data.publication;
-	const series = publication?.series;
-	if (!publication || !series) {
+		const publication = data.publication;
+		const series = publication?.series;
+		if (!publication || !series) {
+			return {
+				notFound: true,
+			};
+		}
+		const posts = publication.series ? publication.series.posts.edges.map((edge) => edge.node) : [];
+
+		return {
+			props: {
+				series,
+				posts,
+				publication,
+			},
+			revalidate: 1,
+		};
+	} catch (error) {
+		console.error('Error fetching series data:', error);
 		return {
 			notFound: true,
+			revalidate: 1,
 		};
 	}
-	const posts = publication.series ? publication.series.posts.edges.map((edge) => edge.node) : [];
-
-	return {
-		props: {
-			series,
-			posts,
-			publication,
-		},
-		revalidate: 1,
-	};
 };
 
 export const getStaticPaths: GetStaticPaths = () => {

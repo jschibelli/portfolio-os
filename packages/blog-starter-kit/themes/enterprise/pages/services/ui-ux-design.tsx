@@ -17,14 +17,14 @@ export default function UIUXDesignPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - UI/UX Design
+            {publication.displayTitle || publication.title || 'John Schibelli'} - UI/UX Design
           </title>
           <meta name="description" content="User-centered design solutions for engaging digital experiences" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - UI/UX Design`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - UI/UX Design`} />
           <meta property="og:description" content="User-centered design solutions for engaging digital experiences" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services/ui-ux-design`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - UI/UX Design`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - UI/UX Design`} />
           <meta name="twitter:description" content="User-centered design solutions for engaging digital experiences" />
         </Head>
         <ModernHeader publication={publication} />
@@ -252,11 +252,11 @@ export default function UIUXDesignPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Professional UI/UX design services for engaging digital experiences',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

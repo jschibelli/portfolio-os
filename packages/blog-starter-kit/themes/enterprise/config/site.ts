@@ -1,8 +1,8 @@
 export const siteConfig = {
-  name: "Mindware Blog",
+  name: "John Schibelli",
   description: "Technology & Development Blog",
-  url: "https://mindware.blog",
-  ogImage: "https://mindware.blog/og.jpg",
+  url: "https://mindware.hashnode.dev",
+  ogImage: "https://mindware.hashnode.dev/og.jpg",
   links: {
     twitter: "https://twitter.com/mindware",
     github: "https://github.com/mindware",

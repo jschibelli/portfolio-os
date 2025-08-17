@@ -201,62 +201,81 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) 
 		throw new Error('No params');
 	}
 
-	const endpoint = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
-	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST;
+	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 	const slug = params.slug;
 
-	const postData = await request(endpoint, SinglePostByPublicationDocument, { host, slug });
+	try {
+		const postData = await request(GQL_ENDPOINT, SinglePostByPublicationDocument, { host, slug });
 
-	if (postData.publication?.post) {
+		if (postData.publication?.post) {
+			return {
+				props: {
+					type: 'post',
+					post: postData.publication.post,
+					publication: postData.publication,
+				},
+				revalidate: 1,
+			};
+		}
+
+		const pageData = await request(GQL_ENDPOINT, PageByPublicationDocument, { host, slug });
+
+		if (pageData.publication?.staticPage) {
+			return {
+				props: {
+					type: 'page',
+					page: pageData.publication.staticPage,
+					publication: pageData.publication,
+				},
+				revalidate: 1,
+			};
+		}
+
 		return {
-			props: {
-				type: 'post',
-				post: postData.publication.post,
-				publication: postData.publication,
-			},
+			notFound: true,
+			revalidate: 1,
+		};
+	} catch (error) {
+		console.error('Error fetching post/page data:', error);
+		return {
+			notFound: true,
 			revalidate: 1,
 		};
 	}
-
-	const pageData = await request(endpoint, PageByPublicationDocument, { host, slug });
-
-	if (pageData.publication?.staticPage) {
-		return {
-			props: {
-				type: 'page',
-				page: pageData.publication.staticPage,
-				publication: pageData.publication,
-			},
-			revalidate: 1,
-		};
-	}
-
-	return {
-		notFound: true,
-		revalidate: 1,
-	};
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const data = await request(
-		process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT,
-		SlugPostsByPublicationDocument,
-		{
-			first: 10,
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-		},
-	);
+	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+	
+	try {
+		const data = await request(
+			GQL_ENDPOINT,
+			SlugPostsByPublicationDocument,
+			{
+				first: 10,
+				host: host,
+			},
+		);
 
-	const postSlugs = (data.publication?.posts.edges ?? []).map((edge) => edge.node.slug);
+		const postSlugs = (data.publication?.posts.edges ?? []).map((edge) => edge.node.slug);
 
-	return {
-		paths: postSlugs.map((slug) => {
-			return {
-				params: {
-					slug: slug,
-				},
-			};
-		}),
-		fallback: 'blocking',
-	};
+		return {
+			paths: postSlugs.map((slug) => {
+				return {
+					params: {
+						slug: slug,
+					},
+				};
+			}),
+			fallback: 'blocking',
+		};
+	} catch (error) {
+		console.error('Error fetching static paths:', error);
+		return {
+			paths: [],
+			fallback: 'blocking',
+		};
+	}
 };
