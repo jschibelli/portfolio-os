@@ -175,23 +175,20 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Test indicator to confirm component is rendering */}
-      <div className="fixed top-4 left-4 z-[10000] bg-green-500 text-white px-3 py-2 rounded text-sm font-bold">
-        CHATBOT LOADED
-      </div>
-      
       {/* Chat Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border-2 border-white"
+        className={`fixed z-[9999] bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border-2 border-white ${
+          isOpen 
+            ? 'top-2 right-2 md:top-2 md:right-2' 
+            : 'bottom-4 right-4 md:bottom-6 md:right-6'
+        }`}
         aria-label="Toggle chatbot"
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
           position: 'fixed',
-          bottom: '16px',
-          right: '16px',
           zIndex: 9999,
           width: '60px',
           height: '60px'
@@ -206,7 +203,7 @@ export default function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-4 md:bottom-24 md:right-6 md:left-auto md:top-auto z-[9998] w-auto md:w-96 h-auto md:h-[500px] max-h-[calc(100vh-2rem)] md:max-h-[500px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+        <div className="fixed inset-4 md:top-20 md:bottom-6 md:right-6 md:left-auto z-[9998] w-auto md:w-96 h-auto md:h-[500px] max-h-[calc(100vh-2rem)] md:max-h-[500px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
                      {/* Header */}
            <div className="bg-stone-900 dark:bg-stone-800 text-white p-3 md:p-4 rounded-t-lg flex items-center justify-between">
              <div className="flex items-center space-x-2 md:space-x-3">

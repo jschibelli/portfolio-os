@@ -15,7 +15,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-                       text: "Hi! I&apos;m John&apos;s AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -252,15 +252,17 @@ export default function Chatbot() {
       {/* Chat Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
+        className={`fixed z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300 ${
+          isOpen 
+            ? 'top-2 right-2 md:top-2 md:right-2' 
+            : 'bottom-4 right-4 md:bottom-6 md:right-6'
+        }`}
         aria-label="Toggle chatbot"
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
           position: 'fixed',
-          bottom: '16px',
-          right: '16px',
           zIndex: 9999,
           width: '60px',
           height: '60px'
@@ -275,7 +277,7 @@ export default function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-4 md:bottom-24 md:right-6 md:left-auto md:top-auto z-[9998] w-auto md:w-96 h-auto md:h-[500px] max-h-[calc(100vh-2rem)] md:max-h-[500px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+        <div className="fixed inset-4 md:top-20 md:bottom-6 md:right-6 md:left-auto z-[9998] w-auto md:w-96 h-auto md:h-[500px] max-h-[calc(100vh-2rem)] md:max-h-[500px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
                      {/* Header */}
            <div className="bg-stone-900 dark:bg-stone-800 text-white p-4 md:p-5 rounded-t-lg flex items-center justify-between">
              <div className="flex items-center space-x-3 md:space-x-4 flex-shrink-0">
@@ -283,8 +285,8 @@ export default function Chatbot() {
                  <Bot className="h-4 w-4 md:h-5 md:w-5" />
                </div>
                <div className="min-w-0">
-                                   <h3 className="font-semibold text-sm md:text-base">John&apos;s Assistant</h3>
-                                   <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John&apos;s background</p>
+                                   <h3 className="font-semibold text-sm md:text-base">John's Assistant</h3>
+                                   <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John's background</p>
                </div>
              </div>
                            <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
@@ -303,13 +305,19 @@ export default function Chatbot() {
                     <VolumeX className="h-4 w-4 md:h-5 md:w-5" />
                   )}
                 </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-stone-300 hover:text-white transition-colors p-2"
-                  aria-label="Close chat"
-                >
-                  <X className="h-4 w-4 md:h-5 md:w-5" />
-                </button>
+                                 <button
+                   onClick={() => {
+                     // Stop speaking if chatbot is talking
+                     if (isSpeaking) {
+                       stopSpeaking();
+                     }
+                     setIsOpen(false);
+                   }}
+                   className="text-stone-300 hover:text-white transition-colors p-2"
+                   aria-label="Close chat"
+                 >
+                   <X className="h-4 w-4 md:h-5 md:w-5" />
+                 </button>
               </div>
            </div>
 
@@ -364,61 +372,62 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
-            <div className="flex space-x-2">
-                             <input
-                 ref={inputRef}
-                 type="text"
-                 value={inputValue}
-                 onChange={(e) => {
-                   setInputValue(e.target.value);
-                   // Stop speaking when user starts typing (interrupt)
-                   if (isSpeaking) {
-                     stopSpeaking();
-                   }
-                 }}
-                 onKeyPress={handleKeyPress}
-                 placeholder={isListening ? "Listening..." : "Ask about John&apos;s experience..."}
-                 className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                 disabled={isLoading || isListening}
-               />
-                             {/* Stop Speaking Button - shows when chatbot is speaking */}
-               {isSpeaking && (
-                 <button
-                   onClick={stopSpeaking}
-                   className="p-2 rounded-lg transition-colors flex-shrink-0 bg-red-500 hover:bg-red-600 text-white"
-                   aria-label="Stop speaking"
-                 >
-                   <X className="h-4 w-4" />
-                 </button>
-               )}
-               <button
-                 onClick={isListening ? stopListening : startListening}
-                 disabled={isLoading}
-                 className={`p-2 rounded-lg transition-colors flex-shrink-0 ${
-                   isListening
-                     ? 'bg-red-500 hover:bg-red-600 text-white'
-                     : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
-                 }`}
-                 aria-label={isListening ? 'Stop listening' : 'Start listening'}
-               >
-                 {isListening ? (
-                   <MicOff className="h-4 w-4" />
-                 ) : (
-                   <Mic className="h-4 w-4" />
-                 )}
-               </button>
-               <button
-                 onClick={sendMessage}
-                 disabled={!inputValue.trim() || isLoading || isListening}
-                 className="bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 p-2 rounded-lg transition-colors disabled:cursor-not-allowed flex-shrink-0"
-                 aria-label="Send message"
-               >
-                 <Send className="h-4 w-4" />
-               </button>
-            </div>
-          </div>
+                     {/* Input */}
+           <div className="p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
+             <div className="flex items-center gap-3">
+                              <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => {
+                    setInputValue(e.target.value);
+                    // Stop speaking when user starts typing (interrupt)
+                    if (isSpeaking) {
+                      stopSpeaking();
+                    }
+                  }}
+                  onKeyPress={handleKeyPress}
+                  placeholder={isListening ? "Listening..." : "Ask about John's experience..."}
+                  className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                  disabled={isLoading || isListening}
+                />
+                              
+                              {/* Button Group */}
+                              <div className="flex items-center gap-4 flex-shrink-0" style={{ minWidth: 'fit-content' }}>
+                                {/* Microphone Button */}
+                                <button
+                                  onClick={isListening ? stopListening : startListening}
+                                  disabled={isLoading}
+                                  className={`w-10 h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 ${
+                                    isListening
+                                      ? 'bg-red-500 hover:bg-red-600 text-white'
+                                      : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
+                                  }`}
+                                  style={{ minWidth: '40px', minHeight: '40px' }}
+                                  aria-label={isListening ? 'Stop listening' : 'Start listening'}
+                                >
+                                  {isListening ? (
+                                    <MicOff className="h-4 w-4" />
+                                  ) : (
+                                    <Mic className="h-4 w-4" />
+                                  )}
+                                </button>
+                                
+                                {/* Send Button */}
+                                <button
+                                  onClick={sendMessage}
+                                  disabled={!inputValue.trim() || isLoading || isListening}
+                                  className="w-10 h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+                                  style={{ minWidth: '40px', minHeight: '40px' }}
+                                  aria-label="Send message"
+                                >
+                                  <Send className="h-4 w-4" />
+                                </button>
+                                
+
+                              </div>
+             </div>
+           </div>
         </div>
       )}
     </>
