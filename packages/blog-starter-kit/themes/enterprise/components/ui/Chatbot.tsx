@@ -22,12 +22,19 @@ interface ConversationHistory {
   assistant: string;
 }
 
+interface PageContext {
+  title?: string;
+  content?: string;
+  url?: string;
+  type?: 'article' | 'page' | 'post';
+}
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I&apos;m John&apos;s AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -42,6 +49,7 @@ export default function Chatbot() {
   const [conversationHistory, setConversationHistory] = useState<ConversationHistory[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
+  const [pageContext, setPageContext] = useState<PageContext | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -49,6 +57,47 @@ export default function Chatbot() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Function to detect current page context
+  const detectPageContext = (): PageContext | null => {
+    if (typeof window === 'undefined') return null;
+    
+    try {
+      const url = window.location.href;
+      const pathname = window.location.pathname;
+      const pageTitle = document.title;
+      
+      // Try to extract content from the page with multiple selectors
+      const pageContent = document.querySelector('main, .main-content, .content, .container, article, .article-content, .post-content, [data-testid="article-content"], .prose, .post-body, .entry-content')?.textContent?.trim();
+      
+      // Try to extract title from the page
+      const pageHeading = document.querySelector('h1, .article-title, .post-title, [data-testid="article-title"], .title, .headline')?.textContent?.trim();
+      
+      // Determine page type based on pathname
+      let pageType: 'article' | 'page' = 'page';
+      if (pathname.includes('/') && pathname !== '/' && pathname !== '/blog' && pathname !== '/about' && pathname !== '/work' && pathname !== '/contact') {
+        // Check if it looks like an article (has content and title)
+        if (pageHeading || (pageContent && pageContent.length > 500)) {
+          pageType = 'article';
+        }
+      }
+      
+      // Always return context if we have any meaningful content
+      if (pageTitle || pageHeading || pageContent) {
+        return {
+          title: pageHeading || pageTitle || 'Current Page',
+          content: pageContent || '',
+          url: url,
+          type: pageType
+        };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error detecting page context:', error);
+      return null;
+    }
   };
 
   useEffect(() => {
@@ -62,6 +111,33 @@ export default function Chatbot() {
       if (!conversationStartTime) {
         setConversationStartTime(new Date());
         trackConversationStart();
+      }
+      
+      // Detect page context when chatbot opens
+      const context = detectPageContext();
+      console.log('🔍 Page context detected:', context);
+      setPageContext(context);
+      
+      // Update initial message based on page context
+      if (context?.title) {
+        console.log('📝 Updating message for page:', context.title);
+        setMessages(prev => {
+          if (prev.length === 1 && prev[0].id === '1') {
+            let welcomeMessage = '';
+            
+            if (context.type === 'article') {
+              welcomeMessage = `Hi! I'm John's AI assistant. I can see you're reading "${context.title}". I can help you learn about this article, John's background, or answer any questions you have. What would you like to know?`;
+            } else {
+              welcomeMessage = `Hi! I'm John's AI assistant. I can see you're on the "${context.title}" page. I can help you learn about John's background, skills, experience, or answer any questions you have. What would you like to know?`;
+            }
+            
+            return [{
+              ...prev[0],
+              text: welcomeMessage
+            }];
+          }
+          return prev;
+        });
       }
     } else if (!isOpen && conversationStartTime) {
       // Track conversation end
@@ -179,7 +255,8 @@ export default function Chatbot() {
         },
         body: JSON.stringify({ 
           message: userMessage.text,
-          conversationHistory: conversationHistory
+          conversationHistory: conversationHistory,
+          pageContext: pageContext
         }),
       });
 
@@ -320,14 +397,14 @@ export default function Chatbot() {
       {/* Chat Toggle Button - Always at bottom */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
+        className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
         aria-label="Toggle chatbot"
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
           position: 'fixed',
-          bottom: '16px',
+          bottom: '80px',
           right: '16px',
           zIndex: 9999,
           width: '60px',
@@ -343,7 +420,7 @@ export default function Chatbot() {
 
       {/* Chat Window - Opens above the toggle button */}
       {isOpen && (
-        <div className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[9998] w-96 md:w-[500px] h-auto max-h-[80vh] sm:max-h-[85vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+        <div className="fixed bottom-36 right-4 md:bottom-40 md:right-6 z-[9998] w-96 md:w-[500px] h-auto max-h-[80vh] sm:max-h-[85vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
           {/* Header */}
           <div className="bg-stone-900 dark:bg-stone-800 text-white p-3 sm:p-4 md:p-5 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-shrink-0">
@@ -460,7 +537,7 @@ export default function Chatbot() {
                   }
                 }}
                 onKeyPress={handleKeyPress}
-                placeholder={isListening ? "Listening..." : "Ask about John&apos;s experience..."}
+                placeholder={isListening ? "Listening..." : "Ask about John's experience..."}
                 className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 disabled={isLoading || isListening}
               />

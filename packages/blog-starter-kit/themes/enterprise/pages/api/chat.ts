@@ -312,7 +312,7 @@ const openai = new OpenAI({
 });
 
 // Enhanced system prompt with better personality and context
-const createSystemPrompt = (articles: any[], conversationHistory: any[] = []) => {
+const createSystemPrompt = (articles: any[], conversationHistory: any[] = [], pageContext: any | null = null, isAskingAboutCurrentArticle: boolean = false) => {
   const categorizedArticles = categorizeArticles(articles);
   const recentArticles = articles.slice(0, 5); // Get 5 most recent articles
   
@@ -327,6 +327,10 @@ const createSystemPrompt = (articles: any[], conversationHistory: any[] = []) =>
         `User: ${exchange.user}\nAssistant: ${exchange.assistant}`
       ).join('\n\n')}`
     : '';
+
+  const pageContextInfo = pageContext ? `\n\nCURRENT PAGE CONTEXT:\n- Type: ${pageContext.type}\n- Title: ${pageContext.title}\n- URL: ${pageContext.url}\n- Content: ${pageContext.content.substring(0, 200)}...` : '';
+
+  const currentArticleSummary = isAskingAboutCurrentArticle && pageContext?.type === 'article' ? `\n\nSUMMARY OF CURRENT ARTICLE:\n${pageContext.content.substring(0, 200)}...` : '';
 
   return `You are John's AI assistant - a knowledgeable, friendly, and professional helper designed to provide information about John Schibelli's background, experience, and expertise. You have a warm, approachable personality while maintaining professionalism.
 
@@ -390,6 +394,10 @@ CONVERSATION GUIDELINES:
 14. When mentioning article titles, use plain text only - no formatting, no quotes, no special characters
 15. Present all information in clean, natural language without any technical formatting
 16. If you see markdown symbols in the article content provided to you, ignore them and present the information in plain text
+17. If the user is viewing an article and asks for a summary, provide a clear, concise summary of the current article's main points
+18. When summarizing articles, focus on the key insights, main arguments, and practical takeaways
+19. If asked about the current article, reference it specifically and provide relevant insights about its content
+20. Always acknowledge when you're providing information about the article the user is currently reading
 
 SPECIAL CAPABILITIES:
 - Answer questions about John's professional background and experience
@@ -399,7 +407,7 @@ SPECIAL CAPABILITIES:
 - Discuss his work on SynaplyAI and other projects
 - Provide career and technology insights based on John's experience
 - Detect user intent and tailor responses accordingly
-- Provide categorized information based on user interests${articlesContext}${conversationContext}`;
+- Provide categorized information based on user interests${articlesContext}${conversationContext}${pageContextInfo}${currentArticleSummary}`;
 };
 
 // Enhanced error handling with fallback responses
@@ -422,7 +430,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { message, conversationHistory = [] } = req.body;
+    const { message, conversationHistory = [], pageContext = null } = req.body;
 
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
@@ -440,6 +448,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userIntent = detectUserIntent(message);
     console.log('🎯 Detected user intent:', userIntent);
 
+    // Check if user is asking about the current article
+    const isAskingAboutCurrentArticle = pageContext?.type === 'article' && (
+      message.toLowerCase().includes('summary') ||
+      message.toLowerCase().includes('summarize') ||
+      message.toLowerCase().includes('this article') ||
+      message.toLowerCase().includes('current article') ||
+      message.toLowerCase().includes('what is this about') ||
+      message.toLowerCase().includes('what is this article about')
+    );
+
     // Fetch articles from GitHub repository
     let articles = await fetchArticlesFromRepo();
     
@@ -455,8 +473,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('🔍 Debug - Using GitHub articles, not fallbacks');
     }
 
-    // Create enhanced system prompt with conversation history
-    const systemPrompt = createSystemPrompt(articles, conversationHistory);
+    // Create enhanced system prompt with conversation history and page context
+    const systemPrompt = createSystemPrompt(articles, conversationHistory, pageContext, isAskingAboutCurrentArticle);
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -482,7 +500,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const enhancedResponse = {
       response,
       intent: userIntent,
-      suggestedActions: getSuggestedActions(userIntent),
+      suggestedActions: getSuggestedActions(userIntent, articles),
       conversationId: Date.now().toString(),
       timestamp: new Date().toISOString()
     };
@@ -502,8 +520,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 // Function to get suggested actions based on user intent
-function getSuggestedActions(intent: string) {
-  const actions = {
+function getSuggestedActions(intent: string, articles: any[]) {
+  const baseActions = {
     contact: [
       { label: "Email John", url: "mailto:jschibelli@gmail.com", icon: "📧" },
       { label: "LinkedIn Profile", url: "https://linkedin.com/in/johnschibelli", icon: "💼" },
@@ -511,7 +529,6 @@ function getSuggestedActions(intent: string) {
     ],
     skills: [
       { label: "View Portfolio", url: "/work", icon: "🎨" },
-      { label: "Read Blog", url: "/blog", icon: "📝" },
       { label: "Contact for Projects", url: "mailto:jschibelli@gmail.com", icon: "💬" }
     ],
     experience: [
@@ -521,13 +538,7 @@ function getSuggestedActions(intent: string) {
     ],
     projects: [
       { label: "View Portfolio", url: "/work", icon: "🎨" },
-      { label: "SynaplyAI Project", url: "/work/synaplyai", icon: "🤖" },
       { label: "Contact for Collaboration", url: "mailto:jschibelli@gmail.com", icon: "🤝" }
-    ],
-    blog: [
-      { label: "Read Blog", url: "/blog", icon: "📝" },
-      { label: "Latest Articles", url: "/blog", icon: "📰" },
-      { label: "Subscribe to Updates", url: "/newsletter", icon: "📧" }
     ],
     hiring: [
       { label: "Contact John", url: "mailto:jschibelli@gmail.com", icon: "💬" },
@@ -541,5 +552,37 @@ function getSuggestedActions(intent: string) {
     ]
   };
 
-  return actions[intent as keyof typeof actions] || actions.general;
+  // Get base actions for the intent
+  let actions = baseActions[intent as keyof typeof baseActions] || baseActions.general;
+
+  // Add dynamic article actions based on intent
+  if (intent === 'blog' || intent === 'skills' || intent === 'technical') {
+    // Add recent articles as suggested actions
+    const recentArticles = articles.slice(0, 3); // Show up to 3 recent articles
+    const articleActions = recentArticles.map(article => ({
+      label: `Read: ${article.title}`,
+      url: article.url,
+      icon: "📝"
+    }));
+    actions = [...articleActions, ...actions];
+  }
+
+  // Add specific article actions for other intents if relevant articles exist
+  if (intent === 'projects' && articles.length > 0) {
+    const projectArticles = articles.filter(article => 
+      article.title.toLowerCase().includes('synaplyai') || 
+      article.title.toLowerCase().includes('project') ||
+      article.title.toLowerCase().includes('build')
+    );
+    if (projectArticles.length > 0) {
+      const projectActions = projectArticles.slice(0, 2).map(article => ({
+        label: `Read: ${article.title}`,
+        url: article.url,
+        icon: "🤖"
+      }));
+      actions = [...projectActions, ...actions];
+    }
+  }
+
+  return actions;
 }
