@@ -17,14 +17,14 @@ export default function MaintenanceSupportPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - Maintenance & Support
+            {publication.displayTitle || publication.title || 'John Schibelli'} - Maintenance & Support
           </title>
           <meta name="description" content="Ongoing maintenance and technical support services for applications and systems" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Maintenance & Support`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Maintenance & Support`} />
           <meta property="og:description" content="Ongoing maintenance and technical support services for applications and systems" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services/maintenance-support`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Maintenance & Support`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Maintenance & Support`} />
           <meta name="twitter:description" content="Ongoing maintenance and technical support services for applications and systems" />
         </Head>
         <ModernHeader publication={publication} />
@@ -244,11 +244,11 @@ export default function MaintenanceSupportPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Professional maintenance and support services for applications and systems',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

@@ -32,11 +32,11 @@ export default function TestNavigationPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Test page for navigation',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

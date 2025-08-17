@@ -17,14 +17,14 @@ export default function ServicesPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - Services
+            {publication.displayTitle || publication.title || 'John Schibelli'} - Services
           </title>
           <meta name="description" content="Professional services and solutions we offer" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Services`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Services`} />
           <meta property="og:description" content="Professional services and solutions we offer" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Services`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Services`} />
           <meta name="twitter:description" content="Professional services and solutions we offer" />
         </Head>
         <ModernHeader publication={publication} />
@@ -255,11 +255,11 @@ export default function ServicesPage({ publication }: Props) {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   // Mock publication data that matches the structure expected by ModernHeader
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Professional technology solutions and consulting services',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

@@ -30,6 +30,7 @@ interface PageContext {
 }
 
 export default function Chatbot() {
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {

@@ -17,14 +17,14 @@ export default function ConsultingPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - Technical Consulting
+            {publication.displayTitle || publication.title || 'John Schibelli'} - Technical Consulting
           </title>
           <meta name="description" content="Expert technical consulting and guidance for technology strategy and implementation" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Technical Consulting`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Technical Consulting`} />
           <meta property="og:description" content="Expert technical consulting and guidance for technology strategy and implementation" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services/consulting`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Technical Consulting`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Technical Consulting`} />
           <meta name="twitter:description" content="Expert technical consulting and guidance for technology strategy and implementation" />
         </Head>
         <ModernHeader publication={publication} />
@@ -280,11 +280,11 @@ export default function ConsultingPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Expert technical consulting services for technology strategy and implementation',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

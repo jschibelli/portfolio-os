@@ -17,14 +17,14 @@ export default function CloudSolutionsPage({ publication }: Props) {
       <Layout>
         <Head>
           <title>
-            {publication.displayTitle || publication.title || 'Enterprise Blog'} - Cloud Solutions
+            {publication.displayTitle || publication.title || 'John Schibelli'} - Cloud Solutions
           </title>
           <meta name="description" content="Scalable cloud infrastructure and DevOps solutions for modern applications" />
-          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Cloud Solutions`} />
+          <meta property="og:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Cloud Solutions`} />
           <meta property="og:description" content="Scalable cloud infrastructure and DevOps solutions for modern applications" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content={`${publication.url}/services/cloud-solutions`} />
-          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'Enterprise Blog'} - Cloud Solutions`} />
+          <meta name="twitter:title" content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Cloud Solutions`} />
           <meta name="twitter:description" content="Scalable cloud infrastructure and DevOps solutions for modern applications" />
         </Head>
         <ModernHeader publication={publication} />
@@ -237,11 +237,11 @@ export default function CloudSolutionsPage({ publication }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const publication: any = {
-    title: 'Enterprise Blog',
-    displayTitle: 'Enterprise Blog',
-    url: 'https://example.com',
+    		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+          url: 'https://mindware.hashnode.dev',
     logo: null,
-    author: { name: 'Enterprise Team' },
+          author: { name: 'John Schibelli' },
     descriptionSEO: 'Professional cloud infrastructure and DevOps solutions',
     ogMetaData: {
       image: 'https://via.placeholder.com/1200x630',

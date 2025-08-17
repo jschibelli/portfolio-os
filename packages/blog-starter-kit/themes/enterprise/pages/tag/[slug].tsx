@@ -49,32 +49,43 @@ type Params = {
 };
 
 export async function getStaticProps({ params }: Params) {
-	const data = await request<TagPostsByPublicationQuery, TagPostsByPublicationQueryVariables>(
-		process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT,
-		TagPostsByPublicationDocument,
-		{
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-			first: 20,
-			tagSlug: params.slug,
-		},
-	);
+	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+	
+	try {
+		const data = await request<TagPostsByPublicationQuery, TagPostsByPublicationQueryVariables>(
+			GQL_ENDPOINT,
+			TagPostsByPublicationDocument,
+			{
+				host: host,
+				first: 20,
+				tagSlug: params.slug,
+			},
+		);
 
-	const publication = data.publication;
-	if (!publication) {
+		const publication = data.publication;
+		if (!publication) {
+			return {
+				notFound: true,
+			};
+		}
+		const posts = publication.posts.edges.map((edge) => edge.node);
+
+		return {
+			props: {
+				posts,
+				publication,
+				tag: params.slug,
+			},
+			revalidate: 1,
+		};
+	} catch (error) {
+		console.error('Error fetching tag data:', error);
 		return {
 			notFound: true,
+			revalidate: 1,
 		};
 	}
-	const posts = publication.posts.edges.map((edge) => edge.node);
-
-	return {
-		props: {
-			posts,
-			publication,
-			tag: params.slug,
-		},
-		revalidate: 1,
-	};
 }
 
 export async function getStaticPaths() {
