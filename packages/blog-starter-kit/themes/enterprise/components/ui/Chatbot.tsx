@@ -82,25 +82,33 @@ export default function Chatbot() {
         const voices = window.speechSynthesis.getVoices();
         setAvailableVoices(voices);
         
-        // Prefer Microsoft William (Multi) as default voice
-        const preferredVoice = voices.find(voice => 
-          voice.name.includes('Microsoft William') && voice.name.includes('Multi')
-        ) || voices.find(voice => 
-          (voice.name.includes('Google') || 
-           voice.name.includes('Natural') ||
-           voice.name.includes('Premium') ||
-           voice.name.includes('Enhanced')) &&
-          (voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en-'))
-        ) || voices.find(voice => voice.lang === 'en-US') || 
-           voices.find(voice => voice.lang === 'en-GB') ||
-           voices.find(voice => voice.lang.startsWith('en-')) ||
-           voices[0];
+                 // Prioritize William and Australian voices
+         const preferredVoice = voices.find(voice => 
+           voice.name.toLowerCase().includes('william') && 
+           (voice.name.toLowerCase().includes('australian') || voice.name.toLowerCase().includes('multi'))
+         ) || voices.find(voice => 
+           voice.name.toLowerCase().includes('william')
+         ) || voices.find(voice => 
+           voice.name.toLowerCase().includes('australian') && voice.lang.startsWith('en-')
+         ) || voices.find(voice => 
+           voice.name.includes('Microsoft William') && voice.name.includes('Multi')
+         ) || voices.find(voice => 
+           (voice.name.includes('Google') || 
+            voice.name.includes('Natural') ||
+            voice.name.includes('Premium') ||
+            voice.name.includes('Enhanced')) &&
+           (voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en-'))
+         ) || voices.find(voice => voice.lang === 'en-US') || 
+            voices.find(voice => voice.lang === 'en-GB') ||
+            voices.find(voice => voice.lang.startsWith('en-')) ||
+            voices[0];
         
-        if (preferredVoice) {
-          speechRef.current!.voice = preferredVoice;
-          setSelectedVoice(preferredVoice);
-          console.log('Selected voice:', preferredVoice.name);
-        }
+                 if (preferredVoice) {
+           speechRef.current!.voice = preferredVoice;
+           setSelectedVoice(preferredVoice);
+           console.log('Selected voice:', preferredVoice.name);
+           console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+         }
       };
       
       // Load voices immediately if available
