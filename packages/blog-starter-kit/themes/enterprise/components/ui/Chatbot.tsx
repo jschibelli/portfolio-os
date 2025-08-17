@@ -1,13 +1,25 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink } from 'lucide-react';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
 
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   timestamp: Date;
+  intent?: string;
+  suggestedActions?: Array<{
+    label: string;
+    url: string;
+    icon: string;
+  }>;
+}
+
+interface ConversationHistory {
+  user: string;
+  assistant: string;
 }
 
 export default function Chatbot() {
@@ -15,7 +27,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I&apos;m John&apos;s AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -27,6 +39,9 @@ export default function Chatbot() {
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const [conversationHistory, setConversationHistory] = useState<ConversationHistory[]>([]);
+  const [conversationId, setConversationId] = useState<string>('');
+  const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -43,8 +58,18 @@ export default function Chatbot() {
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
+      // Track conversation start
+      if (!conversationStartTime) {
+        setConversationStartTime(new Date());
+        trackConversationStart();
+      }
+    } else if (!isOpen && conversationStartTime) {
+      // Track conversation end
+      const duration = Date.now() - conversationStartTime.getTime();
+      trackConversationEnd(duration);
+      setConversationStartTime(null);
     }
-  }, [isOpen]);
+  }, [isOpen, conversationStartTime]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -82,33 +107,33 @@ export default function Chatbot() {
         const voices = window.speechSynthesis.getVoices();
         setAvailableVoices(voices);
         
-                 // Prioritize William and Australian voices
-         const preferredVoice = voices.find(voice => 
-           voice.name.toLowerCase().includes('william') && 
-           (voice.name.toLowerCase().includes('australian') || voice.name.toLowerCase().includes('multi'))
-         ) || voices.find(voice => 
-           voice.name.toLowerCase().includes('william')
-         ) || voices.find(voice => 
-           voice.name.toLowerCase().includes('australian') && voice.lang.startsWith('en-')
-         ) || voices.find(voice => 
-           voice.name.includes('Microsoft William') && voice.name.includes('Multi')
-         ) || voices.find(voice => 
-           (voice.name.includes('Google') || 
-            voice.name.includes('Natural') ||
-            voice.name.includes('Premium') ||
-            voice.name.includes('Enhanced')) &&
-           (voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en-'))
-         ) || voices.find(voice => voice.lang === 'en-US') || 
-            voices.find(voice => voice.lang === 'en-GB') ||
-            voices.find(voice => voice.lang.startsWith('en-')) ||
-            voices[0];
+        // Prioritize William and Australian voices
+        const preferredVoice = voices.find(voice => 
+          voice.name.toLowerCase().includes('william') && 
+          (voice.name.toLowerCase().includes('australian') || voice.name.toLowerCase().includes('multi'))
+        ) || voices.find(voice => 
+          voice.name.toLowerCase().includes('william')
+        ) || voices.find(voice => 
+          voice.name.toLowerCase().includes('australian') && voice.lang.startsWith('en-')
+        ) || voices.find(voice => 
+          voice.name.includes('Microsoft William') && voice.name.includes('Multi')
+        ) || voices.find(voice => 
+          (voice.name.includes('Google') || 
+           voice.name.includes('Natural') ||
+           voice.name.includes('Premium') ||
+           voice.name.includes('Enhanced')) &&
+          (voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en-'))
+        ) || voices.find(voice => voice.lang === 'en-US') || 
+           voices.find(voice => voice.lang === 'en-GB') ||
+           voices.find(voice => voice.lang.startsWith('en-')) ||
+           voices[0];
         
-                 if (preferredVoice) {
-           speechRef.current!.voice = preferredVoice;
-           setSelectedVoice(preferredVoice);
-           console.log('Selected voice:', preferredVoice.name);
-           console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-         }
+        if (preferredVoice) {
+          speechRef.current!.voice = preferredVoice;
+          setSelectedVoice(preferredVoice);
+          console.log('Selected voice:', preferredVoice.name);
+          console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        }
       };
       
       // Load voices immediately if available
@@ -139,6 +164,9 @@ export default function Chatbot() {
       timestamp: new Date(),
     };
 
+    // Track message sent
+    trackMessageSent(userMessage.text);
+
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
@@ -149,19 +177,47 @@ export default function Chatbot() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage.text }),
+        body: JSON.stringify({ 
+          message: userMessage.text,
+          conversationHistory: conversationHistory
+        }),
       });
 
       const data = await response.json();
+
+      // Track intent detected
+      if (data.intent) {
+        trackIntentDetected(data.intent);
+      }
+
+      // Update conversation history
+      const newHistoryEntry: ConversationHistory = {
+        user: userMessage.text,
+        assistant: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again."
+      };
+      
+      setConversationHistory(prev => [...prev, newHistoryEntry]);
+      
+      // Keep only last 5 exchanges to manage context size
+      if (conversationHistory.length >= 10) {
+        setConversationHistory(prev => prev.slice(-5));
+      }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again.",
         sender: 'bot',
         timestamp: new Date(),
+        intent: data.intent,
+        suggestedActions: data.suggestedActions
       };
 
       setMessages(prev => [...prev, botMessage]);
+      
+      // Update conversation ID if provided
+      if (data.conversationId) {
+        setConversationId(data.conversationId);
+      }
       
       // Speak the bot's response if voice is enabled
       speakMessage(botMessage.text);
@@ -238,8 +294,6 @@ export default function Chatbot() {
     }
   };
 
-
-
   const toggleVoice = () => {
     setIsVoiceEnabled(!isVoiceEnabled);
     if (window.speechSynthesis) {
@@ -247,22 +301,34 @@ export default function Chatbot() {
     }
   };
 
+  const handleSuggestedAction = (action: { label: string; url: string; icon: string }) => {
+    // Track action clicked
+    trackActionClicked(action.label);
+    
+    if (action.url.startsWith('mailto:')) {
+      window.location.href = action.url;
+    } else if (action.url.startsWith('http')) {
+      window.open(action.url, '_blank');
+    } else {
+      // Internal navigation
+      window.location.href = action.url;
+    }
+  };
+
   return (
     <>
-      {/* Chat Toggle Button */}
+      {/* Chat Toggle Button - Always at bottom */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300 ${
-          isOpen 
-            ? 'top-2 right-2 md:top-2 md:right-2' 
-            : 'bottom-4 right-4 md:bottom-6 md:right-6'
-        }`}
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
         aria-label="Toggle chatbot"
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
           position: 'fixed',
+          bottom: '16px',
+          right: '16px',
           zIndex: 9999,
           width: '60px',
           height: '60px'
@@ -275,81 +341,88 @@ export default function Chatbot() {
         )}
       </button>
 
-      {/* Chat Window */}
+      {/* Chat Window - Opens above the toggle button */}
       {isOpen && (
-        <div className="fixed inset-4 md:top-20 md:bottom-6 md:right-6 md:left-auto z-[9998] w-auto md:w-96 h-auto md:h-[500px] max-h-[calc(100vh-2rem)] md:max-h-[500px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
-                     {/* Header */}
-           <div className="bg-stone-900 dark:bg-stone-800 text-white p-4 md:p-5 rounded-t-lg flex items-center justify-between">
-             <div className="flex items-center space-x-3 md:space-x-4 flex-shrink-0">
-               <div className="bg-white dark:bg-stone-100 text-stone-900 dark:text-stone-900 p-2 md:p-2.5 rounded-full">
-                 <Bot className="h-4 w-4 md:h-5 md:w-5" />
-               </div>
-               <div className="min-w-0">
-                                   <h3 className="font-semibold text-sm md:text-base">John's Assistant</h3>
-                                   <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John's background</p>
-               </div>
-             </div>
-                           <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
-                <button
-                  onClick={toggleVoice}
-                  className={`p-2 rounded-full transition-colors ${
-                    isVoiceEnabled 
-                      ? 'text-green-400 hover:text-green-300' 
-                      : 'text-stone-400 hover:text-stone-300'
-                  }`}
-                  aria-label={isVoiceEnabled ? 'Disable voice' : 'Enable voice'}
-                >
-                  {isVoiceEnabled ? (
-                    <Volume2 className="h-4 w-4 md:h-5 md:w-5" />
-                  ) : (
-                    <VolumeX className="h-4 w-4 md:h-5 md:w-5" />
-                  )}
-                </button>
-                                 <button
-                   onClick={() => {
-                     // Stop speaking if chatbot is talking
-                     if (isSpeaking) {
-                       stopSpeaking();
-                     }
-                     setIsOpen(false);
-                   }}
-                   className="text-stone-300 hover:text-white transition-colors p-2"
-                   aria-label="Close chat"
-                 >
-                   <X className="h-4 w-4 md:h-5 md:w-5" />
-                 </button>
+        <div className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[9998] w-96 md:w-[500px] h-auto max-h-[80vh] sm:max-h-[85vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+          {/* Header */}
+          <div className="bg-stone-900 dark:bg-stone-800 text-white p-3 sm:p-4 md:p-5 rounded-t-lg flex items-center justify-between">
+            <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-shrink-0">
+              <div className="bg-white dark:bg-stone-100 text-stone-900 dark:text-stone-900 p-2 sm:p-3 md:p-4 rounded-full">
+                <Bot className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
               </div>
-           </div>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-sm md:text-base">John&apos;s Assistant</h3>
+                <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John&apos;s background</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
+              <button
+                onClick={toggleVoice}
+                className={`p-3 sm:p-4 md:p-5 rounded-full transition-colors ${
+                  isVoiceEnabled 
+                    ? 'text-green-400 hover:text-green-300' 
+                    : 'text-stone-400 hover:text-stone-300'
+                }`}
+                aria-label={isVoiceEnabled ? 'Disable voice' : 'Enable voice'}
+              >
+                {isVoiceEnabled ? (
+                  <Volume2 className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+                ) : (
+                  <VolumeX className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+                )}
+              </button>
+            </div>
+          </div>
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+              <div key={message.id}>
                 <div
-                  className={`max-w-[85%] md:max-w-[80%] rounded-lg px-3 py-2 md:px-4 md:py-2 ${
-                    message.sender === 'user'
-                      ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
-                      : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
-                  }`}
+                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className="flex items-start space-x-1.5 md:space-x-2">
-                    {message.sender === 'bot' && (
-                      <Bot className="h-3 w-3 md:h-4 md:w-4 mt-0.5 text-stone-500 dark:text-stone-400 flex-shrink-0" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
-                      <p className="text-xs opacity-60 mt-1">
-                        {formatTime(message.timestamp)}
-                      </p>
+                  <div
+                    className={`max-w-[90%] sm:max-w-[85%] md:max-w-[80%] rounded-lg px-3 py-2 md:px-4 md:py-2 ${
+                      message.sender === 'user'
+                        ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                        : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
+                    }`}
+                  >
+                    <div className="flex items-start space-x-1.5 md:space-x-2">
+                      {message.sender === 'bot' && (
+                        <Bot className="h-4 w-4 md:h-5 md:w-5 mt-0.5 text-stone-500 dark:text-stone-400 flex-shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm md:text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
+                        <p className="text-xs opacity-60 mt-1">
+                          {formatTime(message.timestamp)}
+                        </p>
+                      </div>
+                      {message.sender === 'user' && (
+                        <User className="h-3 w-3 md:h-4 md:w-4 mt-0.5 text-stone-300 dark:text-stone-600 flex-shrink-0" />
+                      )}
                     </div>
-                    {message.sender === 'user' && (
-                      <User className="h-3 w-3 md:h-4 md:w-4 mt-0.5 text-stone-300 dark:text-stone-600 flex-shrink-0" />
-                    )}
                   </div>
                 </div>
+                
+                {/* Suggested Actions */}
+                {message.sender === 'bot' && message.suggestedActions && message.suggestedActions.length > 0 && (
+                  <div className="flex justify-start mt-2">
+                    <div className="flex flex-wrap gap-2">
+                      {message.suggestedActions.map((action, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSuggestedAction(action)}
+                          className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+                        >
+                          <span>{action.icon}</span>
+                          <span>{action.label}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             
@@ -358,7 +431,7 @@ export default function Chatbot() {
               <div className="flex justify-start">
                 <div className="bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-3 py-2 md:px-4 md:py-2">
                   <div className="flex items-center space-x-1.5 md:space-x-2">
-                    <Bot className="h-3 w-3 md:h-4 md:w-4 text-stone-500 dark:text-stone-400" />
+                    <Bot className="h-4 w-4 md:h-5 md:w-5 text-stone-500 dark:text-stone-400" />
                     <div className="flex space-x-1">
                       <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-stone-400 dark:bg-stone-500 rounded-full animate-bounce"></div>
                       <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-stone-400 dark:bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -372,62 +445,76 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-                     {/* Input */}
-           <div className="p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
-             <div className="flex items-center gap-3">
-                              <input
-                  ref={inputRef}
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => {
-                    setInputValue(e.target.value);
-                    // Stop speaking when user starts typing (interrupt)
+          {/* Input and Close Button Row */}
+          <div className="p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
+            <div className="flex items-center gap-3">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  // Stop speaking when user starts typing (interrupt)
+                  if (isSpeaking) {
+                    stopSpeaking();
+                  }
+                }}
+                onKeyPress={handleKeyPress}
+                placeholder={isListening ? "Listening..." : "Ask about John&apos;s experience..."}
+                className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                disabled={isLoading || isListening}
+              />
+              
+              {/* Button Group */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {/* Microphone Button */}
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={isLoading}
+                  className={`w-10 h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 ${
+                    isListening
+                      ? 'bg-red-500 hover:bg-red-600 text-white'
+                      : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
+                  }`}
+                  style={{ minWidth: '40px', minHeight: '40px' }}
+                  aria-label={isListening ? 'Stop listening' : 'Start listening'}
+                >
+                  {isListening ? (
+                    <MicOff className="h-4 w-4" />
+                  ) : (
+                    <Mic className="h-4 w-4" />
+                  )}
+                </button>
+                
+                {/* Send Button */}
+                <button
+                  onClick={sendMessage}
+                  disabled={!inputValue.trim() || isLoading || isListening}
+                  className="w-10 h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+                  style={{ minWidth: '40px', minHeight: '40px' }}
+                  aria-label="Send message"
+                >
+                  <Send className="h-4 w-4" />
+                </button>
+
+                {/* Close Button */}
+                <button
+                  onClick={() => {
+                    // Stop speaking if chatbot is talking
                     if (isSpeaking) {
                       stopSpeaking();
                     }
+                    setIsOpen(false);
                   }}
-                  onKeyPress={handleKeyPress}
-                  placeholder={isListening ? "Listening..." : "Ask about John's experience..."}
-                  className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                  disabled={isLoading || isListening}
-                />
-                              
-                              {/* Button Group */}
-                              <div className="flex items-center gap-4 flex-shrink-0" style={{ minWidth: 'fit-content' }}>
-                                {/* Microphone Button */}
-                                <button
-                                  onClick={isListening ? stopListening : startListening}
-                                  disabled={isLoading}
-                                  className={`w-10 h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 ${
-                                    isListening
-                                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                                      : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
-                                  }`}
-                                  style={{ minWidth: '40px', minHeight: '40px' }}
-                                  aria-label={isListening ? 'Stop listening' : 'Start listening'}
-                                >
-                                  {isListening ? (
-                                    <MicOff className="h-4 w-4" />
-                                  ) : (
-                                    <Mic className="h-4 w-4" />
-                                  )}
-                                </button>
-                                
-                                {/* Send Button */}
-                                <button
-                                  onClick={sendMessage}
-                                  disabled={!inputValue.trim() || isLoading || isListening}
-                                  className="w-10 h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
-                                  style={{ minWidth: '40px', minHeight: '40px' }}
-                                  aria-label="Send message"
-                                >
-                                  <Send className="h-4 w-4" />
-                                </button>
-                                
-
-                              </div>
-             </div>
-           </div>
+                  className="w-10 h-10 bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
+                  style={{ minWidth: '40px', minHeight: '40px' }}
+                  aria-label="Close chat"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
