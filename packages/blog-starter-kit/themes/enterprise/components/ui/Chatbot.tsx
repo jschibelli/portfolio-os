@@ -1,8 +1,26 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink, Settings, Calendar, Check } from 'lucide-react';
 import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
+import QuickActions from '../chat/QuickActions';
+import CaseStudyBlock from '../case-study/Block';
+import { CalendarModal } from './CalendarModal';
+import { ContactForm } from './ContactForm';
+import { BookingModal } from './BookingModal';
+import { BookingConfirmationModal } from './BookingConfirmationModal';
+
+interface TimeSlot {
+  start: string;
+  end: string;
+  duration: number;
+}
+
+interface UIAction {
+  type: string;
+  action: string;
+  data: any;
+}
 
 interface Message {
   id: string;
@@ -15,6 +33,12 @@ interface Message {
     url: string;
     icon: string;
   }>;
+  caseStudyContent?: {
+    caseStudy: any;
+    chapter: any;
+    availableChapters: any[];
+  };
+  uiActions?: UIAction[];
 }
 
 interface ConversationHistory {
@@ -51,6 +75,77 @@ export default function Chatbot() {
   const [conversationId, setConversationId] = useState<string>('');
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
   const [pageContext, setPageContext] = useState<PageContext | null>(null);
+  const [showQuickActions, setShowQuickActions] = useState(true);
+  const [features, setFeatures] = useState({
+    scheduling: process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' || process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === undefined,
+    caseStudy: process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === 'true' || process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === undefined,
+    clientIntake: process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === 'true' || process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === undefined
+  });
+  
+  // Calendar modal state
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [calendarData, setCalendarData] = useState<{
+    availableSlots: TimeSlot[];
+    timezone: string;
+    businessHours: { start: number; end: number; timezone: string };
+    meetingDurations: number[];
+    message?: string;
+  } | null>(null);
+  
+  // Contact form state
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [contactFormData, setContactFormData] = useState<{
+    message?: string;
+    fields: string[];
+    required: string[];
+  } | null>(null);
+  const [userContactInfo, setUserContactInfo] = useState<{
+    name: string;
+    email: string;
+    timezone: string;
+  } | null>(null);
+  
+  // Unified booking modal state
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingModalData, setBookingModalData] = useState<{
+    availableSlots: TimeSlot[];
+    timezone: string;
+    businessHours: { start: number; end: number; timezone: string };
+    meetingDurations: number[];
+    message?: string;
+  } | null>(null);
+  
+  // Booking confirmation modal state
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [confirmationModalData, setConfirmationModalData] = useState<{
+    bookingDetails: {
+      name: string;
+      email: string;
+      timezone: string;
+      startTime: string;
+      endTime: string;
+      duration: number;
+      meetingType?: string;
+    };
+    message?: string;
+  } | null>(null);
+  
+  // Existing booking display state
+  const [existingBooking, setExistingBooking] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    startTime: string;
+    endTime: string;
+    duration: number;
+    googleEventId: string;
+  } | null>(null);
+  
+  // Permission state
+  const [uiPermissionGranted, setUiPermissionGranted] = useState<boolean | null>(null);
+  const [pendingUIAction, setPendingUIAction] = useState<UIAction | null>(null);
+  const [showPermissionRequest, setShowPermissionRequest] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
@@ -287,10 +382,16 @@ export default function Chatbot() {
         sender: 'bot',
         timestamp: new Date(),
         intent: data.intent,
-        suggestedActions: data.suggestedActions
+        suggestedActions: data.suggestedActions,
+        uiActions: data.uiActions
       };
 
       setMessages(prev => [...prev, botMessage]);
+      
+      // Handle UI actions if present
+      if (data.uiActions && data.uiActions.length > 0) {
+        handleUIAction(data.uiActions);
+      }
       
       // Update conversation ID if provided
       if (data.conversationId) {
@@ -317,6 +418,328 @@ export default function Chatbot() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
+    }
+  };
+
+  const checkUIPermission = () => {
+    // Check if permission has been stored in localStorage
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('chatbot-ui-permission');
+      if (stored !== null) {
+        setUiPermissionGranted(stored === 'true');
+        return stored === 'true';
+      }
+    }
+    return null;
+  };
+
+  const requestUIPermission = (action: UIAction) => {
+    setPendingUIAction(action);
+    setShowPermissionRequest(true);
+  };
+
+  const grantUIPermission = () => {
+    setUiPermissionGranted(true);
+    setShowPermissionRequest(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatbot-ui-permission', 'true');
+    }
+    
+    // Execute the pending action
+    if (pendingUIAction) {
+      executeUIAction(pendingUIAction);
+      setPendingUIAction(null);
+    }
+  };
+
+  const denyUIPermission = () => {
+    setUiPermissionGranted(false);
+    setShowPermissionRequest(false);
+    setPendingUIAction(null);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatbot-ui-permission', 'false');
+    }
+  };
+
+  const resetUIPermission = () => {
+    setUiPermissionGranted(null);
+    setShowSettings(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('chatbot-ui-permission');
+    }
+  };
+
+  const executeUIAction = (action: UIAction) => {
+    switch (action.action) {
+      case 'show_calendar_modal':
+        setCalendarData(action.data);
+        setIsCalendarModalOpen(true);
+        break;
+      case 'show_contact_form':
+        setContactFormData(action.data);
+        setIsContactFormOpen(true);
+        break;
+      case 'show_booking_modal':
+        setBookingModalData(action.data);
+        setIsBookingModalOpen(true);
+        break;
+      case 'show_existing_booking':
+        setExistingBooking(action.data.booking);
+        break;
+      case 'show_booking_confirmation':
+        setConfirmationModalData(action.data);
+        setIsConfirmationModalOpen(true);
+        break;
+      default:
+        console.log('Unknown UI action:', action.action);
+    }
+  };
+
+  const handleUIAction = (uiActions: UIAction[]) => {
+    for (const action of uiActions) {
+      const permission = checkUIPermission();
+      
+      if (permission === null) {
+        // First time - ask for permission
+        requestUIPermission(action);
+      } else if (permission === true) {
+        // Permission granted - execute immediately
+        executeUIAction(action);
+      } else {
+        // Permission denied - ignore the action
+        console.log('UI action ignored - permission denied');
+      }
+    }
+  };
+
+  const handleCalendarSlotSelect = (slot: TimeSlot) => {
+    // Here you can handle the slot selection
+    // For example, you could automatically send a message to book the meeting
+    console.log('Selected slot:', slot);
+    
+    // You could also trigger a booking flow here
+    const bookingMessage = `I'd like to book the ${slot.duration}-minute meeting at ${new Date(slot.start).toLocaleString()}.`;
+    setInputValue(bookingMessage);
+  };
+
+  const handleContactFormSubmit = (contactData: { name: string; email: string; timezone: string }) => {
+    setUserContactInfo(contactData);
+    
+    // Send a message to the chatbot with the contact information
+    const contactMessage = `My name is ${contactData.name} and my email is ${contactData.email}. I'm in the ${contactData.timezone} timezone.`;
+    setInputValue(contactMessage);
+    
+    // Automatically send the message
+    setTimeout(() => {
+      sendMessage();
+    }, 100);
+  };
+
+  const handleBookingComplete = (bookingData: {
+    name: string;
+    email: string;
+    timezone: string;
+    slot: TimeSlot;
+  }) => {
+    // Don't close the modal - let it show the confirmation step
+    // The modal will handle its own closing after the user clicks "Done"
+    
+    // Add a success message to the chat
+    const successMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      text: `✅ Meeting booked successfully! Your ${bookingData.slot.duration}-minute meeting with John has been scheduled for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}. You'll receive a calendar invitation via email.`,
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    
+    setMessages(prev => [...prev, successMessage]);
+  };
+
+  const handleConfirmationConfirm = async () => {
+    if (!confirmationModalData) return;
+    
+    try {
+      // Call the booking API to actually create the calendar event
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: confirmationModalData.bookingDetails.name,
+          email: confirmationModalData.bookingDetails.email,
+          timezone: confirmationModalData.bookingDetails.timezone,
+          startTime: confirmationModalData.bookingDetails.startTime,
+          endTime: confirmationModalData.bookingDetails.endTime,
+          meetingType: confirmationModalData.bookingDetails.meetingType || 'consultation',
+          notes: 'Meeting scheduled through chatbot confirmation modal'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to book meeting');
+      }
+
+      const result = await response.json();
+      
+      // Close the confirmation modal
+      setIsConfirmationModalOpen(false);
+      setConfirmationModalData(null);
+      
+      // Add a success message to the chat
+      const successMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: `✅ Meeting confirmed and booked! Your ${confirmationModalData.bookingDetails.duration}-minute meeting with John has been scheduled for ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}. You'll receive a calendar invitation via email.`,
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, successMessage]);
+      
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      
+      // Add an error message to the chat
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: '❌ Sorry, there was an error confirming your booking. Please try again or contact John directly.',
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+      
+      // Close the confirmation modal
+      setIsConfirmationModalOpen(false);
+      setConfirmationModalData(null);
+    }
+  };
+
+  const handleQuickAction = async (action: string) => {
+    let message = '';
+    switch (action) {
+      case 'schedule':
+        message = 'I\'d like to schedule a meeting with John. Can you help me find available times?';
+        break;
+      case 'case-study':
+        message = 'I\'d like to see the Shopify case study. Can you show me the overview?';
+        break;
+      default:
+        return;
+    }
+    
+    setShowQuickActions(false);
+    
+    // Create and send the message directly
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: message,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+
+    // Track message sent
+    trackMessageSent(userMessage.text);
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          message: userMessage.text,
+          conversationHistory: conversationHistory,
+          pageContext: pageContext
+        }),
+      });
+
+      const data = await response.json();
+
+      // Track intent detected
+      if (data.intent) {
+        trackIntentDetected(data.intent);
+      }
+
+      // Update conversation history
+      const newHistoryEntry: ConversationHistory = {
+        user: userMessage.text,
+        assistant: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again."
+      };
+      
+      setConversationHistory(prev => [...prev, newHistoryEntry]);
+      
+      // Keep only last 5 exchanges to manage context size
+      if (conversationHistory.length >= 10) {
+        setConversationHistory(prev => prev.slice(-5));
+      }
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again.",
+        sender: 'bot',
+        timestamp: new Date(),
+        intent: data.intent,
+        suggestedActions: data.suggestedActions,
+        uiActions: data.uiActions
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+      
+      // Handle UI actions if present
+      if (data.uiActions && data.uiActions.length > 0) {
+        handleUIAction(data.uiActions);
+      }
+      
+      // Update conversation ID if provided
+      if (data.conversationId) {
+        setConversationId(data.conversationId);
+      }
+      
+      // Speak the bot's response if voice is enabled
+      speakMessage(botMessage.text);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChapterChange = async (caseStudyId: string, chapterId: string) => {
+    try {
+      const response = await fetch(`/api/case-study/${caseStudyId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ chapterId }),
+      });
+
+      const data = await response.json();
+      
+      if (data.caseStudy && data.chapter) {
+        const newMessage: Message = {
+          id: Date.now().toString(),
+          text: `Showing ${data.chapter.title} chapter of ${data.caseStudy.title}`,
+          sender: 'bot',
+          timestamp: new Date(),
+          caseStudyContent: data,
+        };
+        
+        setMessages(prev => [...prev, newMessage]);
+      }
+    } catch (error) {
+      console.error('Error fetching chapter:', error);
     }
   };
 
@@ -435,6 +858,13 @@ export default function Chatbot() {
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
               <button
+                onClick={() => setShowSettings(true)}
+                className="p-3 sm:p-4 md:p-5 rounded-full transition-colors text-stone-400 hover:text-stone-300"
+                aria-label="Settings"
+              >
+                <Settings className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
+              </button>
+              <button
                 onClick={toggleVoice}
                 className={`p-3 sm:p-4 md:p-5 rounded-full transition-colors ${
                   isVoiceEnabled 
@@ -501,6 +931,42 @@ export default function Chatbot() {
                     </div>
                   </div>
                 )}
+
+                {/* Case Study Content */}
+                {message.sender === 'bot' && message.caseStudyContent && (
+                  <div className="flex justify-start mt-4">
+                    <div className="max-w-full bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 p-4">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
+                          {message.caseStudyContent.caseStudy.title}
+                        </h3>
+                        <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+                          {message.caseStudyContent.caseStudy.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {message.caseStudyContent.availableChapters.map((chapter) => (
+                            <button
+                              key={chapter.id}
+                              onClick={() => handleChapterChange(message.caseStudyContent!.caseStudy.id, chapter.id)}
+                              className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                                chapter.id === message.caseStudyContent!.chapter.id
+                                  ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                                  : 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600'
+                              }`}
+                            >
+                              {chapter.title}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        {message.caseStudyContent.chapter.blocks.map((block: any, index: number) => (
+                          <CaseStudyBlock key={index} block={block} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
             
@@ -521,6 +987,13 @@ export default function Chatbot() {
             )}
             
             <div ref={messagesEndRef} />
+            
+            {/* Quick Actions */}
+            {showQuickActions && messages.length === 1 && (
+              <div className="mt-4">
+                <QuickActions onActionClick={handleQuickAction} features={features} />
+              </div>
+            )}
           </div>
 
           {/* Input and Close Button Row */}
@@ -591,6 +1064,261 @@ export default function Chatbot() {
                   <X className="h-4 w-4" />
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Calendar Modal */}
+      {calendarData && (
+        <CalendarModal
+          isOpen={isCalendarModalOpen}
+          onClose={() => setIsCalendarModalOpen(false)}
+          availableSlots={calendarData.availableSlots}
+          timezone={calendarData.timezone}
+          businessHours={calendarData.businessHours}
+          meetingDurations={calendarData.meetingDurations}
+          message={calendarData.message}
+          onSlotSelect={handleCalendarSlotSelect}
+        />
+      )}
+      
+      {/* Contact Form */}
+      {contactFormData && (
+        <ContactForm
+          isOpen={isContactFormOpen}
+          onClose={() => setIsContactFormOpen(false)}
+          message={contactFormData.message}
+          fields={contactFormData.fields}
+          required={contactFormData.required}
+          onSubmit={handleContactFormSubmit}
+        />
+      )}
+      
+      {/* Unified Booking Modal */}
+      {bookingModalData && (
+        <BookingModal
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+          availableSlots={bookingModalData.availableSlots}
+          timezone={bookingModalData.timezone}
+          businessHours={bookingModalData.businessHours}
+          meetingDurations={bookingModalData.meetingDurations}
+          message={bookingModalData.message}
+          onBookingComplete={handleBookingComplete}
+        />
+      )}
+      
+      {/* Booking Confirmation Modal */}
+      {confirmationModalData && (
+        <BookingConfirmationModal
+          isOpen={isConfirmationModalOpen}
+          onClose={() => setIsConfirmationModalOpen(false)}
+          onConfirm={handleConfirmationConfirm}
+          bookingDetails={confirmationModalData.bookingDetails}
+          isLoading={false}
+        />
+      )}
+      
+      {/* Existing Booking Display */}
+      {existingBooking && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in slide-in-from-bottom-4 duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <Check className="h-4 w-4 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Existing Booking Found</h3>
+              </div>
+              <button
+                onClick={() => setExistingBooking(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 font-medium">
+                  You already have a confirmed meeting scheduled!
+                </p>
+              </div>
+              
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Name:</span>
+                  <span className="font-semibold">{existingBooking.name}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Email:</span>
+                  <span className="font-semibold">{existingBooking.email}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Date:</span>
+                  <span className="font-semibold">
+                    {new Date(existingBooking.startTime).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Time:</span>
+                  <span className="font-semibold">
+                    {new Date(existingBooking.startTime).toLocaleTimeString()} - {new Date(existingBooking.endTime).toLocaleTimeString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 font-medium">Duration:</span>
+                  <span className="font-semibold">{existingBooking.duration} minutes</span>
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-blue-600 text-xs font-bold">✓</span>
+                  </div>
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium">Calendar invitation sent</p>
+                    <p>Check your email for the meeting details and Google Calendar link.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setExistingBooking(null)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Permission Request Modal */}
+      {showPermissionRequest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <Bot className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Permission Request</h3>
+                <p className="text-sm text-gray-500">AI Assistant wants to show you something</p>
+              </div>
+            </div>
+            
+            <div className="mb-6">
+                              <p className="text-gray-700 mb-3">
+                  I&apos;d like to show you a calendar with available meeting times. This will open a modal window to help you schedule a meeting.
+                </p>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Calendar className="h-3 w-3 text-blue-600" />
+                  </div>
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium">Calendar Modal</p>
+                    <p className="text-blue-600">Shows available meeting times from Google Calendar</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={denyUIPermission}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Not Now
+              </button>
+              <button
+                onClick={grantUIPermission}
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                Allow
+              </button>
+            </div>
+            
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              You can change this setting anytime in your browser settings
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Chatbot Settings</h3>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-2">UI Permissions</h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  Control whether the AI assistant can show you modals and interactive elements.
+                </p>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700">Calendar Modals</span>
+                    <span className={`text-sm px-2 py-1 rounded ${
+                      uiPermissionGranted === true 
+                        ? 'bg-green-100 text-green-800' 
+                        : uiPermissionGranted === false 
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {uiPermissionGranted === true ? 'Allowed' : uiPermissionGranted === false ? 'Denied' : 'Not Set'}
+                    </span>
+                  </div>
+                  
+                  <button
+                    onClick={resetUIPermission}
+                    className="w-full px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                  >
+                    Reset Permission
+                  </button>
+                </div>
+              </div>
+              
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-2">Voice Settings</h4>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">Text-to-Speech</span>
+                  <button
+                    onClick={toggleVoice}
+                    className={`px-3 py-1 text-sm rounded transition-colors ${
+                      isVoiceEnabled 
+                        ? 'bg-green-100 text-green-800 hover:bg-green-200' 
+                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    }`}
+                  >
+                    {isVoiceEnabled ? 'Enabled' : 'Disabled'}
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowSettings(false)}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
