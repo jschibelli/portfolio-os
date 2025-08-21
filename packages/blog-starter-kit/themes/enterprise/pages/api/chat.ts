@@ -179,12 +179,18 @@ async function fetchArticlesFromRepo() {
       tokenLength: githubToken?.length || 0
     });
     
+    // Check if GitHub token is valid
+    if (!githubToken || githubToken.length < 10) {
+      console.log('🔍 Debug: GitHub token is missing or invalid, skipping GitHub article fetch');
+      return [];
+    }
+    
     const headers: Record<string, string> = {
       'Accept': 'application/vnd.github.v3+json',
     };
     
     if (githubToken) {
-      headers['Authorization'] = `token ${githubToken}`;
+      headers['Authorization'] = `Bearer ${githubToken}`;
     }
     
     // Try different possible paths for articles
@@ -261,6 +267,14 @@ async function fetchArticlesFromRepo() {
       } else if (response.status === 404) {
         console.log('⚠️ Path not found:', path);
         continue;
+      } else if (response.status === 401) {
+        console.error('❌ GitHub API authentication failed for path', path, ':', {
+          status: response.status,
+          statusText: response.statusText,
+          error: 'Bad credentials - check GITHUB_TOKEN'
+        });
+        // Don't continue trying other paths if auth is failing
+        break;
       } else {
         const errorText = await response.text();
         console.error('❌ Error for path', path, ':', {

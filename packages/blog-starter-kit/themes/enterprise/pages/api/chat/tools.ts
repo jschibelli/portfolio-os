@@ -4,7 +4,11 @@ import path from 'path';
 
 // SSL/TLS configuration for Node.js - only for development
 if (process.env.NODE_ENV === 'development') {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  // Only disable SSL verification if explicitly set
+  if (process.env.DISABLE_SSL_VERIFICATION === 'true') {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    console.log('⚠️ SSL verification disabled for development');
+  }
 }
 
 // Conditional Prisma import
@@ -51,6 +55,40 @@ try {
 
 // Meeting duration options (in minutes)
 const MEETING_DURATIONS = [30, 60];
+
+// Function to create Google Auth client from environment variables
+function createGoogleAuthClient() {
+  if (!process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_CLIENT_EMAIL) {
+    console.log('🔍 Debug: Google credentials not found in environment variables');
+    return null;
+  }
+
+  try {
+    // Create service account credentials from environment variables
+    const credentials = {
+      type: process.env.GOOGLE_TYPE || 'service_account',
+      project_id: process.env.GOOGLE_PROJECT_ID,
+      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Unescape newlines
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      auth_uri: process.env.GOOGLE_AUTH_URI,
+      token_uri: process.env.GOOGLE_TOKEN_URI,
+      auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
+      client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
+      universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
+    };
+
+    console.log('🔍 Debug: Creating Google Auth client from environment variables');
+    return new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
+    });
+  } catch (error) {
+    console.error('🔍 Debug: Error creating Google Auth client:', error);
+    return null;
+  }
+}
 
 // Mock availability function for when Google APIs are not available
 function getMockAvailability(parameters: any) {
@@ -473,7 +511,8 @@ async function getAvailability(parameters: any) {
   // Debug environment variables
   console.log('🔍 Debug - Environment Variables:');
   console.log('  GOOGLE_CALENDAR_ID:', process.env.GOOGLE_CALENDAR_ID || 'NOT SET');
-  console.log('  GOOGLE_SERVICE_ACCOUNT_PATH:', process.env.GOOGLE_SERVICE_ACCOUNT_PATH || 'NOT SET');
+  console.log('  GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? 'SET' : 'NOT SET');
+  console.log('  GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? 'SET' : 'NOT SET');
   console.log('  FEATURE_SCHEDULING:', process.env.FEATURE_SCHEDULING || 'NOT SET');
 
   // Check feature flag - enable by default if not set
@@ -489,18 +528,14 @@ async function getAvailability(parameters: any) {
       return getMockAvailability(parameters);
     }
 
-    // Force service account path to be set correctly
-    const serviceAccountPathEnv = process.env.GOOGLE_SERVICE_ACCOUNT_PATH || './google-service-account.json';
-    console.log('🔍 Debug - Using service account path:', serviceAccountPathEnv);
-
-    // Check if service account file exists
-    const serviceAccountPath = path.join(process.cwd(), serviceAccountPathEnv);
-    if (!fs.existsSync(serviceAccountPath)) {
-      console.log('🔍 Debug: Service account file not found, using mock data');
+    // Create Google Auth client from environment variables
+    const auth = createGoogleAuthClient();
+    if (!auth) {
+      console.log('🔍 Debug: Could not create Google Auth client, using mock data');
       return getMockAvailability(parameters);
     }
 
-    // Force calendar ID to be set correctly
+    // Get calendar ID from environment variables
     const calendarId = process.env.GOOGLE_CALENDAR_ID || 'jschibelli@gmail.com';
     console.log('🔍 Debug - Using calendar ID:', calendarId);
 
@@ -509,12 +544,6 @@ async function getAvailability(parameters: any) {
       console.log('🔍 Debug: Calendar ID not properly configured, using mock data');
       return getMockAvailability(parameters);
     }
-
-    // Create service account client
-    const auth = new google.auth.GoogleAuth({
-      keyFile: serviceAccountPath,
-      scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
-    });
 
     // Calculate time range - when specific time is requested, look ahead 2 weeks
     const now = new Date();
@@ -811,17 +840,16 @@ async function bookMeeting(parameters: any) {
   }
 
   try {
-    // Check if Google APIs and service account are available
-    if (!google || !process.env.GOOGLE_SERVICE_ACCOUNT_PATH) {
-      throw new Error('Google Calendar API is not configured. Please set up GOOGLE_SERVICE_ACCOUNT_PATH environment variable.');
+    // Check if Google APIs are available
+    if (!google) {
+      throw new Error('Google Calendar API is not configured.');
     }
 
-    // Create service account client
-    const serviceAccountPath = path.join(process.cwd(), process.env.GOOGLE_SERVICE_ACCOUNT_PATH);
-    const auth = new google.auth.GoogleAuth({
-      keyFile: serviceAccountPath,
-      scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
-    });
+    // Create Google Auth client from environment variables
+    const auth = createGoogleAuthClient();
+    if (!auth) {
+      throw new Error('Google Calendar API is not configured. Please set up Google service account environment variables.');
+    }
 
     const calendar = google.calendar({ version: 'v3', auth });
 
@@ -1450,17 +1478,28 @@ async function showBookingModal(parameters: any) {
     let startDate = now;
     let endDate = new Date(now.getTime() + lookaheadDays * 24 * 60 * 60 * 1000);
 
-    // Check if Google APIs and service account are available
-    if (!google || !process.env.GOOGLE_SERVICE_ACCOUNT_PATH) {
+    // Check if Google APIs are available
+    if (!google) {
       throw new Error('Google Calendar API is not configured');
     }
 
-    // Create service account client
-    const serviceAccountPath = path.join(process.cwd(), process.env.GOOGLE_SERVICE_ACCOUNT_PATH);
-    const auth = new google.auth.GoogleAuth({
-      keyFile: serviceAccountPath,
-      scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
-    });
+    // Create Google Auth client from environment variables
+    const auth = createGoogleAuthClient();
+    if (!auth) {
+      console.log('🔍 Debug: Could not create Google Auth client, using mock data');
+      return {
+        type: 'ui_action',
+        action: 'show_booking_modal',
+        data: {
+          availableSlots: getMockAvailability({ timezone, days }).availableSlots,
+          timezone: tz,
+          businessHours,
+          meetingDurations,
+          message: 'Schedule a meeting with John (Mock Data)',
+          initialStep: preferredTime ? 'calendar' : 'contact'
+        }
+      };
+    }
 
     const calendar = google.calendar({ version: 'v3', auth });
     const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
