@@ -1,10 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { google } from 'googleapis';
-import { PrismaClient } from '@prisma/client';
+// Conditional Prisma import
+let prisma: any = null;
+try {
+  const { PrismaClient } = require('@prisma/client');
+  prisma = new PrismaClient();
+} catch (error) {
+  console.log('Prisma not available - using mock booking functionality');
+}
 import { Resend } from 'resend';
 import path from 'path';
 
-const prisma = new PrismaClient();
 const calendar = google.calendar('v3');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -100,23 +106,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Store booking in database (if available)
     let booking = null;
-    try {
-      booking = await prisma.booking.create({
-        data: {
-          name,
-          email,
-          timezone,
-          startTime: start,
-          endTime: end,
-          meetingType,
-          notes,
-          googleEventId,
-          status: 'CONFIRMED'
-        }
-      });
-    } catch (dbError) {
-      console.warn('Database not available, continuing without storing booking:', dbError);
-      // Continue without database storage
+    if (prisma) {
+      try {
+        booking = await prisma.booking.create({
+          data: {
+            name,
+            email,
+            timezone,
+            startTime: start,
+            endTime: end,
+            meetingType,
+            notes,
+            googleEventId,
+            status: 'CONFIRMED'
+          }
+        });
+      } catch (dbError) {
+        console.warn('Database not available, continuing without storing booking:', dbError);
+        // Continue without database storage
+      }
     }
 
     // Send confirmation email

@@ -66,7 +66,7 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [customSelectedVoice, setCustomSelectedVoice] = useState<string>('');
@@ -536,7 +536,10 @@ export default function Chatbot() {
       
       // Handle UI actions if present
       if (data.uiActions && data.uiActions.length > 0) {
+        console.log('🔍 Received UI actions from API:', data.uiActions);
         handleUIAction(data.uiActions);
+      } else {
+        console.log('🔍 No UI actions received from API');
       }
       
       // Update conversation ID if provided
@@ -571,12 +574,16 @@ export default function Chatbot() {
     // Check if permission has been stored in localStorage
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('chatbot-ui-permission');
+      console.log('🔍 Stored UI permission:', stored);
       if (stored !== null) {
-        setUiPermissionGranted(stored === 'true');
-        return stored === 'true';
+        const permission = stored === 'true';
+        setUiPermissionGranted(permission);
+        console.log('🔍 Returning stored permission:', permission);
+        return permission;
       }
     }
-    return null;
+    console.log('🔍 Returning current state permission:', uiPermissionGranted);
+    return uiPermissionGranted;
   };
 
   const requestUIPermission = (action: UIAction) => {
@@ -616,44 +623,55 @@ export default function Chatbot() {
   };
 
   const executeUIAction = (action: UIAction) => {
+    console.log('🔍 executeUIAction called with:', action.action, action.data);
     switch (action.action) {
       case 'show_calendar_modal':
+        console.log('🔍 Opening calendar modal with data:', action.data);
         setCalendarData(action.data);
         setIsCalendarModalOpen(true);
         break;
       case 'show_contact_form':
+        console.log('🔍 Opening contact form with data:', action.data);
         setContactFormData(action.data);
         setIsContactFormOpen(true);
         break;
       case 'show_booking_modal':
+        console.log('🔍 Opening booking modal with data:', action.data);
         setBookingModalData(action.data);
         setIsBookingModalOpen(true);
         break;
       case 'show_existing_booking':
+        console.log('🔍 Showing existing booking:', action.data.booking);
         setExistingBooking(action.data.booking);
         break;
       case 'show_booking_confirmation':
+        console.log('🔍 Opening booking confirmation with data:', action.data);
         setConfirmationModalData(action.data);
         setIsConfirmationModalOpen(true);
         break;
       default:
-        console.log('Unknown UI action:', action.action);
+        console.log('🔍 Unknown UI action:', action.action);
     }
   };
 
   const handleUIAction = (uiActions: UIAction[]) => {
+    console.log('🔍 handleUIAction called with:', uiActions);
     for (const action of uiActions) {
+      console.log('🔍 Processing UI action:', action.action, action.data);
       const permission = checkUIPermission();
+      console.log('🔍 UI permission status:', permission);
       
       if (permission === null) {
         // First time - ask for permission
+        console.log('🔍 Requesting UI permission for:', action.action);
         requestUIPermission(action);
       } else if (permission === true) {
         // Permission granted - execute immediately
+        console.log('🔍 Executing UI action:', action.action);
         executeUIAction(action);
       } else {
         // Permission denied - ignore the action
-        console.log('UI action ignored - permission denied');
+        console.log('🔍 UI action ignored - permission denied');
       }
     }
   };
@@ -1272,6 +1290,36 @@ export default function Chatbot() {
               </div>
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
+              {/* Test Booking Modal Button */}
+              <button
+                onClick={() => {
+                  console.log('🔍 Test: Manually triggering booking modal');
+                  const testAction = {
+                    type: 'ui_action',
+                    action: 'show_booking_modal',
+                    data: {
+                      availableSlots: [
+                        {
+                          start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                          end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
+                          duration: 60
+                        }
+                      ],
+                      timezone: 'America/New_York',
+                      businessHours: { start: 9, end: 18, timezone: 'America/New_York' },
+                      meetingDurations: [30, 60],
+                      message: 'Test booking modal',
+                      initialStep: 'contact'
+                    }
+                  };
+                  executeUIAction(testAction);
+                }}
+                className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-blue-400 hover:text-blue-300"
+                aria-label="Test Booking Modal"
+                title="Test Booking Modal"
+              >
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+              </button>
               <button
                 onClick={() => setShowSettings(true)}
                 className="p-3 sm:p-4 md:p-5 rounded-full transition-colors text-stone-400 hover:text-stone-300"
@@ -1293,6 +1341,22 @@ export default function Chatbot() {
                 ) : (
                   <VolumeX className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
                 )}
+              </button>
+              {/* Test Voice Button */}
+              <button
+                onClick={() => {
+                  console.log('🔍 Test: Testing voice with isVoiceEnabled:', isVoiceEnabled);
+                  if (isVoiceEnabled) {
+                    speakMessage('This is a test of the voice system. Voice is working correctly.');
+                  } else {
+                    console.log('🔍 Voice is disabled');
+                  }
+                }}
+                className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-purple-400 hover:text-purple-300"
+                aria-label="Test Voice"
+                title="Test Voice"
+              >
+                <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
               </button>
             </div>
           </div>
