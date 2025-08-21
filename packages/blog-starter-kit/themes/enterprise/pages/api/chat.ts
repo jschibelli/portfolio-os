@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 import resumeData from '../../data/resume.json';
+import { CHAT_TOOLS, executeTool } from './chat/tools';
 
 // Enhanced fallback articles with better categorization
 const fallbackArticles = [
@@ -178,12 +179,18 @@ async function fetchArticlesFromRepo() {
       tokenLength: githubToken?.length || 0
     });
     
+    // Check if GitHub token is valid
+    if (!githubToken || githubToken.length < 10) {
+      console.log('🔍 Debug: GitHub token is missing or invalid, skipping GitHub article fetch');
+      return [];
+    }
+    
     const headers: Record<string, string> = {
       'Accept': 'application/vnd.github.v3+json',
     };
     
     if (githubToken) {
-      headers['Authorization'] = `token ${githubToken}`;
+      headers['Authorization'] = `Bearer ${githubToken}`;
     }
     
     // Try different possible paths for articles
@@ -260,6 +267,14 @@ async function fetchArticlesFromRepo() {
       } else if (response.status === 404) {
         console.log('⚠️ Path not found:', path);
         continue;
+      } else if (response.status === 401) {
+        console.error('❌ GitHub API authentication failed for path', path, ':', {
+          status: response.status,
+          statusText: response.statusText,
+          error: 'Bad credentials - check GITHUB_TOKEN'
+        });
+        // Don't continue trying other paths if auth is failing
+        break;
       } else {
         const errorText = await response.text();
         console.error('❌ Error for path', path, ':', {
@@ -343,6 +358,27 @@ PERSONALITY & COMMUNICATION STYLE:
 - Be encouraging and supportive
 - Use natural transitions and follow-up questions when appropriate
 
+SPECIAL CAPABILITIES:
+You have access to several tools that allow you to help users with specific tasks:
+
+1. SCHEDULING: You can help users book meetings with John
+   - Use get_availability to find available time slots
+   - Use book_meeting to schedule a meeting
+   - Use show_calendar_modal to display a calendar interface with available times
+   - Always ask for name, email, and preferred timezone when scheduling
+
+2. CASE STUDIES: You can show interactive case studies
+   - Use get_case_study_chapter to display case study content
+   - Available case studies: shopify-demo
+   - Chapters include: overview, challenge, solution, architecture, results, lessons
+
+3. CLIENT INTAKE: You can help collect project inquiries
+   - Use submit_client_intake to gather project details
+   - Collect name, email, company, role, project description, budget, timeline
+   - Be thorough but conversational in gathering information
+
+When users express interest in these capabilities, offer to help them and use the appropriate tools. Keep responses concise and actionable.
+
 KEY INFORMATION ABOUT JOHN:
 - Name: John Schibelli
 - Title: Senior Front-End Developer
@@ -407,7 +443,10 @@ SPECIAL CAPABILITIES:
 - Discuss his work on SynaplyAI and other projects
 - Provide career and technology insights based on John's experience
 - Detect user intent and tailor responses accordingly
-- Provide categorized information based on user interests${articlesContext}${conversationContext}${pageContextInfo}${currentArticleSummary}`;
+- Provide categorized information based on user interests
+      - SCHEDULING: CRITICAL INSTRUCTIONS - Follow this EXACT priority order: 1) FIRST PRIORITY: If user asks for a specific time (like "2:00 PM", "3:00 PM", "10:00 AM", "11:00 AM"), ALWAYS call get_availability with requestedTime parameter set to that specific time, then IMMEDIATELY call show_booking_modal with preferredTime parameter to open the scheduling interface. EXAMPLES: "I want to book a meeting for 2:00 PM" → call get_availability with requestedTime: "2:00 PM", then call show_booking_modal with preferredTime: "2:00 PM". "Can I schedule a consultation at 3:00 PM?" → call get_availability with requestedTime: "3:00 PM", then call show_booking_modal with preferredTime: "3:00 PM". "Do you have anything at 11:00 AM?" → call get_availability with requestedTime: "11:00 AM", then call show_booking_modal with preferredTime: "11:00 AM". "I need an appointment for 10:00 AM" → call get_availability with requestedTime: "10:00 AM", then call show_booking_modal with preferredTime: "10:00 AM". "I need a meeting time for 3:00 PM" → call get_availability with requestedTime: "3:00 PM", then call show_booking_modal with preferredTime: "3:00 PM". "Can you schedule a meeting next week at 2:00 PM?" → call get_availability with requestedTime: "next week at 2:00 PM", then call show_booking_modal with preferredTime: "2:00 PM". "I'd like to book next week at 3:00 PM" → call get_availability with requestedTime: "next week at 3:00 PM", then call show_booking_modal with preferredTime: "3:00 PM". 2) SECOND PRIORITY: For general scheduling requests (like "I'd like to schedule a meeting" or "book a meeting"), FIRST ask the user: "I'd be happy to help you schedule a meeting! Do you prefer a morning or afternoon appointment?" Then wait for their response and call get_availability with the appropriate preference parameter (morning/afternoon), then call show_booking_modal. 3) THIRD PRIORITY: If they provide email/name in their request, call process_booking_request tool which will check for existing bookings first, then show booking modal if needed. 4) FOURTH PRIORITY: If they DON'T provide contact info yet, call show_booking_modal tool immediately. This includes ANY request that mentions: "schedule a meeting", "book a meeting", "help me book", "I'd like to schedule", "book a consultation", "schedule a consultation", "book an appointment", "schedule an appointment". For requests like "show me available meeting times" or "show me your calendar" or "find available times", use the show_calendar_modal tool. The show_booking_modal tool provides a unified experience combining contact information collection and calendar selection. NEVER generate fake responses about availability. NEVER say "no available slots" without calling the tool first. NEVER say "unfortunately" or "there isn't" without calling the tool first. The tool will check the actual calendar and return real availability. Only return ONE time: the single next available slot within 14 days. If the user provides a specific time (like "3:00 PM"), the system will look ahead 2 weeks to find the first available occurrence of that time. If the user asks for "next week at [time]", the system will look specifically at next week (7-14 days from now) for that time. The current date is August 18, 2025. Always use the current date (August 18, 2025) as the starting point. Always inform users that all meetings are scheduled in Eastern Time (ET). Do not ask for contact info in chat - the modal will handle that. CRITICAL: If the user asks follow-up questions like "What about any other day?" or "different day" or "any other time", this is ALWAYS a scheduling request - call show_booking_modal immediately to show them filtered available options (1-2 slots per day). CRITICAL: If the user responds with "Yes", "Sure", "Okay", "Go ahead", "Book it", "Confirm", or "Proceed" after you've offered a time slot, IMMEDIATELY call show_booking_modal - do NOT ask for more confirmation. The user has already confirmed they want to book. CRITICAL: When you offer a specific time (like "August 21, 2025, at 4:00 PM ET") and the user confirms, you MUST call show_booking_modal with preferredTime parameter set to that specific time (e.g., preferredTime: "4:00 PM") to let them complete the booking process. Do NOT try to book it directly - let the modal handle the booking flow. CRITICAL: When the user completes the booking form and selects a time slot, call show_booking_confirmation with the booking details (name, email, timezone, startTime, endTime, meetingType) to show them a final confirmation modal before creating the calendar event. CRITICAL: When a user asks for a specific time like "2:00 PM", you MUST call BOTH get_availability AND show_booking_modal - call get_availability with requestedTime: "2:00 PM", then call show_booking_modal with preferredTime: "2:00 PM". The get_availability tool will search for that specific time across 14 days and return the next available occurrence, then the show_booking_modal will display the scheduling interface. CRITICAL: If the user says "I need a meeting time for 3:00 PM", you MUST call get_availability with requestedTime: "3:00 PM" AND then call show_booking_modal with preferredTime: "3:00 PM". CRITICAL: ALWAYS make the user part of the journey - when they ask for a specific time, respond with something like "I found an available appointment for you at [TIME]! Let me open the scheduling interface so you can choose between 30-minute and 60-minute options." Then call both tools to make it interactive.
+- CASE STUDIES: When users ask about case studies, use the get_case_study_chapter tool to show interactive case study content
+- CLIENT INTAKE: When users want to start a project, use the submit_client_intake tool to collect project details${articlesContext}${conversationContext}${pageContextInfo}${currentArticleSummary}`;
 };
 
 // Enhanced error handling with fallback responses
@@ -476,6 +515,324 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Create enhanced system prompt with conversation history and page context
     const systemPrompt = createSystemPrompt(articles, conversationHistory, pageContext, isAskingAboutCurrentArticle);
 
+            // Check if features are enabled and user is asking about them
+        const isAskingAboutScheduling = message.toLowerCase().includes('schedule') ||
+                                       message.toLowerCase().includes('book') ||
+                                       message.toLowerCase().includes('meeting') ||
+                                       message.toLowerCase().includes('appointment') ||
+                                       message.toLowerCase().includes('consultation') ||
+                                       message.toLowerCase().includes('book a time') ||
+                                       message.toLowerCase().includes('availability') ||
+                                       message.toLowerCase().includes('available') ||
+                                       message.toLowerCase().includes('find available times') ||
+                                       message.toLowerCase().includes('help me find available') ||
+                                       message.toLowerCase().includes('calendar') ||
+                                       message.toLowerCase().includes('show me your calendar') ||
+                                       message.toLowerCase().includes('show me available meeting times') ||
+                                       // Check for specific times (like "3:00 PM")
+                                       /\d{1,2}:\d{2}\s*(AM|PM)/i.test(message) ||
+                                       // Check for user providing contact info (name, email, timezone)
+                                       (message.includes('@') && (message.includes('eastern') || message.includes('western') || message.includes('central') || message.includes('pacific') || message.includes('timezone'))) ||
+                                       // Check for quick action patterns
+                                       message.toLowerCase().includes('check availability') ||
+                                       message.toLowerCase().includes('when are you available') ||
+                                       message.toLowerCase().includes('what times work') ||
+                                       message.toLowerCase().includes('can we meet') ||
+                                       message.toLowerCase().includes('i need to schedule') ||
+                                       message.toLowerCase().includes('looking to book') ||
+                                       // Force tool call for any time-related request
+                                       message.toLowerCase().includes('time slot') ||
+                                       message.toLowerCase().includes('next available') ||
+                                       message.toLowerCase().includes('when is') ||
+                                       message.toLowerCase().includes('what time') ||
+                                       message.toLowerCase().includes('need') && (message.toLowerCase().includes('pm') || message.toLowerCase().includes('am')) ||
+                                       // Check for follow-up scheduling questions
+                                       message.toLowerCase().includes('what about') ||
+                                       message.toLowerCase().includes('any other day') ||
+                                       message.toLowerCase().includes('different day') ||
+                                       message.toLowerCase().includes('other time') ||
+                                       message.toLowerCase().includes('another day') ||
+                                       message.toLowerCase().includes('different time') ||
+                                       // Check for time-related follow-ups
+                                       (message.toLowerCase().includes('day') && (message.toLowerCase().includes('pm') || message.toLowerCase().includes('am'))) ||
+                                       (message.toLowerCase().includes('time') && (message.toLowerCase().includes('pm') || message.toLowerCase().includes('am'))) ||
+                                       // Check for confirmation responses
+                                       message.toLowerCase().includes('yes') ||
+                                       message.toLowerCase().includes('sure') ||
+                                       message.toLowerCase().includes('okay') ||
+                                       message.toLowerCase().includes('ok') ||
+                                       message.toLowerCase().includes('go ahead') ||
+                                       message.toLowerCase().includes('book it') ||
+                                       message.toLowerCase().includes('confirm') ||
+                                       message.toLowerCase().includes('proceed');
+    
+    const isAskingAboutCaseStudy = message.toLowerCase().includes('case study') || 
+                                  message.toLowerCase().includes('portfolio') ||
+                                  message.toLowerCase().includes('project example') ||
+                                  message.toLowerCase().includes('show me a case study') ||
+                                  message.toLowerCase().includes('case study example') ||
+                                  message.toLowerCase().includes('shopify case study') ||
+                                  message.toLowerCase().includes('show me the overview') ||
+                                  message.toLowerCase().includes('case study') ||
+                                  message.toLowerCase().includes('portfolio example') ||
+                                  message.toLowerCase().includes('work example');
+    
+    const isAskingAboutIntake = message.toLowerCase().includes('project') || 
+                               message.toLowerCase().includes('hire') || 
+                               message.toLowerCase().includes('work together') ||
+                               message.toLowerCase().includes('collaborate') ||
+                               message.toLowerCase().includes('start a project') ||
+                               message.toLowerCase().includes('client intake') ||
+                               message.toLowerCase().includes('new project') ||
+                               message.toLowerCase().includes('project inquiry') ||
+                               message.toLowerCase().includes('submit a project') ||
+                               message.toLowerCase().includes('discuss a project') ||
+                               message.toLowerCase().includes('start a project') ||
+                               message.toLowerCase().includes('hire you') ||
+                               message.toLowerCase().includes('work with you') ||
+                               message.toLowerCase().includes('need help with a project');
+
+    // If user is asking about special capabilities, use tools
+    // For now, enable all features by default if environment variables are not set
+    const schedulingEnabled = process.env.FEATURE_SCHEDULING === 'true' || process.env.FEATURE_SCHEDULING === undefined;
+    const caseStudyEnabled = process.env.FEATURE_CASE_STUDY === 'true' || process.env.FEATURE_CASE_STUDY === undefined;
+    const intakeEnabled = process.env.FEATURE_CLIENT_INTAKE === 'true' || process.env.FEATURE_CLIENT_INTAKE === undefined;
+    
+    // Direct check for quick action messages
+    const isQuickActionMessage = message.includes('find available times') || 
+                                message.includes('shopify case study') || 
+                                message.includes('project inquiry');
+    
+    // Force scheduling detection if user provides contact info (name, email, timezone)
+    const hasContactInfo = message.includes('@') && (message.includes('eastern') || message.includes('western') || message.includes('central') || message.includes('pacific') || message.includes('timezone'));
+    
+    // Check if this is a follow-up to a previous scheduling conversation
+    const hasSchedulingContext = conversationHistory.some((msg: any) => 
+      msg.role === 'user' && (
+        msg.content.toLowerCase().includes('schedule') ||
+        msg.content.toLowerCase().includes('book') ||
+        msg.content.toLowerCase().includes('meeting') ||
+        msg.content.toLowerCase().includes('appointment') ||
+        msg.content.toLowerCase().includes('consultation') ||
+        msg.content.toLowerCase().includes('time slot') ||
+        msg.content.toLowerCase().includes('available') ||
+        msg.content.toLowerCase().includes('calendar') ||
+        /\d{1,2}:\d{2}\s*(AM|PM)/i.test(msg.content)
+      )
+    );
+    
+    console.log('🔍 Debug - Message:', message);
+    console.log('🔍 Debug - Scheduling detected:', isAskingAboutScheduling);
+    console.log('🔍 Debug - Case study detected:', isAskingAboutCaseStudy);
+    console.log('🔍 Debug - Intake detected:', isAskingAboutIntake);
+    console.log('🔍 Debug - Has contact info:', hasContactInfo);
+    console.log('🔍 Debug - Has scheduling context:', hasSchedulingContext);
+    console.log('🔍 Debug - Features enabled:', { schedulingEnabled, caseStudyEnabled, intakeEnabled });
+    
+    if ((isAskingAboutScheduling && schedulingEnabled) ||
+        (isAskingAboutCaseStudy && caseStudyEnabled) ||
+        (isAskingAboutIntake && intakeEnabled) ||
+        isQuickActionMessage ||
+        (hasContactInfo && schedulingEnabled) ||
+        (hasSchedulingContext && schedulingEnabled)) {
+      
+      console.log('🔍 Debug - Using tools for this request');
+      
+      try {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt,
+            },
+            {
+              role: "user",
+              content: message,
+            },
+          ],
+          tools: CHAT_TOOLS,
+          tool_choice: "auto",
+          max_tokens: 1000,
+          temperature: 0.7,
+        });
+
+      const response = completion.choices[0]?.message;
+      
+              // Handle tool calls
+        if (response?.tool_calls && response.tool_calls.length > 0) {
+          const toolResults = [];
+          let hasErrors = false;
+          
+          console.log('🔍 Debug - Processing tool calls:', response.tool_calls.length);
+          
+          for (const toolCall of response.tool_calls) {
+            try {
+              if (toolCall.type !== 'function') {
+                console.log('Skipping non-function tool call:', toolCall.type);
+                continue;
+              }
+              const toolName = toolCall.function.name;
+              const parameters = JSON.parse(toolCall.function.arguments);
+              
+              console.log('🔍 Debug - Executing tool:', toolName);
+              console.log('🔍 Debug - Tool parameters:', parameters);
+              console.log('🔍 Debug - Is this show_booking_modal?', toolName === 'show_booking_modal');
+              
+              // Add timeout to prevent hanging
+              const result = await Promise.race([
+                executeTool(toolName, parameters),
+                new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Tool execution timeout')), 15000)
+                )
+              ]);
+              
+              console.log('🔍 Debug - Tool result:', result);
+              console.log('🔍 Debug - Tool result type:', typeof result);
+              console.log('🔍 Debug - Tool result keys:', Object.keys(result || {}));
+              
+              toolResults.push({
+                tool_call_id: toolCall.id,
+                role: "tool" as const,
+                content: JSON.stringify(result),
+              });
+            } catch (error) {
+              console.error('Tool execution error:', error);
+              console.error('Tool execution error details:', {
+                toolName: (toolCall as any).function?.name,
+                parameters: (toolCall as any).function?.arguments,
+                error: (error as Error).message,
+                stack: (error as Error).stack
+              });
+              hasErrors = true;
+              toolResults.push({
+                tool_call_id: toolCall.id,
+                role: "tool" as const,
+                content: JSON.stringify({ error: (error as Error).message }),
+              });
+            }
+          }
+
+        // If there were errors, provide a helpful fallback response
+        if (hasErrors) {
+                  return res.status(200).json({
+          response: "I'm sorry, I'm having trouble accessing my calendar right now. Please try again in a moment, or you can contact John directly at jschibelli@gmail.com to schedule a meeting.",
+          intent: userIntent,
+          suggestedActions: getSuggestedActions(userIntent, articles),
+          conversationId: Date.now().toString(),
+          timestamp: new Date().toISOString(),
+          uiActions: undefined
+        });
+        }
+
+        // Get final response with tool results
+        try {
+          const finalCompletion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content: systemPrompt,
+              },
+              {
+                role: "user",
+                content: message,
+              },
+              response,
+              ...toolResults,
+            ],
+            max_tokens: 800,
+            temperature: 0.7,
+          });
+
+          const finalResponse = finalCompletion.choices[0]?.message?.content || "I'm sorry, I couldn't process your request.";
+          
+          // Check if any tool results contain UI actions
+          let uiActions = [];
+          for (const toolResult of toolResults) {
+            try {
+              const parsedResult = JSON.parse(toolResult.content);
+              if (parsedResult.type === 'ui_action') {
+                uiActions.push(parsedResult);
+              }
+            } catch (e) {
+              // Ignore parsing errors
+            }
+          }
+
+          return res.status(200).json({
+            response: finalResponse,
+            intent: userIntent,
+            suggestedActions: getSuggestedActions(userIntent, articles),
+            conversationId: Date.now().toString(),
+            timestamp: new Date().toISOString(),
+            uiActions: uiActions.length > 0 ? uiActions : undefined
+          });
+          
+        } catch (finalError) {
+          console.error('Final OpenAI API error:', finalError);
+          
+          // If the final completion fails, provide a response based on the tool results
+          let responseMessage = "I'm sorry, I couldn't process your request.";
+          
+          if (toolResults.length > 0) {
+            try {
+              const firstToolResult = JSON.parse(toolResults[0].content);
+              if (firstToolResult.availableSlots) {
+                // Availability check succeeded, format the response
+                const slots = firstToolResult.availableSlots;
+                responseMessage = `I found ${slots.length} available time slots for you. Here are some options:\n\n`;
+                slots.slice(0, 5).forEach((slot: any, index: number) => {
+                  const start = new Date(slot.start);
+                  const end = new Date(slot.end);
+                  responseMessage += `${index + 1}. ${start.toLocaleDateString()} at ${start.toLocaleTimeString()} - ${end.toLocaleTimeString()} (${slot.duration} min)\n`;
+                });
+                responseMessage += "\nTo book a meeting, please provide your name, email, and preferred time.";
+              } else if (firstToolResult.success) {
+                responseMessage = firstToolResult.message || "Your request was processed successfully!";
+              }
+            } catch (parseError) {
+              console.error('Error parsing tool result:', parseError);
+            }
+          }
+          
+          return res.status(200).json({
+            response: responseMessage,
+            intent: userIntent,
+            suggestedActions: getSuggestedActions(userIntent, articles),
+            conversationId: Date.now().toString(),
+            timestamp: new Date().toISOString(),
+            uiActions: undefined
+          });
+        }
+      }
+      
+      } catch (openaiError) {
+        console.error('OpenAI API error:', openaiError);
+        
+        // Provide a helpful response when OpenAI fails
+        let fallbackMessage = "I'm sorry, I'm having trouble processing your request right now.";
+        
+        if (isAskingAboutScheduling) {
+          fallbackMessage = "I'm sorry, I'm having trouble accessing my calendar right now. Please try again in a moment, or you can contact John directly at jschibelli@gmail.com to schedule a meeting.";
+        } else if (isAskingAboutCaseStudy) {
+          fallbackMessage = "I'm sorry, I'm having trouble accessing the case study right now. Please try again later or contact John directly.";
+        } else if (isAskingAboutIntake) {
+          fallbackMessage = "I'm sorry, I'm having trouble processing your project inquiry right now. Please try again later or contact John directly at jschibelli@gmail.com.";
+        }
+        
+        return res.status(200).json({
+          response: fallbackMessage,
+          intent: userIntent,
+          suggestedActions: getSuggestedActions(userIntent, articles),
+          conversationId: Date.now().toString(),
+          timestamp: new Date().toISOString(),
+          uiActions: undefined
+        });
+      }
+    }
+
+    // Regular completion without tools
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -488,10 +845,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           content: message,
         },
       ],
-      max_tokens: 600, // Increased for more detailed responses
+      max_tokens: 600,
       temperature: 0.7,
-      presence_penalty: 0.1, // Slightly encourage new topics
-      frequency_penalty: 0.1, // Slightly reduce repetition
+      presence_penalty: 0.1,
+      frequency_penalty: 0.1,
     });
 
     const response = completion.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response at this time.";
@@ -555,10 +912,9 @@ function getSuggestedActions(intent: string, articles: any[]) {
   // Get base actions for the intent
   let actions = baseActions[intent as keyof typeof baseActions] || baseActions.general;
 
-  // Add dynamic article actions based on intent
-  if (intent === 'blog' || intent === 'skills' || intent === 'technical') {
-    // Add recent articles as suggested actions
-    const recentArticles = articles.slice(0, 3); // Show up to 3 recent articles
+  // Only add blog articles for blog-specific intents, and limit to 1-2 articles
+  if (intent === 'blog') {
+    const recentArticles = articles.slice(0, 2); // Show only 2 recent articles
     const articleActions = recentArticles.map(article => ({
       label: `Read: ${article.title}`,
       url: article.url,
@@ -567,7 +923,7 @@ function getSuggestedActions(intent: string, articles: any[]) {
     actions = [...articleActions, ...actions];
   }
 
-  // Add specific article actions for other intents if relevant articles exist
+  // Add specific article actions only for project-related queries
   if (intent === 'projects' && articles.length > 0) {
     const projectArticles = articles.filter(article => 
       article.title.toLowerCase().includes('synaplyai') || 
@@ -575,7 +931,7 @@ function getSuggestedActions(intent: string, articles: any[]) {
       article.title.toLowerCase().includes('build')
     );
     if (projectArticles.length > 0) {
-      const projectActions = projectArticles.slice(0, 2).map(article => ({
+      const projectActions = projectArticles.slice(0, 1).map(article => ({ // Only 1 project article
         label: `Read: ${article.title}`,
         url: article.url,
         icon: "🤖"

@@ -1,0 +1,49 @@
+// Prisma schema for chatbot data
+// Uses SQLite for local development. You can switch to Postgres in production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String
+  timezone      String
+  startTime     DateTime
+  endTime       DateTime
+  meetingType   String?
+  notes         String?
+  status        String    // e.g., CONFIRMED
+  googleEventId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Lead {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String
+  company   String?
+  role      String?
+  project   String
+  budget    String?
+  timeline  String?
+  links     String?
+  notes     String?
+  status    String     // e.g., NEW
+  createdAt DateTime   @default(now())
+}
+
+model CaseStudyView {
+  id          Int       @id @default(autoincrement())
+  caseStudyId String
+  chapterId   String
+  visitorId   String?
+  viewedAt    DateTime
+}
