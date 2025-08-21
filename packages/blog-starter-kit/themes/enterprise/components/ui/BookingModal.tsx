@@ -20,6 +20,7 @@ interface BookingModalProps {
   businessHours: { start: number; end: number; timezone: string };
   meetingDurations: number[];
   message?: string;
+  initialStep?: Step;
   onBookingComplete: (bookingData: {
     name: string;
     email: string;
@@ -28,7 +29,7 @@ interface BookingModalProps {
   }) => void;
 }
 
-type Step = 'contact' | 'calendar' | 'confirmation';
+type Step = 'contact' | 'calendar' | 'contact-after-calendar' | 'confirmation';
 
 export function BookingModal({
   isOpen,
@@ -38,15 +39,17 @@ export function BookingModal({
   businessHours,
   meetingDurations,
   message = 'Schedule a meeting with John',
+  initialStep = 'contact',
   onBookingComplete
 }: BookingModalProps) {
-  const [currentStep, setCurrentStep] = useState<Step>('contact');
+  const [currentStep, setCurrentStep] = useState<Step>(initialStep);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [contactData, setContactData] = useState({
     name: '',
     email: '',
     timezone: 'America/New_York'
   });
+  const [meetingType, setMeetingType] = useState<'video' | 'conference' | 'consultation'>('consultation');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isClosing, setIsClosing] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
@@ -105,10 +108,14 @@ export function BookingModal({
 
   const handleSlotSelect = (slot: TimeSlot) => {
     setSelectedSlot(slot);
+    // If we started at calendar step, move to contact collection
+    if (initialStep === 'calendar') {
+      setCurrentStep('contact-after-calendar');
+    }
   };
 
   const handleConfirmBooking = async () => {
-    if (selectedSlot) {
+    if (selectedSlot && contactData.name && contactData.email) {
       setIsBooking(true);
       try {
         console.log('🔍 Debug - Starting booking process...');
@@ -118,7 +125,8 @@ export function BookingModal({
           timezone: contactData.timezone,
           startTime: selectedSlot.start,
           endTime: selectedSlot.end,
-          duration: selectedSlot.duration
+          duration: selectedSlot.duration,
+          meetingType: meetingType
         });
         
         // Call the booking API
@@ -133,7 +141,8 @@ export function BookingModal({
             timezone: contactData.timezone,
             startTime: selectedSlot.start,
             endTime: selectedSlot.end,
-            duration: selectedSlot.duration
+            meetingType: meetingType,
+            notes: `Meeting type: ${meetingType}`
           }),
         });
 
@@ -168,6 +177,8 @@ export function BookingModal({
   const handleBack = () => {
     if (currentStep === 'calendar') {
       setCurrentStep('contact');
+    } else if (currentStep === 'contact-after-calendar') {
+      setCurrentStep('calendar');
     } else if (currentStep === 'confirmation') {
       setCurrentStep('calendar');
     }
@@ -208,6 +219,7 @@ export function BookingModal({
     switch (currentStep) {
       case 'contact': return 'Contact Information';
       case 'calendar': return 'Select Time';
+      case 'contact-after-calendar': return 'Contact Information';
       case 'confirmation': return 'Booking Confirmed';
       default: return 'Schedule Meeting';
     }
@@ -217,6 +229,7 @@ export function BookingModal({
     switch (currentStep) {
       case 'contact': return <User className="h-5 w-5 text-blue-600" />;
       case 'calendar': return <Calendar className="h-5 w-5 text-blue-600" />;
+      case 'contact-after-calendar': return <User className="h-5 w-5 text-blue-600" />;
       case 'confirmation': return <Check className="h-5 w-5 text-green-600" />;
       default: return <Calendar className="h-5 w-5 text-blue-600" />;
     }
@@ -245,6 +258,7 @@ export function BookingModal({
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className={`w-3 h-3 rounded-full ${currentStep === 'contact' ? 'bg-blue-600' : 'bg-gray-300'}`} />
             <div className={`w-3 h-3 rounded-full ${currentStep === 'calendar' ? 'bg-blue-600' : 'bg-gray-300'}`} />
+            <div className={`w-3 h-3 rounded-full ${currentStep === 'contact-after-calendar' ? 'bg-blue-600' : 'bg-gray-300'}`} />
             <div className={`w-3 h-3 rounded-full ${currentStep === 'confirmation' ? 'bg-blue-600' : 'bg-gray-300'}`} />
           </div>
 
@@ -337,6 +351,48 @@ export function BookingModal({
                 </div>
               </div>
 
+              {/* Meeting Type Selection */}
+              <div className="space-y-3">
+                <Label className="flex items-center space-x-2 text-sm sm:text-base">
+                  <span>Meeting Type</span>
+                </Label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <Button
+                    variant={meetingType === 'video' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setMeetingType('video')}
+                    className="justify-start h-auto p-3"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-sm">Video Call</span>
+                    </div>
+                  </Button>
+                  <Button
+                    variant={meetingType === 'conference' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setMeetingType('conference')}
+                    className="justify-start h-auto p-3"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <span className="text-sm">Conference Call</span>
+                    </div>
+                  </Button>
+                  <Button
+                    variant={meetingType === 'consultation' ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setMeetingType('consultation')}
+                    className="justify-start h-auto p-3"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                      <span className="text-sm">Consultation</span>
+                    </div>
+                  </Button>
+                </div>
+              </div>
+
               <div className="space-y-4 max-h-64 sm:max-h-80 overflow-y-auto">
                 {Object.entries(slotsByDate).map(([date, slots]) => (
                   <div key={date} className="space-y-2">
@@ -389,6 +445,103 @@ export function BookingModal({
                    {isBooking ? 'Booking...' : 'Confirm Booking'}
                  </Button>
               </div>
+            </div>
+          )}
+
+          {/* Contact Information After Calendar Selection */}
+          {currentStep === 'contact-after-calendar' && selectedSlot && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setCurrentStep('calendar')}
+                  className="flex items-center space-x-1"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+                <div className="text-sm text-gray-500">
+                  Selected: {formatDate(selectedSlot.start)} at {formatTime(selectedSlot.start)}
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-blue-600 text-xs font-bold">✓</span>
+                  </div>
+                  <div className="text-sm text-blue-800">
+                    <p className="font-medium">Time slot selected!</p>
+                    <p>Please provide your contact information to complete the booking.</p>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (validateContactForm()) {
+                  handleConfirmBooking();
+                }
+              }} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="flex items-center space-x-2 text-sm sm:text-base">
+                    <User className="h-4 w-4" />
+                    <span>Full Name *</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={contactData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={errors.name ? 'border-red-500' : ''}
+                  />
+                  {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center space-x-2 text-sm sm:text-base">
+                    <Mail className="h-4 w-4" />
+                    <span>Email Address *</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={contactData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className={errors.email ? 'border-red-500' : ''}
+                  />
+                  {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timezone" className="flex items-center space-x-2 text-sm sm:text-base">
+                    <Clock className="h-4 w-4" />
+                    <span>Timezone</span>
+                  </Label>
+                  <select
+                    id="timezone"
+                    value={contactData.timezone}
+                    onChange={(e) => handleInputChange('timezone', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                  >
+                    <option value="America/New_York">Eastern Time (ET)</option>
+                    <option value="America/Chicago">Central Time (CT)</option>
+                    <option value="America/Denver">Mountain Time (MT)</option>
+                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                    <option value="Europe/London">London (GMT)</option>
+                    <option value="Europe/Paris">Paris (CET)</option>
+                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                    <option value="Australia/Sydney">Sydney (AEDT)</option>
+                  </select>
+                </div>
+
+                <Button type="submit" className="w-full" disabled={isBooking}>
+                  {isBooking ? 'Booking...' : 'Confirm Booking'}
+                </Button>
+              </form>
             </div>
           )}
 

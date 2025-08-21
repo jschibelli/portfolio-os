@@ -32,11 +32,17 @@ try {
 }
 
 // Business hours configuration
-const BUSINESS_HOURS = {
-  start: 9, // 9 AM
-  end: 17,  // 5 PM
-  timezone: 'America/New_York'
-};
+  const BUSINESS_HOURS = {
+    morning: {
+      start: 9, // 9 AM
+      end: 13,  // 1 PM
+    },
+    afternoon: {
+      start: 13, // 1 PM
+      end: 18,   // 6 PM
+    },
+    timezone: 'America/New_York'
+  };
 
 // Meeting duration options (in minutes)
 const MEETING_DURATIONS = [30, 60];
@@ -64,6 +70,12 @@ export const CHAT_TOOLS = [
           requestedTime: {
             type: 'string',
             description: 'Specific time the user wants (e.g., "2:00 PM", "3:00 PM", "10:00 AM" or ISO 8601 format). The system will look ahead 14 days to find the first available occurrence of this time. If the user asks for "2:00 PM", set this to "2:00 PM".'
+          },
+          preference: {
+            type: 'string',
+            description: 'Time preference: "morning" (9 AM - 1 PM), "afternoon" (1 PM - 6 PM), or "any" (full day). Use this when user specifies a preference.',
+            enum: ['morning', 'afternoon', 'any'],
+            default: 'any'
           }
         },
         required: ['timezone']
@@ -311,6 +323,12 @@ export const CHAT_TOOLS = [
           preferredTime: {
             type: 'string',
             description: 'Preferred time to highlight in the modal (e.g., "3:00 PM")'
+          },
+          preference: {
+            type: 'string',
+            description: 'Time preference: "morning" (9 AM - 1 PM), "afternoon" (1 PM - 6 PM), or "any" (full day)',
+            enum: ['morning', 'afternoon', 'any'],
+            default: 'any'
           }
         },
         required: ['timezone']
@@ -403,7 +421,7 @@ export async function executeTool(toolName: string, parameters: any) {
 
 
 async function getAvailability(parameters: any) {
-  const { timezone = 'America/New_York', days = 7, requestedTime } = parameters;
+  const { timezone = 'America/New_York', days = 7, requestedTime, preference = 'any' } = parameters;
 
   // Debug environment variables
   console.log('🔍 Debug - Environment Variables:');
@@ -450,6 +468,25 @@ async function getAvailability(parameters: any) {
     let startDate = now;
     let endDate = new Date(now.getTime() + lookaheadDays * 24 * 60 * 60 * 1000);
     
+    // Check if this is a "next week" request
+    const isNextWeekRequest = requestedTime && (
+      requestedTime.toLowerCase().includes('next week') ||
+      requestedTime.toLowerCase().includes('next week') ||
+      requestedTime.toLowerCase().includes('following week')
+    );
+    
+    if (isNextWeekRequest) {
+      // For "next week" requests, look specifically at next week (7-14 days from now)
+      const nextWeekStart = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+      const nextWeekEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000); // 14 days from now
+      
+      startDate = nextWeekStart;
+      endDate = nextWeekEnd;
+      lookaheadDays = 7; // Only look at next week
+      
+      console.log('🔍 Debug: Next week request detected, looking from:', startDate.toISOString(), 'to', endDate.toISOString());
+    }
+    
     // If a specific time is requested, look ahead 2 weeks to find that time
     if (requestedTime) {
       const requestedDate = new Date(requestedTime);
@@ -486,24 +523,78 @@ async function getAvailability(parameters: any) {
     console.log('🔍 Debug: Fetching busy times from Google Calendar...');
     console.log('🔍 Debug: Calendar ID:', calendarId);
     console.log('🔍 Debug: Time range:', startDate.toISOString(), 'to', endDate.toISOString());
+    console.log('🔍 Debug: Timezone:', timezone);
     
-    const busyResponse = await calendar.freebusy.query({
-      auth: auth,
-      requestBody: {
-        timeMin: startDate.toISOString(),
-        timeMax: endDate.toISOString(),
-        items: [{ id: calendarId }],
-        timeZone: timezone,
-      },
-    });
+    let busyResponse;
+    try {
+      busyResponse = await calendar.freebusy.query({
+        auth: auth,
+        requestBody: {
+          timeMin: startDate.toISOString(),
+          timeMax: endDate.toISOString(),
+          items: [{ id: calendarId }],
+          timeZone: timezone,
+        },
+      });
+    } catch (error) {
+      console.log('🔍 Debug: Failed to fetch busy times with calendar ID:', calendarId, 'Error:', error);
+      // Try with 'primary' as fallback
+      console.log('🔍 Debug: Trying with primary calendar...');
+      busyResponse = await calendar.freebusy.query({
+        auth: auth,
+        requestBody: {
+          timeMin: startDate.toISOString(),
+          timeMax: endDate.toISOString(),
+          items: [{ id: 'primary' }],
+          timeZone: timezone,
+        },
+      });
+    }
 
     console.log('🔍 Debug: Google Calendar API response:', JSON.stringify(busyResponse.data, null, 2));
     
     const busyTimes = busyResponse.data.calendars?.[calendarId]?.busy || [];
-    console.log('🔍 Debug: Extracted busy times:', busyTimes);
+    console.log('🔍 Debug: Extracted busy times count:', busyTimes.length);
+    
+    // Also try to fetch actual events to see what's in the calendar
+    try {
+      const eventsResponse = await calendar.events.list({
+        auth: auth,
+        calendarId: calendarId,
+        timeMin: startDate.toISOString(),
+        timeMax: endDate.toISOString(),
+        singleEvents: true,
+        orderBy: 'startTime'
+      });
+      
+      console.log('🔍 Debug: Calendar events found:', eventsResponse.data.items?.length || 0);
+      eventsResponse.data.items?.forEach((event: any, index: number) => {
+        console.log(`🔍 Debug: Event ${index + 1}:`, {
+          summary: event.summary,
+          start: event.start?.dateTime || event.start?.date,
+          end: event.end?.dateTime || event.end?.date,
+          isAllDay: !event.start?.dateTime && event.start?.date
+        });
+      });
+    } catch (eventsError) {
+      console.log('🔍 Debug: Could not fetch calendar events:', eventsError);
+    }
+    
+    // Log each busy time with more detail
+    busyTimes.forEach((busy: any, index: number) => {
+      const start = new Date(busy.start);
+      const end = new Date(busy.end);
+      console.log(`🔍 Debug: Busy time ${index + 1}:`, {
+        start: busy.start,
+        end: busy.end,
+        startLocal: start.toLocaleString(),
+        endLocal: end.toLocaleString(),
+        duration: `${(end.getTime() - start.getTime()) / (1000 * 60 * 60)} hours`
+      });
+    });
 
     // Generate available time slots
-    let availableSlots = generateAvailableSlots(startDate, endDate, busyTimes, timezone);
+    let availableSlots = generateAvailableSlots(startDate, endDate, busyTimes, timezone, preference);
 
     console.log('🔍 Debug - Final availability response:', {
       availableSlots: availableSlots.length,
@@ -573,18 +664,21 @@ async function getAvailability(parameters: any) {
         console.log('🔍 Debug: All available slots:');
         availableSlots.forEach((slot, index) => {
           const slotTime = new Date(slot.start);
-          console.log(`🔍 Debug: Slot ${index}: ${slot.start} -> ${slotTime.toLocaleString('en-US', { timeZone: timezone })}`);
+          const slotTimeInBusinessTZ = new Date(slotTime.toLocaleString('en-US', { timeZone: timezone }));
+          console.log(`🔍 Debug: Slot ${index}: ${slot.start} -> ${slotTimeInBusinessTZ.toLocaleString('en-US', { timeZone: timezone })} (${slotTimeInBusinessTZ.getHours()}:${slotTimeInBusinessTZ.getMinutes().toString().padStart(2, '0')})`);
         });
         
         const matchingSlot = availableSlots.find(slot => {
           const slotTime = new Date(slot.start);
-          const slotHour = slotTime.getHours();
-          const slotMinute = slotTime.getMinutes();
+          // Convert slot time to business timezone for comparison
+          const slotTimeInBusinessTZ = new Date(slotTime.toLocaleString('en-US', { timeZone: timezone }));
+          const slotHour = slotTimeInBusinessTZ.getHours();
+          const slotMinute = slotTimeInBusinessTZ.getMinutes();
           console.log('🔍 Debug: Checking slot:', slotHour + ':' + slotMinute, 'vs requested:', requestedHour + ':' + requestedMinute);
           
-          // Additional debug for 2:00 PM slots specifically
-          if (requestedHour === 14 && requestedMinute === 0) {
-            console.log(`🔍 Debug: 2:00 PM MATCH CHECK - Slot: ${slot.start} (${slotHour}:${slotMinute}) vs Requested: ${requestedHour}:${requestedMinute}`);
+          // Additional debug for 3:00 PM slots specifically
+          if (requestedHour === 15 && requestedMinute === 0) {
+            console.log(`🔍 Debug: 3:00 PM MATCH CHECK - Slot: ${slot.start} (${slotHour}:${slotMinute}) vs Requested: ${requestedHour}:${requestedMinute}`);
           }
           
           return slotHour === requestedHour && slotMinute === requestedMinute;
@@ -595,17 +689,19 @@ async function getAvailability(parameters: any) {
 
         if (next) {
           const slotTime = new Date(next.start);
-          availabilityMessage = `The next available time is ${slotTime.toLocaleString('en-US', { timeZone: timezone })} (ET). ${timezoneNote}`;
+          const slotTimeInBusinessTZ = new Date(slotTime.toLocaleString('en-US', { timeZone: timezone }));
+          availabilityMessage = `The next available time is ${slotTimeInBusinessTZ.toLocaleString('en-US', { timeZone: timezone })} (${timezone}). ${timezoneNote}`;
         } else {
           availabilityMessage = `No available times in the next ${lookaheadDays} days. ${timezoneNote}`;
           
           // Additional debug when no matching slot is found
-          if (requestedHour === 14 && requestedMinute === 0) {
-            console.log(`❌ Debug: NO 2:00 PM SLOT FOUND! Total available slots: ${availableSlots.length}`);
+          if (requestedHour === 15 && requestedMinute === 0) {
+            console.log(`❌ Debug: NO 3:00 PM SLOT FOUND! Total available slots: ${availableSlots.length}`);
             console.log(`❌ Debug: Available slots that were generated:`);
             availableSlots.forEach((slot, index) => {
               const slotTime = new Date(slot.start);
-              console.log(`  ${index + 1}. ${slot.start} -> ${slotTime.toLocaleString('en-US', { timeZone: timezone })}`);
+              const slotTimeInBusinessTZ = new Date(slotTime.toLocaleString('en-US', { timeZone: timezone }));
+              console.log(`  ${index + 1}. ${slot.start} -> ${slotTimeInBusinessTZ.toLocaleString('en-US', { timeZone: timezone })}`);
             });
           }
         }
@@ -932,7 +1028,8 @@ function generateAvailableSlots(
   startDate: Date,
   endDate: Date,
   busyTimes: any[],
-  timezone: string
+  timezone: string,
+  preference: 'morning' | 'afternoon' | 'any' = 'any'
 ): Array<{ start: string; end: string; duration: number }> {
   const slots: Array<{ start: string; end: string; duration: number }> = [];
   const currentDate = new Date(startDate);
@@ -943,10 +1040,17 @@ function generateAvailableSlots(
   console.log('🔍 Debug: Using timezone:', timezone);
   console.log('🔍 Debug: Current time (UTC):', now.toISOString());
   
-  // Log busy times for debugging
-  busyTimes.forEach((busy, index) => {
-    console.log(`🔍 Debug: Busy ${index + 1}:`, busy.start, 'to', busy.end);
-  });
+      // Log busy times for debugging
+    busyTimes.forEach((busy, index) => {
+      const busyStart = new Date(busy.start);
+      const busyEnd = new Date(busy.end);
+      const isAllDay = busyStart.getHours() === 0 && busyStart.getMinutes() === 0 && 
+                      busyEnd.getHours() === 0 && busyEnd.getMinutes() === 0;
+      
+      console.log(`🔍 Debug: Busy ${index + 1}:`, busy.start, 'to', busy.end, 
+                  isAllDay ? '(ALL DAY EVENT)' : '', 
+                  `Duration: ${(busyEnd.getTime() - busyStart.getTime()) / (1000 * 60 * 60)} hours`);
+    });
 
   while (currentDate < endDate) {
     console.log(`🔍 Debug: Processing date: ${currentDate.toISOString().split('T')[0]} (day ${currentDate.getDay()})`);
@@ -961,17 +1065,42 @@ function generateAvailableSlots(
     // Generate slots for each meeting duration
     for (const duration of MEETING_DURATIONS) {
       // Create day start and end in the specified timezone
-      const dayStart = new Date(currentDate);
-      dayStart.setHours(BUSINESS_HOURS.start, 0, 0, 0);
+      // Use a proper timezone-aware approach
+      const dateStr = currentDate.toISOString().split('T')[0];
+      
+      // Create business hours based on preference
+      let businessHours;
+      if (preference === 'morning') {
+        businessHours = BUSINESS_HOURS.morning;
+      } else if (preference === 'afternoon') {
+        businessHours = BUSINESS_HOURS.afternoon;
+      } else {
+        // For 'any' preference, use both morning and afternoon
+        businessHours = { start: BUSINESS_HOURS.morning.start, end: BUSINESS_HOURS.afternoon.end };
+      }
+      
+      const dayStart = new Date(`${dateStr}T${businessHours.start.toString().padStart(2, '0')}:00:00.000`);
+      const dayEnd = new Date(`${dateStr}T${businessHours.end.toString().padStart(2, '0')}:00:00.000`);
+      
+      // Adjust for timezone difference between server and business timezone
+      // Since business hours are in America/New_York, we need to convert
+      const businessTimezone = 'America/New_York';
+      const serverTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      
+      // Get the offset difference between server timezone and business timezone
+      const businessOffset = new Date(dayStart.toLocaleString('en-US', { timeZone: businessTimezone })).getTimezoneOffset();
+      const serverOffset = new Date(dayStart.toLocaleString('en-US', { timeZone: serverTimezone })).getTimezoneOffset();
+      const offsetDiff = (businessOffset - serverOffset) * 60 * 1000; // Convert to milliseconds
+      
+      // Adjust the times
+      const adjustedDayStart = new Date(dayStart.getTime() + offsetDiff);
+      const adjustedDayEnd = new Date(dayEnd.getTime() + offsetDiff);
 
-      const dayEnd = new Date(currentDate);
-      dayEnd.setHours(BUSINESS_HOURS.end, 0, 0, 0);
+      console.log(`🔍 Debug: Generating slots for ${dateStr} - ${adjustedDayStart.toISOString()} to ${adjustedDayEnd.toISOString()}`);
 
-      console.log(`🔍 Debug: Generating slots for ${currentDate.toISOString().split('T')[0]} - ${dayStart.toISOString()} to ${dayEnd.toISOString()}`);
+      let slotStart = new Date(adjustedDayStart);
 
-      let slotStart = new Date(dayStart);
-
-      while (slotStart < dayEnd) {
+      while (slotStart < adjustedDayEnd) {
         const slotEnd = new Date(slotStart.getTime() + duration * 60 * 1000);
 
         // Skip slots that are in the past (within the next 30 minutes to allow for booking)
@@ -987,27 +1116,45 @@ function generateAvailableSlots(
           const busyStart = new Date(busy.start);
           const busyEnd = new Date(busy.end);
           
+          // Check if this is an all-day event
+          const isAllDay = busyStart.getHours() === 0 && busyStart.getMinutes() === 0 && 
+                          busyEnd.getHours() === 0 && busyEnd.getMinutes() === 0;
+          
           // Convert slot times to UTC for proper comparison
           const slotStartUTC = slotStart.toISOString();
           const slotEndUTC = slotEnd.toISOString();
           
-          // Check for overlap: slot overlaps with busy time if:
-          // slot starts before busy ends AND slot ends after busy starts
-          const hasOverlap = slotStartUTC < busyEnd.toISOString() && slotEndUTC > busyStart.toISOString();
+          let hasOverlap = false;
           
-          if (hasOverlap) {
-            console.log(`🔍 Debug: Slot ${slotStart.toISOString()}-${slotEnd.toISOString()} conflicts with busy ${busyStart.toISOString()}-${busyEnd.toISOString()}`);
+          if (isAllDay) {
+            // For all-day events, check if the slot date falls within the all-day event date range
+            const slotDate = slotStart.toISOString().split('T')[0];
+            const busyStartDate = busyStart.toISOString().split('T')[0];
+            const busyEndDate = new Date(busyEnd.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // Subtract 1 day since end is next day midnight
+            
+            hasOverlap = slotDate >= busyStartDate && slotDate <= busyEndDate;
+            
+            if (hasOverlap) {
+              console.log(`🔍 Debug: Slot ${slotStart.toISOString()} conflicts with ALL-DAY event ${busyStartDate} to ${busyEndDate}`);
+            }
+          } else {
+            // For regular events, check for time overlap
+            hasOverlap = slotStartUTC < busyEnd.toISOString() && slotEndUTC > busyStart.toISOString();
+            
+            if (hasOverlap) {
+              console.log(`🔍 Debug: Slot ${slotStart.toISOString()}-${slotEnd.toISOString()} conflicts with busy ${busyStart.toISOString()}-${busyEnd.toISOString()}`);
+            }
           }
           
-          // Additional debug for 2:00 PM slots specifically
-          if (slotStart.getHours() === 14 && slotStart.getMinutes() === 0) {
-            console.log(`🔍 Debug: 2:00 PM slot check - Slot: ${slotStart.toISOString()}, Busy: ${busyStart.toISOString()}-${busyEnd.toISOString()}, Overlap: ${hasOverlap}`);
+          // Additional debug for 3:00 PM slots specifically
+          if (slotStart.getHours() === 15 && slotStart.getMinutes() === 0) {
+            console.log(`🔍 Debug: 3:00 PM slot check - Slot: ${slotStart.toISOString()}, Busy: ${busyStart.toISOString()}-${busyEnd.toISOString()}, AllDay: ${isAllDay}, Overlap: ${hasOverlap}`);
           }
           
           return hasOverlap;
         });
 
-        if (isAvailable && slotEnd <= dayEnd) {
+        if (isAvailable && slotEnd <= adjustedDayEnd) {
           console.log(`✅ Debug: Available slot found: ${slotStart.toISOString()} - ${slotEnd.toISOString()}`);
           
           // Additional debug for 2:00 PM slots specifically
@@ -1339,7 +1486,8 @@ async function showBookingModal(parameters: any) {
         timezone: tz,
         businessHours,
         meetingDurations,
-        message: message || 'Schedule a meeting with John'
+        message: message || 'Schedule a meeting with John',
+        initialStep: preferredTime ? 'calendar' : 'contact' // Start at calendar step if specific time requested
       }
     };
     

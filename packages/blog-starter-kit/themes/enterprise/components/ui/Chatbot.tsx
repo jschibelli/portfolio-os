@@ -1,10 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink, Settings, Calendar, Check } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink, Settings, Calendar, Check, BookOpen } from 'lucide-react';
 import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
-import QuickActions from '../chat/QuickActions';
-import CaseStudyBlock from '../case-study/Block';
 import { CalendarModal } from './CalendarModal';
 import { ContactForm } from './ContactForm';
 import { BookingModal } from './BookingModal';
@@ -71,11 +69,12 @@ export default function Chatbot() {
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const [customSelectedVoice, setCustomSelectedVoice] = useState<string>('');
   const [conversationHistory, setConversationHistory] = useState<ConversationHistory[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
   const [pageContext, setPageContext] = useState<PageContext | null>(null);
-  const [showQuickActions, setShowQuickActions] = useState(true);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   const [features, setFeatures] = useState({
     scheduling: process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' || process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === undefined,
     caseStudy: process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === 'true' || process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === undefined,
@@ -113,6 +112,7 @@ export default function Chatbot() {
     businessHours: { start: number; end: number; timezone: string };
     meetingDurations: number[];
     message?: string;
+    initialStep?: 'contact' | 'calendar' | 'confirmation';
   } | null>(null);
   
   // Booking confirmation modal state
@@ -246,65 +246,153 @@ export default function Chatbot() {
   // Initialize speech recognition
   useEffect(() => {
     if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+      console.log('🎤 Initializing speech recognition...');
+      try {
+        const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = 'en-US';
 
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInputValue(transcript);
-        setIsListening(false);
-      };
+        recognitionRef.current.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          console.log('🎤 Speech recognized:', transcript);
+          setInputValue(transcript);
+          setIsListening(false);
+        };
 
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-      };
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('🎤 Speech recognition error:', event.error);
+          setIsListening(false);
+          
+          // Show user-friendly error messages
+          if (event.error === 'not-allowed') {
+            alert('Microphone access denied. Please allow microphone access in your browser settings.');
+          } else if (event.error === 'no-speech') {
+            console.log('🎤 No speech detected');
+          } else if (event.error === 'network') {
+            alert('Network error with speech recognition. Please check your internet connection.');
+          }
+        };
 
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
+        recognitionRef.current.onend = () => {
+          console.log('🎤 Speech recognition ended');
+          setIsListening(false);
+        };
+
+        recognitionRef.current.onstart = () => {
+          console.log('🎤 Speech recognition started');
+          setIsListening(true);
+        };
+
+        console.log('🎤 Speech recognition initialized successfully');
+      } catch (error) {
+        console.error('🎤 Error initializing speech recognition:', error);
+      }
+    } else {
+      console.log('🎤 Speech recognition not supported in this browser');
     }
   }, []);
 
   // Initialize speech synthesis with better voice settings
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      console.log('🔊 Initializing speech synthesis...');
       speechRef.current = new SpeechSynthesisUtterance();
       
       // Get available voices and select a more natural one
       const loadVoices = () => {
         const voices = window.speechSynthesis.getVoices();
+        console.log('🔊 Available voices:', voices.length);
         setAvailableVoices(voices);
         
-        // Prioritize William and Australian voices
-        const preferredVoice = voices.find(voice => 
-          voice.name.toLowerCase().includes('william') && 
-          (voice.name.toLowerCase().includes('australian') || voice.name.toLowerCase().includes('multi'))
-        ) || voices.find(voice => 
-          voice.name.toLowerCase().includes('william')
-        ) || voices.find(voice => 
-          voice.name.toLowerCase().includes('australian') && voice.lang.startsWith('en-')
-        ) || voices.find(voice => 
-          voice.name.includes('Microsoft William') && voice.name.includes('Multi')
-        ) || voices.find(voice => 
-          (voice.name.includes('Google') || 
-           voice.name.includes('Natural') ||
-           voice.name.includes('Premium') ||
-           voice.name.includes('Enhanced')) &&
-          (voice.lang === 'en-US' || voice.lang === 'en-GB' || voice.lang.startsWith('en-'))
-        ) || voices.find(voice => voice.lang === 'en-US') || 
-           voices.find(voice => voice.lang === 'en-GB') ||
-           voices.find(voice => voice.lang.startsWith('en-')) ||
-           voices[0];
+        if (voices.length === 0) {
+          console.log('🔊 No voices available, will retry...');
+          return;
+        }
         
-        if (preferredVoice) {
-          speechRef.current!.voice = preferredVoice;
-          setSelectedVoice(preferredVoice);
-          console.log('Selected voice:', preferredVoice.name);
-          console.log('Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        // Prioritize the most human-sounding voices (avoid robotic Chrome voices)
+        const preferredVoice = voices.find(voice => 
+          // Google's most human-sounding voices (Chrome)
+          (voice.name.includes('Google') && voice.name.includes('Neural') && voice.name.includes('Male')) ||
+          (voice.name.includes('Google') && voice.name.includes('Natural') && voice.name.includes('Male')) ||
+          (voice.name.includes('Google') && voice.name.includes('US English') && voice.name.includes('Male'))
+        ) || voices.find(voice => 
+          // Microsoft's most human voices (Windows/Edge)
+          (voice.name.includes('Microsoft') && voice.name.includes('Neural')) ||
+          (voice.name.includes('Microsoft') && voice.name.includes('Natural')) ||
+          (voice.name.includes('Microsoft') && voice.name.includes('Andrew')) ||
+          (voice.name.includes('Microsoft') && voice.name.includes('William'))
+        ) || voices.find(voice => 
+          // Apple's most human voices (macOS/Safari)
+          (voice.name.includes('Alex') && voice.lang === 'en-US') ||
+          (voice.name.includes('Samantha') && voice.lang === 'en-US') ||
+          (voice.name.includes('Tom') && voice.lang === 'en-US') ||
+          (voice.name.includes('Daniel') && voice.lang === 'en-US')
+        ) || voices.find(voice => 
+          // Premium/Enhanced human voices
+          (voice.name.includes('Premium') || voice.name.includes('Enhanced') || voice.name.includes('Neural')) &&
+          (voice.name.includes('Male') || voice.name.includes('en-US-Male'))
+        ) || voices.find(voice => 
+          // Avoid ALL known robotic voices
+          !voice.name.includes('Microsoft David') && 
+          !voice.name.includes('Microsoft Zira') &&
+          !voice.name.includes('Microsoft Mark') &&
+          !voice.name.includes('Microsoft James') &&
+          !voice.name.includes('Microsoft George') &&
+          !voice.name.includes('Microsoft Linda') &&
+          !voice.name.includes('Microsoft Richard') &&
+          !voice.name.includes('Microsoft Susan') &&
+          !voice.name.includes('Microsoft Tony') &&
+          !voice.name.includes('Microsoft Ravi') &&
+          !voice.name.includes('Microsoft Jenny') &&
+          !voice.name.includes('Microsoft Aria') &&
+          !voice.name.includes('Microsoft Guy') &&
+          !voice.name.includes('Microsoft Jessa') &&
+          voice.lang === 'en-US'
+        ) || voices.find(voice => 
+          // Any English US voice as fallback (but avoid robotic ones)
+          voice.lang === 'en-US' &&
+          !voice.name.includes('David') &&
+          !voice.name.includes('Zira') &&
+          !voice.name.includes('Mark') &&
+          !voice.name.includes('James')
+        ) || voices.find(voice => 
+          // Last resort - any voice
+          voice.lang.startsWith('en-')
+        ) || voices[0];
+        
+        // Check for saved voice preference
+        const savedVoiceName = localStorage.getItem('chatbot-selected-voice');
+        let finalVoice = preferredVoice;
+        
+        if (savedVoiceName) {
+          const savedVoice = voices.find(v => v.name === savedVoiceName);
+          if (savedVoice) {
+            finalVoice = savedVoice;
+            setCustomSelectedVoice(savedVoiceName);
+            console.log('🔊 Using saved voice preference:', savedVoiceName);
+          }
+        }
+        
+        if (finalVoice) {
+          speechRef.current!.voice = finalVoice;
+          setSelectedVoice(finalVoice);
+          console.log('🔊 Selected voice:', finalVoice.name);
+          console.log('🔊 Cross-browser compatibility:', {
+            browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
+                     navigator.userAgent.includes('Firefox') ? 'Firefox' : 
+                     navigator.userAgent.includes('Safari') ? 'Safari' : 
+                     navigator.userAgent.includes('Edge') ? 'Edge' : 'Unknown',
+            platform: navigator.platform,
+            selectedVoice: finalVoice.name,
+            voiceType: finalVoice.name.includes('Google') ? 'Google (Cross-browser)' :
+                      finalVoice.name.includes('Microsoft') ? 'Microsoft (Windows/Edge)' :
+                      finalVoice.name.includes('Alex') || finalVoice.name.includes('Samantha') ? 'Apple (macOS/Safari)' : 'System'
+          });
+          console.log('🔊 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+        } else {
+          console.log('🔊 No preferred voice found, using default');
         }
       };
       
@@ -314,15 +402,26 @@ export default function Chatbot() {
       // Also try loading voices when they become available
       window.speechSynthesis.onvoiceschanged = loadVoices;
       
-      // More natural speech settings
-      speechRef.current.rate = 0.85;        // Slightly slower for clarity
-      speechRef.current.pitch = 1.1;        // Slightly higher pitch for warmth
-      speechRef.current.volume = 0.9;       // Higher volume
+      // Optimized speech settings for most human-like sound
+      speechRef.current.rate = 0.8;         // Slower for more natural, human pace
+      speechRef.current.pitch = 0.9;        // Lower pitch for warmth and humanity
+      speechRef.current.volume = 0.85;      // Slightly lower volume for natural sound
       
       // Add slight pauses for more natural speech
-      speechRef.current.onstart = () => setIsSpeaking(true);
-      speechRef.current.onend = () => setIsSpeaking(false);
-      speechRef.current.onerror = () => setIsSpeaking(false);
+      speechRef.current.onstart = () => {
+        console.log('🔊 Speech started');
+        setIsSpeaking(true);
+      };
+      speechRef.current.onend = () => {
+        console.log('🔊 Speech ended');
+        setIsSpeaking(false);
+      };
+      speechRef.current.onerror = (event) => {
+        console.error('🔊 Speech error:', event);
+        setIsSpeaking(false);
+      };
+    } else {
+      console.log('🔊 Speech synthesis not supported in this browser');
     }
   }, []);
 
@@ -577,7 +676,8 @@ export default function Chatbot() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to book meeting');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to book meeting`);
       }
 
       const result = await response.json();
@@ -602,7 +702,7 @@ export default function Chatbot() {
       // Add an error message to the chat
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: '❌ Sorry, there was an error confirming your booking. Please try again or contact John directly.',
+        text: `❌ Sorry, there was an error confirming your booking: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again or contact John directly at jschibelli@gmail.com.`,
         sender: 'bot',
         timestamp: new Date(),
       };
@@ -628,7 +728,7 @@ export default function Chatbot() {
         return;
     }
     
-    setShowQuickActions(false);
+            // setShowQuickActions(false);
     
     // Create and send the message directly
     const userMessage: Message = {
@@ -748,43 +848,90 @@ export default function Chatbot() {
   };
 
   const startListening = () => {
+    console.log('🎤 startListening called:', { hasRecognition: !!recognitionRef.current, isListening });
+    
+    // Check if speech recognition is supported
+    if (typeof window === 'undefined' || !('webkitSpeechRecognition' in window)) {
+      console.error('🎤 Speech recognition not supported in this browser');
+      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+    
     if (recognitionRef.current && !isListening) {
-      setIsListening(true);
-      recognitionRef.current.start();
+      try {
+        setIsListening(true);
+        recognitionRef.current.start();
+        console.log('🎤 Started listening');
+      } catch (error) {
+        console.error('🎤 Error starting listening:', error);
+        setIsListening(false);
+        alert('Error starting speech recognition. Please try again.');
+      }
+    } else if (!recognitionRef.current) {
+      console.error('🎤 Speech recognition not initialized');
+      alert('Speech recognition not initialized. Please refresh the page and try again.');
+    } else {
+      console.log('🎤 Cannot start listening:', { hasRecognition: !!recognitionRef.current, isListening });
     }
   };
 
   const stopListening = () => {
+    console.log('🎤 stopListening called:', { hasRecognition: !!recognitionRef.current, isListening });
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
+      try {
+        recognitionRef.current.stop();
+        setIsListening(false);
+        console.log('🎤 Stopped listening');
+      } catch (error) {
+        console.error('🎤 Error stopping listening:', error);
+        setIsListening(false);
+      }
     }
   };
 
   const speakMessage = (text: string) => {
+    console.log('🔊 speakMessage called:', { text: text.substring(0, 50) + '...', isVoiceEnabled, hasSpeechRef: !!speechRef.current, hasSpeechSynthesis: !!window.speechSynthesis });
+    
     if (speechRef.current && isVoiceEnabled && window.speechSynthesis) {
-      // Stop any current speech before starting new one
-      window.speechSynthesis.cancel();
-      
-      // Process text for more natural speech
-      let processedText = text
-        // Add natural pauses by inserting spaces
-        .replace(/\. /g, '.  ')
-        .replace(/\! /g, '!  ')
-        .replace(/\? /g, '?  ')
-        // Add slight pauses for commas
-        .replace(/, /g, ', ')
-        // Clean up any double spaces
-        .replace(/\s+/g, ' ')
-        .trim();
-      
-      // Use selected voice if available
-      if (selectedVoice) {
-        speechRef.current.voice = selectedVoice;
+      try {
+        // Stop any current speech before starting new one
+        window.speechSynthesis.cancel();
+        
+        // Process text for more natural speech (avoid robotic sound)
+        let processedText = text
+          // Add natural pauses for better flow
+          .replace(/\. /g, '. ')
+          .replace(/\! /g, '! ')
+          .replace(/\? /g, '? ')
+          // Add slight pauses for commas
+          .replace(/, /g, ', ')
+          // Add pauses for better rhythm
+          .replace(/:/g, ': ')
+          .replace(/;/g, '; ')
+          // Clean up any double spaces
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        // Use selected voice if available
+        if (selectedVoice) {
+          speechRef.current.voice = selectedVoice;
+          console.log('🔊 Using selected voice:', selectedVoice.name);
+        } else {
+          console.log('🔊 No selected voice, using default');
+        }
+        
+        speechRef.current.text = processedText;
+        console.log('🔊 Starting speech synthesis...');
+        window.speechSynthesis.speak(speechRef.current);
+      } catch (error) {
+        console.error('🔊 Error in speakMessage:', error);
       }
-      
-      speechRef.current.text = processedText;
-      window.speechSynthesis.speak(speechRef.current);
+    } else {
+      console.log('🔊 Speech synthesis not available:', { 
+        hasSpeechRef: !!speechRef.current, 
+        isVoiceEnabled, 
+        hasSpeechSynthesis: !!window.speechSynthesis 
+      });
     }
   };
 
@@ -796,9 +943,51 @@ export default function Chatbot() {
   };
 
   const toggleVoice = () => {
-    setIsVoiceEnabled(!isVoiceEnabled);
+    const newState = !isVoiceEnabled;
+    console.log('🔊 Toggling voice from', isVoiceEnabled, 'to', newState);
+    setIsVoiceEnabled(newState);
+    
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
+      console.log('🔊 Cancelled any ongoing speech');
+    }
+    
+    // Test voice when enabling
+    if (newState && speechRef.current) {
+      console.log('🔊 Testing voice with sample text...');
+      setTimeout(() => {
+        const testUtterance = new SpeechSynthesisUtterance('Voice enabled');
+        testUtterance.rate = 0.8;
+        testUtterance.pitch = 0.9;
+        testUtterance.volume = 0.85;
+        if (selectedVoice) {
+          testUtterance.voice = selectedVoice;
+        }
+        window.speechSynthesis.speak(testUtterance);
+      }, 100);
+    }
+  };
+
+  const handleVoiceSelection = (voiceName: string) => {
+    const voice = availableVoices.find(v => v.name === voiceName);
+    if (voice) {
+      setSelectedVoice(voice);
+      setCustomSelectedVoice(voiceName);
+      localStorage.setItem('chatbot-selected-voice', voiceName);
+      console.log('🔊 Voice selected:', voice.name);
+      
+      // Test the selected voice
+      if (isVoiceEnabled && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        setTimeout(() => {
+          const testUtterance = new SpeechSynthesisUtterance('Voice changed');
+          testUtterance.rate = 0.8;
+          testUtterance.pitch = 0.9;
+          testUtterance.volume = 0.85;
+          testUtterance.voice = voice;
+          window.speechSynthesis.speak(testUtterance);
+        }, 100);
+      }
     }
   };
 
@@ -960,9 +1149,10 @@ export default function Chatbot() {
                         </div>
                       </div>
                       <div className="space-y-4">
-                        {message.caseStudyContent.chapter.blocks.map((block: any, index: number) => (
-                          <CaseStudyBlock key={index} block={block} />
-                        ))}
+                        {/* CaseStudyBlock component not available */}
+                        <div className="text-sm text-stone-600 dark:text-stone-400">
+                          Case study content would be displayed here.
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -989,9 +1179,24 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
             
             {/* Quick Actions */}
-            {showQuickActions && messages.length === 1 && (
-              <div className="mt-4">
-                <QuickActions onActionClick={handleQuickAction} features={features} />
+            {messages.length === 1 && !isLoading && (
+              <div className="flex justify-start mt-4">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleQuickAction('schedule')}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors"
+                  >
+                    <Calendar className="h-3 w-3" />
+                    <span>Schedule a Meeting</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAction('case-study')}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+                  >
+                    <BookOpen className="h-3 w-3" />
+                    <span>View Case Study</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1105,6 +1310,7 @@ export default function Chatbot() {
           businessHours={bookingModalData.businessHours}
           meetingDurations={bookingModalData.meetingDurations}
           message={bookingModalData.message}
+          initialStep={bookingModalData.initialStep}
           onBookingComplete={handleBookingComplete}
         />
       )}
@@ -1253,33 +1459,40 @@ export default function Chatbot() {
       {/* Settings Modal */}
       {showSettings && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Chatbot Settings</h3>
+          <div className="bg-white dark:bg-stone-950 rounded-lg shadow-xl max-w-md w-full p-6 border border-stone-200 dark:border-stone-700">
+            {/* Header */}
+            <div className="bg-stone-900 dark:bg-stone-800 text-white p-4 rounded-lg -m-6 mb-4 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="bg-white dark:bg-stone-100 text-stone-900 dark:text-stone-900 p-2 rounded-full">
+                  <Settings className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-semibold">Chatbot Settings</h3>
+              </div>
               <button
                 onClick={() => setShowSettings(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-stone-400 hover:text-stone-300 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             
             <div className="space-y-4">
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-2">UI Permissions</h4>
-                <p className="text-sm text-gray-600 mb-3">
+              {/* UI Permissions Section */}
+              <div className="border border-stone-200 dark:border-stone-700 rounded-lg p-4 bg-stone-50 dark:bg-stone-900">
+                <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-2">UI Permissions</h4>
+                <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                   Control whether the AI assistant can show you modals and interactive elements.
                 </p>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Calendar Modals</span>
+                    <span className="text-sm text-stone-700 dark:text-stone-300">Calendar Modals</span>
                     <span className={`text-sm px-2 py-1 rounded ${
                       uiPermissionGranted === true 
-                        ? 'bg-green-100 text-green-800' 
+                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' 
                         : uiPermissionGranted === false 
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                        : 'bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200'
                     }`}>
                       {uiPermissionGranted === true ? 'Allowed' : uiPermissionGranted === false ? 'Denied' : 'Not Set'}
                     </span>
@@ -1287,27 +1500,67 @@ export default function Chatbot() {
                   
                   <button
                     onClick={resetUIPermission}
-                    className="w-full px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                    className="w-full px-3 py-2 text-sm bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors"
                   >
                     Reset Permission
                   </button>
                 </div>
               </div>
               
-              <div className="border border-gray-200 rounded-lg p-4">
-                <h4 className="font-medium text-gray-900 mb-2">Voice Settings</h4>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">Text-to-Speech</span>
-                  <button
-                    onClick={toggleVoice}
-                    className={`px-3 py-1 text-sm rounded transition-colors ${
-                      isVoiceEnabled 
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200' 
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                  >
-                    {isVoiceEnabled ? 'Enabled' : 'Disabled'}
-                  </button>
+              {/* Voice Settings Section */}
+              <div className="border border-stone-200 dark:border-stone-700 rounded-lg p-4 bg-stone-50 dark:bg-stone-900">
+                <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-2">Voice Settings</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-stone-700 dark:text-stone-300">Text-to-Speech</span>
+                    <button
+                      onClick={toggleVoice}
+                      className={`px-3 py-1 text-sm rounded transition-colors ${
+                        isVoiceEnabled 
+                          ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800' 
+                          : 'bg-stone-200 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-300 dark:hover:bg-stone-600'
+                      }`}
+                    >
+                      {isVoiceEnabled ? 'Enabled' : 'Disabled'}
+                    </button>
+                  </div>
+                  
+                  {isVoiceEnabled && availableVoices.length > 0 && (
+                    <div className="space-y-2">
+                      <label className="text-sm text-stone-700 dark:text-stone-300 font-medium">Select Voice</label>
+                      <select
+                        value={customSelectedVoice || selectedVoice?.name || ''}
+                        onChange={(e) => handleVoiceSelection(e.target.value)}
+                        className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm"
+                      >
+                        <option value="">Choose a voice...</option>
+                        {availableVoices
+                          .filter(voice => voice.lang.startsWith('en-'))
+                          .sort((a, b) => {
+                            // Sort by quality: Neural > Natural > Premium > others
+                            const getQuality = (name: string) => {
+                              if (name.includes('Neural')) return 4;
+                              if (name.includes('Natural')) return 3;
+                              if (name.includes('Premium')) return 2;
+                              if (name.includes('Enhanced')) return 2;
+                              return 1;
+                            };
+                            return getQuality(b.name) - getQuality(a.name);
+                          })
+                          .map((voice) => (
+                            <option key={voice.name} value={voice.name}>
+                              {voice.name} ({voice.lang})
+                              {voice.name.includes('Neural') ? ' 🧠' : 
+                               voice.name.includes('Natural') ? ' 🌟' : 
+                               voice.name.includes('Premium') ? ' ⭐' : ''}
+                            </option>
+                          ))}
+                      </select>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                        🧠 Neural • 🌟 Natural • ⭐ Premium voices
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1315,7 +1568,7 @@ export default function Chatbot() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowSettings(false)}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                className="px-4 py-2 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 rounded-lg transition-colors"
               >
                 Close
               </button>

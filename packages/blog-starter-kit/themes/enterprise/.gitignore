@@ -1,16 +1,5 @@
 node_modules
 # Keep environment variables out of version control
 .env
-.env.local
-.env.*.local
-
-# Google Service Account credentials
-google-service-account.json
-env.service-account.template
-env.template
-
-# Test files
-test-*.js
-test-*.ts
 
 /generated/prisma
