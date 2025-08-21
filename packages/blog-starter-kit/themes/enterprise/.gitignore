@@ -3,3 +3,9 @@ node_modules
 .env
 
 /generated/prisma
+
+# Sensitive files - DO NOT COMMIT
+google-service-account.json
+.env.local
+.env.production
+.env.development
