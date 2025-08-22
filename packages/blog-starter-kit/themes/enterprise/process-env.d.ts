@@ -39,6 +39,11 @@ declare namespace NodeJS {
 		GOOGLE_CLIENT_X509_CERT_URL: string;
 		GOOGLE_UNIVERSE_DOMAIN: string;
 		GOOGLE_CALENDAR_ID: string;
+
+		// Google OAuth (User consent) for Calendar scheduling
+		GOOGLE_CLIENT_SECRET: string;
+		GOOGLE_REDIRECT_URI: string;
+		GOOGLE_OAUTH_REFRESH_TOKEN: string;
 		GOOGLE_DELEGATED_SUBJECT?: string;
 		
 		// Email Configuration

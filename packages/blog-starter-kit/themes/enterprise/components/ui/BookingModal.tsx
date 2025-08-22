@@ -129,20 +129,21 @@ export function BookingModal({
           meetingType: meetingType
         });
         
-        // Call the booking API
-        const response = await fetch('/api/book', {
+        // Call the booking API (App Router)
+        const response = await fetch('/api/schedule/book', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            name: contactData.name,
-            email: contactData.email,
-            timezone: contactData.timezone,
-            startTime: selectedSlot.start,
-            endTime: selectedSlot.end,
-            meetingType: meetingType,
-            notes: `Meeting type: ${meetingType}`
+            startISO: selectedSlot.start,
+            durationMinutes: selectedSlot.duration,
+            timeZone: contactData.timezone,
+            attendeeEmail: contactData.email,
+            attendeeName: contactData.name,
+            summary: 'Meeting with John',
+            description: `Booked via site UI. Meeting type: ${meetingType}`,
+            sendUpdates: 'all'
           }),
         });
 

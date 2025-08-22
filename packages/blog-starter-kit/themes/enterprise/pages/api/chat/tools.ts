@@ -84,75 +84,41 @@ try {
 // Meeting duration options (in minutes)
 const MEETING_DURATIONS = [30, 60];
 
-// Function to create Google Auth client from environment variables
+// Function to create Google Auth client from environment variables (OAuth)
 async function createGoogleAuthClient() {
-  if (!process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_CLIENT_EMAIL) {
-    console.log('🔍 Debug: Google credentials not found in environment variables');
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_OAUTH_REFRESH_TOKEN) {
+    console.log('🔍 Debug: OAuth credentials not found in environment variables');
+    console.log('🔍 Debug: Need GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_OAUTH_REFRESH_TOKEN');
     return null;
   }
 
   try {
-    // Normalize private key from environment (handles quotes, CRLF, wrapped lines, and base64 variant)
-    let normalizedPrivateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    console.log('🔍 Debug: Creating OAuth client from environment variables');
+    
+    // Create OAuth2 client
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
 
-    // Prefer base64 variable when present (overrides GOOGLE_PRIVATE_KEY)
-    if (process.env.GOOGLE_PRIVATE_KEY_BASE64) {
-      try {
-        normalizedPrivateKey = Buffer.from(String(process.env.GOOGLE_PRIVATE_KEY_BASE64), 'base64').toString('utf8');
-      } catch (_) {
-        // ignore; will fall back to GOOGLE_PRIVATE_KEY content
-      }
-    }
+    // Set credentials with refresh token
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_OAUTH_REFRESH_TOKEN
+    });
 
-    // Remove surrounding quotes only if they wrap the whole value
-    normalizedPrivateKey = normalizedPrivateKey.replace(/^\s*"([\s\S]*)"\s*$/m, '$1');
-    normalizedPrivateKey = normalizedPrivateKey.replace(/^\s*'([\s\S]*)'\s*$/m, '$1');
-
-    // Convert escaped newlines and normalize line endings
-    normalizedPrivateKey = normalizedPrivateKey
-      .replace(/\\r\\n/g, '\n')
-      .replace(/\\n/g, '\n')
-      .replace(/\r\n/g, '\n')
-      .replace(/\r/g, '\n');
-
-    // Fix split header/footer tokens like "BEGIN PRIVATE\nKEY"
-    normalizedPrivateKey = normalizedPrivateKey
-      .replace(/BEGIN\s+PRIVATE\s+KEY/g, 'BEGIN PRIVATE KEY')
-      .replace(/END\s+PRIVATE\s+KEY/g, 'END PRIVATE KEY');
-
-    // Final trim
-    normalizedPrivateKey = normalizedPrivateKey.trim();
-
-    // Create service account credentials from environment variables
-    const credentials = {
-      type: process.env.GOOGLE_TYPE || 'service_account',
-      project_id: process.env.GOOGLE_PROJECT_ID,
-      private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-      private_key: normalizedPrivateKey || undefined,
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      auth_uri: process.env.GOOGLE_AUTH_URI,
-      token_uri: process.env.GOOGLE_TOKEN_URI,
-      auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
-      client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-      universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN || 'googleapis.com'
-    };
-
-    console.log('🔍 Debug: Creating Google Auth client from environment variables');
+    // Test the auth client to make sure it works
     const auth = new google.auth.GoogleAuth({
-      credentials,
+      authClient: oauth2Client,
       scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
     });
     
-    // Test the auth client to make sure it works
     await auth.getClient();
+    console.log('🔍 Debug: OAuth client created successfully');
     return auth;
   } catch (error) {
-    console.error('🔍 Debug: Error creating Google Auth client:', error instanceof Error ? error.message : String(error));
-    // Provide extra hints in logs for common formatting issues
-    const hasHeader = (process.env.GOOGLE_PRIVATE_KEY || '').includes('BEGIN');
-    console.log('🔍 Debug: Private key present:', Boolean(process.env.GOOGLE_PRIVATE_KEY), 'Has header token:', hasHeader);
-    console.log('🔍 Debug: SSL/TLS error detected, using mock data');
+    console.error('🔍 Debug: Error creating OAuth client:', error instanceof Error ? error.message : String(error));
+    console.log('🔍 Debug: OAuth error detected, using mock data');
     return null;
   }
 }

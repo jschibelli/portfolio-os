@@ -1,12 +1,24 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@starter-kit/tsconfig/nextjs.json",
-	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-	"exclude": ["node_modules"],
-	"compilerOptions": {
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./*"]
-		}
-	}
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@starter-kit/tsconfig/nextjs.json",
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "strictNullChecks": true
+  }
 }

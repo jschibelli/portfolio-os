@@ -637,8 +637,47 @@ export default function Chatbot() {
         break;
       case 'show_booking_modal':
         console.log('🔍 Opening booking modal with data:', action.data);
-        setBookingModalData(action.data);
-        setIsBookingModalOpen(true);
+        // If caller didn't supply slots, fetch from API for real data
+        (async () => {
+          try {
+            const now = new Date();
+            const end = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York';
+            const res = await fetch('/api/schedule/slots', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                durationMinutes: (action.data?.meetingDurations?.[0]) || 30,
+                startISO: now.toISOString(),
+                endISO: end.toISOString(),
+                timeZone: tz,
+                dayStartHour: action.data?.businessHours?.start ?? 9,
+                dayEndHour: action.data?.businessHours?.end ?? 18,
+                maxCandidates: 24,
+              })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const slots = (data.slots || []).map((s: any) => ({ start: s.startISO, end: s.endISO, duration: (action.data?.meetingDurations?.[0]) || 30 }));
+              setBookingModalData({
+                availableSlots: slots,
+                timezone: action.data?.timezone || tz,
+                businessHours: action.data?.businessHours || { start: 9, end: 18, timezone: tz },
+                meetingDurations: action.data?.meetingDurations || [30, 60],
+                message: 'Schedule a meeting with John',
+                initialStep: action.data?.initialStep || 'contact',
+              });
+            } else {
+              // Fallback to provided data if API fails
+              setBookingModalData(action.data);
+            }
+          } catch (err) {
+            console.error('Failed to fetch real slots, falling back to provided data', err);
+            setBookingModalData(action.data);
+          } finally {
+            setIsBookingModalOpen(true);
+          }
+        })();
         break;
       case 'show_existing_booking':
         console.log('🔍 Showing existing booking:', action.data.booking);
@@ -705,7 +744,7 @@ export default function Chatbot() {
     timezone: string;
     slot: TimeSlot;
   }) => {
-    // Add a success message placeholder; real confirmation will follow from /api/book
+    // Add a success message placeholder; real confirmation will follow from /api/schedule/book
     const successMessage: Message = {
       id: (Date.now() + 1).toString(),
       text: `⌛ Booking your ${bookingData.slot.duration}-minute meeting for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}...`,
@@ -720,19 +759,20 @@ export default function Chatbot() {
     
     try {
       // Call the booking API to actually create the calendar event
-      const response = await fetch('/api/book', {
+      const response = await fetch('/api/schedule/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: confirmationModalData.bookingDetails.name,
-          email: confirmationModalData.bookingDetails.email,
-          timezone: confirmationModalData.bookingDetails.timezone,
-          startTime: confirmationModalData.bookingDetails.startTime,
-          endTime: confirmationModalData.bookingDetails.endTime,
-          meetingType: confirmationModalData.bookingDetails.meetingType || 'consultation',
-          notes: 'Meeting scheduled through chatbot confirmation modal'
+          startISO: confirmationModalData.bookingDetails.startTime,
+          durationMinutes: confirmationModalData.bookingDetails.duration,
+          timeZone: confirmationModalData.bookingDetails.timezone,
+          attendeeEmail: confirmationModalData.bookingDetails.email,
+          attendeeName: confirmationModalData.bookingDetails.name,
+          summary: 'Meeting with John',
+          description: 'Booked via chatbot confirmation modal',
+          sendUpdates: 'all'
         }),
       });
 
