@@ -60,19 +60,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'End time must be after start time' });
     }
 
-    // Check if Google Calendar service account is configured
-    if (!process.env.GOOGLE_SERVICE_ACCOUNT_PATH) {
-      return res.status(500).json({ error: 'Google Calendar service account not configured' });
+    // Prefer env-based credentials (service account JSON values)
+    let auth: any;
+    if (process.env.GOOGLE_PRIVATE_KEY && process.env.GOOGLE_CLIENT_EMAIL) {
+      auth = new google.auth.GoogleAuth({
+        credentials: {
+          type: process.env.GOOGLE_TYPE || 'service_account',
+          project_id: process.env.GOOGLE_PROJECT_ID,
+          private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+          private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/"/g, '').trim(),
+          client_email: process.env.GOOGLE_CLIENT_EMAIL,
+          client_id: process.env.GOOGLE_CLIENT_ID,
+
+        },
+        scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
+      });
+    } else if (process.env.GOOGLE_SERVICE_ACCOUNT_PATH) {
+      // Fallback to key file if provided
+      const serviceAccountPath = path.join(process.cwd(), process.env.GOOGLE_SERVICE_ACCOUNT_PATH);
+      auth = new google.auth.GoogleAuth({
+        keyFile: serviceAccountPath,
+        scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
+      });
+    } else {
+      return res.status(500).json({ error: 'Google Calendar credentials not configured' });
     }
 
-    // Create service account client
-    const serviceAccountPath = path.join(process.cwd(), process.env.GOOGLE_SERVICE_ACCOUNT_PATH);
-    const auth = new google.auth.GoogleAuth({
-      keyFile: serviceAccountPath,
-      scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
-    });
-
-    // Create Google Calendar event
+    // Create Google Calendar event with Meet link
     const event = {
       summary: `Meeting with ${name}`,
       description: notes || `Meeting scheduled via website chatbot.\n\nContact: ${email}\nMeeting Type: ${meetingType || 'General Discussion'}`,
@@ -83,6 +97,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       end: {
         dateTime: end.toISOString(),
         timeZone: timezone,
+      },
+      conferenceData: {
+        createRequest: {
+          requestId: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          conferenceSolutionKey: { type: 'hangoutsMeet' },
+        },
       },
       // Note: Service accounts cannot add attendees without Domain-Wide Delegation
       // The event will be created in John's calendar, and the confirmation email will be sent separately
@@ -99,10 +119,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       auth: auth,
       calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
       requestBody: event,
+      conferenceDataVersion: 1,
       sendUpdates: 'none', // Don't send invitations (service account limitation)
     });
 
     const googleEventId = calendarResponse.data.id;
+    const meetLink = (calendarResponse.data as any)?.hangoutLink || (calendarResponse.data as any)?.conferenceData?.entryPoints?.find((e: any) => e.entryPointType === 'video')?.uri || null;
+    const htmlLink = (calendarResponse.data as any)?.htmlLink || null;
 
     // Store booking in database (if available)
     let booking = null;
@@ -154,6 +177,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             <p><strong>Type:</strong> ${meetingType || 'General Discussion'}</p>
             ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
                          <p>The meeting has been added to John's calendar. If you need to reschedule, please contact John at jschibelli@gmail.com.</p>
+            ${meetLink ? `<p><strong>Google Meet:</strong> <a href="${meetLink}">${meetLink}</a></p>` : ''}
             <p>Looking forward to our meeting!</p>
             <p>Best regards,<br>John Schibelli</p>
           `
@@ -188,7 +212,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: booking?.id || 'temp-' + Date.now(),
         startTime: start,
         endTime: end,
-        googleEventId
+        googleEventId,
+        googleMeetLink: meetLink,
+        googleEventLink: htmlLink
       },
       message: 'Meeting booked successfully! Check your email for confirmation.'
     });

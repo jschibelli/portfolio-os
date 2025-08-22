@@ -36,19 +36,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Days must be between 1 and 30' });
     }
 
-    // Check if Google Calendar credentials are configured
-    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
-      return res.status(500).json({ error: 'Google Calendar not configured' });
+    // Check if Google Calendar service account credentials are configured
+    if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
+      return res.status(500).json({ error: 'Google Calendar service account not configured' });
     }
 
-    // Create OAuth2 client
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    // Create service account client
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        type: process.env.GOOGLE_TYPE || 'service_account',
+        project_id: process.env.GOOGLE_PROJECT_ID,
+        private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n').replace(/^["']|["']$/g, ''),
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        client_id: process.env.GOOGLE_CLIENT_ID
+      },
+      scopes: ['https://www.googleapis.com/auth/calendar']
     });
 
     // Calculate time range
@@ -57,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Get busy times from Google Calendar
     const busyResponse = await calendar.freebusy.query({
-      auth: oauth2Client,
+      auth: auth,
       requestBody: {
         timeMin: now.toISOString(),
         timeMax: endDate.toISOString(),

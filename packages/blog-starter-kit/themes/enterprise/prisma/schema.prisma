@@ -21,6 +21,9 @@ model Booking {
   notes         String?
   status        String    // e.g., CONFIRMED
   googleEventId String?
+  reminder24hSent Boolean  @default(false)
+  reminder10mSent Boolean  @default(false)
+  followupSent   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
