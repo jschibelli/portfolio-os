@@ -1577,7 +1577,7 @@ async function showBookingModal(parameters: any) {
           timezone: tz,
           businessHours,
           meetingDurations,
-          message: 'Schedule a meeting with John (Mock Data)',
+          message: 'Schedule a meeting with John (Demo Mode - Google Calendar not configured)',
           initialStep: preferredTime ? 'calendar' : 'contact'
         }
       };
@@ -1612,7 +1612,7 @@ async function showBookingModal(parameters: any) {
           timezone: tz,
           businessHours,
           meetingDurations,
-          message: 'Schedule a meeting with John (Temporary fallback while calendar connects)',
+          message: 'Schedule a meeting with John (Demo Mode - Calendar connection failed)',
           initialStep: preferredTime ? 'calendar' : 'contact'
         }
       };
