@@ -705,17 +705,13 @@ export default function Chatbot() {
     timezone: string;
     slot: TimeSlot;
   }) => {
-    // Don't close the modal - let it show the confirmation step
-    // The modal will handle its own closing after the user clicks "Done"
-    
-    // Add a success message to the chat
+    // Add a success message placeholder; real confirmation will follow from /api/book
     const successMessage: Message = {
       id: (Date.now() + 1).toString(),
-      text: `✅ Meeting booked successfully! Your ${bookingData.slot.duration}-minute meeting with John has been scheduled for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}. You'll receive a calendar invitation via email.`,
+      text: `⌛ Booking your ${bookingData.slot.duration}-minute meeting for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}...`,
       sender: 'bot',
       timestamp: new Date(),
     };
-    
     setMessages(prev => [...prev, successMessage]);
   };
 
@@ -751,14 +747,18 @@ export default function Chatbot() {
       setIsConfirmationModalOpen(false);
       setConfirmationModalData(null);
       
-      // Add a success message to the chat
-      const successMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: `✅ Meeting confirmed and booked! Your ${confirmationModalData.bookingDetails.duration}-minute meeting with John has been scheduled for ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}. You'll receive a calendar invitation via email.`,
-        sender: 'bot',
-        timestamp: new Date(),
-      };
-      
+      // Add a success message to the chat with Meet link and Add to Calendar
+      const confirmMsg: string[] = [];
+      confirmMsg.push(`✅ Meeting confirmed and booked!`);
+      confirmMsg.push(`• When: ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}`);
+      if (result?.booking?.googleMeetLink) {
+        confirmMsg.push(`• Meet: ${result.booking.googleMeetLink}`);
+      }
+      if (result?.booking?.googleEventLink) {
+        confirmMsg.push(`• Calendar: ${result.booking.googleEventLink}`);
+      }
+      const messageText = confirmMsg.join('\n');
+      const successMessage: Message = { id: (Date.now() + 1).toString(), text: messageText, sender: 'bot', timestamp: new Date() };
       setMessages(prev => [...prev, successMessage]);
       
     } catch (error) {

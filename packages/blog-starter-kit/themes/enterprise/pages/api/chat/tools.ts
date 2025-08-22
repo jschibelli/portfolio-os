@@ -9,6 +9,34 @@ if (process.env.NODE_ENV === 'development') {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     console.log('⚠️ SSL verification disabled for development');
   }
+  
+  // Fix for Node.js 20+ SSL issues with Google Auth
+  if (process.env.FIX_SSL_ISSUES === 'true') {
+    console.log('🔧 Applying SSL fix for Node.js 20+ compatibility');
+    
+    // Set Node.js to use legacy OpenSSL provider
+    process.env.NODE_OPTIONS = '--openssl-legacy-provider';
+    
+    // Alternative: Monkey patch the crypto module
+    try {
+      const crypto = require('crypto');
+      const originalSign = crypto.Sign.prototype.sign;
+      crypto.Sign.prototype.sign = function(key: any, encoding: any) {
+        try {
+          return originalSign.call(this, key, encoding);
+        } catch (error: any) {
+          if (error.code === 'ERR_OSSL_UNSUPPORTED') {
+            console.log('🔍 Debug: SSL issue detected, using alternative signing method');
+            // Try with different encoding
+            return originalSign.call(this, key, 'base64');
+          }
+          throw error;
+        }
+      };
+    } catch (error) {
+      console.log('🔍 Debug: Could not apply crypto patch:', error);
+    }
+  }
 }
 
 // Conditional Prisma import
@@ -57,35 +85,74 @@ try {
 const MEETING_DURATIONS = [30, 60];
 
 // Function to create Google Auth client from environment variables
-function createGoogleAuthClient() {
+async function createGoogleAuthClient() {
   if (!process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_CLIENT_EMAIL) {
     console.log('🔍 Debug: Google credentials not found in environment variables');
     return null;
   }
 
   try {
+    // Normalize private key from environment (handles quotes, CRLF, wrapped lines, and base64 variant)
+    let normalizedPrivateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+
+    // Prefer base64 variable when present (overrides GOOGLE_PRIVATE_KEY)
+    if (process.env.GOOGLE_PRIVATE_KEY_BASE64) {
+      try {
+        normalizedPrivateKey = Buffer.from(String(process.env.GOOGLE_PRIVATE_KEY_BASE64), 'base64').toString('utf8');
+      } catch (_) {
+        // ignore; will fall back to GOOGLE_PRIVATE_KEY content
+      }
+    }
+
+    // Remove surrounding quotes only if they wrap the whole value
+    normalizedPrivateKey = normalizedPrivateKey.replace(/^\s*"([\s\S]*)"\s*$/m, '$1');
+    normalizedPrivateKey = normalizedPrivateKey.replace(/^\s*'([\s\S]*)'\s*$/m, '$1');
+
+    // Convert escaped newlines and normalize line endings
+    normalizedPrivateKey = normalizedPrivateKey
+      .replace(/\\r\\n/g, '\n')
+      .replace(/\\n/g, '\n')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n');
+
+    // Fix split header/footer tokens like "BEGIN PRIVATE\nKEY"
+    normalizedPrivateKey = normalizedPrivateKey
+      .replace(/BEGIN\s+PRIVATE\s+KEY/g, 'BEGIN PRIVATE KEY')
+      .replace(/END\s+PRIVATE\s+KEY/g, 'END PRIVATE KEY');
+
+    // Final trim
+    normalizedPrivateKey = normalizedPrivateKey.trim();
+
     // Create service account credentials from environment variables
     const credentials = {
       type: process.env.GOOGLE_TYPE || 'service_account',
       project_id: process.env.GOOGLE_PROJECT_ID,
       private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
-      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Unescape newlines
+      private_key: normalizedPrivateKey || undefined,
       client_email: process.env.GOOGLE_CLIENT_EMAIL,
       client_id: process.env.GOOGLE_CLIENT_ID,
       auth_uri: process.env.GOOGLE_AUTH_URI,
       token_uri: process.env.GOOGLE_TOKEN_URI,
       auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_X509_CERT_URL,
       client_x509_cert_url: process.env.GOOGLE_CLIENT_X509_CERT_URL,
-      universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN
+      universe_domain: process.env.GOOGLE_UNIVERSE_DOMAIN || 'googleapis.com'
     };
 
     console.log('🔍 Debug: Creating Google Auth client from environment variables');
-    return new google.auth.GoogleAuth({
+    const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'],
     });
+    
+    // Test the auth client to make sure it works
+    await auth.getClient();
+    return auth;
   } catch (error) {
-    console.error('🔍 Debug: Error creating Google Auth client:', error);
+    console.error('🔍 Debug: Error creating Google Auth client:', error instanceof Error ? error.message : String(error));
+    // Provide extra hints in logs for common formatting issues
+    const hasHeader = (process.env.GOOGLE_PRIVATE_KEY || '').includes('BEGIN');
+    console.log('🔍 Debug: Private key present:', Boolean(process.env.GOOGLE_PRIVATE_KEY), 'Has header token:', hasHeader);
+    console.log('🔍 Debug: SSL/TLS error detected, using mock data');
     return null;
   }
 }
@@ -529,7 +596,7 @@ async function getAvailability(parameters: any) {
     }
 
     // Create Google Auth client from environment variables
-    const auth = createGoogleAuthClient();
+    const auth = await createGoogleAuthClient();
     if (!auth) {
       console.log('🔍 Debug: Could not create Google Auth client, using mock data');
       return getMockAvailability(parameters);
@@ -846,14 +913,14 @@ async function bookMeeting(parameters: any) {
     }
 
     // Create Google Auth client from environment variables
-    const auth = createGoogleAuthClient();
+    const auth = await createGoogleAuthClient();
     if (!auth) {
       throw new Error('Google Calendar API is not configured. Please set up Google service account environment variables.');
     }
 
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Create calendar event with Google Meet
+    // Create calendar event and request Google Meet link
     const event = {
       summary: `${meetingType || 'Meeting'} with ${name}`,
       description: `${notes || 'Meeting scheduled through chatbot'}\n\nGoogle Meet link will be available in the calendar event.`,
@@ -864,6 +931,12 @@ async function bookMeeting(parameters: any) {
       end: {
         dateTime: endTime,
         timeZone: 'America/New_York', // Use fixed timezone format
+      },
+      conferenceData: {
+        createRequest: {
+          requestId: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          conferenceSolutionKey: { type: 'hangoutsMeet' },
+        },
       },
       // Note: Google Meet integration requires additional setup
       // For now, we'll create the calendar event without conference data
@@ -883,6 +956,7 @@ async function bookMeeting(parameters: any) {
       auth: auth,
       calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
       resource: event,
+      conferenceDataVersion: 1,
       sendUpdates: 'none', // Don't send invitations (service account limitation)
     });
 
@@ -969,15 +1043,23 @@ async function bookMeeting(parameters: any) {
       }
     }
 
+    // Extract Meet link if available
+    const meetLink =
+      (calendarResponse.data as any)?.hangoutLink ||
+      (calendarResponse.data as any)?.conferenceData?.entryPoints?.find((e: any) => e.entryPointType === 'video')?.uri ||
+      null;
+
     return {
       success: true,
       booking: {
         id: bookingId || 'google-calendar-event',
         startTime: new Date(startTime),
         endTime: new Date(endTime),
-        googleEventId: calendarResponse.data.id
+        googleEventId: calendarResponse.data.id,
+        googleMeetLink: meetLink,
+        googleEventLink: (calendarResponse.data as any)?.htmlLink || null
       },
-      message: `Meeting successfully scheduled in Google Calendar!${emailSent ? ' You should receive a confirmation email shortly.' : ''} Event ID: ${calendarResponse.data.id}`
+      message: `Meeting successfully scheduled in Google Calendar!${emailSent ? ' You should receive a confirmation email shortly.' : ''} ${meetLink ? `Meet link: ${meetLink}` : ''} Event ID: ${calendarResponse.data.id}`
     };
   } catch (error: any) {
     console.error('Error booking meeting:', error);
@@ -1484,7 +1566,7 @@ async function showBookingModal(parameters: any) {
     }
 
     // Create Google Auth client from environment variables
-    const auth = createGoogleAuthClient();
+    const auth = await createGoogleAuthClient();
     if (!auth) {
       console.log('🔍 Debug: Could not create Google Auth client, using mock data');
       return {
@@ -1504,20 +1586,37 @@ async function showBookingModal(parameters: any) {
     const calendar = google.calendar({ version: 'v3', auth });
     const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
 
-    // Get busy times from Google Calendar
+    // Get busy times from Google Calendar with graceful fallback
     console.log('🔍 Debug: Fetching busy times for booking modal...');
-    const busyResponse = await calendar.freebusy.query({
-      auth: auth,
-      requestBody: {
-        timeMin: startDate.toISOString(),
-        timeMax: endDate.toISOString(),
-        items: [{ id: calendarId }],
-        timeZone: timezone,
-      },
-    });
-
-    const busyTimes = busyResponse.data.calendars?.[calendarId]?.busy || [];
-    console.log('🔍 Debug: Found busy times for booking modal:', busyTimes.length);
+    let busyTimes: any[] = [];
+    try {
+      const busyResponse = await calendar.freebusy.query({
+        auth: auth,
+        requestBody: {
+          timeMin: startDate.toISOString(),
+          timeMax: endDate.toISOString(),
+          items: [{ id: calendarId }],
+          timeZone: timezone,
+        },
+      });
+      busyTimes = busyResponse.data.calendars?.[calendarId]?.busy || [];
+      console.log('🔍 Debug: Found busy times for booking modal:', busyTimes.length);
+    } catch (err: any) {
+      console.log('🔍 Debug: freeBusy query failed in showBookingModal:', err?.message || err);
+      // SSL/TLS error or any auth error → fall back to mock slots but KEEP the flow interactive
+      return {
+        type: 'ui_action',
+        action: 'show_booking_modal',
+        data: {
+          availableSlots: getMockAvailability({ timezone, days }).availableSlots,
+          timezone: tz,
+          businessHours,
+          meetingDurations,
+          message: 'Schedule a meeting with John (Temporary fallback while calendar connects)',
+          initialStep: preferredTime ? 'calendar' : 'contact'
+        }
+      };
+    }
 
     // Generate ALL available time slots
     const allAvailableSlots = generateAvailableSlots(startDate, endDate, busyTimes, timezone);

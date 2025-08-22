@@ -34,6 +34,18 @@ GOOGLE_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/yo
 GOOGLE_UNIVERSE_DOMAIN=googleapis.com
 ```
 
+#### Validation checklist (run locally before starting dev):
+- GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY are SET
+- GOOGLE_PRIVATE_KEY contains the BEGIN/END lines and uses \n (not literal newlines in .env)
+- GOOGLE_CALENDAR_ID is a calendar the service account has access to
+- Optional dev fix: `FIX_SSL_ISSUES=true` (Node 20+ OpenSSL compatibility)
+
+You can quickly verify loaded vars:
+```bash
+# PowerShell
+Get-Content .env.local | Select-String "GOOGLE_"
+```
+
 ### 3. Feature Flags (Public)
 ```env
 # Enable/disable features on the frontend
