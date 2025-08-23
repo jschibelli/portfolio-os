@@ -129,20 +129,21 @@ export function BookingModal({
           meetingType: meetingType
         });
         
-        // Call the booking API
-        const response = await fetch('/api/book', {
+        // Call the booking API (App Router)
+        const response = await fetch('/api/schedule/book', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            name: contactData.name,
-            email: contactData.email,
-            timezone: contactData.timezone,
-            startTime: selectedSlot.start,
-            endTime: selectedSlot.end,
-            meetingType: meetingType,
-            notes: `Meeting type: ${meetingType}`
+            startISO: selectedSlot.start,
+            durationMinutes: selectedSlot.duration,
+            timeZone: contactData.timezone,
+            attendeeEmail: contactData.email,
+            attendeeName: contactData.name,
+            summary: 'Meeting with John',
+            description: `Booked via site UI. Meeting type: ${meetingType}`,
+            sendUpdates: 'all'
           }),
         });
 
@@ -266,6 +267,21 @@ export function BookingModal({
           {currentStep === 'contact' && (
             <div className="space-y-4 animate-in fade-in duration-200">
               <p className="text-gray-600 text-sm sm:text-base">{message}</p>
+              
+              {/* Demo Mode Notice */}
+              {message.includes('Demo Mode') && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="flex items-start space-x-2">
+                    <div className="w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-yellow-600 text-xs font-bold">ℹ</span>
+                    </div>
+                    <div className="text-sm text-yellow-800">
+                      <p className="font-medium">Demo Mode Active</p>
+                      <p>This is showing sample data. To see real calendar availability, configure Google Calendar API in your environment variables.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="space-y-2">
