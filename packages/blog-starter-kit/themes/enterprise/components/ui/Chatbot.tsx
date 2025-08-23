@@ -48,7 +48,9 @@ interface PageContext {
   title?: string;
   content?: string;
   url?: string;
-  type?: 'article' | 'page' | 'post';
+  type?: 'home' | 'about' | 'work' | 'portfolio' | 'contact' | 'blog' | 'services' | 'case-study' | 'article' | 'page' | 'post';
+  specificType?: string;
+  pathname?: string;
 }
 
 export default function Chatbot() {
@@ -66,10 +68,9 @@ export default function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
-  const [customSelectedVoice, setCustomSelectedVoice] = useState<string>('');
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [selectedOpenAIVoice, setSelectedOpenAIVoice] = useState<string>('shimmer');
+  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
   const [conversationHistory, setConversationHistory] = useState<ConversationHistory[]>([]);
   const [conversationId, setConversationId] = useState<string>('');
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
@@ -149,13 +150,66 @@ export default function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Function to detect current page context
+  // Function to generate personalized initial response based on page context
+  const generatePersonalizedWelcome = (context: PageContext | null): string => {
+    if (!context) {
+      return "Hi! I'm John's AI assistant. I'm here to help you learn about John's background, experience, and expertise. What would you like to know?";
+    }
+
+    switch (context.type) {
+      case 'home':
+        return "Welcome to John's portfolio! I'm his AI assistant, and I'm excited to help you explore his work and background. I can tell you about his experience as a Senior Front-End Developer, show you his latest projects, help you schedule a consultation, or answer any questions about his skills and expertise. What interests you most?";
+      
+      case 'about':
+        return "Hi! I see you're learning about John's background. I'm his AI assistant and can provide deeper insights into his professional journey, technical skills, and experience. I can also help you understand his approach to development, his specializations in React and Next.js, or connect you for a consultation. What would you like to know more about?";
+      
+      case 'work':
+      case 'portfolio':
+        return "Great choice exploring John's work! I'm his AI assistant and can provide detailed insights about any of the projects you see here. I can explain the technologies used, development challenges overcome, or help you understand how John's expertise might apply to your own project needs. I can also help you schedule a consultation to discuss your project. What catches your eye?";
+      
+      case 'contact':
+        return "Perfect timing! I'm John's AI assistant and I can help make connecting with John even easier. I can schedule a consultation for you, help you prepare questions about your project, provide more details about John's services, or gather some initial project information to make your conversation more productive. How would you like to get started?";
+      
+      case 'blog':
+        return "Welcome to John's blog! I'm his AI assistant and can help you navigate his latest articles about front-end development, React, Next.js, and industry insights. I can summarize articles, explain technical concepts, or help you find content on specific topics. I can also tell you more about John's expertise behind these articles. What interests you?";
+      
+      case 'services':
+        const serviceMessages: { [key: string]: string } = {
+          'web-development': "I see you're interested in John's web development services! I'm his AI assistant and can provide detailed information about his approach to building modern, responsive websites using React, Next.js, and TypeScript. I can explain his development process, show you relevant case studies, or help you schedule a consultation to discuss your specific needs. What would you like to know?",
+          'mobile-development': "Exploring mobile development options? I'm John's AI assistant and can tell you about his expertise in React Native and mobile-first approaches. I can explain how he creates seamless mobile experiences, discuss relevant projects, or help you schedule a consultation for your mobile app needs. What's your project vision?",
+          'ui-ux-design': "Interested in UI/UX design? I'm John's AI assistant and can share insights about his design philosophy, user-centered approach, and how he creates intuitive interfaces. I can show you design case studies, explain his process from wireframes to implementation, or help schedule a design consultation. What's your design challenge?",
+          'consulting': "Looking for technical consulting? I'm John's AI assistant and can explain his approach to helping businesses with their development challenges. Whether it's architecture planning, code reviews, team guidance, or strategic technical decisions, I can outline how John can help and schedule a consultation to discuss your specific needs. What's your biggest technical challenge?",
+          'cloud-solutions': "Interested in cloud solutions? I'm John's AI assistant and can tell you about John's experience with AWS, Vercel, and modern deployment strategies. I can explain his approach to scalable cloud architecture, DevOps practices, or help you schedule a consultation for your cloud needs. What's your infrastructure challenge?",
+          'maintenance-support': "Need ongoing support? I'm John's AI assistant and can explain John's approach to maintaining and supporting existing applications. Whether it's bug fixes, performance optimization, security updates, or feature enhancements, I can outline support options and help you schedule a consultation. What kind of support do you need?"
+        };
+        return serviceMessages[context.specificType || ''] || "I see you're exploring John's services! I'm his AI assistant and can provide detailed information about his web development, mobile development, UI/UX design, consulting, cloud solutions, and maintenance services. I can explain his approach, show relevant case studies, or help you schedule a consultation. Which service interests you most?";
+      
+      case 'case-study':
+        if (context.specificType) {
+          return `I see you're reading the ${context.specificType.replace('-', ' ')} case study! I'm John's AI assistant and can provide additional insights about this project - the challenges faced, technical decisions made, lessons learned, or how similar approaches might work for your project. I can also show you interactive elements of this case study or help you schedule a consultation to discuss how John's expertise could help with your own project. What would you like to explore?`;
+        }
+        return "Welcome to John's case studies! I'm his AI assistant and can provide deep insights into any of these real-world projects. I can explain the technical challenges, solutions implemented, technologies used, or help you understand how John's approach might apply to your own project. Which case study interests you most?";
+      
+      case 'article':
+        if (context.title) {
+          return `I see you're reading "${context.title}"! I'm John's AI assistant and can help you understand this article better, explain any technical concepts, discuss how these ideas might apply to your projects, or connect you with John for deeper discussions. I can also recommend related articles or help you schedule a consultation if this topic is relevant to your needs. What would you like to explore?`;
+        }
+        return "I see you're reading one of John's articles! I'm his AI assistant and can help explain technical concepts, discuss practical applications, suggest related content, or connect you with John for deeper conversations about the topics covered. What aspects interest you most?";
+      
+      default:
+        if (context.title) {
+          return `Hi! I'm John's AI assistant. I can see you're on the "${context.title}" page. I can help you learn about John's background, skills, experience, navigate his work, or assist with scheduling a consultation. What would you like to know?`;
+        }
+        return "Hi! I'm John's AI assistant. I'm here to help you learn about John's background, experience, and expertise as a Senior Front-End Developer. I can tell you about his projects, help you schedule a consultation, or answer any questions you have. What interests you?";
+    }
+  };
+
+  // Enhanced function to detect current page context with specific page types
   const detectPageContext = (): PageContext | null => {
     if (typeof window === 'undefined') return null;
     
@@ -170,11 +224,41 @@ export default function Chatbot() {
       // Try to extract title from the page
       const pageHeading = document.querySelector('h1, .article-title, .post-title, [data-testid="article-title"], .title, .headline')?.textContent?.trim();
       
-      // Determine page type based on pathname
-      let pageType: 'article' | 'page' = 'page';
-      if (pathname.includes('/') && pathname !== '/' && pathname !== '/blog' && pathname !== '/about' && pathname !== '/work' && pathname !== '/contact') {
+      // Determine specific page type based on pathname and content
+      let pageType: 'home' | 'about' | 'work' | 'portfolio' | 'contact' | 'blog' | 'services' | 'case-study' | 'article' | 'page' = 'page';
+      let specificType = '';
+      
+      // Analyze pathname to determine page type
+      if (pathname === '/' || pathname === '/index') {
+        pageType = 'home';
+      } else if (pathname.includes('/about')) {
+        pageType = 'about';
+      } else if (pathname.includes('/work') || pathname.includes('/portfolio')) {
+        pageType = 'work';
+        specificType = pathname.includes('/portfolio') ? 'portfolio' : 'work';
+      } else if (pathname.includes('/contact')) {
+        pageType = 'contact';
+      } else if (pathname.includes('/blog') && pathname !== '/blog') {
+        pageType = 'article';
+      } else if (pathname === '/blog') {
+        pageType = 'blog';
+      } else if (pathname.includes('/services')) {
+        pageType = 'services';
+        // Extract specific service type
+        if (pathname.includes('/web-development')) specificType = 'web-development';
+        else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
+        else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
+        else if (pathname.includes('/consulting')) specificType = 'consulting';
+        else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
+        else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
+      } else if (pathname.includes('/case-studies') || pathname.includes('/case-study')) {
+        pageType = 'case-study';
+        // Extract case study name from URL
+        const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
+        if (match) specificType = match[1];
+      } else if (pathname !== '/') {
         // Check if it looks like an article (has content and title)
-        if (pageHeading || (pageContent && pageContent.length > 500)) {
+        if (pageHeading && (pageContent && pageContent.length > 500)) {
           pageType = 'article';
         }
       }
@@ -185,7 +269,9 @@ export default function Chatbot() {
           title: pageHeading || pageTitle || 'Current Page',
           content: pageContent || '',
           url: url,
-          type: pageType
+          type: pageType,
+          specificType: specificType,
+          pathname: pathname
         };
       }
       
@@ -214,27 +300,19 @@ export default function Chatbot() {
       console.log('🔍 Page context detected:', context);
       setPageContext(context);
       
-      // Update initial message based on page context
-      if (context?.title) {
-        console.log('📝 Updating message for page:', context.title);
-        setMessages(prev => {
-          if (prev.length === 1 && prev[0].id === '1') {
-            let welcomeMessage = '';
-            
-            if (context.type === 'article') {
-              welcomeMessage = `Hi! I'm John's AI assistant. I can see you're reading "${context.title}". I can help you learn about this article, John's background, or answer any questions you have. What would you like to know?`;
-            } else {
-              welcomeMessage = `Hi! I'm John's AI assistant. I can see you're on the "${context.title}" page. I can help you learn about John's background, skills, experience, or answer any questions you have. What would you like to know?`;
-            }
-            
-            return [{
-              ...prev[0],
-              text: welcomeMessage
-            }];
-          }
-          return prev;
-        });
-      }
+      // Update initial message based on page context with personalized responses
+      console.log('📝 Generating personalized welcome for page:', context?.title || 'unknown');
+      setMessages(prev => {
+        if (prev.length === 1 && prev[0].id === '1') {
+          const welcomeMessage = generatePersonalizedWelcome(context);
+          
+          return [{
+            ...prev[0],
+            text: welcomeMessage
+          }];
+        }
+        return prev;
+      });
     } else if (!isOpen && conversationStartTime) {
       // Track conversation end
       const duration = Date.now() - conversationStartTime.getTime();
@@ -242,6 +320,24 @@ export default function Chatbot() {
       setConversationStartTime(null);
     }
   }, [isOpen, conversationStartTime]);
+
+  // Stop voice when chatbot closes
+  useEffect(() => {
+    if (!isOpen && isSpeaking) {
+      console.log('🔊 Chatbot closed, stopping voice');
+      stopSpeaking();
+    }
+  }, [isOpen, isSpeaking]);
+
+  // Cleanup voice when component unmounts
+  useEffect(() => {
+    return () => {
+      if (isSpeaking) {
+        console.log('🔊 Component unmounting, stopping voice');
+        stopSpeaking();
+      }
+    };
+  }, [isSpeaking]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -341,136 +437,61 @@ export default function Chatbot() {
     }
   }, []);
 
-  // Initialize speech synthesis with better voice settings
+  // Initialize OpenAI TTS
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      console.log('🔊 Initializing speech synthesis...');
-      speechRef.current = new SpeechSynthesisUtterance();
+    if (typeof window !== 'undefined') {
+      // Load saved voice preference
+      const savedVoice = localStorage.getItem('chatbot-openai-voice');
+      if (savedVoice) {
+        setSelectedOpenAIVoice(savedVoice);
+      }
       
-      // Get available voices and select a more natural one
-      const loadVoices = () => {
-        const voices = window.speechSynthesis.getVoices();
-        console.log('🔊 Available voices:', voices.length);
-        setAvailableVoices(voices);
-        
-        if (voices.length === 0) {
-          console.log('🔊 No voices available, will retry...');
-          return;
-        }
-        
-        // Prioritize the most human-sounding voices (avoid robotic Chrome voices)
-        const preferredVoice = voices.find(voice => 
-          // Google's most human-sounding voices (Chrome)
-          (voice.name.includes('Google') && voice.name.includes('Neural') && voice.name.includes('Male')) ||
-          (voice.name.includes('Google') && voice.name.includes('Natural') && voice.name.includes('Male')) ||
-          (voice.name.includes('Google') && voice.name.includes('US English') && voice.name.includes('Male'))
-        ) || voices.find(voice => 
-          // Microsoft's most human voices (Windows/Edge)
-          (voice.name.includes('Microsoft') && voice.name.includes('Neural')) ||
-          (voice.name.includes('Microsoft') && voice.name.includes('Natural')) ||
-          (voice.name.includes('Microsoft') && voice.name.includes('Andrew')) ||
-          (voice.name.includes('Microsoft') && voice.name.includes('William'))
-        ) || voices.find(voice => 
-          // Apple's most human voices (macOS/Safari)
-          (voice.name.includes('Alex') && voice.lang === 'en-US') ||
-          (voice.name.includes('Samantha') && voice.lang === 'en-US') ||
-          (voice.name.includes('Tom') && voice.lang === 'en-US') ||
-          (voice.name.includes('Daniel') && voice.lang === 'en-US')
-        ) || voices.find(voice => 
-          // Premium/Enhanced human voices
-          (voice.name.includes('Premium') || voice.name.includes('Enhanced') || voice.name.includes('Neural')) &&
-          (voice.name.includes('Male') || voice.name.includes('en-US-Male'))
-        ) || voices.find(voice => 
-          // Avoid ALL known robotic voices
-          !voice.name.includes('Microsoft David') && 
-          !voice.name.includes('Microsoft Zira') &&
-          !voice.name.includes('Microsoft Mark') &&
-          !voice.name.includes('Microsoft James') &&
-          !voice.name.includes('Microsoft George') &&
-          !voice.name.includes('Microsoft Linda') &&
-          !voice.name.includes('Microsoft Richard') &&
-          !voice.name.includes('Microsoft Susan') &&
-          !voice.name.includes('Microsoft Tony') &&
-          !voice.name.includes('Microsoft Ravi') &&
-          !voice.name.includes('Microsoft Jenny') &&
-          !voice.name.includes('Microsoft Aria') &&
-          !voice.name.includes('Microsoft Guy') &&
-          !voice.name.includes('Microsoft Jessa') &&
-          voice.lang === 'en-US'
-        ) || voices.find(voice => 
-          // Any English US voice as fallback (but avoid robotic ones)
-          voice.lang === 'en-US' &&
-          !voice.name.includes('David') &&
-          !voice.name.includes('Zira') &&
-          !voice.name.includes('Mark') &&
-          !voice.name.includes('James')
-        ) || voices.find(voice => 
-          // Last resort - any voice
-          voice.lang.startsWith('en-')
-        ) || voices[0];
-        
-        // Check for saved voice preference
-        const savedVoiceName = localStorage.getItem('chatbot-selected-voice');
-        let finalVoice = preferredVoice;
-        
-        if (savedVoiceName) {
-          const savedVoice = voices.find(v => v.name === savedVoiceName);
-          if (savedVoice) {
-            finalVoice = savedVoice;
-            setCustomSelectedVoice(savedVoiceName);
-            console.log('🔊 Using saved voice preference:', savedVoiceName);
-          }
-        }
-        
-        if (finalVoice) {
-          speechRef.current!.voice = finalVoice;
-          setSelectedVoice(finalVoice);
-          console.log('🔊 Selected voice:', finalVoice.name);
-          console.log('🔊 Cross-browser compatibility:', {
-            browser: navigator.userAgent.includes('Chrome') ? 'Chrome' : 
-                     navigator.userAgent.includes('Firefox') ? 'Firefox' : 
-                     navigator.userAgent.includes('Safari') ? 'Safari' : 
-                     navigator.userAgent.includes('Edge') ? 'Edge' : 'Unknown',
-            platform: navigator.platform,
-            selectedVoice: finalVoice.name,
-            voiceType: finalVoice.name.includes('Google') ? 'Google (Cross-browser)' :
-                      finalVoice.name.includes('Microsoft') ? 'Microsoft (Windows/Edge)' :
-                      finalVoice.name.includes('Alex') || finalVoice.name.includes('Samantha') ? 'Apple (macOS/Safari)' : 'System'
-          });
-          console.log('🔊 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
-        } else {
-          console.log('🔊 No preferred voice found, using default');
-        }
-      };
+      // Load saved voice enabled preference (default to true if not set)
+      const savedVoiceEnabled = localStorage.getItem('chatbot-voice-enabled');
+      if (savedVoiceEnabled !== null) {
+        setIsVoiceEnabled(savedVoiceEnabled === 'true');
+      } else {
+        // Default to enabled if no preference is saved
+        setIsVoiceEnabled(true);
+        localStorage.setItem('chatbot-voice-enabled', 'true');
+      }
       
-      // Load voices immediately if available
-      loadVoices();
+      // Create audio element for playback
+      const audio = new Audio();
+      setAudioRef(audio);
       
-      // Also try loading voices when they become available
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-      
-      // Optimized speech settings for most human-like sound
-      speechRef.current.rate = 0.8;         // Slower for more natural, human pace
-      speechRef.current.pitch = 0.9;        // Lower pitch for warmth and humanity
-      speechRef.current.volume = 0.85;      // Slightly lower volume for natural sound
-      
-      // Add slight pauses for more natural speech
-      speechRef.current.onstart = () => {
-        console.log('🔊 Speech started');
+      audio.onplay = () => {
+        console.log('🔊 OpenAI TTS started');
         setIsSpeaking(true);
       };
-      speechRef.current.onend = () => {
-        console.log('🔊 Speech ended');
+      
+      audio.onended = () => {
+        console.log('🔊 OpenAI TTS ended');
         setIsSpeaking(false);
       };
-      speechRef.current.onerror = (event) => {
-        console.error('🔊 Speech error:', event);
+      
+      audio.onerror = () => {
+        console.error('🔊 OpenAI TTS error');
         setIsSpeaking(false);
       };
-    } else {
-      console.log('🔊 Speech synthesis not supported in this browser');
     }
   }, []);
+
+  // Speak initial message when voice is enabled and chatbot opens
+  useEffect(() => {
+    if (isOpen && isVoiceEnabled && audioRef && messages.length === 1) {
+      // Small delay to ensure everything is initialized
+      const timer = setTimeout(() => {
+        const initialMessage = messages[0];
+        if (initialMessage && initialMessage.sender === 'bot') {
+          console.log('🔊 Speaking initial message:', initialMessage.text.substring(0, 50) + '...');
+          speakMessage(initialMessage.text);
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, isVoiceEnabled, audioRef, messages]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -1167,8 +1188,8 @@ export default function Chatbot() {
     }
   };
 
-  const speakMessage = (text: string) => {
-    console.log('🔊 speakMessage called:', { text: text.substring(0, 50) + '...', isVoiceEnabled, hasSpeechRef: !!speechRef.current, hasSpeechSynthesis: !!window.speechSynthesis });
+  const speakMessage = async (text: string) => {
+    console.log('🔊 speakMessage called:', { text: text.substring(0, 50) + '...', isVoiceEnabled, hasAudioRef: !!audioRef });
     
     // Only speak if voice is explicitly enabled by user
     if (!isVoiceEnabled) {
@@ -1176,52 +1197,51 @@ export default function Chatbot() {
       return;
     }
     
-    if (speechRef.current && window.speechSynthesis) {
+    if (audioRef) {
       try {
         // Stop any current speech before starting new one
-        window.speechSynthesis.cancel();
+        audioRef.pause();
+        audioRef.currentTime = 0;
         
-        // Process text for more natural speech (avoid robotic sound)
-        let processedText = text
-          // Add natural pauses for better flow
-          .replace(/\. /g, '. ')
-          .replace(/\! /g, '! ')
-          .replace(/\? /g, '? ')
-          // Add slight pauses for commas
-          .replace(/, /g, ', ')
-          // Add pauses for better rhythm
-          .replace(/:/g, ': ')
-          .replace(/;/g, '; ')
-          // Clean up any double spaces
-          .replace(/\s+/g, ' ')
-          .trim();
+        console.log('🔊 Generating OpenAI TTS for:', text.substring(0, 50) + '...');
         
-        // Use selected voice if available
-        if (selectedVoice) {
-          speechRef.current.voice = selectedVoice;
-          console.log('🔊 Using selected voice:', selectedVoice.name);
-        } else {
-          console.log('🔊 No selected voice, using default');
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: text,
+            voice: selectedOpenAIVoice,
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`TTS API error: ${response.status}`);
         }
         
-        speechRef.current.text = processedText;
-        console.log('🔊 Starting speech synthesis...');
-        window.speechSynthesis.speak(speechRef.current);
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        audioRef.src = audioUrl;
+        await audioRef.play();
+        
       } catch (error) {
         console.error('🔊 Error in speakMessage:', error);
+        setIsSpeaking(false);
       }
     } else {
-      console.log('🔊 Speech synthesis not available:', { 
-        hasSpeechRef: !!speechRef.current, 
-        isVoiceEnabled, 
-        hasSpeechSynthesis: !!window.speechSynthesis 
+      console.log('🔊 Audio element not available:', { 
+        hasAudioRef: !!audioRef, 
+        isVoiceEnabled
       });
     }
   };
 
   const stopSpeaking = () => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    if (audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
       setIsSpeaking(false);
     }
   };
@@ -1231,47 +1251,38 @@ export default function Chatbot() {
     console.log('🔊 Toggling voice from', isVoiceEnabled, 'to', newState);
     setIsVoiceEnabled(newState);
     
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+    // Save preference to localStorage
+    localStorage.setItem('chatbot-voice-enabled', newState.toString());
+    
+    if (audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
       console.log('🔊 Cancelled any ongoing speech');
     }
     
     // Test voice when enabling
-    if (newState && speechRef.current) {
+    if (newState) {
       console.log('🔊 Testing voice with sample text...');
       setTimeout(() => {
-        const testUtterance = new SpeechSynthesisUtterance('Voice enabled');
-        testUtterance.rate = 0.8;
-        testUtterance.pitch = 0.9;
-        testUtterance.volume = 0.85;
-        if (selectedVoice) {
-          testUtterance.voice = selectedVoice;
-        }
-        window.speechSynthesis.speak(testUtterance);
+        speakMessage('Voice enabled');
       }, 100);
     }
   };
 
   const handleVoiceSelection = (voiceName: string) => {
-    const voice = availableVoices.find(v => v.name === voiceName);
-    if (voice) {
-      setSelectedVoice(voice);
-      setCustomSelectedVoice(voiceName);
-      localStorage.setItem('chatbot-selected-voice', voiceName);
-      console.log('🔊 Voice selected:', voice.name);
-      
-      // Test the selected voice
-      if (isVoiceEnabled && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-        setTimeout(() => {
-          const testUtterance = new SpeechSynthesisUtterance('Voice changed');
-          testUtterance.rate = 0.8;
-          testUtterance.pitch = 0.9;
-          testUtterance.volume = 0.85;
-          testUtterance.voice = voice;
-          window.speechSynthesis.speak(testUtterance);
-        }, 100);
+    setSelectedOpenAIVoice(voiceName);
+    localStorage.setItem('chatbot-openai-voice', voiceName);
+    console.log('🔊 OpenAI voice selected:', voiceName);
+    
+    // Test the selected voice
+    if (isVoiceEnabled) {
+      if (audioRef) {
+        audioRef.pause();
+        audioRef.currentTime = 0;
       }
+      setTimeout(() => {
+        speakMessage('Voice changed');
+      }, 100);
     }
   };
 
@@ -1291,23 +1302,31 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Chat Toggle Button - Always at bottom */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
-        aria-label="Toggle chatbot"
-        style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          position: 'fixed',
-          bottom: '80px',
-          right: '16px',
-          zIndex: 9999,
-          width: '60px',
-          height: '60px'
-        }}
-      >
+             {/* Chat Toggle Button - Always at bottom */}
+       <button
+         onClick={() => {
+           if (isOpen) {
+             // Stop speaking when closing the chatbot
+             if (isSpeaking) {
+               stopSpeaking();
+             }
+           }
+           setIsOpen(!isOpen);
+         }}
+         className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-3 md:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
+         aria-label="Toggle chatbot"
+         style={{ 
+           display: 'flex', 
+           alignItems: 'center', 
+           justifyContent: 'center',
+           position: 'fixed',
+           bottom: '16px',
+           right: '16px',
+           zIndex: 9999,
+           width: '50px',
+           height: '50px'
+         }}
+       >
         {isOpen ? (
           <X className="h-6 w-6" />
         ) : (
@@ -1315,9 +1334,9 @@ export default function Chatbot() {
         )}
       </button>
 
-      {/* Chat Window - Opens above the toggle button */}
-      {isOpen && (
-        <div className="fixed bottom-36 right-4 md:bottom-40 md:right-6 z-[9998] w-96 md:w-[500px] h-auto max-h-[80vh] sm:max-h-[85vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+             {/* Chat Window - Opens above the toggle button */}
+       {isOpen && (
+         <div className="fixed bottom-20 right-2 left-2 md:bottom-24 md:right-4 md:left-auto md:w-[500px] z-[9998] h-auto max-h-[70vh] sm:max-h-[75vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
           {/* Header */}
           <div className="bg-stone-900 dark:bg-stone-800 text-white p-3 sm:p-4 md:p-5 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-shrink-0">
@@ -1329,80 +1348,65 @@ export default function Chatbot() {
                 <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John&apos;s background</p>
               </div>
             </div>
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
-              {/* Test Booking Modal Button */}
-              <button
-                onClick={() => {
-                  console.log('🔍 Test: Manually triggering booking modal');
-                  const testAction = {
-                    type: 'ui_action',
-                    action: 'show_booking_modal',
-                    data: {
-                      availableSlots: [
-                        {
-                          start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-                          end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
-                          duration: 60
-                        }
-                      ],
-                      timezone: 'America/New_York',
-                      businessHours: { start: 9, end: 18, timezone: 'America/New_York' },
-                      meetingDurations: [30, 60],
-                      message: 'Test booking modal',
-                      initialStep: 'contact'
-                    }
-                  };
-                  executeUIAction(testAction);
-                }}
-                className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-blue-400 hover:text-blue-300"
-                aria-label="Test Booking Modal"
-                title="Test Booking Modal"
-              >
-                <Calendar className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-              </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-3 sm:p-4 md:p-5 rounded-full transition-colors text-stone-400 hover:text-stone-300"
-                aria-label="Settings"
-              >
-                <Settings className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
-              </button>
-              <button
-                onClick={toggleVoice}
-                className={`p-3 sm:p-4 md:p-5 rounded-full transition-colors ${
-                  isVoiceEnabled 
-                    ? 'text-green-400 hover:text-green-300' 
-                    : 'text-stone-400 hover:text-stone-300'
-                }`}
-                aria-label={isVoiceEnabled ? 'Disable voice' : 'Enable voice'}
-              >
-                {isVoiceEnabled ? (
-                  <Volume2 className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
-                ) : (
-                  <VolumeX className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
-                )}
-              </button>
-              {/* Test Voice Button */}
-              <button
-                onClick={() => {
-                  console.log('🔍 Test: Testing voice with isVoiceEnabled:', isVoiceEnabled);
-                  if (isVoiceEnabled) {
-                    speakMessage('This is a test of the voice system. Voice is working correctly.');
-                  } else {
-                    console.log('🔍 Voice is disabled');
-                  }
-                }}
-                className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-purple-400 hover:text-purple-300"
-                aria-label="Test Voice"
-                title="Test Voice"
-              >
-                <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-              </button>
+                         <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
+               {/* Test Booking Modal Button - Hidden on small screens */}
+               <button
+                 onClick={() => {
+                   console.log('🔍 Test: Manually triggering booking modal');
+                   const testAction = {
+                     type: 'ui_action',
+                     action: 'show_booking_modal',
+                     data: {
+                       availableSlots: [
+                         {
+                           start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                           end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
+                           duration: 60
+                         }
+                       ],
+                       timezone: 'America/New_York',
+                       businessHours: { start: 9, end: 18, timezone: 'America/New_York' },
+                       meetingDurations: [30, 60],
+                       message: 'Test booking modal',
+                       initialStep: 'contact'
+                     }
+                   };
+                   executeUIAction(testAction);
+                 }}
+                 className="hidden md:flex p-2 sm:p-3 md:p-4 rounded-full transition-colors text-blue-400 hover:text-blue-300"
+                 aria-label="Test Booking Modal"
+                 title="Test Booking Modal"
+               >
+                 <Calendar className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+               </button>
+                             <button
+                 onClick={() => setShowSettings(true)}
+                 className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-stone-400 hover:text-stone-300"
+                 aria-label="Settings"
+               >
+                 <Settings className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+               </button>
+                             <button
+                 onClick={toggleVoice}
+                 className={`p-2 sm:p-3 md:p-4 rounded-full transition-colors ${
+                   isVoiceEnabled 
+                     ? 'text-green-400 hover:text-green-300' 
+                     : 'text-stone-400 hover:text-stone-300'
+                 }`}
+                 aria-label={isVoiceEnabled ? 'Disable voice' : 'Enable voice'}
+               >
+                 {isVoiceEnabled ? (
+                   <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                 ) : (
+                   <VolumeX className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                 )}
+               </button>
+              
             </div>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
+                     {/* Messages */}
+           <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 space-y-2 sm:space-y-3 md:space-y-4">
             {messages.map((message) => (
               <div key={message.id}>
                 <div
@@ -1531,9 +1535,9 @@ export default function Chatbot() {
             )}
           </div>
 
-          {/* Input and Close Button Row */}
-          <div className="p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
-            <div className="flex items-center gap-3">
+                     {/* Input and Close Button Row */}
+           <div className="p-2 sm:p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
+             <div className="flex items-center gap-2 sm:gap-3">
               <input
                 ref={inputRef}
                 type="text"
@@ -1546,71 +1550,61 @@ export default function Chatbot() {
                   }
                 }}
                 onKeyPress={handleKeyPress}
-                placeholder={isListening ? "Listening..." : "Ask about John's experience..."}
+                                 placeholder={isListening ? "Listening..." : "Type your message..."}
                 className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 disabled={isLoading || isListening}
               />
               
-              {/* Button Group */}
-              <div className="flex items-center gap-2 flex-shrink-0">
-                                 {/* Microphone Button */}
-                 <button
-                   onClick={isListening ? stopListening : startListening}
-                   disabled={isLoading}
-                   className={`w-10 h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 ${
-                     isListening
-                       ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                       : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
-                   }`}
-                   style={{ minWidth: '40px', minHeight: '40px' }}
-                   aria-label={isListening ? 'Stop listening' : 'Start listening'}
-                   title={isListening ? 'Stop listening' : 'Start voice input (tap to speak)'}
-                 >
-                   {isListening ? (
-                     <MicOff className="h-4 w-4" />
-                   ) : (
-                     <Mic className="h-4 w-4" />
-                   )}
-                 </button>
+                             {/* Button Group */}
+               <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                                                   {/* Microphone Button - Hidden on small screens */}
+                                     <button
+                     onClick={isListening ? stopListening : startListening}
+                     disabled={isLoading}
+                     className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 hidden md:flex ${
+                       isListening
+                         ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                         : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
+                     }`}
+                     style={{ minWidth: '32px', minHeight: '32px' }}
+                     aria-label={isListening ? 'Stop listening' : 'Start listening'}
+                     title={isListening ? 'Stop listening' : 'Start voice input (tap to speak)'}
+                   >
+                     {isListening ? (
+                       <MicOff className="h-3 w-3 sm:h-4 sm:w-4" />
+                     ) : (
+                       <Mic className="h-3 w-3 sm:h-4 sm:w-4" />
+                     )}
+                   </button>
                  
-                 {/* Mobile Microphone Help Text */}
-                 {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && !isListening && (
-                   <div className="absolute -top-8 left-0 right-0 text-center">
-                     <p className="text-xs text-stone-500 dark:text-stone-400 bg-white dark:bg-stone-950 px-2 py-1 rounded border border-stone-200 dark:border-stone-700">
-                       {window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                         ? '💡 Localhost detected - microphone may not work on mobile'
-                         : '💡 Tap to speak (allow microphone when prompted)'
-                       }
-                     </p>
-                   </div>
-                 )}
+                 
                 
-                {/* Send Button */}
-                <button
-                  onClick={sendMessage}
-                  disabled={!inputValue.trim() || isLoading || isListening}
-                  className="w-10 h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
-                  style={{ minWidth: '40px', minHeight: '40px' }}
-                  aria-label="Send message"
-                >
-                  <Send className="h-4 w-4" />
-                </button>
+                                 {/* Send Button */}
+                 <button
+                   onClick={sendMessage}
+                   disabled={!inputValue.trim() || isLoading || isListening}
+                   className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+                   style={{ minWidth: '32px', minHeight: '32px' }}
+                   aria-label="Send message"
+                 >
+                   <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                 </button>
 
-                {/* Close Button */}
-                <button
-                  onClick={() => {
-                    // Stop speaking if chatbot is talking
-                    if (isSpeaking) {
-                      stopSpeaking();
-                    }
-                    setIsOpen(false);
-                  }}
-                  className="w-10 h-10 bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
-                  style={{ minWidth: '40px', minHeight: '40px' }}
-                  aria-label="Close chat"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+                                 {/* Close Button */}
+                 <button
+                   onClick={() => {
+                     // Stop speaking if chatbot is talking
+                     if (isSpeaking) {
+                       stopSpeaking();
+                     }
+                     setIsOpen(false);
+                   }}
+                   className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
+                   style={{ minWidth: '32px', minHeight: '32px' }}
+                   aria-label="Close chat"
+                 >
+                   <X className="h-3 w-3 sm:h-4 sm:w-4" />
+                 </button>
               </div>
             </div>
           </div>
@@ -1868,39 +1862,23 @@ export default function Chatbot() {
                     </button>
                   </div>
                   
-                  {isVoiceEnabled && availableVoices.length > 0 && (
+                  {isVoiceEnabled && (
                     <div className="space-y-2">
-                      <label className="text-sm text-stone-700 dark:text-stone-300 font-medium">Select Voice</label>
+                      <label className="text-sm text-stone-700 dark:text-stone-300 font-medium">Select OpenAI Voice</label>
                       <select
-                        value={customSelectedVoice || selectedVoice?.name || ''}
+                        value={selectedOpenAIVoice}
                         onChange={(e) => handleVoiceSelection(e.target.value)}
                         className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm"
                       >
-                        <option value="">Choose a voice...</option>
-                        {availableVoices
-                          .filter(voice => voice.lang.startsWith('en-'))
-                          .sort((a, b) => {
-                            // Sort by quality: Neural > Natural > Premium > others
-                            const getQuality = (name: string) => {
-                              if (name.includes('Neural')) return 4;
-                              if (name.includes('Natural')) return 3;
-                              if (name.includes('Premium')) return 2;
-                              if (name.includes('Enhanced')) return 2;
-                              return 1;
-                            };
-                            return getQuality(b.name) - getQuality(a.name);
-                          })
-                          .map((voice) => (
-                            <option key={voice.name} value={voice.name}>
-                              {voice.name} ({voice.lang})
-                              {voice.name.includes('Neural') ? ' 🧠' : 
-                               voice.name.includes('Natural') ? ' 🌟' : 
-                               voice.name.includes('Premium') ? ' ⭐' : ''}
-                            </option>
-                          ))}
+                        <option value="alloy">Alloy (Neutral) 🎭</option>
+                        <option value="echo">Echo (Male) 🗣️</option>
+                        <option value="fable">Fable (Male) 📖</option>
+                        <option value="onyx">Onyx (Male) 💎</option>
+                        <option value="nova">Nova (Female) ⭐</option>
+                        <option value="shimmer">Shimmer (Female) ✨</option>
                       </select>
                       <p className="text-xs text-stone-500 dark:text-stone-400">
-                        🧠 Neural • 🌟 Natural • ⭐ Premium voices
+                        Powered by OpenAI TTS - High quality, natural voices
                       </p>
                     </div>
                   )}
