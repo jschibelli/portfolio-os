@@ -1,0 +1,21 @@
+[
+  {
+    "id": "tendril-multi-tenant-chatbot-saas",
+    "title": "Tendril Multi-Tenant Chatbot SaaS: From Market Research to MVP Strategy",
+    "slug": "tendril-multi-tenant-chatbot-saas",
+    "description": "Building a multi-tenant chatbot SaaS with transparent pricing, rapid setup, and agency-focused workflows. A deep dive into market research, implementation, and results.",
+    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
+    "tags": ["SaaS", "AI", "Multi-tenant", "Chatbot"],
+    "publishedAt": "2025-08-29",
+    "author": "John Schibelli",
+    "featured": true,
+    "metrics": {
+      "revenueIncrease": "150%",
+      "userRetention": "91%",
+      "setupTime": "18 minutes"
+    },
+    "liveUrl": "",
+    "caseStudyUrl": "/case-studies/tendril-multi-tenant-chatbot-saas"
+  }
+]
+

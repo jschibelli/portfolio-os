@@ -1,10 +1,10 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { Container } from '../components/container';
+import { Container } from '../components/shared/container';
 import { AppProvider } from '../components/contexts/appContext';
-import { Layout } from '../components/layout';
-import ModernHeader from '../components/modern-header';
-import Chatbot from '../components/ui/Chatbot';
+import { Layout } from '../components/shared/layout';
+import ModernHeader from '../components/features/navigation/modern-header';
+import Chatbot from '../components/features/chatbot/Chatbot';
 
 interface Props {
   publication: any;
