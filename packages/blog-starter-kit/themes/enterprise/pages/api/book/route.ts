@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { google } from 'googleapis';
+
+let google: any;
+let calendar: any;
+
+try {
+	google = require('googleapis');
+	calendar = google.calendar('v3');
+} catch (error) {
+	console.warn('[book-route] googleapis not available');
+	google = null;
+	calendar = null;
+}
 // Conditional Prisma import
 let prisma: any = null;
 try {
@@ -11,7 +22,6 @@ try {
 import { Resend } from 'resend';
 import path from 'path';
 
-const calendar = google.calendar('v3');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {

@@ -2,13 +2,13 @@ import request from 'graphql-request';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Container } from '../../components/container';
+import { Container } from '../../components/shared/container';
 import { AppProvider } from '../../components/contexts/appContext';
-import { Footer } from '../../components/footer';
-import ModernHeader from '../../components/modern-header';
-import { Layout } from '../../components/layout';
-import { MarkdownToHtml } from '../../components/markdown-to-html';
-import { PostHeader } from '../../components/post-header';
+import { Footer } from '../../components/shared/footer';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Layout } from '../../components/shared/layout';
+import { MarkdownToHtml } from '../../components/features/blog/markdown-to-html';
+import { PostHeader } from '../../components/features/blog/post-header';
 import {
 	DraftByIdDocument,
 	DraftByIdQuery,
