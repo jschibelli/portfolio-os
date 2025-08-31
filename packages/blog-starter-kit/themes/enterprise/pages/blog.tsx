@@ -15,6 +15,7 @@ import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import ModernHero from '../components/features/homepage/modern-hero';
 import ModernPostCard from '../components/features/blog/modern-post-card';
+import FeaturedPost from '../components/features/blog/featured-post';
 import NewsletterCTA from '../components/features/newsletter/newsletter-cta';
 import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from '../components/icons';
 
@@ -236,26 +237,12 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									: 'opacity-0 translate-y-8'
 							}`}
 						>
-							{/* Featured Post */}
-							<div className="space-y-6">
-								<div className="flex items-center gap-3 animate-fade-in-up">
-									<h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Featured Post</h2>
-									<div className="px-3 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-sm font-medium rounded-full animate-fade-in-up animation-delay-200">
-										Featured
-									</div>
-								</div>
-								<div className="w-full animate-fade-in-up animation-delay-300">
-									<ModernPostCard
-										title={allPosts[0].title}
-										excerpt={allPosts[0].brief}
-										coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
-										date={allPosts[0].publishedAt}
-										slug={allPosts[0].slug}
-										readTime="5 min read"
-										tags={["Featured", "Technology", "Insights"]}
-									/>
-								</div>
-							</div>
+							<FeaturedPost
+								post={allPosts[0]}
+								coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
+								readTime="5 min read"
+								tags={["Featured", "Technology", "Insights"]}
+							/>
 
 							{/* Latest Posts Grid */}
 							{allPosts.length > 1 && (

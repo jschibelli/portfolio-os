@@ -87,11 +87,14 @@ export function Integrations() {
     })(window, document, "clarity", "script", '${msClarityID}');`;
 
 	useEffect(() => {
-		// @ts-ignore
-		window.gtag('config', gaTrackingID, {
-			transport_url: 'https://ping.hashnode.com',
-			first_party_collection: true,
-		});
+		// Check if gtag is available before calling it
+		if (typeof window !== 'undefined' && window.gtag) {
+			// @ts-ignore
+			window.gtag('config', gaTrackingID, {
+				transport_url: 'https://ping.hashnode.com',
+				first_party_collection: true,
+			});
+		}
 	}, [gaTrackingID]);
 
 	return (
