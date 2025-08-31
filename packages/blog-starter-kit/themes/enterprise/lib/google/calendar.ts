@@ -22,7 +22,7 @@ export async function getBusyWindows(opts: {
 	});
 
 	const cal = res.data.calendars?.[CALENDAR_ID];
-	const busy = (cal?.busy ?? []).map(b => ({
+	const busy = (cal?.busy ?? []).map((b) => ({
 		start: b.start!,
 		end: b.end!,
 	}));
@@ -37,9 +37,9 @@ export async function getFreeSlots(opts: {
 	durationMinutes: number;
 	minBufferMinutes?: number; // optional buffer before/after events
 	dayStartHour?: number; // e.g., 9 local
-	dayEndHour?: number;   // e.g., 18 local
+	dayEndHour?: number; // e.g., 18 local
 	maxCandidates?: number; // cap list
-}) : Promise<Slot[]> {
+}): Promise<Slot[]> {
 	const {
 		timeMinISO,
 		timeMaxISO,
@@ -55,16 +55,18 @@ export async function getFreeSlots(opts: {
 	const tz = timeZone;
 
 	const windowStart = DateTime.fromISO(timeMinISO, { zone: tz });
-	const windowEnd   = DateTime.fromISO(timeMaxISO, { zone: tz });
+	const windowEnd = DateTime.fromISO(timeMaxISO, { zone: tz });
 
 	// Merge/normalize busy intervals.
 	const busyIntervals = busy
-		.map(b => Interval.fromDateTimes(
-			DateTime.fromISO(b.start, { zone: tz }),
-			DateTime.fromISO(b.end,   { zone: tz }),
-		))
-		.filter(i => i.isValid)
-		.sort((a,b) => a.start!.toMillis() - b.start!.toMillis());
+		.map((b) =>
+			Interval.fromDateTimes(
+				DateTime.fromISO(b.start, { zone: tz }),
+				DateTime.fromISO(b.end, { zone: tz }),
+			),
+		)
+		.filter((i) => i.isValid)
+		.sort((a, b) => a.start!.toMillis() - b.start!.toMillis());
 
 	const merged: Interval[] = [];
 	for (const i of busyIntervals) {
@@ -84,10 +86,10 @@ export async function getFreeSlots(opts: {
 	const dayIntervals: Interval[] = [];
 	for (let d = windowStart.startOf('day'); d < windowEnd; d = d.plus({ days: 1 })) {
 		const start = d.set({ hour: dayStartHour, minute: 0 });
-		const end   = d.set({ hour: dayEndHour,   minute: 0 });
-		const dayI  = Interval.fromDateTimes(
+		const end = d.set({ hour: dayEndHour, minute: 0 });
+		const dayI = Interval.fromDateTimes(
 			start < windowStart ? windowStart : start,
-			end   > windowEnd   ? windowEnd   : end
+			end > windowEnd ? windowEnd : end,
 		);
 		if (dayI.isValid) dayIntervals.push(dayI);
 	}
@@ -100,7 +102,7 @@ export async function getFreeSlots(opts: {
 			if (b.end! <= day.start! || b.start! >= day.end!) continue;
 			const overlap = Interval.fromDateTimes(
 				DateTime.max(b.start!, day.start!),
-				DateTime.min(b.end!,   day.end!)
+				DateTime.min(b.end!, day.end!),
 			);
 			if (overlap.isValid) {
 				// segment before overlap
@@ -142,9 +144,18 @@ export async function createCalendarEventWithMeet(opts: {
 	description?: string;
 	attendeeEmail: string;
 	attendeeName?: string;
-	sendUpdates?: 'all'|'externalOnly'|'none';
+	sendUpdates?: 'all' | 'externalOnly' | 'none';
 }) {
-	const { startISO, endISO, timeZone, summary, description, attendeeEmail, attendeeName, sendUpdates = 'all' } = opts;
+	const {
+		startISO,
+		endISO,
+		timeZone,
+		summary,
+		description,
+		attendeeEmail,
+		attendeeName,
+		sendUpdates = 'all',
+	} = opts;
 	const oauth = getOAuth2Client();
 	// Ensure fresh access token if we rely on REFRESH token.
 	await oauth.getAccessToken();
@@ -160,20 +171,20 @@ export async function createCalendarEventWithMeet(opts: {
 			description,
 			location: 'Google Meet',
 			start: { dateTime: startISO, timeZone },
-			end:   { dateTime: endISO,   timeZone },
+			end: { dateTime: endISO, timeZone },
 			attendees: [{ email: attendeeEmail, displayName: attendeeName }],
 			conferenceData: {
 				createRequest: {
 					requestId: uuidv4(),
-					conferenceSolutionKey: { type: 'hangoutsMeet' }
-				}
+					conferenceSolutionKey: { type: 'hangoutsMeet' },
+				},
 			},
 		},
 	});
 
 	// Preferred: conferenceData entryPoint; fallback to hangoutLink
 	const entryPoints = res.data.conferenceData?.entryPoints || [];
-	const video = entryPoints.find(e => e.entryPointType === 'video');
+	const video = entryPoints.find((e) => e.entryPointType === 'video');
 	const meetUrl = video?.uri || res.data.hangoutLink || '';
 
 	return {
@@ -182,5 +193,3 @@ export async function createCalendarEventWithMeet(opts: {
 		meetUrl,
 	};
 }
-
-

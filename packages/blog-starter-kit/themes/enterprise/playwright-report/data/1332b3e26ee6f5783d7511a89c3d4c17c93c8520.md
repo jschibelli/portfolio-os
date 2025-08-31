@@ -1,0 +1,161 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+    - generic [ref=e2]:
+        - main [ref=e4]:
+            - generic [ref=e7]:
+                - link "Tendril Multi-Tenant Chatbot SaaS" [ref=e9] [cursor=pointer]:
+                    - /url: /
+                    - generic [ref=e10] [cursor=pointer]: Tendril Multi-Tenant Chatbot SaaS
+                - navigation [ref=e11]:
+                    - link "Home" [ref=e12] [cursor=pointer]:
+                        - /url: /
+                    - link "Work" [ref=e13] [cursor=pointer]:
+                        - /url: /work
+                    - link "Case Studies" [ref=e14] [cursor=pointer]:
+                        - /url: /case-studies
+                    - link "Blog" [ref=e15] [cursor=pointer]:
+                        - /url: /blog
+                    - link "About" [ref=e16] [cursor=pointer]:
+                        - /url: /about
+                    - link "Contact" [ref=e17] [cursor=pointer]:
+                        - /url: /contact
+                - generic [ref=e18]:
+                    - button "Toggle theme" [ref=e19] [cursor=pointer]:
+                        - img
+                        - img
+                        - generic [ref=e20] [cursor=pointer]: Toggle theme
+                    - button "Subscribe" [ref=e21] [cursor=pointer]
+            - main [ref=e22]:
+                - generic [ref=e23]:
+                    - generic [ref=e25]:
+                        - generic [ref=e26]: Case Study
+                        - 'heading "Tendril Multi-Tenant Chatbot SaaS: Strategic Analysis and Implementation Plan" [level=1] [ref=e27]'
+                        - paragraph [ref=e28]: From Market Research to MVP Strategy
+                        - generic [ref=e29]:
+                            - generic [ref=e30]: Published December 15, 2024
+                            - generic [ref=e31]: •
+                            - generic [ref=e32]: 12 min read
+                            - generic [ref=e33]: •
+                            - generic [ref=e34]: SaaS, Chatbot, Startup
+                    - navigation [ref=e38]:
+                        - link "Problem Statement" [ref=e39] [cursor=pointer]:
+                            - /url: '#problem-statement'
+                        - link "Research & Analysis" [ref=e40] [cursor=pointer]:
+                            - /url: '#research-analysis'
+                        - link "Solution Design" [ref=e41] [cursor=pointer]:
+                            - /url: '#solution-design'
+                        - link "Implementation" [ref=e42] [cursor=pointer]:
+                            - /url: '#implementation'
+                        - link "Results & Metrics" [ref=e43] [cursor=pointer]:
+                            - /url: '#results-metrics'
+                        - link "Lessons Learned" [ref=e44] [cursor=pointer]:
+                            - /url: '#lessons-learned'
+                        - link "Next Steps" [ref=e45] [cursor=pointer]:
+                            - /url: '#next-steps'
+                    - generic [ref=e48]:
+                        - generic [ref=e49]:
+                            - heading "A proven solution for good design" [level=3] [ref=e50]
+                            - paragraph [ref=e51]: 'We started with a simple idea: make enterprise chatbots actually easy to buy, set up, and manage across many clients. That meant clear pricing, one-click onboarding, and multi-tenant controls that feel obvious.'
+                        - generic [ref=e52]:
+                            - generic [ref=e53]:
+                                - paragraph [ref=e54]: achieved
+                                - generic [ref=e55]: '47'
+                                - paragraph [ref=e56]: First Month Sign-ups
+                            - generic [ref=e57]:
+                                - paragraph [ref=e58]: reached
+                                - generic [ref=e59]: 91%
+                                - paragraph [ref=e60]: User Retention Rate
+                            - generic [ref=e61]:
+                                - paragraph [ref=e62]: average
+                                - generic [ref=e63]: 18 min
+                                - paragraph [ref=e64]: Setup Time
+                            - generic [ref=e65]:
+                                - paragraph [ref=e66]: generated
+                                - generic [ref=e67]: $3.4k
+                                - paragraph [ref=e68]: MRR by Month 3
+                    - heading "Problem Statement" [level=2] [ref=e71]
+                    - generic [ref=e73]:
+                        - heading "Research & Analysis" [level=2] [ref=e74]
+                        - generic [ref=e76]:
+                            - generic [ref=e77]:
+                                - generic [ref=e78]:
+                                    - img [ref=e79]
+                                    - generic [ref=e81]: Where Tendril removes friction
+                                - paragraph [ref=e82]: Benchmarks compared to median competitor baselines collected during discovery.
+                                - generic [ref=e84]:
+                                    - generic [ref=e85]: Tendril
+                                    - generic [ref=e87]: Competitors
+                            - generic [ref=e90]:
+                                - generic [ref=e91]:
+                                    - heading "Time-to-first-value" [level=3] [ref=e92]
+                                    - generic [ref=e93]: minutes
+                                    - generic [ref=e94]: Lower is better
+                                - generic [ref=e95]:
+                                    - generic [ref=e97]:
+                                        - generic [ref=e98]: Tendril
+                                        - generic [ref=e99]:
+                                            - generic [ref=e100]: '18'
+                                            - generic [ref=e101]: Better
+                                    - generic [ref=e104]:
+                                        - generic [ref=e105]: Competitors
+                                        - generic [ref=e107]: '120'
+                                - generic [ref=e109]:
+                                    - img [ref=e110]
+                                    - generic [ref=e113]: Tendril performs better
+                    - generic [ref=e115]:
+                        - heading "Solution Design" [level=2] [ref=e116]
+                        - generic [ref=e117]:
+                            - generic [ref=e118]:
+                                - paragraph [ref=e119]: Tech Stack
+                                - generic [ref=e120]:
+                                    - generic [ref=e121]: Next.js + TypeScript
+                                    - generic [ref=e122]: Prisma + PostgreSQL
+                                    - generic [ref=e123]: Background jobs + Webhooks
+                            - generic [ref=e124]:
+                                - paragraph [ref=e125]: Architecture
+                                - generic [ref=e126]:
+                                    - generic [ref=e127]: Tenant isolation at DB + app layers
+                                    - generic [ref=e128]: Event-driven processing
+                                    - generic [ref=e129]: Observability first (tracing + metrics)
+                    - heading "Implementation" [level=2] [ref=e132]
+                    - generic [ref=e134]:
+                        - heading "Results & Metrics" [level=2] [ref=e135]
+                        - generic [ref=e136]:
+                            - generic [ref=e137]:
+                                - generic [ref=e138]: '47'
+                                - generic [ref=e139]: First-month signups
+                            - generic [ref=e140]:
+                                - generic [ref=e141]: $3.4k
+                                - generic [ref=e142]: MRR by month 3
+                            - generic [ref=e144]:
+                                - generic [ref=e149]: 91%
+                                - generic [ref=e150]: Retention month 1
+                    - heading "Lessons Learned" [level=2] [ref=e153]
+                    - generic [ref=e155]:
+                        - heading "Next Steps" [level=2] [ref=e156]
+                        - button "Start a conversation" [ref=e158] [cursor=pointer]
+            - button "Toggle chatbot" [ref=e159] [cursor=pointer]:
+                - img [ref=e160] [cursor=pointer]
+        - contentinfo [ref=e162]:
+            - generic [ref=e164]:
+                - generic [ref=e165]:
+                    - link "Find us on Facebook, external website, opens in new tab" [ref=e166] [cursor=pointer]:
+                        - /url: https://facebook.com
+                        - img [ref=e167] [cursor=pointer]
+                    - link "Find us on Github, external website, opens in new tab" [ref=e169] [cursor=pointer]:
+                        - /url: https://github.com
+                        - img [ref=e170] [cursor=pointer]
+                    - link "Find us on Linkedin, external website, opens in new tab" [ref=e172] [cursor=pointer]:
+                        - /url: https://linkedin.com
+                        - img [ref=e173] [cursor=pointer]
+                    - link "Find us on Bluesky, external website, opens in new tab" [ref=e175] [cursor=pointer]:
+                        - /url: https://bsky.app
+                        - img [ref=e176] [cursor=pointer]
+                    - link "Open blog XML Feed, opens in new tab" [ref=e178] [cursor=pointer]:
+                        - /url: /rss.xml
+                        - img [ref=e179] [cursor=pointer]
+                - paragraph [ref=e182]: © 2025 Tendril Multi-Tenant Chatbot SaaS. All rights reserved.
+    - alert [ref=e183]
+```

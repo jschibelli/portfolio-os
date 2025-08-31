@@ -4,26 +4,22 @@ import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { Container } from '../components/shared/container';
+import { useEffect, useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
-import { Footer } from '../components/shared/footer';
-import { ArticleSVG } from '../components/icons';
-import { Layout } from '../components/shared/layout';
 import Chatbot from '../components/features/chatbot/Chatbot';
+import { ArticleSVG } from '../components/icons';
+import { Container } from '../components/shared/container';
+import { Footer } from '../components/shared/footer';
+import { Layout } from '../components/shared/layout';
 
-import ModernHeader from '../components/features/navigation/modern-header';
-import ModernHero from '../components/features/homepage/modern-hero';
-import ModernPostCard from '../components/features/blog/modern-post-card';
 import FeaturedPost from '../components/features/blog/featured-post';
+import ModernPostCard from '../components/features/blog/modern-post-card';
+import ModernHero from '../components/features/homepage/modern-hero';
+import ModernHeader from '../components/features/navigation/modern-header';
 import NewsletterCTA from '../components/features/newsletter/newsletter-cta';
-import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from '../components/icons';
+import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../components/icons';
 
-import {
-	PageInfo,
-	PostFragment,
-	PublicationFragment,
-} from '../generated/graphql';
+import { PageInfo, PostFragment, PublicationFragment } from '../generated/graphql';
 import { DEFAULT_COVER } from '../utils/const';
 
 const SubscribeForm = dynamic(() =>
@@ -39,7 +35,12 @@ type Props = {
 	initialTotalPosts: number;
 };
 
-export default function Index({ publication, initialAllPosts, initialPageInfo, initialTotalPosts }: Props) {
+export default function Index({
+	publication,
+	initialAllPosts,
+	initialPageInfo,
+	initialTotalPosts,
+}: Props) {
 	const [allPosts] = useState<PostFragment[]>(initialAllPosts);
 	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
@@ -49,14 +50,14 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
-						setVisibleSections(prev => new Set([...prev, entry.target.id]));
+						setVisibleSections((prev) => new Set([...prev, entry.target.id]));
 					}
 				});
 			},
-			{ 
+			{
 				threshold: 0.1,
-				rootMargin: '0px 0px -50px 0px'
-			}
+				rootMargin: '0px 0px -50px 0px',
+			},
 		);
 
 		// Observe all sections
@@ -116,16 +117,16 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 					/>
 				</Head>
 				<ModernHeader publication={publication} />
-				
+
 				{/* Modern Hero Section */}
 				{allPosts.length > 0 && (
-					<div 
+					<div
 						id="hero-section"
 						data-animate-section
 						className={`transition-all duration-1000 ease-out ${
-							isSectionVisible('hero-section') 
-								? 'opacity-100 translate-y-0' 
-								: 'opacity-0 translate-y-8'
+							isSectionVisible('hero-section')
+								? 'translate-y-0 opacity-100'
+								: 'translate-y-8 opacity-0'
 						}`}
 					>
 						<ModernHero
@@ -138,7 +139,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 				)}
 
 				{/* Social Media Icons - Right under the hero */}
-				<div className="py-8 bg-white dark:bg-stone-950">
+				<div className="bg-white py-8 dark:bg-stone-950">
 					<Container className="px-5">
 						<div className="flex justify-center">
 							<div className="flex items-center gap-4">
@@ -148,18 +149,18 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Facebook, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 								>
 									<FacebookSVG className="h-5 w-5" />
 								</a>
-								
+
 								{/* GitHub */}
 								<a
 									href="https://github.com"
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Github, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 								>
 									<GithubSVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -170,7 +171,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Linkedin, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 								>
 									<LinkedinSVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -181,7 +182,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Bluesky, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 								>
 									<BlueskySVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -193,7 +194,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Open blog XML Feed, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 								>
 									<RssSVG className="h-5 w-5 stroke-current" />
 								</Link>
@@ -203,23 +204,22 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 				</div>
 
 				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
-
 					{/* Empty State */}
 					{allPosts.length === 0 && (
-						<div 
+						<div
 							id="empty-state-section"
 							data-animate-section
-							className={`grid grid-cols-1 py-20 lg:grid-cols-3 transition-all duration-800 ease-out ${
-								isSectionVisible('empty-state-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
+							className={`duration-800 grid grid-cols-1 py-20 transition-all ease-out lg:grid-cols-3 ${
+								isSectionVisible('empty-state-section')
+									? 'translate-y-0 opacity-100'
+									: 'translate-y-8 opacity-0'
 							}`}
 						>
-							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 dark:text-stone-400 lg:col-start-2">
-								<div className="w-20 animate-fade-in-up">
+							<div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 lg:col-start-2 dark:text-stone-400">
+								<div className="animate-fade-in-up w-20">
 									<ArticleSVG className="stroke-current" />
 								</div>
-								<p className="text-xl font-semibold animate-fade-in-up animation-delay-200">
+								<p className="animate-fade-in-up animation-delay-200 text-xl font-semibold">
 									Hang tight! We&apos;re drafting the first article.
 								</p>
 							</div>
@@ -228,42 +228,46 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 
 					{/* Featured Post Section */}
 					{allPosts.length > 0 && (
-						<div 
+						<div
 							id="featured-section"
 							data-animate-section
-							className={`space-y-12 transition-all duration-900 ease-out ${
-								isSectionVisible('featured-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
+							className={`duration-900 space-y-12 transition-all ease-out ${
+								isSectionVisible('featured-section')
+									? 'translate-y-0 opacity-100'
+									: 'translate-y-8 opacity-0'
 							}`}
 						>
 							<FeaturedPost
 								post={allPosts[0]}
 								coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
 								readTime="5 min read"
-								tags={["Featured", "Technology", "Insights"]}
+								tags={['Featured', 'Technology', 'Insights']}
 							/>
 
 							{/* Latest Posts Grid */}
 							{allPosts.length > 1 && (
-								<div 
+								<div
 									id="latest-posts-section"
 									data-animate-section
 									className={`space-y-6 transition-all duration-1000 ease-out ${
-										isSectionVisible('latest-posts-section') 
-											? 'opacity-100 translate-y-0' 
-											: 'opacity-0 translate-y-8'
+										isSectionVisible('latest-posts-section')
+											? 'translate-y-0 opacity-100'
+											: 'translate-y-8 opacity-0'
 									}`}
 								>
-									<h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 animate-fade-in-up">Latest Posts</h2>
+									<h2 className="animate-fade-in-up text-2xl font-bold text-stone-900 dark:text-stone-100">
+										Latest Posts
+									</h2>
 									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 										{allPosts.slice(1, 4).map((post, index) => (
-											<div 
+											<div
 												key={post.id}
 												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
-													index === 0 ? 'animation-delay-200' :
-													index === 1 ? 'animation-delay-300' :
-													'animation-delay-400'
+													index === 0
+														? 'animation-delay-200'
+														: index === 1
+															? 'animation-delay-300'
+															: 'animation-delay-400'
 												}`}
 											>
 												<ModernPostCard
@@ -273,7 +277,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 													date={post.publishedAt}
 													slug={post.slug}
 													readTime="3 min read"
-													tags={["Technology", "Development"]}
+													tags={['Technology', 'Development']}
 												/>
 											</div>
 										))}
@@ -285,26 +289,22 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 
 					{/* Newsletter CTA Section */}
 					{allPosts.length > 0 && (
-						<div 
+						<div
 							id="newsletter-section"
 							data-animate-section
-							className={`py-8 transition-all duration-1100 ease-out ${
-								isSectionVisible('newsletter-section') 
-									? 'opacity-100 translate-y-0' 
-									: 'opacity-0 translate-y-8'
+							className={`duration-1100 py-8 transition-all ease-out ${
+								isSectionVisible('newsletter-section')
+									? 'translate-y-0 opacity-100'
+									: 'translate-y-8 opacity-0'
 							}`}
 						>
-							<NewsletterCTA 
+							<NewsletterCTA
 								title="Stay updated with our newsletter"
 								showNewsletterForm={true}
 								className="py-16"
 							/>
 						</div>
 					)}
-
-
-
-
 				</Container>
 				<Footer />
 				<Chatbot />
@@ -315,7 +315,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-	
+
 	try {
 		// Use a direct fetch instead of graphql-request to avoid the document issue
 		const response = await fetch(GQL_ENDPOINT, {
@@ -380,13 +380,13 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
 		const data = await response.json();
 		const publication = data.data?.publication;
-		
+
 		if (!publication) {
 			return {
 				notFound: true,
 			};
 		}
-		
+
 		const initialAllPosts = publication.posts.edges.map((edge: any) => edge.node);
 
 		return {
@@ -415,21 +415,21 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 							hasNextPage: false,
 							endCursor: null,
 						},
-						totalDocuments: 0
+						totalDocuments: 0,
 					},
 					preferences: {
-						logo: null
+						logo: null,
 					},
 					author: {
 						name: 'John Schibelli',
-						profilePicture: null
+						profilePicture: null,
 					},
 					followersCount: 0,
 					isTeam: false,
 					favicon: null,
 					ogMetaData: {
-						image: null
-					}
+						image: null,
+					},
 				} as any,
 				initialAllPosts: [],
 				initialPageInfo: {

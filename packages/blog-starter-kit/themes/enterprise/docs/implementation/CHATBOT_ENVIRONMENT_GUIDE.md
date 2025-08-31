@@ -1,11 +1,13 @@
 # Chatbot Environment Variables Guide
 
 ## Overview
+
 This guide covers all environment variables needed for the chatbot to function properly.
 
 ## Required Environment Variables
 
 ### 1. OpenAI Configuration
+
 ```env
 # Required for AI responses
 OPENAI_API_KEY=sk-your-openai-api-key-here
@@ -16,6 +18,7 @@ OPENAI_ROUTER_MODEL_RESPONSES=gpt-4o-mini
 ```
 
 ### 2. Google Calendar Configuration
+
 ```env
 # Required for scheduling functionality
 GOOGLE_CALENDAR_ID=jschibelli@gmail.com
@@ -35,18 +38,21 @@ GOOGLE_UNIVERSE_DOMAIN=googleapis.com
 ```
 
 #### Validation checklist (run locally before starting dev):
+
 - GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY are SET
 - GOOGLE_PRIVATE_KEY contains the BEGIN/END lines and uses \n (not literal newlines in .env)
 - GOOGLE_CALENDAR_ID is a calendar the service account has access to
 - Optional dev fix: `FIX_SSL_ISSUES=true` (Node 20+ OpenSSL compatibility)
 
 You can quickly verify loaded vars:
+
 ```bash
 # PowerShell
 Get-Content .env.local | Select-String "GOOGLE_"
 ```
 
 ### 3. Feature Flags (Public)
+
 ```env
 # Enable/disable features on the frontend
 NEXT_PUBLIC_FEATURE_SCHEDULING=true
@@ -55,6 +61,7 @@ NEXT_PUBLIC_FEATURE_CLIENT_INTAKE=true
 ```
 
 ### 4. Feature Flags (Server-side)
+
 ```env
 # Enable/disable features on the backend
 FEATURE_SCHEDULING=true
@@ -63,6 +70,7 @@ FEATURE_CLIENT_INTAKE=true
 ```
 
 ### 5. GitHub Configuration (Optional)
+
 ```env
 # For fetching blog articles from GitHub
 GITHUB_REPO_OWNER=jschibelli
@@ -71,12 +79,14 @@ GITHUB_TOKEN=github_pat_your_token_here
 ```
 
 ### 6. Email Configuration (Optional)
+
 ```env
 # For sending booking confirmations
 RESEND_API_KEY=re_your_resend_api_key_here
 ```
 
 ### 7. Development Configuration (Optional)
+
 ```env
 # Only for development - disable SSL verification if needed
 DISABLE_SSL_VERIFICATION=true
@@ -85,11 +95,13 @@ DISABLE_SSL_VERIFICATION=true
 ## Setup Instructions
 
 ### 1. OpenAI Setup
+
 1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
 2. Create a new API key
 3. Add to your `.env.local` file
 
 ### 2. Google Calendar Setup
+
 1. Create a Google Cloud Project
 2. Enable Google Calendar API
 3. Create a Service Account
@@ -98,11 +110,13 @@ DISABLE_SSL_VERIFICATION=true
 6. Add all the service account credentials to `.env.local`
 
 ### 3. GitHub Setup (Optional)
+
 1. Create a GitHub Personal Access Token
 2. Give it `repo` permissions
 3. Add to your `.env.local` file
 
 ### 4. Resend Setup (Optional)
+
 1. Sign up at [Resend](https://resend.com)
 2. Create an API key
 3. Add to your `.env.local` file
@@ -118,16 +132,19 @@ node test-env-simple.js
 ## Troubleshooting
 
 ### GitHub API 401 Errors
+
 - Check that your `GITHUB_TOKEN` is valid and not expired
 - Ensure the token has the correct permissions
 - Verify the repository exists and is accessible
 
 ### Google Calendar Errors
+
 - Verify all service account credentials are correct
 - Check that the calendar is shared with the service account
 - Ensure the Google Calendar API is enabled
 
 ### OpenAI Errors
+
 - Verify your API key is valid
 - Check your OpenAI account has sufficient credits
 - Ensure the API key has the correct permissions

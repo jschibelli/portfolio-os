@@ -7,6 +7,7 @@ This document outlines the new **hybrid approach** for creating case studies tha
 ## Problem Solved
 
 ### Issues with Fenced Block Approach
+
 - **Complex parsing logic** that was unreliable and difficult to debug
 - **Runtime parsing overhead** that could fail silently
 - **Limited flexibility** for complex interactions and animations
@@ -14,6 +15,7 @@ This document outlines the new **hybrid approach** for creating case studies tha
 - **Debugging complexity** when blocks failed to parse
 
 ### Benefits of Hybrid Approach
+
 - ✅ **Reliable** - No parsing issues or debugging complexity
 - ✅ **Maintainable** - Standard React patterns everyone understands
 - ✅ **Flexible** - Full React capabilities (state, effects, animations)
@@ -24,6 +26,7 @@ This document outlines the new **hybrid approach** for creating case studies tha
 ## Implementation
 
 ### File Structure
+
 ```
 pages/case-studies/
 ├── tendril-multi-tenant-chatbot-saas.tsx  # React-based case study
@@ -101,6 +104,7 @@ export default function TendrilCaseStudy() {
 ### Key Features
 
 #### 1. **Structured Content Sections**
+
 - Problem Statement
 - Research & Analysis
 - Solution Design
@@ -110,12 +114,14 @@ export default function TendrilCaseStudy() {
 - Next Steps
 
 #### 2. **Reusable Components**
+
 - `ComparisonTable` - For competitive analysis
 - `KPIsGrid` - For metrics display
 - `PricingAnalysisCard` - For pricing comparisons
 - Custom inline components as needed
 
 #### 3. **Enhanced UX**
+
 - Framer Motion animations
 - Sticky table of contents
 - Responsive design
@@ -123,6 +129,7 @@ export default function TendrilCaseStudy() {
 - Smooth scrolling navigation
 
 #### 4. **SEO Optimization**
+
 - Proper meta tags
 - Structured data
 - Semantic HTML
@@ -131,17 +138,20 @@ export default function TendrilCaseStudy() {
 ## Migration Strategy
 
 ### Phase 1: Create New React-Based Pages
+
 1. **Create dedicated page** for each case study
 2. **Use existing components** from `lib/case-study-blocks.tsx`
 3. **Add inline components** as needed
 4. **Test thoroughly** with Playwright tests
 
 ### Phase 2: Update Routing
+
 1. **Resolve path conflicts** between static and dynamic routes
 2. **Update case study index** to link to new pages
 3. **Maintain backward compatibility** during transition
 
 ### Phase 3: Deprecate Fenced Block System
+
 1. **Document the new approach**
 2. **Train content creators** on React-based authoring
 3. **Remove fenced block parsing** once migration is complete
@@ -149,6 +159,7 @@ export default function TendrilCaseStudy() {
 ## Benefits Over Previous Approach
 
 ### For Developers
+
 - **Standard React patterns** - No custom parsing logic
 - **Full TypeScript support** - Type safety throughout
 - **Better debugging** - Standard React dev tools
@@ -156,12 +167,14 @@ export default function TendrilCaseStudy() {
 - **More flexible** - Full React ecosystem available
 
 ### For Content Creators
+
 - **Clearer structure** - Explicit sections and components
 - **Better preview** - WYSIWYG editing in development
 - **Easier maintenance** - Standard React component updates
 - **More reliable** - No parsing failures or edge cases
 
 ### For Users
+
 - **Better performance** - No runtime parsing
 - **More interactive** - Full React capabilities
 - **Better accessibility** - Semantic HTML structure
@@ -170,24 +183,26 @@ export default function TendrilCaseStudy() {
 ## Testing
 
 ### Playwright Test Suite
+
 ```tsx
 // tests/case-study-hybrid.spec.ts
 test.describe('Case Study Hybrid Implementation', () => {
-  test('should display React-based case study page correctly', async ({ page }) => {
-    await page.goto('/case-studies/tendril-multi-tenant-chatbot-saas');
-    
-    // Verify content sections
-    await expect(page.locator('#problem-statement')).toBeVisible();
-    await expect(page.locator('#research-analysis')).toBeVisible();
-    
-    // Check React components
-    await expect(page.locator('table')).toBeVisible(); // Comparison table
-    await expect(page.locator('.grid')).toBeVisible(); // KPIs grid
-  });
+	test('should display React-based case study page correctly', async ({ page }) => {
+		await page.goto('/case-studies/tendril-multi-tenant-chatbot-saas');
+
+		// Verify content sections
+		await expect(page.locator('#problem-statement')).toBeVisible();
+		await expect(page.locator('#research-analysis')).toBeVisible();
+
+		// Check React components
+		await expect(page.locator('table')).toBeVisible(); // Comparison table
+		await expect(page.locator('.grid')).toBeVisible(); // KPIs grid
+	});
 });
 ```
 
 ### Test Coverage
+
 - ✅ **Content rendering** - All sections display correctly
 - ✅ **Component functionality** - Tables and grids work
 - ✅ **Navigation** - Table of contents and smooth scrolling
@@ -199,27 +214,32 @@ test.describe('Case Study Hybrid Implementation', () => {
 ## Best Practices
 
 ### 1. **Component Organization**
+
 - Use inline components for case-study-specific functionality
 - Reuse shared components from `lib/case-study-blocks.tsx`
 - Keep components focused and single-purpose
 
 ### 2. **Content Structure**
+
 - Follow the standardized 7-section structure
 - Use semantic HTML with proper heading hierarchy
 - Include proper IDs for navigation
 
 ### 3. **Performance**
+
 - Use React.memo for expensive components
 - Implement proper loading states
 - Optimize images and assets
 
 ### 4. **Accessibility**
+
 - Use proper heading hierarchy (h1, h2, h3)
 - Include alt text for images
 - Ensure keyboard navigation works
 - Test with screen readers
 
 ### 5. **SEO**
+
 - Include proper meta tags
 - Use structured data where appropriate
 - Ensure fast loading times
@@ -228,21 +248,25 @@ test.describe('Case Study Hybrid Implementation', () => {
 ## Future Enhancements
 
 ### 1. **Component Library**
+
 - Extract common components to shared library
 - Create component documentation
 - Add component playground for testing
 
 ### 2. **Content Management**
+
 - Create visual editor for case studies
 - Add content validation
 - Implement preview functionality
 
 ### 3. **Analytics**
+
 - Track case study engagement
 - Monitor component usage
 - A/B test different layouts
 
 ### 4. **Internationalization**
+
 - Support multiple languages
 - Implement RTL layouts
 - Add translation management
@@ -252,6 +276,7 @@ test.describe('Case Study Hybrid Implementation', () => {
 The hybrid approach successfully addresses all the issues with the fenced block system while providing significant advantages in terms of reliability, maintainability, and flexibility. This approach leverages the full power of React while maintaining a clean, structured approach to case study content.
 
 The implementation demonstrates that:
+
 - **React components are more reliable** than parsing markdown
 - **Direct component usage is more maintainable** than complex parsing logic
 - **Full React capabilities provide better UX** than limited markdown features

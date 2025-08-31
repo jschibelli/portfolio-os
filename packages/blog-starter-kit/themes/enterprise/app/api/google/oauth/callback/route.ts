@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
-import { NextRequest } from 'next/server';
 import { getOAuth2Client } from '@/lib/google/auth';
+import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
 	const { searchParams } = new URL(req.url);
@@ -9,7 +9,10 @@ export async function GET(req: NextRequest) {
 	const error = searchParams.get('error');
 
 	if (error) {
-		return new Response(`OAuth error: ${error}`, { status: 400, headers: { 'content-type': 'text/plain' } });
+		return new Response(`OAuth error: ${error}`, {
+			status: 400,
+			headers: { 'content-type': 'text/plain' },
+		});
 	}
 	if (!code) {
 		return new Response('Missing code', { status: 400, headers: { 'content-type': 'text/plain' } });
@@ -20,7 +23,7 @@ export async function GET(req: NextRequest) {
 		const { tokens } = await oauth2.getToken(code);
 		// Refresh token appears only on first consent (or if prompt=consent).
 		const refresh = tokens.refresh_token;
-		const access  = tokens.access_token;
+		const access = tokens.access_token;
 
 		// Show a minimal page instructing to copy the refresh token to env/secrets.
 		const html = `
@@ -35,8 +38,9 @@ export async function GET(req: NextRequest) {
 		`;
 		return new Response(html, { headers: { 'content-type': 'text/html' } });
 	} catch (e: any) {
-		return new Response(`Token exchange failed: ${e?.message || e}`, { status: 500, headers: { 'content-type': 'text/plain' } });
+		return new Response(`Token exchange failed: ${e?.message || e}`, {
+			status: 500,
+			headers: { 'content-type': 'text/plain' },
+		});
 	}
 }
-
-

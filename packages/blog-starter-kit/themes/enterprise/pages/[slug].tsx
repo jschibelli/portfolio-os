@@ -5,17 +5,17 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Container } from '../components/shared/container';
 import { AppProvider } from '../components/contexts/appContext';
-import { Footer } from '../components/shared/footer';
-import ModernHeader from '../components/features/navigation/modern-header';
-import { Layout } from '../components/shared/layout';
 import { MarkdownToHtml } from '../components/features/blog/markdown-to-html';
-import { CaseStudyMarkdown } from '../components/features/case-studies/case-study-markdown';
 import { ModernPostHeader } from '../components/features/blog/modern-post-header';
 import { PostTOC } from '../components/features/blog/post-toc';
 import { CaseStudyLayout } from '../components/features/case-studies/case-study-layout';
+import { CaseStudyMarkdown } from '../components/features/case-studies/case-study-markdown';
 import Chatbot from '../components/features/chatbot/Chatbot';
+import ModernHeader from '../components/features/navigation/modern-header';
+import { Container } from '../components/shared/container';
+import { Footer } from '../components/shared/footer';
+import { Layout } from '../components/shared/layout';
 import {
 	PageByPublicationDocument,
 	PostFullFragment,
@@ -32,8 +32,12 @@ import { useEffect, useState } from 'react';
 // @ts-ignore
 import { triggerCustomWidgetEmbed } from '@starter-kit/utils/trigger-custom-widget-embed';
 
-const AboutAuthor = dynamic(() => import('../components/features/blog/about-author'), { ssr: false });
-const Subscribe = dynamic(() => import('../components/features/newsletter/subscribe').then((mod) => mod.Subscribe));
+const AboutAuthor = dynamic(() => import('../components/features/blog/about-author'), {
+	ssr: false,
+});
+const Subscribe = dynamic(() =>
+	import('../components/features/newsletter/subscribe').then((mod) => mod.Subscribe),
+);
 const PostComments = dynamic(() =>
 	import('../components/features/blog/post-comments').then((mod) => mod.PostComments),
 );
@@ -57,13 +61,13 @@ const Post = ({ publication, post }: PostProps) => {
 		'.hljs{display:block;overflow-x:auto;padding:.5em;background:#23241f}.hljs,.hljs-subst,.hljs-tag{color:#f8f8f2}.hljs-emphasis,.hljs-strong{color:#a8a8a2}.hljs-bullet,.hljs-link,.hljs-literal,.hljs-number,.hljs-quote,.hljs-regexp{color:#ae81ff}.hljs-code,.hljs-section,.hljs-selector-class,.hljs-title{color:#a6e22e}.hljs-strong{font-weight:700}.hljs-emphasis{font-style:italic}.hljs-attr,.hljs-keyword,.hljs-name,.hljs-selector-tag{color:#f92672}.hljs-attribute,.hljs-symbol{color:#66d9ef}.hljs-class .hljs-title,.hljs-params{color:#f8f8f2}.hljs-addition,.hljs-built_in,.hljs-builtin-name,.hljs-selector-attr,.hljs-selector-id,.hljs-selector-pseudo,.hljs-string,.hljs-template-variable,.hljs-type,.hljs-variable{color:#e6db74}.hljs-comment,.hljs-deletion,.hljs-meta{color:#75715e}';
 
 	// Check if this is a case study
-	const isCaseStudy = post.tags?.some(tag => tag.slug === 'case-study');
+	const isCaseStudy = post.tags?.some((tag) => tag.slug === 'case-study');
 
 	const tagsList = (post.tags ?? []).map((tag) => (
 		<li key={tag.id}>
 			<Link
 				href={`/tag/${tag.slug}`}
-				className="block rounded-full border px-2 py-1 font-medium hover:bg-slate-50 dark:border-neutral-800 dark:hover:bg-neutral-800 md:px-4"
+				className="block rounded-full border px-2 py-1 font-medium hover:bg-slate-50 md:px-4 dark:border-neutral-800 dark:hover:bg-neutral-800"
 			>
 				#{tag.slug}
 			</Link>
@@ -185,16 +189,17 @@ const Post = ({ publication, post }: PostProps) => {
 				author={post.author}
 				readTimeInMinutes={post.readTimeInMinutes}
 			/>
-			{post.features.tableOfContents.isEnabled && post.features?.tableOfContents?.items?.length > 0 && <PostTOC />}
+			{post.features.tableOfContents.isEnabled &&
+				post.features?.tableOfContents?.items?.length > 0 && <PostTOC />}
 			<MarkdownToHtml contentMarkdown={post.content.markdown} />
 			{post.tags && post.tags.length > 0 && (
-				<div className="mx-auto w-full px-5 text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
-					<div className="flex flex-wrap gap-2 justify-center">
+				<div className="mx-auto w-full px-5 text-slate-600 md:max-w-screen-md dark:text-neutral-300">
+					<div className="flex flex-wrap justify-center gap-2">
 						{post.tags.map((tag) => (
 							<Link
 								key={tag.id}
 								href={`/tag/${tag.slug}`}
-								className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+								className="border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors"
 							>
 								#{tag.slug}
 							</Link>
@@ -229,7 +234,7 @@ export default function PostOrPage(props: Props) {
 	return (
 		<AppProvider publication={publication} post={maybePost} page={maybePage}>
 			<Layout>
-				        <ModernHeader publication={publication} />
+				<ModernHeader publication={publication} />
 				<Container className="pt-10">
 					<article className="flex flex-col items-start gap-10 pb-10">
 						{props.type === 'post' && <Post {...props} />}
@@ -308,7 +313,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-	
+
 	// Check if GraphQL is available
 	if (!request) {
 		console.warn('GraphQL not available, returning empty paths');
@@ -317,16 +322,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 			fallback: 'blocking',
 		};
 	}
-	
+
 	try {
-		const data = await request(
-			GQL_ENDPOINT,
-			SlugPostsByPublicationDocument,
-			{
-				first: 10,
-				host: host,
-			},
-		);
+		const data = await request(GQL_ENDPOINT, SlugPostsByPublicationDocument, {
+			first: 10,
+			host: host,
+		});
 
 		const postSlugs = (data.publication?.posts.edges ?? []).map((edge: any) => edge.node.slug);
 

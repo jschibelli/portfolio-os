@@ -1,6 +1,5 @@
 import request from 'graphql-request';
 import { useRef, useState } from 'react';
-import { Button } from '../../ui/button';
 import {
 	SubscribeToNewsletterDocument,
 	SubscribeToNewsletterMutation,
@@ -8,6 +7,7 @@ import {
 	SubscribeToNewsletterPayload,
 } from '../../../generated/graphql';
 import { useAppContext } from '../../contexts/appContext';
+import { Button } from '../../ui/button';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 

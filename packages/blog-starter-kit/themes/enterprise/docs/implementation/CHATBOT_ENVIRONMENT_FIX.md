@@ -1,11 +1,13 @@
 # Chatbot Environment Configuration Fix
 
 ## Issue
+
 The chatbot is experiencing errors because the `GOOGLE_SERVICE_ACCOUNT_PATH` environment variable is malformed (set to just `{`).
 
 ## Quick Fix
 
 ### Option 1: Use Mock Data (Recommended for Testing)
+
 The chatbot will now automatically fall back to mock data when the Google Calendar configuration is invalid. This allows you to test the chatbot functionality without setting up Google Calendar integration.
 
 ### Option 2: Fix Environment Variables
@@ -27,17 +29,21 @@ FEATURE_CLIENT_INTAKE=true
 ```
 
 ### Option 3: Disable Google Calendar Integration
+
 If you don't need real calendar integration, you can remove the Google Calendar environment variables entirely. The chatbot will use mock data automatically.
 
 ## Current Status
+
 ✅ **Fixed**: The chatbot now handles malformed environment variables gracefully
 ✅ **Working**: Mock data will be used when Google Calendar is not properly configured
 ✅ **Functional**: All chatbot features work with mock scheduling data
 
 ## Testing
+
 The chatbot should now work without errors. When users request scheduling, they'll see mock available time slots that demonstrate the booking flow.
 
 ## Cost-Effective Model Recommendation
+
 Your current `gpt-4o-mini` configuration is optimal for cost-effectiveness:
 
 - **Model**: `gpt-4o-mini` (Standard tier)
@@ -46,5 +52,3 @@ Your current `gpt-4o-mini` configuration is optimal for cost-effectiveness:
 - **Quality**: High-quality responses with good reasoning
 
 This is the most cost-effective option that supports all your chatbot's features.
-
-

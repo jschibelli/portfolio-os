@@ -30,7 +30,7 @@ Chatbase, $40-$500/month + add-ons, SMB
 Tidio, $29/month (limited features), Small Business
 :::
 
-**Key Market Insights**: 
+**Key Market Insights**:
 
 :::kpis
 Metric, Value
@@ -81,6 +81,7 @@ The document ingestion pipeline proved more complex than initially anticipated. 
 The dashboard development focused on intuitive navigation for users managing multiple chatbot instances. User testing revealed the need for better visual organization when handling 10+ chatbots simultaneously. Stripe integration for subscription billing included implementing usage tracking and automated plan upgrades based on conversation volume.
 
 **Technical Challenges and Solutions**:
+
 - **Database Performance**: Multi-tenant queries initially caused performance issues. Resolved through strategic indexing and query optimization.
 - **AI Response Quality**: Early responses were generic and unhelpful. Improved through better context injection and response validation.
 - **Widget Deployment**: Cross-domain embedding created CORS and security challenges. Solved with properly configured iframe sandboxing and domain validation.
@@ -134,6 +135,7 @@ Support Tickets, 60% below average
 :::
 
 **Key Success Indicators**:
+
 - Three agencies deployed Tendril across 15+ client websites within first quarter
 - 78% of users reported Tendril solved their primary pain point with previous solutions
 - 67% of paid users upgraded plans within 90 days due to increased usage
@@ -181,6 +183,7 @@ Simple Interface, Reduced onboarding
 :::
 
 **Strategic Insights for Future Projects**:
+
 - Deep market research should precede technical development
 - Pricing strategy requires as much attention as product features
 - Identifying underserved user segments (agencies) can provide faster paths to market
@@ -191,21 +194,25 @@ Simple Interface, Reduced onboarding
 The success of the Tendril MVP validates the market opportunity and provides a foundation for strategic expansion across multiple dimensions. The roadmap balances user-requested features with business growth initiatives and technical infrastructure improvements.
 
 **Immediate Development Priorities (Next 3 Months)**:
+
 - **Advanced Workflow Integration**: Build native connections to popular helpdesk systems (Zendesk, Freshdesk) and CRM platforms, addressing the 34% of users who requested better handoff capabilities
 - **Enhanced Analytics Dashboard**: Implement conversation analytics, resolution rates, and performance metrics that agencies need for client reporting
 - **Mobile Optimization**: Responsive design improvements and potential mobile app for managing chatbots on-the-go
 
 **Growth and Scale Initiatives (Months 4-9)**:
+
 - **Partner Program Launch**: Formal agency partner program with revenue sharing and co-marketing opportunities to accelerate the successful agency channel
 - **API Development**: Public API to enable integrations with custom applications and third-party tools
 - **Advanced AI Features**: Conversation sentiment analysis, automatic escalation triggers, and personalized response training
 
 **Market Expansion Strategy (Months 6-12)**:
+
 - **Vertical Specialization**: Industry-specific templates and knowledge bases for healthcare, legal, and e-commerce sectors
 - **International Expansion**: Multi-language support and region-specific compliance features
 - **Enterprise Features**: Single sign-on (SSO), advanced permissions, and audit trails for larger customers
 
 **Technical Infrastructure Evolution**:
+
 - **Performance Optimization**: Database sharding and caching improvements to support 10x user growth
 - **Security Enhancements**: SOC 2 compliance preparation and advanced data protection features
 - **AI Model Optimization**: Cost reduction through selective use of open-source models and response caching

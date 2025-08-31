@@ -42,30 +42,33 @@ export const Search = () => {
 		setQuery(searchInputRef.current?.value || '');
 	};
 
-	const search = useCallback(async (query: string) => {
-		if (timerRef.current) clearTimeout(timerRef.current);
+	const search = useCallback(
+		async (query: string) => {
+			if (timerRef.current) clearTimeout(timerRef.current);
 
-		if (!query) {
-			setSearchResults([]);
-			setIsSearching(false);
-			return;
-		}
+			if (!query) {
+				setSearchResults([]);
+				setIsSearching(false);
+				return;
+			}
 
-		timerRef.current = setTimeout(async () => {
-			setIsSearching(true);
+			timerRef.current = setTimeout(async () => {
+				setIsSearching(true);
 
-			const data = await request<
-				SearchPostsOfPublicationQuery,
-				SearchPostsOfPublicationQueryVariables
-			>(GQL_ENDPOINT, SearchPostsOfPublicationDocument, {
-				first: NO_OF_SEARCH_RESULTS,
-				filter: { query, publicationId: publication.id },
-			});
-			const posts = data.searchPostsOfPublication.edges.map((edge) => edge.node);
-			setSearchResults(posts);
-			setIsSearching(false);
-		}, 500);
-	}, [publication.id]);
+				const data = await request<
+					SearchPostsOfPublicationQuery,
+					SearchPostsOfPublicationQueryVariables
+				>(GQL_ENDPOINT, SearchPostsOfPublicationDocument, {
+					first: NO_OF_SEARCH_RESULTS,
+					filter: { query, publicationId: publication.id },
+				});
+				const posts = data.searchPostsOfPublication.edges.map((edge) => edge.node);
+				setSearchResults(posts);
+				setIsSearching(false);
+			}, 500);
+		},
+		[publication.id],
+	);
 
 	useEffect(() => {
 		search(query);
@@ -77,18 +80,18 @@ export const Search = () => {
 			<Link
 				key={post.id}
 				href={postURL}
-				className="flex flex-row items-start gap-4 p-4 hover:bg-slate-50 focus:outline-none focus:bg-slate-50 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800 transition-colors duration-200"
+				className="flex flex-row items-start gap-4 p-4 transition-colors duration-200 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
 			>
-				<div className="flex flex-col gap-2 flex-1 min-w-0">
-					<strong className="text-lg font-semibold text-slate-900 dark:text-neutral-100 leading-tight">
+				<div className="flex min-w-0 flex-1 flex-col gap-2">
+					<strong className="text-lg font-semibold leading-tight text-slate-900 dark:text-neutral-100">
 						{post.title}
 					</strong>
-					<span className="text-slate-600 dark:text-neutral-300 text-sm leading-relaxed">
+					<span className="text-sm leading-relaxed text-slate-600 dark:text-neutral-300">
 						{post.brief.length > 120 ? post.brief.substring(0, 120) + '…' : post.brief}
 					</span>
 				</div>
-				<div className="w-24 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-					<div className="w-full h-full">
+				<div className="h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg">
+					<div className="h-full w-full">
 						<CoverImage
 							title={post.title}
 							src={resizeImage(
@@ -115,12 +118,12 @@ export const Search = () => {
 				onKeyUp={escapeSearchOnESC}
 				onChange={updateSearchQuery}
 				placeholder="Search blog posts…"
-				className="w-full rounded-full border border-slate-200 bg-slate-50 px-6 py-4 text-lg focus:bg-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 dark:placeholder:text-neutral-400 dark:hover:bg-neutral-950"
+				className="focus:ring-primary/20 w-full rounded-full border border-slate-200 bg-slate-50 px-6 py-4 text-lg focus:bg-transparent focus:outline-none focus:ring-2 dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-50 dark:placeholder:text-neutral-400 dark:hover:bg-neutral-950"
 			/>
 			{query && (
 				<>
 					{isSearching && (
-						<div className="absolute left-0 right-0 z-50 mt-2 flex w-full flex-col items-stretch overflow-hidden rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50 min-h-[300px] max-h-[500px] overflow-y-auto">
+						<div className="absolute left-0 right-0 z-50 mt-2 flex max-h-[500px] min-h-[300px] w-full flex-col items-stretch overflow-hidden overflow-y-auto rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50">
 							<div className="flex animate-pulse flex-col gap-3 p-4">
 								<div className="h-6 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
 								<div className="h-4 w-full rounded-lg bg-slate-100 dark:bg-neutral-800"></div>
@@ -139,8 +142,8 @@ export const Search = () => {
 						</div>
 					)}
 					{searchResults.length > 0 && !isSearching && (
-						<div className="absolute left-0 right-0 z-50 mt-2 flex w-full flex-col items-stretch overflow-hidden rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50 min-h-[200px] max-h-[500px] overflow-y-auto">
-							<h3 className="px-4 py-3 font-semibold text-slate-700 dark:text-neutral-300 border-b border-slate-200 dark:border-neutral-700">
+						<div className="absolute left-0 right-0 z-50 mt-2 flex max-h-[500px] min-h-[200px] w-full flex-col items-stretch overflow-hidden overflow-y-auto rounded-xl border bg-white p-2 text-left text-slate-900 shadow-2xl dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-50">
+							<h3 className="border-b border-slate-200 px-4 py-3 font-semibold text-slate-700 dark:border-neutral-700 dark:text-neutral-300">
 								Found {searchResults.length} results
 							</h3>
 							<div className="divide-y divide-slate-200 dark:divide-neutral-700">

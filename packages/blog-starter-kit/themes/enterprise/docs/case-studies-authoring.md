@@ -14,8 +14,8 @@ Case studies are special blog posts that showcase real-world solutions, technica
 
 ```markdown
 ---
-title: "Building a Multi-Tenant Chatbot Platform"
-tags: ["case-study", "chatbot", "saas"]
+title: 'Building a Multi-Tenant Chatbot Platform'
+tags: ['case-study', 'chatbot', 'saas']
 ---
 ```
 
@@ -49,6 +49,7 @@ Agency, $199, 10, 20,000/mo, 20GB, White-label + custom domains, Advanced analyt
 ```
 
 **Features:**
+
 - Responsive table design
 - Hover effects
 - Accessible with proper table headers
@@ -69,6 +70,7 @@ Tidio, $29–$59, Conversations-based, Limited on lower plans, Unlimited seats
 ```
 
 **Features:**
+
 - Clean comparison layout
 - Responsive design
 - Easy to scan
@@ -88,6 +90,7 @@ Resolution rate, 60–75% (target)
 ```
 
 **Features:**
+
 - 2-column mobile, 4-column desktop grid
 - Card-based design
 - Highlighted values
@@ -106,6 +109,7 @@ url, alt
 ```
 
 **Features:**
+
 - Responsive grid layout
 - Click to open lightbox modal
 - Keyboard accessible (ESC to close)
@@ -123,6 +127,7 @@ Want a similar build?, I can ship this for your startup or agency., Contact me, 
 ```
 
 **Features:**
+
 - Full-width CTA card
 - Gradient background
 - Prominent button design
@@ -170,8 +175,8 @@ Want a similar build?, I can ship this for your startup or agency., Contact me, 
 
 ```markdown
 ---
-title: "Building Tendril: A Multi-Tenant Chatbot Platform"
-tags: ["case-study", "chatbot", "saas", "startup"]
+title: 'Building Tendril: A Multi-Tenant Chatbot Platform'
+tags: ['case-study', 'chatbot', 'saas', 'startup']
 ---
 
 ## Problem Statement
@@ -236,16 +241,19 @@ Ready to build something similar?, Let's discuss your project requirements., Sta
 ## Accessibility Features
 
 ### Tables
+
 - Proper `<th scope="col">` headers
 - Semantic table structure
 - Keyboard navigation support
 
 ### Gallery
+
 - Keyboard focusable images
 - ESC key to close lightbox
 - Screen reader friendly alt text
 
 ### TOC
+
 - Semantic navigation structure
 - Keyboard accessible links
 - ARIA labels for screen readers
@@ -253,16 +261,19 @@ Ready to build something similar?, Let's discuss your project requirements., Sta
 ## Troubleshooting
 
 ### Block Not Rendering
+
 - Check syntax: `:::blocktype` to `:::`
 - Ensure proper comma separation
 - Verify block type is supported
 
 ### Layout Issues
+
 - Confirm `case-study` tag is present
 - Check for proper heading structure (h2, h3)
 - Verify responsive breakpoints
 
 ### Content Not Displaying
+
 - Check markdown syntax
 - Verify image paths for gallery blocks
 - Ensure proper URL formatting for CTA blocks
@@ -270,10 +281,11 @@ Ready to build something similar?, Let's discuss your project requirements., Sta
 ## Support
 
 For issues or questions about case study authoring:
+
 1. Check this documentation
 2. Review existing case studies for examples
 3. Contact the development team
 
 ---
 
-*This guide is maintained by the development team. Last updated: [Current Date]*
+_This guide is maintained by the development team. Last updated: [Current Date]_

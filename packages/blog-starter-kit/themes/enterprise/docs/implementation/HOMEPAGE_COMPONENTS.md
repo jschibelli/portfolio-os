@@ -5,6 +5,7 @@ This document describes the new homepage components created for John Schibelli's
 ## Components Overview
 
 ### 1. Hero Section (`components/hero.tsx`)
+
 - **Purpose**: Main landing section with name, title, and CTAs
 - **Features**:
   - Stone palette background image with radial gradient overlay
@@ -14,6 +15,7 @@ This document describes the new homepage components created for John Schibelli's
   - Scroll indicator animation
 
 ### 2. Intro Section (`components/intro.tsx`)
+
 - **Purpose**: Personal introduction with avatar/monogram
 - **Features**:
   - JS monogram avatar
@@ -22,6 +24,7 @@ This document describes the new homepage components created for John Schibelli's
   - Responsive layout (stacked on mobile)
 
 ### 3. Featured Projects (`components/featured-projects.tsx`)
+
 - **Purpose**: Showcase 2-3 featured projects
 - **Features**:
   - Uses existing portfolio data from `data/portfolio.json`
@@ -30,6 +33,7 @@ This document describes the new homepage components created for John Schibelli's
   - Responsive design
 
 ### 4. Project Card (`components/project-card.tsx`)
+
 - **Purpose**: Individual project display card
 - **Features**:
   - Image thumbnail with hover effects
@@ -39,6 +43,7 @@ This document describes the new homepage components created for John Schibelli's
   - Hover animations (scale + shadow)
 
 ### 5. Skills Ticker (`components/skills-ticker.tsx`)
+
 - **Purpose**: Infinite horizontal scroll of skills and tools
 - **Features**:
   - Auto-scrolling animation (30s duration)
@@ -48,6 +53,7 @@ This document describes the new homepage components created for John Schibelli's
   - Uses data from `data/skills.ts`
 
 ### 6. CTA Banner (`components/cta-banner.tsx`)
+
 - **Purpose**: Freelance/consulting availability call-to-action
 - **Features**:
   - Stone gradient background with pattern overlay
@@ -56,6 +62,7 @@ This document describes the new homepage components created for John Schibelli's
   - Framer Motion animations
 
 ### 7. Latest Posts (`components/latest-posts.tsx`)
+
 - **Purpose**: Teaser for recent blog posts
 - **Features**:
   - Grid of post cards
@@ -63,6 +70,7 @@ This document describes the new homepage components created for John Schibelli's
   - Uses data from `data/posts.ts`
 
 ### 8. Post Card (`components/post-card.tsx`)
+
 - **Purpose**: Individual blog post display
 - **Features**:
   - Post title, date, and read time
@@ -73,15 +81,18 @@ This document describes the new homepage components created for John Schibelli's
 ## Data Files
 
 ### `data/posts.ts`
+
 - Sample blog post data with title, excerpt, date, slug, and read time
 - Used by Latest Posts section
 
 ### `data/skills.ts`
+
 - Comprehensive list of skills and tools organized by categories
 - Includes icons and category grouping
 - Used by Skills Ticker component
 
 ### `data/portfolio.json` (existing)
+
 - Updated with placeholder images from Unsplash
 - Used by Featured Projects section
 
@@ -92,7 +103,7 @@ This document describes the new homepage components created for John Schibelli's
   - `stone-800` for dividers
   - Dark mode support throughout
 
-- **Typography**: 
+- **Typography**:
   - Responsive font sizes
   - Proper contrast ratios for accessibility
   - Line clamping for text overflow
@@ -133,13 +144,13 @@ import LatestPosts from '../components/latest-posts';
 
 // Use in your page component
 <main>
-  <Hero />
-  <Intro />
-  <FeaturedProjects />
-  <SkillsTicker />
-  <CTABanner />
-  <LatestPosts />
-</main>
+	<Hero />
+	<Intro />
+	<FeaturedProjects />
+	<SkillsTicker />
+	<CTABanner />
+	<LatestPosts />
+</main>;
 ```
 
 ## Dependencies

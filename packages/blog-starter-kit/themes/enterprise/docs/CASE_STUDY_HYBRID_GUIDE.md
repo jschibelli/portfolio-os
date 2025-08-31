@@ -7,6 +7,7 @@ This guide explains how to use the new hybrid markdown + React components system
 ## Why This Approach?
 
 ### ✅ **Advantages Over Pure Markdown**
+
 - Beautiful, animated cards instead of basic tables
 - Interactive elements with hover effects
 - Professional styling with Shadcn/UI components
@@ -14,6 +15,7 @@ This guide explains how to use the new hybrid markdown + React components system
 - Smooth animations with Framer Motion
 
 ### ✅ **Advantages Over Pure React**
+
 - Easy content editing for non-technical users
 - Git-based version control for content
 - Fast content creation and updates
@@ -21,6 +23,7 @@ This guide explains how to use the new hybrid markdown + React components system
 - No complex build processes for content changes
 
 ### ✅ **Advantages Over Hashnode**
+
 - Full control over design and functionality
 - No platform dependencies or limitations
 - No monthly fees or usage limits
@@ -151,13 +154,13 @@ Use the `CaseStudyMarkdown` component to render your content:
 import { CaseStudyMarkdown } from '../components/case-study-markdown';
 
 export default function YourCaseStudyPage() {
-  const content = `# Your markdown content here...`;
-  
-  return (
-    <div className="container mx-auto py-12">
-      <CaseStudyMarkdown contentMarkdown={content} />
-    </div>
-  );
+	const content = `# Your markdown content here...`;
+
+	return (
+		<div className="container mx-auto py-12">
+			<CaseStudyMarkdown contentMarkdown={content} />
+		</div>
+	);
 }
 ```
 
@@ -173,19 +176,17 @@ If you're using the existing case study system with tags, your case studies will
 
 ```tsx
 const NewComponent: React.FC<{ data: any }> = ({ data }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Card>
-        <CardContent>
-          {/* Your component content */}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.5 }}
+		>
+			<Card>
+				<CardContent>{/* Your component content */}</CardContent>
+			</Card>
+		</motion.div>
+	);
 };
 ```
 
@@ -205,18 +206,21 @@ All components use Tailwind CSS classes and can be customized by modifying the c
 ## Best Practices
 
 ### 1. Content Structure
+
 - Use clear, descriptive labels for metrics
 - Keep comparison data consistent and fair
 - Include real customer testimonials when possible
 - Use specific, measurable metrics
 
 ### 2. Visual Hierarchy
+
 - Mix regular markdown with enhanced components
 - Don't overuse components - let content breathe
 - Use components to highlight key data points
 - Maintain consistent spacing and typography
 
 ### 3. Performance
+
 - Components are optimized with Framer Motion
 - Animations only trigger on scroll into view
 - Images are lazy-loaded automatically
@@ -240,6 +244,7 @@ The hybrid system provides better performance, more control, and no ongoing cost
 ## Support
 
 For questions or issues:
+
 1. Check the demo page for examples
 2. Review the component source code
 3. Test with simple examples first

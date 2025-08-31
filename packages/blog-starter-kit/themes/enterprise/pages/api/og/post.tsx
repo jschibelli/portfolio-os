@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { resizeImage } from '@starter-kit/utils/image';
 import { ImageResponse } from '@vercel/og';
 import { type NextRequest } from 'next/server';

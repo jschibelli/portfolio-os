@@ -9,6 +9,7 @@ The chatbot now has the ability to trigger UI actions that can control the brows
 ## How It Works
 
 ### 1. Tool Definition
+
 The chatbot has a new tool called `show_calendar_modal` that can be triggered when users ask about scheduling:
 
 ```typescript
@@ -42,57 +43,61 @@ The chatbot has a new tool called `show_calendar_modal` that can be triggered wh
 ```
 
 ### 2. Tool Execution
+
 When the tool is called, it:
+
 1. Fetches real availability from Google Calendar
 2. Returns a UI action object instead of just data
 3. The frontend processes this action and shows the modal
 
 ```typescript
 async function showCalendarModal(parameters: any) {
-  const { timezone = 'America/New_York', days = 7, message } = parameters;
+	const { timezone = 'America/New_York', days = 7, message } = parameters;
 
-  try {
-    // First, get the availability data
-    const availabilityResult = await getAvailability({ timezone, days });
-    
-    // Return a UI action that the frontend can handle
-    return {
-      type: 'ui_action',
-      action: 'show_calendar_modal',
-      data: {
-        availableSlots: availabilityResult.availableSlots,
-        timezone: availabilityResult.timezone,
-        businessHours: availabilityResult.businessHours,
-        meetingDurations: availabilityResult.meetingDurations,
-        message: message || 'Here are the available time slots for scheduling:'
-      }
-    };
-  } catch (error) {
-    console.error('Error showing calendar modal:', error);
-    throw new Error('Failed to show calendar modal');
-  }
+	try {
+		// First, get the availability data
+		const availabilityResult = await getAvailability({ timezone, days });
+
+		// Return a UI action that the frontend can handle
+		return {
+			type: 'ui_action',
+			action: 'show_calendar_modal',
+			data: {
+				availableSlots: availabilityResult.availableSlots,
+				timezone: availabilityResult.timezone,
+				businessHours: availabilityResult.businessHours,
+				meetingDurations: availabilityResult.meetingDurations,
+				message: message || 'Here are the available time slots for scheduling:',
+			},
+		};
+	} catch (error) {
+		console.error('Error showing calendar modal:', error);
+		throw new Error('Failed to show calendar modal');
+	}
 }
 ```
 
 ### 3. Frontend Processing
+
 The chatbot component processes UI actions in the response:
 
 ```typescript
 const handleUIAction = (uiActions: UIAction[]) => {
-  for (const action of uiActions) {
-    switch (action.action) {
-      case 'show_calendar_modal':
-        setCalendarData(action.data);
-        setIsCalendarModalOpen(true);
-        break;
-      default:
-        console.log('Unknown UI action:', action.action);
-    }
-  }
+	for (const action of uiActions) {
+		switch (action.action) {
+			case 'show_calendar_modal':
+				setCalendarData(action.data);
+				setIsCalendarModalOpen(true);
+				break;
+			default:
+				console.log('Unknown UI action:', action.action);
+		}
+	}
 };
 ```
 
 ### 4. Modal Display
+
 The calendar modal is rendered with the fetched data:
 
 ```typescript
@@ -153,6 +158,7 @@ The chatbot implements a privacy-first permission system that ensures users main
 ### Managing Permissions
 
 Users can manage permissions through the settings modal (gear icon in chatbot header):
+
 - View current permission status
 - Reset permissions to ask again
 - Toggle voice settings
@@ -160,6 +166,7 @@ Users can manage permissions through the settings modal (gear icon in chatbot he
 ## Testing
 
 Visit `/test-calendar-modal` to test the functionality. Try these commands:
+
 - "Show me available meeting times"
 - "I'd like to schedule a meeting"
 - "Can you show me your calendar?"
@@ -168,6 +175,7 @@ Visit `/test-calendar-modal` to test the functionality. Try these commands:
 ## Future Enhancements
 
 This system can be extended to support other UI actions:
+
 - **Forms**: Show contact forms, intake forms
 - **Galleries**: Display portfolio images
 - **Videos**: Play demo videos

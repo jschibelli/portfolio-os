@@ -10,7 +10,7 @@ export const MorePosts = ({ posts, context }: Props) => {
 	return (
 		<section className="mb-10 flex flex-col items-start gap-10">
 			{context === 'home' && (
-				<h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-neutral-50 lg:text-3xl">
+				<h2 className="text-xl font-bold leading-tight tracking-tight text-slate-900 lg:text-3xl dark:text-neutral-50">
 					More Posts
 				</h2>
 			)}
@@ -24,7 +24,7 @@ export const MorePosts = ({ posts, context }: Props) => {
 						slug={post.slug}
 						excerpt={post.brief}
 						readTime="3 min read"
-						tags={["Technology", "Development"]}
+						tags={['Technology', 'Development']}
 					/>
 				))}
 			</div>

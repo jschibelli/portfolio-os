@@ -33,6 +33,7 @@ GITHUB_TOKEN=your_github_personal_access_token_here
 
 3. **Repository Structure:**
    Your articles repository should have this structure:
+
    ```
    your-articles-repo/
    ├── posts/
@@ -63,6 +64,7 @@ You could also point to an RSS feed of your articles if you have one.
 ### 📝 Example Usage
 
 Once configured, the chatbot can now:
+
 - "What articles have you written about React?"
 - "Tell me about your TypeScript articles"
 - "What's your latest blog post about?"

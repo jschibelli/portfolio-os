@@ -1,8 +1,8 @@
 export const runtime = 'nodejs';
 
+import { getFreeSlots } from '@/lib/google/calendar';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getFreeSlots } from '@/lib/google/calendar';
 
 const Body = z.object({
 	durationMinutes: z.number().int().min(10).max(180),
@@ -36,5 +36,3 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ error: msg }, { status: 400 });
 	}
 }
-
-

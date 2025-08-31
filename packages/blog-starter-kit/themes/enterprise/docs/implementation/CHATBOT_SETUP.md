@@ -38,6 +38,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 ### 3. Dependencies
 
 The required dependencies are already included in the enterprise theme:
+
 - `openai` - OpenAI API client (installed)
 - `lucide-react` - Icons for the UI (already included)
 
@@ -65,17 +66,17 @@ The chatbot uses the resume data from `data/resume.json`. To update the chatbot'
 import Chatbot from '../components/chatbot';
 
 export default function YourPage() {
-  return (
-    <AppProvider publication={publication}>
-      <Layout>
-        {/* Your page content */}
-        <Footer />
-        
-        {/* Chatbot */}
-        <Chatbot />
-      </Layout>
-    </AppProvider>
-  );
+	return (
+		<AppProvider publication={publication}>
+			<Layout>
+				{/* Your page content */}
+				<Footer />
+
+				{/* Chatbot */}
+				<Chatbot />
+			</Layout>
+		</AppProvider>
+	);
 }
 ```
 

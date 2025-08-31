@@ -7,6 +7,7 @@ This document provides a complete overview of an AI-powered chatbot system built
 ## Core System Architecture
 
 ### Technology Stack
+
 - **Frontend**: Next.js 13+ with TypeScript, Tailwind CSS, React Hooks
 - **Backend**: Next.js API routes, OpenAI GPT-4o-mini, Google Calendar API
 - **Database**: PostgreSQL with Prisma ORM
@@ -15,6 +16,7 @@ This document provides a complete overview of an AI-powered chatbot system built
 - **Hosting**: Vercel with Postgres database
 
 ### System Components
+
 1. **Main Chatbot Component** (`components/ui/Chatbot.tsx`)
 2. **API Endpoints** (`pages/api/chat.ts`, `pages/api/tts.ts`, etc.)
 3. **Tool System** (`pages/api/chat/tools.ts`)
@@ -29,6 +31,7 @@ This document provides a complete overview of an AI-powered chatbot system built
 **Technology**: OpenAI GPT-4o-mini with Function Calling
 
 **Capabilities**:
+
 - Natural language processing and understanding
 - Context-aware conversations with memory
 - Intent detection (contact, skills, experience, projects, hiring, scheduling)
@@ -37,16 +40,18 @@ This document provides a complete overview of an AI-powered chatbot system built
 - Fallback responses when API unavailable
 
 **Key Features**:
+
 - Personality: Professional, friendly AI assistant representing John Schibelli
 - Knowledge Base: Resume data, blog articles, case studies
 - Response Templates: Pre-defined responses for common questions
 - Error Handling: Graceful degradation with fallback content
 
 **Code Example**:
+
 ```typescript
 // System prompt includes personality, knowledge base, and conversation guidelines
 const createSystemPrompt = (articles, conversationHistory, pageContext) => {
-  return `You are John's AI assistant - a knowledgeable, friendly, and professional helper...
+	return `You are John's AI assistant - a knowledgeable, friendly, and professional helper...
   PERSONALITY & COMMUNICATION STYLE:
   - Friendly and welcoming, but professional
   - Enthusiastic about John's work and achievements
@@ -61,6 +66,7 @@ const createSystemPrompt = (articles, conversationHistory, pageContext) => {
 **Technology**: OpenAI TTS-1, Web Speech API, HTML5 Audio
 
 **Capabilities**:
+
 - Text-to-Speech: 6 voice options (alloy, echo, fable, onyx, nova, shimmer)
 - Speech-to-Text: Browser-based voice recognition
 - Voice Control: Toggle on/off with visual indicators
@@ -68,6 +74,7 @@ const createSystemPrompt = (articles, conversationHistory, pageContext) => {
 - Voice Preferences: User-selectable voice options
 
 **Key Features**:
+
 - Default: Voice disabled (user preference)
 - Natural-sounding voices (not robotic)
 - Automatic audio element management
@@ -75,19 +82,20 @@ const createSystemPrompt = (articles, conversationHistory, pageContext) => {
 - Voice state persistence
 
 **Code Example**:
+
 ```typescript
 const speakMessage = async (text: string) => {
-  if (!isVoiceEnabled) return;
-  
-  const response = await fetch('/api/tts', {
-    method: 'POST',
-    body: JSON.stringify({ text, voice: selectedOpenAIVoice })
-  });
-  
-  const audioBlob = await response.blob();
-  const audioUrl = URL.createObjectURL(audioBlob);
-  audioRef.src = audioUrl;
-  await audioRef.play();
+	if (!isVoiceEnabled) return;
+
+	const response = await fetch('/api/tts', {
+		method: 'POST',
+		body: JSON.stringify({ text, voice: selectedOpenAIVoice }),
+	});
+
+	const audioBlob = await response.blob();
+	const audioUrl = URL.createObjectURL(audioBlob);
+	audioRef.src = audioUrl;
+	await audioRef.play();
 };
 ```
 
@@ -97,6 +105,7 @@ const speakMessage = async (text: string) => {
 **Technology**: Google Calendar API, Service Account Authentication
 
 **Capabilities**:
+
 - Real-time availability checking from Google Calendar
 - Meeting booking with contact collection
 - Time zone support (UTC-5 Eastern Time)
@@ -107,6 +116,7 @@ const speakMessage = async (text: string) => {
 - Fallback to mock data when Google Calendar unavailable
 
 **Key Features**:
+
 - Automatic time slot generation
 - Conflict detection with existing calendar events
 - Contact information collection
@@ -115,6 +125,7 @@ const speakMessage = async (text: string) => {
 - Reminder system (30 minutes before)
 
 **Code Example**:
+
 ```typescript
 // Tool definition for scheduling
 {
@@ -134,6 +145,7 @@ const speakMessage = async (text: string) => {
 **Technology**: Structured data with dynamic content display
 
 **Capabilities**:
+
 - Interactive case study content display
 - Chapter navigation (overview, challenge, solution, architecture, results, lessons)
 - Available case studies: Shopify demo
@@ -141,6 +153,7 @@ const speakMessage = async (text: string) => {
 - View tracking for analytics
 
 **Key Features**:
+
 - Dynamic content loading
 - Chapter-based navigation
 - Rich content formatting
@@ -148,6 +161,7 @@ const speakMessage = async (text: string) => {
 - Responsive design
 
 **Code Example**:
+
 ```typescript
 // Case study tool
 {
@@ -166,6 +180,7 @@ const speakMessage = async (text: string) => {
 **Technology**: Prisma ORM, PostgreSQL database
 
 **Capabilities**:
+
 - Comprehensive project inquiry forms
 - Data collection: name, email, company, role, project details, budget, timeline
 - Link management for portfolios and references
@@ -173,6 +188,7 @@ const speakMessage = async (text: string) => {
 - Status tracking (NEW, CONTACTED, etc.)
 
 **Key Features**:
+
 - Form validation and sanitization
 - Database storage with Prisma
 - Lead status management
@@ -180,6 +196,7 @@ const speakMessage = async (text: string) => {
 - Data export capabilities
 
 **Database Schema**:
+
 ```sql
 model Lead {
   id        Int       @id @default(autoincrement())
@@ -203,6 +220,7 @@ model Lead {
 **Technology**: Local storage, event tracking system
 
 **Capabilities**:
+
 - Conversation analytics (starts, messages, intents)
 - User behavior tracking (popular actions, common intents)
 - Engagement metrics (average messages per conversation)
@@ -210,6 +228,7 @@ model Lead {
 - Local storage for client-side analytics
 
 **Key Features**:
+
 - Real-time analytics dashboard
 - Intent detection tracking
 - Action click tracking
@@ -217,14 +236,15 @@ model Lead {
 - User satisfaction metrics (placeholder)
 
 **Code Example**:
+
 ```typescript
 export const trackConversationStart = () => {
-  if ((window as any).trackChatbotEvent) {
-    (window as any).trackChatbotEvent({
-      type: 'conversation_start',
-      data: { timestamp: new Date().toISOString() }
-    });
-  }
+	if ((window as any).trackChatbotEvent) {
+		(window as any).trackChatbotEvent({
+			type: 'conversation_start',
+			data: { timestamp: new Date().toISOString() },
+		});
+	}
 };
 ```
 
@@ -234,6 +254,7 @@ export const trackConversationStart = () => {
 **Technology**: React, Tailwind CSS, Lucide React icons
 
 **Capabilities**:
+
 - Responsive design (mobile-first)
 - Accessibility features (ARIA labels, keyboard navigation)
 - Dark/light theme support
@@ -243,6 +264,7 @@ export const trackConversationStart = () => {
 - Permission system for browser features
 
 **Key Features**:
+
 - Floating chat interface
 - Message threading with timestamps
 - Suggested actions for common tasks
@@ -251,6 +273,7 @@ export const trackConversationStart = () => {
 - Settings panel
 
 **Code Example**:
+
 ```typescript
 // Suggested actions system
 {message.suggestedActions && message.suggestedActions.map((action, index) => (
@@ -272,6 +295,7 @@ export const trackConversationStart = () => {
 **Technology**: GitHub API, fallback content system
 
 **Capabilities**:
+
 - GitHub repository integration for blog articles
 - Resume data integration
 - Dynamic content updates
@@ -279,6 +303,7 @@ export const trackConversationStart = () => {
 - Fallback content when external sources unavailable
 
 **Key Features**:
+
 - Article fetching from GitHub
 - Content categorization (React, TypeScript, etc.)
 - Recent articles display
@@ -288,6 +313,7 @@ export const trackConversationStart = () => {
 ## Environment Configuration
 
 ### Required Environment Variables
+
 ```env
 # OpenAI Configuration
 OPENAI_API_KEY=sk-your-openai-api-key-here
@@ -311,6 +337,7 @@ NEXT_PUBLIC_FEATURE_CLIENT_INTAKE=true
 ```
 
 ### Optional Environment Variables
+
 ```env
 # GitHub Integration
 GITHUB_REPO_OWNER=your-github-username
@@ -328,6 +355,7 @@ FIX_SSL_ISSUES=true
 ## Database Schema
 
 ### Booking Table
+
 ```sql
 model Booking {
   id            Int       @id @default(autoincrement())
@@ -349,6 +377,7 @@ model Booking {
 ```
 
 ### Lead Table
+
 ```sql
 model Lead {
   id        Int       @id @default(autoincrement())
@@ -367,6 +396,7 @@ model Lead {
 ```
 
 ### CaseStudyView Table
+
 ```sql
 model CaseStudyView {
   id          Int       @id @default(autoincrement())
@@ -380,6 +410,7 @@ model CaseStudyView {
 ## API Endpoints
 
 ### Core Chat API (`/api/chat`)
+
 - **Method**: POST
 - **Purpose**: Main conversation endpoint
 - **Features**: Intent detection, tool calling, response generation
@@ -387,6 +418,7 @@ model CaseStudyView {
 - **Output**: response, intent, suggestedActions, uiActions
 
 ### Text-to-Speech API (`/api/tts`)
+
 - **Method**: POST
 - **Purpose**: Convert text to speech
 - **Features**: Multiple voice options, audio streaming
@@ -394,6 +426,7 @@ model CaseStudyView {
 - **Output**: Audio MP3 file
 
 ### Availability API (`/api/availability`)
+
 - **Method**: POST
 - **Purpose**: Get calendar availability
 - **Features**: Google Calendar integration, timezone support
@@ -401,6 +434,7 @@ model CaseStudyView {
 - **Output**: availableSlots, businessHours, meetingDurations
 
 ### Booking API (`/api/book`)
+
 - **Method**: POST
 - **Purpose**: Create calendar bookings
 - **Features**: Google Calendar event creation, email notifications
@@ -408,6 +442,7 @@ model CaseStudyView {
 - **Output**: success, booking, message
 
 ### Intake API (`/api/intake`)
+
 - **Method**: POST
 - **Purpose**: Submit client leads
 - **Features**: Form validation, database storage
@@ -417,6 +452,7 @@ model CaseStudyView {
 ## Tool System (OpenAI Function Calling)
 
 ### Available Tools
+
 1. **get_availability**: Fetch calendar availability
 2. **book_meeting**: Create calendar bookings
 3. **get_case_study_chapter**: Display case study content
@@ -427,31 +463,38 @@ model CaseStudyView {
 8. **collect_contact_info**: Gather contact information
 
 ### Tool Execution Flow
+
 ```typescript
 // Tool execution in chat API
 if (response.tool_calls && response.tool_calls.length > 0) {
-  for (const toolCall of response.tool_calls) {
-    const result = await executeTool(toolCall.function.name, JSON.parse(toolCall.function.arguments));
-    // Handle tool results and UI actions
-  }
+	for (const toolCall of response.tool_calls) {
+		const result = await executeTool(
+			toolCall.function.name,
+			JSON.parse(toolCall.function.arguments),
+		);
+		// Handle tool results and UI actions
+	}
 }
 ```
 
 ## User Experience Flow
 
 ### 1. Initial Interaction
+
 - User clicks chat icon (bottom-right corner)
 - Chatbot opens with welcome message
 - Voice is disabled by default
 - Quick actions may be displayed
 
 ### 2. Conversation Flow
+
 - User types message or uses voice input
 - AI processes intent and generates response
 - Suggested actions appear if relevant
 - UI actions trigger modals when needed
 
 ### 3. Scheduling Flow
+
 - User requests meeting
 - AI calls scheduling tool
 - Calendar modal opens with available slots
@@ -460,6 +503,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Calendar event created
 
 ### 4. Case Study Flow
+
 - User asks about case studies
 - AI calls case study tool
 - Interactive case study content displayed
@@ -467,6 +511,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - View tracking recorded
 
 ### 5. Lead Generation Flow
+
 - User expresses project interest
 - AI calls client intake tool
 - Form modal opens for project details
@@ -476,6 +521,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 ## Security and Privacy
 
 ### Data Protection
+
 - API keys stored in environment variables
 - Input sanitization and validation
 - HTTPS encryption for all communications
@@ -483,6 +529,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Rate limiting considerations
 
 ### Privacy Features
+
 - No persistent user identification
 - Conversation data not stored long-term
 - GDPR-compliant data handling
@@ -492,6 +539,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 ## Performance Optimization
 
 ### Frontend Optimizations
+
 - React component memoization
 - Efficient state management
 - Lazy loading of modals
@@ -499,6 +547,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Responsive image loading
 
 ### Backend Optimizations
+
 - API response caching
 - Database query optimization
 - Efficient tool execution
@@ -508,6 +557,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 ## Error Handling and Fallbacks
 
 ### Graceful Degradation
+
 - Mock data when external APIs unavailable
 - Fallback responses for AI failures
 - Offline mode considerations
@@ -515,6 +565,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Progressive enhancement
 
 ### Error Recovery
+
 - Automatic retry mechanisms
 - User-friendly error messages
 - Alternative action suggestions
@@ -524,6 +575,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 ## Monitoring and Analytics
 
 ### System Health
+
 - API endpoint monitoring
 - Database connection status
 - External service availability
@@ -531,6 +583,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Performance metrics
 
 ### User Analytics
+
 - Conversation engagement
 - Feature usage patterns
 - Conversion tracking
@@ -540,6 +593,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 ## Future Roadmap
 
 ### Short-term Enhancements
+
 - Advanced analytics dashboard
 - Email template customization
 - Multi-language support
@@ -547,6 +601,7 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 - Enhanced voice features
 
 ### Long-term Vision
+
 - CRM integration
 - Advanced AI capabilities
 - Video call integration
@@ -558,4 +613,3 @@ if (response.tool_calls && response.tool_calls.length > 0) {
 This chatbot system represents a comprehensive, production-ready AI assistant with advanced capabilities including voice interaction, automated scheduling, lead generation, and content management. The system is built with modern web technologies, robust error handling, and extensive customization options. It serves as a complete solution for professional portfolio websites requiring intelligent user interaction and automated workflow management.
 
 The system demonstrates best practices in AI integration, user experience design, and scalable architecture, making it suitable for deployment in professional environments with proper configuration and monitoring.
-

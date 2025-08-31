@@ -3,21 +3,25 @@
 ## Issues Fixed
 
 ### 1. Voice Settings - Now Disabled by Default
+
 **Problem**: Voice was enabled by default (`useState(true)`)
 **Solution**: Changed to disabled by default (`useState(false)`)
 
 ### 2. Scheduling Interface Not Opening
+
 **Problem**: UI permission flow had issues with localStorage checking
 **Solution**: Fixed permission checking logic and added comprehensive debugging
 
 ## Changes Made
 
 ### Voice Settings
+
 - **File**: `components/ui/Chatbot.tsx`
 - **Change**: Line 68 - Changed `useState(true)` to `useState(false)`
 - **Result**: Voice is now disabled by default
 
 ### Scheduling Interface
+
 - **File**: `components/ui/Chatbot.tsx`
 - **Changes**:
   - Fixed `checkUIPermission()` function to properly return permission status
@@ -25,6 +29,7 @@
   - Added test buttons for manual testing
 
 ### Debugging Added
+
 - Added console logs to track UI action flow
 - Added test buttons for manual testing of booking modal and voice
 - Enhanced error handling and logging
@@ -32,18 +37,21 @@
 ## Testing Instructions
 
 ### 1. Test Voice Settings
+
 1. Open the chatbot
 2. Look for the purple test voice button (next to settings)
 3. Click it to test voice functionality
 4. Check console for voice status logs
 
 ### 2. Test Scheduling Interface
+
 1. Open the chatbot
 2. Look for the blue calendar test button (next to settings)
 3. Click it to manually trigger the booking modal
 4. Check console for UI action logs
 
 ### 3. Test Natural Flow
+
 1. Open the chatbot
 2. Type: "I want to schedule a meeting"
 3. Check console for UI action logs
@@ -79,18 +87,21 @@ The following console logs will help debug issues:
 ## Troubleshooting
 
 ### If Scheduling Interface Still Doesn't Open:
+
 1. Check browser console for error messages
 2. Look for `🔍` prefixed debug logs
 3. Check if permission dialog appears
 4. Verify localStorage has correct permission value
 
 ### If Voice Doesn't Work:
+
 1. Check if voice is enabled (green speaker icon)
 2. Check browser console for voice-related errors
 3. Verify browser supports speech synthesis
 4. Test with purple test button
 
 ### Reset Everything:
+
 1. Open browser developer tools
 2. Go to Application/Storage tab
 3. Clear localStorage for the domain
@@ -100,6 +111,7 @@ The following console logs will help debug issues:
 ## Environment Variables
 
 Make sure these are set in your `.env.local`:
+
 ```env
 NEXT_PUBLIC_FEATURE_SCHEDULING=true
 NEXT_PUBLIC_FEATURE_CASE_STUDY=true

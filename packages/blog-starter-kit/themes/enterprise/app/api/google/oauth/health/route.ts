@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
-import { NextResponse } from 'next/server';
 import { getOAuth2Client } from '@/lib/google/auth';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
 	const envs = {
@@ -43,5 +43,3 @@ export async function GET() {
 		tokenHint,
 	});
 }
-
-

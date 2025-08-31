@@ -1,12 +1,12 @@
 let request, gql;
 try {
-  const graphqlRequest = require('graphql-request');
-  request = graphqlRequest.request;
-  gql = graphqlRequest.gql;
+	const graphqlRequest = require('graphql-request');
+	request = graphqlRequest.request;
+	gql = graphqlRequest.gql;
 } catch (error) {
-  console.warn('graphql-request not available, skipping redirection rules');
-  request = null;
-  gql = null;
+	console.warn('graphql-request not available, skipping redirection rules');
+	request = null;
+	gql = null;
 }
 
 const ANALYTICS_BASE_URL = 'https://hn-ping2.hashnode.com';
