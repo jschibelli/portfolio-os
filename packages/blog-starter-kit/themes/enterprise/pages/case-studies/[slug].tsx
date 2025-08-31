@@ -91,61 +91,76 @@ export default function CaseStudyPage({ caseStudy, publication }: Props) {
                      </div>
                    </div>
                    
-                                        {/* Content Section - Consistent with other pages */}
-                     <div className="mx-auto w-full px-5 text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
-                       <div className="prose prose-base lg:prose-lg max-w-none dark:prose-invert">
-                         <CaseStudyMarkdown contentMarkdown={caseStudy.content} />
+                   {/* Featured Image Section */}
+                   {caseStudy.image && (
+                     <div className="mb-8 lg:mb-12">
+                       <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden">
+                         <img
+                           src={caseStudy.image}
+                           alt={caseStudy.title}
+                           className="w-full h-full object-cover"
+                         />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                        </div>
                      </div>
-                     
-                     {/* Author Section */}
-                     <div className="mx-auto w-full px-5 md:max-w-screen-md mb-5 mt-10">
-                       <div className="flex-1">
-                         <div className="flex flex-col items-start">
-                           <h3 className="mb-6 w-full text-lg font-semibold text-foreground border-b border-border pb-2">
-                             Written by
-                           </h3>
-                           <div className="flex w-full flex-col gap-8">
-                             <div className="flex items-center gap-4">
-                               <a
-                                 href="https://hashnode.com/@mindware"
-                                 className="block h-16 w-16 overflow-hidden rounded-full border dark:border-slate-800"
-                                 target="_blank"
-                                 rel="noopener noreferrer"
-                               >
-                                 <img
-                                   src={resizeImage('https://cdn.hashnode.com/res/hashnode/image/upload/v1659089761812/fsOct5gl6.png', { w: 256, h: 256, c: 'face' })}
-                                   alt={caseStudy.author}
-                                   className="block w-full h-full object-cover"
-                                 />
-                               </a>
-                               <div className="flex flex-col">
-                                 <h4 className="text-lg font-semibold text-foreground">
-                                   <a 
-                                     href="https://hashnode.com/@mindware" 
-                                     className="hover:text-primary transition-colors"
-                                     target="_blank"
-                                     rel="noopener noreferrer"
-                                   >
-                                     {caseStudy.author}
-                                   </a>
-                                 </h4>
-                                 <p className="text-sm text-muted-foreground">
-                                   Full-stack developer and technical consultant with expertise in SaaS platforms, AI integration, and scalable architectures.
-                                 </p>
-                                 <div className="flex flex-wrap gap-2 mt-2">
-                                   {caseStudy.tags.map((tag) => (
-                                     <Badge key={tag} variant="outline" className="text-xs">
-                                       {tag}
-                                     </Badge>
-                                   ))}
-                                 </div>
+                   )}
+                   
+                   {/* Content Section - Consistent with other pages */}
+                   <div className="mx-auto w-full px-5 text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
+                     <div className="prose prose-base lg:prose-lg max-w-none dark:prose-invert">
+                       <CaseStudyMarkdown contentMarkdown={caseStudy.content} />
+                     </div>
+                   </div>
+                   
+                   {/* Author Section */}
+                   <div className="mx-auto w-full px-5 md:max-w-screen-md mb-5 mt-10">
+                     <div className="flex-1">
+                       <div className="flex flex-col items-start">
+                         <h3 className="mb-6 w-full text-lg font-semibold text-foreground border-b border-border pb-2">
+                           Written by
+                         </h3>
+                         <div className="flex w-full flex-col gap-8">
+                           <div className="flex items-start gap-6">
+                             <a
+                               href="https://hashnode.com/@mindware"
+                               className="block h-20 w-20 overflow-hidden rounded-full border-2 border-primary/20 dark:border-slate-700 flex-shrink-0"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                             >
+                               <img
+                                 src={resizeImage('https://cdn.hashnode.com/res/hashnode/image/upload/v1659089761812/fsOct5gl6.png', { w: 256, h: 256, c: 'face' })}
+                                 alt={caseStudy.author}
+                                 className="block w-full h-full object-cover"
+                               />
+                             </a>
+                             <div className="flex flex-col flex-1">
+                               <h4 className="text-xl font-semibold text-foreground mb-2">
+                                 <a 
+                                   href="https://hashnode.com/@mindware" 
+                                   className="hover:text-primary transition-colors"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                 >
+                                   {caseStudy.author}
+                                 </a>
+                               </h4>
+                               <p className="text-base text-muted-foreground mb-4 leading-relaxed">
+                                 Full-stack developer and technical consultant with expertise in SaaS platforms, AI integration, and scalable architectures. 
+                                 Passionate about building innovative solutions that drive business growth and user engagement.
+                               </p>
+                               <div className="flex flex-wrap gap-2">
+                                 {caseStudy.tags.map((tag) => (
+                                   <Badge key={tag} variant="outline" className="text-sm">
+                                     {tag}
+                                   </Badge>
+                                 ))}
                                </div>
                              </div>
                            </div>
                          </div>
                        </div>
                      </div>
+                   </div>
                  </div>
                 {/* Sticky TOC */}
                 <aside className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
