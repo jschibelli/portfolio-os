@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 			timeZone: input.timeZone,
 		});
 
-		const conflicts = busy.some(b => {
+		const conflicts = busy.some((b: any) => {
 			const i = Interval.fromDateTimes(
 				DateTime.fromISO(b.start, { zone: input.timeZone }),
 				DateTime.fromISO(b.end,   { zone: input.timeZone }),

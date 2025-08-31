@@ -1,8 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { google } from 'googleapis';
 
-// Initialize Google Calendar API
-const calendar = google.calendar('v3');
+let google: any;
+let calendar: any;
+
+try {
+	google = require('googleapis');
+	calendar = google.calendar('v3');
+} catch (error) {
+	console.warn('[availability-route] googleapis not available');
+	google = null;
+	calendar = null;
+}
 
 // Business hours configuration
 const BUSINESS_HOURS = {
@@ -22,6 +30,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Check feature flag
   if (process.env.FEATURE_SCHEDULING !== 'true') {
     return res.status(503).json({ error: 'Scheduling feature is disabled' });
+  }
+
+  // Check if googleapis is available
+  if (!google || !calendar) {
+    return res.status(503).json({ error: 'Google Calendar API not available' });
   }
 
   try {

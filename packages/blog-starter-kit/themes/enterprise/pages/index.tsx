@@ -12,18 +12,18 @@ import {
 } from '../generated/graphql';
 
 // Import all the new components
-import Hero from '../components/hero';
-import Intro from '../components/intro';
-import FeaturedProjects from '../components/featured-projects';
-import SkillsTicker from '../components/skills-ticker';
-import CTABanner from '../components/cta-banner';
-import LatestPosts from '../components/latest-posts';
+import Hero from '../components/features/homepage/hero';
+import Intro from '../components/features/homepage/intro';
+import FeaturedProjects from '../components/features/portfolio/featured-projects';
+import SkillsTicker from '../components/features/homepage/skills-ticker';
+import CTABanner from '../components/features/marketing/cta-banner';
+import LatestPosts from '../components/features/blog/latest-posts';
 
 // Import navigation and footer
-import ModernHeader from '../components/modern-header';
-import { Footer } from '../components/footer';
+import ModernHeader from '../components/features/navigation/modern-header';
+import { Footer } from '../components/shared/footer';
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/ui/Chatbot';
+import Chatbot from '../components/features/chatbot/Chatbot';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 

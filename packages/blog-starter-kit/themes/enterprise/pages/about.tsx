@@ -12,10 +12,10 @@ import {
 	PostsByPublicationQueryVariables,
 } from '../generated/graphql';
 import { AppProvider } from '../components/contexts/appContext';
-import ModernHeader from '../components/modern-header';
-import { Footer } from '../components/footer';
-import Chatbot from '../components/ui/Chatbot';
-import { Container } from '../components/container';
+import ModernHeader from '../components/features/navigation/modern-header';
+import { Footer } from '../components/shared/footer';
+import Chatbot from '../components/features/chatbot/Chatbot';
+import { Container } from '../components/shared/container';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { 

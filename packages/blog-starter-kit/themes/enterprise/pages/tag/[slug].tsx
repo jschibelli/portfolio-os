@@ -1,11 +1,15 @@
+import { resizeImage } from '@starter-kit/utils/image';
 import request from 'graphql-request';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import { Container } from '../../components/container';
+import Link from 'next/link';
+import { Container } from '../../components/shared/container';
 import { AppProvider } from '../../components/contexts/appContext';
-import { Footer } from '../../components/footer';
-import ModernHeader from '../../components/modern-header';
-import { Layout } from '../../components/layout';
-import { MorePosts } from '../../components/more-posts';
+import { CoverImage } from '../../components/shared/cover-image';
+import { Footer } from '../../components/shared/footer';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Layout } from '../../components/shared/layout';
+import { MorePosts } from '../../components/features/blog/more-posts';
 import {
 	Publication,
 	TagPostsByPublicationDocument,

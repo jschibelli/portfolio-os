@@ -18,3 +18,4 @@ test-*.json
 *.test.ts
 *.spec.js
 *.spec.ts
+.vercel

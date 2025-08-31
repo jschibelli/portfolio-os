@@ -246,19 +246,19 @@ export const CHAT_TOOLS = [
     type: "function" as const,
     function: {
       name: 'get_case_study_chapter',
-      description: 'Get a specific chapter from a case study',
+      description: 'Get a specific section from a case study to provide detailed insights about the project, technical implementation, challenges, and results',
       parameters: {
         type: 'object',
         properties: {
           caseStudyId: {
             type: 'string',
-            description: 'ID of the case study (e.g., shopify-demo)',
-            default: 'shopify-demo'
+            description: 'ID of the case study (e.g., tendril-multi-tenant-chatbot-saas)',
+            default: 'tendril-multi-tenant-chatbot-saas'
           },
           chapterId: {
             type: 'string',
-            description: 'ID of the chapter to retrieve',
-            default: 'overview'
+            description: 'ID of the section to retrieve (e.g., problem-statement, research-analysis, solution-design, implementation, results-metrics, lessons-learned, next-steps)',
+            default: 'problem-statement'
           },
           visitorId: {
             type: 'string',
@@ -1042,21 +1042,86 @@ async function getCaseStudyChapter(parameters: any) {
   }
 
   try {
-    // Load case study from JSON file
-    const caseStudyPath = path.join(process.cwd(), 'content', 'case-studies', `${caseStudyId}.json`);
+    // First try to load from local case studies (markdown files)
+    const caseStudyPath = path.join(process.cwd(), 'content', 'case-studies', `${caseStudyId}.md`);
+    const fallbackPath = path.join(process.cwd(), 'docs', `${caseStudyId}.md`);
     
-    if (!fs.existsSync(caseStudyPath)) {
-      throw new Error('Case study not found');
+    let caseStudyContent = '';
+    let caseStudyMeta = null;
+    
+    // Try to load markdown content
+    if (fs.existsSync(caseStudyPath)) {
+      caseStudyContent = fs.readFileSync(caseStudyPath, 'utf8');
+    } else if (fs.existsSync(fallbackPath)) {
+      caseStudyContent = fs.readFileSync(fallbackPath, 'utf8');
+    } else {
+      // Fallback to old JSON format
+      const jsonPath = path.join(process.cwd(), 'content', 'case-studies', `${caseStudyId}.json`);
+      if (fs.existsSync(jsonPath)) {
+        const jsonContent = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        
+        // Validate chapter exists
+        if (!jsonContent.chapters || !jsonContent.chapters[chapterId]) {
+          throw new Error('Chapter not found');
+        }
+
+        const chapter = jsonContent.chapters[chapterId];
+
+        // Track view in database
+        if (prisma) {
+          try {
+            await prisma.caseStudyView.create({
+              data: {
+                caseStudyId,
+                chapterId,
+                visitorId: visitorId || null,
+                viewedAt: new Date()
+              }
+            });
+          } catch (dbError) {
+            console.error('Failed to track case study view:', dbError);
+          }
+        }
+
+        return {
+          caseStudy: {
+            id: jsonContent.id,
+            title: jsonContent.title,
+            description: jsonContent.description,
+            client: jsonContent.client,
+            duration: jsonContent.duration,
+            team: jsonContent.team
+          },
+          chapter: {
+            id: chapterId,
+            title: chapter.title,
+            blocks: chapter.blocks
+          },
+          availableChapters: Object.keys(jsonContent.chapters).map(chapterKey => ({
+            id: chapterKey,
+            title: jsonContent.chapters[chapterKey].title
+          }))
+        };
+      } else {
+        throw new Error('Case study not found');
+      }
     }
 
-    const caseStudyContent = JSON.parse(fs.readFileSync(caseStudyPath, 'utf8'));
-    
-    // Validate chapter exists
-    if (!caseStudyContent.chapters || !caseStudyContent.chapters[chapterId]) {
-      throw new Error('Chapter not found');
+    // Load case study metadata from JSON
+    const metaPath = path.join(process.cwd(), 'data', 'case-studies.json');
+    if (fs.existsSync(metaPath)) {
+      const caseStudiesData = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      caseStudyMeta = caseStudiesData.find((cs: any) => cs.slug === caseStudyId);
     }
 
-    const chapter = caseStudyContent.chapters[chapterId];
+    // Extract sections from markdown content
+    const sections = extractCaseStudySections(caseStudyContent);
+    
+    // Find the requested chapter/section
+    const requestedSection = sections.find(section => 
+      section.id === chapterId || 
+      section.title.toLowerCase().includes(chapterId.toLowerCase())
+    ) || sections[0]; // Default to first section
 
     // Track view in database
     if (prisma) {
@@ -1064,41 +1129,80 @@ async function getCaseStudyChapter(parameters: any) {
         await prisma.caseStudyView.create({
           data: {
             caseStudyId,
-            chapterId,
+            chapterId: requestedSection.id,
             visitorId: visitorId || null,
             viewedAt: new Date()
           }
         });
       } catch (dbError) {
         console.error('Failed to track case study view:', dbError);
-        // Don't fail the request if tracking fails
       }
     }
 
-    // Return chapter data
     return {
       caseStudy: {
-        id: caseStudyContent.id,
-        title: caseStudyContent.title,
-        description: caseStudyContent.description,
-        client: caseStudyContent.client,
-        duration: caseStudyContent.duration,
-        team: caseStudyContent.team
+        id: caseStudyId,
+        title: caseStudyMeta?.title || caseStudyId,
+        description: caseStudyMeta?.description || 'A comprehensive case study',
+        author: caseStudyMeta?.author || 'John Schibelli',
+        publishedAt: caseStudyMeta?.publishedAt,
+        tags: caseStudyMeta?.tags || [],
+        content: caseStudyContent
       },
       chapter: {
-        id: chapterId,
-        title: chapter.title,
-        blocks: chapter.blocks
+        id: requestedSection.id,
+        title: requestedSection.title,
+        content: requestedSection.content
       },
-      availableChapters: Object.keys(caseStudyContent.chapters).map(chapterKey => ({
-        id: chapterKey,
-        title: caseStudyContent.chapters[chapterKey].title
+      availableChapters: sections.map(section => ({
+        id: section.id,
+        title: section.title
       }))
     };
   } catch (error) {
     console.error('Error fetching case study:', error);
     throw new Error('Failed to fetch case study');
   }
+}
+
+// Helper function to extract sections from markdown content
+function extractCaseStudySections(markdownContent: string) {
+  const sections = [];
+  const lines = markdownContent.split('\n');
+  let currentSection = null;
+  let currentContent = [];
+
+  for (const line of lines) {
+    // Check for section headers (## )
+    const sectionMatch = line.match(/^##\s+(.+)$/);
+    if (sectionMatch) {
+      // Save previous section if exists
+      if (currentSection) {
+        sections.push({
+          id: currentSection.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-'),
+          title: currentSection,
+          content: currentContent.join('\n').trim()
+        });
+      }
+      
+      // Start new section
+      currentSection = sectionMatch[1];
+      currentContent = [];
+    } else if (currentSection) {
+      currentContent.push(line);
+    }
+  }
+
+  // Add the last section
+  if (currentSection) {
+    sections.push({
+      id: currentSection.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-'),
+      title: currentSection,
+      content: currentContent.join('\n').trim()
+    });
+  }
+
+  return sections;
 }
 
 async function submitClientIntake(parameters: any) {

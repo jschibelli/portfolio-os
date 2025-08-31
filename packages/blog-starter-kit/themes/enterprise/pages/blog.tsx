@@ -5,18 +5,17 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Container } from '../components/container';
+import { Container } from '../components/shared/container';
 import { AppProvider } from '../components/contexts/appContext';
-import { Footer } from '../components/footer';
+import { Footer } from '../components/shared/footer';
 import { ArticleSVG } from '../components/icons';
-import { Layout } from '../components/layout';
-import Chatbot from '../components/ui/Chatbot';
+import { Layout } from '../components/shared/layout';
+import Chatbot from '../components/features/chatbot/Chatbot';
 
-import ModernHeader from '../components/modern-header';
-import ModernHero from '../components/modern-hero';
-import ModernPostCard from '../components/modern-post-card';
-import FeaturedPostCard from '../components/featured-post-card';
-import NewsletterCTA from '../components/newsletter-cta';
+import ModernHeader from '../components/features/navigation/modern-header';
+import ModernHero from '../components/features/homepage/modern-hero';
+import ModernPostCard from '../components/features/blog/modern-post-card';
+import NewsletterCTA from '../components/features/newsletter/newsletter-cta';
 import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from '../components/icons';
 
 import {
@@ -27,7 +26,7 @@ import {
 import { DEFAULT_COVER } from '../utils/const';
 
 const SubscribeForm = dynamic(() =>
-	import('../components/subscribe-form').then((mod) => mod.SubscribeForm),
+	import('../components/features/newsletter/subscribe-form').then((mod) => mod.SubscribeForm),
 );
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
@@ -246,7 +245,7 @@ export default function Index({ publication, initialAllPosts, initialPageInfo, i
 									</div>
 								</div>
 								<div className="w-full animate-fade-in-up animation-delay-300">
-									<FeaturedPostCard
+									<ModernPostCard
 										title={allPosts[0].title}
 										excerpt={allPosts[0].brief}
 										coverImage={allPosts[0].coverImage?.url || DEFAULT_COVER}
