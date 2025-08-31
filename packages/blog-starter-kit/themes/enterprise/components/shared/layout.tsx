@@ -1,4 +1,3 @@
-import { ThemeProvider } from 'next-themes';
 // import { AnalyticsSafe } from './analytics-safe';
 import { Integrations } from './integrations';
 import { Meta } from './meta';
@@ -10,7 +9,7 @@ type Props = {
 
 export const Layout = ({ children }: Props) => {
 	return (
-		<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+		<>
 			<Meta />
 			<Scripts />
 			<div className="min-h-screen bg-background">
@@ -18,6 +17,6 @@ export const Layout = ({ children }: Props) => {
 			</div>
 			{/* <AnalyticsSafe /> */}
 			<Integrations />
-		</ThemeProvider>
+		</>
 	);
 };
