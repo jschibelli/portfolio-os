@@ -30,7 +30,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 			whileHover={{ y: -8 }}
 			className="h-full"
 		>
-			<Card className="group h-full overflow-hidden border-stone-200 transition-all duration-300 hover:shadow-xl dark:border-stone-800">
+			<Card className="group h-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl">
 				{/* Image */}
 				<div className="relative h-48 overflow-hidden">
 					<Image
@@ -39,30 +39,40 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						fill
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
 					/>
-					<div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+
+					{project.tags?.length ? (
+						<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
+							<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
+								{project.tags[0]}
+							</Badge>
+						</div>
+					) : null}
+
+					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
+						<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+							View Case Study
+						</div>
+					</div>
 				</div>
 
 				{/* Content */}
 				<CardHeader className="pb-4">
-					<h3 className="text-xl font-bold text-stone-900 transition-colors group-hover:text-stone-700 dark:text-stone-100 dark:group-hover:text-stone-300">
+					<h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
 						{project.title}
 					</h3>
 				</CardHeader>
 
 				<CardContent className="space-y-4">
 					{/* Description */}
-					<p className="leading-relaxed text-stone-600 dark:text-stone-400">
+					<p className="leading-relaxed text-muted-foreground">
 						{project.description}
 					</p>
 
 					{/* Tags */}
 					<div className="flex flex-wrap gap-2">
-						{project.tags.map((tag, tagIndex) => (
-							<Badge
-								key={tagIndex}
-								variant="secondary"
-								className="bg-stone-100 text-xs text-stone-700 dark:bg-stone-800 dark:text-stone-300"
-							>
+						{project.tags?.slice(1, 3).map((tag, tagIndex) => (
+							<Badge key={tagIndex} variant="outline" className="text-xs">
 								{tag}
 							</Badge>
 						))}
@@ -72,7 +82,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					<Button
 						variant="outline"
 						size="sm"
-						className="group/btn w-full border-stone-300 text-stone-700 transition-all duration-300 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800"
+						className="group/btn w-full transition-all duration-300"
 						asChild
 					>
 						<Link href={project.caseStudyUrl}>

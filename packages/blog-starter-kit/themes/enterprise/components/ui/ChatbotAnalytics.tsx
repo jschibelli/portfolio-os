@@ -119,12 +119,12 @@ export default function ChatbotAnalytics() {
 	if (!isVisible || !analytics) return null;
 
 	return (
-		<div className="fixed left-4 top-4 z-[10000] max-w-sm rounded-lg border border-stone-200 bg-white p-4 shadow-lg dark:border-stone-700 dark:bg-stone-800">
+		<div className="fixed left-4 top-4 z-[10000] max-w-sm rounded-lg border border-border bg-card p-4 shadow-lg">
 			<div className="mb-3 flex items-center justify-between">
 				<h3 className="text-sm font-semibold">Chatbot Analytics</h3>
 				<button
 					onClick={() => setIsVisible(false)}
-					className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+					className="text-muted-foreground hover:text-foreground"
 				>
 					✕
 				</button>
@@ -132,19 +132,19 @@ export default function ChatbotAnalytics() {
 
 			<div className="space-y-3 text-xs">
 				<div className="grid grid-cols-2 gap-2">
-					<div className="rounded bg-stone-50 p-2 dark:bg-stone-700">
+					<div className="rounded bg-muted p-2">
 						<div className="font-medium">{analytics.totalConversations}</div>
-						<div className="text-stone-500">Conversations</div>
+						<div className="text-muted-foreground">Conversations</div>
 					</div>
-					<div className="rounded bg-stone-50 p-2 dark:bg-stone-700">
+					<div className="rounded bg-muted p-2">
 						<div className="font-medium">{analytics.totalMessages}</div>
-						<div className="text-stone-500">Messages</div>
+						<div className="text-muted-foreground">Messages</div>
 					</div>
 				</div>
 
-				<div className="rounded bg-stone-50 p-2 dark:bg-stone-700">
+				<div className="rounded bg-muted p-2">
 					<div className="font-medium">{analytics.averageMessagesPerConversation}</div>
-					<div className="text-stone-500">Avg Messages/Conversation</div>
+					<div className="text-muted-foreground">Avg Messages/Conversation</div>
 				</div>
 
 				{analytics.mostCommonIntents.length > 0 && (
@@ -154,7 +154,7 @@ export default function ChatbotAnalytics() {
 							{analytics.mostCommonIntents.map(({ intent, count }) => (
 								<div key={intent} className="flex justify-between">
 									<span className="capitalize">{intent}</span>
-									<span className="text-stone-500">{count}</span>
+									<span className="text-muted-foreground">{count}</span>
 								</div>
 							))}
 						</div>
@@ -168,7 +168,7 @@ export default function ChatbotAnalytics() {
 							{analytics.popularActions.map(({ action, count }) => (
 								<div key={action} className="flex justify-between">
 									<span>{action}</span>
-									<span className="text-stone-500">{count}</span>
+									<span className="text-muted-foreground">{count}</span>
 								</div>
 							))}
 						</div>

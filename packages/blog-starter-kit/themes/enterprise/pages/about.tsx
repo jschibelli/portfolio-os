@@ -197,10 +197,10 @@ export default function About({ publication }: Props) {
 
 			<ModernHeader publication={publication} />
 
-			<main className="min-h-screen bg-white dark:bg-stone-950">
+			<main className="min-h-screen bg-background">
 				{/* Hero Section */}
 				<section
-					className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+					className="relative min-h-[400px] overflow-hidden bg-muted py-12 md:py-16"
 					style={{
 						backgroundImage: 'url(/assets/hero/hero-bg.png)',
 						backgroundSize: 'cover',
@@ -209,7 +209,7 @@ export default function About({ publication }: Props) {
 					}}
 				>
 					{/* Background Overlay */}
-					<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+					<div className="absolute inset-0 z-0 bg-muted/70"></div>
 					{/* Content Overlay */}
 					<div className="relative z-10">
 						<Container className="px-4">
@@ -269,7 +269,6 @@ export default function About({ publication }: Props) {
 										<div className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
 											<Button
 												size="lg"
-												className="bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
 												asChild
 											>
 												<Link href="/contact">
@@ -280,7 +279,6 @@ export default function About({ publication }: Props) {
 											<Button
 												size="lg"
 												variant="outline"
-												className="border-stone-300 dark:border-stone-600"
 												asChild
 											>
 												<Link href="/work">View My Work</Link>
@@ -294,7 +292,7 @@ export default function About({ publication }: Props) {
 				</section>
 
 				{/* Professional Summary */}
-				<section className="bg-white py-16 dark:bg-stone-950">
+				<section className="bg-background py-16">
 					<Container className="px-4">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -318,7 +316,7 @@ export default function About({ publication }: Props) {
 				</section>
 
 				{/* Resume Accordion Section */}
-				<section className="bg-stone-50 py-20 dark:bg-stone-900">
+				<section className="bg-muted py-20">
 					<Container className="px-4">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -340,11 +338,11 @@ export default function About({ publication }: Props) {
 								{/* Experience */}
 								<AccordionItem
 									value="experience"
-									className="rounded-lg border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:border-stone-300 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600"
+									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
 								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200 hover:bg-stone-50 dark:hover:bg-stone-700">
+									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<BriefcaseIcon className="h-5 w-5 text-stone-600 transition-colors duration-200 dark:text-stone-400" />
+											<BriefcaseIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
 											<span className="text-lg font-semibold">Professional Experience</span>
 										</div>
 									</AccordionTrigger>
@@ -353,7 +351,7 @@ export default function About({ publication }: Props) {
 											{experience.map((job, index) => (
 												<div
 													key={index}
-													className="border-l-4 border-stone-200 pl-6 dark:border-stone-600"
+													className="border-l-4 border-primary/40 pl-6"
 												>
 													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
 														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
@@ -391,11 +389,11 @@ export default function About({ publication }: Props) {
 								{/* Skills */}
 								<AccordionItem
 									value="skills"
-									className="rounded-lg border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:border-stone-300 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600"
+									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
 								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200 hover:bg-stone-50 dark:hover:bg-stone-700">
+									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<LightbulbIcon className="h-5 w-5 text-stone-600 transition-colors duration-200 dark:text-stone-400" />
+											<LightbulbIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
 											<span className="text-lg font-semibold">Skills & Technologies</span>
 										</div>
 									</AccordionTrigger>
@@ -411,7 +409,6 @@ export default function About({ publication }: Props) {
 															<Badge
 																key={skill}
 																variant="secondary"
-																className="border border-stone-200 bg-stone-100 text-stone-700 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-300"
 															>
 																{skill}
 															</Badge>
@@ -426,11 +423,11 @@ export default function About({ publication }: Props) {
 								{/* Education */}
 								<AccordionItem
 									value="education"
-									className="rounded-lg border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:border-stone-300 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600"
+									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
 								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200 hover:bg-stone-50 dark:hover:bg-stone-700">
+									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<GraduationCapIcon className="h-5 w-5 text-stone-600 transition-colors duration-200 dark:text-stone-400" />
+											<GraduationCapIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
 											<span className="text-lg font-semibold">Education & Certifications</span>
 										</div>
 									</AccordionTrigger>
@@ -439,7 +436,7 @@ export default function About({ publication }: Props) {
 											{education.map((edu, index) => (
 												<div
 													key={index}
-													className="border-l-4 border-stone-200 pl-6 dark:border-stone-600"
+													className="border-l-4 border-primary/40 pl-6"
 												>
 													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
 														<h4 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
@@ -484,11 +481,11 @@ export default function About({ publication }: Props) {
 								{/* Approach */}
 								<AccordionItem
 									value="approach"
-									className="rounded-lg border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:border-stone-300 hover:shadow-md dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600"
+									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
 								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200 hover:bg-stone-50 dark:hover:bg-stone-700">
+									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<BookOpenIcon className="h-5 w-5 text-stone-600 transition-colors duration-200 dark:text-stone-400" />
+											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
 											<span className="text-lg font-semibold">My Approach & Philosophy</span>
 										</div>
 									</AccordionTrigger>
@@ -534,7 +531,7 @@ export default function About({ publication }: Props) {
 				</section>
 
 				{/* CTA Section */}
-				<section className="bg-white py-20 dark:bg-stone-950">
+				<section className="bg-background py-20">
 					<Container className="px-4">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -543,7 +540,7 @@ export default function About({ publication }: Props) {
 							viewport={{ once: true }}
 							className="mx-auto max-w-4xl text-center"
 						>
-							<div className="rounded-lg border border-stone-200 bg-stone-50 p-8 shadow-sm dark:border-stone-700 dark:bg-stone-800">
+							<div className="rounded-lg border border-border bg-accent p-8 shadow-sm">
 								<h2 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100">
 									Let&apos;s Work Together
 								</h2>
@@ -555,7 +552,6 @@ export default function About({ publication }: Props) {
 								<div className="flex flex-col justify-center gap-4 sm:flex-row">
 									<Button
 										size="lg"
-										className="bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
 										asChild
 									>
 										<Link href="/contact">
@@ -566,7 +562,6 @@ export default function About({ publication }: Props) {
 									<Button
 										size="lg"
 										variant="outline"
-										className="border-stone-300 dark:border-stone-600"
 										asChild
 									>
 										<Link href="/work">View My Work</Link>

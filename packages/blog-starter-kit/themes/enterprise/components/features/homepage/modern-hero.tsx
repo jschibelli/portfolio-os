@@ -97,7 +97,6 @@ export default function ModernHero({
 							>
 								<Button
 									size="lg"
-									variant="glow"
 									className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
 									asChild
 								>
@@ -105,7 +104,8 @@ export default function ModernHero({
 								</Button>
 								<Button
 									size="lg"
-									className="group w-full bg-white px-6 py-3 text-sm font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
+									variant="outline"
+									className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
 									asChild
 								>
 									<Link href="/blog">

@@ -56,7 +56,7 @@ export default function ModernPostCard({
 			}`}
 		>
 			<Link href={`/${slug}`} className="group block">
-				<Card className="group overflow-hidden border border-stone-200 bg-white shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-stone-400 hover:shadow-xl dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-600">
+				<Card className="group overflow-hidden border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 					<div className="relative overflow-hidden">
 						<Screenshot
 							srcLight={coverImage}
@@ -89,20 +89,20 @@ export default function ModernPostCard({
 
 					<CardHeader className="p-6 pb-4">
 						<div className="space-y-2">
-							<div className="flex items-center gap-2 text-sm text-stone-600 transition-all duration-300 group-hover:text-stone-900 dark:text-stone-400 dark:group-hover:text-stone-100">
+							<div className="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-300 group-hover:text-foreground">
 								<time dateTime={date}>{format(new Date(date), 'MMM dd, yyyy')}</time>
 								<span>•</span>
 								<span>{readTime}</span>
 							</div>
 
-							<h3 className="text-xl font-semibold leading-tight text-stone-900 transition-all duration-300 group-hover:scale-[1.02] group-hover:text-stone-700 dark:text-stone-100 dark:group-hover:text-stone-300">
+							<h3 className="text-xl font-semibold leading-tight text-foreground transition-all duration-300 group-hover:scale-[1.02] group-hover:text-foreground">
 								{title}
 							</h3>
 						</div>
 					</CardHeader>
 
 					<CardContent className="p-6 pt-0">
-						<p className="line-clamp-3 leading-relaxed text-stone-600 transition-all duration-300 group-hover:text-stone-800 dark:text-stone-400 dark:group-hover:text-stone-200">
+						<p className="line-clamp-3 leading-relaxed text-muted-foreground transition-all duration-300 group-hover:text-foreground">
 							{excerpt}
 						</p>
 
@@ -112,14 +112,14 @@ export default function ModernPostCard({
 									<Badge
 										key={index}
 										variant="outline"
-										className="border-stone-300 text-xs text-stone-700 transition-all duration-300 group-hover:border-stone-400 group-hover:bg-stone-100 dark:border-stone-600 dark:text-stone-300 dark:group-hover:border-stone-500 dark:group-hover:bg-stone-800"
+										className="text-xs"
 									>
 										{tag}
 									</Badge>
 								))}
 							</div>
 
-							<div className="flex items-center gap-1 text-sm font-medium text-stone-700 transition-all duration-300 group-hover:translate-x-2 group-hover:text-stone-900 dark:text-stone-300 dark:group-hover:text-stone-100">
+							<div className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-all duration-300 group-hover:translate-x-2 group-hover:text-foreground">
 								<span>Read more</span>
 								<span className="transition-transform duration-300 group-hover:translate-x-1">
 									→

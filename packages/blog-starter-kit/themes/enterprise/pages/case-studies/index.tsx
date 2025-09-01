@@ -14,6 +14,7 @@ import { Container } from '../../components/shared/container';
 import { Footer } from '../../components/shared/footer';
 import { Layout } from '../../components/shared/layout';
 import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
 import {
 	Card,
 	CardContent,
@@ -159,16 +160,29 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 									<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 										{(localCaseStudies as any).map((cs: any) => (
 											<motion.div key={cs.id} variants={itemVariants} className="group">
-												<Card className="border-border/50 hover:border-primary/30 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+												<Card className="group overflow-hidden h-full border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 													<CardHeader className="pb-4">
 														{cs.image && (
-															<div className="relative mb-4 aspect-video overflow-hidden rounded-lg">
+															<div className="relative mb-4 aspect-video overflow-hidden">
 																<img
 																	src={cs.image}
 																	alt={`Cover image for ${cs.title}`}
 																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 																	loading="lazy"
 																/>
+																<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+																{cs.tags?.length ? (
+																	<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
+																		<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
+																			{cs.tags[0]}
+																		</Badge>
+																	</div>
+																) : null}
+																<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
+																	<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+																		Read Case Study
+																	</div>
+																</div>
 															</div>
 														)}
 														<CardTitle className="group-hover:text-primary line-clamp-2 text-xl font-bold transition-colors duration-200">
@@ -239,16 +253,27 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 									<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 										{caseStudies.map((caseStudy, index) => (
 											<motion.div key={caseStudy.id} variants={itemVariants} className="group">
-												<Card className="border-border/50 hover:border-primary/30 h-full transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+												<Card className="group overflow-hidden h-full border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 													<CardHeader className="pb-4">
 														{caseStudy.coverImage?.url && (
-															<div className="relative mb-4 aspect-video overflow-hidden rounded-lg">
+															<div className="relative mb-4 aspect-video overflow-hidden">
 																<img
 																	src={caseStudy.coverImage.url}
 																	alt={`Cover image for ${caseStudy.title}`}
 																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 																	loading="lazy"
 																/>
+																<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+																<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
+																	<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
+																		Case Study
+																	</Badge>
+																</div>
+																<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
+																	<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+																		Read Case Study
+																	</div>
+																</div>
 															</div>
 														)}
 														<CardTitle className="group-hover:text-primary line-clamp-2 text-xl font-bold transition-colors duration-200">

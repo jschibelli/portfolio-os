@@ -290,7 +290,7 @@ export default function ContactPage({ publication }: Props) {
 												type="submit"
 												disabled={isSubmitting}
 												size="lg"
-												className="w-full bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+												className="w-full px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 											>
 												{isSubmitting ? (
 													<div className="flex items-center gap-2">
@@ -371,37 +371,31 @@ export default function ContactPage({ publication }: Props) {
 										<div className="flex flex-wrap gap-2">
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												Web Development
 											</Badge>
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												React & Next.js
 											</Badge>
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												TypeScript
 											</Badge>
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												UI/UX Design
 											</Badge>
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												Consulting
 											</Badge>
 											<Badge
 												variant="secondary"
-												className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
 											>
 												Maintenance
 											</Badge>
@@ -419,7 +413,7 @@ export default function ContactPage({ publication }: Props) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<FacebookIcon className="h-5 w-5" />
 											</a>
@@ -429,7 +423,7 @@ export default function ContactPage({ publication }: Props) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<GithubIcon className="h-5 w-5 stroke-current" />
 											</a>
@@ -439,7 +433,7 @@ export default function ContactPage({ publication }: Props) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<LinkedinIcon className="h-5 w-5 stroke-current" />
 											</a>
@@ -449,7 +443,7 @@ export default function ContactPage({ publication }: Props) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<BlueskyIcon className="h-5 w-5 stroke-current" />
 											</a>

@@ -47,7 +47,7 @@ const ResearchAnalysis: React.FC = () => (
 		<div id="research-analysis" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Research & Analysis
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -106,16 +106,16 @@ const ResearchAnalysis: React.FC = () => (
 			<Card className="my-8">
 				<CardHeader>
 					<CardTitle className="relative flex items-center gap-2">
-						<CheckCircle className="h-5 w-5 text-amber-600" />
+						<CheckCircle className="h-5 w-5 text-primary" />
 						Feature Comparison Matrix
-						<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-amber-500/60" />
+						<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-primary/60" />
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="overflow-x-auto">
 						<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
 							<thead>
-								<tr className="bg-amber-100 dark:bg-amber-500/10">
+								<tr className="bg-accent">
 									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 										Feature
 									</th>
@@ -128,7 +128,7 @@ const ResearchAnalysis: React.FC = () => (
 									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 										Chatbase
 									</th>
-									<th className="border border-stone-200 bg-amber-100 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:bg-amber-500/10 dark:text-stone-100">
+									<th className="border border-stone-200 bg-accent px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 										Tendril
 									</th>
 								</tr>
@@ -228,16 +228,16 @@ const PricingModelTable: React.FC = () => (
 	<Card className="my-8">
 		<CardHeader>
 			<CardTitle className="relative flex items-center gap-2">
-				<DollarSign className="h-5 w-5 text-amber-600" />
+				<DollarSign className="h-5 w-5 text-primary" />
 				Pricing Model Analysis
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
 					<thead>
-						<tr className="bg-amber-100 dark:bg-amber-500/10">
+						<tr className="bg-accent">
 							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 								Competitor
 							</th>
@@ -306,16 +306,16 @@ const MarketInsightsTable: React.FC = () => (
 	<Card className="my-8">
 		<CardHeader>
 			<CardTitle className="relative flex items-center gap-2">
-				<Target className="h-5 w-5 text-amber-600" />
+				<Target className="h-5 w-5 text-primary" />
 				Key Market Insights
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
 					<thead>
-						<tr className="bg-amber-100 dark:bg-amber-500/10">
+						<tr className="bg-accent">
 							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 								Insight Category
 							</th>
@@ -391,7 +391,7 @@ const SolutionDesign: React.FC = () => (
 		<div id="solution-design" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Solution Design
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -479,16 +479,16 @@ const TechnicalChallengesTable: React.FC = () => (
 	<Card className="my-8">
 		<CardHeader>
 			<CardTitle className="relative flex items-center gap-2">
-				<AlertTriangle className="h-5 w-5 text-amber-600" />
+				<AlertTriangle className="h-5 w-5 text-primary" />
 				Anticipated Technical Challenges
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
 					<thead>
-						<tr className="bg-amber-100 dark:bg-amber-500/10">
+						<tr className="bg-accent">
 							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
 								Challenge
 							</th>
@@ -542,7 +542,7 @@ const ImplementationPlan: React.FC = () => (
 		<div id="implementation-plan" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Implementation Plan
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -606,21 +606,21 @@ const ImplementationPlan: React.FC = () => (
 						duration: 'Weeks 1-4',
 						description:
 							'Multi-tenant database architecture and user authentication system with row-level security policies.',
-						icon: <Database className="h-5 w-5 text-amber-600" />,
+						icon: <Database className="h-5 w-5 text-primary" />,
 					},
 					{
 						title: 'Phase 2: AI Integration',
 						duration: 'Weeks 5-8',
 						description:
 							'Document ingestion pipeline and AI integration with OpenAI GPT-4 and custom RAG implementation.',
-						icon: <Zap className="h-5 w-5 text-amber-600" />,
+						icon: <Zap className="h-5 w-5 text-primary" />,
 					},
 					{
 						title: 'Phase 3: UI & Billing',
 						duration: 'Weeks 9-12',
 						description:
 							'Dashboard development and Stripe integration for transparent subscription billing.',
-						icon: <Users className="h-5 w-5 text-amber-600" />,
+						icon: <Users className="h-5 w-5 text-primary" />,
 					},
 				]}
 			/>
@@ -664,7 +664,7 @@ const ProjectedResults: React.FC = () => (
 		<div id="projected-results" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Strategic Projections & Success Metrics
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -805,7 +805,7 @@ const LessonsLearned: React.FC = () => (
 		<div id="lessons-learned" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Lessons Learned from Research & Strategic Planning
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -938,9 +938,9 @@ const SimpleBarChart: React.FC<{
 		<Card className="my-8">
 			<CardHeader>
 				<CardTitle className="relative flex items-center gap-2">
-					<BarChart3 className="h-5 w-5 text-amber-600" />
+					<BarChart3 className="h-5 w-5 text-primary" />
 					{title}
-					<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-amber-500/60" />
+					<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-primary/60" />
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -954,7 +954,7 @@ const SimpleBarChart: React.FC<{
 							</div>
 							<div className="h-3 w-full rounded-full bg-stone-200 dark:bg-stone-700">
 								<div
-									className="h-3 rounded-full bg-amber-500 transition-all duration-500 ease-out dark:bg-amber-400"
+									className="h-3 rounded-full bg-primary transition-all duration-500 ease-out"
 									style={{ width: `${(item.value / maxValue) * 100}%` }}
 								></div>
 							</div>
@@ -984,9 +984,9 @@ const SimplePieChart: React.FC<{
 		<Card className="my-8">
 			<CardHeader>
 				<CardTitle className="relative flex items-center gap-2">
-					<PieChart className="h-5 w-5 text-amber-600" />
+					<PieChart className="h-5 w-5 text-primary" />
 					{title}
-					<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-amber-500/60" />
+					<span className="absolute -bottom-2 left-0 h-1 w-12 rounded-full bg-primary/60" />
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
@@ -1052,21 +1052,21 @@ const Timeline: React.FC<{
 	<Card className="my-8">
 		<CardHeader>
 			<CardTitle className="relative flex items-center gap-2">
-				<Calendar className="h-5 w-5 text-amber-600" />
+				<Calendar className="h-5 w-5 text-primary" />
 				Development Timeline
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div className="relative overflow-hidden rounded-lg">
 				{/* Timeline line (avoid overflow inside card) */}
-				<div className="absolute bottom-3 left-6 top-3 z-0 w-0.5 bg-amber-300 dark:bg-amber-700"></div>
+				<div className="absolute bottom-3 left-6 top-3 z-0 w-0.5 bg-primary/30"></div>
 
 				<div className="space-y-8">
 					{phases.map((phase, index) => (
 						<div key={index} className="group relative flex items-start gap-4">
 							{/* Timeline dot */}
-							<div className="relative z-10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 border-amber-300/70 bg-amber-50 shadow-[0_0_0_4px_rgba(0,0,0,0.15)] transition-transform duration-200 group-hover:scale-110 dark:border-amber-600/60 dark:bg-amber-900/30">
+							<div className="relative z-10 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 border-primary/70 bg-primary/10 shadow-[0_0_0_4px_rgba(0,0,0,0.15)] transition-transform duration-200 group-hover:scale-110">
 								{phase.icon}
 							</div>
 
@@ -1078,7 +1078,7 @@ const Timeline: React.FC<{
 									</h4>
 									<Badge
 										variant="secondary"
-										className="border border-amber-200/60 bg-amber-100 text-xs text-amber-800 dark:border-amber-700/40 dark:bg-amber-500/15 dark:text-amber-300"
+										className="text-xs"
 									>
 										{phase.duration}
 									</Badge>
@@ -1100,17 +1100,17 @@ const SystemArchitecture: React.FC = () => (
 	<Card className="my-8">
 		<CardHeader>
 			<CardTitle className="relative flex items-center gap-2">
-				<Database className="h-5 w-5 text-amber-600" />
+				<Database className="h-5 w-5 text-primary" />
 				System Architecture
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</CardTitle>
 		</CardHeader>
 		<CardContent>
 			<div className="space-y-6">
 				{/* Frontend Layer */}
 				<div className="text-center">
-					<div className="inline-flex items-center gap-2 rounded-lg bg-amber-100 px-4 py-2 ring-1 ring-amber-300 dark:bg-amber-900/30 dark:ring-amber-700/40">
-						<Globe className="h-4 w-4 text-amber-600" />
+					<div className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 ring-1 ring-border">
+						<Globe className="h-4 w-4 text-primary" />
 						<span className="font-medium text-stone-900 dark:text-stone-100">React Dashboard</span>
 					</div>
 					<div className="mt-2 text-sm text-stone-600 dark:text-stone-400">Multi-tenant UI</div>
@@ -1123,8 +1123,8 @@ const SystemArchitecture: React.FC = () => (
 
 				{/* API Layer */}
 				<div className="text-center">
-					<div className="inline-flex items-center gap-2 rounded-lg bg-amber-100 px-4 py-2 ring-1 ring-amber-300 dark:bg-amber-900/30 dark:ring-amber-700/40">
-						<Zap className="h-4 w-4 text-amber-600" />
+					<div className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 ring-1 ring-border">
+						<Zap className="h-4 w-4 text-primary" />
 						<span className="font-medium text-stone-900 dark:text-stone-100">Node.js API</span>
 					</div>
 					<div className="mt-2 text-sm text-stone-600 dark:text-stone-400">
@@ -1139,8 +1139,8 @@ const SystemArchitecture: React.FC = () => (
 
 				{/* Database Layer */}
 				<div className="text-center">
-					<div className="inline-flex items-center gap-2 rounded-lg bg-amber-100 px-4 py-2 ring-1 ring-amber-300 dark:bg-amber-900/30 dark:ring-amber-700/40">
-						<Database className="h-4 w-4 text-amber-600" />
+					<div className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 ring-1 ring-border">
+						<Database className="h-4 w-4 text-primary" />
 						<span className="font-medium text-stone-900 dark:text-stone-100">PostgreSQL</span>
 					</div>
 					<div className="mt-2 text-sm text-stone-600 dark:text-stone-400">
@@ -1155,8 +1155,8 @@ const SystemArchitecture: React.FC = () => (
 
 				{/* AI Integration */}
 				<div className="text-center">
-					<div className="inline-flex items-center gap-2 rounded-lg bg-amber-100 px-4 py-2 ring-1 ring-amber-300 dark:bg-amber-900/30 dark:ring-amber-700/40">
-						<Shield className="h-4 w-4 text-amber-600" />
+					<div className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 ring-1 ring-border">
+						<Shield className="h-4 w-4 text-primary" />
 						<span className="font-medium text-stone-900 dark:text-stone-100">AI Integration</span>
 					</div>
 					<div className="mt-2 text-sm text-stone-600 dark:text-stone-400">
@@ -1195,7 +1195,7 @@ const InteractiveBarChart: React.FC<{
 							</div>
 							<div className="h-3 w-full rounded-full bg-stone-200 dark:bg-stone-700">
 								<div
-									className="h-3 rounded-full bg-amber-500 transition-all duration-500 ease-out dark:bg-amber-400"
+									className="h-3 rounded-full bg-primary transition-all duration-500 ease-out"
 									style={{ width: `${(item.value / maxValue) * 100}%` }}
 								></div>
 							</div>
@@ -1224,7 +1224,7 @@ const DevelopmentRoadmap: React.FC = () => (
 		<div id="development-roadmap" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Development Roadmap & Strategic Plan
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -1337,12 +1337,12 @@ const DevelopmentRoadmap: React.FC = () => (
 			</p>
 
 			<div className="mt-8">
-				<div className="relative overflow-hidden rounded-xl border border-amber-300 bg-amber-100/70 p-6 sm:p-8 dark:border-amber-700/40 dark:bg-amber-900/20">
+				<div className="relative overflow-hidden rounded-xl border border-border bg-accent/50 p-6 sm:p-8">
 					<div className="pointer-events-none absolute inset-0" aria-hidden="true"></div>
 					<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 						<div>
 							<h4 className="flex items-center gap-2 text-xl font-semibold text-stone-900 dark:text-stone-100">
-								<span className="inline-block h-2 w-2 rounded-full bg-amber-500"></span>
+								<span className="inline-block h-2 w-2 rounded-full bg-primary"></span>
 								Ready to validate this plan?
 							</h4>
 							<p className="mt-1 text-stone-700 dark:text-stone-300">
@@ -1352,13 +1352,13 @@ const DevelopmentRoadmap: React.FC = () => (
 						<div className="flex flex-wrap items-center gap-3">
 							<Link
 								href="/contact"
-								className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-5 py-3 font-medium text-white transition-colors hover:bg-amber-700"
+								className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
 							>
 								Get in touch
 							</Link>
 							<Link
 								href="/services/consulting"
-								className="inline-flex items-center gap-2 rounded-lg border border-amber-300 px-5 py-3 font-medium text-amber-700 transition-colors hover:bg-amber-50/50 dark:border-amber-700/50 dark:text-amber-300 dark:hover:bg-amber-900/20"
+								className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-medium transition-colors hover:bg-accent"
 							>
 								View services
 							</Link>
@@ -1381,7 +1381,7 @@ const HeroSection: React.FC = () => (
 		<div className="mb-12 text-center">
 			<Badge
 				variant="secondary"
-				className="mb-4 border border-amber-200/60 bg-amber-100 text-amber-800 dark:border-amber-700/40 dark:bg-amber-500/15 dark:text-amber-300"
+				className="mb-4"
 			>
 				Strategic Analysis
 			</Badge>
@@ -1413,7 +1413,7 @@ const ProblemStatement: React.FC = () => (
 		<div id="problem-statement" className="space-y-6">
 			<h2 className="relative mb-8 text-3xl font-bold text-stone-900 dark:text-stone-100">
 				Problem Statement
-				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-2 left-0 h-1 w-16 rounded-full bg-primary/60" />
 			</h2>
 
 			<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
@@ -1520,7 +1520,7 @@ const TableOfContents: React.FC<{ items: Array<{ id: string; title: string }> }>
 		<div className="max-h-[calc(100vh-2rem)] space-y-2 overflow-y-auto pr-1">
 			<h3 className="relative mb-4 text-sm font-semibold uppercase tracking-wide text-stone-900 dark:text-stone-100">
 				Table of Contents
-				<span className="absolute -bottom-1 left-0 h-0.5 w-10 rounded-full bg-amber-500/60" />
+				<span className="absolute -bottom-1 left-0 h-0.5 w-10 rounded-full bg-primary/60" />
 			</h3>
 			<nav className="space-y-1">
 				{items.map((item) => (
@@ -1529,7 +1529,7 @@ const TableOfContents: React.FC<{ items: Array<{ id: string; title: string }> }>
 						href={`#${item.id}`}
 						className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 pl-2 text-sm transition-colors ${
 							activeSection === item.id
-								? 'border-l-2 border-amber-400 bg-amber-100 font-medium text-stone-900 ring-1 ring-amber-200/60 dark:bg-amber-500/10 dark:text-stone-100 dark:ring-amber-700/40'
+								? 'border-l-2 border-primary bg-accent font-medium text-stone-900 ring-1 ring-border dark:text-stone-100'
 								: 'border-l-2 border-transparent text-stone-600 hover:bg-stone-50 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900/50 dark:hover:text-stone-100'
 						}`}
 						onClick={(e) => {
@@ -1547,7 +1547,7 @@ const TableOfContents: React.FC<{ items: Array<{ id: string; title: string }> }>
 					>
 						<ChevronRight
 							className={`h-3 w-3 transition-transform ${
-								activeSection === item.id ? 'rotate-90 text-amber-600' : 'text-stone-400'
+								activeSection === item.id ? 'rotate-90 text-primary' : 'text-stone-400'
 							}`}
 						/>
 						{item.title}
@@ -1584,7 +1584,7 @@ const ProjectedMetrics: React.FC<{
 						</div>
 						<Badge
 							variant="secondary"
-							className="border border-amber-200/60 bg-amber-100 text-xs text-amber-800 dark:border-amber-700/40 dark:bg-amber-500/15 dark:text-amber-300"
+							className="text-xs"
 						>
 							{item.improvement}
 						</Badge>
@@ -1625,7 +1625,7 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 
 				<ModernHeader publication={publication} />
 
-				<main className="min-h-screen bg-stone-50 dark:bg-stone-900">
+				<main className="min-h-screen bg-background">
 					<Container>
 						<div className="grid grid-cols-1 gap-8 py-12 lg:grid-cols-4">
 							{/* Main Content */}
@@ -1643,7 +1643,7 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 							{/* Table of Contents - Right Sidebar */}
 							<div className="lg:col-span-1">
 								<div className="sticky top-20 w-full max-w-[260px]">
-									<Card className="border-stone-200/60 shadow-lg dark:border-stone-800/60">
+									<Card className="border-border shadow-lg">
 										<CardContent className="p-6">
 											<TableOfContents items={toc} />
 										</CardContent>

@@ -27,7 +27,7 @@ export default function PostCard({ post, index }: PostCardProps) {
 			whileHover={{ y: -4 }}
 			className="h-full"
 		>
-			<Card className="group h-full border-stone-200 transition-all duration-300 hover:shadow-lg dark:border-stone-800">
+			<Card className="group h-full border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
 				<CardHeader className="pb-4">
 					<div className="mb-2 flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
 						<div className="flex items-center gap-1">
@@ -39,21 +39,21 @@ export default function PostCard({ post, index }: PostCardProps) {
 							<span>{post.readTime}</span>
 						</div>
 					</div>
-					<h3 className="line-clamp-2 text-xl font-bold text-stone-900 transition-colors group-hover:text-stone-700 dark:text-stone-100 dark:group-hover:text-stone-300">
+					<h3 className="line-clamp-2 text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
 						{post.title}
 					</h3>
 				</CardHeader>
 
 				<CardContent className="space-y-4">
 					{/* Excerpt */}
-					<p className="line-clamp-3 leading-relaxed text-stone-600 dark:text-stone-400">
+					<p className="line-clamp-3 leading-relaxed text-muted-foreground">
 						{post.excerpt}
 					</p>
 
 					{/* Read More Link */}
 					<Link
 						href={`/blog/${post.slug}`}
-						className="group/link inline-flex items-center gap-2 font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+						className="group/link inline-flex items-center gap-2 font-medium text-foreground transition-colors hover:text-foreground"
 					>
 						Read More
 						<ArrowRightIcon className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />

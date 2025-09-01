@@ -8,7 +8,7 @@ export const Footer = () => {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className="border-t bg-white dark:bg-stone-950">
+		<footer className="border-t border-border bg-white dark:bg-stone-950">
 			<Container className="px-5 py-12">
 				<div className="flex flex-col items-center justify-between gap-6 text-center">
 					{/* Social Links */}
@@ -19,7 +19,7 @@ export const Footer = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Find us on Facebook, external website, opens in new tab"
-							className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+							className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 						>
 							<FacebookSVG className="h-5 w-5" />
 						</a>
@@ -30,7 +30,7 @@ export const Footer = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Find us on Github, external website, opens in new tab"
-							className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+							className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 						>
 							<GithubSVG className="h-5 w-5 stroke-current" />
 						</a>
@@ -41,7 +41,7 @@ export const Footer = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Find us on Linkedin, external website, opens in new tab"
-							className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+							className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 						>
 							<LinkedinSVG className="h-5 w-5 stroke-current" />
 						</a>
@@ -52,7 +52,7 @@ export const Footer = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Find us on Bluesky, external website, opens in new tab"
-							className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+							className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 						>
 							<BlueskySVG className="h-5 w-5 stroke-current" />
 						</a>
@@ -64,7 +64,7 @@ export const Footer = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Open blog XML Feed, opens in new tab"
-							className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+							className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 						>
 							<RssSVG className="h-5 w-5 stroke-current" />
 						</Link>

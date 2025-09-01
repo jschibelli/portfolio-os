@@ -18,7 +18,7 @@ interface ModernHeaderProps {
 
 export default function ModernHeader({ publication }: ModernHeaderProps) {
 	return (
-		<header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-stone-800 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60">
+		<header className="sticky top-0 z-50 w-full border-b border-border bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60">
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
@@ -31,7 +31,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 									className="h-8 w-8 rounded-lg"
 								/>
 							)}
-							<span className="text-xl font-bold text-stone-900 dark:text-stone-100">
+							<span className="text-xl font-bold text-foreground">
 								{publication.displayTitle || publication.title}
 							</span>
 						</Link>
@@ -41,37 +41,37 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 					<nav className="hidden items-center space-x-8 md:flex">
 						<Link
 							href="/"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							Home
 						</Link>
 						<Link
 							href="/work"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							Work
 						</Link>
 						<Link
 							href="/case-studies"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							Case Studies
 						</Link>
 						<Link
 							href="/blog"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							Blog
 						</Link>
 						<Link
 							href="/about"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							About
 						</Link>
 						<Link
 							href="/contact"
-							className="text-sm font-medium text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
 						>
 							Contact
 						</Link>
@@ -82,7 +82,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 						<ThemeToggle />
 						<Button
 							size="sm"
-							className="hidden bg-stone-900 text-white hover:bg-stone-800 sm:inline-flex dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+							className="hidden sm:inline-flex"
 						>
 							Subscribe
 						</Button>
@@ -110,9 +110,9 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 													className="h-6 w-6 rounded"
 												/>
 											)}
-											<span className="text-lg font-bold text-stone-900 dark:text-stone-100">
-												{publication.displayTitle || publication.title}
-											</span>
+																		<span className="text-lg font-bold text-foreground">
+								{publication.displayTitle || publication.title}
+							</span>
 										</Link>
 									</SheetTitle>
 								</SheetHeader>
@@ -121,43 +121,43 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 									<nav className="flex flex-col space-y-4">
 										<Link
 											href="/"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											Home
 										</Link>
 										<Link
 											href="/work"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											Work
 										</Link>
 										<Link
 											href="/case-studies"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											Case Studies
 										</Link>
 										<Link
 											href="/blog"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											Blog
 										</Link>
 										<Link
 											href="/about"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											About
 										</Link>
 										<Link
 											href="/contact"
-											className="rounded-md px-4 py-3 text-base font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 										>
 											Contact
 										</Link>
 									</nav>
 
-									<div className="mt-8 border-t border-stone-200 pt-6 dark:border-stone-700">
+									<div className="mt-8 border-t border-border pt-6">
 										<div className="flex items-center justify-center gap-4">
 											{/* Facebook */}
 											<a
@@ -165,7 +165,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<FacebookSVG className="h-5 w-5" />
 											</a>
@@ -176,7 +176,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<GithubSVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -187,7 +187,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<LinkedinSVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -198,7 +198,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<BlueskySVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -210,7 +210,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Open blog XML Feed, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												<RssSVG className="h-5 w-5 stroke-current" />
 											</Link>

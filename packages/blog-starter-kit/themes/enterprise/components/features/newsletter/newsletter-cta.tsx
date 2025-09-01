@@ -126,9 +126,8 @@ export default function CTA({
 							<Button
 								onClick={subscribe}
 								disabled={requestInProgress || !email.trim()}
-								variant="default"
 								size="lg"
-								className="border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent group w-full border-2 px-6 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg sm:w-fit sm:px-8 sm:py-3 sm:text-base"
+								className="group w-full px-6 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg sm:w-fit sm:px-8 sm:py-3 sm:text-base"
 							>
 								{requestInProgress ? (
 									<div className="flex items-center gap-2">

@@ -13,9 +13,9 @@ interface CaseStudyCardProps {
 export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps) {
 	return (
 		<div className="group pointer-events-auto h-full">
-			<Card className="hover:shadow-primary/5 border-border/50 from-background to-muted/20 pointer-events-auto relative flex h-full max-h-[600px] flex-col overflow-hidden bg-gradient-to-br backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+			<Card className="group overflow-hidden border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 				<div className="relative overflow-hidden">
-					<div className="from-primary/10 to-primary/5 relative aspect-video overflow-hidden bg-gradient-to-br">
+					<div className="relative aspect-video overflow-hidden">
 						{item.image && item.image.startsWith('/') ? (
 							<img
 								src={item.image}
@@ -51,16 +51,28 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 								<p className="text-muted-foreground text-sm font-medium">{item.title}</p>
 							</div>
 						</div>
-						<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+						{item.tags && item.tags.length > 0 && (
+							<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
+								<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
+									{item.tags[0]}
+								</Badge>
+							</div>
+						)}
+						<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
+							<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+								View Case Study
+							</div>
+						</div>
 					</div>
 				</div>
 
 				<CardHeader className="pb-4">
 					<div className="space-y-3">
-						<h3 className="group-hover:text-primary text-xl font-semibold leading-tight transition-colors duration-300">
+						<h3 className="text-xl font-semibold leading-tight text-foreground transition-colors duration-300 group-hover:text-foreground">
 							{item.title}
 						</h3>
-						<p className="text-muted-foreground line-clamp-3 text-sm leading-relaxed">
+						<p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
 							{item.description}
 						</p>
 					</div>
@@ -70,12 +82,8 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 					<div className="flex flex-1 flex-col space-y-4">
 						{/* Tags */}
 						<div className="flex flex-wrap gap-2">
-							{item.tags.map((tag, tagIndex) => (
-								<Badge
-									key={tag}
-									variant="secondary"
-									className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 text-xs transition-colors duration-200"
-								>
+							{item.tags?.slice(1, 3).map((tag, tagIndex) => (
+								<Badge key={tag} variant="outline" className="text-xs">
 									{tag}
 								</Badge>
 							))}
@@ -114,7 +122,6 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 							<Button
 								asChild
 								size="sm"
-								variant="default"
 								className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs"
 							>
 								<Link

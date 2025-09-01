@@ -52,7 +52,7 @@ export default function FeaturedProjects() {
 					<Button
 						size="lg"
 						variant="outline"
-						className="group border-2 border-stone-300 px-8 py-4 text-lg font-semibold text-stone-700 transition-all duration-300 hover:scale-105 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800"
+						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
 					>
 						<Link href="/work">

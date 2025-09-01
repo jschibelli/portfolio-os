@@ -274,7 +274,7 @@ export default function WorkPage({ publication }: Props) {
 								<div className="flex flex-col justify-center gap-4 sm:flex-row">
 									<Button
 										size="lg"
-										className="bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100"
+										className="px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 										asChild
 									>
 										<Link href="/about">
@@ -285,7 +285,7 @@ export default function WorkPage({ publication }: Props) {
 									<Button
 										size="lg"
 										variant="outline"
-										className="border-white px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900"
+										className="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900"
 										asChild
 									>
 										<Link href="/blog">

@@ -407,7 +407,7 @@ export default function TendrilCaseStudy({ title, sections, metrics }: CaseStudy
 									dangerouslySetInnerHTML={{ __html: sections['next-steps'] || '' }}
 								/>
 								<div className="mt-6 text-center">
-									<Button className="rounded-lg bg-stone-800 px-6 py-3 font-semibold text-stone-50 transition-colors hover:bg-stone-700">
+									<Button className="rounded-lg px-6 py-3 font-semibold transition-colors">
 										Start a conversation
 									</Button>
 								</div>
