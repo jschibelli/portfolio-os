@@ -119,7 +119,7 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 
 			{/* Cover Image */}
 			{coverImage && (
-				<div className="w-full">
+				<div className="mx-auto max-w-4xl w-full">
 					<Card className="overflow-hidden border-0 shadow-lg">
 						<CardContent className="p-0">
 							<CoverImage

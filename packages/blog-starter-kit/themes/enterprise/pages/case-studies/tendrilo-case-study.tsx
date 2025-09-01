@@ -1627,8 +1627,13 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 				<main className="min-h-screen bg-background">
 					<Container>
 						<div className="grid grid-cols-1 gap-8 py-12 lg:grid-cols-4">
+							{/* Buffer - Left Sidebar */}
+							<div className="lg:col-span-1">
+								{/* Empty buffer space */}
+							</div>
+
 							{/* Main Content */}
-							<div className="space-y-12 lg:col-span-3">
+							<div className="space-y-12 lg:col-span-2">
 								<HeroSection />
 								<ProblemStatement />
 								<ResearchAnalysis />

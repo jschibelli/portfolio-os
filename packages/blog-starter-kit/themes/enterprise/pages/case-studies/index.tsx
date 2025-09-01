@@ -261,12 +261,29 @@ export default function CaseStudiesPage({ publication }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-	// Simple fallback publication data
+	// Simple fallback publication data with required properties
 	const publication = {
 		title: siteConfig.name,
 		displayTitle: siteConfig.name,
 		url: siteConfig.url,
 		logo: null,
+		posts: {
+			totalDocuments: 0,
+		},
+		preferences: {
+			logo: null,
+		},
+		author: {
+			name: siteConfig.name,
+			profilePicture: null,
+		},
+		followersCount: 0,
+		isTeam: false,
+		favicon: null,
+		descriptionSEO: siteConfig.description,
+		ogMetaData: {
+			image: null,
+		},
 	} as unknown as PublicationFragment;
 
 	return {
