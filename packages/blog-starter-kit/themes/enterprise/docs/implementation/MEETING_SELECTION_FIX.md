@@ -17,6 +17,7 @@ The system is designed to gracefully handle missing Google Calendar API configur
 ## Root Cause
 
 Missing environment variables for Google Calendar API:
+
 - `GOOGLE_CALENDAR_ID`
 - `GOOGLE_CLIENT_EMAIL`
 - `GOOGLE_PRIVATE_KEY`
@@ -83,17 +84,17 @@ From your downloaded service account JSON file, extract these values:
 
 ```json
 {
-  "type": "service_account",
-  "project_id": "your-project-id",
-  "private_key_id": "your-private-key-id",
-  "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
-  "client_email": "your-service-account@your-project.iam.gserviceaccount.com",
-  "client_id": "your-client-id",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account",
-  "universe_domain": "googleapis.com"
+	"type": "service_account",
+	"project_id": "your-project-id",
+	"private_key_id": "your-private-key-id",
+	"private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+	"client_email": "your-service-account@your-project.iam.gserviceaccount.com",
+	"client_id": "your-client-id",
+	"auth_uri": "https://accounts.google.com/o/oauth2/auth",
+	"token_uri": "https://oauth2.googleapis.com/token",
+	"auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+	"client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account",
+	"universe_domain": "googleapis.com"
 }
 ```
 
@@ -116,6 +117,7 @@ npm run dev
 ## Expected Result
 
 After proper configuration:
+
 - **Message**: "Schedule a meeting with John"
 - **Behavior**: Shows real calendar availability
 - **Slots**: Multiple slots based on your actual calendar availability
@@ -126,6 +128,7 @@ After proper configuration:
 ### Still Seeing Mock Data?
 
 1. **Check Environment Variables**
+
    ```bash
    node test-env-simple.js
    ```

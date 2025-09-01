@@ -1,233 +1,239 @@
-import React from 'react';
-import Link from 'next/link';
-import { Button } from '../../ui/button';
-import { ThemeToggle } from '../../ui/theme-toggle';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetTrigger 
-} from '../../ui/sheet';
+/* eslint-disable @next/next/no-img-element */
 import { Menu } from 'lucide-react';
-import { FacebookSVG, GithubSVG, LinkedinSVG, BlueskySVG, RssSVG } from '../../icons';
+import Link from 'next/link';
+import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';
+import { Button } from '../../ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
+import { ThemeToggle } from '../../ui/theme-toggle';
 
 interface ModernHeaderProps {
-  publication: {
-    title: string;
-    displayTitle?: string | null;
-    logo?: {
-      url: string;
-    } | null;
-  };
+	publication: {
+		title: string;
+		displayTitle?: string | null;
+		logo?: {
+			url: string;
+		} | null;
+	};
 }
 
 export default function ModernHeader({ publication }: ModernHeaderProps) {
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-900/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-stone-900/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center space-x-2">
-              {publication.logo?.url && (
-                <img
-                  src={publication.logo.url}
-                  alt={publication.displayTitle || publication.title}
-                  className="h-8 w-8 rounded-lg"
-                />
-              )}
-              <span className="font-bold text-xl text-stone-900 dark:text-stone-100">
-                {publication.displayTitle || publication.title}
-              </span>
-            </Link>
-          </div>
+	const siteTitle = publication.displayTitle || publication.title;
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Home
-            </Link>
-            <Link 
-              href="/work" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Work
-            </Link>
-            <Link 
-              href="/case-studies" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Case Studies
-            </Link>
-            <Link 
-              href="/blog" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Blog
-            </Link>
-            <Link 
-              href="/about" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              About
-            </Link>
-            <Link 
-              href="/contact" 
-              className="text-sm font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100"
-            >
-              Contact
-            </Link>
-          </nav>
+	return (
+		<header className="sticky top-0 z-50 w-full border-b border-border bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60" role="banner">
+			<div className="container mx-auto px-4">
+				<div className="flex h-16 items-center justify-between">
+					{/* Logo */}
+					<div className="flex-shrink-0">
+						<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
+							{publication.logo?.url && (
+								<img
+									src={publication.logo.url}
+									alt={`${siteTitle} logo`}
+									className="h-8 w-8 rounded-lg"
+								/>
+							)}
+							<span className="text-xl font-bold text-foreground">
+								{siteTitle}
+							</span>
+						</Link>
+					</div>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
-            <ThemeToggle />
-            <Button 
-              size="sm" 
-              className="hidden sm:inline-flex bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200"
-            >
-              Subscribe
-            </Button>
-            
-            {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                  aria-label="Toggle mobile menu"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle className="text-left">
-                    <Link href="/" className="flex items-center space-x-2">
-                      {publication.logo?.url && (
-                        <img
-                          src={publication.logo.url}
-                          alt={publication.displayTitle || publication.title}
-                          className="h-6 w-6 rounded"
-                        />
-                      )}
-                      <span className="font-bold text-lg text-stone-900 dark:text-stone-100">
-                        {publication.displayTitle || publication.title}
-                      </span>
-                    </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                
-                <div className="mt-8">
-                  <nav className="flex flex-col space-y-4">
-                    <Link 
-                      href="/" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Home
-                    </Link>
-                    <Link 
-                      href="/work" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Work
-                    </Link>
-                    <Link 
-                      href="/case-studies" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Case Studies
-                    </Link>
-                    <Link 
-                      href="/blog" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Blog
-                    </Link>
-                    <Link 
-                      href="/about" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      About
-                    </Link>
-                    <Link 
-                      href="/contact" 
-                      className="text-base font-medium text-stone-700 dark:text-stone-300 transition-colors hover:text-stone-900 dark:hover:text-stone-100 py-3 px-4 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800"
-                    >
-                      Contact
-                    </Link>
-                  </nav>
-                  
-                  <div className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
-                    <div className="flex items-center justify-center gap-4">
-                      {/* Facebook */}
-                      <a
-                        href="https://facebook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Find us on Facebook, external website, opens in new tab"
-                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-                      >
-                        <FacebookSVG className="h-5 w-5" />
-                      </a>
-                      
-                      {/* GitHub */}
-                      <a
-                        href="https://github.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Find us on Github, external website, opens in new tab"
-                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-                      >
-                        <GithubSVG className="h-5 w-5 stroke-current" />
-                      </a>
+					{/* Desktop Navigation */}
+					<nav className="hidden items-center space-x-8 md:flex" role="navigation" aria-label="Main navigation">
+						<Link
+							href="/"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							Home
+						</Link>
+						<Link
+							href="/work"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							Work
+						</Link>
+						<Link
+							href="/case-studies"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							Case Studies
+						</Link>
+						<Link
+							href="/blog"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							Blog
+						</Link>
+						<Link
+							href="/about"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							About
+						</Link>
+						<Link
+							href="/contact"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+						>
+							Contact
+						</Link>
+					</nav>
 
-                      {/* LinkedIn */}
-                      <a
-                        href="https://linkedin.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Find us on Linkedin, external website, opens in new tab"
-                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-                      >
-                        <LinkedinSVG className="h-5 w-5 stroke-current" />
-                      </a>
+					{/* Actions */}
+					<div className="flex items-center space-x-4">
+						<ThemeToggle />
+						<Button
+							size="sm"
+							className="hidden sm:inline-flex"
+							aria-label="Subscribe to newsletter"
+						>
+							Subscribe
+						</Button>
 
-                      {/* Bluesky */}
-                      <a
-                        href="https://bsky.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Find us on Bluesky, external website, opens in new tab"
-                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-                      >
-                        <BlueskySVG className="h-5 w-5 stroke-current" />
-                      </a>
+						{/* Mobile Menu */}
+						<Sheet>
+							<SheetTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="md:hidden"
+									aria-label="Toggle mobile menu"
+									aria-expanded="false"
+									aria-controls="mobile-menu"
+								>
+									<Menu className="h-5 w-5" />
+									<span className="sr-only">Toggle mobile menu</span>
+								</Button>
+							</SheetTrigger>
+							<SheetContent side="right" className="w-[300px] sm:w-[400px]" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
+								<SheetHeader>
+									<SheetTitle className="text-left">
+										<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
+											{publication.logo?.url && (
+												<img
+													src={publication.logo.url}
+													alt={`${siteTitle} logo`}
+													className="h-6 w-6 rounded"
+												/>
+											)}
+											<span className="text-lg font-bold text-foreground">
+												{siteTitle}
+											</span>
+										</Link>
+									</SheetTitle>
+								</SheetHeader>
 
-                      {/* RSS Feed */}
-                      <Link
-                        prefetch={false}
-                        href={`/rss.xml`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Open blog XML Feed, opens in new tab"
-                        className="flex items-center justify-center rounded-full border border-stone-200 p-3 hover:bg-stone-100 dark:border-stone-700 dark:hover:bg-stone-800 transition-colors text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
-                      >
-                        <RssSVG className="h-5 w-5 stroke-current" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-} 
+								<div className="mt-8">
+									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
+										<Link
+											href="/"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Home
+										</Link>
+										<Link
+											href="/work"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Work
+										</Link>
+										<Link
+											href="/case-studies"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Case Studies
+										</Link>
+										<Link
+											href="/blog"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Blog
+										</Link>
+										<Link
+											href="/about"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											About
+										</Link>
+										<Link
+											href="/contact"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+										>
+											Contact
+										</Link>
+									</nav>
+
+									<div className="mt-8 border-t border-border pt-6">
+										<h3 className="sr-only">Social media links</h3>
+										<div className="flex items-center justify-center gap-4" role="list" aria-label="Social media links">
+											{/* Facebook */}
+											<a
+												href="https://facebook.com"
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label="Find us on Facebook, external website, opens in new tab"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
+											>
+												<FacebookSVG className="h-5 w-5" />
+											</a>
+
+											{/* GitHub */}
+											<a
+												href="https://github.com"
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label="Find us on Github, external website, opens in new tab"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
+											>
+												<GithubSVG className="h-5 w-5 stroke-current" />
+											</a>
+
+											{/* LinkedIn */}
+											<a
+												href="https://linkedin.com"
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label="Find us on Linkedin, external website, opens in new tab"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
+											>
+												<LinkedinSVG className="h-5 w-5 stroke-current" />
+											</a>
+
+											{/* Bluesky */}
+											<a
+												href="https://bsky.app"
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label="Find us on Bluesky, external website, opens in new tab"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
+											>
+												<BlueskySVG className="h-5 w-5 stroke-current" />
+											</a>
+
+											{/* RSS Feed */}
+											<Link
+												prefetch={false}
+												href={`/rss.xml`}
+												target="_blank"
+												rel="noopener noreferrer"
+												aria-label="Open blog XML Feed, opens in new tab"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
+											>
+												<RssSVG className="h-5 w-5 stroke-current" />
+											</Link>
+										</div>
+									</div>
+								</div>
+							</SheetContent>
+						</Sheet>
+					</div>
+				</div>
+			</div>
+		</header>
+	);
+}

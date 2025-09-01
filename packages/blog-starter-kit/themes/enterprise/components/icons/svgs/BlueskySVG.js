@@ -14,4 +14,4 @@ export default class BlueskySVG extends React.Component {
 			</svg>
 		);
 	}
-} 
+}

@@ -1,11 +1,13 @@
 # Architecture Organization
 
 ## Overview
+
 This document outlines the organized component structure for the Enterprise blog theme, following a feature-based architecture pattern.
 
 ## Component Structure
 
 ### Root Components Directory
+
 ```
 components/
 ├── contexts/          # Application context providers
@@ -16,6 +18,7 @@ components/
 ```
 
 ### Features Directory
+
 ```
 components/features/
 ├── blog/             # Blog-specific components
@@ -60,6 +63,7 @@ components/features/
 ```
 
 ### Shared Directory
+
 ```
 components/shared/
 ├── analytics.tsx
@@ -90,17 +94,21 @@ components/shared/
 ## Organization Principles
 
 ### Feature-Based Organization
+
 - Components are organized by feature/domain rather than type
 - Each feature directory contains all related components
 - Promotes better code discoverability and maintainability
 
 ### Shared Components
+
 - Reusable components that are used across multiple features
 - Generic UI components, utilities, and common patterns
 - Includes analytics, layout, and integration components
 
 ### Import Path Updates
+
 All import paths have been updated to reflect the new structure:
+
 - Feature components: `../components/features/[feature]/[component]`
 - Shared components: `../components/shared/[component]`
 - UI components: `../components/ui/[component]`
@@ -116,6 +124,7 @@ All import paths have been updated to reflect the new structure:
 ## Migration Status
 
 ✅ **Completed**:
+
 - All components moved to appropriate feature directories
 - Shared components consolidated in `components/shared/`
 - Import paths updated throughout the codebase

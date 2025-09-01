@@ -5,6 +5,7 @@ This guide will help you configure all the necessary environment variables for y
 ## 🚨 **Current Issues Fixed**
 
 The build was failing due to:
+
 1. **GraphQL Issues**: Missing Hashnode GraphQL configuration
 2. **Google API Issues**: Missing Google OAuth and Calendar configuration
 3. **Missing Environment Variables**: External services not properly configured
@@ -14,6 +15,7 @@ The build was failing due to:
 Create a `.env.local` file in the `packages/blog-starter-kit/themes/enterprise/` directory with the following variables:
 
 ### 1. **Hashnode GraphQL Configuration**
+
 ```bash
 # Required for blog content
 NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT=https://gql.hashnode.com/
@@ -21,6 +23,7 @@ NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=mindware.hashnode.dev
 ```
 
 ### 2. **Google OAuth Configuration**
+
 ```bash
 # Required for Google Calendar integration
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -29,6 +32,7 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/api/google/oauth/callback
 ```
 
 ### 3. **Google Calendar Configuration**
+
 ```bash
 # Required for scheduling functionality
 GOOGLE_CALENDAR_ID=your_calendar_id@gmail.com
@@ -45,12 +49,14 @@ GOOGLE_UNIVERSE_DOMAIN=googleapis.com
 ```
 
 ### 4. **OpenAI Configuration**
+
 ```bash
 # Required for chatbot functionality
 OPENAI_API_KEY=your_openai_api_key
 ```
 
 ### 5. **Feature Flags**
+
 ```bash
 # Enable/disable features
 NEXT_PUBLIC_FEATURE_SCHEDULING=true
@@ -62,6 +68,7 @@ FEATURE_CLIENT_INTAKE=true
 ```
 
 ### 6. **GitHub Configuration (Optional)**
+
 ```bash
 # For chatbot to fetch articles from GitHub
 GITHUB_REPO_OWNER=your_github_username
@@ -70,12 +77,14 @@ GITHUB_TOKEN=your_github_token
 ```
 
 ### 7. **Email Configuration (Optional)**
+
 ```bash
 # For sending booking confirmations
 RESEND_API_KEY=your_resend_api_key
 ```
 
 ### 8. **App Configuration**
+
 ```bash
 # Base configuration
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
@@ -156,6 +165,7 @@ NEXT_PUBLIC_MODE=development
 ## 🧪 **Testing Your Configuration**
 
 ### **Test GraphQL Connection**
+
 ```bash
 # Start development server
 pnpm dev
@@ -166,11 +176,13 @@ pnpm dev
 ```
 
 ### **Test Google Calendar**
+
 1. Open the chatbot on your site
 2. Try to schedule a meeting
 3. Check if calendar integration works
 
 ### **Test OpenAI Chatbot**
+
 1. Open the chatbot
 2. Ask a question
 3. Verify AI responses work
@@ -178,16 +190,19 @@ pnpm dev
 ## 🚨 **Troubleshooting**
 
 ### **GraphQL Errors**
+
 - ✅ Check `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` is correct
 - ✅ Verify your Hashnode publication exists
 - ✅ Check network connectivity
 
 ### **Google API Errors**
+
 - ✅ Verify all Google environment variables are set
 - ✅ Check service account has calendar access
 - ✅ Ensure OAuth redirect URIs are correct
 
 ### **Build Errors**
+
 - ✅ All environment variables are in `.env.local`
 - ✅ No typos in variable names
 - ✅ Private key is properly escaped
@@ -197,11 +212,13 @@ pnpm dev
 For GitHub Actions to work properly, add these secrets to your repository:
 
 ### **Required Secrets**
+
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
 ### **Optional Secrets**
+
 - `NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT`
 - `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST`
 - `OPENAI_API_KEY`
@@ -218,6 +235,7 @@ For GitHub Actions to work properly, add these secrets to your repository:
 4. **Deploy** and verify everything works
 
 Once configured, your blog will have:
+
 - ✅ Working GraphQL integration with Hashnode
 - ✅ Google Calendar scheduling
 - ✅ OpenAI-powered chatbot

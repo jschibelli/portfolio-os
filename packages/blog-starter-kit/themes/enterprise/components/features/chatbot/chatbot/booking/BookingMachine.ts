@@ -31,8 +31,8 @@ export interface BookingContext {
 
 export type BotTurn = {
 	say: string;
-	chips?: { type: 'duration'|'slot'|'confirmTz'; values: string[] | SlotChip[] };
-	expect?: 'duration'|'window'|'tz'|'email'|'slot'|'confirm'|'none';
+	chips?: { type: 'duration' | 'slot' | 'confirmTz'; values: string[] | SlotChip[] };
+	expect?: 'duration' | 'window' | 'tz' | 'email' | 'slot' | 'confirm' | 'none';
 	context: BookingContext;
 };
 
@@ -63,12 +63,12 @@ async function fetchSlots(args: {
 			startISO: args.startISO,
 			endISO: args.endISO,
 			timeZone: args.timeZone,
-			maxCandidates: 24
+			maxCandidates: 24,
 		}),
 	});
 	if (!res.ok) throw new Error(await res.text());
 	const data = await res.json();
-	return (data.slots as { startISO: string; endISO: string }[]).slice(0, 12).map(s => ({
+	return (data.slots as { startISO: string; endISO: string }[]).slice(0, 12).map((s) => ({
 		startISO: s.startISO,
 		label: labelFor(s.startISO, args.timeZone),
 	}));
@@ -92,10 +92,7 @@ async function bookSlot(args: {
 	return res.json() as Promise<{ meetUrl: string; htmlLink: string; eventId: string }>;
 }
 
-export async function nextTurn(
-	userInput: string | null,
-	ctx: BookingContext
-): Promise<BotTurn> {
+export async function nextTurn(userInput: string | null, ctx: BookingContext): Promise<BotTurn> {
 	let say = '';
 	let chips: BotTurn['chips'] | undefined;
 	let expect: BotTurn['expect'] | undefined = 'none';
@@ -161,7 +158,7 @@ export async function nextTurn(
 		}
 
 		case 'PRESENT_SLOTS': {
-			const chosen = ctx.candidateSlots?.find(s => (userInput || '').includes(s.label));
+			const chosen = ctx.candidateSlots?.find((s) => (userInput || '').includes(s.label));
 			if (!chosen) {
 				say = `Pick one of the times above and I’ll lock it.`;
 				chips = { type: 'slot', values: ctx.candidateSlots || [] };
@@ -236,5 +233,3 @@ export async function nextTurn(
 
 	return { say, chips, expect, context: { ...ctx, state } };
 }
-
-

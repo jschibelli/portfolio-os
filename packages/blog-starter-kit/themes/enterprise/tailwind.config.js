@@ -12,7 +12,10 @@ module.exports = {
 				'accent-7': '#333',
 				success: '#0070f3',
 				cyan: '#79FFE1',
-                primary: colors.stone,
+				primary: {
+					DEFAULT: 'hsl(var(--primary))',
+					foreground: 'hsl(var(--primary-foreground))',
+				},
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
@@ -47,11 +50,11 @@ module.exports = {
 					foreground: 'hsl(var(--primary-foreground))',
 				},
 				chart: {
-					'1': 'hsl(var(--chart-1))',
-					'2': 'hsl(var(--chart-2))',
-					'3': 'hsl(var(--chart-3))',
-					'4': 'hsl(var(--chart-4))',
-					'5': 'hsl(var(--chart-5))',
+					1: 'hsl(var(--chart-1))',
+					2: 'hsl(var(--chart-2))',
+					3: 'hsl(var(--chart-3))',
+					4: 'hsl(var(--chart-4))',
+					5: 'hsl(var(--chart-5))',
 				},
 			},
 			spacing: {
@@ -100,8 +103,8 @@ module.exports = {
 				},
 			},
 			animation: {
-				'scroll': 'scroll 30s linear infinite',
-				'paused': 'none',
+				scroll: 'scroll 30s linear infinite',
+				paused: 'none',
 				'accordion-down': 'accordion-down 300ms cubic-bezier(0.87, 0, 0.13, 1)',
 				'accordion-up': 'accordion-up 300ms cubic-bezier(0.87, 0, 0.13, 1)',
 			},
@@ -109,14 +112,14 @@ module.exports = {
 				'animation-play-state': 'animation-play-state',
 			},
 			animationPlayState: {
-				'paused': 'paused',
-				'running': 'running',
+				paused: 'paused',
+				running: 'running',
 			},
 		},
 	},
 	plugins: [
-		require('@tailwindcss/typography'), 
+		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
-		require('@tailwindcss/line-clamp')
+		require('@tailwindcss/line-clamp'),
 	],
 };

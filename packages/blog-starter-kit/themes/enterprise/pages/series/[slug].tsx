@@ -2,13 +2,13 @@ import { resizeImage } from '@starter-kit/utils/image';
 import request from 'graphql-request';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import { Container } from '../../components/shared/container';
 import { AppProvider } from '../../components/contexts/appContext';
+import { MorePosts } from '../../components/features/blog/more-posts';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Container } from '../../components/shared/container';
 import { CoverImage } from '../../components/shared/cover-image';
 import { Footer } from '../../components/shared/footer';
-import ModernHeader from '../../components/features/navigation/modern-header';
 import { Layout } from '../../components/shared/layout';
-import { MorePosts } from '../../components/features/blog/more-posts';
 import {
 	PostFragment,
 	PublicationFragment,
@@ -86,20 +86,19 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) 
 	if (!params) {
 		throw new Error('No params');
 	}
-	
+
 	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-	
+
 	try {
-		const data = await request<SeriesPostsByPublicationQuery, SeriesPostsByPublicationQueryVariables>(
-			GQL_ENDPOINT,
-			SeriesPostsByPublicationDocument,
-			{
-				host: host,
-				first: 20,
-				seriesSlug: params.slug,
-			},
-		);
+		const data = await request<
+			SeriesPostsByPublicationQuery,
+			SeriesPostsByPublicationQueryVariables
+		>(GQL_ENDPOINT, SeriesPostsByPublicationDocument, {
+			host: host,
+			first: 20,
+			seriesSlug: params.slug,
+		});
 
 		const publication = data.publication;
 		const series = publication?.series;

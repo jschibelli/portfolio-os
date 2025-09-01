@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
-import { NextResponse } from 'next/server';
 import { getCalendar } from '@/lib/google/auth';
+import { NextResponse } from 'next/server';
 
 export async function GET() {
 	const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
@@ -36,5 +36,3 @@ export async function GET() {
 		},
 	});
 }
-
-
