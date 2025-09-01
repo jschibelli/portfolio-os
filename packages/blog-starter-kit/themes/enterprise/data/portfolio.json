@@ -20,6 +20,16 @@
 		"caseStudyUrl": "/case-studies/zeus-ecommerce-platform"
 	},
 	{
+		"id": "portfolio-site",
+		"title": "Schibelli.dev",
+		"slug": "portfolio-site",
+		"description": "A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.",
+		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "Tailwind CSS", "React"],
+		"liveUrl": "https://mindware.hashnode.dev",
+		"caseStudyUrl": "/case-studies/portfolio-site"
+	},
+	{
 		"id": "synaplyai",
 		"title": "SynaplyAI – Real-Time AI Collaboration Platform",
 		"slug": "synaplyai",
@@ -30,24 +40,14 @@
 		"caseStudyUrl": "/case-studies/synaplyai"
 	},
 	{
-		"id": "content-hub",
-		"title": "ContentHub CMS Redesign",
-		"slug": "contenthub-cms-redesign",
-		"description": "Led frontend redesign for a SaaS CMS, focusing on accessibility and performance. Delivered pixel-perfect UIs using LaunchUI, integrated internationalization and improved onboarding flows.",
-		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
-		"tags": ["React", "LaunchUI", "Accessibility", "i18n"],
-		"liveUrl": "https://contenthub.io",
-		"caseStudyUrl": "/case-studies/contenthub-cms-redesign"
-	},
-	{
-		"id": "fintech-dashboard",
-		"title": "FinTech Analytics Dashboard",
-		"slug": "fintech-analytics-dashboard",
-		"description": "A comprehensive financial analytics dashboard with real-time data visualization, interactive charts, and advanced filtering capabilities for investment portfolio management.",
+		"id": "intraweb-technologies",
+		"title": "Intraweb Technologies",
+		"slug": "intraweb-technologies",
+		"description": "A comprehensive web development and technology solutions company website. Features modern design, service showcases, and interactive elements highlighting expertise in React, Next.js, and full-stack development.",
 		"image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-		"tags": ["React", "D3.js", "TypeScript", "WebSocket", "Chart.js"],
-		"liveUrl": "https://fintech-dashboard.demo",
-		"caseStudyUrl": "/case-studies/fintech-analytics-dashboard"
+		"tags": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Full-Stack"],
+		"liveUrl": "https://intrawebtechnologies.com",
+		"caseStudyUrl": "/case-studies/intraweb-technologies"
 	},
 	{
 		"id": "healthcare-portal",
