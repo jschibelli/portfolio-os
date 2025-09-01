@@ -1,11 +1,12 @@
 [
 	{
-		"id": "tendrilo-case-study",
-		"title": "Tendril Multi-Tenant Chatbot SaaS: Strategic Analysis and Implementation Plan",
+		"id": "tendrilo",
+		"title": "Tendrilo Chatbot",
+		"subtitle": "Strategic Analysis and Implementation Plan to MVP Strategy",
 		"slug": "tendrilo-case-study",
 		"description": "Comprehensive strategic analysis and implementation plan for Tendril Multi-Tenant Chatbot SaaS platform targeting SMB market gaps.",
 		"image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
-		"tags": ["SaaS", "AI", "Multi-tenant", "Chatbot"],
+		"tags": ["Strategic Analysis", "Market Research", "Implementation Plan"],
 		"publishedAt": "2025-08-29",
 		"author": "John Schibelli",
 		"featured": true,
@@ -14,7 +15,7 @@
 			"userRetention": "91%",
 			"setupTime": "18 minutes"
 		},
-		"liveUrl": "",
+		"liveUrl": "https://tendrilo.ai",
 		"caseStudyUrl": "/case-studies/tendrilo-case-study"
 	}
 ]

@@ -102,7 +102,7 @@ export default function TendrilCaseStudy({ title, sections, metrics }: CaseStudy
 			<Layout>
 				<Head>
 					<title>
-						Tendril Multi-Tenant Chatbot SaaS: From Market Research to MVP Strategy – Case Study
+						Tendrillo Chat: From Market Research to MVP Strategy
 					</title>
 					<meta
 						name="description"
@@ -130,7 +130,7 @@ export default function TendrilCaseStudy({ title, sections, metrics }: CaseStudy
 									Case Study
 								</Badge>
 								<h1 className="text-foreground mb-6 text-4xl font-bold leading-tight lg:text-6xl">
-									{title || 'Tendril Multi-Tenant Chatbot SaaS'}
+									{title || 'TendriTendrillo Chat'}
 								</h1>
 								<p className="text-muted-foreground mb-8 text-xl leading-relaxed lg:text-2xl">
 									From Market Research to MVP Strategy
@@ -446,7 +446,7 @@ export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
 	};
 
 	const titleMatch = raw.match(/^#\s+(.+)$/m);
-	const title = titleMatch ? titleMatch[1].trim() : 'Tendril Multi-Tenant Chatbot SaaS';
+	const title = titleMatch ? titleMatch[1].trim() : 'T';
 
 	const resultsText = raw.match(/##\s+Results\s*&\s*Metrics[\s\S]*/i)?.[0] || '';
 	const signups = /(\d+)\s+sign-?ups|signups/i.exec(resultsText);

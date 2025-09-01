@@ -33,11 +33,13 @@ import {
 	PostsByPublicationQueryVariables,
 	PublicationFragment,
 } from '../../generated/graphql';
+import caseStudiesData from '../../data/case-studies.json';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 
 type CaseStudyProps = {
 	publication: PublicationFragment;
+	caseStudy: any; // We'll type this properly later
 };
 
 // Research Analysis Component
@@ -1370,7 +1372,7 @@ const DevelopmentRoadmap: React.FC = () => (
 );
 
 // Hero Section Component
-const HeroSection: React.FC = () => (
+const HeroSection: React.FC<{ caseStudy: any }> = ({ caseStudy }) => (
 	<motion.div
 		className="mb-16"
 		initial={{ opacity: 0, y: 20 }}
@@ -1382,20 +1384,21 @@ const HeroSection: React.FC = () => (
 				variant="secondary"
 				className="mb-4"
 			>
-				Strategic Analysis
+				{caseStudy.tags[0]}
 			</Badge>
 			<h1 className="mb-6 text-4xl font-bold leading-tight text-stone-900 lg:text-6xl dark:text-stone-100">
-				Tendril Multi-Tenant Chatbot SaaS
+				{caseStudy.title}
 			</h1>
 			<p className="mx-auto mb-8 max-w-4xl text-xl leading-relaxed text-stone-600 lg:text-2xl dark:text-stone-400">
-				Strategic Analysis and Implementation Plan
+				{caseStudy.subtitle}
 			</p>
 			<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-				<span>Strategic Analysis</span>
-				<span>•</span>
-				<span>Market Research</span>
-				<span>•</span>
-				<span>Implementation Plan</span>
+				{caseStudy.tags.map((tag: string, index: number) => (
+					<React.Fragment key={tag}>
+						<span>{tag}</span>
+						{index < caseStudy.tags.length - 1 && <span>•</span>}
+					</React.Fragment>
+				))}
 			</div>
 		</div>
 	</motion.div>
@@ -1594,7 +1597,7 @@ const ProjectedMetrics: React.FC<{
 	</Card>
 );
 
-export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
+export default function TendriloCaseStudy({ publication, caseStudy }: CaseStudyProps) {
 	const toc = [
 		{ id: 'problem-statement', title: 'Problem Statement' },
 		{ id: 'research-analysis', title: 'Research & Analysis' },
@@ -1610,15 +1613,15 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 			<Layout>
 				<Head>
 					<title>
-						Tendril Multi-Tenant Chatbot SaaS – Strategic Analysis and Implementation Plan
+						{caseStudy.title} – {caseStudy.subtitle}
 					</title>
 					<meta
 						name="description"
-						content="Comprehensive strategic analysis and implementation plan for Tendril Multi-Tenant Chatbot SaaS platform targeting SMB market gaps."
+						content={caseStudy.description}
 					/>
 					<meta
 						name="keywords"
-						content="chatbot, saas, multi-tenant, strategic analysis, implementation plan, SMB, market research"
+						content={caseStudy.tags.join(', ')}
 					/>
 				</Head>
 
@@ -1634,7 +1637,7 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 
 							{/* Main Content */}
 							<div className="space-y-12 lg:col-span-7">
-								<HeroSection />
+								<HeroSection caseStudy={caseStudy} />
 								<ProblemStatement />
 								<ResearchAnalysis />
 								<SolutionDesign />
@@ -1667,6 +1670,14 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 
+	// Get the case study data from JSON
+	const caseStudy = caseStudiesData.find(cs => cs.slug === 'tendrilo-case-study');
+	if (!caseStudy) {
+		return {
+			notFound: true,
+		};
+	}
+
 	try {
 		const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
 			GQL_ENDPOINT,
@@ -1687,6 +1698,7 @@ export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
 		return {
 			props: {
 				publication,
+				caseStudy,
 			},
 			revalidate: 1,
 		};

@@ -1,4 +1,4 @@
-# Tendril Multi-Tenant Chatbot SaaS: Strategic Analysis and Implementation Plan
+# Tendrillo Chat: From Market Research to MVP Strategy
 
 ## Problem Statement
 
