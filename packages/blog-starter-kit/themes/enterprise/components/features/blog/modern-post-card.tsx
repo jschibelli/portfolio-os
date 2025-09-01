@@ -1,7 +1,7 @@
 import { Badge, Card, CardContent, CardHeader } from '@/components/ui';
-import Screenshot from '../screenshot/Screenshot';
 import { format } from 'date-fns';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 interface ModernPostCardProps {
@@ -24,6 +24,7 @@ export default function ModernPostCard({
 	tags = [],
 }: ModernPostCardProps) {
 	const [isVisible, setIsVisible] = useState(false);
+	const [imageError, setImageError] = useState(false);
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -47,6 +48,10 @@ export default function ModernPostCard({
 		};
 	}, [slug]);
 
+	const handleImageError = () => {
+		setImageError(true);
+	};
+
 	return (
 		<div
 			data-card-id={slug}
@@ -57,13 +62,24 @@ export default function ModernPostCard({
 			<Link href={`/${slug}`} className="group block">
 				<Card className="group overflow-hidden border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 					<div className="relative overflow-hidden">
-						<Screenshot
-							srcLight={coverImage}
-							alt={title}
-							width={400}
-							height={250}
-							className="h-48 w-full object-cover transition-all duration-500 group-hover:scale-110"
-						/>
+						<div className="relative h-48 w-full">
+							{!imageError && coverImage ? (
+								<Image
+									src={coverImage}
+									alt={title}
+									fill
+									className="object-cover transition-all duration-500 group-hover:scale-110"
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+									onError={handleImageError}
+								/>
+							) : (
+								<div className="flex h-full w-full items-center justify-center bg-stone-200 dark:bg-stone-800">
+									<span className="text-sm text-stone-500 dark:text-stone-400">
+										{imageError ? 'Image failed to load' : 'No image available'}
+									</span>
+								</div>
+							)}
+						</div>
 						<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
 
 						{/* Enhanced floating badge */}

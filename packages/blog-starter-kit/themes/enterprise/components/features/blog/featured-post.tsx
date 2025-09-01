@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PostFragment } from '../../../generated/graphql';
 import { Badge } from '../../ui/badge';
+import { useState, useEffect } from 'react';
 
 interface FeaturedPostProps {
 	post: PostFragment;
@@ -13,12 +14,18 @@ interface FeaturedPostProps {
 }
 
 export default function FeaturedPost({ post, coverImage, readTime, tags }: FeaturedPostProps) {
+	const [imageError, setImageError] = useState(false);
+
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',
 		});
+	};
+
+	const handleImageError = () => {
+		setImageError(true);
 	};
 
 	return (
@@ -52,13 +59,22 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
 					{/* Left Section - Image */}
 					<div className="group relative">
 						<div className="relative overflow-hidden rounded-lg">
-							<Image
-								src={coverImage}
-								alt={post.title}
-								width={600}
-								height={500}
-								className="h-[400px] w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[500px]"
-							/>
+							{!imageError && coverImage ? (
+								<Image
+									src={coverImage}
+									alt={post.title}
+									width={600}
+									height={500}
+									className="h-[400px] w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[500px]"
+									onError={handleImageError}
+								/>
+							) : (
+								<div className="flex h-[400px] w-full items-center justify-center bg-stone-200 dark:bg-stone-800 lg:h-[500px]">
+									<span className="text-sm text-stone-500 dark:text-stone-400">
+										{imageError ? 'Image failed to load' : 'No image available'}
+									</span>
+								</div>
+							)}
 							<div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 							<Badge
 								variant="secondary"
