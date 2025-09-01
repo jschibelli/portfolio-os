@@ -8,7 +8,7 @@ import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import { ArticleSVG } from '../components/icons';
 import { Container } from '../components/shared/container';
-import { Footer } from '../components/shared/footer';
+
 import { Layout } from '../components/shared/layout';
 import { SEOHead } from '../components/shared/seo-head';
 
@@ -291,7 +291,6 @@ export default function Index({
 						</div>
 					)}
 				</Container>
-				<Footer />
 				<Chatbot />
 			</Layout>
 		</AppProvider>

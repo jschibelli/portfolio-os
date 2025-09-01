@@ -13,7 +13,7 @@ import {
 	LinkedinSVG as LinkedinIcon,
 } from '../components/icons';
 import { Container } from '../components/shared/container';
-import { Footer } from '../components/shared/footer';
+
 import { Layout } from '../components/shared/layout';
 import { SEOHead } from '../components/shared/seo-head';
 import { Badge, Button } from '../components/ui';
@@ -464,7 +464,6 @@ export default function ContactPage({ publication }: Props) {
 						</Container>
 					</section>
 				</main>
-				<Footer />
 				<Chatbot />
 			</Layout>
 		</AppProvider>

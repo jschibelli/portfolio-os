@@ -9,7 +9,7 @@ import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import ProjectCard, { Project } from '../components/features/portfolio/project-card';
 import { Container } from '../components/shared/container';
-import { Footer } from '../components/shared/footer';
+
 import { Layout } from '../components/shared/layout';
 import { Badge, Button } from '../components/ui';
 import portfolioData from '../data/portfolio.json';
@@ -297,7 +297,6 @@ export default function WorkPage({ publication }: Props) {
 						</Container>
 					</section>
 				</main>
-				<Footer />
 
 				{/* Chatbot */}
 				<Chatbot />

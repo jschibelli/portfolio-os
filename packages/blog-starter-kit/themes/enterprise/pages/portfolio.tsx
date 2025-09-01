@@ -2,12 +2,14 @@ import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import Image from 'next/image';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
 import { Layout } from '../components/shared/layout';
 import { PublicationByHostDocument } from '../generated/graphql';
+import portfolioData from '../data/portfolio.json';
 
 interface Props {
 	publication: any;
@@ -61,137 +63,60 @@ export default function PortfolioPage({ publication }: Props) {
 					>
 						<h2 className="text-foreground mb-8 text-3xl font-bold">Featured Projects</h2>
 						<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-							{/* Project 1 */}
-							<div className="group">
-								<div className="bg-card border-border hover:border-primary/50 overflow-hidden rounded-lg border transition-colors">
-									<div className="flex h-48 items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-										<svg
-											className="h-16 w-16 text-white"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+							{portfolioData.map((project, index) => (
+								<div key={project.id} className="group">
+									<div className="bg-card border-border hover:border-primary/50 overflow-hidden rounded-lg border transition-colors">
+										<div className="relative h-48 overflow-hidden">
+											<Image
+												src={project.image}
+												alt={project.title}
+												fill
+												className="object-cover transition-transform duration-500 group-hover:scale-105"
+												sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 											/>
-										</svg>
-									</div>
-									<div className="p-6">
-										<h3 className="text-foreground mb-2 text-xl font-semibold">
-											E-Commerce Platform
-										</h3>
-										<p className="text-muted-foreground mb-4">
-											A modern e-commerce platform built with Next.js, featuring real-time inventory
-											management and seamless payment processing.
-										</p>
-										<div className="mb-4 flex flex-wrap gap-2">
-											<span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm">
-												Next.js
-											</span>
-											<span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-600 dark:bg-green-900/30 dark:text-green-400">
-												TypeScript
-											</span>
-											<span className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-												Stripe
-											</span>
+											<div className="absolute inset-0 bg-black/20" />
 										</div>
-										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
-											View Project →
-										</Link>
+										<div className="p-6">
+											<h3 className="text-foreground mb-2 text-xl font-semibold">
+												{project.title}
+											</h3>
+											<p className="text-muted-foreground mb-4">
+												{project.description}
+											</p>
+											<div className="mb-4 flex flex-wrap gap-2">
+												{project.tags.slice(0, 3).map((tag) => (
+													<span
+														key={tag}
+														className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm"
+													>
+														{tag}
+													</span>
+												))}
+											</div>
+											<div className="flex gap-3">
+												{project.liveUrl && (
+													<a
+														href={project.liveUrl}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+													>
+														Live Demo
+													</a>
+												)}
+												{project.caseStudyUrl && (
+													<Link
+														href={project.caseStudyUrl}
+														className="border-border hover:bg-muted rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+													>
+														View Case Study
+													</Link>
+												)}
+											</div>
+										</div>
 									</div>
 								</div>
-							</div>
-
-							{/* Project 2 */}
-							<div className="group">
-								<div className="bg-card border-border hover:border-primary/50 overflow-hidden rounded-lg border transition-colors">
-									<div className="flex h-48 items-center justify-center bg-gradient-to-br from-green-500 to-teal-600">
-										<svg
-											className="h-16 w-16 text-white"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-											/>
-										</svg>
-									</div>
-									<div className="p-6">
-										<h3 className="text-foreground mb-2 text-xl font-semibold">
-											Mobile Banking App
-										</h3>
-										<p className="text-muted-foreground mb-4">
-											A secure mobile banking application with biometric authentication and
-											real-time transaction monitoring.
-										</p>
-										<div className="mb-4 flex flex-wrap gap-2">
-											<span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm">
-												React Native
-											</span>
-											<span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-600 dark:bg-green-900/30 dark:text-green-400">
-												Node.js
-											</span>
-											<span className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-												AWS
-											</span>
-										</div>
-										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
-											View Project →
-										</Link>
-									</div>
-								</div>
-							</div>
-
-							{/* Project 3 */}
-							<div className="group">
-								<div className="bg-card border-border hover:border-primary/50 overflow-hidden rounded-lg border transition-colors">
-									<div className="flex h-48 items-center justify-center bg-gradient-to-br from-orange-500 to-red-600">
-										<svg
-											className="h-16 w-16 text-white"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-											/>
-										</svg>
-									</div>
-									<div className="p-6">
-										<h3 className="text-foreground mb-2 text-xl font-semibold">
-											Cloud Analytics Dashboard
-										</h3>
-										<p className="text-muted-foreground mb-4">
-											A comprehensive analytics dashboard for cloud infrastructure monitoring and
-											performance optimization.
-										</p>
-										<div className="mb-4 flex flex-wrap gap-2">
-											<span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm">
-												React
-											</span>
-											<span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-600 dark:bg-green-900/30 dark:text-green-400">
-												D3.js
-											</span>
-											<span className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
-												Kubernetes
-											</span>
-										</div>
-										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
-											View Project →
-										</Link>
-									</div>
-								</div>
-							</div>
+							))}
 						</div>
 					</div>
 

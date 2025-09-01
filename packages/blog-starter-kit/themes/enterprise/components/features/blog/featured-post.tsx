@@ -29,7 +29,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
 	};
 
 	return (
-		<section className="bg-stone-50 py-20 dark:bg-stone-900">
+		<section className="bg-stone-50 py-8 dark:bg-stone-900">
 			<div className="container mx-auto px-4">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}

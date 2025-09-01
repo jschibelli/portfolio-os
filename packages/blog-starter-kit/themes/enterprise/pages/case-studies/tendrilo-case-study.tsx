@@ -1626,14 +1626,14 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 
 				<main className="min-h-screen bg-background">
 					<Container>
-						<div className="grid grid-cols-1 gap-8 py-12 lg:grid-cols-4">
+						<div className="grid grid-cols-1 gap-8 py-12 lg:grid-cols-12">
 							{/* Buffer - Left Sidebar */}
-							<div className="lg:col-span-1">
+							<div className="lg:col-span-2">
 								{/* Empty buffer space */}
 							</div>
 
 							{/* Main Content */}
-							<div className="space-y-12 lg:col-span-2">
+							<div className="space-y-12 lg:col-span-7">
 								<HeroSection />
 								<ProblemStatement />
 								<ResearchAnalysis />
@@ -1645,7 +1645,7 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 							</div>
 
 							{/* Table of Contents - Right Sidebar */}
-							<div className="lg:col-span-1">
+							<div className="lg:col-span-3">
 								<div className="sticky top-20 w-full max-w-[260px]">
 									<Card className="border-border shadow-lg">
 										<CardContent className="p-6">
