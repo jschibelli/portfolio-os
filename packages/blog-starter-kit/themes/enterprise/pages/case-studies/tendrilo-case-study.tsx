@@ -113,92 +113,92 @@ const ResearchAnalysis: React.FC = () => (
 				</CardHeader>
 				<CardContent>
 					<div className="overflow-x-auto">
-						<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
+						<table className="w-full border-collapse rounded-lg border border-border">
 							<thead>
 								<tr className="bg-accent">
-									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+									<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 										Feature
 									</th>
-									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+									<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 										Intercom
 									</th>
-									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+									<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 										Drift
 									</th>
-									<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+									<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 										Chatbase
 									</th>
-									<th className="border border-stone-200 bg-accent px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+									<th className="border border-border bg-accent px-4 py-3 text-center font-semibold text-foreground">
 										Tendril
 									</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr className="bg-white transition-colors hover:bg-stone-50 dark:bg-stone-900 dark:hover:bg-stone-800">
-									<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+								<tr className="bg-card transition-colors hover:bg-muted">
+									<td className="border border-border px-4 py-3 font-medium text-foreground">
 										Multi-Tenant Support
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 bg-stone-50 px-4 py-3 text-center dark:border-stone-700 dark:bg-stone-800">
+									<td className="border border-border bg-muted px-4 py-3 text-center">
 										<span className="font-bold text-green-500">✓</span>
 									</td>
 								</tr>
-								<tr className="bg-stone-50 transition-colors hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-									<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+								<tr className="bg-muted transition-colors hover:bg-muted/80">
+									<td className="border border-border px-4 py-3 font-medium text-foreground">
 										Transparent Pricing
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-yellow-500">~</span>
 									</td>
-									<td className="border border-stone-200 bg-stone-50 px-4 py-3 text-center dark:border-stone-700 dark:bg-stone-800">
+									<td className="border border-border bg-muted px-4 py-3 text-center">
 										<span className="font-bold text-green-500">✓</span>
 									</td>
 								</tr>
-								<tr className="bg-white transition-colors hover:bg-stone-50 dark:bg-stone-900 dark:hover:bg-stone-800">
-									<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+								<tr className="bg-card transition-colors hover:bg-muted">
+									<td className="border border-border px-4 py-3 font-medium text-foreground">
 										Quick Setup (&lt; 30 min)
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-red-500">✗</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-yellow-500">~</span>
 									</td>
-									<td className="border border-stone-200 bg-stone-50 px-4 py-3 text-center dark:border-stone-700 dark:bg-stone-800">
+									<td className="border border-border bg-muted px-4 py-3 text-center">
 										<span className="font-bold text-green-500">✓</span>
 									</td>
 								</tr>
-								<tr className="bg-stone-50 transition-colors hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-									<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+								<tr className="bg-muted transition-colors hover:bg-muted/80">
+									<td className="border border-border px-4 py-3 font-medium text-foreground">
 										AI-Powered Responses
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-green-500">✓</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-green-500">✓</span>
 									</td>
-									<td className="border border-stone-200 px-4 py-3 text-center dark:border-stone-700">
+									<td className="border border-border px-4 py-3 text-center">
 										<span className="text-green-500">✓</span>
 									</td>
-									<td className="border border-stone-200 bg-stone-50 px-4 py-3 text-center dark:border-stone-700 dark:bg-stone-800">
+									<td className="border border-border bg-muted px-4 py-3 text-center">
 										<span className="font-bold text-green-500">✓</span>
 									</td>
 								</tr>
@@ -235,62 +235,62 @@ const PricingModelTable: React.FC = () => (
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
-				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
+				<table className="w-full border-collapse rounded-lg border border-border">
 					<thead>
 						<tr className="bg-accent">
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Competitor
 							</th>
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Pricing Structure
 							</th>
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Key Limitations
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Intercom
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								$39-$139 per agent plus usage fees
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Hidden costs, complex pricing model
 							</td>
 						</tr>
-						<tr className="bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-muted hover:bg-muted/80">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Drift
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								~$2,500/month with annual commitments
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Enterprise-focused, expensive for SMBs
 							</td>
 						</tr>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Chatbase
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								$40-$500/month with feature limitations
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Limited features, additional charges for basic functionality
 							</td>
 						</tr>
-						<tr className="bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-muted hover:bg-muted/80">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Tidio
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								$29/month
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Lacks advanced features and multi-tenant capabilities
 							</td>
 						</tr>
@@ -313,63 +313,63 @@ const MarketInsightsTable: React.FC = () => (
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
-				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
+				<table className="w-full border-collapse rounded-lg border border-border">
 					<thead>
 						<tr className="bg-accent">
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Insight Category
 							</th>
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Market Finding
 							</th>
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Business Impact
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Pricing Complaints
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								68% of SMB users cite pricing as their primary complaint with current solutions
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Clear opportunity for transparent pricing model
 							</td>
 						</tr>
-						<tr className="bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-muted hover:bg-muted/80">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Setup Time Gap
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Setup time averaging 2-3 weeks versus desired deployment in under 24 hours
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Market demand for rapid deployment solutions
 							</td>
 						</tr>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Multi-Tenant Gap
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Zero major players offering true multi-tenant architecture for agencies
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Underserved market segment with high-value potential
 							</td>
 						</tr>
-						<tr className="bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-muted hover:bg-muted/80">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Market Demand
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Strong demand evidenced by Chatbase's rapid growth to $180K MRR within months of
 								launch
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Validates market opportunity and growth potential
 							</td>
 						</tr>
@@ -486,41 +486,41 @@ const TechnicalChallengesTable: React.FC = () => (
 		</CardHeader>
 		<CardContent>
 			<div className="overflow-x-auto">
-				<table className="w-full border-collapse rounded-lg border border-stone-200 dark:border-stone-700">
+				<table className="w-full border-collapse rounded-lg border border-border">
 					<thead>
 						<tr className="bg-accent">
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Challenge
 							</th>
-							<th className="border border-stone-200 px-4 py-3 text-center font-semibold text-stone-900 dark:border-stone-700 dark:text-stone-100">
+							<th className="border border-border px-4 py-3 text-center font-semibold text-foreground">
 								Description
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Multi-Tenant Performance
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Database query optimization will be critical to prevent performance degradation as
 								tenant count scales
 							</td>
 						</tr>
-						<tr className="bg-stone-50 hover:bg-stone-100 dark:bg-stone-800/50 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-muted hover:bg-muted/80">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								AI Response Consistency
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Maintaining quality responses across diverse knowledge bases while minimizing API
 								costs
 							</td>
 						</tr>
-						<tr className="bg-white hover:bg-stone-100 dark:bg-stone-900 dark:hover:bg-stone-800">
-							<td className="border border-stone-200 px-4 py-3 font-medium text-stone-900 dark:border-stone-700 dark:text-stone-100">
+						<tr className="bg-card hover:bg-muted">
+							<td className="border border-border px-4 py-3 font-medium text-foreground">
 								Cross-Domain Security
 							</td>
-							<td className="border border-stone-200 px-4 py-3 text-stone-700 dark:border-stone-700 dark:text-stone-300">
+							<td className="border border-border px-4 py-3 text-muted-foreground">
 								Implementing secure widget embedding without creating vulnerabilities or CORS issues
 							</td>
 						</tr>
@@ -782,7 +782,7 @@ const ProjectedResults: React.FC = () => (
 			{/* Performance Metrics */}
 			<SimpleBarChart
 				title="Performance Improvement Targets"
-				caption="Amber bars show the current percentage for each metric; right-aligned labels indicate current versus target benchmarks."
+				caption="Current vs. Target benchmarks."
 				data={[
 					{ label: 'Setup Time Reduction', value: 90, target: 95 },
 					{ label: 'Cost Savings', value: 75, target: 80 },
