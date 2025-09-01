@@ -11,8 +11,7 @@ import ProjectCard, { Project } from '../components/features/portfolio/project-c
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { Layout } from '../components/shared/layout';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
+import { Badge, Button } from '../components/ui';
 import portfolioData from '../data/portfolio.json';
 import { PublicationByHostDocument } from '../generated/graphql';
 

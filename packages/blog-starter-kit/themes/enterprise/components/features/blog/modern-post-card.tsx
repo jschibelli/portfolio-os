@@ -1,6 +1,5 @@
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import Screenshot from '@/components/ui/screenshot';
+import { Badge, Card, CardContent, CardHeader } from '@/components/ui';
+import Screenshot from '../screenshot/Screenshot';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';

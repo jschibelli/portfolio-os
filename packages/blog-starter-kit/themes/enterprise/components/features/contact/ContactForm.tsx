@@ -1,9 +1,11 @@
+'use client';
+
 import { Clock, Mail, User, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { Button } from './button';
-import { Card, CardContent, CardHeader, CardTitle } from './card';
-import { Input } from './input';
-import { Label } from './label';
+import { Button } from '../../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 
 interface ContactFormProps {
 	isOpen: boolean;
@@ -65,21 +67,45 @@ export function ContactForm({
 		}
 	};
 
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			onClose();
+		}
+	};
+
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+		<div 
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="contact-form-title"
+			aria-describedby="contact-form-description"
+			onKeyDown={handleKeyDown}
+		>
 			<Card className="w-full max-w-md">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
 					<div className="flex items-center space-x-2">
-						<User className="h-5 w-5 text-blue-600" />
-						<CardTitle>Contact Information</CardTitle>
+						<User className="h-5 w-5 text-blue-600" aria-hidden="true" />
+						<CardTitle id="contact-form-title">Contact Information</CardTitle>
 					</div>
-					<Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+					<Button 
+						variant="ghost" 
+						size="icon" 
+						onClick={onClose} 
+						className="h-8 w-8 p-0"
+						aria-label="Close contact form"
+					>
 						<X className="h-4 w-4" />
+						<span className="sr-only">Close</span>
 					</Button>
 				</CardHeader>
 
-				<CardContent>
-					<p className="mb-6 text-gray-600">{message}</p>
+				<CardContent className="space-y-4">
+					{message && (
+						<p id="contact-form-description" className="text-sm text-gray-600">
+							{message}
+						</p>
+					)}
 
 					<form onSubmit={handleSubmit} className="space-y-4">
 						{fields.includes('name') && (
@@ -97,8 +123,14 @@ export function ContactForm({
 									onChange={(e) => handleInputChange('name', e.target.value)}
 									placeholder="Enter your full name"
 									className={errors.name ? 'border-red-500' : ''}
+									aria-describedby={errors.name ? 'name-error' : undefined}
+									aria-invalid={!!errors.name}
 								/>
-								{errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+								{errors.name && (
+									<p id="name-error" className="text-sm text-red-500" role="alert">
+										{errors.name}
+									</p>
+								)}
 							</div>
 						)}
 
@@ -107,8 +139,7 @@ export function ContactForm({
 								<Label htmlFor="email" className="flex items-center space-x-2">
 									<Mail className="h-4 w-4" />
 									<span>
-										Email Address{' '}
-										{required.includes('email') && <span className="text-red-500">*</span>}
+										Email Address {required.includes('email') && <span className="text-red-500">*</span>}
 									</span>
 								</Label>
 								<Input
@@ -118,8 +149,14 @@ export function ContactForm({
 									onChange={(e) => handleInputChange('email', e.target.value)}
 									placeholder="Enter your email address"
 									className={errors.email ? 'border-red-500' : ''}
+									aria-describedby={errors.email ? 'email-error' : undefined}
+									aria-invalid={!!errors.email}
 								/>
-								{errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+								{errors.email && (
+									<p id="email-error" className="text-sm text-red-500" role="alert">
+										{errors.email}
+									</p>
+								)}
 							</div>
 						)}
 
@@ -133,7 +170,7 @@ export function ContactForm({
 									id="timezone"
 									value={formData.timezone}
 									onChange={(e) => handleInputChange('timezone', e.target.value)}
-									className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
 								>
 									<option value="America/New_York">Eastern Time (ET)</option>
 									<option value="America/Chicago">Central Time (CT)</option>
@@ -148,11 +185,11 @@ export function ContactForm({
 						)}
 
 						<div className="flex space-x-3 pt-4">
-							<Button type="button" variant="outline" onClick={onClose} className="flex-1">
+							<Button variant="outline" onClick={onClose} className="flex-1">
 								Cancel
 							</Button>
 							<Button type="submit" className="flex-1">
-								Continue
+								Submit
 							</Button>
 						</div>
 					</form>

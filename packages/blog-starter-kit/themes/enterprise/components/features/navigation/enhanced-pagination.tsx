@@ -1,6 +1,4 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge, Button, Card, CardContent } from '@/components/ui';
 import { ChevronLeft, Loader2, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageInfo } from '../generated/graphql';

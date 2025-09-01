@@ -1,6 +1,7 @@
 import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
@@ -97,9 +98,9 @@ export default function PortfolioPage({ publication }: Props) {
 												Stripe
 											</span>
 										</div>
-										<a href="#" className="text-primary hover:text-primary/80 font-medium">
+										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
 											View Project →
-										</a>
+										</Link>
 									</div>
 								</div>
 							</div>
@@ -141,9 +142,9 @@ export default function PortfolioPage({ publication }: Props) {
 												AWS
 											</span>
 										</div>
-										<a href="#" className="text-primary hover:text-primary/80 font-medium">
+										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
 											View Project →
-										</a>
+										</Link>
 									</div>
 								</div>
 							</div>
@@ -185,9 +186,9 @@ export default function PortfolioPage({ publication }: Props) {
 												Kubernetes
 											</span>
 										</div>
-										<a href="#" className="text-primary hover:text-primary/80 font-medium">
+										<Link href="/case-studies" className="text-primary hover:text-primary/80 font-medium">
 											View Project →
-										</a>
+										</Link>
 									</div>
 								</div>
 							</div>

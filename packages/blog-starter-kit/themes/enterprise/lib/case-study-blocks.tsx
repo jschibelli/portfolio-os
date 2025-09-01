@@ -15,8 +15,7 @@ import {
 	Zap,
 } from 'lucide-react';
 import React from 'react';
-import { Badge } from '../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '../components/ui';
 
 export interface ParsedBlock {
 	type: string;

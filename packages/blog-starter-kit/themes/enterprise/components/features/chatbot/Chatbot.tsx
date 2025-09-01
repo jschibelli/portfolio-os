@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 // import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
-import { BookingConfirmationModal } from '../../ui/BookingConfirmationModal';
-import { BookingModal } from '../../ui/BookingModal';
-import { CalendarModal } from '../../ui/CalendarModal';
-import { ContactForm } from '../../ui/ContactForm';
+import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
+import { BookingModal } from '../booking/BookingModal';
+import { CalendarModal } from '../booking/CalendarModal';
+import { ContactForm } from '../contact/ContactForm';
 
 interface TimeSlot {
   start: string;
@@ -356,11 +356,11 @@ export default function Chatbot() {
       
       // Detect page context when chatbot opens
       const context = detectPageContext();
-      console.log('🔍 Page context detected:', context);
+      // Page context detected
       setPageContext(context);
       
       // Update initial message based on page context with personalized responses
-      console.log('📝 Generating personalized welcome for page:', context?.title || 'unknown');
+      // Generating personalized welcome for page
 			setMessages((prev) => {
         if (prev.length === 1 && prev[0].id === '1') {
           const welcomeMessage = generatePersonalizedWelcome(context);
@@ -386,7 +386,7 @@ export default function Chatbot() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!isOpen && isSpeaking) {
-      console.log('🔊 Chatbot closed, stopping voice');
+      // Chatbot closed, stopping voice
       stopSpeaking();
     }
   }, [isOpen, isSpeaking]);
@@ -396,7 +396,7 @@ export default function Chatbot() {
   useEffect(() => {
     return () => {
       if (isSpeaking) {
-        console.log('🔊 Component unmounting, stopping voice');
+        // Component unmounting, stopping voice
         stopSpeaking();
       }
     };
@@ -1481,7 +1481,7 @@ export default function Chatbot() {
                {/* Test Booking Modal Button - Hidden on small screens */}
                <button
                  onClick={() => {
-                   console.log('🔍 Test: Manually triggering booking modal');
+                   // Test: Manually triggering booking modal
                    const testAction = {
                      type: 'ui_action',
                      action: 'show_booking_modal',

@@ -1,8 +1,6 @@
 import { Building, Clock, DollarSign, ExternalLink, Mail, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Badge } from '../../../components/ui/badge';
-import { Button } from '../../../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '../../../components/ui';
 
 interface Lead {
 	id: string;

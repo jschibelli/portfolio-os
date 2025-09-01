@@ -1,11 +1,12 @@
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import Link from 'next/link';
 import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
-import { Button } from '../../components/ui/button';
+import { SEOHead } from '../../components/shared/seo-head';
+import { Button } from '../../components/ui';
+import { generateServiceStructuredData } from '../../lib/structured-data';
 
 interface Props {
 	publication: any;
@@ -15,33 +16,37 @@ export default function WebDevelopmentPage({ publication }: Props) {
 	return (
 		<AppProvider publication={publication}>
 			<Layout>
-				<Head>
-					<title>
-						{publication.displayTitle || publication.title || 'John Schibelli'} - Web Development
-					</title>
-					<meta
-						name="description"
-						content="Custom web development services using modern technologies like React, Next.js, and full-stack solutions"
-					/>
-					<meta
-						property="og:title"
-						content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Web Development`}
-					/>
-					<meta
-						property="og:description"
-						content="Custom web development services using modern technologies like React, Next.js, and full-stack solutions"
-					/>
-					<meta property="og:type" content="website" />
-					<meta property="og:url" content={`${publication.url}/services/web-development`} />
-					<meta
-						name="twitter:title"
-						content={`${publication.displayTitle || publication.title || 'John Schibelli'} - Web Development`}
-					/>
-					<meta
-						name="twitter:description"
-						content="Custom web development services using modern technologies like React, Next.js, and full-stack solutions"
-					/>
-				</Head>
+				<SEOHead
+					title={`Web Development Services - ${publication.displayTitle || publication.title || 'John Schibelli'}`}
+					description="Custom web development services using modern technologies like React, Next.js, TypeScript, and full-stack solutions. Build scalable, high-performance web applications."
+					keywords={[
+						'Web Development',
+						'React Development',
+						'Next.js Development',
+						'TypeScript Development',
+						'Full-Stack Development',
+						'Custom Web Applications',
+						'Progressive Web Apps',
+						'Web Performance',
+						'SEO Optimization',
+						'Responsive Design',
+					]}
+					canonical="/services/web-development"
+					ogType="website"
+					structuredData={generateServiceStructuredData({
+						name: 'Web Development Services',
+						description: 'Custom web development services using modern technologies like React, Next.js, TypeScript, and full-stack solutions.',
+						provider: {
+							name: 'John Schibelli',
+							description: 'Senior Front-End Developer with 15+ years of experience',
+							url: 'https://johnschibelli.com',
+							jobTitle: 'Senior Front-End Developer',
+						},
+						url: 'https://johnschibelli.com/services/web-development',
+						serviceType: 'Web Development',
+						areaServed: ['United States', 'Remote'],
+					})}
+				/>
 				<ModernHeader publication={publication} />
 
 				<Container className="flex flex-col items-stretch gap-10 px-5 pb-10">

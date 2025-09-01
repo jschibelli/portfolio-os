@@ -10,9 +10,7 @@ import Chatbot from '../../components/features/chatbot/Chatbot';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent } from '../../components/ui/card';
+import { Badge, Button, Card, CardContent } from '../../components/ui';
 
 // Mock publication data for the case study
 const mockPublication = {
@@ -423,7 +421,7 @@ export default function TendrilCaseStudy({ title, sections, metrics }: CaseStudy
 }
 
 export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
-	const mdPath = path.join(process.cwd(), 'docs', 'tendrilo-case-study.md');
+	const mdPath = path.join(process.cwd(), 'docs', 'case-studies', 'tendrilo-case-study.md');
 	const raw = fs.readFileSync(mdPath, 'utf8');
 
 	const toHtml = (md: string) => {

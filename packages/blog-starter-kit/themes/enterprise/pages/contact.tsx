@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import request from 'graphql-request';
 import { ClockIcon, MailIcon, MapPinIcon, SendIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
@@ -16,8 +15,9 @@ import {
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { Layout } from '../components/shared/layout';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
+import { SEOHead } from '../components/shared/seo-head';
+import { Badge, Button } from '../components/ui';
+import { generateOrganizationStructuredData } from '../lib/structured-data';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -68,31 +68,41 @@ export default function ContactPage({ publication }: Props) {
 	return (
 		<AppProvider publication={publication}>
 			<Layout>
-				<Head>
-					<title>{publication.displayTitle || publication.title} - Contact</title>
-					<meta
-						name="description"
-						content="Get in touch to discuss your next project. Based in Northern New Jersey, available for remote work and local projects."
-					/>
-					<meta
-						property="og:title"
-						content={`${publication.displayTitle || publication.title} - Contact`}
-					/>
-					<meta
-						property="og:description"
-						content="Get in touch to discuss your next project. Based in Northern New Jersey, available for remote work and local projects."
-					/>
-					<meta property="og:type" content="website" />
-					<meta property="og:url" content={`${publication.url}/contact`} />
-					<meta
-						name="twitter:title"
-						content={`${publication.displayTitle || publication.title} - Contact`}
-					/>
-					<meta
-						name="twitter:description"
-						content="Get in touch to discuss your next project. Based in Northern New Jersey, available for remote work and local projects."
-					/>
-				</Head>
+				<SEOHead
+					title={`Contact - ${publication.displayTitle || publication.title || 'John Schibelli'}`}
+					description="Get in touch to discuss your next project. Based in Northern New Jersey, available for remote work and local projects. Let's build something amazing together."
+					keywords={[
+						'Contact',
+						'Web Development',
+						'Project Consultation',
+						'Freelance Developer',
+						'React Developer',
+						'Next.js Developer',
+						'TypeScript Developer',
+						'Northern New Jersey',
+						'Remote Work',
+						'Project Quote',
+					]}
+					canonical="/contact"
+					ogType="website"
+					structuredData={generateOrganizationStructuredData({
+						name: 'John Schibelli',
+						description: 'Senior Front-End Developer providing web development services',
+						url: 'https://johnschibelli.com',
+						contactPoint: {
+							telephone: '+1-555-0123',
+							contactType: 'customer service',
+							email: 'john@johnschibelli.com',
+						},
+						address: {
+							streetAddress: 'Northern New Jersey',
+							addressLocality: 'New Jersey',
+							addressRegion: 'NJ',
+							postalCode: '07000',
+							addressCountry: 'US',
+						},
+					})}
+				/>
 				<ModernHeader publication={publication} />
 
 				<main className="min-h-screen bg-white dark:bg-stone-950">

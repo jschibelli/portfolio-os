@@ -1,6 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Glow from '@/components/ui/glow';
+import { Button, Card, CardContent, CardHeader, CardTitle, Glow } from '@/components/ui';
 import request from 'graphql-request';
 import React, { useEffect, useState } from 'react';
 import {

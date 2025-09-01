@@ -13,8 +13,7 @@ import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Footer } from '../../components/shared/footer';
 import { Layout } from '../../components/shared/layout';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
+import { Button, Badge } from '../../components/ui';
 import {
 	Card,
 	CardContent,
@@ -22,7 +21,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '../../components/ui/card';
-import { Section } from '../../components/ui/section';
+import { Section } from '../../components/ui';
 import { siteConfig } from '../../config/site';
 import localCaseStudies from '../../data/case-studies.json';
 import {
@@ -166,7 +165,7 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 															<div className="relative mb-4 aspect-video overflow-hidden">
 																<img
 																	src={cs.image}
-																	alt={`Cover image for ${cs.title}`}
+																	alt={`Cover for ${cs.title}`}
 																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 																	loading="lazy"
 																/>
@@ -259,7 +258,7 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 															<div className="relative mb-4 aspect-video overflow-hidden">
 																<img
 																	src={caseStudy.coverImage.url}
-																	alt={`Cover image for ${caseStudy.title}`}
+																	alt={`Cover for ${caseStudy.title}`}
 																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 																	loading="lazy"
 																/>

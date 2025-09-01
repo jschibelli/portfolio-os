@@ -17,61 +17,63 @@ interface ModernHeaderProps {
 }
 
 export default function ModernHeader({ publication }: ModernHeaderProps) {
+	const siteTitle = publication.displayTitle || publication.title;
+
 	return (
-		<header className="sticky top-0 z-50 w-full border-b border-border bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60">
+		<header className="sticky top-0 z-50 w-full border-b border-border bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60" role="banner">
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<div className="flex-shrink-0">
-						<Link href="/" className="flex items-center space-x-2">
+						<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
 							{publication.logo?.url && (
 								<img
 									src={publication.logo.url}
-									alt={publication.displayTitle || publication.title}
+									alt={`${siteTitle} logo`}
 									className="h-8 w-8 rounded-lg"
 								/>
 							)}
 							<span className="text-xl font-bold text-foreground">
-								{publication.displayTitle || publication.title}
+								{siteTitle}
 							</span>
 						</Link>
 					</div>
 
 					{/* Desktop Navigation */}
-					<nav className="hidden items-center space-x-8 md:flex">
+					<nav className="hidden items-center space-x-8 md:flex" role="navigation" aria-label="Main navigation">
 						<Link
 							href="/"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Home
 						</Link>
 						<Link
 							href="/work"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Work
 						</Link>
 						<Link
 							href="/case-studies"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Case Studies
 						</Link>
 						<Link
 							href="/blog"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Blog
 						</Link>
 						<Link
 							href="/about"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							About
 						</Link>
 						<Link
 							href="/contact"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Contact
 						</Link>
@@ -83,6 +85,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 						<Button
 							size="sm"
 							className="hidden sm:inline-flex"
+							aria-label="Subscribe to newsletter"
 						>
 							Subscribe
 						</Button>
@@ -95,77 +98,82 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 									size="icon"
 									className="md:hidden"
 									aria-label="Toggle mobile menu"
+									aria-expanded="false"
+									aria-controls="mobile-menu"
 								>
 									<Menu className="h-5 w-5" />
+									<span className="sr-only">Toggle mobile menu</span>
 								</Button>
 							</SheetTrigger>
-							<SheetContent side="right" className="w-[300px] sm:w-[400px]">
+							<SheetContent side="right" className="w-[300px] sm:w-[400px]" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
 								<SheetHeader>
 									<SheetTitle className="text-left">
-										<Link href="/" className="flex items-center space-x-2">
+										<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
 											{publication.logo?.url && (
 												<img
 													src={publication.logo.url}
-													alt={publication.displayTitle || publication.title}
+													alt={`${siteTitle} logo`}
 													className="h-6 w-6 rounded"
 												/>
 											)}
-																		<span className="text-lg font-bold text-foreground">
-								{publication.displayTitle || publication.title}
-							</span>
+											<span className="text-lg font-bold text-foreground">
+												{siteTitle}
+											</span>
 										</Link>
 									</SheetTitle>
 								</SheetHeader>
 
 								<div className="mt-8">
-									<nav className="flex flex-col space-y-4">
+									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Home
 										</Link>
 										<Link
 											href="/work"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Work
 										</Link>
 										<Link
 											href="/case-studies"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Case Studies
 										</Link>
 										<Link
 											href="/blog"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Blog
 										</Link>
 										<Link
 											href="/about"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											About
 										</Link>
 										<Link
 											href="/contact"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Contact
 										</Link>
 									</nav>
 
 									<div className="mt-8 border-t border-border pt-6">
-										<div className="flex items-center justify-center gap-4">
+										<h3 className="sr-only">Social media links</h3>
+										<div className="flex items-center justify-center gap-4" role="list" aria-label="Social media links">
 											{/* Facebook */}
 											<a
 												href="https://facebook.com"
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
 											>
 												<FacebookSVG className="h-5 w-5" />
 											</a>
@@ -176,7 +184,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
 											>
 												<GithubSVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -187,7 +196,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
 											>
 												<LinkedinSVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -198,7 +208,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
 											>
 												<BlueskySVG className="h-5 w-5 stroke-current" />
 											</a>
@@ -210,7 +221,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												target="_blank"
 												rel="noopener noreferrer"
 												aria-label="Open blog XML Feed, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												role="listitem"
 											>
 												<RssSVG className="h-5 w-5 stroke-current" />
 											</Link>

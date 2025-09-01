@@ -36,7 +36,7 @@ export default function ChatbotAnalytics() {
 			localStorage.setItem('chatbot_analytics', JSON.stringify(existingEvents));
 
 			// In production, you'd send this to your analytics service
-			console.log('📊 Analytics Event:', event);
+			// Analytics Event tracked
 		} catch (error) {
 			console.error('Failed to track analytics event:', error);
 		}

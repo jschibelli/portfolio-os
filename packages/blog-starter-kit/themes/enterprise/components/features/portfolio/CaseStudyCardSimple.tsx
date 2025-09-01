@@ -1,7 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge, Button, Card, CardContent, CardHeader } from '@/components/ui';
 import Link from 'next/link';
 import { PortfolioItem } from '../../types/portfolio';
 

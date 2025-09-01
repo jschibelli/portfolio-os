@@ -145,7 +145,7 @@ export const Analytics = () => {
 	useEffect(() => {
 		// Skip analytics in development mode
 		if (isDev) {
-			console.log('Analytics disabled in development mode');
+			// Analytics disabled in development mode
 			return;
 		}
 

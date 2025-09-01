@@ -5,7 +5,7 @@ import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
-import { Button } from '../../components/ui/button';
+import { Button } from '../../components/ui';
 
 interface Props {
 	publication: any;

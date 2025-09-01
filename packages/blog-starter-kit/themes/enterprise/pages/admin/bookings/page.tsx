@@ -1,7 +1,6 @@
 import { Calendar, Clock, Mail, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Badge } from '../../../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../../components/ui';
 
 interface Booking {
 	id: string;

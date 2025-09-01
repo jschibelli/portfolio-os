@@ -1,12 +1,13 @@
 import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
 import { Layout } from '../components/shared/layout';
-import { Button } from '../components/ui/button';
+import { Button } from '../components/ui';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
@@ -178,9 +179,9 @@ export default function NewsletterPage({ publication }: Props) {
 									/>
 									<label htmlFor="privacy" className="text-muted-foreground text-sm">
 										I agree to receive email communications and acknowledge the{' '}
-										<a href="#" className="text-primary hover:text-primary/80 underline">
+										<Link href="/privacy-policy" className="text-primary hover:text-primary/80 underline">
 											Privacy Policy
-										</a>
+										</Link>
 									</label>
 								</div>
 

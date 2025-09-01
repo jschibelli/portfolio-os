@@ -26,8 +26,7 @@ import Chatbot from '../../components/features/chatbot/Chatbot';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
-import { Badge } from '../../components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../components/ui';
 import {
 	PostsByPublicationDocument,
 	PostsByPublicationQuery,
