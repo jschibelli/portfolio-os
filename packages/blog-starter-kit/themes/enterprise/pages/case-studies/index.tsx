@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { motion } from 'framer-motion';
-import request from 'graphql-request';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -24,22 +23,13 @@ import {
 import { Section } from '../../components/ui';
 import { siteConfig } from '../../config/site';
 import localCaseStudies from '../../data/case-studies.json';
-import {
-	PostFragment,
-	PublicationByHostDocument,
-	PublicationByHostQueryVariables,
-	PublicationFragment,
-	TagPostsByPublicationDocument,
-} from '../../generated/graphql';
-
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
+import { PublicationFragment } from '../../generated/graphql';
 
 type Props = {
 	publication: PublicationFragment;
-	caseStudies: PostFragment[];
 };
 
-export default function CaseStudiesPage({ publication, caseStudies }: Props) {
+export default function CaseStudiesPage({ publication }: Props) {
 	const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
 
 	React.useEffect(() => {
@@ -84,14 +74,6 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 						ease: [0.25, 0.46, 0.45, 0.94],
 					},
 				},
-	};
-
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString('en-US', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-		});
 	};
 
 	return (
@@ -219,12 +201,7 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 											</motion.div>
 										))}
 									</div>
-								) : null}
-							</motion.div>
-
-							{/* Remote Case Studies Grid (Hashnode) */}
-							<motion.div variants={itemVariants} className="mb-12">
-								{(localCaseStudies as any).length === 0 && caseStudies.length === 0 ? (
+								) : (
 									<div className="py-12 text-center">
 										<div className="bg-primary/20 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg">
 											<svg
@@ -247,100 +224,6 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 										<p className="text-muted-foreground">
 											Check back soon for detailed case studies.
 										</p>
-									</div>
-								) : (
-									<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-										{caseStudies.map((caseStudy, index) => (
-											<motion.div key={caseStudy.id} variants={itemVariants} className="group">
-												<Card className="group overflow-hidden h-full border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
-													<CardHeader className="pb-4">
-														{caseStudy.coverImage?.url && (
-															<div className="relative mb-4 aspect-video overflow-hidden">
-																<img
-																	src={caseStudy.coverImage.url}
-																	alt={`Cover for ${caseStudy.title}`}
-																	className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-																	loading="lazy"
-																/>
-																<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
-																<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
-																	<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
-																		Case Study
-																	</Badge>
-																</div>
-																<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
-																	<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
-																		Read Case Study
-																	</div>
-																</div>
-															</div>
-														)}
-														<CardTitle className="group-hover:text-primary line-clamp-2 text-xl font-bold transition-colors duration-200">
-															{caseStudy.title}
-														</CardTitle>
-														<CardDescription className="text-muted-foreground line-clamp-3">
-															{caseStudy.brief}
-														</CardDescription>
-													</CardHeader>
-													<CardContent className="pt-0">
-														<div className="mb-4 flex items-center justify-between">
-															<div className="text-muted-foreground flex items-center gap-2 text-sm">
-																<svg
-																	className="h-4 w-4"
-																	fill="none"
-																	stroke="currentColor"
-																	viewBox="0 0 24 24"
-																>
-																	<path
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																		strokeWidth={2}
-																		d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-																	/>
-																</svg>
-																{formatDate(caseStudy.publishedAt)}
-															</div>
-															{caseStudy.author && (
-																<div className="flex items-center gap-2">
-																	{caseStudy.author.profilePicture && (
-																		<img
-																			src={caseStudy.author.profilePicture}
-																			alt={caseStudy.author.name}
-																			className="h-6 w-6 rounded-full"
-																		/>
-																	)}
-																	<span className="text-muted-foreground text-sm">
-																		{caseStudy.author.name}
-																	</span>
-																</div>
-															)}
-														</div>
-														<Button
-															asChild
-															variant="outline"
-															className="group-hover:bg-primary group-hover:text-primary-foreground w-full transition-colors duration-200"
-														>
-															<Link href={`/${caseStudy.slug}`}>
-																Read Case Study
-																<svg
-																	className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-																	fill="none"
-																	stroke="currentColor"
-																	viewBox="0 0 24 24"
-																>
-																	<path
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																		strokeWidth={2}
-																		d="M9 5l7 7-7 7"
-																	/>
-																</svg>
-															</Link>
-														</Button>
-													</CardContent>
-												</Card>
-											</motion.div>
-										))}
 									</div>
 								)}
 							</motion.div>
@@ -378,79 +261,18 @@ export default function CaseStudiesPage({ publication, caseStudies }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-	// Fallback-friendly behavior: if Hashnode config is missing, provide stub data
-	if (!GQL_ENDPOINT || !process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST) {
-		const publication = {
-			title: siteConfig.name,
-			displayTitle: siteConfig.name,
-			url: siteConfig.url,
-			logo: null,
-		} as unknown as PublicationFragment;
+	// Simple fallback publication data
+	const publication = {
+		title: siteConfig.name,
+		displayTitle: siteConfig.name,
+		url: siteConfig.url,
+		logo: null,
+	} as unknown as PublicationFragment;
 
-		return {
-			props: {
-				publication,
-				caseStudies: [],
-			},
-			revalidate: 60,
-		};
-	}
-
-	try {
-		// Fetch publication data
-		const publicationData = await request<
-			{ publication: PublicationFragment },
-			PublicationByHostQueryVariables
-		>(GQL_ENDPOINT, PublicationByHostDocument, {
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-		});
-
-		const publication = publicationData.publication;
-
-		if (!publication) {
-			return {
-				props: {
-					publication: {
-						title: siteConfig.name,
-						displayTitle: siteConfig.name,
-						url: siteConfig.url,
-						logo: null,
-					} as unknown as PublicationFragment,
-					caseStudies: [],
-				},
-				revalidate: 60,
-			};
-		}
-
-		// Fetch case studies (posts tagged with 'case-study')
-		const caseStudiesData = await request(GQL_ENDPOINT, TagPostsByPublicationDocument, {
-			host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
-			tagSlug: 'case-study',
-			first: 50,
-		});
-
-		const caseStudies = caseStudiesData.publication?.posts.edges?.map((edge) => edge.node) || [];
-
-		return {
-			props: {
-				publication,
-				caseStudies,
-			},
-			revalidate: 60,
-		};
-	} catch (error) {
-		console.error('Error fetching case studies data:', error);
-		return {
-			props: {
-				publication: {
-					title: siteConfig.name,
-					displayTitle: siteConfig.name,
-					url: siteConfig.url,
-					logo: null,
-				} as unknown as PublicationFragment,
-				caseStudies: [],
-			},
-			revalidate: 60,
-		};
-	}
+	return {
+		props: {
+			publication,
+		},
+		revalidate: 60,
+	};
 };
