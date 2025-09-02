@@ -1692,7 +1692,7 @@ export default function Chatbot() {
                     stopSpeaking();
                   }
                 }}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyPress}
 								placeholder={isListening ? 'Listening...' : 'Type your message...'}
 								className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-stone-500 md:text-base dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                 disabled={isLoading || isListening}
