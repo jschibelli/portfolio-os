@@ -2,9 +2,9 @@
 	"name": "@starter-kit/blog-enterprise",
 	"private": true,
 	"scripts": {
+		"dev": "next dev",
 		"build": "next build",
 		"codegen": "graphql-codegen --config codegen.yml",
-		"dev": "concurrently \"next\" \"pnpm codegen --watch\" --names next,codegen",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\" --ignore-path ../../../../.prettierignore",
 		"lint": "next lint",
 		"postbuild": "next-sitemap",
@@ -15,7 +15,14 @@
 		"typecheck": "tsc",
 		"prisma:push": "prisma db push",
 		"prisma:migrate": "prisma migrate dev --name init",
-		"prisma:seed": "node prisma/seed.js"
+		"prisma:seed": "node prisma/seed.js",
+		"db:seed": "npx tsx prisma/seed.ts",
+		"db:import-hashnode": "npx tsx scripts/import-hashnode-articles.ts",
+		"db:test-import": "npx tsx scripts/test-import.ts",
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:migrate": "prisma migrate dev",
+		"db:studio": "prisma studio"
 	},
 	"prisma": {
 		"seed": "node prisma/seed.js"
@@ -23,6 +30,7 @@
 	"dependencies": {
 		"@auth/prisma-adapter": "^1.6.0",
 		"@graphql-typed-document-node/core": "^3.2.0",
+		"@octokit/rest": "^22.0.0",
 		"@prisma/client": "^5.0.0",
 		"@radix-ui/react-accordion": "^1.2.1",
 		"@radix-ui/react-checkbox": "^1.3.3",

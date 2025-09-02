@@ -46,8 +46,57 @@ export default function NewArticle() {
   });
 
   const handleSave = async (type: 'draft' | 'publish' | 'schedule') => {
-    // TODO: Implement save logic
-    console.log('Saving article:', { type, articleData });
+    try {
+      // Determine status based on save type
+      let status = 'DRAFT';
+      let publishedAt = null;
+      let scheduledAt = null;
+      
+      if (type === 'publish') {
+        status = 'PUBLISHED';
+        publishedAt = new Date().toISOString();
+      } else if (type === 'schedule') {
+        status = 'SCHEDULED';
+        scheduledAt = new Date().toISOString();
+      }
+
+      // Prepare article data
+      const articlePayload = {
+        title: articleData.title,
+        subtitle: articleData.excerpt, // Using excerpt as subtitle for now
+        content: articleData.content,
+        status: status,
+        tags: articleData.tags,
+        featured: false,
+        excerpt: articleData.excerpt,
+        publishedAt: publishedAt,
+        scheduledAt: scheduledAt,
+        visibility: articleData.visibility,
+        contentMdx: articleData.content,
+        contentJson: articleData.content
+      };
+
+      const response = await fetch('/api/admin/articles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(articlePayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create article');
+      }
+
+      const createdArticle = await response.json();
+      
+      // Redirect to articles list on success
+      window.location.href = '/admin/articles';
+    } catch (error) {
+      console.error('Failed to save article:', error);
+      alert(`Failed to save article: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   const toggleSettings = () => setIsSettingsOpen(!isSettingsOpen);

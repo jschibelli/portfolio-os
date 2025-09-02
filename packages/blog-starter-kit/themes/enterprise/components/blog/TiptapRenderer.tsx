@@ -10,7 +10,7 @@ interface TiptapRendererProps {
 export function TiptapRenderer({ content, className = "" }: TiptapRendererProps) {
   const renderedContent = useMemo(() => {
     if (!content || !content.content) {
-      return <p className="text-gray-500 italic">No content available</p>;
+      return <p className="text-stone-500 dark:text-stone-400 italic">No content available</p>;
     }
 
     const renderNode = (node: any): React.ReactNode => {
@@ -26,14 +26,14 @@ export function TiptapRenderer({ content, className = "" }: TiptapRendererProps)
                 text = <em key={Math.random()}>{text}</em>;
                 break;
               case "code":
-                text = <code key={Math.random()} className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{text}</code>;
+                text = <code key={Math.random()} className="bg-stone-100 dark:bg-stone-700 px-1 py-0.5 rounded text-sm font-mono text-stone-800 dark:text-stone-200">{text}</code>;
                 break;
               case "link":
                 text = (
                   <a 
                     key={Math.random()} 
                     href={mark.attrs.href} 
-                    className="text-blue-600 hover:text-blue-800 underline"
+                    className="text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -100,22 +100,22 @@ export function TiptapRenderer({ content, className = "" }: TiptapRendererProps)
 
         case "blockquote":
           return (
-            <blockquote key={Math.random()} className="border-l-4 border-gray-300 pl-4 italic text-gray-700 mb-4">
+            <blockquote key={Math.random()} className="border-l-4 border-stone-300 dark:border-stone-600 pl-4 italic text-stone-700 dark:text-stone-300 mb-4">
               {node.content?.map((child: any, index: number) => renderNode(child))}
             </blockquote>
           );
 
         case "codeBlock":
           return (
-            <pre key={Math.random()} className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-4">
-              <code className="text-sm font-mono">
+            <pre key={Math.random()} className="bg-stone-100 dark:bg-stone-700 p-4 rounded-lg overflow-x-auto mb-4">
+              <code className="text-sm font-mono text-stone-800 dark:text-stone-200">
                 {node.content?.map((child: any, index: number) => renderNode(child))}
               </code>
             </pre>
           );
 
         case "horizontalRule":
-          return <hr key={Math.random()} className="my-8 border-gray-300" />;
+          return <hr key={Math.random()} className="my-8 border-stone-300 dark:border-stone-600" />;
 
         case "image":
           return (
@@ -141,9 +141,9 @@ export function TiptapRenderer({ content, className = "" }: TiptapRendererProps)
                 type="checkbox"
                 checked={node.attrs.checked}
                 readOnly
-                className="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                className="mt-1 h-4 w-4 text-stone-600 rounded border-stone-300 focus:ring-stone-500"
               />
-              <span className={node.attrs.checked ? "line-through text-gray-500" : ""}>
+              <span className={node.attrs.checked ? "line-through text-stone-500 dark:text-stone-400" : ""}>
                 {node.content?.map((child: any, index: number) => renderNode(child))}
               </span>
             </li>

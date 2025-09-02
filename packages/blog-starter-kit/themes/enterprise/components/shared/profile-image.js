@@ -1,60 +1,58 @@
 import Image from 'next/legacy/image';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { resizeImage } from '@starter-kit/utils/image';
 import { DEFAULT_AVATAR } from '../../utils/const';
 
-export default class ProfileImage extends React.Component {
-	componentDidMount() {
-		if (!this.props.user) {
-			return;
-		}
-		if (this.props.user.isDeactivated) {
-			return;
-		}
-	}
+function ProfileImage({ user, blogURL, postUrlForAnonymous, className, width, height }) {
+	const profileImageRef = useRef(null);
 
-	render() {
-		const user = this.props.user;
-		const blogURL = this.props.blogURL;
-		return (
-			<a
-				href={
-					blogURL
-						? blogURL
-						: user && !user.isDeactivated
-							? `https://hashnode.com/@${user.username}`
-							: this.props.postUrlForAnonymous
-								? this.props.postUrlForAnonymous
-								: '#'
+	useEffect(() => {
+		if (!user) {
+			return;
+		}
+		if (user.isDeactivated) {
+			return;
+		}
+	}, [user]);
+
+	return (
+		<a
+			href={
+				blogURL
+					? blogURL
+					: user && !user.isDeactivated
+						? `https://hashnode.com/@${user.username}`
+						: postUrlForAnonymous
+							? postUrlForAnonymous
+							: '#'
+			}
+			ref={profileImageRef}
+			className={`relative block h-full w-full`}
+		>
+			<Image
+				className={twMerge(className, `relative z-20 block w-full rounded-full`)}
+				src={
+					user && user.profilePicture
+						? resizeImage(user.profilePicture, {
+								w: width || 70,
+								h: height || 70,
+								c: 'face',
+							})
+						: DEFAULT_AVATAR
 				}
-				ref={(c) => {
-					this.profileImage = c;
-				}}
-				className={`relative block h-full w-full`}
-			>
-				<Image
-					className={twMerge(this.props.className, `relative z-20 block w-full rounded-full`)}
-					src={
-						user && user.profilePicture
-							? resizeImage(user.profilePicture, {
-									w: this.props.width || 70,
-									h: this.props.height || 70,
-									c: 'face',
-								})
-							: DEFAULT_AVATAR
-					}
-					width={this.props.width ? parseInt(this.props.width) : 70}
-					height={this.props.height ? parseInt(this.props.height) : 70}
-					// resize={{
-					//   w: this.props.width ? parseInt(this.props.width) : 70,
-					//   h: this.props.height ? parseInt(this.props.height) : 70,
-					//   c: 'face',
-					// }}
-					alt={user ? user.name + "'s photo" : undefined}
-				/>
-			</a>
-		);
-	}
+				width={width ? parseInt(width) : 70}
+				height={height ? parseInt(height) : 70}
+				// resize={{
+				//   w: width ? parseInt(width) : 70,
+				//   h: height ? parseInt(height) : 70,
+				//   c: 'face',
+				// }}
+				alt={user ? user.name + "'s photo" : undefined}
+			/>
+		</a>
+	);
 }
+
+export default ProfileImage;

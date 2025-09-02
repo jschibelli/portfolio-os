@@ -40,18 +40,21 @@ export default function EditArticlePage() {
 
   const fetchArticle = async (id: string) => {
     try {
-      // For now, we'll use mock data since we don't have the API yet
-      const mockArticle = {
-        title: "Getting Started with Blog Management",
-        subtitle: "Learn how to manage your blog effectively",
-        slug: "getting-started-blog-management",
-        excerpt: "A comprehensive guide to managing your blog content",
-        status: "DRAFT",
-        visibility: "PUBLIC",
-        contentJson: null,
-      };
+      const response = await fetch(`/api/admin/articles/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch article');
+      }
       
-      setForm(mockArticle);
+      const article = await response.json();
+      setForm({
+        title: article.title,
+        subtitle: article.subtitle || "",
+        slug: article.slug,
+        excerpt: article.excerpt || "",
+        status: article.status,
+        visibility: article.visibility || "PUBLIC",
+        contentJson: article.contentJson || null,
+      });
     } catch (error) {
       console.error("Failed to fetch article:", error);
       setError("Failed to load article");
@@ -82,13 +85,27 @@ export default function EditArticlePage() {
     setError("");
 
     try {
-      // For now, just simulate success
-      console.log("Updating article:", form);
-      alert("Article updated successfully!");
+      const response = await fetch(`/api/admin/articles/${params.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          publishedAt: form.status === "PUBLISHED" ? new Date().toISOString() : null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update article');
+      }
+
+      // Redirect to articles list
       router.push("/admin/articles");
     } catch (error) {
       console.error("Failed to update article:", error);
-      setError("Failed to update article");
+      setError(error instanceof Error ? error.message : "Failed to update article");
     } finally {
       setIsSubmitting(false);
     }

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Metadata } from "next";
 import { TiptapRenderer } from "../../../components/blog/TiptapRenderer";
+import Link from "next/link";
+import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
 
 const prisma = new PrismaClient();
 
@@ -100,105 +102,135 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <article className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="mb-8">
-          {post.cover && (
-            <div className="mb-6">
-              <img
-                src={post.cover.url}
-                alt={post.cover.alt || post.title}
-                className="w-full h-64 md:h-96 object-cover rounded-lg"
-              />
-            </div>
-          )}
-
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {post.title}
-          </h1>
-
-          {post.subtitle && (
-            <h2 className="text-xl md:text-2xl text-gray-700 mb-6">
-              {post.subtitle}
-            </h2>
-          )}
-
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
-            {post.author?.name && (
-              <span>By {post.author.name}</span>
-            )}
-            {post.publishedAt && (
-              <time dateTime={post.publishedAt.toISOString()}>
-                {format(post.publishedAt, "MMMM d, yyyy")}
-              </time>
-            )}
-            {post.readingMinutes && (
-              <span>{post.readingMinutes} min read</span>
-            )}
-            {post.views > 0 && (
-              <span>{post.views} views</span>
-            )}
-          </div>
-
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map(({ tag }) => (
-                <span
-                  key={tag.id}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        {/* Content */}
-        <div className="prose prose-lg max-w-none">
-          {post.contentJson ? (
-            <TiptapRenderer content={post.contentJson} />
-          ) : post.contentMdx ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: post.contentMdx,
-              }}
-            />
-          ) : (
-            <p className="text-gray-600 italic">
-              No content available for this article.
-            </p>
-          )}
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+      {/* Navigation */}
+      <nav className="bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700">
+        <div className="container mx-auto px-4 py-4">
+          <Link 
+            href="/admin/articles" 
+            className="inline-flex items-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Articles
+          </Link>
         </div>
+      </nav>
 
-        {/* Footer */}
-        <footer className="mt-12 pt-8 border-t border-gray-200">
-          {post.series && (
-            <div className="mb-4">
-              <p className="text-sm text-gray-600">
-                Part of the series:{" "}
-                <span className="font-medium text-gray-900">
-                  {post.series.title}
-                </span>
-              </p>
-            </div>
-          )}
+      <article className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <header className="mb-8">
+            {post.cover && (
+              <div className="mb-6">
+                <img
+                  src={post.cover.url}
+                  alt={post.cover.alt || post.title}
+                  className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                />
+              </div>
+            )}
 
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600">
+            <h1 className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-4">
+              {post.title}
+            </h1>
+
+            {post.subtitle && (
+              <h2 className="text-xl md:text-2xl text-stone-700 dark:text-stone-300 mb-6">
+                {post.subtitle}
+              </h2>
+            )}
+
+            <div className="flex flex-wrap items-center gap-6 text-sm text-stone-600 dark:text-stone-400 mb-6">
               {post.author?.name && (
-                <p>Written by {post.author.name}</p>
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  <span>{post.author.name}</span>
+                </div>
+              )}
+              {post.publishedAt && (
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <time dateTime={post.publishedAt.toISOString()}>
+                    {format(post.publishedAt, "MMMM d, yyyy")}
+                  </time>
+                </div>
+              )}
+              {post.readingMinutes && (
+                <div className="flex items-center">
+                  <Clock className="h-4 w-4 mr-2" />
+                  <span>{post.readingMinutes} min read</span>
+                </div>
+              )}
+              {post.views > 0 && (
+                <div className="flex items-center">
+                  <Eye className="h-4 w-4 mr-2" />
+                  <span>{post.views} views</span>
+                </div>
               )}
             </div>
 
-            <div className="text-sm text-gray-600">
-              <p>Last updated: {format(post.updatedAt, "MMM d, yyyy")}</p>
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map(({ tag }) => (
+                  <span
+                    key={tag.id}
+                    className="inline-flex items-center px-3 py-1 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full text-sm"
+                  >
+                    <Tag className="h-3 w-3 mr-1" />
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </header>
+
+          {/* Content */}
+          <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-8">
+            <div className="prose prose-stone prose-lg max-w-none dark:prose-invert">
+              {post.contentJson ? (
+                <TiptapRenderer content={post.contentJson} />
+              ) : post.contentMdx ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: post.contentMdx,
+                  }}
+                />
+              ) : (
+                <p className="text-stone-600 dark:text-stone-400 italic">
+                  No content available for this article.
+                </p>
+              )}
             </div>
           </div>
-        </footer>
-      </div>
-    </article>
+
+          {/* Footer */}
+          <footer className="mt-12 pt-8 border-t border-stone-200 dark:border-stone-700">
+            {post.series && (
+              <div className="mb-4">
+                <p className="text-sm text-stone-600 dark:text-stone-400">
+                  Part of the series:{" "}
+                  <span className="font-medium text-stone-900 dark:text-stone-100">
+                    {post.series.title}
+                  </span>
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-stone-600 dark:text-stone-400">
+                {post.author?.name && (
+                  <p>Written by {post.author.name}</p>
+                )}
+              </div>
+
+              <div className="text-sm text-stone-600 dark:text-stone-400">
+                <p>Last updated: {format(post.updatedAt, "MMM d, yyyy")}</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </article>
+    </div>
   );
 }
 

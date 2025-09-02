@@ -36,7 +36,7 @@ export default function Post({ publication, posts, tag }: Props) {
 					</div>
 					<MorePosts context="tag" posts={posts} />
 				</Container>
-				<Footer />
+				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);
