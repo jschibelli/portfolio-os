@@ -242,4 +242,38 @@ model CaseStudyView {
   viewedAt    DateTime
 }
 
+model ConnectedAccount {
+  id           String @id @default(cuid())
+  provider     String
+  scopes       String
+  accessTokenEnc   String
+  refreshTokenEnc  String?
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+}
+
+model OutboundItem {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // 'email' | 'social' | 'calendar'
+  channel     String   // 'gmail' | 'linkedin' | 'facebook' | 'threads'
+  status      String   // 'SCHEDULED' | 'SENT' | 'FAILED'
+  externalId  String?
+  scheduledAt DateTime?
+  payloadJson Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  content   String   // markdown
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 
