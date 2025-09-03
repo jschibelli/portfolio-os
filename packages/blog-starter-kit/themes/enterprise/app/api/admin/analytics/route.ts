@@ -1,14 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
 
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+// Conditional Prisma import to handle build-time issues
+let prisma: any;
+try {
+  const { PrismaClient } = require("@prisma/client");
+  prisma = new PrismaClient();
+} catch (error) {
+  console.warn("Prisma client not available during build:", error);
+  prisma = null;
+}
 
 export async function GET(request: NextRequest) {
   try {
+    // If Prisma is not available, return empty analytics data
+    if (!prisma) {
+      return NextResponse.json({
+        articles: [],
+        caseStudies: [],
+        totalViews: 0,
+        uniqueVisitors: 0,
+        topArticles: [],
+        topCaseStudies: [],
+        viewsData: [],
+        visitorsData: [],
+        bounceRateData: []
+      });
+    }
+
     const session = await getServerSession(authOptions);
     
     if (!session) {

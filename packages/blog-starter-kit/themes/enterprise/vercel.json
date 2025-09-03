@@ -1,3 +1,6 @@
 {
-	"framework": "nextjs"
+	"framework": "nextjs",
+	"buildCommand": "cd packages/blog-starter-kit/themes/enterprise && npm run build",
+	"installCommand": "pnpm install",
+	"outputDirectory": "packages/blog-starter-kit/themes/enterprise/.next"
 }
