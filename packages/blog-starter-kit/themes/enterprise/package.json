@@ -13,6 +13,8 @@
 		"test:accessibility": "playwright test tests/accessibility*.spec.ts",
 		"test:seo": "playwright test tests/seo-comprehensive.spec.ts",
 		"typecheck": "tsc",
+		"setup-auth": "node scripts/setup-auth.js",
+		"fix-admin-credentials": "node scripts/fix-admin-credentials.js",
 		"prisma:push": "prisma db push",
 		"prisma:migrate": "prisma migrate dev --name init",
 		"prisma:seed": "node prisma/seed.js",
