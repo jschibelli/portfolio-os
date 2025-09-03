@@ -1,2 +1,8 @@
 packages:
-  - "./packages/**"
+  - ./packages/**
+
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - bcrypt

@@ -1,36 +1,63 @@
-import { getServerSession } from "next-auth/next";
-import Link from "next/link";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { DashboardStats } from "../../components/admin/DashboardStats";
 import { RecentActivity } from "../../components/admin/RecentActivity";
 import { QuickActions } from "../../components/admin/QuickActions";
 import { PerformanceChart } from "../../components/admin/PerformanceChart";
 import { adminDataService } from "../../lib/admin-data-service";
 
-export default async function AdminDashboard() {
-  const session = await getServerSession(authOptions);
-
-  // Get real content counts
-  let contentStats = {
+export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [contentStats, setContentStats] = useState({
     publishedArticles: 0,
     draftArticles: 0,
     caseStudies: 0
-  };
+  });
 
-  try {
-    const [articles, caseStudies] = await Promise.all([
-      adminDataService.getArticles(),
-      adminDataService.getCaseStudies()
-    ]);
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+      router.push("/login");
+      return;
+    }
 
-    contentStats = {
-      publishedArticles: articles.filter(a => a.status === 'PUBLISHED').length,
-      draftArticles: articles.filter(a => a.status === 'DRAFT').length,
-      caseStudies: caseStudies.filter(c => c.status === 'PUBLISHED').length
+    // Load content stats
+    const loadContentStats = async () => {
+      try {
+        const [articles, caseStudies] = await Promise.all([
+          adminDataService.getArticles(),
+          adminDataService.getCaseStudies()
+        ]);
+
+        setContentStats({
+          publishedArticles: articles.filter(a => a.status === 'PUBLISHED').length,
+          draftArticles: articles.filter(a => a.status === 'DRAFT').length,
+          caseStudies: caseStudies.filter(c => c.status === 'PUBLISHED').length
+        });
+      } catch (error) {
+        console.error('Failed to load content stats:', error);
+        // Fallback to default values
+      }
     };
-  } catch (error) {
-    console.error('Failed to load content stats:', error);
-    // Fallback to default values
+
+    loadContentStats();
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    return null;
   }
 
   return (

@@ -1,25 +1,46 @@
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Sidebar } from "../../components/admin/Sidebar";
 import { ThemeProvider } from "../../components/contexts/ThemeContext";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (!session) {
-    redirect("/login");
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    // Check if user has admin role
+    const userRole = (session.user as any)?.role;
+    
+    if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
+      router.push("/login?error=unauthorized");
+      return;
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
   }
 
-  // Check if user has admin role
-  const userRole = (session.user as any)?.role;
-  
-  if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
-    redirect("/login?error=unauthorized");
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    return null;
   }
 
   return (
