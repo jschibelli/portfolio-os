@@ -26,25 +26,39 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
     const search = searchParams.get('search');
+    const status = searchParams.get('status');
+    const author = searchParams.get('author');
+    const category = searchParams.get('category');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
 
     // Build where clause
     const where: any = {};
     
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { excerpt: { contains: search, mode: 'insensitive' } },
+        { contentMdx: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+    
     if (status && status !== 'all') {
       where.status = status;
     }
     
-    if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { subtitle: { contains: search, mode: 'insensitive' } },
-        { excerpt: { contains: search, mode: 'insensitive' } }
-      ];
+    if (author && author !== 'all') {
+      where.authorId = author;
+    }
+    
+    if (category && category !== 'all') {
+      where.categories = {
+        some: {
+          id: category
+        }
+      };
     }
 
     const [articles, total] = await Promise.all([
@@ -54,28 +68,31 @@ export async function GET(request: NextRequest) {
           author: {
             select: {
               name: true,
-              email: true
+              email: true,
+              role: true
             }
           },
           cover: {
             select: {
-              url: true,
-              alt: true
+              url: true
+            }
+          },
+          categories: {
+            select: {
+              id: true,
+              name: true,
+              color: true
             }
           },
           tags: {
-            include: {
-              tag: {
-                select: {
-                  name: true
-                }
-              }
+            select: {
+              id: true,
+              name: true,
+              color: true
             }
           }
         },
         orderBy: [
-          { featured: 'desc' },
-          { publishedAt: 'desc' },
           { updatedAt: 'desc' }
         ],
         skip,
@@ -83,24 +100,30 @@ export async function GET(request: NextRequest) {
       }),
       prisma.article.count({ where })
     ]);
-
+    
     // Transform the data to match the expected format
-    const transformedArticles = articles.map(article => ({
+    const transformedArticles = articles.map(article => {
+      return {
       id: article.id,
       title: article.title,
-      subtitle: article.subtitle,
+      subtitle: article.excerpt && article.excerpt.length > 100 ? 
+        article.excerpt.substring(0, 100) + '...' : article.excerpt,
       status: article.status,
       updatedAt: article.updatedAt.toISOString(),
       publishedAt: article.publishedAt?.toISOString(),
-      author: article.author,
-      views: article.views,
+      author: {
+        name: article.author?.name || 'Unknown',
+        email: article.author?.email || ''
+      },
+      views: article.views || 0,
       readTime: article.readingMinutes || 5,
-      tags: article.tags.map(t => t.tag.name),
-      featured: article.featured,
+      tags: article.tags.map(tag => tag.name),
+      featured: article.featured || false,
       slug: article.slug,
       excerpt: article.excerpt,
-      image: article.cover?.url
-    }));
+      image: article.cover?.url || undefined
+      };
+    });
 
     return NextResponse.json({
       articles: transformedArticles,
@@ -112,7 +135,7 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error) {
-    console.error("Error fetching admin articles:", error);
+    console.error("Error fetching articles:", error);
     return NextResponse.json(
       { error: "Failed to fetch articles" },
       { status: 500 }
@@ -140,48 +163,95 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, subtitle, content, status, tags, featured, excerpt } = body;
+    const { 
+      title, 
+      excerpt, 
+      contentMdx,
+      contentJson,
+      status = 'DRAFT',
+      categories, 
+      tags, 
+      readingMinutes,
+      wordCount,
+                    slug,
+      // coverImageUrl,
+      featured = false,
+      allowComments = true,
+      paywalled = false,
+      noindex = false,
+      visibility = 'PUBLIC'
+    } = body;
+
+    // Validate required fields
+    if (!title || !slug) {
+      return NextResponse.json(
+        { error: "Title and slug are required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if slug already exists
+    const existingArticle = await prisma.article.findUnique({
+      where: { slug }
+    });
+
+    if (existingArticle) {
+      return NextResponse.json(
+        { error: "An article with this slug already exists" },
+        { status: 400 }
+      );
+    }
 
     // Create the article
     const article = await prisma.article.create({
       data: {
         title,
-        subtitle,
-        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        status: status || 'DRAFT',
         excerpt,
-        featured: featured || false,
-        contentMdx: content,
+        contentMdx,
+        contentJson,
+        status,
+        slug,
+        // coverImageUrl,
+        featured,
+        allowComments,
+        paywalled,
+        noindex,
+        visibility,
+        readingMinutes: readingMinutes || 5,
+        wordCount: wordCount || 0,
         authorId: (session.user as any)?.id,
         publishedAt: status === 'PUBLISHED' ? new Date() : null,
-        views: 0
+        categories: categories ? {
+          connect: categories.map((id: string) => ({ id }))
+        } : undefined,
+        tags: tags ? {
+          connect: tags.map((id: string) => ({ id }))
+        } : undefined
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+            role: true
+          }
+        },
+        categories: {
+          select: {
+            id: true,
+            name: true,
+            color: true
+          }
+        },
+        tags: {
+          select: {
+            id: true,
+            name: true,
+            color: true
+          }
+        }
       }
     });
-
-    // Create tags if they don't exist and link them
-    if (tags && tags.length > 0) {
-      for (const tagName of tags) {
-        let tag = await prisma.tag.findUnique({
-          where: { name: tagName }
-        });
-
-        if (!tag) {
-          tag = await prisma.tag.create({
-            data: {
-              name: tagName,
-              slug: tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-            }
-          });
-        }
-
-        await prisma.articleTag.create({
-          data: {
-            articleId: article.id,
-            tagId: tag.id
-          }
-        });
-      }
-    }
 
     return NextResponse.json(article, { status: 201 });
   } catch (error) {

@@ -160,21 +160,21 @@ export default function NewCaseStudy() {
 
 
   return (
-    <div className="flex h-screen bg-stone-50 dark:bg-stone-900">
+    <div className="flex h-screen bg-slate-50 dark:bg-slate-900">
       {/* Main Editor Area */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${isSettingsOpen ? 'mr-96' : ''}`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800">
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
           <div className="flex items-center space-x-4">
             <Link
               href="/admin/case-studies"
-              className="flex items-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+              className="flex items-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
             >
               <ChevronLeft className="h-5 w-5 mr-1" />
               Back to Case Studies
             </Link>
-            <div className="h-6 w-px bg-stone-300 dark:bg-stone-600" />
-            <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+            <div className="h-6 w-px bg-slate-300 dark:bg-slate-600" />
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               {caseStudyData.title || "Untitled Case Study"}
             </h1>
           </div>
@@ -221,7 +221,7 @@ export default function NewCaseStudy() {
                 placeholder="Case study title..."
                 value={caseStudyData.title}
                 onChange={(e) => setCaseStudyData({...caseStudyData, title: e.target.value})}
-                className="w-full text-4xl font-bold bg-transparent border-none outline-none text-stone-900 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-600"
+                className="w-full text-4xl font-bold bg-transparent border-none outline-none text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600"
               />
             </div>
 
@@ -232,14 +232,14 @@ export default function NewCaseStudy() {
                 value={caseStudyData.excerpt}
                 onChange={(e) => setCaseStudyData({...caseStudyData, excerpt: e.target.value})}
                 rows={3}
-                className="w-full text-lg bg-transparent border-none outline-none text-stone-700 dark:text-stone-300 placeholder-stone-400 dark:placeholder-stone-600 resize-none"
+                className="w-full text-lg bg-transparent border-none outline-none text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-600 resize-none"
               />
             </div>
 
             {/* Project Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Client/Company
                 </label>
                 <input
@@ -247,11 +247,11 @@ export default function NewCaseStudy() {
                   placeholder="Client name"
                   value={caseStudyData.client}
                   onChange={(e) => setCaseStudyData({...caseStudyData, client: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Industry
                 </label>
                 <input
@@ -259,11 +259,11 @@ export default function NewCaseStudy() {
                   placeholder="Industry"
                   value={caseStudyData.industry}
                   onChange={(e) => setCaseStudyData({...caseStudyData, industry: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Duration
                 </label>
                 <input
@@ -271,11 +271,11 @@ export default function NewCaseStudy() {
                   placeholder="e.g., 3 months"
                   value={caseStudyData.duration}
                   onChange={(e) => setCaseStudyData({...caseStudyData, duration: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Team Size
                 </label>
                 <input
@@ -283,14 +283,14 @@ export default function NewCaseStudy() {
                   placeholder="e.g., 5 developers"
                   value={caseStudyData.teamSize}
                   onChange={(e) => setCaseStudyData({...caseStudyData, teamSize: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
               </div>
             </div>
             
             {/* Technologies */}
             <div>
-              <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Technologies Used
               </label>
               <input
@@ -298,9 +298,9 @@ export default function NewCaseStudy() {
                 placeholder="e.g., React, Node.js, PostgreSQL, AWS"
                 value={Array.isArray(caseStudyData.technologies) ? caseStudyData.technologies.join(', ') : ''}
                 onChange={(e) => setCaseStudyData({...caseStudyData, technologies: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
-                className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               />
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Separate multiple technologies with commas
               </p>
             </div>
@@ -308,7 +308,7 @@ export default function NewCaseStudy() {
             {/* Content Editor */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Case Study Content
                 </label>
                 <textarea
@@ -316,9 +316,9 @@ export default function NewCaseStudy() {
                   value={caseStudyData.content}
                   onChange={(e) => setCaseStudyData({...caseStudyData, content: e.target.value})}
                   rows={12}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 resize-none"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none"
                 />
-                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Use markdown formatting for headers, lists, links, and other formatting.
                 </p>
               </div>
@@ -328,11 +328,11 @@ export default function NewCaseStudy() {
       </div>
 
       {/* Right Side Settings Panel */}
-      <div className={`fixed right-0 top-0 h-full w-96 bg-white dark:bg-stone-800 border-l border-stone-200 dark:border-stone-700 transform transition-transform duration-300 ease-in-out ${isSettingsOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      <div className={`fixed right-0 top-0 h-full w-96 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 transform transition-transform duration-300 ease-in-out ${isSettingsOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="h-full flex flex-col">
           {/* Panel Header */}
-          <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">Case Study Settings</h2>
+          <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Case Study Settings</h2>
             <Button
               variant="ghost"
               size="sm"
@@ -407,7 +407,7 @@ export default function NewCaseStudy() {
               
               {/* AI Response Display */}
               {aiResponse && (
-                <div className="mt-4 p-3 bg-white dark:bg-stone-800 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="mt-4 p-3 bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-blue-800">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-medium text-blue-900 dark:text-blue-100">AI Response</h4>
                     <Button
@@ -419,7 +419,7 @@ export default function NewCaseStudy() {
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap max-h-32 overflow-y-auto">
+                  <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap max-h-32 overflow-y-auto">
                     {aiResponse}
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export default function NewCaseStudy() {
 
             {/* Publishing */}
             <div className="space-y-3">
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 flex items-center">
+              <h3 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
                 <Globe className="h-4 w-4 mr-2" />
                 Publishing
               </h3>
@@ -455,7 +455,7 @@ export default function NewCaseStudy() {
                 <select
                   value={caseStudyData.status}
                   onChange={(e) => setCaseStudyData({...caseStudyData, status: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -464,7 +464,7 @@ export default function NewCaseStudy() {
                 <select
                   value={caseStudyData.visibility}
                   onChange={(e) => setCaseStudyData({...caseStudyData, visibility: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 >
                   <option value="PUBLIC">Public</option>
                   <option value="PRIVATE">Private</option>
@@ -475,41 +475,41 @@ export default function NewCaseStudy() {
                     type="checkbox"
                     checked={caseStudyData.featured}
                     onChange={(e) => setCaseStudyData({...caseStudyData, featured: e.target.checked})}
-                    className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                    className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                   />
-                  <span className="text-sm text-stone-700 dark:text-stone-300">Featured case study</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Featured case study</span>
                 </label>
               </div>
             </div>
 
             {/* Cover Image */}
             <div className="space-y-3">
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 flex items-center">
+              <h3 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
                 <ImageIcon className="h-4 w-4 mr-2" />
                 Cover Image
               </h3>
-              <div className="border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-lg p-6 text-center">
-                <ImageIcon className="h-8 w-8 mx-auto text-stone-400 mb-2" />
-                <p className="text-sm text-stone-600 dark:text-stone-400">Click to upload cover image</p>
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center">
+                <ImageIcon className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+                <p className="text-sm text-slate-600 dark:text-slate-400">Click to upload cover image</p>
               </div>
             </div>
 
             {/* Tags */}
             <div className="space-y-3">
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 flex items-center">
+              <h3 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
                 <Tag className="h-4 w-4 mr-2" />
                 Tags
               </h3>
               <input
                 type="text"
                 placeholder="Add tags..."
-                className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
               />
             </div>
 
             {/* SEO */}
             <div className="space-y-3">
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 flex items-center">
+              <h3 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
                 <Search className="h-4 w-4 mr-2" />
                 SEO & Social
               </h3>
@@ -519,28 +519,28 @@ export default function NewCaseStudy() {
                   placeholder="SEO title"
                   value={caseStudyData.seoTitle}
                   onChange={(e) => setCaseStudyData({...caseStudyData, seoTitle: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
                 <textarea
                   placeholder="SEO description"
                   value={caseStudyData.seoDescription}
                   onChange={(e) => setCaseStudyData({...caseStudyData, seoDescription: e.target.value})}
                   rows={2}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
                 <input
                   type="text"
                   placeholder="Canonical URL"
                   value={caseStudyData.canonicalUrl}
                   onChange={(e) => setCaseStudyData({...caseStudyData, canonicalUrl: e.target.value})}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-md bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 />
               </div>
             </div>
 
             {/* Engagement */}
             <div className="space-y-3">
-              <h3 className="font-medium text-stone-900 dark:text-stone-100 flex items-center">
+              <h3 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
                 <Users className="h-4 w-4 mr-2" />
                 Engagement
               </h3>
@@ -550,18 +550,18 @@ export default function NewCaseStudy() {
                     type="checkbox"
                     checked={caseStudyData.allowComments}
                     onChange={(e) => setCaseStudyData({...caseStudyData, allowComments: e.target.checked})}
-                    className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                    className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                   />
-                  <span className="text-sm text-stone-700 dark:text-stone-300">Allow comments</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Allow comments</span>
                 </label>
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     checked={caseStudyData.allowReactions}
                     onChange={(e) => setCaseStudyData({...caseStudyData, allowReactions: e.target.checked})}
-                    className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                    className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                   />
-                  <span className="text-sm text-stone-700 dark:text-stone-300">Allow reactions</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Allow reactions</span>
                 </label>
               </div>
             </div>

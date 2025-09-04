@@ -21,7 +21,7 @@ function StatCard({ title, value, change, changeType, icon: Icon, description }:
       case 'decrease':
         return 'text-red-600 dark:text-red-400';
       default:
-        return 'text-stone-600 dark:text-stone-400';
+        return 'text-slate-600 dark:text-slate-400';
     }
   };
 
@@ -37,17 +37,17 @@ function StatCard({ title, value, change, changeType, icon: Icon, description }:
   };
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-stone-600 dark:text-stone-400">{title}</p>
-          <p className="text-3xl font-bold text-stone-900 dark:text-stone-100 mt-2">{value}</p>
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{title}</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">{value}</p>
           {description && (
-            <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">{description}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-500 mt-1">{description}</p>
           )}
         </div>
-        <div className="p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
-          <Icon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+        <div className="p-3 bg-slate-100 dark:bg-slate-700 rounded-lg">
+          <Icon className="h-6 w-6 text-slate-600 dark:text-slate-400" />
         </div>
       </div>
       {change !== '0%' && (
@@ -56,7 +56,7 @@ function StatCard({ title, value, change, changeType, icon: Icon, description }:
           <span className={`text-sm font-medium ml-1 ${getChangeColor()}`}>
             {change}
           </span>
-          <span className="text-sm text-stone-500 dark:text-stone-500 ml-1">from last month</span>
+          <span className="text-sm text-slate-500 dark:text-slate-500 ml-1">from last month</span>
         </div>
       )}
     </div>
@@ -86,14 +86,14 @@ export function DashboardStats() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
-          <div key={index} className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6 animate-pulse">
+          <div key={index} className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 animate-pulse">
             <div className="flex items-center justify-between">
               <div className="space-y-3 flex-1">
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
-                <div className="h-8 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-2/3"></div>
+                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div>
               </div>
-              <div className="w-12 h-12 bg-stone-200 dark:bg-stone-700 rounded-lg"></div>
+              <div className="w-12 h-12 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
             </div>
           </div>
         ))}
@@ -104,7 +104,7 @@ export function DashboardStats() {
   if (!stats) {
     return (
       <div className="text-center py-8">
-        <p className="text-stone-500 dark:text-stone-400">Failed to load dashboard stats</p>
+        <p className="text-slate-500 dark:text-slate-400">Failed to load dashboard stats</p>
       </div>
     );
   }

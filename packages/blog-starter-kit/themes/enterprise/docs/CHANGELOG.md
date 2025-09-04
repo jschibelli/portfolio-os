@@ -2,6 +2,20 @@
 
 This file tracks all changes and updates to the documentation.
 
+## [1.1.0] - 2025-01-04
+
+### Fixed
+- **Build Issues**: Resolved critical build errors including missing imports and unescaped entities
+- **ESLint Configuration**: Fixed jsx-a11y/alt-text rule causing false positives with lucide-react components
+- **Accessibility**: Fixed autoFocus issues and redundant alt attributes
+- **Security**: Made debug logging conditional to development environment only
+- **Code Quality**: Removed unused backup files and empty debug files
+
+### Improved
+- **Tailwind Configuration**: Removed deprecated @tailwindcss/line-clamp plugin
+- **Link Components**: Replaced anchor tags with Next.js Link components for better performance
+- **Error Handling**: Improved error handling in API routes
+
 ## [1.0.0] - 2025-01-31
 
 ### Added

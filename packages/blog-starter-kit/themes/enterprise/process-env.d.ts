@@ -58,5 +58,35 @@ declare namespace NodeJS {
 		FEATURE_SCHEDULING: string;
 		FEATURE_CASE_STUDY: string;
 		FEATURE_CLIENT_INTAKE: string;
+		
+		// Control Center Integrations
+		CRON_SECRET: string;
+		
+		// LinkedIn
+		LINKEDIN_CLIENT_ID: string;
+		LINKEDIN_CLIENT_SECRET: string;
+		
+		// Facebook
+		FACEBOOK_APP_ID: string;
+		FACEBOOK_APP_SECRET: string;
+		FACEBOOK_PAGE_ID: string;
+		
+		// GitHub OAuth
+		GITHUB_CLIENT_ID: string;
+		GITHUB_CLIENT_SECRET: string;
+		
+		// Vercel
+		VERCEL_API_TOKEN: string;
+		
+		// Sentry
+		SENTRY_API_TOKEN: string;
+		
+		// Plausible
+		PLAUSIBLE_API_TOKEN: string;
+		PLAUSIBLE_SITE_ID: string;
+		
+		// Stripe
+		STRIPE_SECRET_KEY: string;
+		STRIPE_WEBHOOK_SECRET: string;
 	}
 }

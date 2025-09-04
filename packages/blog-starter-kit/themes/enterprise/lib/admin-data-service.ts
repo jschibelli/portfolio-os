@@ -165,6 +165,7 @@ class AdminDataService {
       return response.articles;
     } catch (error) {
       console.error('Failed to fetch articles from API, falling back to local data:', error);
+      
       // Fallback to local data if API fails
       const allPosts = [featuredPost, ...recentPosts];
       return allPosts.map((post, index) => ({
@@ -186,6 +187,19 @@ class AdminDataService {
         excerpt: post.excerpt,
         image: post.image
       }));
+    }
+  }
+
+  // Import Hashnode articles
+  async importHashnodeArticles(): Promise<{ message: string; importedCount: number }> {
+    try {
+      const response = await this.apiCall<{ message: string; importedCount: number }>('articles/import-hashnode', {
+        method: 'POST'
+      });
+      return response;
+    } catch (error) {
+      console.error('Failed to import Hashnode articles:', error);
+      throw error;
     }
   }
 

@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { PrismaClient } from "@prisma/client";
 
-export const dynamic = 'force-dynamic';
-
-// Conditional Prisma import to handle build-time issues
-let prisma: any;
-try {
-  const { PrismaClient } = require("@prisma/client");
-  prisma = new PrismaClient();
-} catch (error) {
-  console.warn("Prisma client not available during build:", error);
-  prisma = null;
-}
+const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
-    // If Prisma is not available, return empty array
-    if (!prisma) {
-      return NextResponse.json([]);
-    }
-
     const session = await getServerSession(authOptions);
     
     if (!session) {
@@ -32,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // Check if user has admin role
     const userRole = (session.user as any)?.role;
-    if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
+    if (!userRole || !["ADMIN", "EDITOR"].includes(userRole)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -40,163 +26,157 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const filter = searchParams.get('filter') || 'all';
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const search = searchParams.get('search');
+    const category = searchParams.get('category');
+    const severity = searchParams.get('severity');
+    const user = searchParams.get('user');
+    const timeRange = searchParams.get('timeRange');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const skip = (page - 1) * limit;
 
-    // Get recent articles
-    const recentArticles = await prisma.article.findMany({
-      where: {
-        status: 'PUBLISHED'
-      },
-      select: {
-        id: true,
-        title: true,
-        status: true,
-        publishedAt: true,
-        updatedAt: true,
-        author: {
-          select: {
-            name: true,
-            email: true
-          }
-        }
-      },
-      orderBy: {
-        publishedAt: 'desc'
-      },
-      take: 5
-    });
-
-    // Get recent case studies
-    const recentCaseStudies = await prisma.caseStudy.findMany({
-      where: {
-        status: 'PUBLISHED'
-      },
-      select: {
-        id: true,
-        title: true,
-        status: true,
-        publishedAt: true,
-        updatedAt: true,
-        author: {
-          select: {
-            name: true,
-            email: true
-          }
-        }
-      },
-      orderBy: {
-        publishedAt: 'desc'
-      },
-      take: 3
-    });
-
-    // Build activity feed
-    const activities = [];
-
-    // Add article activities
-    recentArticles.forEach(article => {
-      if (article.publishedAt) {
-        activities.push({
-          id: `article-${article.id}`,
-          type: 'article_published',
-          title: 'New article published',
-          description: `"${article.title}" was published and is now live`,
-          timestamp: article.publishedAt.toISOString(),
-          user: article.author?.name || article.author?.email || 'Unknown',
-          link: `/admin/articles/${article.id}`
-        });
+    // Build where clause
+    const where: any = {};
+    
+    if (search) {
+      where.OR = [
+        { action: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } }
+      ];
+    }
+    
+    if (category && category !== 'all') {
+      where.category = category;
+    }
+    
+    if (severity && severity !== 'all') {
+      where.severity = severity;
+    }
+    
+    if (user && user !== 'all') {
+      where.userId = user;
+    }
+    
+    if (timeRange && timeRange !== 'all') {
+      const now = new Date();
+      let startDate: Date;
+      
+      switch (timeRange) {
+        case '24h':
+          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case '7d':
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case '30d':
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          startDate = new Date(0);
       }
-    });
-
-    // Add case study activities
-    recentCaseStudies.forEach(caseStudy => {
-      if (caseStudy.publishedAt) {
-        activities.push({
-          id: `case-study-${caseStudy.id}`,
-          type: 'case_study_published',
-          title: 'New case study published',
-          description: `"${caseStudy.title}" was added to your portfolio`,
-          timestamp: caseStudy.publishedAt.toISOString(),
-          user: caseStudy.author?.name || caseStudy.author?.email || 'Unknown',
-          link: `/admin/case-studies/${caseStudy.id}`
-        });
-      }
-    });
-
-    // Add article update activities
-    recentArticles.forEach(article => {
-      if (article.updatedAt && article.publishedAt && 
-          article.updatedAt > article.publishedAt) {
-        activities.push({
-          id: `update-${article.id}`,
-          type: 'article_updated',
-          title: 'Article updated',
-          description: `"${article.title}" was updated with new content`,
-          timestamp: article.updatedAt.toISOString(),
-          user: article.author?.name || article.author?.email || 'Unknown',
-          link: `/admin/articles/${article.id}`
-        });
-      }
-    });
-
-    // Add analytics milestone (this would need real analytics data)
-    const totalViews = await prisma.article.aggregate({
-      where: {
-        status: 'PUBLISHED'
-      },
-      _sum: {
-        views: true
-      }
-    });
-
-    if ((totalViews._sum.views || 0) > 25000) {
-      activities.push({
-        id: 'milestone-1',
-        type: 'analytics_milestone',
-        title: 'Traffic milestone reached',
-        description: 'Your blog reached 25K monthly views for the first time!',
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
-        link: '/admin/analytics'
-      });
+      
+      where.createdAt = {
+        gte: startDate
+      };
     }
 
-    // Sort activities by timestamp (most recent first)
-    activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    const [activities, total] = await Promise.all([
+      prisma.activityLog.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              role: true
+            }
+          }
+        },
+        orderBy: [
+          { createdAt: 'desc' }
+        ],
+        skip,
+        take: limit
+      }),
+      prisma.activityLog.count({ where })
+    ]);
 
-    // Apply filter
-    let filteredActivities = activities;
-    if (filter !== 'all') {
-      switch (filter) {
-        case 'articles':
-          filteredActivities = activities.filter(activity => 
-            ['article_published', 'article_updated'].includes(activity.type)
-          );
-          break;
-        case 'case_studies':
-          filteredActivities = activities.filter(activity => 
-            activity.type === 'case_study_published'
-          );
-          break;
-        case 'analytics':
-          filteredActivities = activities.filter(activity => 
-            activity.type === 'analytics_milestone'
-          );
-          break;
-      }
-    }
-
-    // Limit results
-    filteredActivities = filteredActivities.slice(0, limit);
+    // Transform the data to match the expected format
+    const transformedActivities = activities.map(activity => ({
+      id: activity.id,
+      action: activity.action,
+      description: activity.description,
+      user: activity.user?.name || 'System',
+      userRole: activity.user?.role || 'SYSTEM',
+      timestamp: activity.createdAt.toISOString(),
+      category: activity.category,
+      severity: activity.severity,
+      ipAddress: activity.ipAddress || '',
+      userAgent: activity.userAgent || '',
+      affectedResource: activity.affectedResource || '',
+      changes: activity.changes || []
+    }));
 
     return NextResponse.json({
-      activities: filteredActivities,
-      total: activities.length
+      activities: transformedActivities,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
     });
   } catch (error) {
-    console.error("Error fetching admin activity:", error);
+    console.error("Error fetching admin activity logs:", error);
     return NextResponse.json(
-      { error: "Failed to fetch activity" },
+      { error: "Failed to fetch activity logs" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userRole = (session.user as any)?.role;
+    if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { action, description, category, severity, affectedResource, changes, ipAddress, userAgent } = body;
+
+    // Create the activity log
+    const activity = await prisma.activityLog.create({
+      data: {
+        action,
+        description,
+        category,
+        severity,
+        affectedResource,
+        changes,
+        ipAddress,
+        userAgent,
+        userId: (session.user as any)?.id
+      }
+    });
+
+    return NextResponse.json(activity, { status: 201 });
+  } catch (error) {
+    console.error("Error creating activity log:", error);
+    return NextResponse.json(
+      { error: "Failed to create activity log" },
       { status: 500 }
     );
   }

@@ -31,7 +31,7 @@ function ActivityItem({ item }: { item: ActivityItem }) {
       case 'case_study_published':
         return <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />;
       default:
-        return <Clock className="h-4 w-4 text-stone-600 dark:text-stone-400" />;
+        return <Clock className="h-4 w-4 text-slate-600 dark:text-slate-400" />;
     }
   };
 
@@ -50,7 +50,7 @@ function ActivityItem({ item }: { item: ActivityItem }) {
       case 'case_study_published':
         return 'bg-green-100 dark:bg-green-900/20';
       default:
-        return 'bg-stone-100 dark:bg-stone-700/50';
+        return 'bg-slate-100 dark:bg-slate-700/50';
     }
   };
 
@@ -66,25 +66,25 @@ function ActivityItem({ item }: { item: ActivityItem }) {
   };
 
   const content = (
-    <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors">
+    <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors">
       <div className={`p-2 rounded-lg ${getTypeColor()}`}>
         {getIcon()}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
           {item.title}
         </p>
-        <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           {item.description}
         </p>
         <div className="flex items-center space-x-2 mt-2">
-          <span className="text-xs text-stone-500 dark:text-stone-500">
+          <span className="text-xs text-slate-500 dark:text-slate-500">
             {formatTimeAgo(item.timestamp)}
           </span>
           {item.user && (
             <>
-              <span className="text-xs text-stone-400">•</span>
-              <span className="text-xs text-stone-500 dark:text-stone-500">
+              <span className="text-xs text-slate-400">•</span>
+              <span className="text-xs text-slate-500 dark:text-slate-500">
                 {item.user}
               </span>
             </>
@@ -135,20 +135,20 @@ export function RecentActivity() {
 
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6 transition-colors">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
             Recent Activity
           </h2>
         </div>
         <div className="space-y-4">
           {[...Array(5)].map((_, index) => (
             <div key={index} className="flex items-start space-x-3 animate-pulse">
-              <div className="w-8 h-8 bg-stone-200 dark:bg-stone-700 rounded-lg"></div>
+              <div className="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4"></div>
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/2"></div>
-                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
               </div>
             </div>
           ))}
@@ -158,21 +158,21 @@ export function RecentActivity() {
   }
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
           Recent Activity
         </h2>
         <Link
           href="/admin/activity"
-          className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+          className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
         >
           View All →
         </Link>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex space-x-1 mb-4 p-1 bg-stone-100 dark:bg-stone-700 rounded-lg">
+      <div className="flex space-x-1 mb-4 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
         {[
           { key: 'all', label: 'All' },
           { key: 'articles', label: 'Articles' },
@@ -184,8 +184,8 @@ export function RecentActivity() {
             onClick={() => setFilter(tab.key as any)}
             className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
               filter === tab.key
-                ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-sm'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
             {tab.label}
@@ -197,7 +197,7 @@ export function RecentActivity() {
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {filteredActivities.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-stone-500 dark:text-stone-400">No activity found</p>
+            <p className="text-slate-500 dark:text-slate-400">No activity found</p>
           </div>
         ) : (
           filteredActivities.map((activity) => (

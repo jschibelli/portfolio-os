@@ -29,6 +29,7 @@ yarn-error.log*
 # local env files
 .env*
 !.env.example
+env.example
 
 # vercel
 .vercel
@@ -40,3 +41,5 @@ next-env.d.ts
 # vscode
 .vscode/*
 !.vscode/extensions.json
+
+

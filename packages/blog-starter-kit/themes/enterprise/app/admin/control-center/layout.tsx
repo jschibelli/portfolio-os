@@ -1,11 +1,13 @@
 import React from 'react';
+import { Toaster } from 'sonner';
 
-const ControlCenterLayout = ({ children }) => {
+const ControlCenterLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="control-center-layout">
-      <header>Control Center Header</header>
-      <aside>Left Rail</aside>
-      <main>{children}</main>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <Toaster position="top-right" richColors />
+      <div className="container mx-auto py-6 px-4">
+        {children}
+      </div>
     </div>
   );
 };

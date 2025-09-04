@@ -19,7 +19,6 @@ export async function GET(
       );
     }
 
-    // Check if user has admin role
     const userRole = (session.user as any)?.role;
     if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
       return NextResponse.json(
@@ -30,30 +29,34 @@ export async function GET(
 
     const article = await prisma.article.findUnique({
       where: { id: params.id },
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
+              include: {
+          author: {
+            select: {
+              name: true,
+              email: true,
+              role: true
+            }
           },
-        },
-        cover: {
-          select: {
-            url: true,
-            alt: true,
+          cover: {
+            select: {
+              url: true
+            }
           },
-        },
-        tags: {
-          include: {
-            tag: {
-              select: {
-                name: true,
-              },
-            },
+          categories: {
+            select: {
+              id: true,
+              name: true,
+              color: true
+            }
           },
-        },
-        series: true,
-      },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+              color: true
+            }
+          }
+        }
     });
 
     if (!article) {
@@ -67,27 +70,34 @@ export async function GET(
     const transformedArticle = {
       id: article.id,
       title: article.title,
-      subtitle: article.subtitle,
+      subtitle: article.excerpt && article.excerpt.length > 100 ? 
+        article.excerpt.substring(0, 100) + '...' : article.excerpt,
       status: article.status,
       updatedAt: article.updatedAt.toISOString(),
       publishedAt: article.publishedAt?.toISOString(),
-      author: article.author,
-      views: article.views,
+      author: {
+        name: article.author?.name || 'Unknown',
+        email: article.author?.email || ''
+      },
+      views: article.views || 0,
       readTime: article.readingMinutes || 5,
-      tags: article.tags.map(t => t.tag.name),
-      featured: article.featured,
+      tags: article.tags.map(tag => tag.name),
+      featured: article.featured || false,
       slug: article.slug,
       excerpt: article.excerpt,
-      image: article.cover?.url,
+      image: article.cover?.url || undefined,
       contentMdx: article.contentMdx,
       contentJson: article.contentJson,
-      visibility: article.visibility,
-      scheduledAt: article.scheduledAt?.toISOString(),
+      categories: article.categories,
+      allowComments: article.allowComments,
+      paywalled: article.paywalled,
+      noindex: article.noindex,
+      visibility: article.visibility
     };
 
     return NextResponse.json(transformedArticle);
   } catch (error) {
-    console.error("Failed to fetch article:", error);
+    console.error("Error fetching article:", error);
     return NextResponse.json(
       { error: "Failed to fetch article" },
       { status: 500 }
@@ -95,7 +105,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
@@ -109,7 +119,6 @@ export async function PATCH(
       );
     }
 
-    // Check if user has admin role
     const userRole = (session.user as any)?.role;
     if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
       return NextResponse.json(
@@ -121,137 +130,118 @@ export async function PATCH(
     const body = await request.json();
     const { 
       title, 
-      subtitle, 
-      slug, 
       excerpt, 
-      status, 
-      visibility, 
-      contentJson, 
       contentMdx,
-      publishedAt,
-      scheduledAt,
+      contentJson,
+      status,
+      categories, 
+      tags, 
+      readingMinutes,
+      wordCount,
+      slug,
+      coverImage,
       featured,
-      tags
+      allowComments,
+      paywalled,
+      noindex,
+      visibility
     } = body;
 
-    const updateData: any = {};
-    
-    if (title !== undefined) updateData.title = title;
-    if (subtitle !== undefined) updateData.subtitle = subtitle;
-    if (slug !== undefined) updateData.slug = slug;
-    if (excerpt !== undefined) updateData.excerpt = excerpt;
-    if (status !== undefined) updateData.status = status;
-    if (visibility !== undefined) updateData.visibility = visibility;
-    if (contentJson !== undefined) updateData.contentJson = contentJson;
-    if (contentMdx !== undefined) updateData.contentMdx = contentMdx;
-    if (featured !== undefined) updateData.featured = featured;
-    
-    // Handle publishing dates
-    if (status === "PUBLISHED" && !publishedAt) {
-      updateData.publishedAt = new Date();
-    } else if (status === "SCHEDULED" && scheduledAt) {
-      updateData.scheduledAt = new Date(scheduledAt);
-    }
-
-    // Update the article
-    const updated = await prisma.article.update({
-      where: { id: params.id },
-      data: updateData,
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-        tags: {
-          include: {
-            tag: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
+    // Check if article exists
+    const existingArticle = await prisma.article.findUnique({
+      where: { id: params.id }
     });
 
-    // Handle tags update if provided
-    if (tags !== undefined) {
-      // Remove existing tags
-      await prisma.articleTag.deleteMany({
-        where: { articleId: params.id }
+    if (!existingArticle) {
+      return NextResponse.json(
+        { error: "Article not found" },
+        { status: 404 }
+      );
+    }
+
+    // Check if slug is being changed and if it already exists
+    if (slug && slug !== existingArticle.slug) {
+      const slugExists = await prisma.article.findUnique({
+        where: { slug }
       });
 
-      // Add new tags
-      if (tags && tags.length > 0) {
-        for (const tagName of tags) {
-          let tag = await prisma.tag.findUnique({
-            where: { name: tagName }
-          });
-
-          if (!tag) {
-            tag = await prisma.tag.create({
-              data: {
-                name: tagName,
-                slug: tagName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-              }
-            });
-          }
-
-          await prisma.articleTag.create({
-            data: {
-              articleId: params.id,
-              tagId: tag.id
-            }
-          });
-        }
+      if (slugExists) {
+        return NextResponse.json(
+          { error: "An article with this slug already exists" },
+          { status: 400 }
+        );
       }
     }
 
-    // Fetch the updated article with all relations
-    const finalArticle = await prisma.article.findUnique({
+    // Prepare update data
+    const updateData: any = {};
+    
+    if (title !== undefined) updateData.title = title;
+    if (excerpt !== undefined) updateData.excerpt = excerpt;
+    if (contentMdx !== undefined) updateData.contentMdx = contentMdx;
+    if (contentJson !== undefined) updateData.contentJson = contentJson;
+    if (status !== undefined) {
+      updateData.status = status;
+      // Set publishedAt if status is being changed to PUBLISHED
+      if (status === 'PUBLISHED' && existingArticle.status !== 'PUBLISHED') {
+        updateData.publishedAt = new Date();
+      }
+    }
+    if (slug !== undefined) updateData.slug = slug;
+    if (coverImage !== undefined) updateData.coverImage = coverImage;
+    if (featured !== undefined) updateData.featured = featured;
+    if (allowComments !== undefined) updateData.allowComments = allowComments;
+    if (paywalled !== undefined) updateData.paywalled = paywalled;
+    if (noindex !== undefined) updateData.noindex = noindex;
+    if (visibility !== undefined) updateData.visibility = visibility;
+    if (readingMinutes !== undefined) updateData.readingMinutes = readingMinutes;
+    if (wordCount !== undefined) updateData.wordCount = wordCount;
+
+    // Update the article
+    const article = await prisma.article.update({
       where: { id: params.id },
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-        tags: {
-          include: {
-            tag: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
+      data: {
+        ...updateData,
+        categories: categories ? {
+          set: categories.map((id: string) => ({ id }))
+        } : undefined,
+        tags: tags ? {
+          set: tags.map((id: string) => ({ id }))
+        } : undefined
       },
+              include: {
+          author: {
+            select: {
+              name: true,
+              email: true,
+              role: true
+            }
+          },
+          cover: {
+            select: {
+              url: true
+            }
+          },
+          categories: {
+            select: {
+              id: true,
+              name: true,
+              color: true
+            }
+          },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+              color: true
+            }
+          }
+        }
     });
 
-    // Transform the data to match the expected format
-    const transformedArticle = {
-      id: finalArticle!.id,
-      title: finalArticle!.title,
-      subtitle: finalArticle!.subtitle,
-      status: finalArticle!.status,
-      updatedAt: finalArticle!.updatedAt.toISOString(),
-      publishedAt: finalArticle!.publishedAt?.toISOString(),
-      author: finalArticle!.author,
-      views: finalArticle!.views,
-      readTime: finalArticle!.readingMinutes || 5,
-      tags: finalArticle!.tags.map(t => t.tag.name),
-      featured: finalArticle!.featured,
-      slug: finalArticle!.slug,
-      excerpt: finalArticle!.excerpt,
-      image: finalArticle!.cover?.url,
-    };
-
-    return NextResponse.json(transformedArticle);
+    return NextResponse.json(article);
   } catch (error) {
-    console.error("Failed to update article:", error);
+    console.error("Error updating article:", error);
     return NextResponse.json(
       { error: "Failed to update article" },
       { status: 500 }
@@ -273,28 +263,34 @@ export async function DELETE(
       );
     }
 
-    // Check if user has admin role
     const userRole = (session.user as any)?.role;
-    if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
+    if (!userRole || !["ADMIN", "EDITOR"].includes(userRole)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
 
-    // Delete related records first
-    await prisma.articleTag.deleteMany({
-      where: { articleId: params.id }
+    // Check if article exists
+    const existingArticle = await prisma.article.findUnique({
+      where: { id: params.id }
     });
+
+    if (!existingArticle) {
+      return NextResponse.json(
+        { error: "Article not found" },
+        { status: 404 }
+      );
+    }
 
     // Delete the article
     await prisma.article.delete({
-      where: { id: params.id },
+      where: { id: params.id }
     });
 
     return NextResponse.json({ message: "Article deleted successfully" });
   } catch (error) {
-    console.error("Failed to delete article:", error);
+    console.error("Error deleting article:", error);
     return NextResponse.json(
       { error: "Failed to delete article" },
       { status: 500 }

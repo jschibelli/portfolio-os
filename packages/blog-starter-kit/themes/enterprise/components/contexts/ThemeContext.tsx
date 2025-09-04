@@ -12,16 +12,17 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>('dark'); // Default to dark theme
 
   useEffect(() => {
     // Only run on client side
     if (typeof window !== 'undefined') {
-      // Check for saved theme preference or default to light
+      // Check for saved theme preference or default to dark for admin cockpit
       const savedTheme = localStorage.getItem('admin-theme') as Theme;
       if (savedTheme) {
         setTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      } else {
+        // Always default to dark for admin cockpit
         setTheme('dark');
       }
     }

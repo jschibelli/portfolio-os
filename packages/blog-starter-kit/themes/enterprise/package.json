@@ -14,6 +14,7 @@
 		"test:seo": "playwright test tests/seo-comprehensive.spec.ts",
 		"typecheck": "tsc",
 		"setup-auth": "node scripts/setup-auth.js",
+		"setup-admin": "node scripts/setup-admin-user.js",
 		"fix-admin-credentials": "node scripts/fix-admin-credentials.js",
 		"prisma:push": "prisma db push",
 		"prisma:migrate": "prisma migrate dev --name init",
@@ -92,6 +93,8 @@
 		"remark": "^14.0.2",
 		"remark-html": "^15.0.1",
 		"resend": "^3.0.0",
+		"sonner": "^2.0.7",
+		"stripe": "^18.5.0",
 		"tailwind-merge": "^1.13.2",
 		"uuid": "^9.0.1",
 		"zod": "^3.23.8"

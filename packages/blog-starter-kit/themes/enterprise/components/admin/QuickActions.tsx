@@ -15,17 +15,17 @@ function QuickAction({ title, description, href, icon: Icon, color }: QuickActio
   return (
     <Link
       href={href}
-      className="group p-4 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 hover:shadow-sm transition-all bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700/50"
+      className="group p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all bg-white dark:bg-slate-800 hover:bg-stone-50 dark:hover:bg-slate-700/50"
     >
       <div className="flex items-start space-x-3">
         <div className={`p-2 rounded-lg ${color} group-hover:scale-110 transition-transform`}>
           <Icon className="h-5 w-5 text-white" />
         </div>
         <div className="flex-1">
-          <h3 className="font-medium text-stone-900 dark:text-stone-100 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors">
+          <h3 className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             {description}
           </p>
         </div>
@@ -81,14 +81,14 @@ export function QuickActions() {
   ];
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6 transition-colors">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
           Quick Actions
         </h2>
         <Link
           href="/admin/articles"
-          className="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+          className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
         >
           View All →
         </Link>

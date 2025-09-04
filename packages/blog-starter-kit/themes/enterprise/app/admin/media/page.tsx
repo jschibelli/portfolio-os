@@ -172,7 +172,7 @@ export default function AdminMedia() {
       case 'archive':
         return <Archive className="h-8 w-8 text-orange-600 dark:text-orange-400" />;
       default:
-        return <FileText className="h-8 w-8 text-stone-600 dark:text-stone-400" />;
+        return <FileText className="h-8 w-8 text-slate-600 dark:text-slate-400" />;
     }
   };
 
@@ -217,21 +217,21 @@ export default function AdminMedia() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100">Media Library</h1>
-          <p className="text-stone-600 dark:text-stone-400 mt-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Media Library</h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2">
             Manage your images, documents, and media files
           </p>
         </div>
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-            className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
+            className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
           >
             {viewMode === 'grid' ? <List className="h-5 w-5" /> : <Grid3X3 className="h-5 w-5" />}
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-4 py-2 bg-stone-600 text-white rounded-md hover:bg-stone-700 transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors flex items-center space-x-2"
           >
             <Upload className="h-4 w-4" />
             <span>Upload Files</span>
@@ -240,18 +240,18 @@ export default function AdminMedia() {
       </div>
 
       {/* Upload Area */}
-      <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-6">
-        <div className="border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-lg p-8 text-center">
-          <Upload className="h-12 w-12 text-stone-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+        <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-8 text-center">
+          <Upload className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">
             Drop files here or click to upload
           </h3>
-          <p className="text-stone-600 dark:text-stone-400 mb-4">
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
             Support for images, documents, videos, and audio files
           </p>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="px-6 py-2 bg-stone-600 text-white rounded-md hover:bg-stone-700 transition-colors"
+            className="px-6 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors"
           >
             Choose Files
           </button>
@@ -268,12 +268,12 @@ export default function AdminMedia() {
         {isUploading && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-stone-600 dark:text-stone-400">Uploading...</span>
-              <span className="text-sm text-stone-600 dark:text-stone-400">{uploadProgress}%</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">Uploading...</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">{uploadProgress}%</span>
             </div>
-            <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-2">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
               <div 
-                className="bg-stone-600 h-2 rounded-full transition-all duration-300"
+                className="bg-slate-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
@@ -282,22 +282,22 @@ export default function AdminMedia() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-4">
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
               placeholder="Search media files..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-stone-200 dark:border-stone-700 rounded-md bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             />
           </div>
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-4 py-2 border border-stone-200 dark:border-stone-700 rounded-md bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:ring-2 focus:ring-stone-500 focus:border-transparent"
+            className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent"
           >
             <option value="all">All Types</option>
             <option value="image">Images</option>
@@ -311,9 +311,9 @@ export default function AdminMedia() {
 
       {/* Bulk Actions */}
       {selectedItems.length > 0 && (
-        <div className="bg-stone-50 dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700 p-4">
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-stone-600 dark:text-stone-400">
+            <span className="text-sm text-slate-600 dark:text-slate-400">
               {selectedItems.length} file(s) selected
             </span>
             <button
@@ -329,13 +329,13 @@ export default function AdminMedia() {
       {/* Media Grid/List */}
       {media.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-stone-500 text-lg">No media files found</p>
-          <p className="text-stone-400 mt-2">Upload your first file to get started</p>
+          <p className="text-slate-500 text-lg">No media files found</p>
+          <p className="text-slate-400 mt-2">Upload your first file to get started</p>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {media.map((item) => (
-            <div key={item.id} className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 overflow-hidden transition-colors hover:shadow-md">
+            <div key={item.id} className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors hover:shadow-md">
               <div className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <input
@@ -348,12 +348,12 @@ export default function AdminMedia() {
                         setSelectedItems(selectedItems.filter(id => id !== item.id));
                       }
                     }}
-                    className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                    className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                   />
                   <div className="flex items-center space-x-1">
                     <button
                       onClick={() => copyToClipboard(item.url)}
-                      className="p-1 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                      className="p-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                       title="Copy URL"
                     >
                       <Copy className="h-4 w-4" />
@@ -376,17 +376,17 @@ export default function AdminMedia() {
                       className="w-full h-32 object-cover rounded-lg mb-3"
                     />
                   ) : (
-                    <div className="w-full h-32 bg-stone-100 dark:bg-stone-700 rounded-lg flex items-center justify-center mb-3">
+                    <div className="w-full h-32 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-3">
                       {getFileIcon(item.type)}
                     </div>
                   )}
                   
-                  <h3 className="text-sm font-medium text-stone-900 dark:text-stone-100 truncate">
+                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
                     {item.name}
                   </h3>
                 </div>
                 
-                <div className="space-y-2 text-xs text-stone-500 dark:text-stone-500">
+                <div className="space-y-2 text-xs text-slate-500 dark:text-slate-500">
                   <div className="flex justify-between">
                     <span>Size:</span>
                     <span>{formatFileSize(item.size)}</span>
@@ -410,7 +410,7 @@ export default function AdminMedia() {
                 {item.tags.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1">
                     {item.tags.slice(0, 3).map((tag, index) => (
-                      <span key={index} className="px-2 py-1 text-xs bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded">
+                      <span key={index} className="px-2 py-1 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded">
                         {tag}
                       </span>
                     ))}
@@ -421,12 +421,12 @@ export default function AdminMedia() {
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-stone-800 shadow-sm border border-stone-200 dark:border-stone-700 rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-stone-200 dark:divide-stone-700">
-              <thead className="bg-stone-50 dark:bg-stone-700/50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-700/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     <input
                       type="checkbox"
                       checked={selectedItems.length === media.length}
@@ -437,29 +437,29 @@ export default function AdminMedia() {
                           setSelectedItems([]);
                         }
                       }}
-                      className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                      className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                     />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     File
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     Size
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     Uploaded
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-stone-800 divide-y divide-stone-200 dark:divide-stone-700">
+              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {media.map((item) => (
-                  <tr key={item.id} className="hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors">
+                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
@@ -471,7 +471,7 @@ export default function AdminMedia() {
                             setSelectedItems(selectedItems.filter(id => id !== item.id));
                           }
                         }}
-                        className="rounded border-stone-300 text-stone-600 focus:ring-stone-500"
+                        className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -483,43 +483,43 @@ export default function AdminMedia() {
                             className="w-10 h-10 object-cover rounded"
                           />
                         ) : (
-                          <div className="w-10 h-10 bg-stone-100 dark:bg-stone-700 rounded flex items-center justify-center">
+                          <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded flex items-center justify-center">
                             {getFileIcon(item.type)}
                           </div>
                         )}
                         <div>
-                          <div className="text-sm font-medium text-stone-900 dark:text-stone-100">
+                          <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                             {item.name}
                           </div>
-                          <div className="text-sm text-stone-500 dark:text-stone-400">
+                          <div className="text-sm text-slate-500 dark:text-slate-400">
                             {item.uploadedBy}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="capitalize text-sm text-stone-900 dark:text-stone-100">
+                      <span className="capitalize text-sm text-slate-900 dark:text-slate-100">
                         {item.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-stone-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                       {formatFileSize(item.size)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500 dark:text-stone-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                       {formatDate(item.uploadedAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
                         <button
                           onClick={() => window.open(item.url, '_blank')}
-                          className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                          className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                           title="View"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => copyToClipboard(item.url)}
-                          className="text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+                          className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                           title="Copy URL"
                         >
                           <Copy className="h-4 w-4" />

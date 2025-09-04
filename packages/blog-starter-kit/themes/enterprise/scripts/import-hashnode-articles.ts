@@ -266,6 +266,7 @@ class HashnodeArticleImporter {
         slug: articleData.slug,
         excerpt: articleData.excerpt,
         contentMdx: articleData.content,
+        // coverImageUrl: null, // Will be set later if needed
         status: articleData.status,
         publishedAt: articleData.status === 'PUBLISHED' ? articleData.publishedAt : null,
         authorId,
@@ -338,6 +339,12 @@ async function main() {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+// Method to import articles without disconnecting (for API use)
+export async function importArticlesWithoutDisconnect() {
+  const importer = new HashnodeArticleImporter();
+  await importer.importArticles();
 }
 
 // Run if called directly

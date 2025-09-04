@@ -558,12 +558,14 @@ export async function executeTool(toolName: string, parameters: any) {
 async function getAvailability(parameters: any) {
 	const { timezone = 'America/New_York', days = 7, requestedTime, preference = 'any' } = parameters;
 
-	// Debug environment variables
-	console.log('🔍 Debug - Environment Variables:');
-	console.log('  GOOGLE_CALENDAR_ID:', process.env.GOOGLE_CALENDAR_ID || 'NOT SET');
-	console.log('  GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? 'SET' : 'NOT SET');
-	console.log('  GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? 'SET' : 'NOT SET');
-	console.log('  FEATURE_SCHEDULING:', process.env.FEATURE_SCHEDULING || 'NOT SET');
+	// Debug environment variables (only in development)
+	if (process.env.NODE_ENV === 'development') {
+		console.log('🔍 Debug - Environment Variables:');
+		console.log('  GOOGLE_CALENDAR_ID:', process.env.GOOGLE_CALENDAR_ID || 'NOT SET');
+		console.log('  GOOGLE_CLIENT_EMAIL:', process.env.GOOGLE_CLIENT_EMAIL ? 'SET' : 'NOT SET');
+		console.log('  GOOGLE_PRIVATE_KEY:', process.env.GOOGLE_PRIVATE_KEY ? 'SET' : 'NOT SET');
+		console.log('  FEATURE_SCHEDULING:', process.env.FEATURE_SCHEDULING || 'NOT SET');
+	}
 
 	// Check feature flag - enable by default if not set
 	if (process.env.FEATURE_SCHEDULING === 'false') {

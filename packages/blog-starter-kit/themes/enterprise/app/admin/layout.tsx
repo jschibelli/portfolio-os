@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "../../components/admin/Sidebar";
 import { ThemeProvider } from "../../components/contexts/ThemeContext";
+import Script from "next/script";
 
 export default function AdminLayout({
   children,
@@ -31,9 +32,19 @@ export default function AdminLayout({
     }
   }, [session, status, router]);
 
+  // Ensure dark theme is applied immediately for admin cockpit
+  useEffect(() => {
+    // Force dark theme on admin pages
+    const root = document.documentElement;
+    if (!root.classList.contains('dark')) {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    }
+  }, []);
+
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-100">
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -44,11 +55,28 @@ export default function AdminLayout({
   }
 
   return (
-    <ThemeProvider>
-      <div className="flex min-h-screen bg-white dark:bg-stone-900 transition-colors">
+    <>
+      <Script
+        id="admin-dark-theme"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              // Force dark theme for admin cockpit
+              const root = document.documentElement;
+              root.classList.remove('light');
+              root.classList.add('dark');
+              localStorage.setItem('admin-theme', 'dark');
+            })();
+          `,
+        }}
+      />
+      <ThemeProvider>
+              <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors">
         <Sidebar />
-        <main className="flex-1 p-4 md:p-6 bg-stone-50 dark:bg-stone-900 overflow-auto transition-colors md:ml-0">{children}</main>
+        <main className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-900 overflow-auto transition-colors md:ml-0">{children}</main>
       </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </>
   );
 }

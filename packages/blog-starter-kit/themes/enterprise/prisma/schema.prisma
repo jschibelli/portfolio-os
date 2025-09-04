@@ -37,6 +37,18 @@ enum ReactionKind {
   ROCKET
 }
 
+enum NewsletterStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  PENDING
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -274,6 +286,56 @@ model Note {
   content   String   // markdown
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  type        String   // 'email' | 'social'
+  payloadJson Json
+  runAt       DateTime
+  status      String   // 'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED'
+  attempts    Int      @default(0)
+  lastError   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  kind        String   // 'EMAIL_SENT' | 'POST_PUBLISHED' | 'EVENT_CREATED' | 'DEPLOY_COMPLETE' | etc.
+  channel     String?  // 'gmail' | 'linkedin' | 'facebook' | 'threads' | 'calendar' | ...
+  externalId  String?
+  meta        Json?
+  createdAt   DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String?
+  status        NewsletterStatus @default(ACTIVE)
+  tags          String[]
+  source        String?         @default("website")
+  engagement    String?         @default("medium") // 'high' | 'medium' | 'low'
+  lastEmailSent DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model NewsletterCampaign {
+  id              String        @id @default(cuid())
+  title           String
+  subject         String
+  content         String
+  status          CampaignStatus @default(DRAFT)
+  scheduledAt     DateTime?
+  sentAt          DateTime?
+  recipientCount  Int           @default(0)
+  openRate        Float         @default(0)
+  clickRate       Float         @default(0)
+  tags            String[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 
