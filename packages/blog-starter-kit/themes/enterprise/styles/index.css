@@ -43,7 +43,7 @@
     --secondary: 240 5% 20%; /* Lighter secondary background */
     --secondary-foreground: 0 0% 98%; /* Bright text on secondary */
     --muted: 240 5% 18%; /* Lighter muted background */
-    --muted-foreground: 240 5% 88%; /* Much lighter muted text for better readability */
+    --muted-foreground: 0 0% 95%; /* Much brighter muted text for WCAG AA compliance */
     --accent: 240 5% 20%; /* Lighter accent background */
     --accent-foreground: 0 0% 98%; /* Bright text on accent */
     --destructive: 0 62.8% 30.6%;
@@ -69,7 +69,7 @@
     outline-offset: 2px;
   }
 
-  /* Skip to main content link */
+  /* Skip to main content link - enhanced for cross-browser compatibility */
   .skip-link {
     position: absolute;
     top: -40px;
@@ -81,10 +81,32 @@
     border-radius: 4px;
     z-index: 1000;
     transition: top 0.3s;
+    /* Explicit focus styles for all browsers */
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    /* Ensure it's focusable */
+    display: block;
+    width: auto;
+    height: auto;
   }
 
-  .skip-link:focus {
+  .skip-link:focus,
+  .skip-link:focus-visible,
+  .skip-link:focus-within {
     top: 6px;
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    /* Ensure visibility on focus */
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  
+  /* Additional focus styles for better cross-browser support */
+  .skip-link:hover:focus,
+  .skip-link:active:focus {
+    top: 6px;
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 
   /* Reduced motion support */
@@ -161,8 +183,11 @@
 
   .dark .text-stone-300,
   .dark p.text-stone-300,
-  .dark .text-lg.text-stone-300 {
-    color: hsl(240 5% 98%) !important; /* Pure white for maximum contrast on dark background */
+  .dark .text-lg.text-stone-300,
+  .dark .text-stone-700,
+  .dark p.text-stone-700,
+  .dark .text-lg.text-stone-700 {
+    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
   }
 
   .text-stone-500,
@@ -332,6 +357,21 @@
   .dark .text-stone-600 {
     color: hsl(240 5% 90%) !important; /* Lighter for better contrast */
   }
+  
+  /* Cross-browser color contrast fixes - simplified approach */
+  
+  /* Dark mode text color overrides for WCAG AA compliance */
+  .dark .text-stone-300,
+  .dark .text-stone-700 {
+    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast */
+  }
+  
+  /* Button contrast fixes - make text much darker for all states */
+  .text-stone-900,
+  .text-lg.font-semibold.text-stone-900 {
+    color: hsl(240 3.8% 5%) !important; /* Very dark for 4.5:1 contrast on all backgrounds */
+  }
+  
   .dark .text-neutral-100,
   .dark .text-neutral-200,
   .dark .text-neutral-300,
@@ -342,6 +382,34 @@
   .dark .text-neutral-800,
   .dark .text-neutral-900 {
     color: hsl(0 0% 100%) !important;
+  }
+  
+  /* Browser-specific fixes for cross-browser compatibility */
+  
+  /* Firefox-specific overrides */
+  @-moz-document url-prefix() {
+    .dark .text-stone-700,
+    .dark .text-stone-300 {
+      color: hsl(0 0% 100%) !important;
+    }
+    
+    .text-stone-900,
+    .text-lg.font-semibold.text-stone-900 {
+      color: hsl(240 3.8% 5%) !important;
+    }
+  }
+  
+  /* WebKit-specific overrides */
+  @media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .dark .text-stone-700,
+    .dark .text-stone-300 {
+      color: hsl(0 0% 100%) !important;
+    }
+    
+    .text-stone-900,
+    .text-lg.font-semibold.text-stone-900 {
+      color: hsl(240 3.8% 5%) !important;
+    }
   }
 }
 
