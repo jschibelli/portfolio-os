@@ -4,7 +4,7 @@ import { ClockIcon, MailIcon, MapPinIcon, SendIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/features/chatbot/Chatbot';
+import Chatbot from '../components/features/chatbot/chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import {
 	BlueskySVG as BlueskyIcon,

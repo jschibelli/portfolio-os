@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { resizeImage } from '@starter-kit/utils/image';
-import { DEFAULT_AVATAR } from '../../utils/const';
+import { DEFAULT_AVATAR } from '../../lib/utils';
 
 function ProfileImage({ user, blogURL, postUrlForAnonymous, className, width, height }) {
 	const profileImageRef = useRef(null);

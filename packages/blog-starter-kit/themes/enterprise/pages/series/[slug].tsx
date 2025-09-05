@@ -17,7 +17,7 @@ import {
 	SeriesPostsByPublicationQuery,
 	SeriesPostsByPublicationQueryVariables,
 } from '../../generated/graphql';
-import { DEFAULT_COVER } from '../../utils/const';
+import { DEFAULT_COVER } from '../../lib/utils';
 
 type Props = {
 	series: SeriesFragment;

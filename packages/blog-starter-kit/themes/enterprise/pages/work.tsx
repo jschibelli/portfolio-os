@@ -5,7 +5,7 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/features/chatbot/Chatbot';
+import Chatbot from '../components/features/chatbot/chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import ProjectCard, { Project } from '../components/features/portfolio/project-card';
 import { Container } from '../components/shared/container';

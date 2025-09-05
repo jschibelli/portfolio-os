@@ -25,7 +25,11 @@
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push",
 		"db:migrate": "prisma migrate dev",
-		"db:studio": "prisma studio"
+		"db:studio": "prisma studio",
+		"docs:types": "typedoc --out docs/types src --excludePrivate --excludeProtected",
+		"docs:lint": "markdownlint docs/**/*.md --ignore docs/CHANGELOG.md",
+		"docs:check": "npm run docs:lint && npm run docs:types",
+		"docs:build": "npm run docs:types"
 	},
 	"prisma": {
 		"seed": "node prisma/seed.js"

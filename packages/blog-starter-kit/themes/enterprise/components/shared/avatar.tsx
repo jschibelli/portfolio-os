@@ -1,6 +1,6 @@
 import { resizeImage } from '@starter-kit/utils/image';
 import Image from 'next/image';
-import { DEFAULT_AVATAR } from '../../utils/const';
+import { DEFAULT_AVATAR } from '../../lib/utils';
 
 type Props = {
 	username: string;

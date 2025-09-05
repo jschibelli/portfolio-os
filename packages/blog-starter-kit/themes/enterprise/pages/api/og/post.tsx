@@ -2,7 +2,7 @@
 import { resizeImage } from '@starter-kit/utils/image';
 import { ImageResponse } from '@vercel/og';
 import { type NextRequest } from 'next/server';
-import { DEFAULT_AVATAR } from '../../../utils/const';
+import { DEFAULT_AVATAR } from '../../../lib/utils';
 
 export const config = {
 	runtime: 'edge',

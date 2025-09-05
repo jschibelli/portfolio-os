@@ -1,7 +1,7 @@
 import { resizeImage } from '@starter-kit/utils/image';
 import Link from 'next/link';
 import { User } from '../../../generated/graphql';
-import { DEFAULT_COVER } from '../../../utils/const';
+import { DEFAULT_COVER } from '../../../lib/utils';
 import { CoverImage } from '../../shared/cover-image';
 import { DateFormatter } from '../../shared/date-formatter';
 

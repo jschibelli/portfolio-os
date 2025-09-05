@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { PostFullFragment } from '../../../generated/graphql';
-import { DEFAULT_AVATAR } from '../../../utils/const';
+import { DEFAULT_AVATAR } from '../../../lib/utils';
 import { useAppContext } from '../../contexts/appContext';
 import CloseSVG from '../../icons/svgs/CloseSVG';
 import { Button } from '../../shared/button';

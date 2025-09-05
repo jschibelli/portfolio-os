@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/features/chatbot/Chatbot';
+import Chatbot from '../components/features/chatbot/chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
 import { Layout } from '../components/shared/layout';

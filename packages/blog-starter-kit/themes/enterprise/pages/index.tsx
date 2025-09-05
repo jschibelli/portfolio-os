@@ -20,7 +20,7 @@ import FeaturedProjects from '../components/features/portfolio/featured-projects
 
 // Import navigation and footer
 import { AppProvider } from '../components/contexts/appContext';
-import Chatbot from '../components/features/chatbot/Chatbot';
+import Chatbot from '../components/features/chatbot/chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Footer } from '../components/shared/footer';
 import { SEOHead } from '../components/shared/seo-head';

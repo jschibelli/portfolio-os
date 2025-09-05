@@ -1,0 +1,35 @@
+{
+  "entryPoints": ["lib/**/*.ts", "components/**/*.tsx"],
+  "out": "docs/types",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "readme": "docs/README.md",
+  "name": "Mindware Blog API Documentation",
+  "includeVersion": true,
+  "sort": ["source-order"],
+  "categoryOrder": [
+    "Authentication",
+    "Database",
+    "API",
+    "Components",
+    "Utilities",
+    "*"
+  ],
+  "categorizeByGroup": true,
+  "defaultCategory": "Other",
+  "gitRevision": "main",
+  "cleanOutputDir": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "searchInComments": true,
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "node_modules/**/*"
+  ]
+}

@@ -1,14 +1,139 @@
-# A statically generated blog example using Next.js, Markdown, and TypeScript with Hashnode 💫
+# Mindware Blog - Enterprise Theme
 
-This is the existing [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) plus TypeScript, wired with [Hashnode](https://hashnode.com).
+A comprehensive, production-ready blog platform built with Next.js 14, TypeScript, and modern web technologies. Features a complete admin dashboard, case study management, AI-powered chatbot, and integrated analytics.
 
-We've used [Hashnode APIs](https://apidocs.hashnode.com) and integrated them with this blog starter kit.
+## 🚀 Quick Start
 
-## Want to have your own?
+```bash
+# Clone and install dependencies
+git clone <repository-url>
+cd packages/blog-starter-kit/themes/enterprise
+npm install
 
-Fork it and change the environment variable `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` to your host (engineering.hashnode.dev is the host in the example) and deploy it to Vercel. That's it! You now have your own frontend. You can still use Hashnode for writing your Articles.
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
 
-Demo of the `enterprise` theme: [https://demo.hashnode.com/engineering](https://demo.hashnode.com/engineering).
+# Set up database
+npm run db:push
+npm run db:seed
+
+# Start development server
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to see your blog in action.
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + Radix UI
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: NextAuth.js
+- **Content**: MDX with TipTap editor
+- **Analytics**: Google Analytics + Plausible
+- **Deployment**: Vercel
+- **Testing**: Playwright (E2E), Jest (Unit)
+
+## 📁 Repository Structure
+
+```
+├── app/                    # Next.js App Router pages
+│   ├── (admin)/           # Admin dashboard routes
+│   ├── api/               # API routes
+│   └── blog/              # Blog pages
+├── components/            # React components
+│   ├── admin/             # Admin dashboard components
+│   ├── features/          # Feature-specific components
+│   ├── shared/            # Reusable components
+│   └── ui/                # Base UI components
+├── docs/                  # Documentation
+├── lib/                   # Utilities and configurations
+├── prisma/                # Database schema and migrations
+└── public/                # Static assets
+```
+
+## 📚 Documentation
+
+- [Architecture Overview](docs/architecture.md) - System design and data flow
+- [Getting Started](docs/getting-started/README.md) - Detailed setup guide
+- [Admin Dashboard](docs/admin-setup.md) - Admin panel configuration
+- [Case Studies](docs/case-studies/README.md) - Case study management
+- [AI Chatbot](docs/ai-chatbot/README.md) - Chatbot integration
+- [Contributing](docs/contributing.md) - Development guidelines
+- [API Reference](docs/api.md) - API documentation
+- [Accessibility](docs/accessibility.md) - A11y guidelines
+- [SEO Guide](docs/seo.md) - Search optimization
+- [Testing](docs/testing.md) - Testing strategies
+- [Deployment](docs/runbooks/deploy.md) - Deployment guide
+- [Troubleshooting](docs/runbooks/troubleshooting.md) - Common issues
+
+## 🔧 Available Scripts
+
+```bash
+# Development
+npm run dev              # Start development server
+npm run build            # Build for production
+npm run start            # Start production server
+
+# Database
+npm run db:push          # Push schema changes
+npm run db:migrate       # Run migrations
+npm run db:seed          # Seed database
+npm run db:studio        # Open Prisma Studio
+
+# Code Quality
+npm run lint             # Run ESLint
+npm run format           # Format with Prettier
+npm run typecheck        # TypeScript type checking
+
+# Testing
+npm run test             # Run unit tests
+npm run test:accessibility # Run accessibility tests
+npm run test:seo         # Run SEO tests
+
+# Documentation
+npm run docs:types       # Generate type documentation
+npm run docs:lint        # Lint documentation
+npm run docs:check       # Run all doc checks
+```
+
+## 🌟 Features
+
+- **Modern Blog Platform**: Built with Next.js 14 and App Router
+- **Admin Dashboard**: Complete content management system
+- **Case Studies**: Structured case study management with templates
+- **AI Chatbot**: Intelligent assistant with voice capabilities
+- **Analytics Integration**: Google Analytics and Plausible support
+- **Social Media**: Automated posting to LinkedIn, Facebook, Twitter
+- **Email Marketing**: Newsletter management with Resend
+- **Calendar Integration**: Google Calendar booking system
+- **SEO Optimized**: Meta tags, sitemaps, and structured data
+- **Accessibility**: WCAG 2.1 AA compliant
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+
+## 🔐 Environment Setup
+
+See [Environment Configuration](docs/getting-started/README.md#environment-setup) for detailed setup instructions.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](docs/contributing.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 📞 Support
+
+- 📧 Email: [support@mindware.dev](mailto:support@mindware.dev)
+- 🐛 Issues: [GitHub Issues](https://github.com/your-org/mindware-blog/issues)
+- 📖 Documentation: [docs/](docs/)
+
+---
+
+**Last Updated**: January 2025 | **Version**: 2.0.0
 
 ## Control Center Setup
 

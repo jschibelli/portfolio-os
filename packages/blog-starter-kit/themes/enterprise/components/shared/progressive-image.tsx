@@ -3,7 +3,7 @@ import { resizeImage } from '@starter-kit/utils/image';
 import React, { useRef, useEffect } from 'react';
 
 import { twMerge } from 'tailwind-merge';
-import { DEFAULT_AVATAR } from '../../utils/const';
+import { DEFAULT_AVATAR } from '../../lib/utils';
 
 /**
  * Progressive Image Component which loads low resolution version image before loading original

@@ -10,7 +10,7 @@ import { ModernPostHeader } from '../components/features/blog/modern-post-header
 import { PostTOC } from '../components/features/blog/post-toc';
 import { CaseStudyLayout } from '../components/features/case-studies/case-study-layout';
 import { CaseStudyMarkdown } from '../components/features/case-studies/case-study-markdown';
-import Chatbot from '../components/features/chatbot/Chatbot';
+import Chatbot from '../components/features/chatbot/chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';

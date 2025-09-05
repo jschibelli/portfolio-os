@@ -7,7 +7,7 @@ import {
 	SearchPostsOfPublicationQuery,
 	SearchPostsOfPublicationQueryVariables,
 } from '../generated/graphql';
-import { DEFAULT_COVER } from '../utils/const';
+import { DEFAULT_COVER } from '../../../lib/utils';
 import { useAppContext } from './contexts/appContext';
 import { CoverImage } from './cover-image';
 
