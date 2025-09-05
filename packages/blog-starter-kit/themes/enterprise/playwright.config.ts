@@ -1,18 +1,26 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
+	// Test directory containing all test files
 	testDir: './tests',
+	// Run tests in parallel for faster execution
 	fullyParallel: true,
+	// Prevent .only() tests in CI environment
 	forbidOnly: !!process.env.CI,
+	// Retry failed tests in CI (2 retries) but not locally for faster feedback
 	retries: process.env.CI ? 2 : 0,
+	// Use single worker in CI for stability, multiple workers locally for speed
 	workers: process.env.CI ? 1 : undefined,
-	reporter: process.env.CI ? [['github'], ['html']] : 'html',
+	// Use GitHub reporter in CI for PR comments, HTML reporter for local debugging
+	reporter: process.env.CI ? [['github'], ['html']] : [['html']],
 	use: {
+		// Base URL for all tests
 		baseURL: 'http://localhost:3000',
+		// Enable tracing on first retry for debugging
 		trace: 'on-first-retry',
 		// Visual regression testing configuration
-		screenshot: 'only-on-failure',
-		video: 'retain-on-failure',
+		screenshot: 'only-on-failure', // Capture screenshots only when tests fail
+		video: 'retain-on-failure',    // Record videos only when tests fail
 	},
 	projects: [
 		{
