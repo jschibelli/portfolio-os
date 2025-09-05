@@ -10,7 +10,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 346.8 77.2% 45%; /* Darker red for better contrast */
+    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
     --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -22,9 +22,9 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 346.8 77.2% 45%; /* Match primary color */
+    --ring: 346.8 77.2% 35%; /* Match primary color */
     --radius: 0.5rem;
-    --chart-1: 346.8 77.2% 45%; /* Match primary color */
+    --chart-1: 346.8 77.2% 35%; /* Match primary color */
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -38,7 +38,7 @@
     --card-foreground: 0 0% 98%; /* Bright text on cards */
     --popover: 240 10% 10%; /* Lighter popover background */
     --popover-foreground: 0 0% 98%; /* Bright text on popovers */
-    --primary: 346.8 77.2% 45%; /* Same darker red for consistency */
+    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
     --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
     --secondary: 240 5% 20%; /* Lighter secondary background */
     --secondary-foreground: 0 0% 98%; /* Bright text on secondary */
@@ -50,8 +50,8 @@
     --destructive-foreground: 0 85.7% 97.3%;
     --border: 240 5% 25%; /* Lighter borders for better visibility */
     --input: 240 5% 20%; /* Lighter input backgrounds */
-    --ring: 346.8 77.2% 45%; /* Match primary color */
-    --chart-1: 346.8 77.2% 45%; /* Match primary color */
+    --ring: 346.8 77.2% 35%; /* Match primary color */
+    --chart-1: 346.8 77.2% 35%; /* Match primary color */
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -69,13 +69,13 @@
     outline-offset: 2px;
   }
 
-  /* Skip to main content link - enhanced for cross-browser compatibility */
+  /* Skip to main content link - enhanced for cross-browser compatibility with WCAG AA compliance */
   .skip-link {
     position: absolute;
     top: -40px;
     left: 6px;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
+    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
     padding: 8px;
     text-decoration: none;
     border-radius: 4px;
@@ -96,9 +96,9 @@
     top: 6px;
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
-    /* Ensure visibility on focus */
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    /* Ensure visibility on focus with WCAG AA compliance */
+    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
+    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
   }
   
   /* Additional focus styles for better cross-browser support */
@@ -107,6 +107,8 @@
     top: 6px;
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
+    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
   }
 
   /* Reduced motion support */
@@ -177,8 +179,9 @@
   /* Fix stone color contrast issues - optimized for WCAG 2.1 AA compliance */
   .text-stone-700,
   p.text-stone-700,
-  .text-lg.text-stone-700 {
-    color: hsl(240 3.8% 25%) !important; /* Much darker for 4.5:1 contrast on light background */
+  .text-lg.text-stone-700,
+  .leading-relaxed.text-stone-700 {
+    color: hsl(240 3.8% 15%) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-stone-300,
@@ -186,8 +189,25 @@
   .dark .text-lg.text-stone-300,
   .dark .text-stone-700,
   .dark p.text-stone-700,
-  .dark .text-lg.text-stone-700 {
+  .dark .text-lg.text-stone-700,
+  .dark .leading-relaxed.text-stone-300 {
     color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
+  }
+
+  /* Specific fixes for stone headings in dark mode */
+  .dark .text-stone-100,
+  .dark h2.text-stone-100,
+  .dark h3.text-stone-100,
+  .dark .font-bold.text-stone-900,
+  .dark h2.text-2xl.font-bold.text-stone-900,
+  .dark .md\:text-3xl.dark\:text-stone-100 {
+    color: hsl(0 0% 100%) !important; /* Pure white for headings in dark mode */
+  }
+
+  /* Fix very low contrast stone colors in dark mode */
+  .dark .text-stone-300,
+  .dark .text-stone-700 {
+    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast */
   }
 
   .text-stone-500,
@@ -325,6 +345,36 @@
   }
 
   /* Fix any neutral colors that might be used for headings */
+
+  /* Fix primary color contrast issues - WCAG 2.1 AA compliant */
+  .text-primary {
+    color: hsl(346.8 77.2% 60%) !important; /* Lighter primary color for better contrast */
+  }
+
+  .dark .text-primary {
+    color: hsl(346.8 77.2% 70%) !important; /* Even lighter in dark mode for maximum contrast */
+  }
+
+  .bg-primary\/10 {
+    background-color: hsl(346.8 77.2% 10%) !important; /* Darker background for primary/10 */
+  }
+
+  .dark .bg-primary\/10 {
+    background-color: hsl(346.8 77.2% 15%) !important; /* Slightly lighter in dark mode */
+  }
+
+  /* Fix primary color text on primary/10 backgrounds - more specific targeting */
+  span.bg-primary\/10.text-primary,
+  .bg-primary\/10.text-primary {
+    background-color: hsl(346.8 77.2% 90%) !important; /* Much lighter background */
+    color: hsl(346.8 77.2% 25%) !important; /* Much darker text for 4.5:1 contrast */
+  }
+
+  .dark span.bg-primary\/10.text-primary,
+  .dark .bg-primary\/10.text-primary {
+    background-color: hsl(346.8 77.2% 20%) !important; /* Darker background in dark mode */
+    color: hsl(346.8 77.2% 85%) !important; /* Much lighter text in dark mode for 4.5:1 contrast */
+  }
 
   /* Specific fixes for skill tags and category badges - WCAG 2.1 AA compliant */
   .rounded-full.bg-stone-200.text-stone-500 {
