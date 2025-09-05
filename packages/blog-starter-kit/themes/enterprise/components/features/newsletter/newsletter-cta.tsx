@@ -84,30 +84,56 @@ export default function CTA({
 		setEmail('');
 		
 		// Track newsletter subscription analytics using centralized utility
+		// with enhanced error handling and proper async/await management
 		try {
-			const { trackNewsletterSubscription } = await import('../../../lib/analytics-utils');
+			// Import analytics utilities with error handling
+			const analyticsModule = await import('../../../lib/analytics-utils');
+			const { trackNewsletterSubscription } = analyticsModule;
 			
-			await trackNewsletterSubscription({
+			// Validate required data before tracking
+			if (!data.subscribeToNewsletter?.status) {
+				console.warn('Newsletter subscription tracking skipped: missing status data');
+				return;
+			}
+			
+			// Track with centralized utility
+			const trackingResult = await trackNewsletterSubscription({
 				status: data.subscribeToNewsletter.status,
 				timestamp: new Date().toISOString(),
 				publicationId: publication?.id || 'unknown'
 			});
 			
-			// Also dispatch custom event for backward compatibility
-			if (typeof window !== 'undefined') {
-				window.dispatchEvent(new CustomEvent('newsletter-subscription', {
-					detail: { 
-						status: data.subscribeToNewsletter.status,
-						timestamp: new Date().toISOString(),
-						publicationId: publication?.id || 'unknown'
-					}
-				}));
+			// Log tracking result for debugging
+			if (!trackingResult) {
+				console.warn('Newsletter subscription tracking failed: utility returned false');
 			}
-		} catch (error) {
-			console.error('Failed to track newsletter subscription:', {
-				error: error instanceof Error ? error.message : 'Unknown error',
-				stack: error instanceof Error ? error.stack : undefined,
-				timestamp: new Date().toISOString()
+			
+			// Dispatch custom event for backward compatibility
+			// Only dispatch if window is available (browser environment)
+			if (typeof window !== 'undefined' && window.dispatchEvent) {
+				try {
+					window.dispatchEvent(new CustomEvent('newsletter-subscription', {
+						detail: { 
+							status: data.subscribeToNewsletter.status,
+							timestamp: new Date().toISOString(),
+							publicationId: publication?.id || 'unknown'
+						}
+					}));
+				} catch (dispatchError) {
+					console.warn('Failed to dispatch custom newsletter event:', dispatchError);
+				}
+			}
+			
+		} catch (importError) {
+			// Handle import errors specifically
+			console.error('Failed to import analytics utilities:', {
+				error: importError instanceof Error ? importError.message : 'Unknown import error',
+				stack: importError instanceof Error ? importError.stack : undefined,
+				timestamp: new Date().toISOString(),
+				context: {
+					status: data.subscribeToNewsletter?.status,
+					publicationId: publication?.id
+				}
 			});
 		}
 		} catch (error: any) {

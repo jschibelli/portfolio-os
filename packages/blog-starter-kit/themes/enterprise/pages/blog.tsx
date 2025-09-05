@@ -29,6 +29,26 @@ const SubscribeForm = dynamic(() =>
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 
+// Type definitions for analytics events
+interface PostClickEvent extends CustomEvent {
+	detail: {
+		slug: string;
+		title: string;
+	};
+}
+
+interface SocialClickEvent extends CustomEvent {
+	detail: {
+		platform: string;
+	};
+}
+
+interface NewsletterSubscriptionEvent extends CustomEvent {
+	detail: {
+		status: string;
+	};
+}
+
 type Props = {
 	publication: PublicationFragment;
 	initialAllPosts: PostFragment[];
@@ -36,7 +56,7 @@ type Props = {
 	initialTotalPosts: number;
 };
 
-export default function Index({
+export default function Blog({
 	publication,
 	initialAllPosts,
 	initialPageInfo,
@@ -77,25 +97,6 @@ export default function Index({
 		};
 	}, []);
 
-	// Type definitions for analytics events
-	interface PostClickEvent extends CustomEvent {
-		detail: {
-			slug: string;
-			title: string;
-		};
-	}
-
-	interface SocialClickEvent extends CustomEvent {
-		detail: {
-			platform: string;
-		};
-	}
-
-	interface NewsletterSubscriptionEvent extends CustomEvent {
-		detail: {
-			status: string;
-		};
-	}
 
 	// Analytics tracking with centralized utilities and enhanced error handling
 	useEffect(() => {
@@ -173,8 +174,10 @@ export default function Index({
 			}
 		};
 
-		// Initialize page view tracking
-		trackPageView();
+		// Initialize analytics and track page view
+		initAnalytics().then(() => {
+			trackPageView();
+		});
 
 		// Add event listeners
 		window.addEventListener('newsletter-subscription', handleNewsletterSubscription as EventListener);
@@ -425,7 +428,6 @@ export default function Index({
 										{allPosts.slice(1, 4).map((post, index) => (
 											<div
 												key={post.id}
-												{/* Staggered animation delays for smooth sequential appearance */}
 												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
 													index === 0
 														? 'animation-delay-200'

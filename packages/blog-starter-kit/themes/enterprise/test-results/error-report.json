@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "successRate": "50.00%",
+    "duration": "65ms"
+  },
+  "errors": [
+    {
+      "timestamp": "2025-09-05T05:10:23.542Z",
+      "error": "Test error for demonstration",
+      "stack": "Error: Test error for demonstration\n    at Object.<anonymous> (E:\\2025 Portfolio\\mindware-blog\\packages\\blog-starter-kit\\themes\\enterprise\\scripts\\test-error-handler.js:245:11)\n    at Module._compile (node:internal/modules/cjs/loader:1376:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)\n    at Module.load (node:internal/modules/cjs/loader:1207:32)\n    at Module._load (node:internal/modules/cjs/loader:1023:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:135:12)\n    at node:internal/main/run_main_module:28:49",
+      "context": {
+        "testName": "Error Handler Test"
+      },
+      "testDuration": 2
+    }
+  ],
+  "timestamp": "2025-09-05T05:10:23.607Z"
+}
