@@ -1,11 +1,12 @@
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 
 // Conditional import to handle missing googleapis during build
 let getOAuth2Client: any;
 try {
-	const { getOAuth2Client: importedGetOAuth2Client } = require('../../../lib/google/auth');
+	const { getOAuth2Client: importedGetOAuth2Client } = require('../../../../../lib/google/auth');
 	getOAuth2Client = importedGetOAuth2Client;
 } catch (error) {
 	console.warn('googleapis not available, OAuth will not work');
@@ -41,5 +42,3 @@ export async function GET() {
 		return NextResponse.json({ error: 'OAuth configuration error' }, { status: 500 });
 	}
 }
-
-

@@ -1,22 +1,18 @@
-import { resizeImage } from '@starter-kit/utils/image';
 import request from 'graphql-request';
-import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-import { Container } from '../../components/shared/container';
 import { AppProvider } from '../../components/contexts/appContext';
-import { CoverImage } from '../../components/shared/cover-image';
-import { Footer } from '../../components/shared/footer';
-import ModernHeader from '../../components/features/navigation/modern-header';
-import { Layout } from '../../components/shared/layout';
 import { MorePosts } from '../../components/features/blog/more-posts';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Container } from '../../components/shared/container';
+import { Footer } from '../../components/shared/footer';
+import { Layout } from '../../components/shared/layout';
+import type { Post } from '../../generated/graphql';
 import {
 	Publication,
 	TagPostsByPublicationDocument,
 	TagPostsByPublicationQuery,
 	TagPostsByPublicationQueryVariables,
 } from '../../generated/graphql';
-import type { Post } from '../../generated/graphql';
 
 type Props = {
 	posts: Post[];
@@ -40,7 +36,7 @@ export default function Post({ publication, posts, tag }: Props) {
 					</div>
 					<MorePosts context="tag" posts={posts} />
 				</Container>
-				<Footer />
+				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);
@@ -55,7 +51,7 @@ type Params = {
 export async function getStaticProps({ params }: Params) {
 	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-	
+
 	try {
 		const data = await request<TagPostsByPublicationQuery, TagPostsByPublicationQueryVariables>(
 			GQL_ENDPOINT,

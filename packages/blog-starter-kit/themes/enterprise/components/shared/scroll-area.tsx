@@ -1,5 +1,5 @@
-import { PropsWithChildren } from 'react';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
+import { PropsWithChildren } from 'react';
 
 const scrollbarStyles = `
 .ScrollAreaRoot {
@@ -57,22 +57,22 @@ const scrollbarStyles = `
 interface ScrollAreaProps extends PropsWithChildren<any> {}
 
 const CustomScrollArea = ({ children }: ScrollAreaProps) => (
-  <>
-    <style
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: scrollbarStyles }}
-    />
-    <ScrollArea.Root type="scroll" className="ScrollAreaRoot">
-      <ScrollArea.Viewport className="ScrollAreaViewport">{children}</ScrollArea.Viewport>
-      <ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="vertical">
-        <ScrollArea.Thumb className="ScrollAreaThumb" />
-      </ScrollArea.Scrollbar>
-      <ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="horizontal">
-        <ScrollArea.Thumb className="ScrollAreaThumb" />
-      </ScrollArea.Scrollbar>
-      <ScrollArea.Corner className="ScrollAreaCorner" />
-    </ScrollArea.Root>
-  </>
+	<>
+		<style
+			// eslint-disable-next-line react/no-danger
+			dangerouslySetInnerHTML={{ __html: scrollbarStyles }}
+		/>
+		<ScrollArea.Root type="scroll" className="ScrollAreaRoot">
+			<ScrollArea.Viewport className="ScrollAreaViewport">{children}</ScrollArea.Viewport>
+			<ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="vertical">
+				<ScrollArea.Thumb className="ScrollAreaThumb" />
+			</ScrollArea.Scrollbar>
+			<ScrollArea.Scrollbar className="ScrollAreaScrollbar" orientation="horizontal">
+				<ScrollArea.Thumb className="ScrollAreaThumb" />
+			</ScrollArea.Scrollbar>
+			<ScrollArea.Corner className="ScrollAreaCorner" />
+		</ScrollArea.Root>
+	</>
 );
 
 export default CustomScrollArea;

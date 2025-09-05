@@ -1,12 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Send, X, Bot, User, Mic, MicOff, Volume2, VolumeX, ExternalLink, Settings, Calendar, Check, BookOpen } from 'lucide-react';
+import {
+	BookOpen,
+	Bot,
+	Calendar,
+	Check,
+	ExternalLink,
+	MessageCircle,
+	Mic,
+	MicOff,
+	Send,
+	Settings,
+	User,
+	Volume2,
+	VolumeX,
+	X,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 // import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
-import { CalendarModal } from '../../ui/CalendarModal';
-import { ContactForm } from '../../ui/ContactForm';
-import { BookingModal } from '../../ui/BookingModal';
-import { BookingConfirmationModal } from '../../ui/BookingConfirmationModal';
+import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
+import { BookingModal } from '../booking/BookingModal';
+import { CalendarModal } from '../booking/CalendarModal';
+import { ContactForm } from '../contact/ContactForm';
 
 interface TimeSlot {
   start: string;
@@ -48,13 +64,23 @@ interface PageContext {
   title?: string;
   content?: string;
   url?: string;
-  type?: 'home' | 'about' | 'work' | 'portfolio' | 'contact' | 'blog' | 'services' | 'case-study' | 'article' | 'page' | 'post';
+	type?:
+		| 'home'
+		| 'about'
+		| 'work'
+		| 'portfolio'
+		| 'contact'
+		| 'blog'
+		| 'services'
+		| 'case-study'
+		| 'article'
+		| 'page'
+		| 'post';
   specificType?: string;
   pathname?: string;
 }
 
 export default function Chatbot() {
-
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -77,9 +103,15 @@ export default function Chatbot() {
   const [pageContext, setPageContext] = useState<PageContext | null>(null);
   const [showQuickActions, setShowQuickActions] = useState(false);
   const [features, setFeatures] = useState({
-    scheduling: process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' || process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === undefined,
-    caseStudy: process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === 'true' || process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === undefined,
-    clientIntake: process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === 'true' || process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === undefined
+		scheduling:
+			process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' ||
+			process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === undefined,
+		caseStudy:
+			process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === 'true' ||
+			process.env.NEXT_PUBLIC_FEATURE_CASE_STUDY === undefined,
+		clientIntake:
+			process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === 'true' ||
+			process.env.NEXT_PUBLIC_FEATURE_CLIENT_INTAKE === undefined,
   });
   
   // Calendar modal state
@@ -180,14 +212,23 @@ export default function Chatbot() {
       
       case 'services':
         const serviceMessages: { [key: string]: string } = {
-          'web-development': "I see you're interested in John's web development services! I'm his AI assistant and can provide detailed information about his approach to building modern, responsive websites using React, Next.js, and TypeScript. I can explain his development process, show you relevant case studies, or help you schedule a consultation to discuss your specific needs. What would you like to know?",
-          'mobile-development': "Exploring mobile development options? I'm John's AI assistant and can tell you about his expertise in React Native and mobile-first approaches. I can explain how he creates seamless mobile experiences, discuss relevant projects, or help you schedule a consultation for your mobile app needs. What's your project vision?",
-          'ui-ux-design': "Interested in UI/UX design? I'm John's AI assistant and can share insights about his design philosophy, user-centered approach, and how he creates intuitive interfaces. I can show you design case studies, explain his process from wireframes to implementation, or help schedule a design consultation. What's your design challenge?",
-          'consulting': "Looking for technical consulting? I'm John's AI assistant and can explain his approach to helping businesses with their development challenges. Whether it's architecture planning, code reviews, team guidance, or strategic technical decisions, I can outline how John can help and schedule a consultation to discuss your specific needs. What's your biggest technical challenge?",
-          'cloud-solutions': "Interested in cloud solutions? I'm John's AI assistant and can tell you about John's experience with AWS, Vercel, and modern deployment strategies. I can explain his approach to scalable cloud architecture, DevOps practices, or help you schedule a consultation for your cloud needs. What's your infrastructure challenge?",
-          'maintenance-support': "Need ongoing support? I'm John's AI assistant and can explain John's approach to maintaining and supporting existing applications. Whether it's bug fixes, performance optimization, security updates, or feature enhancements, I can outline support options and help you schedule a consultation. What kind of support do you need?"
-        };
-        return serviceMessages[context.specificType || ''] || "I see you're exploring John's services! I'm his AI assistant and can provide detailed information about his web development, mobile development, UI/UX design, consulting, cloud solutions, and maintenance services. I can explain his approach, show relevant case studies, or help you schedule a consultation. Which service interests you most?";
+					'web-development':
+						"I see you're interested in John's web development services! I'm his AI assistant and can provide detailed information about his approach to building modern, responsive websites using React, Next.js, and TypeScript. I can explain his development process, show you relevant case studies, or help you schedule a consultation to discuss your specific needs. What would you like to know?",
+					'mobile-development':
+						"Exploring mobile development options? I'm John's AI assistant and can tell you about his expertise in React Native and mobile-first approaches. I can explain how he creates seamless mobile experiences, discuss relevant projects, or help you schedule a consultation for your mobile app needs. What's your project vision?",
+					'ui-ux-design':
+						"Interested in UI/UX design? I'm John's AI assistant and can share insights about his design philosophy, user-centered approach, and how he creates intuitive interfaces. I can show you design case studies, explain his process from wireframes to implementation, or help schedule a design consultation. What's your design challenge?",
+					consulting:
+						"Looking for technical consulting? I'm John's AI assistant and can explain his approach to helping businesses with their development challenges. Whether it's architecture planning, code reviews, team guidance, or strategic technical decisions, I can outline how John can help and schedule a consultation to discuss your specific needs. What's your biggest technical challenge?",
+					'cloud-solutions':
+						"Interested in cloud solutions? I'm John's AI assistant and can tell you about John's experience with AWS, Vercel, and modern deployment strategies. I can explain his approach to scalable cloud architecture, DevOps practices, or help you schedule a consultation for your cloud needs. What's your infrastructure challenge?",
+					'maintenance-support':
+						"Need ongoing support? I'm John's AI assistant and can explain John's approach to maintaining and supporting existing applications. Whether it's bug fixes, performance optimization, security updates, or feature enhancements, I can outline support options and help you schedule a consultation. What kind of support do you need?",
+				};
+				return (
+					serviceMessages[context.specificType || ''] ||
+					"I see you're exploring John's services! I'm his AI assistant and can provide detailed information about his web development, mobile development, UI/UX design, consulting, cloud solutions, and maintenance services. I can explain his approach, show relevant case studies, or help you schedule a consultation. Which service interests you most?"
+				);
       
       case 'case-study':
         if (context.specificType) {
@@ -219,13 +260,31 @@ export default function Chatbot() {
       const pageTitle = document.title;
       
       // Try to extract content from the page with multiple selectors
-      const pageContent = document.querySelector('main, .main-content, .content, .container, article, .article-content, .post-content, [data-testid="article-content"], .prose, .post-body, .entry-content')?.textContent?.trim();
+			const pageContent = document
+				.querySelector(
+					'main, .main-content, .content, .container, article, .article-content, .post-content, [data-testid="article-content"], .prose, .post-body, .entry-content',
+				)
+				?.textContent?.trim();
       
       // Try to extract title from the page
-      const pageHeading = document.querySelector('h1, .article-title, .post-title, [data-testid="article-title"], .title, .headline')?.textContent?.trim();
+			const pageHeading = document
+				.querySelector(
+					'h1, .article-title, .post-title, [data-testid="article-title"], .title, .headline',
+				)
+				?.textContent?.trim();
       
       // Determine specific page type based on pathname and content
-      let pageType: 'home' | 'about' | 'work' | 'portfolio' | 'contact' | 'blog' | 'services' | 'case-study' | 'article' | 'page' = 'page';
+			let pageType:
+				| 'home'
+				| 'about'
+				| 'work'
+				| 'portfolio'
+				| 'contact'
+				| 'blog'
+				| 'services'
+				| 'case-study'
+				| 'article'
+				| 'page' = 'page';
       let specificType = '';
       
       // Analyze pathname to determine page type
@@ -258,7 +317,7 @@ export default function Chatbot() {
         if (match) specificType = match[1];
       } else if (pathname !== '/') {
         // Check if it looks like an article (has content and title)
-        if (pageHeading && (pageContent && pageContent.length > 500)) {
+				if (pageHeading && pageContent && pageContent.length > 500) {
           pageType = 'article';
         }
       }
@@ -271,7 +330,7 @@ export default function Chatbot() {
           url: url,
           type: pageType,
           specificType: specificType,
-          pathname: pathname
+					pathname: pathname,
         };
       }
       
@@ -297,19 +356,21 @@ export default function Chatbot() {
       
       // Detect page context when chatbot opens
       const context = detectPageContext();
-      console.log('🔍 Page context detected:', context);
+      // Page context detected
       setPageContext(context);
       
       // Update initial message based on page context with personalized responses
-      console.log('📝 Generating personalized welcome for page:', context?.title || 'unknown');
-      setMessages(prev => {
+      // Generating personalized welcome for page
+			setMessages((prev) => {
         if (prev.length === 1 && prev[0].id === '1') {
           const welcomeMessage = generatePersonalizedWelcome(context);
           
-          return [{
+					return [
+						{
             ...prev[0],
-            text: welcomeMessage
-          }];
+							text: welcomeMessage,
+						},
+					];
         }
         return prev;
       });
@@ -325,7 +386,7 @@ export default function Chatbot() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!isOpen && isSpeaking) {
-      console.log('🔊 Chatbot closed, stopping voice');
+      // Chatbot closed, stopping voice
       stopSpeaking();
     }
   }, [isOpen, isSpeaking]);
@@ -335,7 +396,7 @@ export default function Chatbot() {
   useEffect(() => {
     return () => {
       if (isSpeaking) {
-        console.log('🔊 Component unmounting, stopping voice');
+        // Component unmounting, stopping voice
         stopSpeaking();
       }
     };
@@ -345,21 +406,25 @@ export default function Chatbot() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Check for speech recognition support with better mobile detection
-      const hasSpeechRecognition = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			const hasSpeechRecognition =
+				'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+				navigator.userAgent,
+			);
       
       console.log('🎤 Speech recognition check:', { 
         hasSpeechRecognition, 
         isMobile, 
         userAgent: navigator.userAgent.substring(0, 100),
         webkitSpeechRecognition: 'webkitSpeechRecognition' in window,
-        SpeechRecognition: 'SpeechRecognition' in window
+				SpeechRecognition: 'SpeechRecognition' in window,
       });
       
       if (hasSpeechRecognition) {
         console.log('🎤 Initializing speech recognition...');
         try {
-          const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+					const SpeechRecognition =
+						(window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
           recognitionRef.current = new SpeechRecognition();
           
           // Mobile-specific settings
@@ -390,17 +455,25 @@ export default function Chatbot() {
             // Enhanced error handling for mobile
             if (event.error === 'not-allowed') {
               if (isMobile) {
-                alert('Microphone access denied. On mobile, please:\n1. Allow microphone access when prompted\n2. Check your browser settings\n3. Try using Chrome or Safari');
+								alert(
+									'Microphone access denied. On mobile, please:\n1. Allow microphone access when prompted\n2. Check your browser settings\n3. Try using Chrome or Safari',
+								);
               } else {
-                alert('Microphone access denied. Please allow microphone access in your browser settings.');
+								alert(
+									'Microphone access denied. Please allow microphone access in your browser settings.',
+								);
               }
             } else if (event.error === 'no-speech') {
               console.log('🎤 No speech detected');
               if (isMobile) {
-                alert('No speech detected. Please try speaking more clearly and ensure your microphone is working.');
+								alert(
+									'No speech detected. Please try speaking more clearly and ensure your microphone is working.',
+								);
               }
             } else if (event.error === 'network') {
-              alert('Network error with speech recognition. Please check your internet connection.');
+							alert(
+								'Network error with speech recognition. Please check your internet connection.',
+							);
             } else if (event.error === 'audio-capture') {
               alert('Audio capture error. Please check your microphone and try again.');
             } else if (event.error === 'service-not-allowed') {
@@ -508,7 +581,7 @@ export default function Chatbot() {
           // Track message sent
       // trackMessageSent(userMessage.text);
 
-    setMessages(prev => [...prev, userMessage]);
+		setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
 
@@ -521,7 +594,7 @@ export default function Chatbot() {
         body: JSON.stringify({ 
           message: userMessage.text,
           conversationHistory: conversationHistory,
-          pageContext: pageContext
+					pageContext: pageContext,
         }),
       });
 
@@ -535,27 +608,33 @@ export default function Chatbot() {
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-        assistant: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again."
+				assistant:
+					data.response ||
+					data.fallback ||
+					"I'm sorry, I couldn't process your request. Please try again.",
       };
       
-      setConversationHistory(prev => [...prev, newHistoryEntry]);
+			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
       // Keep only last 5 exchanges to manage context size
       if (conversationHistory.length >= 10) {
-        setConversationHistory(prev => prev.slice(-5));
+				setConversationHistory((prev) => prev.slice(-5));
       }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again.",
+				text:
+					data.response ||
+					data.fallback ||
+					"I'm sorry, I couldn't process your request. Please try again.",
         sender: 'bot',
         timestamp: new Date(),
         intent: data.intent,
         suggestedActions: data.suggestedActions,
-        uiActions: data.uiActions
+				uiActions: data.uiActions,
       };
 
-      setMessages(prev => [...prev, botMessage]);
+			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
       if (data.uiActions && data.uiActions.length > 0) {
@@ -580,7 +659,7 @@ export default function Chatbot() {
         sender: 'bot',
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+			setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -670,18 +749,22 @@ export default function Chatbot() {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                durationMinutes: (action.data?.meetingDurations?.[0]) || 30,
+								durationMinutes: action.data?.meetingDurations?.[0] || 30,
                 startISO: now.toISOString(),
                 endISO: end.toISOString(),
                 timeZone: tz,
                 dayStartHour: action.data?.businessHours?.start ?? 9,
                 dayEndHour: action.data?.businessHours?.end ?? 18,
                 maxCandidates: 24,
-              })
+							}),
             });
             if (res.ok) {
               const data = await res.json();
-              const slots = (data.slots || []).map((s: any) => ({ start: s.startISO, end: s.endISO, duration: (action.data?.meetingDurations?.[0]) || 30 }));
+							const slots = (data.slots || []).map((s: any) => ({
+								start: s.startISO,
+								end: s.endISO,
+								duration: action.data?.meetingDurations?.[0] || 30,
+							}));
               setBookingModalData({
                 availableSlots: slots,
                 timezone: action.data?.timezone || tz,
@@ -748,7 +831,11 @@ export default function Chatbot() {
     setInputValue(bookingMessage);
   };
 
-  const handleContactFormSubmit = (contactData: { name: string; email: string; timezone: string }) => {
+	const handleContactFormSubmit = (contactData: {
+		name: string;
+		email: string;
+		timezone: string;
+	}) => {
     setUserContactInfo(contactData);
     
     // Send a message to the chatbot with the contact information
@@ -774,7 +861,7 @@ export default function Chatbot() {
       sender: 'bot',
       timestamp: new Date(),
     };
-    setMessages(prev => [...prev, successMessage]);
+		setMessages((prev) => [...prev, successMessage]);
   };
 
   const handleConfirmationConfirm = async () => {
@@ -795,7 +882,7 @@ export default function Chatbot() {
           attendeeName: confirmationModalData.bookingDetails.name,
           summary: 'Meeting with John',
           description: 'Booked via chatbot confirmation modal',
-          sendUpdates: 'all'
+					sendUpdates: 'all',
         }),
       });
 
@@ -813,7 +900,9 @@ export default function Chatbot() {
       // Add a success message to the chat with Meet link and Add to Calendar
       const confirmMsg: string[] = [];
       confirmMsg.push(`✅ Meeting confirmed and booked!`);
-      confirmMsg.push(`• When: ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}`);
+			confirmMsg.push(
+				`• When: ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}`,
+			);
       if (result?.booking?.googleMeetLink) {
         confirmMsg.push(`• Meet: ${result.booking.googleMeetLink}`);
       }
@@ -821,9 +910,13 @@ export default function Chatbot() {
         confirmMsg.push(`• Calendar: ${result.booking.googleEventLink}`);
       }
       const messageText = confirmMsg.join('\n');
-      const successMessage: Message = { id: (Date.now() + 1).toString(), text: messageText, sender: 'bot', timestamp: new Date() };
-      setMessages(prev => [...prev, successMessage]);
-      
+			const successMessage: Message = {
+				id: (Date.now() + 1).toString(),
+				text: messageText,
+				sender: 'bot',
+				timestamp: new Date(),
+			};
+			setMessages((prev) => [...prev, successMessage]);
     } catch (error) {
       console.error('Error confirming booking:', error);
       
@@ -835,7 +928,7 @@ export default function Chatbot() {
         timestamp: new Date(),
       };
       
-      setMessages(prev => [...prev, errorMessage]);
+			setMessages((prev) => [...prev, errorMessage]);
       
       // Close the confirmation modal
       setIsConfirmationModalOpen(false);
@@ -847,10 +940,11 @@ export default function Chatbot() {
     let message = '';
     switch (action) {
       case 'schedule':
-        message = 'I\'d like to schedule a meeting with John. Can you help me find available times?';
+				message = "I'd like to schedule a meeting with John. Can you help me find available times?";
         break;
       case 'case-study':
-        message = 'I\'d like to see the Tendril case study. Can you show me the problem statement and solution overview?';
+				message =
+					"I'd like to see the Tendril case study. Can you show me the problem statement and solution overview?";
         break;
       default:
         return;
@@ -869,7 +963,7 @@ export default function Chatbot() {
           // Track message sent
       // trackMessageSent(userMessage.text);
 
-    setMessages(prev => [...prev, userMessage]);
+		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
     try {
@@ -881,7 +975,7 @@ export default function Chatbot() {
         body: JSON.stringify({ 
           message: userMessage.text,
           conversationHistory: conversationHistory,
-          pageContext: pageContext
+					pageContext: pageContext,
         }),
       });
 
@@ -895,27 +989,33 @@ export default function Chatbot() {
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-        assistant: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again."
+				assistant:
+					data.response ||
+					data.fallback ||
+					"I'm sorry, I couldn't process your request. Please try again.",
       };
       
-      setConversationHistory(prev => [...prev, newHistoryEntry]);
+			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
       // Keep only last 5 exchanges to manage context size
       if (conversationHistory.length >= 10) {
-        setConversationHistory(prev => prev.slice(-5));
+				setConversationHistory((prev) => prev.slice(-5));
       }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response || data.fallback || "I'm sorry, I couldn't process your request. Please try again.",
+				text:
+					data.response ||
+					data.fallback ||
+					"I'm sorry, I couldn't process your request. Please try again.",
         sender: 'bot',
         timestamp: new Date(),
         intent: data.intent,
         suggestedActions: data.suggestedActions,
-        uiActions: data.uiActions
+				uiActions: data.uiActions,
       };
 
-      setMessages(prev => [...prev, botMessage]);
+			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
       if (data.uiActions && data.uiActions.length > 0) {
@@ -937,7 +1037,7 @@ export default function Chatbot() {
         sender: 'bot',
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+			setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -964,7 +1064,7 @@ export default function Chatbot() {
           caseStudyContent: data,
         };
         
-        setMessages(prev => [...prev, newMessage]);
+				setMessages((prev) => [...prev, newMessage]);
       }
     } catch (error) {
       console.error('Error fetching chapter:', error);
@@ -976,8 +1076,11 @@ export default function Chatbot() {
   };
 
   const startListening = () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent,
+		);
+		const isLocalhost =
+			window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
     console.log('🎤 startListening called:', { 
       hasRecognition: !!recognitionRef.current, 
@@ -989,25 +1092,29 @@ export default function Chatbot() {
       webkitSpeechRecognition: 'webkitSpeechRecognition' in window,
       SpeechRecognition: 'SpeechRecognition' in window,
       speechSynthesis: 'speechSynthesis' in window,
-      permissions: navigator.permissions ? 'Available' : 'Not Available'
+			permissions: navigator.permissions ? 'Available' : 'Not Available',
     });
     
     // Special handling for localhost on mobile
     if (isLocalhost && isMobile) {
-      alert('⚠️ Localhost Detection\n\nYou\'re testing on localhost on a mobile device. Mobile browsers have strict security policies that often block microphone access on localhost.\n\nTo test microphone functionality:\n1. Deploy your site to a real domain (like Vercel, Netlify, etc.)\n2. Or test on desktop browser\n3. Or use text input for now\n\nThis is a browser security limitation, not a bug in the code.');
+			alert(
+				"⚠️ Localhost Detection\n\nYou're testing on localhost on a mobile device. Mobile browsers have strict security policies that often block microphone access on localhost.\n\nTo test microphone functionality:\n1. Deploy your site to a real domain (like Vercel, Netlify, etc.)\n2. Or test on desktop browser\n3. Or use text input for now\n\nThis is a browser security limitation, not a bug in the code.",
+			);
       return;
     }
     
     // Check if we can access permissions API
     if (navigator.permissions) {
-      navigator.permissions.query({ name: 'microphone' as PermissionName })
+			navigator.permissions
+				.query({ name: 'microphone' as PermissionName })
         .then((permissionStatus) => {
           console.log('🎤 Microphone permission status:', permissionStatus.state);
           if (permissionStatus.state === 'denied') {
             let guidance = 'Microphone access is permanently denied. Please:\n';
             
             if (isLocalhost) {
-              guidance += '1. This is localhost - mobile browsers often block microphone on localhost\n';
+							guidance +=
+								'1. This is localhost - mobile browsers often block microphone on localhost\n';
               guidance += '2. Deploy to a real domain to test microphone\n';
               guidance += '3. Or use text input for now\n';
               guidance += '\nThis is a browser security limitation.';
@@ -1028,12 +1135,19 @@ export default function Chatbot() {
     }
     
     // Check if speech recognition is supported
-    if (typeof window === 'undefined' || (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))) {
+		if (
+			typeof window === 'undefined' ||
+			(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window))
+		) {
       console.error('🎤 Speech recognition not supported in this browser');
       if (isMobile) {
-        alert('Speech recognition is not supported in your mobile browser. Please use Chrome or Safari on mobile.');
+				alert(
+					'Speech recognition is not supported in your mobile browser. Please use Chrome or Safari on mobile.',
+				);
       } else {
-        alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+				alert(
+					'Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.',
+				);
       }
       return;
     }
@@ -1054,7 +1168,8 @@ export default function Chatbot() {
              
                            // Reset the recognition instance for mobile
               try {
-                const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+						const SpeechRecognition =
+							(window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
                 recognitionRef.current = new SpeechRecognition();
                 recognitionRef.current.continuous = false;
                 recognitionRef.current.interimResults = false;
@@ -1088,11 +1203,11 @@ export default function Chatbot() {
                     let guidance = 'Microphone access denied. Please:\n';
                     
                     if (userAgent.includes('Safari') && userAgent.includes('iPhone')) {
-                      guidance += '1. Tap the microphone icon in Safari\'s address bar\n';
+									guidance += "1. Tap the microphone icon in Safari's address bar\n";
                       guidance += '2. Select "Allow"\n';
                       guidance += '3. Refresh the page and try again';
                     } else if (userAgent.includes('Chrome') && userAgent.includes('Mobile')) {
-                      guidance += '1. Tap the lock icon in Chrome\'s address bar\n';
+									guidance += "1. Tap the lock icon in Chrome's address bar\n";
                       guidance += '2. Tap "Site settings"\n';
                       guidance += '3. Change microphone to "Allow"\n';
                       guidance += '4. Refresh the page';
@@ -1112,7 +1227,9 @@ export default function Chatbot() {
                     alert('Audio capture error. Please check your microphone.');
                   } else {
                     console.error('🎤 Unknown mobile error:', event.error);
-                    alert(`Speech recognition error: ${event.error}. Please try again or use text input.`);
+								alert(
+									`Speech recognition error: ${event.error}. Please try again or use text input.`,
+								);
                   }
                };
                
@@ -1149,7 +1266,8 @@ export default function Chatbot() {
                  if (mobileError instanceof Error) {
                    errorMessage += `Details: ${mobileError.message}. `;
                  }
-                 errorMessage += 'Please:\n1. Check microphone permissions\n2. Try using Chrome or Safari\n3. Use text input instead';
+							errorMessage +=
+								'Please:\n1. Check microphone permissions\n2. Try using Chrome or Safari\n3. Use text input instead';
                  
                  alert(errorMessage);
                }
@@ -1163,7 +1281,9 @@ export default function Chatbot() {
         console.error('🎤 Error starting listening:', error);
         setIsListening(false);
         if (isMobile) {
-          alert('Error starting speech recognition on mobile. Please:\n1. Allow microphone access\n2. Try using Chrome or Safari\n3. Use text input instead');
+					alert(
+						'Error starting speech recognition on mobile. Please:\n1. Allow microphone access\n2. Try using Chrome or Safari\n3. Use text input instead',
+					);
         } else {
           alert('Error starting speech recognition. Please try again.');
         }
@@ -1172,12 +1292,18 @@ export default function Chatbot() {
       console.error('🎤 Speech recognition not initialized');
       alert('Speech recognition not initialized. Please refresh the page and try again.');
     } else {
-      console.log('🎤 Cannot start listening:', { hasRecognition: !!recognitionRef.current, isListening });
+			console.log('🎤 Cannot start listening:', {
+				hasRecognition: !!recognitionRef.current,
+				isListening,
+			});
     }
   };
 
   const stopListening = () => {
-    console.log('🎤 stopListening called:', { hasRecognition: !!recognitionRef.current, isListening });
+		console.log('🎤 stopListening called:', {
+			hasRecognition: !!recognitionRef.current,
+			isListening,
+		});
     if (recognitionRef.current && isListening) {
       try {
         recognitionRef.current.stop();
@@ -1191,7 +1317,11 @@ export default function Chatbot() {
   };
 
   const speakMessage = async (text: string) => {
-    console.log('🔊 speakMessage called:', { text: text.substring(0, 50) + '...', isVoiceEnabled, hasAudioRef: !!audioRef });
+		console.log('🔊 speakMessage called:', {
+			text: text.substring(0, 50) + '...',
+			isVoiceEnabled,
+			hasAudioRef: !!audioRef,
+		});
     
     // Only speak if voice is explicitly enabled by user
     if (!isVoiceEnabled) {
@@ -1227,7 +1357,6 @@ export default function Chatbot() {
         
         audioRef.src = audioUrl;
         await audioRef.play();
-        
       } catch (error) {
         console.error('🔊 Error in speakMessage:', error);
         setIsSpeaking(false);
@@ -1235,7 +1364,7 @@ export default function Chatbot() {
     } else {
       console.log('🔊 Audio element not available:', { 
         hasAudioRef: !!audioRef, 
-        isVoiceEnabled
+				isVoiceEnabled,
       });
     }
   };
@@ -1315,7 +1444,7 @@ export default function Chatbot() {
            }
            setIsOpen(!isOpen);
          }}
-         className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 p-3 md:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-stone-700 dark:border-stone-300"
+				className="fixed bottom-4 right-4 z-[9999] rounded-full border border-stone-700 bg-stone-900 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-stone-800 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
          aria-label="Toggle chatbot"
          style={{ 
            display: 'flex', 
@@ -1326,35 +1455,33 @@ export default function Chatbot() {
            right: '16px',
            zIndex: 9999,
            width: '50px',
-           height: '50px'
-         }}
-       >
-        {isOpen ? (
-          <X className="h-6 w-6" />
-        ) : (
-          <MessageCircle className="h-6 w-6" />
-        )}
+					height: '50px',
+				}}
+			>
+				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </button>
 
              {/* Chat Window - Opens above the toggle button */}
        {isOpen && (
-         <div className="fixed bottom-20 right-2 left-2 md:bottom-24 md:right-4 md:left-auto md:w-[500px] z-[9998] h-auto max-h-[70vh] sm:max-h-[75vh] md:h-[650px] md:max-h-[650px] bg-white dark:bg-stone-950 rounded-lg shadow-2xl border border-stone-200 dark:border-stone-700 flex flex-col">
+				<div className="fixed bottom-20 left-2 right-2 z-[9998] flex h-auto max-h-[70vh] flex-col rounded-lg border border-stone-200 bg-white shadow-2xl sm:max-h-[75vh] md:bottom-24 md:left-auto md:right-4 md:h-[650px] md:max-h-[650px] md:w-[500px] dark:border-stone-700 dark:bg-stone-950">
           {/* Header */}
-          <div className="bg-stone-900 dark:bg-stone-800 text-white p-3 sm:p-4 md:p-5 rounded-t-lg flex items-center justify-between">
-            <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4 flex-shrink-0">
-              <div className="bg-white dark:bg-stone-100 text-stone-900 dark:text-stone-900 p-2 sm:p-3 md:p-4 rounded-full">
+					<div className="flex items-center justify-between rounded-t-lg bg-stone-900 p-3 text-white sm:p-4 md:p-5 dark:bg-stone-800">
+						<div className="flex flex-shrink-0 items-center space-x-2 sm:space-x-3 md:space-x-4">
+							<div className="rounded-full bg-white p-2 text-stone-900 sm:p-3 md:p-4 dark:bg-stone-100 dark:text-stone-900">
                 <Bot className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-semibold text-sm md:text-base">John&apos;s Assistant</h3>
-                <p className="text-xs text-stone-300 dark:text-stone-400 hidden sm:block">Ask me about John&apos;s background</p>
+								<h3 className="text-sm font-semibold md:text-base">John&apos;s Assistant</h3>
+								<p className="hidden text-xs text-stone-300 sm:block dark:text-stone-400">
+									Ask me about John&apos;s background
+								</p>
               </div>
             </div>
-                         <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
+						<div className="flex flex-shrink-0 items-center space-x-1 sm:space-x-2 md:space-x-3">
                {/* Test Booking Modal Button - Hidden on small screens */}
                <button
                  onClick={() => {
-                   console.log('🔍 Test: Manually triggering booking modal');
+                   // Test: Manually triggering booking modal
                    const testAction = {
                      type: 'ui_action',
                      action: 'show_booking_modal',
@@ -1362,20 +1489,22 @@ export default function Chatbot() {
                        availableSlots: [
                          {
                            start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-                           end: new Date(Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000).toISOString(),
-                           duration: 60
-                         }
+													end: new Date(
+														Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000,
+													).toISOString(),
+													duration: 60,
+												},
                        ],
                        timezone: 'America/New_York',
                        businessHours: { start: 9, end: 18, timezone: 'America/New_York' },
                        meetingDurations: [30, 60],
                        message: 'Test booking modal',
-                       initialStep: 'contact'
-                     }
+											initialStep: 'contact',
+										},
                    };
                    executeUIAction(testAction);
                  }}
-                 className="hidden md:flex p-2 sm:p-3 md:p-4 rounded-full transition-colors text-blue-400 hover:text-blue-300"
+								className="hidden rounded-full p-2 text-blue-400 transition-colors hover:text-blue-300 sm:p-3 md:flex md:p-4"
                  aria-label="Test Booking Modal"
                  title="Test Booking Modal"
                >
@@ -1383,14 +1512,14 @@ export default function Chatbot() {
                </button>
                              <button
                  onClick={() => setShowSettings(true)}
-                 className="p-2 sm:p-3 md:p-4 rounded-full transition-colors text-stone-400 hover:text-stone-300"
+								className="rounded-full p-2 text-stone-400 transition-colors hover:text-stone-300 sm:p-3 md:p-4"
                  aria-label="Settings"
                >
                  <Settings className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                </button>
                              <button
                  onClick={toggleVoice}
-                 className={`p-2 sm:p-3 md:p-4 rounded-full transition-colors ${
+								className={`rounded-full p-2 transition-colors sm:p-3 md:p-4 ${
                    isVoiceEnabled 
                      ? 'text-green-400 hover:text-green-300' 
                      : 'text-stone-400 hover:text-stone-300'
@@ -1403,50 +1532,51 @@ export default function Chatbot() {
                    <VolumeX className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                  )}
                </button>
-              
             </div>
           </div>
 
                      {/* Messages */}
-           <div className="flex-1 overflow-y-auto p-2 sm:p-3 md:p-4 space-y-2 sm:space-y-3 md:space-y-4">
+					<div className="flex-1 space-y-2 overflow-y-auto p-2 sm:space-y-3 sm:p-3 md:space-y-4 md:p-4">
             {messages.map((message) => (
               <div key={message.id}>
                 <div
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[90%] sm:max-w-[85%] md:max-w-[80%] rounded-lg px-3 py-2 md:px-4 md:py-2 ${
+										className={`max-w-[90%] rounded-lg px-3 py-2 sm:max-w-[85%] md:max-w-[80%] md:px-4 md:py-2 ${
                       message.sender === 'user'
-                        ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
-                        : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
+												? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
+												: 'bg-stone-100 text-stone-900 dark:bg-stone-800 dark:text-stone-100'
                     }`}
                   >
                     <div className="flex items-start space-x-1.5 md:space-x-2">
                       {message.sender === 'bot' && (
-                        <Bot className="h-4 w-4 md:h-5 md:w-5 mt-0.5 text-stone-500 dark:text-stone-400 flex-shrink-0" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm md:text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
-                        <p className="text-xs opacity-60 mt-1">
-                          {formatTime(message.timestamp)}
-                        </p>
+												<Bot className="mt-0.5 h-4 w-4 flex-shrink-0 text-stone-500 md:h-5 md:w-5 dark:text-stone-400" />
+											)}
+											<div className="min-w-0 flex-1">
+												<p className="whitespace-pre-wrap text-sm leading-relaxed md:text-sm">
+													{message.text}
+												</p>
+												<p className="mt-1 text-xs opacity-60">{formatTime(message.timestamp)}</p>
                       </div>
                       {message.sender === 'user' && (
-                        <User className="h-3 w-3 md:h-4 md:w-4 mt-0.5 text-stone-300 dark:text-stone-600 flex-shrink-0" />
+												<User className="mt-0.5 h-3 w-3 flex-shrink-0 text-stone-300 md:h-4 md:w-4 dark:text-stone-600" />
                       )}
                     </div>
                   </div>
                 </div>
                 
                 {/* Suggested Actions */}
-                {message.sender === 'bot' && message.suggestedActions && message.suggestedActions.length > 0 && (
-                  <div className="flex justify-start mt-2">
+								{message.sender === 'bot' &&
+									message.suggestedActions &&
+									message.suggestedActions.length > 0 && (
+										<div className="mt-2 flex justify-start">
                     <div className="flex flex-wrap gap-2">
                       {message.suggestedActions.map((action, index) => (
                         <button
                           key={index}
                           onClick={() => handleSuggestedAction(action)}
-                          className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+														className="inline-flex items-center space-x-1 rounded-full bg-stone-200 px-3 py-1.5 text-xs text-stone-700 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
                         >
                           <span>{action.icon}</span>
                           <span>{action.label}</span>
@@ -1459,24 +1589,29 @@ export default function Chatbot() {
 
                 {/* Case Study Content */}
                 {message.sender === 'bot' && message.caseStudyContent && (
-                  <div className="flex justify-start mt-4">
-                    <div className="max-w-full bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 p-4">
+									<div className="mt-4 flex justify-start">
+										<div className="max-w-full rounded-lg border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
                       <div className="mb-4">
-                        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
+												<h3 className="mb-2 text-lg font-semibold text-stone-900 dark:text-stone-100">
                           {message.caseStudyContent.caseStudy.title}
                         </h3>
-                        <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+												<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
                           {message.caseStudyContent.caseStudy.description}
                         </p>
-                        <div className="flex flex-wrap gap-2 mb-4">
+												<div className="mb-4 flex flex-wrap gap-2">
                           {message.caseStudyContent.availableChapters.map((chapter) => (
                             <button
                               key={chapter.id}
-                              onClick={() => handleChapterChange(message.caseStudyContent!.caseStudy.id, chapter.id)}
-                              className={`px-3 py-1 text-xs rounded-full transition-colors ${
+															onClick={() =>
+																handleChapterChange(
+																	message.caseStudyContent!.caseStudy.id,
+																	chapter.id,
+																)
+															}
+															className={`rounded-full px-3 py-1 text-xs transition-colors ${
                                 chapter.id === message.caseStudyContent!.chapter.id
-                                  ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
-                                  : 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-600'
+																	? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
+																	: 'bg-stone-200 text-stone-700 hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600'
                               }`}
                             >
                               {chapter.title}
@@ -1499,13 +1634,19 @@ export default function Chatbot() {
             {/* Loading indicator */}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg px-3 py-2 md:px-4 md:py-2">
+								<div className="rounded-lg bg-stone-100 px-3 py-2 text-stone-900 md:px-4 md:py-2 dark:bg-stone-800 dark:text-stone-100">
                   <div className="flex items-center space-x-1.5 md:space-x-2">
-                    <Bot className="h-4 w-4 md:h-5 md:w-5 text-stone-500 dark:text-stone-400" />
+										<Bot className="h-4 w-4 text-stone-500 md:h-5 md:w-5 dark:text-stone-400" />
                     <div className="flex space-x-1">
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-stone-400 dark:bg-stone-500 rounded-full animate-bounce"></div>
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-stone-400 dark:bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-stone-400 dark:bg-stone-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+											<div className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 md:h-2 md:w-2 dark:bg-stone-500"></div>
+											<div
+												className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 md:h-2 md:w-2 dark:bg-stone-500"
+												style={{ animationDelay: '0.1s' }}
+											></div>
+											<div
+												className="h-1.5 w-1.5 animate-bounce rounded-full bg-stone-400 md:h-2 md:w-2 dark:bg-stone-500"
+												style={{ animationDelay: '0.2s' }}
+											></div>
                     </div>
                   </div>
                 </div>
@@ -1516,18 +1657,18 @@ export default function Chatbot() {
             
             {/* Quick Actions */}
             {messages.length === 1 && !isLoading && (
-              <div className="flex justify-start mt-4">
+							<div className="mt-4 flex justify-start">
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleQuickAction('schedule')}
-                    className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-full hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors"
+										className="inline-flex items-center space-x-1 rounded-full bg-stone-900 px-3 py-1.5 text-xs text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
                   >
                     <Calendar className="h-3 w-3" />
                     <span>Schedule a Meeting</span>
                   </button>
                   <button
                     onClick={() => handleQuickAction('case-study')}
-                    className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full hover:bg-stone-300 dark:hover:bg-stone-600 transition-colors"
+										className="inline-flex items-center space-x-1 rounded-full bg-stone-200 px-3 py-1.5 text-xs text-stone-700 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
                   >
                     <BookOpen className="h-3 w-3" />
                     <span>View Case Study</span>
@@ -1538,7 +1679,7 @@ export default function Chatbot() {
           </div>
 
                      {/* Input and Close Button Row */}
-           <div className="p-2 sm:p-3 md:p-4 border-t border-stone-200 dark:border-stone-700">
+					<div className="border-t border-stone-200 p-2 sm:p-3 md:p-4 dark:border-stone-700">
              <div className="flex items-center gap-2 sm:gap-3">
               <input
                 ref={inputRef}
@@ -1551,22 +1692,22 @@ export default function Chatbot() {
                     stopSpeaking();
                   }
                 }}
-                onKeyPress={handleKeyPress}
-                                 placeholder={isListening ? "Listening..." : "Type your message..."}
-                className="flex-1 px-3 py-2 text-sm md:text-base border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                onKeyDown={handleKeyPress}
+								placeholder={isListening ? 'Listening...' : 'Type your message...'}
+								className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-stone-500 md:text-base dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                 disabled={isLoading || isListening}
               />
               
                              {/* Button Group */}
-               <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+							<div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
                                                    {/* Microphone Button - Hidden on small screens */}
                                      <button
                      onClick={isListening ? stopListening : startListening}
                      disabled={isLoading}
-                     className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg transition-colors flex items-center justify-center flex-shrink-0 hidden md:flex ${
+									className={`flex hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-10 sm:w-10 md:flex ${
                        isListening
-                         ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                         : 'bg-stone-600 dark:bg-stone-500 hover:bg-stone-700 dark:hover:bg-stone-600 text-white'
+											? 'animate-pulse bg-red-500 text-white hover:bg-red-600'
+											: 'bg-stone-600 text-white hover:bg-stone-700 dark:bg-stone-500 dark:hover:bg-stone-600'
                      }`}
                      style={{ minWidth: '32px', minHeight: '32px' }}
                      aria-label={isListening ? 'Stop listening' : 'Start listening'}
@@ -1578,14 +1719,12 @@ export default function Chatbot() {
                        <Mic className="h-3 w-3 sm:h-4 sm:w-4" />
                      )}
                    </button>
-                 
-                 
                 
                                  {/* Send Button */}
                  <button
                    onClick={sendMessage}
                    disabled={!inputValue.trim() || isLoading || isListening}
-                   className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 disabled:bg-stone-300 dark:disabled:bg-stone-600 text-white dark:text-stone-900 rounded-lg transition-colors disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
+									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
                    style={{ minWidth: '32px', minHeight: '32px' }}
                    aria-label="Send message"
                  >
@@ -1601,7 +1740,7 @@ export default function Chatbot() {
                      }
                      setIsOpen(false);
                    }}
-                   className="w-8 h-8 sm:w-10 sm:h-10 bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
+									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
                    style={{ minWidth: '32px', minHeight: '32px' }}
                    aria-label="Close chat"
                  >
@@ -1667,11 +1806,11 @@ export default function Chatbot() {
       
       {/* Existing Booking Display */}
       {existingBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in slide-in-from-bottom-4 duration-300">
-            <div className="flex items-center justify-between mb-4">
+				<div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-2 duration-300 sm:p-4">
+					<div className="animate-in slide-in-from-bottom-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl duration-300">
+						<div className="mb-4 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+								<div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
                   <Check className="h-4 w-4 text-green-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Existing Booking Found</h3>
@@ -1685,43 +1824,44 @@ export default function Chatbot() {
             </div>
             
             <div className="space-y-4">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-green-800 font-medium">
+							<div className="rounded-lg border border-green-200 bg-green-50 p-4">
+								<p className="font-medium text-green-800">
                   You already have a confirmed meeting scheduled!
                 </p>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Name:</span>
+							<div className="space-y-3 rounded-lg bg-gray-50 p-4">
+								<div className="flex items-center justify-between">
+									<span className="font-medium text-gray-600">Name:</span>
                   <span className="font-semibold">{existingBooking.name}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Email:</span>
+								<div className="flex items-center justify-between">
+									<span className="font-medium text-gray-600">Email:</span>
                   <span className="font-semibold">{existingBooking.email}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Date:</span>
+								<div className="flex items-center justify-between">
+									<span className="font-medium text-gray-600">Date:</span>
                   <span className="font-semibold">
                     {new Date(existingBooking.startTime).toLocaleDateString()}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Time:</span>
+								<div className="flex items-center justify-between">
+									<span className="font-medium text-gray-600">Time:</span>
                   <span className="font-semibold">
-                    {new Date(existingBooking.startTime).toLocaleTimeString()} - {new Date(existingBooking.endTime).toLocaleTimeString()}
+										{new Date(existingBooking.startTime).toLocaleTimeString()} -{' '}
+										{new Date(existingBooking.endTime).toLocaleTimeString()}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 font-medium">Duration:</span>
+								<div className="flex items-center justify-between">
+									<span className="font-medium text-gray-600">Duration:</span>
                   <span className="font-semibold">{existingBooking.duration} minutes</span>
                 </div>
               </div>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+							<div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-blue-600 text-xs font-bold">✓</span>
+									<div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
+										<span className="text-xs font-bold text-blue-600">✓</span>
                   </div>
                   <div className="text-sm text-blue-800">
                     <p className="font-medium">Calendar invitation sent</p>
@@ -1732,7 +1872,7 @@ export default function Chatbot() {
               
               <button
                 onClick={() => setExistingBooking(null)}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+								className="w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-green-700"
               >
                 Got it!
               </button>
@@ -1743,10 +1883,10 @@ export default function Chatbot() {
       
       {/* Permission Request Modal */}
       {showPermissionRequest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+					<div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+						<div className="mb-4 flex items-center space-x-3">
+							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
                 <Bot className="h-5 w-5 text-blue-600" />
               </div>
               <div>
@@ -1756,18 +1896,21 @@ export default function Chatbot() {
             </div>
             
             <div className="mb-6">
-                              <p className="text-gray-700 mb-3">
-                  I&apos;d like to show you a calendar with available meeting times. This will open a modal window to help you schedule a meeting.
+							<p className="mb-3 text-gray-700">
+								I&apos;d like to show you a calendar with available meeting times. This will open a
+								modal window to help you schedule a meeting.
                 </p>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+							<div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+									<div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
                     <Calendar className="h-3 w-3 text-blue-600" />
                   </div>
                   <div className="text-sm text-blue-800">
                     <p className="font-medium">Calendar Modal</p>
-                    <p className="text-blue-600">Shows available meeting times from Google Calendar</p>
+										<p className="text-blue-600">
+											Shows available meeting times from Google Calendar
+										</p>
                   </div>
                 </div>
               </div>
@@ -1776,19 +1919,19 @@ export default function Chatbot() {
             <div className="flex space-x-3">
               <button
                 onClick={denyUIPermission}
-                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+								className="flex-1 rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200"
               >
                 Not Now
               </button>
               <button
                 onClick={grantUIPermission}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+								className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 Allow
               </button>
             </div>
             
-            <p className="text-xs text-gray-500 mt-3 text-center">
+						<p className="mt-3 text-center text-xs text-gray-500">
               You can change this setting anytime in your browser settings
             </p>
           </div>
@@ -1797,19 +1940,19 @@ export default function Chatbot() {
       
       {/* Settings Modal */}
       {showSettings && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-stone-950 rounded-lg shadow-xl max-w-md w-full p-6 border border-stone-200 dark:border-stone-700">
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+					<div className="w-full max-w-md rounded-lg border border-stone-200 bg-white p-6 shadow-xl dark:border-stone-700 dark:bg-stone-950">
             {/* Header */}
-            <div className="bg-stone-900 dark:bg-stone-800 text-white p-4 rounded-lg -m-6 mb-4 flex items-center justify-between">
+						<div className="-m-6 mb-4 flex items-center justify-between rounded-lg bg-stone-900 p-4 text-white dark:bg-stone-800">
               <div className="flex items-center space-x-3">
-                <div className="bg-white dark:bg-stone-100 text-stone-900 dark:text-stone-900 p-2 rounded-full">
+								<div className="rounded-full bg-white p-2 text-stone-900 dark:bg-stone-100 dark:text-stone-900">
                   <Settings className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold">Chatbot Settings</h3>
               </div>
               <button
                 onClick={() => setShowSettings(false)}
-                className="text-stone-400 hover:text-stone-300 transition-colors"
+								className="text-stone-400 transition-colors hover:text-stone-300"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1817,29 +1960,39 @@ export default function Chatbot() {
             
             <div className="space-y-4">
               {/* UI Permissions Section */}
-              <div className="border border-stone-200 dark:border-stone-700 rounded-lg p-4 bg-stone-50 dark:bg-stone-900">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-2">UI Permissions</h4>
-                <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
+							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
+								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
+									UI Permissions
+								</h4>
+								<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
                   Control whether the AI assistant can show you modals and interactive elements.
                 </p>
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-stone-700 dark:text-stone-300">Calendar Modals</span>
-                    <span className={`text-sm px-2 py-1 rounded ${
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Calendar Modals
+										</span>
+										<span
+											className={`rounded px-2 py-1 text-sm ${
                       uiPermissionGranted === true 
-                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' 
+													? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : uiPermissionGranted === false 
-                        ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-                        : 'bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200'
-                    }`}>
-                      {uiPermissionGranted === true ? 'Allowed' : uiPermissionGranted === false ? 'Denied' : 'Not Set'}
+														? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+														: 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200'
+											}`}
+										>
+											{uiPermissionGranted === true
+												? 'Allowed'
+												: uiPermissionGranted === false
+													? 'Denied'
+													: 'Not Set'}
                     </span>
                   </div>
                   
                   <button
                     onClick={resetUIPermission}
-                    className="w-full px-3 py-2 text-sm bg-stone-200 dark:bg-stone-700 hover:bg-stone-300 dark:hover:bg-stone-600 text-stone-700 dark:text-stone-300 rounded-lg transition-colors"
+										className="w-full rounded-lg bg-stone-200 px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
                   >
                     Reset Permission
                   </button>
@@ -1847,17 +2000,21 @@ export default function Chatbot() {
               </div>
               
               {/* Voice Settings Section */}
-              <div className="border border-stone-200 dark:border-stone-700 rounded-lg p-4 bg-stone-50 dark:bg-stone-900">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-2">Voice Settings</h4>
+							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
+								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
+									Voice Settings
+								</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-stone-700 dark:text-stone-300">Text-to-Speech</span>
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Text-to-Speech
+										</span>
                     <button
                       onClick={toggleVoice}
-                      className={`px-3 py-1 text-sm rounded transition-colors ${
+											className={`rounded px-3 py-1 text-sm transition-colors ${
                         isVoiceEnabled 
-                          ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800' 
-                          : 'bg-stone-200 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-300 dark:hover:bg-stone-600'
+													? 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800'
+													: 'bg-stone-200 text-stone-800 hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-200 dark:hover:bg-stone-600'
                       }`}
                     >
                       {isVoiceEnabled ? 'Enabled' : 'Disabled'}
@@ -1866,11 +2023,13 @@ export default function Chatbot() {
                   
                   {isVoiceEnabled && (
                     <div className="space-y-2">
-                      <label className="text-sm text-stone-700 dark:text-stone-300 font-medium">Select OpenAI Voice</label>
+											<label className="text-sm font-medium text-stone-700 dark:text-stone-300">
+												Select OpenAI Voice
+											</label>
                       <select
                         value={selectedOpenAIVoice}
                         onChange={(e) => handleVoiceSelection(e.target.value)}
-                        className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-transparent text-sm"
+												className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                       >
                         <option value="alloy">Alloy (Neutral) 🎭</option>
                         <option value="echo">Echo (Male) 🗣️</option>
@@ -1891,7 +2050,7 @@ export default function Chatbot() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowSettings(false)}
-                className="px-4 py-2 bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 rounded-lg transition-colors"
+								className="rounded-lg bg-stone-900 px-4 py-2 text-white transition-colors hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
               >
                 Close
               </button>

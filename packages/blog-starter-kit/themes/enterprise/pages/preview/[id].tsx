@@ -2,13 +2,14 @@ import request from 'graphql-request';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Container } from '../../components/shared/container';
 import { AppProvider } from '../../components/contexts/appContext';
-import { Footer } from '../../components/shared/footer';
-import ModernHeader from '../../components/features/navigation/modern-header';
-import { Layout } from '../../components/shared/layout';
 import { MarkdownToHtml } from '../../components/features/blog/markdown-to-html';
 import { PostHeader } from '../../components/features/blog/post-header';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Container } from '../../components/shared/container';
+import { Footer } from '../../components/shared/footer';
+import { Layout } from '../../components/shared/layout';
+import type { Post } from '../../generated/graphql';
 import {
 	DraftByIdDocument,
 	DraftByIdQuery,
@@ -18,7 +19,6 @@ import {
 	PublicationByHostQuery,
 	PublicationByHostQueryVariables,
 } from '../../generated/graphql';
-import type { Post } from '../../generated/graphql';
 
 type Props = {
 	post: Post;
@@ -37,7 +37,7 @@ export default function Post({ publication, post }: Props) {
 		<li key={tag.id}>
 			<Link
 				href={`/tag/${tag.slug}`}
-				className="block rounded-full border px-2 py-1 font-medium hover:bg-slate-50 dark:border-neutral-800 dark:hover:bg-neutral-800 md:px-4"
+				className="block rounded-full border px-2 py-1 font-medium hover:bg-slate-50 md:px-4 dark:border-neutral-800 dark:hover:bg-neutral-800"
 			>
 				#{tag.slug}
 			</Link>
@@ -63,12 +63,12 @@ export default function Post({ publication, post }: Props) {
 							readTimeInMinutes={post.readTimeInMinutes}
 						/>
 						<MarkdownToHtml contentMarkdown={post.content.markdown} />
-						<div className="mx-auto w-full px-5 text-slate-600 dark:text-neutral-300 md:max-w-screen-md">
+						<div className="mx-auto w-full px-5 text-slate-600 md:max-w-screen-md dark:text-neutral-300">
 							<ul className="flex flex-row flex-wrap items-center gap-2">{tagsList}</ul>
 						</div>
 					</article>
 				</Container>
-				<Footer />
+				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '../../ui/badge';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { PostFragment } from '../../../generated/graphql';
+import { useState, useEffect } from 'react';
 
 interface FeaturedPostProps {
   post: PostFragment;
@@ -14,6 +15,8 @@ interface FeaturedPostProps {
 }
 
 export default function FeaturedPost({ post, coverImage, readTime, tags }: FeaturedPostProps) {
+  const [imageError, setImageError] = useState(false);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -23,36 +26,68 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
     });
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="group relative overflow-hidden rounded-xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 shadow-lg hover:shadow-xl transition-all duration-300"
-    >
-      <div className="grid lg:grid-cols-2 gap-0">
-        {/* Left Section - Image */}
-        <div className="relative group">
-          <div className="relative overflow-hidden rounded-l-xl">
-            <Image
-              src={coverImage}
-              alt={post.title}
-              width={600}
-              height={500}
-              className="w-full h-[400px] lg:h-[500px] object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+    <section className="bg-stone-50 py-8 dark:bg-stone-900">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          viewport={{ once: true }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Featured Post</h2>
             <Badge
               variant="secondary"
-              className="absolute top-4 left-4 bg-white/90 dark:bg-stone-800/90 text-stone-700 dark:text-stone-300 border-0"
+              className="bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
             >
               Featured
             </Badge>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Section - Content */}
-        <div className="p-8 lg:p-10 flex flex-col justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+          viewport={{ once: true }}
+          className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2"
+        >
+          {/* Left Section - Image */}
+          <div className="group relative">
+            <div className="relative overflow-hidden rounded-lg">
+              {!imageError && coverImage ? (
+                <Image
+                  src={coverImage}
+                  alt={post.title}
+                  width={600}
+                  height={500}
+                  className="h-[400px] w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[500px]"
+                  onError={handleImageError}
+                />
+              ) : (
+                <div className="flex h-[400px] w-full items-center justify-center bg-stone-200 dark:bg-stone-800 lg:h-[500px]">
+                  <span className="text-sm text-stone-500 dark:text-stone-400">
+                    {imageError ? 'Image failed to load' : 'No image available'}
+                  </span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <Badge
+                variant="secondary"
+                className="absolute left-4 top-4 bg-white/90 text-stone-700 dark:bg-stone-800/90 dark:text-stone-300"
+              >
+                Featured
+              </Badge>
+            </div>
+          </div>
+
+          {/* Right Section - Content */}
           <div className="space-y-6">
             {/* Metadata */}
             <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
@@ -67,12 +102,12 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             </div>
 
             {/* Title */}
-            <h3 className="text-3xl lg:text-4xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
+            <h3 className="text-3xl font-bold leading-tight text-stone-900 lg:text-4xl dark:text-stone-100">
               {post.title}
             </h3>
 
             {/* Excerpt */}
-            <p className="text-lg text-stone-600 dark:text-stone-400 leading-relaxed">
+            <p className="text-lg leading-relaxed text-stone-600 dark:text-stone-400">
               {post.brief}
             </p>
 
@@ -82,7 +117,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
                 <Badge
                   key={index}
                   variant="outline"
-                  className="border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  className="border-stone-300 text-stone-700 dark:border-stone-600 dark:text-stone-300"
                 >
                   {tag}
                 </Badge>
@@ -92,14 +127,14 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             {/* Call to Action */}
             <Link
               href={`/${post.slug}`}
-              className="inline-flex items-center gap-2 text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 font-semibold text-lg transition-colors group"
+              className="group inline-flex items-center gap-2 text-lg font-semibold text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
             >
               Read full article
               <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </section>
   );
 }

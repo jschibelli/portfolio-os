@@ -1,93 +1,51 @@
 [
-    {
-      "id": "zeus-ecom",
-      "title": "Zeus E-Commerce Platform",
-      "slug": "zeus-ecommerce-platform",
-      "description": "A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration.",
-      "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
-      "tags": ["Next.js", "Tailwind CSS", "Stripe", "Headless CMS"],
-      "liveUrl": "https://zeus.shop",
-      "caseStudyUrl": "/case-studies/zeus-ecommerce-platform"
-    },
-    {
-      "id": "synaplyai",
-      "title": "SynaplyAI – Real-Time AI Collaboration Platform",
-      "slug": "synaplyai",
-      "description": "A multi-tenant AI content platform featuring token-level conflict resolution and real-time collaboration. Built with Next.js, Prisma, and Framer Motion.",
-      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
-      "tags": ["Next.js", "TypeScript", "Prisma", "Framer Motion", "AI"],
-      "liveUrl": "https://synaply.ai",
-      "caseStudyUrl": "/case-studies/synaplyai"
-    },
-    {
-      "id": "content-hub",
-      "title": "ContentHub CMS Redesign",
-      "slug": "contenthub-cms-redesign",
-      "description": "Led frontend redesign for a SaaS CMS, focusing on accessibility and performance. Delivered pixel-perfect UIs using LaunchUI, integrated internationalization and improved onboarding flows.",
-      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
-      "tags": ["React", "LaunchUI", "Accessibility", "i18n"],
-      "liveUrl": "https://contenthub.io",
-      "caseStudyUrl": "/case-studies/contenthub-cms-redesign"
-    },
-    {
-      "id": "fintech-dashboard",
-      "title": "FinTech Analytics Dashboard",
-      "slug": "fintech-analytics-dashboard",
-      "description": "A comprehensive financial analytics dashboard with real-time data visualization, interactive charts, and advanced filtering capabilities for investment portfolio management.",
-      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-      "tags": ["React", "D3.js", "TypeScript", "WebSocket", "Chart.js"],
-      "liveUrl": "https://fintech-dashboard.demo",
-      "caseStudyUrl": "/case-studies/fintech-analytics-dashboard"
-    },
-    {
-      "id": "healthcare-portal",
-      "title": "Healthcare Patient Portal",
-      "slug": "healthcare-patient-portal",
-      "description": "A secure patient portal with appointment scheduling, medical records access, and telemedicine integration. Built with HIPAA compliance and accessibility standards.",
-      "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&h=600&fit=crop",
-      "tags": ["Next.js", "PostgreSQL", "HIPAA", "WebRTC", "Accessibility"],
-      "liveUrl": "https://healthcare-portal.demo",
-      "caseStudyUrl": "/case-studies/healthcare-patient-portal"
-    },
-    {
-      "id": "real-estate-platform",
-      "title": "Real Estate Management Platform",
-      "slug": "real-estate-management-platform",
-      "description": "A comprehensive real estate platform with property listings, virtual tours, and CRM integration. Features advanced search filters and interactive property maps.",
-      "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
-      "tags": ["React", "Node.js", "MongoDB", "Google Maps API", "Stripe"],
-      "liveUrl": "https://real-estate.demo",
-      "caseStudyUrl": "/case-studies/real-estate-management-platform"
-    },
-    {
-      "id": "edtech-platform",
-      "title": "EdTech Learning Platform",
-      "slug": "edtech-learning-platform",
-      "description": "An interactive learning platform with video courses, progress tracking, and gamification features. Supports multiple learning paths and adaptive content delivery.",
-      "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop",
-      "tags": ["Next.js", "TypeScript", "Video.js", "Gamification", "Analytics"],
-      "liveUrl": "https://edtech-platform.demo",
-      "caseStudyUrl": "/case-studies/edtech-learning-platform"
-    },
-    {
-      "id": "logistics-dashboard",
-      "title": "Logistics & Supply Chain Dashboard",
-      "slug": "logistics-supply-chain-dashboard",
-      "description": "A real-time logistics dashboard for supply chain management with route optimization, inventory tracking, and predictive analytics for delivery times.",
-      "image": "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&h=600&fit=crop",
-      "tags": ["React", "Node.js", "PostgreSQL", "Machine Learning", "IoT"],
-      "liveUrl": "https://logistics-dashboard.demo",
-      "caseStudyUrl": "/case-studies/logistics-supply-chain-dashboard"
-    },
-    {
-      "id": "social-media-app",
-      "title": "Social Media Content Platform",
-      "slug": "social-media-content-platform",
-      "description": "A social media platform focused on content creators with advanced scheduling, analytics, and multi-platform posting capabilities.",
-      "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&h=600&fit=crop",
-      "tags": ["React Native", "Node.js", "Redis", "Social APIs", "Analytics"],
-      "liveUrl": "https://social-platform.demo",
-      "caseStudyUrl": "/case-studies/social-media-content-platform"
-    }
-  ]
-  
+	{
+		"id": "tendrilo",
+		"title": "Tendril Multi-Tenant Chatbot SaaS",
+		"slug": "tendril-multi-tenant-chatbot-saas",
+		"description": "A strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. Features comprehensive market research, competitive analysis, and detailed technical architecture.",
+		"image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "AI/ML", "Multi-tenant", "SaaS"],
+		"liveUrl": "https://tendrilo.ai",
+		"caseStudyUrl": "/case-studies/tendrilo-case-study"
+	},
+	{
+		"id": "zeus-ecom",
+		"title": "Zeus E-Commerce Platform",
+		"slug": "zeus-ecommerce-platform",
+		"description": "A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration.",
+		"image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "Tailwind CSS", "Stripe", "Headless CMS"],
+		"liveUrl": "https://zeus.shop",
+		"caseStudyUrl": "/case-studies/zeus-ecommerce-platform"
+	},
+	{
+		"id": "portfolio-site",
+		"title": "Schibelli.dev",
+		"slug": "portfolio-site",
+		"description": "A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.",
+		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "Tailwind CSS", "React"],
+		"liveUrl": "https://mindware.hashnode.dev",
+		"caseStudyUrl": "/case-studies/portfolio-site"
+	},
+	{
+		"id": "synaplyai",
+		"title": "SynaplyAI – Real-Time AI Collaboration Platform",
+		"slug": "synaplyai",
+		"description": "A multi-tenant AI content platform featuring token-level conflict resolution and real-time collaboration. Built with Next.js, Prisma, and Framer Motion.",
+		"image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "Prisma", "Framer Motion", "AI"],
+		"liveUrl": "https://synaply.ai",
+		"caseStudyUrl": "/case-studies/synaplyai"
+	},
+	{
+		"id": "intraweb-technologies",
+		"title": "Intraweb Technologies",
+		"slug": "intraweb-technologies",
+		"description": "A comprehensive web development and technology solutions company website. Features modern design, service showcases, and interactive elements highlighting expertise in React, Next.js, and full-stack development.",
+		"image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
+		"tags": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Full-Stack"],
+		"liveUrl": "https://intrawebtechnologies.com",
+		"caseStudyUrl": "/case-studies/intraweb-technologies"
+	}]

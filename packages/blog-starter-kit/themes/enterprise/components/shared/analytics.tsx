@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useAppContext } from './contexts/appContext';
@@ -145,20 +145,24 @@ export const Analytics = () => {
 	useEffect(() => {
 		// Skip analytics in development mode
 		if (isDev) {
-			console.log('Analytics disabled in development mode');
+			// Analytics disabled in development mode
 			return;
 		}
-		
+
 		// Skip analytics if not in production
 		if (!isProd) return;
-		
+
 		// Only run analytics in browser environment
 		if (typeof window === 'undefined') return;
 
 		_sendPageViewsToHashnodeGoogleAnalytics();
 		_sendViewsToHashnodeInternalAnalytics();
 		_sendViewsToAdvancedAnalyticsDashboard();
-	}, [_sendPageViewsToHashnodeGoogleAnalytics, _sendViewsToHashnodeInternalAnalytics, _sendViewsToAdvancedAnalyticsDashboard]);
+	}, [
+		_sendPageViewsToHashnodeGoogleAnalytics,
+		_sendViewsToHashnodeInternalAnalytics,
+		_sendViewsToAdvancedAnalyticsDashboard,
+	]);
 
 	return null;
 };

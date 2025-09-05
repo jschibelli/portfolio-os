@@ -17,16 +17,19 @@ OPENAI_API_KEY=your-openai-api-key
 ## 📋 **Step-by-Step Setup**
 
 ### 1. **Get Your GitHub Username**
+
 - Go to your GitHub profile
 - Your username is in the URL: `https://github.com/YOUR_USERNAME`
 - **Example**: If your profile is `https://github.com/jschibelli`, then `GITHUB_REPO_OWNER=jschibelli`
 
 ### 2. **Create or Identify Your Articles Repository**
+
 - Create a new repository for your articles, or use an existing one
 - **Repository name**: `GITHUB_REPO_NAME=your-repo-name`
 - **Example**: `GITHUB_REPO_NAME=blog-articles`
 
 ### 3. **Generate GitHub Personal Access Token**
+
 1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. Click "Generate new token (classic)"
 3. Give it a name like "Blog Articles Access"
@@ -38,6 +41,7 @@ OPENAI_API_KEY=your-openai-api-key
 7. Set `GITHUB_TOKEN=your-token-here`
 
 ### 4. **Repository Structure**
+
 Your repository should have one of these structures:
 
 ```
@@ -65,23 +69,26 @@ your-repo/
 ## 🧪 **Testing the Integration**
 
 ### 1. **Test GitHub Configuration**
+
 Visit: `http://localhost:3000/api/test-github`
 
 Expected response:
+
 ```json
 {
-  "success": true,
-  "config": {
-    "repoOwner": "your-username",
-    "repoName": "your-repo-name",
-    "hasToken": true,
-    "tokenLength": 40,
-    "tokenPreview": "ghp_123456..."
-  }
+	"success": true,
+	"config": {
+		"repoOwner": "your-username",
+		"repoName": "your-repo-name",
+		"hasToken": true,
+		"tokenLength": 40,
+		"tokenPreview": "ghp_123456..."
+	}
 }
 ```
 
 ### 2. **Test Article Fetching**
+
 1. Open the chatbot
 2. Ask: "What articles have you written about React?"
 3. Check the browser console for debug messages
@@ -93,21 +100,25 @@ Expected response:
 ## 🔍 **Troubleshooting**
 
 ### **404 Error - Repository Not Found**
+
 - ✅ Check `GITHUB_REPO_OWNER` is your GitHub username (not email)
 - ✅ Check `GITHUB_REPO_NAME` matches your repository name exactly
 - ✅ Ensure the repository exists and is accessible
 
 ### **401 Error - Unauthorized**
+
 - ✅ Check `GITHUB_TOKEN` is correct
 - ✅ Ensure token has `repo` scope
 - ✅ Token might be expired - generate a new one
 
 ### **No Articles Found**
+
 - ✅ Check repository structure matches one of the options above
 - ✅ Ensure files have `.md` or `.markdown` extension
 - ✅ Check browser console for debug messages
 
 ### **Wrong Articles Loading**
+
 - ✅ Check file names and content
 - ✅ Ensure articles are in the correct directory
 - ✅ Verify markdown files are properly formatted
@@ -135,6 +146,7 @@ OPENAI_API_KEY=sk-1234567890abcdef1234567890abcdef1234567890abcdef
 ## 📞 **Need Help?**
 
 If you're still having issues:
+
 1. Check the browser console for error messages
 2. Verify your GitHub token has the correct permissions
 3. Ensure your repository structure matches the examples above

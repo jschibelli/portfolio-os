@@ -1,4 +1,5 @@
 // import { AnalyticsSafe } from './analytics-safe';
+import { Footer } from './footer';
 import { Integrations } from './integrations';
 import { Meta } from './meta';
 import { Scripts } from './scripts';
@@ -8,13 +9,22 @@ type Props = {
 };
 
 export const Layout = ({ children }: Props) => {
+	// Default publication object for the footer
+	const defaultPublication = {
+		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+	};
+
 	return (
 		<>
 			<Meta />
 			<Scripts />
-			<div className="min-h-screen bg-background">
-				<main>{children}</main>
+			<div className="bg-background min-h-screen">
+				<main role="main" id="main-content">
+					{children}
+				</main>
 			</div>
+			<Footer publication={defaultPublication} />
 			{/* <AnalyticsSafe /> */}
 			<Integrations />
 		</>

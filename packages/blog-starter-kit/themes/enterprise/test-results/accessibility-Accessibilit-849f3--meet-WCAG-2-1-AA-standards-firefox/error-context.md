@@ -1,0 +1,55 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - link "John Schibelli - Home" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8] [cursor=pointer]: John Schibelli
+        - navigation "Main navigation" [ref=e9]:
+          - link "Home" [ref=e10] [cursor=pointer]:
+            - /url: /
+          - link "Work" [ref=e11] [cursor=pointer]:
+            - /url: /work
+          - link "Case Studies" [ref=e12] [cursor=pointer]:
+            - /url: /case-studies
+          - link "Blog" [ref=e13] [cursor=pointer]:
+            - /url: /blog
+          - link "About" [ref=e14] [cursor=pointer]:
+            - /url: /about
+          - link "Contact" [ref=e15] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e16]:
+          - button "Switch to light theme" [ref=e17] [cursor=pointer]:
+            - img
+            - generic [ref=e18] [cursor=pointer]: Toggle theme
+          - button "Subscribe to newsletter" [ref=e19] [cursor=pointer]: Subscribe
+    - generic [ref=e23]:
+      - heading "The Developer's Lens" [level=1] [ref=e24]
+      - paragraph [ref=e25]: Unfiltered perspectives on code, creativity, and the constant evolution of technology.
+    - generic [ref=e26]:
+      - heading "Latest Posts" [level=2] [ref=e28]
+      - generic [ref=e30]:
+        - heading "Stay updated with our newsletter" [level=2] [ref=e31]
+        - generic [ref=e33]:
+          - textbox "Email address" [ref=e34]
+          - button "Subscribe" [ref=e35] [cursor=pointer]
+    - contentinfo [ref=e36]:
+      - generic [ref=e38]:
+        - navigation "Social media links" [ref=e39]:
+          - list [ref=e40]:
+            - listitem "Find us on Facebook, external website, opens in new tab" [ref=e41] [cursor=pointer]:
+              - img [ref=e42] [cursor=pointer]
+            - listitem "Find us on Github, external website, opens in new tab" [ref=e44] [cursor=pointer]:
+              - img [ref=e45] [cursor=pointer]
+            - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e47] [cursor=pointer]:
+              - img [ref=e48] [cursor=pointer]
+            - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e50] [cursor=pointer]:
+              - img [ref=e51] [cursor=pointer]
+            - listitem "Open blog XML Feed, opens in new tab" [ref=e53] [cursor=pointer]:
+              - img [ref=e54] [cursor=pointer]
+        - paragraph [ref=e57]: © 2025 John Schibelli. All rights reserved.
+  - alert [ref=e58]
+```

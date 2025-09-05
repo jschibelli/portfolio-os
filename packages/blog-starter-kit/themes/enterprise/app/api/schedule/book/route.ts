@@ -1,9 +1,9 @@
 export const runtime = 'nodejs';
 
+import { createCalendarEventWithMeet, getBusyWindows } from '@/lib/google/calendar';
+import { DateTime, Interval } from 'luxon';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { DateTime, Interval } from 'luxon';
-import { getBusyWindows, createCalendarEventWithMeet } from '@/lib/google/calendar';
 
 const Body = z.object({
 	startISO: z.string().min(10),
@@ -13,7 +13,7 @@ const Body = z.object({
 	attendeeName: z.string().min(1).optional(),
 	summary: z.string().min(3).max(120),
 	description: z.string().max(5000).optional(),
-	sendUpdates: z.enum(['all','externalOnly','none']).optional(),
+	sendUpdates: z.enum(['all', 'externalOnly', 'none']).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
 		const input = Body.parse(json);
 
 		const start = DateTime.fromISO(input.startISO, { zone: input.timeZone });
-		const end   = start.plus({ minutes: input.durationMinutes });
+		const end = start.plus({ minutes: input.durationMinutes });
 		const startISO = start.toISO()!;
-		const endISO   = end.toISO()!;
+		const endISO = end.toISO()!;
 
 		// Final race check against Free/Busy.
 		const busy = await getBusyWindows({
@@ -36,13 +36,16 @@ export async function POST(req: NextRequest) {
 		const conflicts = busy.some((b: any) => {
 			const i = Interval.fromDateTimes(
 				DateTime.fromISO(b.start, { zone: input.timeZone }),
-				DateTime.fromISO(b.end,   { zone: input.timeZone }),
+				DateTime.fromISO(b.end, { zone: input.timeZone }),
 			);
 			return i.overlaps(Interval.fromDateTimes(start, end));
 		});
 
 		if (conflicts) {
-			return NextResponse.json({ error: 'Slot just became unavailable. Pick another time.' }, { status: 409 });
+			return NextResponse.json(
+				{ error: 'Slot just became unavailable. Pick another time.' },
+				{ status: 409 },
+			);
 		}
 
 		const created = await createCalendarEventWithMeet({
@@ -69,5 +72,3 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ error: msg }, { status: 400 });
 	}
 }
-
-

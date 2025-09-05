@@ -5,6 +5,7 @@ This guide will help you set up a comprehensive CI/CD pipeline for your mindware
 ## 🚀 Overview
 
 The GitHub Actions workflow includes:
+
 - **Linting & Type Checking**: ESLint and TypeScript validation
 - **Testing**: Unit and integration tests (when added)
 - **Building**: Next.js application build
@@ -25,16 +26,19 @@ The GitHub Actions workflow includes:
 First, you need to get your Vercel project details:
 
 1. **Install Vercel CLI** (if not already installed):
+
    ```bash
    npm i -g vercel
    ```
 
 2. **Login to Vercel**:
+
    ```bash
    vercel login
    ```
 
 3. **Link your project** (run from the enterprise theme directory):
+
    ```bash
    cd packages/blog-starter-kit/themes/enterprise
    vercel link
@@ -50,6 +54,7 @@ First, you need to get your Vercel project details:
 Go to your GitHub repository → Settings → Secrets and variables → Actions, then add these secrets:
 
 #### Required Secrets:
+
 ```bash
 # Vercel Configuration
 VERCEL_TOKEN=your_vercel_token_here
@@ -58,6 +63,7 @@ VERCEL_PROJECT_ID=your_vercel_project_id_here
 ```
 
 #### Optional Secrets (for enhanced features):
+
 ```bash
 # Slack Notifications (optional)
 SLACK_WEBHOOK_URL=your_slack_webhook_url
@@ -72,17 +78,20 @@ DATABASE_URL=your_database_url
 ### 3. How to Get Vercel Secrets
 
 #### Vercel Token:
+
 1. Go to [Vercel Dashboard](https://vercel.com/account/tokens)
 2. Click "Create Token"
 3. Give it a name like "GitHub Actions"
 4. Copy the token
 
 #### Vercel Org ID:
+
 1. Go to [Vercel Dashboard](https://vercel.com/account)
 2. Click on your organization
 3. The Org ID is in the URL: `https://vercel.com/orgs/YOUR_ORG_ID`
 
 #### Vercel Project ID:
+
 1. Go to your project in Vercel Dashboard
 2. Click "Settings" → "General"
 3. Copy the "Project ID"
@@ -101,6 +110,7 @@ You can add more environment variables in the workflow file under the "Build" jo
 ## 🔄 Workflow Triggers
 
 The workflow runs on:
+
 - **Push to main branch**: Deploys to production
 - **Push to develop branch**: Runs all checks
 - **Pull requests**: Creates preview deployments
@@ -108,36 +118,43 @@ The workflow runs on:
 ## 📊 Workflow Jobs
 
 ### 1. Lint & Type Check
+
 - Runs ESLint for code quality
 - Runs TypeScript type checking
 - Must pass before other jobs
 
 ### 2. Test
+
 - Runs unit tests (when added)
 - Runs integration tests (when added)
 - Currently a placeholder
 
 ### 3. Build
+
 - Builds the Next.js application
 - Creates build artifacts
 - Validates the build process
 
 ### 4. Security Scan
+
 - Scans for vulnerabilities using Trivy
 - Uploads results to GitHub Security tab
 - Doesn't block deployment but provides insights
 
 ### 5. Deploy Production
+
 - Deploys to Vercel production environment
 - Only runs on main branch
 - Uses production environment variables
 
 ### 6. Deploy Preview
+
 - Creates preview deployments for pull requests
 - Allows testing changes before merge
 - Uses preview environment variables
 
 ### 7. Notify
+
 - Provides success/failure notifications
 - Can be extended with Slack/Discord integration
 
@@ -146,39 +163,44 @@ The workflow runs on:
 To add real tests to your project:
 
 1. **Install testing dependencies**:
+
    ```bash
    pnpm add -D jest @testing-library/react @testing-library/jest-dom jest-environment-jsdom
    ```
 
 2. **Create Jest configuration** (`jest.config.js`):
+
    ```javascript
    module.exports = {
-     testEnvironment: 'jsdom',
-     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-     testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
-     moduleNameMapping: {
-       '^@/(.*)$': '<rootDir>/$1',
-     },
+   	testEnvironment: 'jsdom',
+   	setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+   	testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+   	moduleNameMapping: {
+   		'^@/(.*)$': '<rootDir>/$1',
+   	},
    };
    ```
 
 3. **Create Jest setup** (`jest.setup.js`):
+
    ```javascript
    import '@testing-library/jest-dom';
    ```
 
 4. **Update package.json test script**:
+
    ```json
    {
-     "scripts": {
-       "test": "jest",
-       "test:watch": "jest --watch",
-       "test:coverage": "jest --coverage"
-     }
+   	"scripts": {
+   		"test": "jest",
+   		"test:watch": "jest --watch",
+   		"test:coverage": "jest --coverage"
+   	}
    }
    ```
 
 5. **Create test files** (e.g., `__tests__/components/Header.test.tsx`):
+
    ```typescript
    import { render, screen } from '@testing-library/react';
    import Header from '../components/Header';
@@ -194,11 +216,13 @@ To add real tests to your project:
 ## 🔒 Security Features
 
 ### Trivy Vulnerability Scanner
+
 - Scans for known vulnerabilities in dependencies
 - Scans for security issues in your code
 - Results appear in GitHub Security tab
 
 ### Optional: Snyk Integration
+
 To add Snyk security scanning:
 
 1. **Get Snyk token** from [Snyk Dashboard](https://app.snyk.io/account)
@@ -208,9 +232,11 @@ To add Snyk security scanning:
 ## 📱 Notifications
 
 ### Basic Notifications
+
 The workflow provides basic console notifications for success/failure.
 
 ### Slack Integration (Optional)
+
 To add Slack notifications:
 
 1. **Create Slack webhook** in your Slack workspace
@@ -222,16 +248,19 @@ To add Slack notifications:
 ### Common Issues
 
 #### Build Fails
+
 - Check environment variables are set correctly
 - Verify all dependencies are installed
 - Check for TypeScript errors
 
 #### Deployment Fails
+
 - Verify Vercel secrets are correct
 - Check Vercel project is linked properly
 - Ensure Vercel token has correct permissions
 
 #### Security Scan Fails
+
 - Review vulnerability reports
 - Update dependencies if needed
 - Check for false positives
@@ -251,6 +280,7 @@ To add Slack notifications:
 ## 🔄 Workflow Customization
 
 ### Adding New Jobs
+
 To add new jobs to the workflow:
 
 1. **Add job definition** in `.github/workflows/main.yml`
@@ -258,6 +288,7 @@ To add new jobs to the workflow:
 3. **Configure triggers** using `if:`
 
 ### Environment-Specific Deployments
+
 To add staging environment:
 
 1. **Add staging job** similar to production
@@ -265,6 +296,7 @@ To add staging environment:
 3. **Configure different Vercel project** if needed
 
 ### Performance Optimization
+
 - **Cache dependencies** (already implemented)
 - **Parallel jobs** where possible
 - **Conditional job execution**
@@ -272,11 +304,13 @@ To add staging environment:
 ## 📈 Monitoring
 
 ### GitHub Actions Insights
+
 - View workflow performance in Actions tab
 - Monitor job success rates
 - Track deployment times
 
 ### Vercel Analytics
+
 - Monitor deployment performance
 - Track build times
 - Analyze deployment success rates
@@ -293,6 +327,7 @@ To add staging environment:
 ## 📞 Support
 
 If you encounter issues:
+
 1. Check the troubleshooting section above
 2. Review GitHub Actions documentation
 3. Check Vercel deployment logs
