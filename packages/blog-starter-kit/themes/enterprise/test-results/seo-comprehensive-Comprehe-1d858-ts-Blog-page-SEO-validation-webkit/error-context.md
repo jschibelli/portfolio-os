@@ -1,0 +1,166 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - main [ref=e4]:
+    - banner [ref=e5]:
+      - generic [ref=e7]:
+        - link "John Schibelli - Home" [ref=e9]:
+          - /url: /
+          - generic [ref=e10]: John Schibelli
+        - navigation "Main navigation" [ref=e11]:
+          - link "Home" [ref=e12]:
+            - /url: /
+          - link "Work" [ref=e13]:
+            - /url: /work
+          - link "Case Studies" [ref=e14]:
+            - /url: /case-studies
+          - link "Blog" [ref=e15]:
+            - /url: /blog
+          - link "About" [ref=e16]:
+            - /url: /about
+          - link "Contact" [ref=e17]:
+            - /url: /contact
+        - generic [ref=e18]:
+          - button "Toggle theme" [disabled]:
+            - img
+            - generic: Toggle theme
+          - button "Subscribe to newsletter" [ref=e19] [cursor=pointer]: Subscribe
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - heading "Technology & Development" [level=2] [ref=e28]
+        - heading "The Developer's Lens" [level=1] [ref=e29]
+      - paragraph [ref=e30]: Unfiltered perspectives on code, creativity, and the constant evolution of technology.
+    - generic [ref=e34]:
+      - link "Find us on Facebook, external website, opens in new tab" [ref=e35]:
+        - /url: https://facebook.com
+        - img [ref=e36]
+      - link "Find us on Github, external website, opens in new tab" [ref=e38]:
+        - /url: https://github.com
+        - img [ref=e39]
+      - link "Find us on Linkedin, external website, opens in new tab" [ref=e41]:
+        - /url: https://linkedin.com
+        - img [ref=e42]
+      - link "Find us on Bluesky, external website, opens in new tab" [ref=e44]:
+        - /url: https://bsky.app
+        - img [ref=e45]
+      - link "Open blog XML Feed, opens in new tab" [ref=e47]:
+        - /url: /rss.xml
+        - img [ref=e48]
+    - generic [ref=e50]:
+      - generic [ref=e51]:
+        - generic [ref=e53]:
+          - generic [ref=e55]:
+            - heading "Featured Post" [level=2] [ref=e56]
+            - generic [ref=e57]: Featured
+          - generic [ref=e58]:
+            - generic [ref=e60]:
+              - img "How I Use GPT to Scope and Estimate Freelance Projects (Without Burning Hours)" [ref=e61]
+              - generic [ref=e63]: Featured
+            - generic [ref=e64]:
+              - generic [ref=e65]:
+                - generic [ref=e66]:
+                  - img [ref=e67]
+                  - generic [ref=e69]: Jul 25, 2025
+                - generic [ref=e70]:
+                  - img [ref=e71]
+                  - generic [ref=e74]: 5 min read
+              - heading "How I Use GPT to Scope and Estimate Freelance Projects (Without Burning Hours)" [level=3] [ref=e75]
+              - paragraph [ref=e76]: Scoping freelance work used to be the part I dreaded most. Endless back-and-forth with vague client requests, a half-baked idea of what they wanted, and pressure to give a number — fast. And when I got it wrong? It usually cost me time, energy, and r...
+              - generic [ref=e77]:
+                - generic [ref=e78]: Featured
+                - generic [ref=e79]: Technology
+                - generic [ref=e80]: Insights
+              - link "Read full article" [ref=e81]:
+                - /url: /how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours
+                - text: Read full article
+                - img [ref=e82]
+        - generic [ref=e84]:
+          - heading "Latest Posts" [level=2] [ref=e85]
+          - generic [ref=e86]:
+            - 'link "From Setback to Comeback: My Stroke Recovery Journey with AI Technology Read Article May 02, 2025 • 3 min read From Setback to Comeback: My Stroke Recovery Journey with AI Three years ago, everything changed in an instant. While driving on the highway, I had a stroke. There was no warning or time to prepare, just a sudden and life-altering event that brought everything to a standstill. The immediate aftermath was surre... Development Read more →" [ref=e89]':
+              - /url: /from-setback-to-comeback-my-stroke-recovery-journey-with-ai
+              - generic [ref=e90]:
+                - generic [ref=e91]:
+                  - 'img "From Setback to Comeback: My Stroke Recovery Journey with AI" [ref=e93]'
+                  - generic [ref=e96]: Technology
+                  - generic [ref=e98]: Read Article
+                - generic [ref=e100]:
+                  - generic [ref=e101]:
+                    - time [ref=e102]: May 02, 2025
+                    - generic [ref=e103]: •
+                    - generic [ref=e104]: 3 min read
+                  - 'heading "From Setback to Comeback: My Stroke Recovery Journey with AI" [level=3] [ref=e105]'
+                - generic [ref=e106]:
+                  - paragraph [ref=e107]: Three years ago, everything changed in an instant. While driving on the highway, I had a stroke. There was no warning or time to prepare, just a sudden and life-altering event that brought everything to a standstill. The immediate aftermath was surre...
+                  - generic [ref=e108]:
+                    - generic [ref=e110]: Development
+                    - generic [ref=e111]:
+                      - generic [ref=e112]: Read more
+                      - generic [ref=e113]: →
+            - link "How We Built SynaplyAI Technology Read Article Apr 08, 2025 • 3 min read How We Built SynaplyAI SynaplyAI started with a problem I faced myself. I was creating content for multiple platforms — blog posts, social media updates, technical articles — and it was exhausting to track everything across different tools. I’d use one platform to draft co... Development Read more →" [ref=e116]:
+              - /url: /how-we-built-synaplyai
+              - generic [ref=e117]:
+                - generic [ref=e118]:
+                  - img "How We Built SynaplyAI" [ref=e120]
+                  - generic [ref=e123]: Technology
+                  - generic [ref=e125]: Read Article
+                - generic [ref=e127]:
+                  - generic [ref=e128]:
+                    - time [ref=e129]: Apr 08, 2025
+                    - generic [ref=e130]: •
+                    - generic [ref=e131]: 3 min read
+                  - heading "How We Built SynaplyAI" [level=3] [ref=e132]
+                - generic [ref=e133]:
+                  - paragraph [ref=e134]: SynaplyAI started with a problem I faced myself. I was creating content for multiple platforms — blog posts, social media updates, technical articles — and it was exhausting to track everything across different tools. I’d use one platform to draft co...
+                  - generic [ref=e135]:
+                    - generic [ref=e137]: Development
+                    - generic [ref=e138]:
+                      - generic [ref=e139]: Read more
+                      - generic [ref=e140]: →
+            - 'link "Advanced State Management in React: When to Use Context, Redux, or Zustand Technology Read Article Feb 28, 2025 • 3 min read Advanced State Management in React: When to Use Context, Redux, or Zustand State management in React can be a game-changer for your app’s performance and maintainability. But with so many options—useState, Context API, Redux, Zustand—how do you know which one to pick? Choosing the right solution means the difference between... Development Read more →" [ref=e143]':
+              - /url: /advanced-state-management-in-react-when-to-use-context-redux-or-zustand
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - 'img "Advanced State Management in React: When to Use Context, Redux, or Zustand" [ref=e147]'
+                  - generic [ref=e150]: Technology
+                  - generic [ref=e152]: Read Article
+                - generic [ref=e154]:
+                  - generic [ref=e155]:
+                    - time [ref=e156]: Feb 28, 2025
+                    - generic [ref=e157]: •
+                    - generic [ref=e158]: 3 min read
+                  - 'heading "Advanced State Management in React: When to Use Context, Redux, or Zustand" [level=3] [ref=e159]'
+                - generic [ref=e160]:
+                  - paragraph [ref=e161]: State management in React can be a game-changer for your app’s performance and maintainability. But with so many options—useState, Context API, Redux, Zustand—how do you know which one to pick? Choosing the right solution means the difference between...
+                  - generic [ref=e162]:
+                    - generic [ref=e164]: Development
+                    - generic [ref=e165]:
+                      - generic [ref=e166]: Read more
+                      - generic [ref=e167]: →
+      - generic [ref=e171]:
+        - heading "Stay updated with our newsletter" [level=2] [ref=e172]
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - textbox "Email address" [ref=e175]
+            - button "Subscribe" [disabled]:
+              - generic: Subscribe
+          - paragraph [ref=e176]: No spam, unsubscribe at any time. We respect your privacy.
+    - button "Toggle chatbot" [ref=e178] [cursor=pointer]:
+      - img [ref=e179] [cursor=pointer]
+  - contentinfo [ref=e181]:
+    - generic [ref=e183]:
+      - navigation "Social media links" [ref=e184]:
+        - list [ref=e185]:
+          - listitem "Find us on Facebook, external website, opens in new tab" [ref=e186]:
+            - img [ref=e187]
+          - listitem "Find us on Github, external website, opens in new tab" [ref=e189]:
+            - img [ref=e190]
+          - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e192]:
+            - img [ref=e193]
+          - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e195]:
+            - img [ref=e196]
+          - listitem "Open blog XML Feed, opens in new tab" [ref=e198]:
+            - img [ref=e199]
+      - paragraph [ref=e202]: © 2025 John Schibelli. All rights reserved.
+```

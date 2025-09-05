@@ -82,6 +82,13 @@ export default function CTA({
 
 			setStatus(data.subscribeToNewsletter.status);
 			setEmail('');
+			
+			// Track newsletter subscription analytics
+			if (typeof window !== 'undefined') {
+				window.dispatchEvent(new CustomEvent('newsletter-subscription', {
+					detail: { status: data.subscribeToNewsletter.status }
+				}));
+			}
 		} catch (error: any) {
 			const message =
 				error.response?.errors?.[0]?.message || 'Something went wrong. Please try again.';

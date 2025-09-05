@@ -74,6 +74,61 @@ export default function Index({
 		};
 	}, []);
 
+	// Analytics tracking
+	useEffect(() => {
+		// Track page view
+		if (typeof window !== 'undefined' && window.gtag) {
+			window.gtag('config', 'GA_MEASUREMENT_ID', {
+				page_title: `Blog - ${publication.displayTitle || publication.title || 'John Schibelli'}`,
+				page_location: window.location.href,
+			});
+		}
+
+		// Track newsletter subscription events
+		const handleNewsletterSubscription = (event: CustomEvent) => {
+			if (typeof window !== 'undefined' && window.gtag) {
+				window.gtag('event', 'newsletter_subscription', {
+					event_category: 'engagement',
+					event_label: 'blog_page',
+					value: 1,
+				});
+			}
+		};
+
+		// Track post click events
+		const handlePostClick = (event: CustomEvent) => {
+			if (typeof window !== 'undefined' && window.gtag) {
+				window.gtag('event', 'post_click', {
+					event_category: 'engagement',
+					event_label: event.detail?.slug || 'unknown',
+					value: 1,
+				});
+			}
+		};
+
+		// Track social media clicks
+		const handleSocialClick = (event: CustomEvent) => {
+			if (typeof window !== 'undefined' && window.gtag) {
+				window.gtag('event', 'social_click', {
+					event_category: 'engagement',
+					event_label: event.detail?.platform || 'unknown',
+					value: 1,
+				});
+			}
+		};
+
+		// Add event listeners
+		window.addEventListener('newsletter-subscription', handleNewsletterSubscription as EventListener);
+		window.addEventListener('post-click', handlePostClick as EventListener);
+		window.addEventListener('social-click', handleSocialClick as EventListener);
+
+		return () => {
+			window.removeEventListener('newsletter-subscription', handleNewsletterSubscription as EventListener);
+			window.removeEventListener('post-click', handlePostClick as EventListener);
+			window.removeEventListener('social-click', handleSocialClick as EventListener);
+		};
+	}, [publication]);
+
 	const morePosts = allPosts.slice(4);
 
 	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
@@ -134,7 +189,14 @@ export default function Index({
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Facebook, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									onClick={() => {
+										if (typeof window !== 'undefined') {
+											window.dispatchEvent(new CustomEvent('social-click', {
+												detail: { platform: 'facebook' }
+											}));
+										}
+									}}
 								>
 									<FacebookSVG className="h-5 w-5" />
 								</a>
@@ -145,7 +207,14 @@ export default function Index({
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Github, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									onClick={() => {
+										if (typeof window !== 'undefined') {
+											window.dispatchEvent(new CustomEvent('social-click', {
+												detail: { platform: 'github' }
+											}));
+										}
+									}}
 								>
 									<GithubSVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -156,7 +225,14 @@ export default function Index({
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Linkedin, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									onClick={() => {
+										if (typeof window !== 'undefined') {
+											window.dispatchEvent(new CustomEvent('social-click', {
+												detail: { platform: 'linkedin' }
+											}));
+										}
+									}}
 								>
 									<LinkedinSVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -167,7 +243,14 @@ export default function Index({
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Find us on Bluesky, external website, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									onClick={() => {
+										if (typeof window !== 'undefined') {
+											window.dispatchEvent(new CustomEvent('social-click', {
+												detail: { platform: 'bluesky' }
+											}));
+										}
+									}}
 								>
 									<BlueskySVG className="h-5 w-5 stroke-current" />
 								</a>
@@ -179,7 +262,14 @@ export default function Index({
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Open blog XML Feed, opens in new tab"
-									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+									onClick={() => {
+										if (typeof window !== 'undefined') {
+											window.dispatchEvent(new CustomEvent('social-click', {
+												detail: { platform: 'rss' }
+											}));
+										}
+									}}
 								>
 									<RssSVG className="h-5 w-5 stroke-current" />
 								</Link>

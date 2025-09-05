@@ -30,6 +30,15 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
     setImageError(true);
   };
 
+  const handlePostClick = () => {
+    // Track post click analytics
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('post-click', {
+        detail: { slug: post.slug, title: post.title }
+      }));
+    }
+  };
+
   return (
     <section className="bg-stone-50 py-8 dark:bg-stone-900">
       <div className="container mx-auto px-4">
@@ -107,7 +116,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             </h3>
 
             {/* Excerpt */}
-            <p className="text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+            <p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
               {post.brief}
             </p>
 
@@ -128,6 +137,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             <Link
               href={`/${post.slug}`}
               className="group inline-flex items-center gap-2 text-lg font-semibold text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+              onClick={handlePostClick}
             >
               Read full article
               <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />

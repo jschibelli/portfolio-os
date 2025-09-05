@@ -43,37 +43,37 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 					<nav className="hidden items-center space-x-8 md:flex" role="navigation" aria-label="Main navigation">
 						<Link
 							href="/"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Home
 						</Link>
 						<Link
 							href="/work"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Work
 						</Link>
 						<Link
 							href="/case-studies"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Case Studies
 						</Link>
 						<Link
 							href="/blog"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Blog
 						</Link>
 						<Link
 							href="/about"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							About
 						</Link>
 						<Link
 							href="/contact"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
 							Contact
 						</Link>
@@ -127,37 +127,37 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Home
 										</Link>
 										<Link
 											href="/work"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Work
 										</Link>
 										<Link
 											href="/case-studies"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Case Studies
 										</Link>
 										<Link
 											href="/blog"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Blog
 										</Link>
 										<Link
 											href="/about"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											About
 										</Link>
 										<Link
 											href="/contact"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+											className="rounded-md px-4 py-3 text-base font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
 											Contact
 										</Link>
@@ -165,68 +165,73 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 
 									<div className="mt-8 border-t border-border pt-6">
 										<h3 className="sr-only">Social media links</h3>
-										<div className="flex items-center justify-center gap-4" role="list" aria-label="Social media links">
+										<ul className="flex items-center justify-center gap-4" aria-label="Social media links">
 											{/* Facebook */}
-											<a
-												href="https://facebook.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<FacebookSVG className="h-5 w-5" />
-											</a>
+											<li>
+												<a
+													href="https://facebook.com"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Find us on Facebook, external website, opens in new tab"
+													className="flex items-center justify-center rounded-full border border-border p-3 text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													<FacebookSVG className="h-5 w-5" />
+												</a>
+											</li>
 
 											{/* GitHub */}
-											<a
-												href="https://github.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<GithubSVG className="h-5 w-5 stroke-current" />
-											</a>
+											<li>
+												<a
+													href="https://github.com"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Find us on Github, external website, opens in new tab"
+													className="flex items-center justify-center rounded-full border border-border p-3 text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													<GithubSVG className="h-5 w-5 stroke-current" />
+												</a>
+											</li>
 
 											{/* LinkedIn */}
-											<a
-												href="https://linkedin.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<LinkedinSVG className="h-5 w-5 stroke-current" />
-											</a>
+											<li>
+												<a
+													href="https://linkedin.com"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Find us on Linkedin, external website, opens in new tab"
+													className="flex items-center justify-center rounded-full border border-border p-3 text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													<LinkedinSVG className="h-5 w-5 stroke-current" />
+												</a>
+											</li>
 
 											{/* Bluesky */}
-											<a
-												href="https://bsky.app"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<BlueskySVG className="h-5 w-5 stroke-current" />
-											</a>
+											<li>
+												<a
+													href="https://bsky.app"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Find us on Bluesky, external website, opens in new tab"
+													className="flex items-center justify-center rounded-full border border-border p-3 text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													<BlueskySVG className="h-5 w-5 stroke-current" />
+												</a>
+											</li>
 
 											{/* RSS Feed */}
-											<Link
-												prefetch={false}
-												href={`/rss.xml`}
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Open blog XML Feed, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<RssSVG className="h-5 w-5 stroke-current" />
-											</Link>
-										</div>
+											<li>
+												<Link
+													prefetch={false}
+													href={`/rss.xml`}
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Open blog XML Feed, opens in new tab"
+													className="flex items-center justify-center rounded-full border border-border p-3 text-foreground/80 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+												>
+													<RssSVG className="h-5 w-5 stroke-current" />
+												</Link>
+											</li>
+										</ul>
 									</div>
 								</div>
 							</SheetContent>

@@ -5,6 +5,7 @@
 		"build": "next build",
 		"codegen": "graphql-codegen --config codegen.yml",
 		"dev": "concurrently \"next\" \"pnpm codegen --watch\" --names next,codegen",
+		"fetch-issue-21": "ts-node scripts/fetch-github-issue.ts",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\" --ignore-path ../../../../.prettierignore",
 		"lint": "next lint",
 		"postbuild": "next-sitemap",
