@@ -93,11 +93,148 @@ jobs:
         env:
           CI: true
 
+  # Visual Regression Testing
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+            
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        
+      - name: Build application
+        run: |
+          cd packages/blog-starter-kit/themes/enterprise
+          pnpm build
+        env:
+          NEXT_PUBLIC_MODE: production
+          NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
+          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: ${{ secrets.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev' }}
+          NEXT_PUBLIC_FEATURE_SCHEDULING: 'true'
+          NEXT_PUBLIC_FEATURE_CASE_STUDY: 'true'
+          NEXT_PUBLIC_FEATURE_CLIENT_INTAKE: 'true'
+          FEATURE_SCHEDULING: 'true'
+          FEATURE_CASE_STUDY: 'true'
+          FEATURE_CLIENT_INTAKE: 'true'
+        
+      - name: Run visual regression tests
+        run: |
+          cd packages/blog-starter-kit/themes/enterprise
+          pnpm test:visual
+        env:
+          CI: true
+          
+      - name: Upload visual test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-test-results
+          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          retention-days: 7
+          
+      - name: Upload visual test screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-test-screenshots
+          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          retention-days: 7
+          
+      - name: Comment PR with visual test results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Check if visual tests failed
+            const testResultsPath = 'packages/blog-starter-kit/themes/enterprise/test-results/';
+            let hasFailures = false;
+            let comment = '## 🎨 Visual Regression Test Results\n\n';
+            
+            try {
+              if (fs.existsSync(testResultsPath)) {
+                const files = fs.readdirSync(testResultsPath, { recursive: true });
+                const diffFiles = files.filter(file => file.includes('diff') || file.includes('actual'));
+                
+                if (diffFiles.length > 0) {
+                  hasFailures = true;
+                  comment += '❌ **Visual differences detected!**\n\n';
+                  comment += 'The following visual differences were found:\n\n';
+                  
+                  diffFiles.forEach(file => {
+                    comment += `- \`${file}\`\n`;
+                  });
+                  
+                  comment += '\n📸 **Screenshots and diffs are available in the artifacts above.**\n\n';
+                  comment += '### Next Steps:\n';
+                  comment += '1. Review the visual differences in the uploaded artifacts\n';
+                  comment += '2. If the changes are intentional, update the baseline images\n';
+                  comment += '3. If the changes are unintentional, fix the issues and push again\n\n';
+                  comment += 'To update baseline images locally, run:\n';
+                  comment += '```bash\n';
+                  comment += 'pnpm test:visual:update\n';
+                  comment += '```\n';
+                } else {
+                  comment += '✅ **All visual tests passed!** No visual differences detected.\n';
+                }
+              } else {
+                comment += '⚠️ **Visual test results not found.** Please check the test logs.\n';
+              }
+            } catch (error) {
+              comment += '❌ **Error processing visual test results:** ' + error.message + '\n';
+            }
+            
+            // Post comment to PR
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+            
+            // Fail the job if there are visual differences
+            if (hasFailures) {
+              core.setFailed('Visual regression tests failed - differences detected');
+            }
+
   # Build
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test]
+    needs: [lint-and-typecheck, test, visual-regression]
     
     steps:
       - name: Checkout code
@@ -204,7 +341,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, security]
     if: github.event_name == 'pull_request'
-    environment: preview
+    environment: preview-deployment
     
     steps:
       - name: Checkout code
