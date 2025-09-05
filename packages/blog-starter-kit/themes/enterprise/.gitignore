@@ -18,4 +18,32 @@ test-*.json
 *.test.ts
 *.spec.js
 *.spec.ts
+
+# Playwright test results and artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+test-results-*/
+playwright-report-*/
+
+# Playwright configuration files (optional - uncomment if you want to exclude)
+# playwright.config.ts
+# playwright.config.js
+
+# Playwright test files (optional - uncomment if you want to exclude)
+# tests/
+# e2e/
+# __tests__/
+
+# Playwright screenshots and videos
+*.png
+*.jpg
+*.jpeg
+*.webm
+*.mp4
+
+# Playwright trace files
+trace.zip
+*.trace
+
 .vercel
