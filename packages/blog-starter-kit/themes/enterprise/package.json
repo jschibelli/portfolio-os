@@ -8,11 +8,18 @@
 		"fetch-issue-21": "ts-node scripts/fetch-github-issue.ts",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\" --ignore-path ../../../../.prettierignore",
 		"lint": "next lint",
+		"lint:fix": "next lint --fix",
+		"lint:staged": "lint-staged",
 		"postbuild": "next-sitemap",
 		"start": "next start",
 		"test": "echo \"No tests specified yet\" && exit 0",
 		"test:accessibility": "playwright test tests/accessibility*.spec.ts",
 		"test:seo": "playwright test tests/seo-comprehensive.spec.ts",
+		"test:analytics": "node scripts/test-analytics-performance.js",
+		"test:analytics:watch": "nodemon scripts/test-analytics-performance.js",
+		"test:cross-browser": "playwright test --project=chromium --project=firefox --project=webkit",
+		"test:performance": "npm run test:analytics && npm run test:cross-browser",
+		"fix:playwright-reports": "node scripts/fix-playwright-reports.js",
 		"typecheck": "tsc"
 	},
 	"dependencies": {

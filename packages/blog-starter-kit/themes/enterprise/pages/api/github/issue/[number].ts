@@ -31,42 +31,77 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { number } = req.query;
-    const issueNumber = parseInt(number as string);
-
-    if (isNaN(issueNumber)) {
-      return res.status(400).json({ error: 'Invalid issue number' });
+    
+    // Enhanced input validation
+    if (!number || typeof number !== 'string') {
+      return res.status(400).json({ 
+        error: 'Invalid request', 
+        message: 'Issue number is required and must be a string' 
+      });
     }
 
-    // Get repository information from environment variables
+    // Validate issue number format and range
+    const issueNumber = parseInt(number, 10);
+    if (isNaN(issueNumber) || issueNumber <= 0 || issueNumber > 999999) {
+      return res.status(400).json({ 
+        error: 'Invalid issue number', 
+        message: 'Issue number must be a positive integer between 1 and 999999' 
+      });
+    }
+
+    // Get repository information from environment variables with validation
     const repoOwner = process.env.GITHUB_REPO_OWNER;
     const repoName = process.env.GITHUB_REPO_NAME;
     const githubToken = process.env.GITHUB_TOKEN;
 
+    // Validate environment variables
     if (!repoOwner || !repoName) {
-      return res.status(400).json({ 
-        error: 'GitHub repository not configured',
-        message: 'Please set GITHUB_REPO_OWNER and GITHUB_REPO_NAME environment variables'
+      console.error('GitHub repository configuration missing:', { 
+        repoOwner: !!repoOwner, 
+        repoName: !!repoName 
+      });
+      return res.status(500).json({ 
+        error: 'Server configuration error',
+        message: 'GitHub repository not configured. Please contact the administrator.'
       });
     }
 
     if (!githubToken) {
-      return res.status(400).json({ 
-        error: 'GitHub token not configured',
-        message: 'Please set GITHUB_TOKEN environment variable'
+      console.error('GitHub token not configured');
+      return res.status(500).json({ 
+        error: 'Server configuration error',
+        message: 'GitHub integration not available. Please contact the administrator.'
       });
     }
 
-    // Fetch issue from GitHub API
+    // Validate repository owner and name format
+    if (!/^[a-zA-Z0-9._-]+$/.test(repoOwner) || !/^[a-zA-Z0-9._-]+$/.test(repoName)) {
+      return res.status(400).json({ 
+        error: 'Invalid repository configuration',
+        message: 'Repository owner and name must contain only alphanumeric characters, dots, underscores, and hyphens'
+      });
+    }
+
+    // Fetch issue from GitHub API with enhanced error handling
     const headers: Record<string, string> = {
       'Accept': 'application/vnd.github.v3+json',
       'Authorization': `token ${githubToken}`,
-      'User-Agent': 'mindware-blog'
+      'User-Agent': 'mindware-blog',
+      'X-GitHub-Api-Version': '2022-11-28'
     };
 
-    const response = await fetch(
-      `https://api.github.com/repos/${repoOwner}/${repoName}/issues/${issueNumber}`,
-      { headers }
-    );
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/issues/${issueNumber}`;
+    
+    // Add timeout and retry logic
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    const response = await fetch(apiUrl, { 
+      headers,
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -120,11 +155,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
   } catch (error: any) {
-    console.error('Error fetching GitHub issue:', error);
+    // Enhanced error logging with more context
+    console.error('Error fetching GitHub issue:', {
+      error: error.message,
+      stack: error.stack,
+      name: error.name,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle specific error types
+    if (error.name === 'AbortError') {
+      return res.status(408).json({ 
+        error: 'Request timeout',
+        message: 'GitHub API request timed out. Please try again.'
+      });
+    }
+
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      return res.status(503).json({ 
+        error: 'Service unavailable',
+        message: 'Unable to connect to GitHub API. Please try again later.'
+      });
+    }
+
     return res.status(500).json({ 
       error: 'Internal server error',
-      message: error.message || 'Failed to fetch issue'
+      message: 'An unexpected error occurred while fetching the issue. Please try again.'
     });
   }
 }
+
 

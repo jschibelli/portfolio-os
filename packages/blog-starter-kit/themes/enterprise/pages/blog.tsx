@@ -46,9 +46,11 @@ export default function Index({
 	const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
 	// Intersection Observer for scroll animations
+	// This creates a smooth fade-in effect for sections as they come into view
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
+				// Track which sections are currently visible for animation triggers
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						setVisibleSections((prev) => new Set([...prev, entry.target.id]));
@@ -56,17 +58,18 @@ export default function Index({
 				});
 			},
 			{
-				threshold: 0.1,
-				rootMargin: '0px 0px -50px 0px',
+				threshold: 0.1, // Trigger when 10% of element is visible
+				rootMargin: '0px 0px -50px 0px', // Start animation 50px before element enters viewport
 			},
 		);
 
-		// Observe all sections
+		// Observe all sections with data-animate-section attribute
 		const sections = document.querySelectorAll('[data-animate-section]');
 		sections.forEach((section) => {
 			observer.observe(section);
 		});
 
+		// Cleanup: unobserve all sections when component unmounts
 		return () => {
 			sections.forEach((section) => {
 				observer.unobserve(section);
@@ -74,48 +77,104 @@ export default function Index({
 		};
 	}, []);
 
-	// Analytics tracking
+	// Type definitions for analytics events
+	interface PostClickEvent extends CustomEvent {
+		detail: {
+			slug: string;
+			title: string;
+		};
+	}
+
+	interface SocialClickEvent extends CustomEvent {
+		detail: {
+			platform: string;
+		};
+	}
+
+	interface NewsletterSubscriptionEvent extends CustomEvent {
+		detail: {
+			status: string;
+		};
+	}
+
+	// Analytics tracking with centralized utilities and enhanced error handling
 	useEffect(() => {
-		// Track page view
-		if (typeof window !== 'undefined' && window.gtag) {
-			window.gtag('config', 'GA_MEASUREMENT_ID', {
-				page_title: `Blog - ${publication.displayTitle || publication.title || 'John Schibelli'}`,
-				page_location: window.location.href,
-			});
-		}
+		let analyticsUtils: any = null;
 
-		// Track newsletter subscription events
-		const handleNewsletterSubscription = (event: CustomEvent) => {
-			if (typeof window !== 'undefined' && window.gtag) {
-				window.gtag('event', 'newsletter_subscription', {
-					event_category: 'engagement',
-					event_label: 'blog_page',
-					value: 1,
-				});
+		// Initialize analytics utilities
+		const initAnalytics = async () => {
+			try {
+				analyticsUtils = await import('../lib/analytics-utils');
+			} catch (error) {
+				console.warn('Failed to load analytics utilities:', error);
 			}
 		};
 
-		// Track post click events
-		const handlePostClick = (event: CustomEvent) => {
-			if (typeof window !== 'undefined' && window.gtag) {
-				window.gtag('event', 'post_click', {
-					event_category: 'engagement',
-					event_label: event.detail?.slug || 'unknown',
-					value: 1,
-				});
+		// Track page view with enhanced error handling
+		const trackPageView = async () => {
+			try {
+				if (analyticsUtils) {
+					await analyticsUtils.trackPageView(
+						`Blog - ${publication.displayTitle || publication.title || 'John Schibelli'}`,
+						window.location.href
+					);
+				}
+			} catch (error) {
+				console.warn('Failed to track page view:', error);
 			}
 		};
 
-		// Track social media clicks
-		const handleSocialClick = (event: CustomEvent) => {
-			if (typeof window !== 'undefined' && window.gtag) {
-				window.gtag('event', 'social_click', {
-					event_category: 'engagement',
-					event_label: event.detail?.platform || 'unknown',
-					value: 1,
-				});
+		// Track newsletter subscription events with centralized utility
+		const handleNewsletterSubscription = async (event: NewsletterSubscriptionEvent) => {
+			try {
+				if (analyticsUtils && event.detail?.status) {
+					await analyticsUtils.trackNewsletterSubscription({
+						status: event.detail.status,
+						timestamp: new Date().toISOString(),
+						publicationId: publication.id
+					});
+				}
+			} catch (error) {
+				console.warn('Failed to track newsletter subscription:', error);
 			}
 		};
+
+		// Track post click events with centralized utility
+		const handlePostClick = async (event: PostClickEvent) => {
+			try {
+				if (analyticsUtils && event.detail?.slug && event.detail?.title) {
+					await analyticsUtils.trackPostClick({
+						slug: event.detail.slug,
+						title: event.detail.title,
+						timestamp: new Date().toISOString()
+					});
+				} else {
+					console.warn('Post click event missing required properties:', event.detail);
+				}
+			} catch (error) {
+				console.warn('Failed to track post click:', error);
+			}
+		};
+
+		// Track social media clicks with validation
+		const handleSocialClick = (event: SocialClickEvent) => {
+			try {
+				if (typeof window !== 'undefined' && window.gtag && event.detail?.platform) {
+					window.gtag('event', 'social_click', {
+						event_category: 'engagement',
+						event_label: event.detail.platform,
+						value: 1,
+					});
+				} else {
+					console.warn('Social click event missing platform:', event.detail);
+				}
+			} catch (error) {
+				console.warn('Failed to track social click:', error);
+			}
+		};
+
+		// Initialize page view tracking
+		trackPageView();
 
 		// Add event listeners
 		window.addEventListener('newsletter-subscription', handleNewsletterSubscription as EventListener);
@@ -129,8 +188,10 @@ export default function Index({
 		};
 	}, [publication]);
 
+	// Get additional posts beyond the first 4 (featured + 3 latest)
 	const morePosts = allPosts.slice(4);
 
+	// Helper function to check if a section should be visible for animations
 	const isSectionVisible = (sectionId: string) => visibleSections.has(sectionId);
 
 	return (
@@ -191,10 +252,15 @@ export default function Index({
 									aria-label="Find us on Facebook, external website, opens in new tab"
 									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 									onClick={() => {
-										if (typeof window !== 'undefined') {
-											window.dispatchEvent(new CustomEvent('social-click', {
-												detail: { platform: 'facebook' }
-											}));
+										// Track social media click with error handling
+										try {
+											if (typeof window !== 'undefined') {
+												window.dispatchEvent(new CustomEvent('social-click', {
+													detail: { platform: 'facebook' }
+												}));
+											}
+										} catch (error) {
+											console.warn('Failed to dispatch social click event:', error);
 										}
 									}}
 								>
@@ -209,10 +275,15 @@ export default function Index({
 									aria-label="Find us on Github, external website, opens in new tab"
 									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 									onClick={() => {
-										if (typeof window !== 'undefined') {
-											window.dispatchEvent(new CustomEvent('social-click', {
-												detail: { platform: 'github' }
-											}));
+										// Track social media click with error handling
+										try {
+											if (typeof window !== 'undefined') {
+												window.dispatchEvent(new CustomEvent('social-click', {
+													detail: { platform: 'github' }
+												}));
+											}
+										} catch (error) {
+											console.warn('Failed to dispatch social click event:', error);
 										}
 									}}
 								>
@@ -227,10 +298,15 @@ export default function Index({
 									aria-label="Find us on Linkedin, external website, opens in new tab"
 									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 									onClick={() => {
-										if (typeof window !== 'undefined') {
-											window.dispatchEvent(new CustomEvent('social-click', {
-												detail: { platform: 'linkedin' }
-											}));
+										// Track social media click with error handling
+										try {
+											if (typeof window !== 'undefined') {
+												window.dispatchEvent(new CustomEvent('social-click', {
+													detail: { platform: 'linkedin' }
+												}));
+											}
+										} catch (error) {
+											console.warn('Failed to dispatch social click event:', error);
 										}
 									}}
 								>
@@ -245,10 +321,15 @@ export default function Index({
 									aria-label="Find us on Bluesky, external website, opens in new tab"
 									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 									onClick={() => {
-										if (typeof window !== 'undefined') {
-											window.dispatchEvent(new CustomEvent('social-click', {
-												detail: { platform: 'bluesky' }
-											}));
+										// Track social media click with error handling
+										try {
+											if (typeof window !== 'undefined') {
+												window.dispatchEvent(new CustomEvent('social-click', {
+													detail: { platform: 'bluesky' }
+												}));
+											}
+										} catch (error) {
+											console.warn('Failed to dispatch social click event:', error);
 										}
 									}}
 								>
@@ -264,10 +345,15 @@ export default function Index({
 									aria-label="Open blog XML Feed, opens in new tab"
 									className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-100"
 									onClick={() => {
-										if (typeof window !== 'undefined') {
-											window.dispatchEvent(new CustomEvent('social-click', {
-												detail: { platform: 'rss' }
-											}));
+										// Track social media click with error handling
+										try {
+											if (typeof window !== 'undefined') {
+												window.dispatchEvent(new CustomEvent('social-click', {
+													detail: { platform: 'rss' }
+												}));
+											}
+										} catch (error) {
+											console.warn('Failed to dispatch social click event:', error);
 										}
 									}}
 								>
@@ -319,7 +405,7 @@ export default function Index({
 								tags={['Featured', 'Technology', 'Insights']}
 							/>
 
-							{/* Latest Posts Grid */}
+							{/* Latest Posts Grid - Shows 3 most recent posts after featured */}
 							{allPosts.length > 1 && (
 								<div
 									id="latest-posts-section"
@@ -333,10 +419,13 @@ export default function Index({
 									<h2 className="animate-fade-in-up text-2xl font-bold text-stone-900 dark:text-stone-100">
 										Latest Posts
 									</h2>
+									{/* Responsive grid: 1 column on mobile, 2 on tablet, 3 on desktop */}
 									<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+										{/* Render posts 2-4 (skip first post as it's featured above) */}
 										{allPosts.slice(1, 4).map((post, index) => (
 											<div
 												key={post.id}
+												{/* Staggered animation delays for smooth sequential appearance */}
 												className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
 													index === 0
 														? 'animation-delay-200'

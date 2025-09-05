@@ -80,15 +80,36 @@ export default function CTA({
 				input: { publicationId: publication.id, email },
 			});
 
-			setStatus(data.subscribeToNewsletter.status);
-			setEmail('');
+					setStatus(data.subscribeToNewsletter.status);
+		setEmail('');
+		
+		// Track newsletter subscription analytics using centralized utility
+		try {
+			const { trackNewsletterSubscription } = await import('../../../lib/analytics-utils');
 			
-			// Track newsletter subscription analytics
+			await trackNewsletterSubscription({
+				status: data.subscribeToNewsletter.status,
+				timestamp: new Date().toISOString(),
+				publicationId: publication?.id || 'unknown'
+			});
+			
+			// Also dispatch custom event for backward compatibility
 			if (typeof window !== 'undefined') {
 				window.dispatchEvent(new CustomEvent('newsletter-subscription', {
-					detail: { status: data.subscribeToNewsletter.status }
+					detail: { 
+						status: data.subscribeToNewsletter.status,
+						timestamp: new Date().toISOString(),
+						publicationId: publication?.id || 'unknown'
+					}
 				}));
 			}
+		} catch (error) {
+			console.error('Failed to track newsletter subscription:', {
+				error: error instanceof Error ? error.message : 'Unknown error',
+				stack: error instanceof Error ? error.stack : undefined,
+				timestamp: new Date().toISOString()
+			});
+		}
 		} catch (error: any) {
 			const message =
 				error.response?.errors?.[0]?.message || 'Something went wrong. Please try again.';

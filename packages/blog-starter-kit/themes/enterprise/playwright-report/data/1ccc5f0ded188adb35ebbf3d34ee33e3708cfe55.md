@@ -354,3 +354,10 @@
         - paragraph [ref=e388]: © 2025 John Schibelli. All rights reserved.
   - alert [ref=e389]
 ```
+<!-- 
+This page-snapshot captures content for automated testing.
+Purpose: Page snapshot for accessibility and visual testing
+File: 1ccc5f0ded188adb35ebbf3d34ee33e3708cfe55.md
+Generated: 2025-09-05T04:49:58.526Z
+-->
+

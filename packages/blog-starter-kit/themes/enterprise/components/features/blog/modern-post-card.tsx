@@ -53,11 +53,18 @@ export default function ModernPostCard({
 	};
 
 	const handlePostClick = () => {
-		// Track post click analytics
-		if (typeof window !== 'undefined') {
-			window.dispatchEvent(new CustomEvent('post-click', {
-				detail: { slug, title }
-			}));
+		// Track post click analytics with validation and error handling
+		try {
+			// Validate required properties before dispatching event
+			if (typeof window !== 'undefined' && slug && title) {
+				window.dispatchEvent(new CustomEvent('post-click', {
+					detail: { slug, title }
+				}));
+			} else {
+				console.warn('Post click tracking failed: missing slug or title', { slug, title });
+			}
+		} catch (error) {
+			console.warn('Failed to dispatch post click event:', error);
 		}
 	};
 

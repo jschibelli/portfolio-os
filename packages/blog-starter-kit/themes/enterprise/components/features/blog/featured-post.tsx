@@ -31,11 +31,21 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
   };
 
   const handlePostClick = () => {
-    // Track post click analytics
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('post-click', {
-        detail: { slug: post.slug, title: post.title }
-      }));
+    // Track post click analytics with validation and error handling
+    try {
+      // Validate required properties before dispatching event
+      if (typeof window !== 'undefined' && post.slug && post.title) {
+        window.dispatchEvent(new CustomEvent('post-click', {
+          detail: { slug: post.slug, title: post.title }
+        }));
+      } else {
+        console.warn('Featured post click tracking failed: missing slug or title', { 
+          slug: post.slug, 
+          title: post.title 
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to dispatch featured post click event:', error);
     }
   };
 
