@@ -27,25 +27,25 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 240 10% 8%; /* Lighter background for better readability */
+    --foreground: 0 0% 98%; /* Brighter text for better contrast */
+    --card: 240 10% 12%; /* Lighter card background */
+    --card-foreground: 0 0% 98%; /* Bright text on cards */
+    --popover: 240 10% 10%; /* Lighter popover background */
+    --popover-foreground: 0 0% 98%; /* Bright text on popovers */
+    --primary: 210 40% 98%; /* Keep existing primary for admin */
+    --primary-foreground: 222.2 47.4% 11.2%; /* Keep existing primary foreground */
+    --secondary: 240 5% 20%; /* Lighter secondary background */
+    --secondary-foreground: 0 0% 98%; /* Bright text on secondary */
+    --muted: 240 5% 18%; /* Lighter muted background */
+    --muted-foreground: 240 5% 88%; /* Much lighter muted text for better readability */
+    --accent: 240 5% 20%; /* Lighter accent background */
+    --accent-foreground: 0 0% 98%; /* Bright text on accent */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 240 5% 25%; /* Lighter borders for better visibility */
+    --input: 240 5% 20%; /* Lighter input backgrounds */
+    --ring: 212.7 26.8% 83.9%; /* Keep existing ring color */
   }
 }
 
@@ -55,6 +55,45 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Ensure all headings are bright white in dark mode */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    color: hsl(0 0% 100%) !important;
+  }
+  
+  /* Fix any text classes that might be too dark */
+  .dark .text-white {
+    color: hsl(0 0% 100%) !important;
+  }
+  
+  .dark .text-gray-100,
+  .dark .text-gray-200,
+  .dark .text-gray-300 {
+    color: hsl(0 0% 100%) !important;
+  }
+
+  /* Fix foreground text for headings */
+  .dark .text-foreground {
+    color: hsl(0 0% 100%) !important;
+  }
+
+  /* Fix any neutral colors */
+  .dark .text-neutral-100,
+  .dark .text-neutral-200,
+  .dark .text-neutral-300,
+  .dark .text-neutral-400,
+  .dark .text-neutral-500,
+  .dark .text-neutral-600,
+  .dark .text-neutral-700,
+  .dark .text-neutral-800,
+  .dark .text-neutral-900 {
+    color: hsl(0 0% 100%) !important;
   }
 }
 

@@ -70,7 +70,7 @@ export default function Home({ publication, recentPosts }: Props) {
 			<ModernHeader publication={publication} />
 
 			{/* Homepage Sections in order */}
-			<main>
+			<main id="main-content" role="main">
 				{/* 1. Hero Section */}
 				<Hero />
 
