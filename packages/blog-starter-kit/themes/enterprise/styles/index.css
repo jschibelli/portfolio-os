@@ -152,27 +152,27 @@
     border: 0;
   }
 
-  /* Fix stone color contrast issues - optimized for readability */
+  /* Fix stone color contrast issues - optimized for WCAG 2.1 AA compliance */
   .text-stone-700,
   p.text-stone-700,
   .text-lg.text-stone-700 {
-    color: hsl(240 3.8% 35%) !important; /* Darker for better contrast on light background */
+    color: hsl(240 3.8% 25%) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-stone-300,
   .dark p.text-stone-300,
   .dark .text-lg.text-stone-300 {
-    color: hsl(240 5% 95%) !important; /* Much lighter for better readability on dark background */
+    color: hsl(240 5% 98%) !important; /* Pure white for maximum contrast on dark background */
   }
 
   .text-stone-500,
   span.text-stone-500 {
-    color: hsl(240 3.8% 40%) !important; /* Darker for better contrast on light background */
+    color: hsl(240 3.8% 30%) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-stone-400,
   .dark span.text-stone-400 {
-    color: hsl(240 5% 90%) !important; /* Lighter for better readability on dark background */
+    color: hsl(240 5% 95%) !important; /* Much lighter for 4.5:1 contrast on dark background */
   }
 
   .text-stone-900,
@@ -223,13 +223,13 @@
     color: hsl(var(--secondary-foreground)) !important;
   }
 
-  /* Fix stone background colors for better contrast */
+  /* Fix stone background colors for better contrast - WCAG 2.1 AA compliant */
   .bg-stone-200 {
-    background-color: hsl(240 4.8% 85%) !important; /* Lighter background */
+    background-color: hsl(240 4.8% 90%) !important; /* Lighter background for better contrast */
   }
 
   .dark .bg-stone-700 {
-    background-color: hsl(240 5% 30%) !important; /* Lighter for better contrast */
+    background-color: hsl(240 5% 25%) !important; /* Darker for better contrast with light text */
   }
 
   .bg-stone-50 {
@@ -237,7 +237,7 @@
   }
 
   .dark .bg-stone-900 {
-    background-color: hsl(240 5% 15%) !important; /* Lighter for better contrast */
+    background-color: hsl(240 5% 12%) !important; /* Darker for better contrast with light text */
   }
 
   /* Additional dark theme text improvements */
@@ -300,6 +300,38 @@
   }
 
   /* Fix any neutral colors that might be used for headings */
+
+  /* Specific fixes for skill tags and category badges - WCAG 2.1 AA compliant */
+  .rounded-full.bg-stone-200.text-stone-500 {
+    background-color: hsl(240 4.8% 90%) !important;
+    color: hsl(240 3.8% 25%) !important; /* Much darker text for 4.5:1 contrast */
+  }
+
+  .dark .rounded-full.bg-stone-200.text-stone-500,
+  .dark .rounded-full.bg-stone-700.text-stone-400 {
+    background-color: hsl(240 5% 25%) !important;
+    color: hsl(240 5% 95%) !important; /* Much lighter text for 4.5:1 contrast */
+  }
+
+  /* Fix chatbot button contrast issues */
+  .bg-stone-200.text-stone-700 {
+    background-color: hsl(240 4.8% 90%) !important;
+    color: hsl(240 3.8% 25%) !important;
+  }
+
+  .dark .bg-stone-700.text-stone-300 {
+    background-color: hsl(240 5% 25%) !important;
+    color: hsl(240 5% 98%) !important;
+  }
+
+  /* Fix any other stone color combinations that might cause issues */
+  .text-stone-600 {
+    color: hsl(240 3.8% 35%) !important; /* Darker for better contrast */
+  }
+
+  .dark .text-stone-600 {
+    color: hsl(240 5% 90%) !important; /* Lighter for better contrast */
+  }
   .dark .text-neutral-100,
   .dark .text-neutral-200,
   .dark .text-neutral-300,

@@ -26,7 +26,7 @@ type Props = {
 };
 
 export default function Post({ series, publication, posts }: Props) {
-	const title = `${series.name} - ${publication.title}`;
+	const title = `${series?.name || 'Series'} - ${publication?.title || 'John Schibelli'}`;
 
 	return (
 		<AppProvider publication={publication} series={series}>
