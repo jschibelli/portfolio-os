@@ -9,7 +9,7 @@ Based on the setup, here are your specific configuration details:
 ### Project Information
 
 - **Project Name**: `schibelli-custom-blog`
-- **Production URL**: https://www.schibelli.dev
+- **Production URL**: https://www.johnschibelli.dev
 - **Vercel Username**: `jschibelli`
 
 ### Required GitHub Secrets
@@ -59,7 +59,7 @@ prj_iDONadYkeOO3s8zxMVqUWN6ORzDC
 ### 3. Verify Deployment
 
 - Check the Actions tab for workflow status
-- Visit https://www.schibelli.dev to see your deployed site
+- Visit https://www.johnschibelli.dev to see your deployed site
 - Preview deployments will be created for pull requests
 
 ## 🚀 What Happens Now
@@ -70,7 +70,7 @@ prj_iDONadYkeOO3s8zxMVqUWN6ORzDC
 2. ✅ Test (placeholder)
 3. ✅ Build
 4. ✅ Security Scan
-5. ✅ Deploy to Production (https://www.schibelli.dev)
+5. ✅ Deploy to Production (https://www.johnschibelli.dev)
 
 ### On Pull Requests:
 

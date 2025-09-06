@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 import { Resend } from 'resend';
+import { SITE_CONFIG } from '@/config/constants';
 
 let google: any;
 let calendar: any;
@@ -24,6 +25,47 @@ try {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Email validation utility
+function isValidEmail(email: string): boolean {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return emailRegex.test(email);
+}
+
+// Enhanced error handling for email sending
+async function sendConfirmationEmail(email: string, name: string, date: string, time: string) {
+	if (!isValidEmail(email)) {
+		throw new Error(`Invalid email address: ${email}`);
+	}
+
+	const contactEmail = process.env.CONTACT_EMAIL || SITE_CONFIG.EMAIL.CONTACT;
+	
+	try {
+		const result = await resend.emails.send({
+			from: `John Schibelli <${contactEmail}>`,
+			to: [email],
+			subject: 'Meeting Confirmed - John Schibelli',
+			html: `
+				<h2>Meeting Confirmed!</h2>
+				<p>Hi ${name},</p>
+				<p>Your meeting has been scheduled for:</p>
+				<p><strong>Date:</strong> ${date}</p>
+				<p><strong>Time:</strong> ${time}</p>
+				<p>Looking forward to speaking with you!</p>
+				<p>Best regards,<br>John Schibelli</p>
+			`,
+		});
+
+		if (result.error) {
+			throw new Error(`Email sending failed: ${result.error.message}`);
+		}
+
+		return result;
+	} catch (error) {
+		console.error('Email sending error:', error);
+		throw new Error(`Failed to send confirmation email: ${error instanceof Error ? error.message : 'Unknown error'}`);
+	}
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'POST') {
 		return res.status(405).json({ error: 'Method not allowed' });
@@ -41,6 +83,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	try {
 		const { name, email, timezone, startTime, endTime, meetingType, notes } = req.body;
+
+		// Validate email address
+		if (!isValidEmail(email)) {
+			return res.status(400).json({ 
+				error: 'Invalid email address format',
+				details: 'Please provide a valid email address'
+			});
+		}
 
 		// Validate required fields
 		if (!name || !email || !timezone || !startTime || !endTime) {
@@ -183,7 +233,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		if (process.env.RESEND_API_KEY) {
 			try {
 				await resend.emails.send({
-					from: `John Schibelli <${process.env.CONTACT_EMAIL || 'john@johnschibelli.dev'}>`,
+					from: `John Schibelli <${process.env.CONTACT_EMAIL || SITE_CONFIG.EMAIL.CONTACT}>`,
 					to: [email],
 					subject: 'Meeting Confirmed - John Schibelli',
 					html: `

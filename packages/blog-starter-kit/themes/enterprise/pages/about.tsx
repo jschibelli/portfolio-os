@@ -18,6 +18,7 @@ import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
+import { SITE_CONFIG } from '../config/constants';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
@@ -176,13 +177,13 @@ export default function About({ publication }: Props) {
 				ogType="profile"
 				structuredData={generatePersonStructuredData({
 					name: 'John Schibelli',
-					description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
-					url: 'https://johnschibelli.dev',
-					jobTitle: 'Senior Front-End Developer',
+					description: SITE_CONFIG.SEO.DESCRIPTION,
+					url: SITE_CONFIG.BASE_URL,
+					jobTitle: SITE_CONFIG.PERSONAL.TITLE,
 					sameAs: [
-						'https://linkedin.com/in/johnschibelli',
+						SITE_CONFIG.SOCIAL.LINKEDIN,
 						'https://github.com/johnschibelli',
-						'https://twitter.com/johnschibelli',
+						SITE_CONFIG.SOCIAL.TWITTER,
 					],
 				})}
 			/>

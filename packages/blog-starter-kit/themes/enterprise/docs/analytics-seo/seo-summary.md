@@ -184,10 +184,10 @@ npm run lint
 ### **Performance Testing**
 ```bash
 # Lighthouse audit
-npx lighthouse https://johnschibelli.com
+npx lighthouse https://johnschibelli.dev
 
 # PageSpeed Insights
-npx psi https://johnschibelli.com
+npx psi https://johnschibelli.dev
 ```
 
 ## 🎉 Success Metrics
