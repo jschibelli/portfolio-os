@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from '@/config/constants';
+
 export interface PersonStructuredData {
 	name: string;
 	description: string;
@@ -152,26 +154,26 @@ export function generateWebSiteStructuredData() {
 		'@type': 'WebSite',
 		name: 'John Schibelli - Senior Front-End Developer',
 		description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
-		url: 'https://johnschibelli.dev',
+		url: SITE_CONFIG.BASE_URL,
 		author: generatePersonStructuredData({
 			name: 'John Schibelli',
 			description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
-			url: 'https://johnschibelli.dev',
+			url: SITE_CONFIG.BASE_URL,
 			jobTitle: 'Senior Front-End Developer',
 			sameAs: [
-				'https://linkedin.com/in/johnschibelli',
-				'https://github.com/johnschibelli',
-				'https://twitter.com/johnschibelli',
+				SITE_CONFIG.SOCIAL.LINKEDIN,
+				SITE_CONFIG.SOCIAL.GITHUB,
+				SITE_CONFIG.SOCIAL.TWITTER,
 			],
 		}),
 		publisher: generateOrganizationStructuredData({
 			name: 'John Schibelli',
 			description: 'Professional web development and consulting services',
-			url: 'https://johnschibelli.dev',
+			url: SITE_CONFIG.BASE_URL,
 			contactPoint: {
 				telephone: '+1-555-0123',
 				contactType: 'customer service',
-				email: 'john@johnschibelli.dev',
+				email: SITE_CONFIG.EMAIL.CONTACT,
 			},
 		}),
 	};

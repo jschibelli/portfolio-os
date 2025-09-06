@@ -92,7 +92,7 @@ export default function ContactPage({ publication }: Props) {
 						contactPoint: {
 							telephone: '+1-555-0123',
 							contactType: 'customer service',
-							email: 'john@johnschibelli.com',
+							email: 'john@johnschibelli.dev',
 						},
 						address: {
 							streetAddress: 'Northern New Jersey',

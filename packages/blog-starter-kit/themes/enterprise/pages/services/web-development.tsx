@@ -42,7 +42,7 @@ export default function WebDevelopmentPage({ publication }: Props) {
 							url: 'https://johnschibelli.dev',
 							jobTitle: 'Senior Front-End Developer',
 						},
-						url: 'https://johnschibelli.com/services/web-development',
+						url: 'https://johnschibelli.dev/services/web-development',
 						serviceType: 'Web Development',
 						areaServed: ['United States', 'Remote'],
 					})}

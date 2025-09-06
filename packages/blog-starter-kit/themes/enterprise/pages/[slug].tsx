@@ -172,7 +172,7 @@ const Post = ({ publication, post }: PostProps) => {
 					author: {
 						name: post.author.name,
 						description: 'Senior Front-End Developer',
-						url: 'https://johnschibelli.com',
+						url: 'https://johnschibelli.dev',
 					},
 					publisher: {
 						name: publication.title,

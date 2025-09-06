@@ -183,7 +183,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		if (process.env.RESEND_API_KEY) {
 			try {
 				await resend.emails.send({
-					from: 'John Schibelli <john@johnschibelli.dev>',
+					from: `John Schibelli <${process.env.CONTACT_EMAIL || 'john@johnschibelli.dev'}>`,
 					to: [email],
 					subject: 'Meeting Confirmed - John Schibelli',
 					html: `

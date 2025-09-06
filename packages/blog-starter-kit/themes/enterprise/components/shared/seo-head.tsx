@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { ReactNode } from 'react';
+import { getSiteUrl, SITE_CONFIG } from '@/config/constants';
 
 export interface SEOHeadProps {
 	title: string;
@@ -36,31 +37,12 @@ export function SEOHead({
 	noIndex = false,
 	children,
 }: SEOHeadProps) {
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev';
+	const siteUrl = getSiteUrl();
 	const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
 	const fullOgImage = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-image.jpg`;
 
 	// Default keywords for the site
-	const defaultKeywords = [
-		'John Schibelli',
-		'Front-End Developer',
-		'React Developer',
-		'Next.js Developer',
-		'TypeScript Developer',
-		'Web Development',
-		'UI/UX Design',
-		'JavaScript',
-		'React',
-		'Next.js',
-		'TypeScript',
-		'Tailwind CSS',
-		'Web Accessibility',
-		'SEO',
-		'Performance',
-		'Mobile Development',
-		'Cloud Solutions',
-		'Consulting',
-	];
+	const defaultKeywords = SITE_CONFIG.SEO.KEYWORDS;
 
 	const allKeywords = [...new Set([...defaultKeywords, ...keywords])];
 
