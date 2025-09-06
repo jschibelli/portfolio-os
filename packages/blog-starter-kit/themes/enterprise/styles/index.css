@@ -228,21 +228,21 @@
   /* Fix stone-500 text contrast issues - WCAG 2.1 AA compliant */
   .text-stone-500,
   span.text-stone-500 {
-    color: hsl(240, 3.8%, 35%) !important; /* Darker for 4.5:1 contrast on light background */
+    color: var(--text-stone-500-light) !important; /* Darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-stone-500,
   .dark span.text-stone-500 {
-    color: hsl(240, 5%, 90%) !important; /* Much lighter for dark mode - WCAG AA compliant */
+    color: var(--text-stone-500-dark) !important; /* Much lighter for dark mode - WCAG AA compliant */
   }
 
   /* Fix stone-900 text contrast issues */
   .text-stone-900 {
-    color: hsl(240, 3.8%, 5%) !important; /* Very dark for maximum contrast */
+    color: var(--text-stone-900-light) !important; /* Very dark for maximum contrast */
   }
 
   .dark .text-stone-900 {
-    color: hsl(0, 0%, 100%) !important; /* Pure white in dark mode */
+    color: var(--text-stone-900-dark) !important; /* Pure white in dark mode */
   }
 
   .dark .text-stone-400,
@@ -384,12 +384,23 @@
    * - Dark mode: Pure white text on dark backgrounds for maximum contrast
    * - Uses !important to override theme defaults that may not meet accessibility standards
    */
+  
+  /* CSS Variables for consistent color values */
+  :root {
+    --text-primary-light: hsl(240, 3.8%, 15%);
+    --text-primary-dark: hsl(0, 0%, 100%);
+    --text-stone-500-light: hsl(240, 3.8%, 35%);
+    --text-stone-500-dark: hsl(240, 5%, 90%);
+    --text-stone-900-light: hsl(240, 3.8%, 5%);
+    --text-stone-900-dark: hsl(0, 0%, 100%);
+  }
+
   .text-primary {
-    color: hsl(240, 3.8%, 15%) !important; /* Much darker for 4.5:1 contrast on light background */
+    color: var(--text-primary-light) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-primary {
-    color: hsl(0, 0%, 100%) !important; /* Pure white for maximum contrast on dark background */
+    color: var(--text-primary-dark) !important; /* Pure white for maximum contrast on dark background */
   }
 
   .bg-primary\/10 {

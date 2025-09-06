@@ -4,7 +4,7 @@ export default function Document() {
 	return (
 		<Html lang="en">
 			<Head>
-					{/* Preload critical fonts for better LCP */}
+					{/* Preload critical fonts for better LCP - optimized strategy */}
 					<link
 						rel="preload"
 						href="/assets/PlusJakartaSans-Regular.ttf"
