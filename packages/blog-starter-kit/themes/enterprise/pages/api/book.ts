@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 import { Resend } from 'resend';
 import { SITE_CONFIG } from '@/config/constants';
+import { validateAndSanitizeEmail } from '@/lib/config-validation';
 
 let google: any;
 let calendar: any;
@@ -25,7 +26,7 @@ try {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Email validation utility
+// Email validation utility (deprecated - use validateAndSanitizeEmail instead)
 function isValidEmail(email: string): boolean {
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailRegex.test(email);
@@ -84,11 +85,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	try {
 		const { name, email, timezone, startTime, endTime, meetingType, notes } = req.body;
 
-		// Validate email address
-		if (!isValidEmail(email)) {
+		// Validate and sanitize email address
+		const emailValidation = validateAndSanitizeEmail(email);
+		if (!emailValidation.isValid) {
 			return res.status(400).json({ 
-				error: 'Invalid email address format',
-				details: 'Please provide a valid email address'
+				error: 'Invalid email address',
+				details: emailValidation.error || 'Please provide a valid email address'
 			});
 		}
 
@@ -101,7 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 		// Input sanitization and validation
 		const sanitizedName = name.trim().replace(/[<>]/g, '');
-		const sanitizedEmail = email.trim().toLowerCase();
+		const sanitizedEmail = emailValidation.email; // Use validated and sanitized email
 		const sanitizedNotes = notes ? notes.trim().replace(/[<>]/g, '') : '';
 		const sanitizedMeetingType = meetingType ? meetingType.trim().replace(/[<>]/g, '') : 'General Discussion';
 
@@ -289,7 +291,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 						})} (${timezone})</p>
             <p><strong>Type:</strong> ${meetingType || 'General Discussion'}</p>
             ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
-                         <p>The meeting has been added to John's calendar. If you need to reschedule, please contact John at jschibelli@gmail.com.</p>
+                         <p>The meeting has been added to John's calendar. If you need to reschedule, please contact John at ${process.env.CONTACT_EMAIL || SITE_CONFIG.EMAIL.CONTACT}.</p>
             ${meetLink ? `<p><strong>Google Meet:</strong> <a href="${meetLink}">${meetLink}</a></p>` : ''}
             <p>Looking forward to our meeting!</p>
             <p>Best regards,<br>John Schibelli</p>

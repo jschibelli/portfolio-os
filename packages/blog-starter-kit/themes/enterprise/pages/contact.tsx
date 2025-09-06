@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
+import { SITE_CONFIG } from '../config/constants';
 import {
 	BlueskySVG as BlueskyIcon,
 	FacebookSVG as FacebookIcon,
@@ -88,11 +89,11 @@ export default function ContactPage({ publication }: Props) {
 					structuredData={generateOrganizationStructuredData({
 						name: 'John Schibelli',
 						description: 'Senior Front-End Developer providing web development services',
-						url: 'https://johnschibelli.dev',
+						url: SITE_CONFIG.BASE_URL,
 						contactPoint: {
-							telephone: '+1-555-0123',
+							telephone: SITE_CONFIG.PERSONAL.PHONE,
 							contactType: 'customer service',
-							email: 'john@johnschibelli.dev',
+							email: SITE_CONFIG.EMAIL.CONTACT,
 						},
 						address: {
 							streetAddress: 'Northern New Jersey',

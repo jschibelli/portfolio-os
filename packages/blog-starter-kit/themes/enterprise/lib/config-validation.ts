@@ -65,7 +65,35 @@ const VALIDATION_PATTERNS = {
  * Validates email format
  */
 export function validateEmail(email: string): boolean {
-  return VALIDATION_PATTERNS.EMAIL.test(email);
+  if (!email || typeof email !== 'string') {
+    return false;
+  }
+  return VALIDATION_PATTERNS.EMAIL.test(email.trim());
+}
+
+/**
+ * Validates and sanitizes email address
+ */
+export function validateAndSanitizeEmail(email: string): { isValid: boolean; email: string; error?: string } {
+  if (!email || typeof email !== 'string') {
+    return { isValid: false, email: '', error: 'Email is required' };
+  }
+  
+  const trimmedEmail = email.trim().toLowerCase();
+  
+  if (trimmedEmail.length === 0) {
+    return { isValid: false, email: '', error: 'Email cannot be empty' };
+  }
+  
+  if (trimmedEmail.length > 254) {
+    return { isValid: false, email: '', error: 'Email is too long' };
+  }
+  
+  if (!validateEmail(trimmedEmail)) {
+    return { isValid: false, email: '', error: 'Invalid email format' };
+  }
+  
+  return { isValid: true, email: trimmedEmail };
 }
 
 /**
