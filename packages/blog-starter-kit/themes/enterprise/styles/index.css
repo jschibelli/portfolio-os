@@ -10,7 +10,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
+    --primary: 240 3.8% 15%; /* Much darker for 4.5:1 contrast on light background */
     --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -38,7 +38,7 @@
     --card-foreground: 0 0% 98%; /* Bright text on cards */
     --popover: 240 10% 10%; /* Lighter popover background */
     --popover-foreground: 0 0% 98%; /* Bright text on popovers */
-    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
+    --primary: 240 3.8% 15%; /* Much darker for 4.5:1 contrast on light background */
     --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
     --secondary: 240 5% 20%; /* Lighter secondary background */
     --secondary-foreground: 0 0% 98%; /* Bright text on secondary */
@@ -194,6 +194,21 @@
     color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
   }
 
+  /* Fix form input contrast issues */
+  .dark input,
+  .dark select,
+  .dark textarea {
+    background-color: hsl(240 5% 20%) !important; /* Lighter background for better contrast */
+    color: hsl(0 0% 100%) !important; /* Pure white text */
+    border-color: hsl(240 5% 40%) !important; /* Lighter border */
+  }
+
+  .dark input::placeholder,
+  .dark select::placeholder,
+  .dark textarea::placeholder {
+    color: hsl(240 5% 80%) !important; /* Lighter placeholder text */
+  }
+
   /* Specific fixes for stone headings in dark mode */
   .dark .text-stone-100,
   .dark h2.text-stone-100,
@@ -213,6 +228,24 @@
   .text-stone-500,
   span.text-stone-500 {
     color: hsl(240 3.8% 30%) !important; /* Much darker for 4.5:1 contrast on light background */
+  }
+
+  /* Fix specific stone color combinations that are failing contrast tests */
+  .text-stone-500.dark\:text-stone-400 {
+    color: hsl(240 3.8% 35%) !important; /* Darker for light mode */
+  }
+
+  .dark .text-stone-500.dark\:text-stone-400 {
+    color: hsl(240 5% 90%) !important; /* Much lighter for dark mode */
+  }
+
+  /* Fix stone-900 text contrast issues */
+  .text-stone-900 {
+    color: hsl(240 3.8% 5%) !important; /* Very dark for maximum contrast */
+  }
+
+  .dark .text-stone-900 {
+    color: hsl(0 0% 100%) !important; /* Pure white in dark mode */
   }
 
   .dark .text-stone-400,
@@ -348,11 +381,11 @@
 
   /* Fix primary color contrast issues - WCAG 2.1 AA compliant */
   .text-primary {
-    color: hsl(346.8 77.2% 60%) !important; /* Lighter primary color for better contrast */
+    color: hsl(240 3.8% 15%) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-primary {
-    color: hsl(346.8 77.2% 70%) !important; /* Even lighter in dark mode for maximum contrast */
+    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
   }
 
   .bg-primary\/10 {

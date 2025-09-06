@@ -11,6 +11,7 @@
 		"start": "next start",
 		"test": "echo \"No tests specified yet\" && exit 0",
 		"test:accessibility": "playwright test tests/accessibility*.spec.ts",
+		"test:performance": "playwright test tests/blog-performance.spec.ts",
 		"test:seo": "playwright test tests/seo-comprehensive.spec.ts",
 		"test:visual": "playwright test tests/visual/",
 		"test:visual:update": "playwright test tests/visual/ --update-snapshots",
