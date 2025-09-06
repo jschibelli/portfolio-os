@@ -285,16 +285,81 @@ const KPIsGrid: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, 
 	);
 };
 
+// Helper function to validate image URLs
+const isValidImageUrl = (url: string): boolean => {
+	try {
+		const urlObj = new URL(url);
+		const validProtocols = ['http:', 'https:'];
+		const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+		
+		if (!validProtocols.includes(urlObj.protocol)) {
+			return false;
+		}
+		
+		// Check if URL has a valid image extension or is from a known image service
+		const pathname = urlObj.pathname.toLowerCase();
+		const hasValidExtension = validExtensions.some(ext => pathname.endsWith(ext));
+		const isImageService = ['unsplash.com', 'images.unsplash.com', 'picsum.photos', 'via.placeholder.com'].some(domain => 
+			urlObj.hostname.includes(domain)
+		);
+		
+		return hasValidExtension || isImageService;
+	} catch {
+		return false;
+	}
+};
+
 const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => {
 	return (
 		<div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{rows.map((row, index) => {
 				const [url, alt] = row;
+				const isValidUrl = isValidImageUrl(url);
+				
 				return (
 					<Card key={index} className="overflow-hidden">
-						<Image src={url} alt={alt} width={400} height={192} className="h-48 w-full object-cover" />
+						{isValidUrl ? (
+							<div className="relative">
+								<Image 
+									src={url} 
+									alt={alt || 'Gallery image'} 
+									width={400} 
+									height={192} 
+									className="h-48 w-full object-cover" 
+									loading="lazy"
+									quality={85}
+									placeholder="blur"
+									blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+									onError={(e) => {
+										// Show error state instead of hiding the image
+										const target = e.currentTarget
+										target.style.display = 'none'
+										const errorDiv = target.nextElementSibling as HTMLElement
+										if (errorDiv) {
+											errorDiv.style.display = 'block'
+										}
+									}}
+								/>
+								<div 
+									className="hidden bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center h-48 flex items-center justify-center"
+									style={{ display: 'none' }}
+								>
+									<div className="text-gray-500 text-sm">
+										<p>Failed to load image</p>
+										<p className="text-xs mt-1">Please check the URL</p>
+									</div>
+								</div>
+							</div>
+						) : (
+							<div className="h-48 w-full bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+								<div className="text-gray-500 text-sm text-center">
+									<p>⚠️ Invalid image URL</p>
+									<p className="text-xs mt-1">Please provide a valid image URL</p>
+								</div>
+							</div>
+						)}
 						<CardContent className="p-4">
-							<p className="text-muted-foreground text-sm">{alt}</p>
+							<p className="text-muted-foreground text-sm">{alt || 'Gallery image'}</p>
 						</CardContent>
 					</Card>
 				);
