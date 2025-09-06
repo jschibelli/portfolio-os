@@ -2,388 +2,487 @@
  * Enhanced Email Service
  * 
  * This module provides a robust email service with retry mechanisms,
- * input sanitization, and comprehensive error handling.
+ * spam prevention, rate limiting, and comprehensive error handling.
  * 
- * Addresses code review feedback from PR #37:
- * - Retry mechanism for email sending
- * - Input sanitization to prevent injection attacks
- * - Proper logging mechanisms for debugging and auditing
- * - Enhanced error handling for email operations
+ * Addresses code review feedback from PR #37 about implementing retry
+ * mechanisms for email sending and preventing email spam.
  */
 
 import { Resend } from 'resend';
 import { 
-  EmailRequest, 
-  EmailResponse, 
+  EmailConfig, 
+  EmailResult, 
   RetryConfig, 
+  ApiErrorType, 
+  ApiError,
   LogEntry,
-  ApiError 
+  AuditLogEntry 
 } from './api-types';
-import { sanitizeInput, getSafeConfigValue } from './config-validation';
-import { SITE_CONFIG } from '../config/constants';
+import { sanitizeInput } from './config-validation';
 
 // Default retry configuration
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  maxAttempts: 3,
-  delay: 1000, // 1 second
+  maxRetries: 3,
+  baseDelay: 1000, // 1 second
+  maxDelay: 30000, // 30 seconds
   backoffMultiplier: 2,
-  maxDelay: 10000, // 10 seconds
+  retryableErrors: [
+    'network_error',
+    'timeout',
+    'rate_limit',
+    'service_unavailable',
+    'temporary_failure'
+  ]
 };
 
-// Email service class
-export class EmailService {
+// Rate limiting configuration
+const RATE_LIMIT_CONFIG = {
+  maxEmailsPerHour: 50,
+  maxEmailsPerDay: 200,
+  windowMs: 60 * 60 * 1000, // 1 hour
+};
+
+// Email tracking for spam prevention
+interface EmailTracking {
+  recipient: string;
+  lastSent: Date;
+  count: number;
+  windowStart: Date;
+}
+
+class EmailService {
   private resend: Resend;
   private retryConfig: RetryConfig;
+  private emailTracking: Map<string, EmailTracking> = new Map();
+  private logs: LogEntry[] = [];
+  private auditLogs: AuditLogEntry[] = [];
 
-  constructor(apiKey?: string, retryConfig?: Partial<RetryConfig>) {
-    this.resend = new Resend(apiKey || process.env.RESEND_API_KEY);
+  constructor(apiKey: string, retryConfig?: Partial<RetryConfig>) {
+    this.resend = new Resend(apiKey);
     this.retryConfig = { ...DEFAULT_RETRY_CONFIG, ...retryConfig };
+  }
+
+  /**
+   * Sends an email with retry mechanism and spam prevention
+   */
+  async sendEmail(config: EmailConfig, requestId?: string): Promise<EmailResult> {
+    const startTime = Date.now();
+    let retryCount = 0;
+    let lastError: Error | null = null;
+
+    // Validate email configuration
+    const validation = this.validateEmailConfig(config);
+    if (!validation.isValid) {
+      return {
+        success: false,
+        error: `Invalid email configuration: ${validation.errors.join(', ')}`,
+        retryCount: 0
+      };
+    }
+
+    // Check rate limits and spam prevention
+    const rateLimitCheck = this.checkRateLimit(config.to[0]);
+    if (!rateLimitCheck.allowed) {
+      this.audit('email_rate_limited', false, {
+        recipient: config.to[0],
+        reason: rateLimitCheck.reason,
+        requestId
+      });
+      
+      return {
+        success: false,
+        error: `Rate limit exceeded: ${rateLimitCheck.reason}`,
+        retryCount: 0
+      };
+    }
+
+    // Sanitize email content
+    const sanitizedConfig = this.sanitizeEmailConfig(config);
+
+    // Retry loop with exponential backoff
+    while (retryCount <= this.retryConfig.maxRetries) {
+      try {
+        this.log('info', `Attempting to send email (attempt ${retryCount + 1})`, {
+          to: sanitizedConfig.to,
+          subject: sanitizedConfig.subject,
+          requestId
+        });
+
+        const result = await this.resend.emails.send(sanitizedConfig);
+        
+        if (result.error) {
+          throw new Error(result.error.message || 'Email sending failed');
+        }
+
+        // Update tracking for spam prevention
+        this.updateEmailTracking(config.to[0]);
+
+        // Log successful send
+        this.audit('email_sent', true, {
+          recipient: config.to[0],
+          messageId: result.data?.id,
+          retryCount,
+          duration: Date.now() - startTime,
+          requestId
+        });
+
+        this.log('info', 'Email sent successfully', {
+          messageId: result.data?.id,
+          recipient: config.to[0],
+          retryCount,
+          duration: Date.now() - startTime,
+          requestId
+        });
+
+        return {
+          success: true,
+          messageId: result.data?.id,
+          retryCount
+        };
+
+      } catch (error) {
+        lastError = error as Error;
+        retryCount++;
+
+        // Check if error is retryable
+        if (!this.isRetryableError(error as Error) || retryCount > this.retryConfig.maxRetries) {
+          break;
+        }
+
+        // Calculate delay with exponential backoff
+        const delay = Math.min(
+          this.retryConfig.baseDelay * Math.pow(this.retryConfig.backoffMultiplier, retryCount - 1),
+          this.retryConfig.maxDelay
+        );
+
+        this.log('warn', `Email send failed, retrying in ${delay}ms`, {
+          error: lastError.message,
+          retryCount,
+          delay,
+          requestId
+        });
+
+        // Wait before retry
+        await this.sleep(delay);
+      }
+    }
+
+    // All retries failed
+    const finalError = lastError || new Error('Unknown error');
+    
+    this.audit('email_failed', false, {
+      recipient: config.to[0],
+      error: finalError.message,
+      retryCount,
+      duration: Date.now() - startTime,
+      requestId
+    });
+
+    this.log('error', 'Email sending failed after all retries', {
+      error: finalError.message,
+      retryCount,
+      duration: Date.now() - startTime,
+      requestId
+    });
+
+    return {
+      success: false,
+      error: finalError.message,
+      retryCount
+    };
+  }
+
+  /**
+   * Validates email configuration
+   */
+  private validateEmailConfig(config: EmailConfig): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    if (!config.from || !config.from.trim()) {
+      errors.push('From address is required');
+    } else if (!this.isValidEmail(config.from)) {
+      errors.push('Invalid from address format');
+    }
+
+    if (!config.to || config.to.length === 0) {
+      errors.push('To address is required');
+    } else {
+      config.to.forEach((email, index) => {
+        if (!this.isValidEmail(email)) {
+          errors.push(`Invalid to address at index ${index}: ${email}`);
+        }
+      });
+    }
+
+    if (!config.subject || !config.subject.trim()) {
+      errors.push('Subject is required');
+    }
+
+    if (!config.html && !config.text) {
+      errors.push('Email content (html or text) is required');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  /**
+   * Sanitizes email configuration to prevent injection attacks
+   */
+  private sanitizeEmailConfig(config: EmailConfig): EmailConfig {
+    return {
+      from: sanitizeInput(config.from, 'email'),
+      to: config.to.map(email => sanitizeInput(email, 'email')),
+      subject: sanitizeInput(config.subject, 'text'),
+      html: config.html ? sanitizeInput(config.html, 'html') : undefined,
+      text: config.text ? sanitizeInput(config.text, 'text') : undefined,
+    };
   }
 
   /**
    * Validates email address format
    */
-  validateEmailAddress(email: string): boolean {
-    if (!email || typeof email !== 'string') {
-      return false;
-    }
-    
+  private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email.trim());
   }
 
   /**
-   * Sanitizes email content to prevent injection attacks
+   * Checks rate limits and spam prevention
    */
-  private sanitizeEmailContent(content: string): string {
-    return sanitizeInput(content)
-      .replace(/javascript:/gi, '')
-      .replace(/data:/gi, '')
-      .replace(/vbscript:/gi, '')
-      .replace(/onload=/gi, '')
-      .replace(/onerror=/gi, '');
+  private checkRateLimit(recipient: string): { allowed: boolean; reason?: string } {
+    const now = new Date();
+    const tracking = this.emailTracking.get(recipient);
+
+    if (!tracking) {
+      return { allowed: true };
+    }
+
+    // Check hourly limit
+    const hourAgo = new Date(now.getTime() - RATE_LIMIT_CONFIG.windowMs);
+    if (tracking.lastSent > hourAgo && tracking.count >= RATE_LIMIT_CONFIG.maxEmailsPerHour) {
+      return { 
+        allowed: false, 
+        reason: `Hourly limit exceeded (${RATE_LIMIT_CONFIG.maxEmailsPerHour} emails per hour)` 
+      };
+    }
+
+    // Check daily limit
+    const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    if (tracking.lastSent > dayAgo && tracking.count >= RATE_LIMIT_CONFIG.maxEmailsPerDay) {
+      return { 
+        allowed: false, 
+        reason: `Daily limit exceeded (${RATE_LIMIT_CONFIG.maxEmailsPerDay} emails per day)` 
+      };
+    }
+
+    // Check for rapid successive emails (spam prevention)
+    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+    if (tracking.lastSent > fiveMinutesAgo) {
+      return { 
+        allowed: false, 
+        reason: 'Too many emails sent to this recipient recently (spam prevention)' 
+      };
+    }
+
+    return { allowed: true };
   }
 
   /**
-   * Sanitizes email request data
+   * Updates email tracking for spam prevention
    */
-  private sanitizeEmailRequest(request: EmailRequest): EmailRequest {
+  private updateEmailTracking(recipient: string): void {
+    const now = new Date();
+    const tracking = this.emailTracking.get(recipient);
+
+    if (tracking) {
+      // Reset count if window has passed
+      const hourAgo = new Date(now.getTime() - RATE_LIMIT_CONFIG.windowMs);
+      if (tracking.windowStart < hourAgo) {
+        tracking.count = 1;
+        tracking.windowStart = now;
+      } else {
+        tracking.count++;
+      }
+      tracking.lastSent = now;
+    } else {
+      this.emailTracking.set(recipient, {
+        recipient,
+        lastSent: now,
+        count: 1,
+        windowStart: now
+      });
+    }
+  }
+
+  /**
+   * Checks if an error is retryable
+   */
+  private isRetryableError(error: Error): boolean {
+    const errorMessage = error.message.toLowerCase();
+    
+    return this.retryConfig.retryableErrors.some(retryableError => 
+      errorMessage.includes(retryableError.toLowerCase())
+    );
+  }
+
+  /**
+   * Sleep utility for delays
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Logs a message
+   */
+  private log(level: LogEntry['level'], message: string, context?: Record<string, any>): void {
+    const entry: LogEntry = {
+      level,
+      message,
+      context,
+      timestamp: new Date().toISOString()
+    };
+    
+    this.logs.push(entry);
+    
+    // Also log to console for development
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[EMAIL-SERVICE] ${level.toUpperCase()}: ${message}`, context || '');
+    }
+  }
+
+  /**
+   * Creates an audit log entry
+   */
+  private audit(action: string, success: boolean, metadata?: Record<string, any>): void {
+    const entry: AuditLogEntry = {
+      action,
+      success,
+      metadata,
+      timestamp: new Date().toISOString()
+    };
+    
+    this.auditLogs.push(entry);
+  }
+
+  /**
+   * Gets rate limit status for a recipient
+   */
+  getRateLimitStatus(recipient: string): {
+    emailsSent: number;
+    limit: number;
+    resetTime: Date;
+    canSend: boolean;
+  } {
+    const tracking = this.emailTracking.get(recipient);
+    const now = new Date();
+    
+    if (!tracking) {
+      return {
+        emailsSent: 0,
+        limit: RATE_LIMIT_CONFIG.maxEmailsPerHour,
+        resetTime: new Date(now.getTime() + RATE_LIMIT_CONFIG.windowMs),
+        canSend: true
+      };
+    }
+
+    const hourAgo = new Date(now.getTime() - RATE_LIMIT_CONFIG.windowMs);
+    const resetTime = new Date(tracking.windowStart.getTime() + RATE_LIMIT_CONFIG.windowMs);
+    
     return {
-      ...request,
-      to: Array.isArray(request.to) 
-        ? request.to.map(email => sanitizeInput(email))
-        : sanitizeInput(request.to),
-      subject: this.sanitizeEmailContent(request.subject),
-      html: this.sanitizeEmailContent(request.html),
-      text: request.text ? this.sanitizeEmailContent(request.text) : undefined,
-      from: request.from ? sanitizeInput(request.from) : undefined,
-      replyTo: request.replyTo ? sanitizeInput(request.replyTo) : undefined,
-      cc: request.cc ? request.cc.map(email => sanitizeInput(email)) : undefined,
-      bcc: request.bcc ? request.bcc.map(email => sanitizeInput(email)) : undefined,
+      emailsSent: tracking.count,
+      limit: RATE_LIMIT_CONFIG.maxEmailsPerHour,
+      resetTime,
+      canSend: tracking.count < RATE_LIMIT_CONFIG.maxEmailsPerHour
     };
   }
 
   /**
-   * Logs email operations for debugging and auditing
+   * Gets service logs
    */
-  private logOperation(entry: LogEntry): void {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] [${entry.level.toUpperCase()}] ${entry.message}`;
+  getLogs(filter?: Partial<LogEntry>): LogEntry[] {
+    if (!filter) return [...this.logs];
     
-    switch (entry.level) {
-      case 'error':
-        console.error(logMessage, entry.context);
-        break;
-      case 'warn':
-        console.warn(logMessage, entry.context);
-        break;
-      case 'debug':
-        console.debug(logMessage, entry.context);
-        break;
-      default:
-        console.log(logMessage, entry.context);
-    }
+    return this.logs.filter(entry => 
+      Object.entries(filter).every(([key, value]) => 
+        entry[key as keyof LogEntry] === value
+      )
+    );
   }
 
   /**
-   * Sends email with basic error handling
+   * Gets audit logs
    */
-  async sendEmail(request: EmailRequest): Promise<EmailResponse> {
-    const requestId = `email-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  getAuditLogs(filter?: Partial<AuditLogEntry>): AuditLogEntry[] {
+    if (!filter) return [...this.auditLogs];
     
-    try {
-      // Validate and sanitize request
-      if (!this.validateEmailAddress(Array.isArray(request.to) ? request.to[0] : request.to)) {
-        throw new Error('Invalid email address');
-      }
-
-      const sanitizedRequest = this.sanitizeEmailRequest(request);
-      
-      // Set default from address if not provided
-      const fromAddress = getSafeConfigValue(
-        sanitizedRequest.from,
-        `John Schibelli <${SITE_CONFIG.EMAIL.CONTACT}>`,
-        'email from address'
-      );
-
-      this.logOperation({
-        level: 'info',
-        message: 'Sending email',
-        context: {
-          requestId,
-          to: sanitizedRequest.to,
-          subject: sanitizedRequest.subject,
-          from: fromAddress,
-        },
-        timestamp: new Date().toISOString(),
-        requestId,
-      });
-
-      const result = await this.resend.emails.send({
-        from: fromAddress,
-        to: sanitizedRequest.to,
-        subject: sanitizedRequest.subject,
-        html: sanitizedRequest.html,
-        text: sanitizedRequest.text,
-        replyTo: sanitizedRequest.replyTo,
-        cc: sanitizedRequest.cc,
-        bcc: sanitizedRequest.bcc,
-        attachments: sanitizedRequest.attachments,
-      });
-
-      this.logOperation({
-        level: 'info',
-        message: 'Email sent successfully',
-        context: {
-          requestId,
-          messageId: result.data?.id,
-        },
-        timestamp: new Date().toISOString(),
-        requestId,
-      });
-
-      return {
-        messageId: result.data?.id || 'unknown',
-        success: true,
-      };
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      
-      this.logOperation({
-        level: 'error',
-        message: 'Email sending failed',
-        context: {
-          requestId,
-          error: errorMessage,
-          request: {
-            to: request.to,
-            subject: request.subject,
-          },
-        },
-        timestamp: new Date().toISOString(),
-        requestId,
-      });
-
-      return {
-        messageId: '',
-        success: false,
-        error: errorMessage,
-      };
-    }
+    return this.auditLogs.filter(entry => 
+      Object.entries(filter).every(([key, value]) => 
+        entry[key as keyof AuditLogEntry] === value
+      )
+    );
   }
 
   /**
-   * Sends email with retry mechanism
+   * Clears logs (for testing)
    */
-  async sendWithRetry(
-    request: EmailRequest, 
-    config?: Partial<RetryConfig>
-  ): Promise<EmailResponse> {
-    const retryConfig = { ...this.retryConfig, ...config };
-    let lastError: Error | null = null;
+  clearLogs(): void {
+    this.logs = [];
+    this.auditLogs = [];
+    this.emailTracking.clear();
+  }
+
+  /**
+   * Gets service health status
+   */
+  getHealthStatus(): {
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    rateLimitStatus: Record<string, any>;
+    recentErrors: number;
+    lastError?: string;
+  } {
+    const recentLogs = this.logs.filter(log => 
+      new Date(log.timestamp) > new Date(Date.now() - 60 * 60 * 1000) // Last hour
+    );
     
-    for (let attempt = 1; attempt <= retryConfig.maxAttempts; attempt++) {
-      try {
-        const result = await this.sendEmail(request);
-        
-        if (result.success) {
-          if (attempt > 1) {
-            this.logOperation({
-              level: 'info',
-              message: `Email sent successfully on attempt ${attempt}`,
-              context: {
-                attempt,
-                maxAttempts: retryConfig.maxAttempts,
-                messageId: result.messageId,
-              },
-              timestamp: new Date().toISOString(),
-            });
-          }
-          return result;
-        }
+    const errorCount = recentLogs.filter(log => log.level === 'error').length;
+    const lastError = recentLogs
+      .filter(log => log.level === 'error')
+      .pop()?.message;
 
-        // If not successful, treat as error for retry logic
-        lastError = new Error(result.error || 'Email sending failed');
-        
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error('Unknown error');
-      }
-
-      // Don't wait after the last attempt
-      if (attempt < retryConfig.maxAttempts) {
-        const delay = Math.min(
-          retryConfig.delay * Math.pow(retryConfig.backoffMultiplier, attempt - 1),
-          retryConfig.maxDelay
-        );
-
-        this.logOperation({
-          level: 'warn',
-          message: `Email sending failed, retrying in ${delay}ms (attempt ${attempt}/${retryConfig.maxAttempts})`,
-          context: {
-            attempt,
-            maxAttempts: retryConfig.maxAttempts,
-            delay,
-            error: lastError.message,
-          },
-          timestamp: new Date().toISOString(),
-        });
-
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
+    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+    if (errorCount > 10) {
+      status = 'unhealthy';
+    } else if (errorCount > 5) {
+      status = 'degraded';
     }
-
-    // All attempts failed
-    this.logOperation({
-      level: 'error',
-      message: `Email sending failed after ${retryConfig.maxAttempts} attempts`,
-      context: {
-        maxAttempts: retryConfig.maxAttempts,
-        finalError: lastError?.message,
-      },
-      timestamp: new Date().toISOString(),
-    });
 
     return {
-      messageId: '',
-      success: false,
-      error: lastError?.message || 'Email sending failed after all retry attempts',
+      status,
+      rateLimitStatus: Object.fromEntries(
+        Array.from(this.emailTracking.entries()).map(([recipient, tracking]) => [
+          recipient,
+          this.getRateLimitStatus(recipient)
+        ])
+      ),
+      recentErrors: errorCount,
+      lastError
     };
-  }
-
-  /**
-   * Sends confirmation email for meeting bookings
-   */
-  async sendConfirmationEmail(
-    email: string,
-    name: string,
-    date: string,
-    time: string,
-    meetLink?: string,
-    calendarLink?: string
-  ): Promise<EmailResponse> {
-    if (!this.validateEmailAddress(email)) {
-      return {
-        messageId: '',
-        success: false,
-        error: `Invalid email address: ${email}`,
-      };
-    }
-
-    const sanitizedName = sanitizeInput(name);
-    const sanitizedDate = sanitizeInput(date);
-    const sanitizedTime = sanitizeInput(time);
-
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">Meeting Confirmed!</h2>
-        <p>Hi ${sanitizedName},</p>
-        <p>Your meeting has been scheduled for:</p>
-        <ul>
-          <li><strong>Date:</strong> ${sanitizedDate}</li>
-          <li><strong>Time:</strong> ${sanitizedTime}</li>
-        </ul>
-        ${meetLink ? `<p><strong>Meeting Link:</strong> <a href="${sanitizeInput(meetLink)}">Join Meeting</a></p>` : ''}
-        ${calendarLink ? `<p><strong>Calendar Link:</strong> <a href="${sanitizeInput(calendarLink)}">Add to Calendar</a></p>` : ''}
-        <p>If you need to reschedule or have any questions, please don't hesitate to reach out.</p>
-        <p>Best regards,<br>John Schibelli</p>
-      </div>
-    `;
-
-    const text = `
-      Meeting Confirmed!
-      
-      Hi ${sanitizedName},
-      
-      Your meeting has been scheduled for:
-      - Date: ${sanitizedDate}
-      - Time: ${sanitizedTime}
-      
-      ${meetLink ? `Meeting Link: ${meetLink}` : ''}
-      ${calendarLink ? `Calendar Link: ${calendarLink}` : ''}
-      
-      If you need to reschedule or have any questions, please don't hesitate to reach out.
-      
-      Best regards,
-      John Schibelli
-    `;
-
-    return this.sendWithRetry({
-      to: email,
-      subject: 'Meeting Confirmed - John Schibelli',
-      html,
-      text,
-    });
-  }
-
-  /**
-   * Sends contact form notification
-   */
-  async sendContactNotification(
-    contactData: {
-      name: string;
-      email: string;
-      subject: string;
-      message: string;
-      phone?: string;
-      company?: string;
-    }
-  ): Promise<EmailResponse> {
-    const sanitizedData = {
-      name: sanitizeInput(contactData.name),
-      email: sanitizeInput(contactData.email),
-      subject: sanitizeInput(contactData.subject),
-      message: sanitizeInput(contactData.message),
-      phone: contactData.phone ? sanitizeInput(contactData.phone) : undefined,
-      company: contactData.company ? sanitizeInput(contactData.company) : undefined,
-    };
-
-    const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${sanitizedData.name}</p>
-        <p><strong>Email:</strong> ${sanitizedData.email}</p>
-        <p><strong>Subject:</strong> ${sanitizedData.subject}</p>
-        ${sanitizedData.phone ? `<p><strong>Phone:</strong> ${sanitizedData.phone}</p>` : ''}
-        ${sanitizedData.company ? `<p><strong>Company:</strong> ${sanitizedData.company}</p>` : ''}
-        <p><strong>Message:</strong></p>
-        <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
-          ${sanitizedData.message.replace(/\n/g, '<br>')}
-        </div>
-      </div>
-    `;
-
-    return this.sendWithRetry({
-      to: SITE_CONFIG.EMAIL.CONTACT,
-      subject: `Contact Form: ${sanitizedData.subject}`,
-      html,
-      replyTo: sanitizedData.email,
-    });
   }
 }
 
 // Export singleton instance
-export const emailService = new EmailService();
+export const emailService = new EmailService(
+  process.env.RESEND_API_KEY || '',
+  {
+    maxRetries: parseInt(process.env.EMAIL_MAX_RETRIES || '3'),
+    baseDelay: parseInt(process.env.EMAIL_BASE_DELAY || '1000'),
+    maxDelay: parseInt(process.env.EMAIL_MAX_DELAY || '30000'),
+  }
+);
 
 // Export default
 export default EmailService;

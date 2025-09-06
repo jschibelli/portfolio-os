@@ -48,7 +48,7 @@ export default function Hero() {
 						transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
 						className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl"
 					>
-						React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
+						Crafting fast, accessible apps with React, Next.js, and TypeScript
 					</motion.p>
 
 					{/* CTA Buttons */}

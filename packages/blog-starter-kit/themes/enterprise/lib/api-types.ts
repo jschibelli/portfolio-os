@@ -1,16 +1,14 @@
 /**
- * API Type Definitions
+ * API Types and Interfaces
  * 
- * This module provides TypeScript interfaces for API request and response objects
- * to ensure type safety and better error handling across the application.
+ * This module defines TypeScript interfaces for API request and response objects
+ * to enhance type safety and improve code maintainability.
  * 
- * Addresses code review feedback from PR #37:
- * - TypeScript interfaces for request body objects
- * - Enhanced type safety for API endpoints
- * - Consistent error response structures
+ * Addresses code review feedback from PR #37 about defining interfaces for
+ * request body objects to enhance type safety.
  */
 
-// Base API response structure
+// Base API response interface
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -19,179 +17,50 @@ export interface ApiResponse<T = any> {
   timestamp: string;
 }
 
-// Booking API types
+// Booking API request interface
 export interface BookingRequest {
   name: string;
   email: string;
-  meetingType: string;
-  date: string;
-  time: string;
   timezone: string;
+  startTime: string;
+  endTime: string;
+  meetingType?: string;
   notes?: string;
-  phone?: string;
-  company?: string;
 }
 
+// Booking API response interface
 export interface BookingResponse {
   bookingId: string;
-  googleEventId?: string;
-  meetLink?: string;
-  calendarLink?: string;
+  eventId: string;
+  meetingLink?: string;
   confirmationEmail: boolean;
-  message: string;
+  scheduledTime: {
+    start: string;
+    end: string;
+    timezone: string;
+  };
 }
 
-// Email API types
-export interface EmailRequest {
-  to: string | string[];
+// Email service interfaces
+export interface EmailConfig {
+  from: string;
+  to: string[];
   subject: string;
   html: string;
   text?: string;
-  from?: string;
-  replyTo?: string;
-  cc?: string[];
-  bcc?: string[];
-  attachments?: EmailAttachment[];
 }
 
-export interface EmailAttachment {
-  filename: string;
-  content: string | Buffer;
-  contentType?: string;
-}
-
-export interface EmailResponse {
-  messageId: string;
+export interface EmailResult {
   success: boolean;
+  messageId?: string;
   error?: string;
+  retryCount: number;
 }
 
-// Contact form types
-export interface ContactRequest {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  phone?: string;
-  company?: string;
-  service?: string;
-}
-
-export interface ContactResponse {
-  messageId: string;
-  success: boolean;
-  message: string;
-}
-
-// Analytics API types
-export interface AnalyticsRequest {
-  period: string;
-  metric: string;
-  startDate?: string;
-  endDate?: string;
-  filters?: Record<string, any>;
-}
-
-export interface AnalyticsResponse {
-  timeSeriesData: Array<{
-    date: string;
-    value: number;
-    label?: string;
-  }>;
-  overview: {
-    total: number;
-    change: number;
-    changeType: 'increase' | 'decrease' | 'neutral';
-  };
-  metadata: {
-    period: string;
-    lastUpdated: string;
-    dataSource: string;
-  };
-}
-
-// Error types
-export interface ApiError {
-  code: string;
-  message: string;
-  details?: Record<string, any>;
-  timestamp: string;
-  requestId?: string;
-}
-
-// Validation error types
-export interface ValidationError {
-  field: string;
-  message: string;
-  value?: any;
-}
-
-export interface ValidationResponse {
-  isValid: boolean;
-  errors: ValidationError[];
-  warnings: string[];
-}
-
-// Retry configuration
-export interface RetryConfig {
-  maxAttempts: number;
-  delay: number;
-  backoffMultiplier: number;
-  maxDelay: number;
-}
-
-// Logging types
-export interface LogEntry {
-  level: 'info' | 'warn' | 'error' | 'debug';
-  message: string;
-  context?: Record<string, any>;
-  timestamp: string;
-  requestId?: string;
-  userId?: string;
-}
-
-// Configuration validation types
-export interface ConfigValidationRequest {
-  configType: 'site' | 'email' | 'social' | 'personal' | 'seo';
-  config: Record<string, any>;
-}
-
-export interface ConfigValidationResponse {
-  isValid: boolean;
-  errors: string[];
-  warnings: string[];
-  missingFields: string[];
-  recommendations: string[];
-}
-
-// Utility types for API responses
-export type ApiSuccessResponse<T> = ApiResponse<T> & {
-  success: true;
-  data: T;
-};
-
-export type ApiErrorResponse = ApiResponse<never> & {
-  success: false;
-  error: string;
-};
-
-// Request validation helpers
-export interface RequestValidator<T> {
-  validate(data: unknown): ValidationResponse & { data?: T };
-}
-
-// Email service types
-export interface EmailService {
-  sendEmail(request: EmailRequest): Promise<EmailResponse>;
-  sendWithRetry(request: EmailRequest, config?: RetryConfig): Promise<EmailResponse>;
-  validateEmailAddress(email: string): boolean;
-}
-
-// Calendar service types
+// Calendar service interfaces
 export interface CalendarEvent {
-  id?: string;
   summary: string;
-  description?: string;
+  description: string;
   start: {
     dateTime: string;
     timeZone: string;
@@ -200,89 +69,255 @@ export interface CalendarEvent {
     dateTime: string;
     timeZone: string;
   };
-  attendees?: Array<{
+  attendees: Array<{
     email: string;
     displayName?: string;
-    responseStatus?: string;
   }>;
   conferenceData?: {
     createRequest: {
       requestId: string;
-      conferenceSolutionKey: { type: string };
+      conferenceSolutionKey: {
+        type: string;
+      };
     };
   };
-  reminders?: {
-    useDefault: boolean;
-    overrides: Array<{
-      method: string;
-      minutes: number;
-    }>;
+}
+
+export interface CalendarResult {
+  success: boolean;
+  eventId?: string;
+  meetingLink?: string;
+  error?: string;
+}
+
+// Validation interfaces
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+}
+
+export interface FieldValidation {
+  field: string;
+  value: any;
+  isValid: boolean;
+  error?: string;
+}
+
+// Retry configuration interface
+export interface RetryConfig {
+  maxRetries: number;
+  baseDelay: number;
+  maxDelay: number;
+  backoffMultiplier: number;
+  retryableErrors: string[];
+}
+
+// Logging interfaces
+export interface LogEntry {
+  level: 'debug' | 'info' | 'warn' | 'error';
+  message: string;
+  context?: Record<string, any>;
+  timestamp: string;
+  userId?: string;
+  requestId?: string;
+}
+
+export interface AuditLogEntry {
+  action: string;
+  userId?: string;
+  email?: string;
+  success: boolean;
+  error?: string;
+  metadata?: Record<string, any>;
+  timestamp: string;
+  requestId: string;
+}
+
+// Error types
+export enum ApiErrorType {
+  VALIDATION = 'validation',
+  AUTHENTICATION = 'authentication',
+  AUTHORIZATION = 'authorization',
+  NOT_FOUND = 'not_found',
+  CONFLICT = 'conflict',
+  RATE_LIMIT = 'rate_limit',
+  EXTERNAL_SERVICE = 'external_service',
+  INTERNAL = 'internal',
+  NETWORK = 'network',
+  TIMEOUT = 'timeout'
+}
+
+export interface ApiError {
+  type: ApiErrorType;
+  message: string;
+  code: string;
+  details?: Record<string, any>;
+  retryable: boolean;
+  timestamp: string;
+}
+
+// Configuration interfaces
+export interface BookingConfig {
+  featureEnabled: boolean;
+  maxBookingsPerDay: number;
+  allowedMeetingTypes: string[];
+  defaultMeetingDuration: number;
+  timezoneValidation: boolean;
+  emailNotifications: boolean;
+  calendarIntegration: boolean;
+}
+
+export interface EmailServiceConfig {
+  provider: 'resend' | 'sendgrid' | 'nodemailer';
+  apiKey: string;
+  fromEmail: string;
+  fromName: string;
+  retryConfig: RetryConfig;
+  rateLimitConfig: {
+    maxEmailsPerHour: number;
+    maxEmailsPerDay: number;
   };
 }
 
-export interface CalendarService {
-  createEvent(event: CalendarEvent): Promise<CalendarEvent>;
-  updateEvent(eventId: string, event: Partial<CalendarEvent>): Promise<CalendarEvent>;
-  deleteEvent(eventId: string): Promise<boolean>;
-  getEvent(eventId: string): Promise<CalendarEvent>;
+export interface CalendarServiceConfig {
+  provider: 'google' | 'outlook' | 'calendly';
+  credentials: {
+    type: string;
+    project_id?: string;
+    private_key_id?: string;
+    private_key?: string;
+    client_email?: string;
+    client_id?: string;
+  };
+  scopes: string[];
+  calendarId: string;
 }
 
-// Database types
+// Database interfaces (for future use)
 export interface BookingRecord {
   id: string;
   name: string;
   email: string;
-  meetingType: string;
-  scheduledDate: Date;
   timezone: string;
+  startTime: Date;
+  endTime: Date;
+  meetingType: string;
   notes?: string;
-  phone?: string;
-  company?: string;
-  googleEventId?: string;
-  meetLink?: string;
-  status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+  eventId?: string;
+  meetingLink?: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface ContactRecord {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  phone?: string;
-  company?: string;
-  service?: string;
-  status: 'new' | 'read' | 'replied' | 'archived';
-  createdAt: Date;
-  updatedAt: Date;
+// Service interfaces
+export interface EmailService {
+  sendEmail(config: EmailConfig): Promise<EmailResult>;
+  validateEmail(email: string): boolean;
+  getRateLimitStatus(): Promise<{
+    emailsSent: number;
+    limit: number;
+    resetTime: Date;
+  }>;
 }
 
-// Export all types for use in other modules
+export interface CalendarService {
+  createEvent(event: CalendarEvent): Promise<CalendarResult>;
+  updateEvent(eventId: string, event: Partial<CalendarEvent>): Promise<CalendarResult>;
+  deleteEvent(eventId: string): Promise<CalendarResult>;
+  getEvent(eventId: string): Promise<CalendarEvent | null>;
+}
+
+export interface ValidationService {
+  validateBookingRequest(request: BookingRequest): ValidationResult;
+  validateEmail(email: string): FieldValidation;
+  validateTimezone(timezone: string): FieldValidation;
+  validateTimeRange(startTime: string, endTime: string): FieldValidation;
+  sanitizeInput(input: string, type: 'name' | 'email' | 'notes' | 'meetingType'): string;
+}
+
+export interface LoggingService {
+  log(entry: LogEntry): void;
+  audit(action: string, success: boolean, metadata?: Record<string, any>): void;
+  getLogs(filter?: Partial<LogEntry>): LogEntry[];
+  getAuditLogs(filter?: Partial<AuditLogEntry>): AuditLogEntry[];
+}
+
+// Request context interface
+export interface RequestContext {
+  requestId: string;
+  userId?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  timestamp: Date;
+  method: string;
+  url: string;
+  headers: Record<string, string>;
+}
+
+// Rate limiting interfaces
+export interface RateLimitConfig {
+  windowMs: number;
+  maxRequests: number;
+  keyGenerator?: (req: any) => string;
+  skipSuccessfulRequests?: boolean;
+  skipFailedRequests?: boolean;
+}
+
+export interface RateLimitStatus {
+  limit: number;
+  remaining: number;
+  resetTime: Date;
+  retryAfter?: number;
+}
+
+// Health check interfaces
+export interface HealthCheckResult {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  services: {
+    email: ServiceHealth;
+    calendar: ServiceHealth;
+    database: ServiceHealth;
+  };
+  timestamp: string;
+  version: string;
+}
+
+export interface ServiceHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  responseTime?: number;
+  error?: string;
+  lastChecked: string;
+}
+
+// Export default
 export default {
   ApiResponse,
   BookingRequest,
   BookingResponse,
-  EmailRequest,
-  EmailResponse,
-  ContactRequest,
-  ContactResponse,
-  AnalyticsRequest,
-  AnalyticsResponse,
-  ApiError,
-  ValidationError,
-  ValidationResponse,
+  EmailConfig,
+  EmailResult,
+  CalendarEvent,
+  CalendarResult,
+  ValidationResult,
+  FieldValidation,
   RetryConfig,
   LogEntry,
-  ConfigValidationRequest,
-  ConfigValidationResponse,
-  ApiSuccessResponse,
-  ApiErrorResponse,
-  RequestValidator,
-  EmailService,
-  CalendarEvent,
-  CalendarService,
+  AuditLogEntry,
+  ApiErrorType,
+  ApiError,
+  BookingConfig,
+  EmailServiceConfig,
+  CalendarServiceConfig,
   BookingRecord,
-  ContactRecord,
+  EmailService,
+  CalendarService,
+  ValidationService,
+  LoggingService,
+  RequestContext,
+  RateLimitConfig,
+  RateLimitStatus,
+  HealthCheckResult,
+  ServiceHealth,
 };
