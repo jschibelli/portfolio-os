@@ -177,6 +177,12 @@ function validateSecurity() {
     process.exit(1);
   }
   
+  // Check if we're in a safe environment
+  if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_PROD_TESTS) {
+    console.error('❌ Performance tests are not allowed in production environment');
+    process.exit(1);
+  }
+  
   // Check if required dependencies are available
   try {
     require('child_process');
@@ -184,6 +190,30 @@ function validateSecurity() {
     require('path');
   } catch (error) {
     console.error('❌ Required dependencies not available:', error.message);
+    process.exit(1);
+  }
+  
+  // Validate script execution context
+  if (require.main !== module) {
+    console.error('❌ Script must be executed directly, not imported');
+    process.exit(1);
+  }
+  
+  // Check for suspicious environment variables
+  const suspiciousVars = ['NODE_OPTIONS', 'NODE_PATH'];
+  suspiciousVars.forEach(varName => {
+    if (process.env[varName] && process.env[varName].includes('--eval')) {
+      console.error(`❌ Suspicious environment variable detected: ${varName}`);
+      process.exit(1);
+    }
+  });
+  
+  // Validate file permissions
+  const scriptPath = __filename;
+  try {
+    fs.accessSync(scriptPath, fs.constants.R_OK | fs.constants.W_OK);
+  } catch (error) {
+    console.error('❌ Script file permissions are invalid:', error.message);
     process.exit(1);
   }
   

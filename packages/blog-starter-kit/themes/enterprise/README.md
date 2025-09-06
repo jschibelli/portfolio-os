@@ -137,3 +137,61 @@ FEATURE_DEVOPS=true
 FEATURE_ANALYTICS=true
 FEATURE_FINANCE=true
 ```
+
+## 🚀 Performance Testing
+
+The blog starter kit includes comprehensive performance testing capabilities to ensure optimal Core Web Vitals and user experience.
+
+### Available Performance Tests
+
+```bash
+# Run basic performance tests
+npm run test:performance
+
+# Run comprehensive performance monitoring
+npm run test:performance:monitor
+
+# Run Lighthouse audit
+npm run test:performance:lighthouse
+
+# Validate CORS headers
+npm run test:performance:cors
+
+# Validate resource paths and file types
+npm run test:performance:resources
+
+# Validate font files and formats
+npm run test:performance:fonts
+
+# Run all performance tests
+npm run test:performance:all
+
+# Optimize CSS for performance and accessibility
+npm run test:performance:css
+```
+
+### Performance Monitoring Features
+
+- **Core Web Vitals Tracking**: LCP, FID, CLS, FCP metrics
+- **Resource Validation**: Font, CSS, and asset file validation
+- **CORS Compliance**: Cross-origin resource sharing validation
+- **Lighthouse Integration**: Comprehensive performance audits
+- **Security Validation**: Environment and dependency checks
+- **CI/CD Integration**: Automated testing in GitHub Actions
+
+### Performance Thresholds
+
+Default performance thresholds based on Core Web Vitals:
+
+- **LCP (Largest Contentful Paint)**: < 2.5 seconds
+- **FID (First Input Delay)**: < 100 milliseconds
+- **CLS (Cumulative Layout Shift)**: < 0.1
+- **FCP (First Contentful Paint)**: < 1.8 seconds
+
+### Documentation
+
+For detailed information about performance testing:
+
+- [Performance Testing Documentation](docs/testing/performance-testing.md)
+- [Script Documentation](docs/testing/script-documentation.md)
+- [Test Results Documentation](test-results/README.md)

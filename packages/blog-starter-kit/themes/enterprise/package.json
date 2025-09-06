@@ -19,6 +19,7 @@
 		"test:performance:resources": "node scripts/validate-resources.js",
 		"test:performance:fonts": "node scripts/validate-fonts.js",
 		"test:performance:all": "node scripts/run-all-performance-tests.js",
+		"test:performance:css": "node scripts/optimize-css.js",
 		"test:seo": "playwright test tests/seo-comprehensive.spec.ts",
 		"test:visual": "playwright test tests/visual/",
 		"test:visual:update": "playwright test tests/visual/ --update-snapshots",

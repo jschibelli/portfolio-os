@@ -56,6 +56,9 @@ jobs:
     - name: Validate fonts
       run: npm run test:performance:fonts
       
+    - name: Optimize CSS
+      run: npm run test:performance:css
+      
     - name: Upload performance report
       uses: actions/upload-artifact@v4
       if: always()

@@ -42,6 +42,11 @@ const TEST_SCRIPTS = [
     name: 'Lighthouse Audit',
     command: 'npm run test:performance:lighthouse',
     critical: false
+  },
+  {
+    name: 'CSS Optimization',
+    command: 'npm run test:performance:css',
+    critical: false
   }
 ];
 
