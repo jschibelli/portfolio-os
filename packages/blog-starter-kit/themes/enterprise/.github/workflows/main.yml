@@ -327,6 +327,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel
+        id: deploy-production
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -334,6 +335,20 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./packages/blog-starter-kit/themes/enterprise
           vercel-args: '--prod'
+        continue-on-error: true
+        
+      - name: Check production deployment status
+        if: steps.deploy-production.outcome == 'failure'
+        run: |
+          echo "❌ Production deployment failed"
+          echo "Please check the Vercel logs for more details"
+          exit 1
+          
+      - name: Production success notification
+        if: steps.deploy-production.outcome == 'success'
+        run: |
+          echo "✅ Production deployment successful"
+          echo "Production URL: ${{ steps.deploy-production.outputs.preview-url }}"
 
   # Deploy to Vercel (Preview)
   deploy-preview:
@@ -347,6 +362,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel (Preview)
+        id: deploy-preview
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -354,6 +370,20 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./packages/blog-starter-kit/themes/enterprise
           vercel-args: '--target=preview'
+        continue-on-error: true
+        
+      - name: Check deployment status
+        if: steps.deploy-preview.outcome == 'failure'
+        run: |
+          echo "❌ Preview deployment failed"
+          echo "Please check the Vercel logs for more details"
+          exit 1
+          
+      - name: Success notification
+        if: steps.deploy-preview.outcome == 'success'
+        run: |
+          echo "✅ Preview deployment successful"
+          echo "Preview URL: ${{ steps.deploy-preview.outputs.preview-url }}"
 
   # Notify on Success/Failure
   notify:
@@ -367,8 +397,15 @@ jobs:
         if: success()
         run: |
           echo "✅ All checks passed! Deployment successful."
+          echo "🔒 Security scan completed successfully"
+          echo "🚀 Application deployed and ready"
           
       - name: Notify on Failure
         if: failure()
         run: |
           echo "❌ Some checks failed. Please review the logs."
+          echo "🔍 Check the following areas:"
+          echo "  - Build logs for compilation errors"
+          echo "  - Security scan results for vulnerabilities"
+          echo "  - Deployment logs for Vercel issues"
+          echo "  - Test results for failing tests"
