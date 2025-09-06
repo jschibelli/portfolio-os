@@ -781,7 +781,7 @@ const ProjectedResults: React.FC = () => (
 			{/* Performance Metrics */}
 			<SimpleBarChart
 				title="Performance Improvement Targets"
-				caption="Current vs. Target benchmarks."
+				caption="Current percentage for each metric vs. Target benchmarks."
 				data={[
 					{ label: 'Setup Time Reduction', value: 90, target: 95 },
 					{ label: 'Cost Savings', value: 75, target: 80 },
