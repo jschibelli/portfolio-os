@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import { MarkdownToHtml } from '../components/features/blog/markdown-to-html';
+import { SITE_CONFIG } from '../config/constants';
 import { ModernPostHeader } from '../components/features/blog/modern-post-header';
 import { PostTOC } from '../components/features/blog/post-toc';
 import { CaseStudyLayout } from '../components/features/case-studies/case-study-layout';
@@ -118,7 +119,7 @@ const Post = ({ publication, post }: PostProps) => {
 					ogType="article"
 					author={post.author.name}
 					publishedTime={post.publishedAt}
-					modifiedTime={post.updatedAt}
+					modifiedTime={post.updatedAt || undefined}
 					section={post.tags?.[0]?.name || undefined}
 					tags={post.tags?.map(tag => tag.name) || []}
 					structuredData={generateArticleStructuredData({
@@ -126,15 +127,15 @@ const Post = ({ publication, post }: PostProps) => {
 						description: post.seo?.description || post.subtitle || post.brief,
 						author: {
 							name: post.author.name,
-							description: 'Senior Front-End Developer',
-							url: 'https://johnschibelli.dev',
+							description: SITE_CONFIG.PERSONAL.TITLE,
+							url: SITE_CONFIG.BASE_URL,
 						},
 						publisher: {
 							name: publication.title,
 							url: publication.url,
 						},
 						datePublished: post.publishedAt,
-						dateModified: post.updatedAt,
+						dateModified: post.updatedAt || undefined,
 						image: post.coverImage?.url,
 						url: post.url,
 						keywords: post.tags?.map(tag => tag.name),
@@ -163,7 +164,7 @@ const Post = ({ publication, post }: PostProps) => {
 				ogType="article"
 				author={post.author.name}
 				publishedTime={post.publishedAt}
-				modifiedTime={post.updatedAt}
+				modifiedTime={post.updatedAt || undefined}
 				section={post.tags?.[0]?.name || undefined}
 				tags={post.tags?.map(tag => tag.name) || []}
 				structuredData={generateArticleStructuredData({
@@ -171,15 +172,15 @@ const Post = ({ publication, post }: PostProps) => {
 					description: post.seo?.description || post.subtitle || post.brief,
 					author: {
 						name: post.author.name,
-						description: 'Senior Front-End Developer',
-						url: 'https://johnschibelli.dev',
+						description: SITE_CONFIG.PERSONAL.TITLE,
+						url: SITE_CONFIG.BASE_URL,
 					},
 					publisher: {
 						name: publication.title,
 						url: publication.url,
 					},
 					datePublished: post.publishedAt,
-					dateModified: post.updatedAt,
+					dateModified: post.updatedAt || undefined,
 					image: post.coverImage?.url,
 					url: post.url,
 					keywords: post.tags?.map(tag => tag.name),
@@ -223,7 +224,7 @@ const Page = ({ page }: PageProps) => {
 		<>
 			<SEOHead
 				title={title}
-				description={page.description || 'Static page content'}
+				description={'Static page content'}
 				canonical={page.slug}
 				ogType="website"
 			/>
