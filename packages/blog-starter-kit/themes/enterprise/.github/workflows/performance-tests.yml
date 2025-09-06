@@ -50,6 +50,12 @@ jobs:
     - name: Validate CORS headers
       run: npm run test:performance:cors
       
+    - name: Validate resources
+      run: npm run test:performance:resources
+      
+    - name: Validate fonts
+      run: npm run test:performance:fonts
+      
     - name: Upload performance report
       uses: actions/upload-artifact@v4
       if: always()

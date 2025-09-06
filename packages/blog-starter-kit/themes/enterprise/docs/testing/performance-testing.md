@@ -14,6 +14,8 @@ The performance testing suite is designed to ensure the application meets Core W
 - `npm run test:performance:monitor` - Run performance monitoring script with detailed reporting
 - `npm run test:performance:lighthouse` - Run Lighthouse audit for comprehensive performance analysis
 - `npm run test:performance:cors` - Validate CORS headers for font and resource loading
+- `npm run test:performance:resources` - Validate resource paths and file types
+- `npm run test:performance:fonts` - Validate font files and their formats
 
 ### Test Structure
 
