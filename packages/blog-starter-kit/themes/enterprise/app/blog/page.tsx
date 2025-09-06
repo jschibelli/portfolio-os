@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
+import { SEOHead } from '../../components/shared/seo-head';
+import { generateWebSiteStructuredData } from '../../lib/structured-data';
 
 const prisma = new PrismaClient();
 
@@ -80,6 +82,25 @@ export default async function BlogIndex() {
 
     return (
       <AppProvider publication={publication}>
+        <SEOHead
+          title="Blog - John Schibelli"
+          description="Read the latest insights on web development, React, Next.js, TypeScript, and modern development practices from John Schibelli, Senior Front-End Developer."
+          keywords={[
+            'Blog',
+            'Web Development',
+            'React',
+            'Next.js',
+            'TypeScript',
+            'Front-End Development',
+            'JavaScript',
+            'Development Insights',
+            'Technology',
+            'Programming',
+          ]}
+          canonical="/blog"
+          ogType="website"
+          structuredData={generateWebSiteStructuredData()}
+        />
         <div className="min-h-screen bg-background text-foreground">
           {/* Main Navigation Header - Same as used across the app */}
           <ModernHeader publication={publication} />
@@ -107,7 +128,7 @@ export default async function BlogIndex() {
                     <div className="flex items-center justify-center bg-muted rounded-lg p-12">
                       {featuredPost.cover ? (
                         <img src={featuredPost.cover.url} alt={featuredPost.cover.alt || featuredPost.title} 
-                             className="w-full h-64 object-cover rounded-lg" />
+                             className="w-full h-64 object-cover rounded-lg" loading="lazy" />
                       ) : (
                         <div className="text-center">
                           <svg className="w-24 h-24 mx-auto text-muted-foreground mb-4" fill="currentColor" viewBox="0 0 24 24">
@@ -184,6 +205,7 @@ export default async function BlogIndex() {
                           src={post.cover.url}
                           alt={post.cover.alt || post.title}
                           className="w-full h-48 object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="bg-muted h-48 flex items-center justify-center">

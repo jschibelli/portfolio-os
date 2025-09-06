@@ -127,6 +127,7 @@ function FeaturedCaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
               src={caseStudy.coverImage}
               alt={caseStudy.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
             />
             <div className="absolute top-3 right-3">
               <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
@@ -209,6 +210,7 @@ function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
               src={caseStudy.coverImage}
               alt={caseStudy.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
             />
           </div>
         )}

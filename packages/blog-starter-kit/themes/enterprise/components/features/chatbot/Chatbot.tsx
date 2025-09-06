@@ -1704,12 +1704,12 @@ export default function Chatbot() {
                                      <button
                      onClick={isListening ? stopListening : startListening}
                      disabled={isLoading}
-									className={`flex hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-10 sm:w-10 md:flex ${
+									className={`flex hidden h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-12 sm:w-12 md:flex ${
                        isListening
 											? 'animate-pulse bg-red-500 text-white hover:bg-red-600'
 											: 'bg-stone-600 text-white hover:bg-stone-700 dark:bg-stone-500 dark:hover:bg-stone-600'
                      }`}
-                     style={{ minWidth: '32px', minHeight: '32px' }}
+                     style={{ minWidth: '44px', minHeight: '44px' }}
                      aria-label={isListening ? 'Stop listening' : 'Start listening'}
                      title={isListening ? 'Stop listening' : 'Start voice input (tap to speak)'}
                    >
@@ -1724,7 +1724,7 @@ export default function Chatbot() {
                  <button
                    onClick={sendMessage}
                    disabled={!inputValue.trim() || isLoading || isListening}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
                    style={{ minWidth: '32px', minHeight: '32px' }}
                    aria-label="Send message"
                  >
@@ -1740,8 +1740,8 @@ export default function Chatbot() {
                      }
                      setIsOpen(false);
                    }}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
-                   style={{ minWidth: '32px', minHeight: '32px' }}
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+                   style={{ minWidth: '44px', minHeight: '44px' }}
                    aria-label="Close chat"
                  >
                    <X className="h-3 w-3 sm:h-4 sm:w-4" />

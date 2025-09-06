@@ -128,6 +128,29 @@ export function SEOHead({
 			<link rel="preconnect" href="https://www.google-analytics.com" />
 			<link rel="preconnect" href="https://www.googletagmanager.com" />
 
+			{/* Font preloading */}
+			<link
+				rel="preload"
+				href="/assets/PlusJakartaSans-Regular.ttf"
+				as="font"
+				type="font/ttf"
+				crossOrigin="anonymous"
+			/>
+			<link
+				rel="preload"
+				href="/assets/PlusJakartaSans-Medium.ttf"
+				as="font"
+				type="font/ttf"
+				crossOrigin="anonymous"
+			/>
+			<link
+				rel="preload"
+				href="/assets/PlusJakartaSans-SemiBold.ttf"
+				as="font"
+				type="font/ttf"
+				crossOrigin="anonymous"
+			/>
+
 			{/* Favicon */}
 			<link rel="icon" href="/favicon.ico" />
 			<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
