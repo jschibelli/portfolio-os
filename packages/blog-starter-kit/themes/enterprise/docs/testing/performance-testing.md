@@ -12,6 +12,8 @@ The performance testing suite is designed to ensure the application meets Core W
 
 - `npm run test:performance` - Run performance tests using Playwright
 - `npm run test:performance:monitor` - Run performance monitoring script with detailed reporting
+- `npm run test:performance:lighthouse` - Run Lighthouse audit for comprehensive performance analysis
+- `npm run test:performance:cors` - Validate CORS headers for font and resource loading
 
 ### Test Structure
 

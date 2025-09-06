@@ -44,6 +44,12 @@ jobs:
     - name: Generate performance report
       run: npm run test:performance:monitor
       
+    - name: Run Lighthouse audit
+      run: npm run test:performance:lighthouse
+      
+    - name: Validate CORS headers
+      run: npm run test:performance:cors
+      
     - name: Upload performance report
       uses: actions/upload-artifact@v4
       if: always()
