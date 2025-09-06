@@ -40,7 +40,7 @@ const mockPublication = {
 		image: '/profile.jpg',
 		bio: 'Full-stack developer and SaaS entrepreneur',
 		location: 'United States',
-		website: 'https://schibelli.dev',
+		website: 'https://johnschibelli.dev',
 		twitter: '@jschibelli',
 		github: 'jschibelli',
 		linkedin: 'jschibelli',

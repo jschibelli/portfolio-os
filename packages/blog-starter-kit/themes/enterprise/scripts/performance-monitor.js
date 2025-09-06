@@ -16,7 +16,9 @@ const THRESHOLDS = {
   LCP: 2500, // 2.5 seconds
   FID: 100,  // 100 milliseconds
   CLS: 0.1,  // 0.1
-  FCP: 1800  // 1.8 seconds
+  FCP: 1800, // 1.8 seconds
+  TTFB: 800, // 800 milliseconds (Time to First Byte)
+  SI: 3400   // 3.4 seconds (Speed Index)
 };
 
 /**
@@ -180,6 +182,7 @@ function validateSecurity() {
   // Check if we're in a safe environment
   if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_PROD_TESTS) {
     console.error('❌ Performance tests are not allowed in production environment');
+    console.error('   Set ALLOW_PROD_TESTS=true if you need to run tests in production');
     process.exit(1);
   }
   

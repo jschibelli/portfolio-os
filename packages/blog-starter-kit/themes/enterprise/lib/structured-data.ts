@@ -152,11 +152,11 @@ export function generateWebSiteStructuredData() {
 		'@type': 'WebSite',
 		name: 'John Schibelli - Senior Front-End Developer',
 		description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
-		url: 'https://johnschibelli.com',
+		url: 'https://johnschibelli.dev',
 		author: generatePersonStructuredData({
 			name: 'John Schibelli',
 			description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
-			url: 'https://johnschibelli.com',
+			url: 'https://johnschibelli.dev',
 			jobTitle: 'Senior Front-End Developer',
 			sameAs: [
 				'https://linkedin.com/in/johnschibelli',
@@ -167,11 +167,11 @@ export function generateWebSiteStructuredData() {
 		publisher: generateOrganizationStructuredData({
 			name: 'John Schibelli',
 			description: 'Professional web development and consulting services',
-			url: 'https://johnschibelli.com',
+			url: 'https://johnschibelli.dev',
 			contactPoint: {
 				telephone: '+1-555-0123',
 				contactType: 'customer service',
-				email: 'john@johnschibelli.com',
+				email: 'john@johnschibelli.dev',
 			},
 		}),
 	};

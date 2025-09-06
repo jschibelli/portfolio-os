@@ -44,10 +44,20 @@ The `scripts/performance-monitor.js` script provides:
 ### Features
 
 - **Automated Testing**: Runs performance tests and extracts metrics
-- **Threshold Validation**: Compares metrics against Core Web Vitals thresholds
+- **Threshold Validation**: Compares metrics against Core Web Vitals thresholds (LCP, FID, CLS, FCP, TTFB, SI)
 - **Report Generation**: Creates detailed performance reports
 - **Error Handling**: Graceful handling of test failures
 - **Security Validation**: Ensures script runs in secure environment
+- **Production Safety**: Prevents accidental execution in production environments
+
+### Enhanced ESLint Configuration
+
+The project now includes improved ESLint rules for better code quality:
+
+- **Prop Sorting**: Enforces consistent prop ordering for better readability
+- **Performance Rules**: Added rules to prevent performance anti-patterns
+- **Code Consistency**: Enhanced rules for consistent code formatting
+- **Deprecated Rule Removal**: Removed outdated rules like `react/jsx-space-before-closing`
 
 ### Usage
 

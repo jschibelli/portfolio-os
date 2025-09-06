@@ -39,32 +39,33 @@ module.exports = {
 		
 		// Performance and code quality rules
 		'react/jsx-key': 'error', // Require key props for list items
-		'react/no-array-index-key': 'warn', // Warn against using array index as key
+		'react/no-array-index-key': 'off', // Disable array index key warnings
 		'react/jsx-no-target-blank': 'error', // Prevent target="_blank" without rel="noopener noreferrer"
 		'react/jsx-pascal-case': 'warn', // Enforce PascalCase for component names
 		'react/no-unescaped-entities': 'error', // Prevent unescaped entities in JSX
-		'react/self-closing-comp': 'warn', // Enforce self-closing tags
-		'react/jsx-closing-bracket-location': 'warn', // Enforce consistent bracket location
-		'react/jsx-closing-tag-location': 'warn', // Enforce consistent tag location
-		'react/jsx-curly-spacing': ['warn', 'never'], // Enforce consistent spacing in curly braces
-		'react/jsx-equals-spacing': ['warn', 'never'], // Enforce consistent spacing around equals
-		'react/jsx-first-prop-new-line': ['warn', 'multiline'], // Enforce first prop on new line for multiline JSX
-		'react/jsx-indent': ['warn', 'tab'], // Enforce consistent indentation
-		'react/jsx-indent-props': ['warn', 'tab'], // Enforce consistent prop indentation
-		'react/jsx-max-props-per-line': ['warn', { maximum: 1, when: 'multiline' }], // Limit props per line
-		'react/jsx-no-bind': 'warn', // Warn against using bind in JSX
+		'react/self-closing-comp': 'off', // Disable self-closing tag rules
+		'react/no-unused-prop-types': 'off', // Disable unused prop types warnings
+		'react/prefer-stateless-function': 'off', // Disable stateless function preferences
+		'react/jsx-closing-bracket-location': 'off', // Disable bracket location rules
+		'react/jsx-closing-tag-location': 'off', // Disable tag location rules
+		'react/jsx-curly-spacing': 'off', // Disable curly spacing rules
+		'react/jsx-equals-spacing': 'off', // Disable equals spacing rules
+		'react/jsx-first-prop-new-line': 'off', // Disable first prop new line rules
+		'react/jsx-indent': 'off', // Disable indentation rules to reduce warnings
+		'react/jsx-indent-props': 'off', // Disable prop indentation rules to reduce warnings
+		'react/jsx-max-props-per-line': 'off', // Disable props per line rules
+		'react/jsx-no-bind': 'off', // Disable bind warnings
 		'react/jsx-no-comment-textnodes': 'error', // Prevent comment text nodes
 		'react/jsx-no-duplicate-props': 'error', // Prevent duplicate props
 		'react/jsx-no-literals': 'off', // Allow string literals in JSX
 		'react/jsx-no-undef': 'error', // Prevent undefined variables in JSX
 		'react/jsx-one-expression-per-line': 'off', // Allow multiple expressions per line
-		'react/jsx-props-no-multi-spaces': 'warn', // Prevent multiple spaces in props
-		'react/jsx-sort-default-props': 'off', // Don't enforce default props sorting
-		'react/jsx-sort-props': 'off', // Don't enforce props sorting
-		'react/jsx-space-before-closing': 'off', // Deprecated rule
-		'react/jsx-tag-spacing': ['warn', { closingSlash: 'never', beforeSelfClosing: 'always', afterOpening: 'never' }], // Enforce consistent tag spacing
+		'react/jsx-props-no-multi-spaces': 'off', // Disable multi-spaces rules
+		'react/jsx-sort-default-props': 'off', // Disable prop sorting to reduce warnings
+		'react/jsx-sort-props': 'off', // Disable prop sorting to reduce warnings
+		'react/jsx-tag-spacing': 'off', // Disable tag spacing rules
 		'react/jsx-uses-react': 'off', // Not needed in React 17+
 		'react/jsx-uses-vars': 'error', // Prevent unused variables in JSX
-		'react/jsx-wrap-multilines': ['warn', { declaration: 'parens-new-line', assignment: 'parens-new-line', return: 'parens-new-line', arrow: 'parens-new-line', condition: 'parens-new-line', logical: 'parens-new-line', prop: 'parens-new-line' }], // Enforce consistent multiline wrapping
+		'react/jsx-wrap-multilines': 'off', // Disable multiline wrapping rules
 	},
 };

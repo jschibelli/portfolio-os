@@ -36,7 +36,7 @@ export function SEOHead({
 	noIndex = false,
 	children,
 }: SEOHeadProps) {
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.com';
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev';
 	const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
 	const fullOgImage = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-image.jpg`;
 

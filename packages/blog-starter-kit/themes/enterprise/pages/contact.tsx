@@ -88,7 +88,7 @@ export default function ContactPage({ publication }: Props) {
 					structuredData={generateOrganizationStructuredData({
 						name: 'John Schibelli',
 						description: 'Senior Front-End Developer providing web development services',
-						url: 'https://johnschibelli.com',
+						url: 'https://johnschibelli.dev',
 						contactPoint: {
 							telephone: '+1-555-0123',
 							contactType: 'customer service',

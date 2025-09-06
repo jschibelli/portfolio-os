@@ -40,7 +40,7 @@ const responseTemplates = {
 			{ label: 'Email', url: 'mailto:jschibelli@gmail.com', icon: '📧' },
 			{ label: 'LinkedIn', url: 'https://linkedin.com/in/johnschibelli', icon: '💼' },
 			{ label: 'GitHub', url: 'https://github.com/jschibelli', icon: '🐙' },
-			{ label: 'Website', url: 'https://schibelli.dev', icon: '🌐' },
+			{ label: 'Website', url: 'https://johnschibelli.dev', icon: '🌐' },
 		],
 	},
 	skills: {
@@ -470,7 +470,7 @@ KEY INFORMATION ABOUT JOHN:
 - Title: Senior Front-End Developer
 - Location: Towaco, NJ
 - Email: jschibelli@gmail.com
-- Website: https://schibelli.dev
+- Website: https://johnschibelli.dev
 - LinkedIn: https://linkedin.com/in/johnschibelli
 - GitHub: https://github.com/jschibelli
 

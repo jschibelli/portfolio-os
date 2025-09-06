@@ -39,7 +39,7 @@ export default function WebDevelopmentPage({ publication }: Props) {
 						provider: {
 							name: 'John Schibelli',
 							description: 'Senior Front-End Developer with 15+ years of experience',
-							url: 'https://johnschibelli.com',
+							url: 'https://johnschibelli.dev',
 							jobTitle: 'Senior Front-End Developer',
 						},
 						url: 'https://johnschibelli.com/services/web-development',

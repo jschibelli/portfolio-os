@@ -177,7 +177,7 @@ export default function About({ publication }: Props) {
 				structuredData={generatePersonStructuredData({
 					name: 'John Schibelli',
 					description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
-					url: 'https://johnschibelli.com',
+					url: 'https://johnschibelli.dev',
 					jobTitle: 'Senior Front-End Developer',
 					sameAs: [
 						'https://linkedin.com/in/johnschibelli',

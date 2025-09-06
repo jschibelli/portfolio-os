@@ -1,6 +1,6 @@
-+/** @type {import('next-sitemap').IConfig} */
+/** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://schibelli.dev',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev',
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: [
@@ -29,7 +29,7 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      'https://johnschibelli.com/sitemap.xml',
+      'https://johnschibelli.dev/sitemap.xml',
     ],
   },
   transform: async (config, path) => {
