@@ -130,7 +130,26 @@ npm run test:performance:css
 - Console summary with optimization score
 - JSON report saved to `test-results/css-optimization-report.json`
 
-### 7. **Comprehensive Testing Suite** (`scripts/run-all-performance-tests.js`)
+### 7. **Code Quality (ESLint)** (`npm run test:performance:lint`)
+
+**Purpose**: Validates code quality and catches potential issues using ESLint.
+
+**Usage**:
+```bash
+npm run test:performance:lint
+```
+
+**Features**:
+- Runs ESLint with comprehensive rules for React, JSX, and accessibility
+- Enforces consistent code formatting and best practices
+- Catches potential performance issues and code quality problems
+- Validates accessibility compliance in JSX components
+
+**Output**:
+- Console output with linting errors and warnings
+- Exit code 1 if any errors are found (zero tolerance for errors)
+
+### 8. **Comprehensive Testing Suite** (`scripts/run-all-performance-tests.js`)
 
 **Purpose**: Runs all performance tests and validations in sequence.
 

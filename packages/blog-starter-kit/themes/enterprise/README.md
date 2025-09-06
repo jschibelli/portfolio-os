@@ -168,6 +168,9 @@ npm run test:performance:all
 
 # Optimize CSS for performance and accessibility
 npm run test:performance:css
+
+# Validate code quality with ESLint
+npm run test:performance:lint
 ```
 
 ### Performance Monitoring Features

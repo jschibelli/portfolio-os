@@ -47,6 +47,11 @@ const TEST_SCRIPTS = [
     name: 'CSS Optimization',
     command: 'npm run test:performance:css',
     critical: false
+  },
+  {
+    name: 'Code Quality (ESLint)',
+    command: 'npm run test:performance:lint',
+    critical: true
   }
 ];
 
