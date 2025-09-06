@@ -4,7 +4,16 @@ export default function Document() {
 	return (
 		<Html lang="en">
 			<Head>
-					{/* Preload critical fonts for better LCP - optimized strategy */}
+					{/* 
+					 * Preload critical fonts for better LCP - optimized strategy
+					 * 
+					 * Performance Impact:
+					 * - Reduces Largest Contentful Paint (LCP) by preloading above-the-fold fonts
+					 * - Improves First Contentful Paint (FCP) by eliminating font loading delays
+					 * - Font-display: swap ensures text remains visible during font loading
+					 * 
+					 * Monitoring: Track LCP, FCP, and CLS metrics to validate effectiveness
+					 */
 					<link
 						rel="preload"
 						href="/assets/PlusJakartaSans-Regular.ttf"
