@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import { Badge, Button, Card, CardContent, CardHeader } from '@/components/ui';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { PortfolioItem } from '../../types/portfolio';
@@ -79,10 +79,11 @@ export default function CaseStudyCard({ item, index }: CaseStudyCardProps) {
 						className="relative aspect-video overflow-hidden"
 					>
 						{item.image && item.image.startsWith('/') ? (
-							<img
+							<Image
 								src={item.image}
 								alt={`Screenshot of ${item.title}`}
-								className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+								fill
+								className="object-cover transition-transform duration-500 group-hover:scale-105"
 								loading="lazy"
 								onError={(e) => {
 									const target = e.target as HTMLImageElement;

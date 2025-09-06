@@ -76,8 +76,8 @@ export class ModuleRegistry {
     name: string, 
     config: ModuleConfig = {}
   ): Promise<ModuleResult> {
-    const moduleInstance = this.get(name);
-    if (!moduleInstance) {
+    const moduleItem = this.get(name);
+    if (!moduleItem) {
       throw new Error(`Module '${name}' not found`);
     }
 
@@ -85,15 +85,15 @@ export class ModuleRegistry {
     
     try {
       // Validate module if validator exists
-      if (moduleInstance.validate) {
-        const isValid = await moduleInstance.validate(config);
+      if (moduleItem.validate) {
+        const isValid = await moduleItem.validate(config);
         if (!isValid) {
           throw new Error(`Module '${name}' validation failed`);
         }
       }
 
       // Execute module
-      const result = await moduleInstance.execute(config);
+      const result = await moduleItem.execute(config);
       result.duration = Date.now() - startTime;
       
       return result;
@@ -154,8 +154,8 @@ export class ModuleRegistry {
    */
   async cleanup(): Promise<void> {
     const cleanupPromises = this.list()
-      .filter(moduleInstance => moduleInstance.cleanup)
-      .map(moduleInstance => moduleInstance.cleanup!());
+      .filter(moduleItem => moduleItem.cleanup)
+      .map(moduleItem => moduleItem.cleanup!());
 
     await Promise.all(cleanupPromises);
   }

@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Separator } from '../../ui/separator';
 
 export default function Intro() {
@@ -17,10 +17,13 @@ export default function Intro() {
 						{/* Profile Image */}
 						<div className="flex-shrink-0">
 							<div className="h-20 w-20 overflow-hidden rounded-full shadow-lg md:h-24 md:w-24">
-								<img
+								<Image
 									src="/assets/hero/profile.png"
 									alt="John Schibelli - Senior Frontend Developer"
+									width={96}
+									height={96}
 									className="h-full w-full object-cover"
+									priority
 								/>
 							</div>
 						</div>

@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import { resizeImage } from '@starter-kit/utils/image';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { AppProvider } from '../../components/contexts/appContext';
 import { CaseStudyMarkdown } from '../../components/features/case-studies/case-study-markdown';
@@ -146,10 +146,12 @@ export default function CaseStudyPage({ caseStudy, publication }: Props) {
                   {caseStudy.coverImage && (
                     <div className="mb-8 lg:mb-12">
                       <div className="relative h-64 w-full overflow-hidden rounded-xl md:h-80 lg:h-96">
-                        <img
+                        <Image
                           src={caseStudy.coverImage}
                           alt={caseStudy.title}
-                          className="h-full w-full object-cover"
+                          fill
+                          className="object-cover"
+                          priority
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                       </div>
@@ -210,13 +212,16 @@ export default function CaseStudyPage({ caseStudy, publication }: Props) {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              <img
+                              <Image
                                 src={resizeImage(
                                   'https://cdn.hashnode.com/res/hashnode/image/upload/v1659089761812/fsOct5gl6.png',
                                   { w: 256, h: 256, c: 'face' },
                                 )}
                                 alt={caseStudy.author?.name || 'Author'}
+                                width={80}
+                                height={80}
                                 className="block h-full w-full object-cover"
+                                loading="lazy"
                               />
                             </a>
                             <div className="flex flex-1 flex-col">

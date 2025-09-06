@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
 import { Badge } from '../../../ui/badge';
 import { Card, CardContent } from '../../../ui/card';
@@ -66,10 +66,13 @@ export const Testimonial: React.FC<TestimonialProps> = ({
 					{/* Author info */}
 					<div className="flex items-center gap-4">
 						{avatar && (
-							<img
+							<Image
 								src={avatar}
 								alt={author}
+								width={48}
+								height={48}
 								className="border-border h-12 w-12 rounded-full border-2 object-cover"
+								loading="lazy"
 							/>
 						)}
 						<div>

@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import {
 	BarChart3,
 	CheckCircle,
@@ -292,7 +292,7 @@ const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, r
 				const [url, alt] = row;
 				return (
 					<Card key={index} className="overflow-hidden">
-						<img src={url} alt={alt} className="h-48 w-full object-cover" />
+						<Image src={url} alt={alt} width={400} height={192} className="h-48 w-full object-cover" />
 						<CardContent className="p-4">
 							<p className="text-muted-foreground text-sm">{alt}</p>
 						</CardContent>
