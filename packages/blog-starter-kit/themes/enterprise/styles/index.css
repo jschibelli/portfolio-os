@@ -228,38 +228,38 @@
   /* Fix stone-500 text contrast issues - WCAG 2.1 AA compliant */
   .text-stone-500,
   span.text-stone-500 {
-    color: hsl(240 3.8% 35%) !important; /* Darker for 4.5:1 contrast on light background */
+    color: hsl(240, 3.8%, 35%) !important; /* Darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-stone-500,
   .dark span.text-stone-500 {
-    color: hsl(240 5% 90%) !important; /* Much lighter for dark mode - WCAG AA compliant */
+    color: hsl(240, 5%, 90%) !important; /* Much lighter for dark mode - WCAG AA compliant */
   }
 
   /* Fix stone-900 text contrast issues */
   .text-stone-900 {
-    color: hsl(240 3.8% 5%) !important; /* Very dark for maximum contrast */
+    color: hsl(240, 3.8%, 5%) !important; /* Very dark for maximum contrast */
   }
 
   .dark .text-stone-900 {
-    color: hsl(0 0% 100%) !important; /* Pure white in dark mode */
+    color: hsl(0, 0%, 100%) !important; /* Pure white in dark mode */
   }
 
   .dark .text-stone-400,
   .dark span.text-stone-400 {
-    color: hsl(240 5% 95%) !important; /* Much lighter for 4.5:1 contrast on dark background */
+    color: hsl(240, 5%, 95%) !important; /* Much lighter for 4.5:1 contrast on dark background */
   }
 
   .text-stone-900,
   h2.text-stone-900,
   h3.text-stone-900 {
-    color: hsl(240 3.8% 15%) !important; /* Dark for good contrast on light background */
+    color: hsl(240, 3.8%, 15%) !important; /* Dark for good contrast on light background */
   }
 
   .dark .text-stone-100,
   .dark h2.text-stone-100,
   .dark h3.text-stone-100 {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum visibility on dark background */
+    color: hsl(0, 0%, 100%) !important; /* Pure white for maximum visibility on dark background */
   }
 
   /* Additional heading improvements for dark mode */
@@ -376,13 +376,20 @@
 
   /* Fix any neutral colors that might be used for headings */
 
-  /* Fix primary color contrast issues - WCAG 2.1 AA compliant */
+  /* 
+   * Primary Color Contrast Fixes - WCAG 2.1 AA Compliant
+   * 
+   * These styles ensure proper color contrast ratios for accessibility:
+   * - Light mode: Dark text (15% lightness) on light backgrounds for 4.5:1+ contrast
+   * - Dark mode: Pure white text on dark backgrounds for maximum contrast
+   * - Uses !important to override theme defaults that may not meet accessibility standards
+   */
   .text-primary {
-    color: hsl(240 3.8% 15%) !important; /* Much darker for 4.5:1 contrast on light background */
+    color: hsl(240, 3.8%, 15%) !important; /* Much darker for 4.5:1 contrast on light background */
   }
 
   .dark .text-primary {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
+    color: hsl(0, 0%, 100%) !important; /* Pure white for maximum contrast on dark background */
   }
 
   .bg-primary\/10 {
