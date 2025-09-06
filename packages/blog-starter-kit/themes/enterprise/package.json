@@ -10,6 +10,7 @@
 		"postbuild": "next-sitemap",
 		"start": "next start",
 		"test": "echo \"No tests specified yet\" && exit 0",
+		"_comment_tests": "Performance testing scripts: test:performance runs Playwright tests, test:performance:monitor generates detailed reports with Core Web Vitals validation",
 		"test:accessibility": "playwright test tests/accessibility*.spec.ts",
 		"test:performance": "playwright test tests/blog-performance.spec.ts",
 		"test:performance:monitor": "node scripts/performance-monitor.js",

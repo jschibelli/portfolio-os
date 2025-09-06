@@ -41,6 +41,11 @@ export default function Document() {
 							font-family: 'Plus Jakarta Sans';
 							font-display: swap;
 						}
+						
+						/* Fallback fonts for better reliability */
+						body {
+							font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+						}
 					`}</style>
 				{/* Preload critical CSS */}
 				<link rel="preload" href="/styles/index.css" as="style" />

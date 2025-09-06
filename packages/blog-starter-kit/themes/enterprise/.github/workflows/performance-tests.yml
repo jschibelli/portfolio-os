@@ -1,0 +1,103 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+  schedule:
+    # Run performance tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  performance-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Start application
+      run: npm start &
+      
+    - name: Wait for application to start
+      run: npx wait-on http://localhost:3000 --timeout 60000
+      
+    - name: Run performance tests
+      run: npm run test:performance
+      
+    - name: Generate performance report
+      run: npm run test:performance:monitor
+      
+    - name: Upload performance report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-report
+        path: test-results/performance-report.json
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: test-results/
+        
+    - name: Comment PR with performance results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            const reportPath = path.join('test-results', 'performance-report.json');
+            if (fs.existsSync(reportPath)) {
+              const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+              
+              const comment = `## 📊 Performance Test Results
+              
+              **Test Date:** ${new Date(report.timestamp).toLocaleString()}
+              
+              ### Core Web Vitals
+              ${report.validation.violations.map(v => 
+                `- ${v.status === 'PASS' ? '✅' : '❌'} **${v.metric}**: ${v.value}ms (threshold: ${v.threshold}ms)`
+              ).join('\n')}
+              
+              ### Summary
+              - **Total Metrics**: ${report.summary.total}
+              - **Passed**: ${report.summary.passed}
+              - **Failed**: ${report.summary.failed}
+              
+              ${report.validation.passed ? 
+                '🎉 All performance metrics are within acceptable thresholds!' : 
+                '⚠️ Some performance metrics exceed thresholds. Please review the results.'
+              }
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+          } catch (error) {
+            console.error('Failed to create performance comment:', error);
+          }
