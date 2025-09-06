@@ -14,7 +14,7 @@ import {
   ListOrdered, 
   Quote,
   Code,
-  Image,
+  Image as ImageIcon,
   Link,
   Plus,
   Trash2,
