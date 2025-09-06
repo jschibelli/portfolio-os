@@ -225,18 +225,15 @@
     color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast */
   }
 
+  /* Fix stone-500 text contrast issues - WCAG 2.1 AA compliant */
   .text-stone-500,
   span.text-stone-500 {
-    color: hsl(240 3.8% 30%) !important; /* Much darker for 4.5:1 contrast on light background */
+    color: hsl(240 3.8% 35%) !important; /* Darker for 4.5:1 contrast on light background */
   }
 
-  /* Fix specific stone color combinations that are failing contrast tests */
-  .text-stone-500.dark\:text-stone-400 {
-    color: hsl(240 3.8% 35%) !important; /* Darker for light mode */
-  }
-
-  .dark .text-stone-500.dark\:text-stone-400 {
-    color: hsl(240 5% 90%) !important; /* Much lighter for dark mode */
+  .dark .text-stone-500,
+  .dark span.text-stone-500 {
+    color: hsl(240 5% 90%) !important; /* Much lighter for dark mode - WCAG AA compliant */
   }
 
   /* Fix stone-900 text contrast issues */

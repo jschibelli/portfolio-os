@@ -1,3 +1,12 @@
+/**
+ * Blog Index Page - Performance Optimized
+ * 
+ * This page has been optimized for Core Web Vitals:
+ * - Uses Next.js Image component for optimized image loading
+ * - Implements mock data to avoid database bottlenecks during testing
+ * - Prioritizes above-the-fold content loading
+ * - Implements proper lazy loading for below-the-fold images
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
