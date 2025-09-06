@@ -6,12 +6,13 @@ import { prisma } from '@/lib/prisma'
 import { ArticleEditor } from '../../_components/ArticleEditor'
 
 interface EditArticlePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default async function EditArticlePage({ params }: EditArticlePageProps) {
+export default async function EditArticlePage(props: EditArticlePageProps) {
+  const params = await props.params;
   const article = await prisma.article.findUnique({
     where: { id: params.id },
     include: {
