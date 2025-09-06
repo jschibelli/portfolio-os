@@ -1444,8 +1444,10 @@ export default function Chatbot() {
            }
            setIsOpen(!isOpen);
          }}
-				className="fixed bottom-4 right-4 z-[9999] rounded-full border border-stone-700 bg-stone-900 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-stone-800 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
-         aria-label="Toggle chatbot"
+				className="fixed bottom-4 right-4 z-[9999] rounded-full border-2 border-white bg-primary p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-primary/90 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-200 dark:bg-primary dark:text-white dark:hover:bg-primary/90"
+         aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
+         aria-expanded={isOpen}
+         role="button"
          style={{ 
            display: 'flex', 
            alignItems: 'center', 
@@ -1458,7 +1460,7 @@ export default function Chatbot() {
 					height: '50px',
 				}}
 			>
-				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+				{isOpen ? <X className="h-6 w-6 text-white" /> : <MessageCircle className="h-6 w-6 text-white" />}
       </button>
 
              {/* Chat Window - Opens above the toggle button */}

@@ -72,7 +72,7 @@
   /* Skip to main content link - enhanced for cross-browser compatibility with WCAG AA compliance */
   .skip-link {
     position: absolute;
-    top: -40px;
+    top: -100px; /* Move further off-screen to prevent partial visibility */
     left: 6px;
     background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
     color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
@@ -88,6 +88,9 @@
     display: block;
     width: auto;
     height: auto;
+    /* Ensure it's completely hidden when not focused */
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
   }
 
   .skip-link:focus,
@@ -99,6 +102,9 @@
     /* Ensure visibility on focus with WCAG AA compliance */
     background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
     color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
+    /* Remove clip when focused to make it visible */
+    clip: auto;
+    overflow: visible;
   }
   
   /* Additional focus styles for better cross-browser support */
@@ -107,6 +113,9 @@
     top: 6px;
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+    /* Remove clip when focused to make it visible */
+    clip: auto;
+    overflow: visible;
     background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
     color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
   }
