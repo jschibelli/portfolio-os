@@ -19,68 +19,73 @@ export const Footer = ({ publication }: FooterProps) => {
 				<div className="flex flex-col items-center justify-between gap-6 text-center">
 					{/* Social Links */}
 					<nav aria-label="Social media links">
-						<div className="flex items-center gap-4" role="list">
+						<ul className="flex items-center gap-4">
 							{/* Facebook */}
-							<a
-								href="https://facebook.com"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Find us on Facebook, external website, opens in new tab"
-								className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								role="listitem"
-							>
-								<FacebookSVG className="h-5 w-5" />
-							</a>
+							<li>
+								<a
+									href="https://facebook.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Facebook, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									<FacebookSVG className="h-5 w-5" />
+								</a>
+							</li>
 
 							{/* GitHub */}
-							<a
-								href="https://github.com"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Find us on Github, external website, opens in new tab"
-								className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								role="listitem"
-							>
-								<GithubSVG className="h-5 w-5 stroke-current" />
-							</a>
+							<li>
+								<a
+									href="https://github.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Github, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									<GithubSVG className="h-5 w-5 stroke-current" />
+								</a>
+							</li>
 
 							{/* LinkedIn */}
-							<a
-								href="https://linkedin.com"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Find us on Linkedin, external website, opens in new tab"
-								className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								role="listitem"
-							>
-								<LinkedinSVG className="h-5 w-5 stroke-current" />
-							</a>
+							<li>
+								<a
+									href="https://linkedin.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Linkedin, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									<LinkedinSVG className="h-5 w-5 stroke-current" />
+								</a>
+							</li>
 
 							{/* Bluesky */}
-							<a
-								href="https://bsky.app"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Find us on Bluesky, external website, opens in new tab"
-								className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								role="listitem"
-							>
-								<BlueskySVG className="h-5 w-5 stroke-current" />
-							</a>
+							<li>
+								<a
+									href="https://bsky.app"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Find us on Bluesky, external website, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									<BlueskySVG className="h-5 w-5 stroke-current" />
+								</a>
+							</li>
 
 							{/* RSS Feed */}
-							<Link
-								prefetch={false}
-								href={`/rss.xml`}
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Open blog XML Feed, opens in new tab"
-								className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-								role="listitem"
-							>
-								<RssSVG className="h-5 w-5 stroke-current" />
-							</Link>
-						</div>
+							<li>
+								<Link
+									prefetch={false}
+									href={`/rss.xml`}
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Open blog XML Feed, opens in new tab"
+									className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								>
+									<RssSVG className="h-5 w-5 stroke-current" />
+								</Link>
+							</li>
+						</ul>
 					</nav>
 
 					{/* Copyright */}

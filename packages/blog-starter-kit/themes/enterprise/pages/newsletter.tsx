@@ -126,9 +126,9 @@ export default function NewsletterPage({ publication }: Props) {
 								</div>
 
 								<div>
-									<label className="text-foreground mb-2 block text-sm font-medium">
+									<div className="text-foreground mb-2 block text-sm font-medium">
 										Topics of Interest
-									</label>
+									</div>
 									<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 										<label className="flex items-center space-x-3">
 											<input

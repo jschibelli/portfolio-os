@@ -53,7 +53,18 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
 		<>
 			<div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center duration-300">
 				{/* Backdrop */}
-				<div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+				<div 
+					className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+					onClick={onClose}
+					onKeyDown={(e) => {
+						if (e.key === 'Escape') {
+							onClose();
+						}
+					}}
+					role="button"
+					tabIndex={0}
+					aria-label="Close modal"
+				/>
 
 				{/* Modal */}
 				<Card className="animate-in slide-in-from-bottom-4 mx-4 w-full max-w-md duration-300 ease-out">

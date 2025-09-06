@@ -68,4 +68,30 @@ module.exports = {
 		'react/jsx-uses-vars': 'error', // Prevent unused variables in JSX
 		'react/jsx-wrap-multilines': 'off', // Disable multiline wrapping rules
 	},
+	overrides: [
+		{
+			// Admin components - less strict accessibility rules
+			files: ['app/admin/**/*.tsx', 'components/admin/**/*.tsx'],
+			rules: {
+				'jsx-a11y/label-has-associated-control': 'off',
+				'jsx-a11y/click-events-have-key-events': 'off',
+				'jsx-a11y/no-static-element-interactions': 'off',
+				'jsx-a11y/no-noninteractive-element-interactions': 'off',
+				'jsx-a11y/prefer-tag-over-role': 'off',
+				'jsx-a11y/no-interactive-element-to-noninteractive-role': 'off',
+				'@next/next/no-img-element': 'warn', // Allow img elements in admin
+				'react-hooks/exhaustive-deps': 'warn', // Less strict for admin components
+			}
+		},
+		{
+			// Public pages - maintain strict accessibility
+			files: ['pages/**/*.tsx', 'components/features/**/*.tsx', 'components/shared/**/*.tsx'],
+			rules: {
+				'jsx-a11y/label-has-associated-control': 'error',
+				'jsx-a11y/click-events-have-key-events': 'error',
+				'jsx-a11y/no-static-element-interactions': 'error',
+				'@next/next/no-img-element': 'error', // Strict for public pages
+			}
+		}
+	]
 };

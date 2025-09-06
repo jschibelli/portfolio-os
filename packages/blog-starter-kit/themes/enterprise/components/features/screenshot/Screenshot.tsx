@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Camera, Download, X } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
@@ -45,9 +46,11 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 				</CardHeader>
 				<CardContent className="p-0">
 					<div className="relative">
-						<img
+						<Image
 							src={url}
 							alt={alt}
+							width={800}
+							height={600}
 							className="w-full h-auto object-cover"
 							loading="lazy"
 						/>
@@ -83,9 +86,11 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 						</CardHeader>
 						<CardContent className="p-0">
 							<div className="relative">
-								<img
+								<Image
 									src={url}
 									alt={alt}
+									width={1200}
+									height={800}
 									className="w-full h-auto max-h-[70vh] object-contain"
 								/>
 								<div className="absolute bottom-4 right-4">

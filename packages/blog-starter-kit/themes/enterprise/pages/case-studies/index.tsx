@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { AppProvider } from '../../components/contexts/appContext';
 import Chatbot from '../../components/features/chatbot/Chatbot';
@@ -123,10 +124,11 @@ function FeaturedCaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
       <CardContent className="p-0">
         {caseStudy.coverImage && (
           <div className="relative h-48 overflow-hidden rounded-t-lg">
-            <img
+            <Image
               src={caseStudy.coverImage}
               alt={caseStudy.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute top-3 right-3">
               <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
@@ -205,10 +207,11 @@ function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
       <CardContent className="p-0">
         {caseStudy.coverImage && (
           <div className="relative h-40 overflow-hidden rounded-t-lg">
-            <img
+            <Image
               src={caseStudy.coverImage}
               alt={caseStudy.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}

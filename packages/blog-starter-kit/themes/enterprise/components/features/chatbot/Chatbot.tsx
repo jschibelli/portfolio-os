@@ -2023,10 +2023,11 @@ export default function Chatbot() {
                   
                   {isVoiceEnabled && (
                     <div className="space-y-2">
-											<label className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											<label htmlFor="openai-voice-select" className="text-sm font-medium text-stone-700 dark:text-stone-300">
 												Select OpenAI Voice
 											</label>
                       <select
+                        id="openai-voice-select"
                         value={selectedOpenAIVoice}
                         onChange={(e) => handleVoiceSelection(e.target.value)}
 												className="w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
