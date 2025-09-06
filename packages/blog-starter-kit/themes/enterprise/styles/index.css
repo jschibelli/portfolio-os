@@ -10,21 +10,21 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
-    --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 30%; /* Darker for better contrast */
+    --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 346.8 77.2% 35%; /* Match primary color */
+    --ring: 346.8 77.2% 49.8%;
     --radius: 0.5rem;
-    --chart-1: 346.8 77.2% 35%; /* Match primary color */
+    --chart-1: 346.8 77.2% 49.8%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -32,26 +32,26 @@
   }
 
   .dark {
-    --background: 240 10% 8%; /* Lighter background for better readability */
-    --foreground: 0 0% 98%; /* Brighter text for better contrast */
-    --card: 240 10% 12%; /* Lighter card background */
-    --card-foreground: 0 0% 98%; /* Bright text on cards */
-    --popover: 240 10% 10%; /* Lighter popover background */
-    --popover-foreground: 0 0% 98%; /* Bright text on popovers */
-    --primary: 346.8 77.2% 35%; /* Darker red for better contrast with white text */
-    --primary-foreground: 0 0% 100%; /* Pure white for maximum contrast */
-    --secondary: 240 5% 20%; /* Lighter secondary background */
-    --secondary-foreground: 0 0% 98%; /* Bright text on secondary */
-    --muted: 240 5% 18%; /* Lighter muted background */
-    --muted-foreground: 0 0% 95%; /* Much brighter muted text for WCAG AA compliance */
-    --accent: 240 5% 20%; /* Lighter accent background */
-    --accent-foreground: 0 0% 98%; /* Bright text on accent */
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 5% 25%; /* Lighter borders for better visibility */
-    --input: 240 5% 20%; /* Lighter input backgrounds */
-    --ring: 346.8 77.2% 35%; /* Match primary color */
-    --chart-1: 346.8 77.2% 35%; /* Match primary color */
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 346.8 77.2% 49.8%;
+    --chart-1: 346.8 77.2% 49.8%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -69,55 +69,22 @@
     outline-offset: 2px;
   }
 
-  /* Skip to main content link - enhanced for cross-browser compatibility with WCAG AA compliance */
+  /* Skip to main content link */
   .skip-link {
     position: absolute;
-    top: -100px; /* Move further off-screen to prevent partial visibility */
+    top: -40px;
     left: 6px;
-    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
-    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     padding: 8px;
     text-decoration: none;
     border-radius: 4px;
     z-index: 1000;
     transition: top 0.3s;
-    /* Explicit focus styles for all browsers */
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-    /* Ensure it's focusable */
-    display: block;
-    width: auto;
-    height: auto;
-    /* Ensure it's completely hidden when not focused */
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
   }
 
-  .skip-link:focus,
-  .skip-link:focus-visible,
-  .skip-link:focus-within {
+  .skip-link:focus {
     top: 6px;
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-    /* Ensure visibility on focus with WCAG AA compliance */
-    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
-    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
-    /* Remove clip when focused to make it visible */
-    clip: auto;
-    overflow: visible;
-  }
-  
-  /* Additional focus styles for better cross-browser support */
-  .skip-link:hover:focus,
-  .skip-link:active:focus {
-    top: 6px;
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-    /* Remove clip when focused to make it visible */
-    clip: auto;
-    overflow: visible;
-    background: hsl(346.8 77.2% 35%) !important; /* Darker background for better contrast */
-    color: hsl(0 0% 100%) !important; /* Pure white text for maximum contrast */
   }
 
   /* Reduced motion support */
@@ -130,23 +97,6 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
-  }
-
-  /* Admin Panel Dark Mode Enhancements */
-  .dark {
-    color-scheme: dark;
-  }
-
-  .dark body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-  }
-
-  /* Smooth theme transitions */
-  * {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
   }
 
   /* High contrast mode support */
@@ -183,292 +133,6 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
-  }
-
-  /* Fix stone color contrast issues - optimized for WCAG 2.1 AA compliance */
-  .text-stone-700,
-  p.text-stone-700,
-  .text-lg.text-stone-700,
-  .leading-relaxed.text-stone-700 {
-    color: hsl(240 3.8% 15%) !important; /* Much darker for 4.5:1 contrast on light background */
-  }
-
-  .dark .text-stone-300,
-  .dark p.text-stone-300,
-  .dark .text-lg.text-stone-300,
-  .dark .text-stone-700,
-  .dark p.text-stone-700,
-  .dark .text-lg.text-stone-700,
-  .dark .leading-relaxed.text-stone-300 {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast on dark background */
-  }
-
-  /* Specific fixes for stone headings in dark mode */
-  .dark .text-stone-100,
-  .dark h2.text-stone-100,
-  .dark h3.text-stone-100,
-  .dark .font-bold.text-stone-900,
-  .dark h2.text-2xl.font-bold.text-stone-900,
-  .dark .md\:text-3xl.dark\:text-stone-100 {
-    color: hsl(0 0% 100%) !important; /* Pure white for headings in dark mode */
-  }
-
-  /* Fix very low contrast stone colors in dark mode */
-  .dark .text-stone-300,
-  .dark .text-stone-700 {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast */
-  }
-
-  .text-stone-500,
-  span.text-stone-500 {
-    color: hsl(240 3.8% 30%) !important; /* Much darker for 4.5:1 contrast on light background */
-  }
-
-  .dark .text-stone-400,
-  .dark span.text-stone-400 {
-    color: hsl(240 5% 95%) !important; /* Much lighter for 4.5:1 contrast on dark background */
-  }
-
-  .text-stone-900,
-  h2.text-stone-900,
-  h3.text-stone-900 {
-    color: hsl(240 3.8% 15%) !important; /* Dark for good contrast on light background */
-  }
-
-  .dark .text-stone-100,
-  .dark h2.text-stone-100,
-  .dark h3.text-stone-100 {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum visibility on dark background */
-  }
-
-  /* Additional heading improvements for dark mode */
-  .dark h1,
-  .dark h2,
-  .dark h3,
-  .dark h4,
-  .dark h5,
-  .dark h6 {
-    color: hsl(0 0% 100%) !important; /* Pure white for all headings in dark mode */
-  }
-
-  /* Specific heading classes that might be used */
-  .dark .text-white {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  .dark .text-gray-100 {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  .dark .text-gray-200 {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  .dark .text-gray-300 {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  /* Fix secondary badge contrast */
-  .bg-secondary {
-    background-color: hsl(var(--secondary)) !important;
-  }
-
-  .text-secondary-foreground {
-    color: hsl(var(--secondary-foreground)) !important;
-  }
-
-  /* Fix stone background colors for better contrast - WCAG 2.1 AA compliant */
-  .bg-stone-200 {
-    background-color: hsl(240 4.8% 90%) !important; /* Lighter background for better contrast */
-  }
-
-  .dark .bg-stone-700 {
-    background-color: hsl(240 5% 25%) !important; /* Darker for better contrast with light text */
-  }
-
-  .bg-stone-50 {
-    background-color: hsl(240 4.8% 98%) !important; /* Very light background */
-  }
-
-  .dark .bg-stone-900 {
-    background-color: hsl(240 5% 12%) !important; /* Darker for better contrast with light text */
-  }
-
-  /* Additional dark theme text improvements */
-  .dark .text-muted-foreground {
-    color: hsl(240 5% 88%) !important; /* Lighter muted text for better readability */
-  }
-
-  .dark .text-foreground {
-    color: hsl(240 5% 98%) !important; /* Lighter foreground text for better readability */
-  }
-
-  /* Improve contrast for secondary text elements */
-  .dark .text-stone-600 {
-    color: hsl(240 5% 88%) !important; /* Lighter for better readability */
-  }
-
-  .dark .text-stone-800 {
-    color: hsl(240 5% 92%) !important; /* Lighter for better readability */
-  }
-
-  /* Ensure all heading elements are bright white in dark mode */
-  .dark .heading,
-  .dark .title,
-  .dark .subtitle,
-  .dark .section-title {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  /* Fix any prose headings that might be using different classes */
-  .dark .prose h1,
-  .dark .prose h2,
-  .dark .prose h3,
-  .dark .prose h4,
-  .dark .prose h5,
-  .dark .prose h6 {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  /* Fix any text that might be using slate colors */
-  .dark .text-slate-100,
-  .dark .text-slate-200,
-  .dark .text-slate-300,
-  .dark .text-slate-400,
-  .dark .text-slate-500,
-  .dark .text-slate-600,
-  .dark .text-slate-700,
-  .dark .text-slate-800,
-  .dark .text-slate-900 {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  /* Fix specific heading patterns found in components */
-  .dark .text-foreground {
-    color: hsl(0 0% 100%) !important; /* Make foreground text pure white for headings */
-  }
-
-  /* Fix hero and section titles specifically */
-  .dark .text-white {
-    color: hsl(0 0% 100%) !important;
-  }
-
-  /* Fix any neutral colors that might be used for headings */
-
-  /* Fix primary color contrast issues - WCAG 2.1 AA compliant */
-  .text-primary {
-    color: hsl(346.8 77.2% 60%) !important; /* Lighter primary color for better contrast */
-  }
-
-  .dark .text-primary {
-    color: hsl(346.8 77.2% 70%) !important; /* Even lighter in dark mode for maximum contrast */
-  }
-
-  .bg-primary\/10 {
-    background-color: hsl(346.8 77.2% 10%) !important; /* Darker background for primary/10 */
-  }
-
-  .dark .bg-primary\/10 {
-    background-color: hsl(346.8 77.2% 15%) !important; /* Slightly lighter in dark mode */
-  }
-
-  /* Fix primary color text on primary/10 backgrounds - more specific targeting */
-  span.bg-primary\/10.text-primary,
-  .bg-primary\/10.text-primary {
-    background-color: hsl(346.8 77.2% 90%) !important; /* Much lighter background */
-    color: hsl(346.8 77.2% 25%) !important; /* Much darker text for 4.5:1 contrast */
-  }
-
-  .dark span.bg-primary\/10.text-primary,
-  .dark .bg-primary\/10.text-primary {
-    background-color: hsl(346.8 77.2% 20%) !important; /* Darker background in dark mode */
-    color: hsl(346.8 77.2% 85%) !important; /* Much lighter text in dark mode for 4.5:1 contrast */
-  }
-
-  /* Specific fixes for skill tags and category badges - WCAG 2.1 AA compliant */
-  .rounded-full.bg-stone-200.text-stone-500 {
-    background-color: hsl(240 4.8% 90%) !important;
-    color: hsl(240 3.8% 25%) !important; /* Much darker text for 4.5:1 contrast */
-  }
-
-  .dark .rounded-full.bg-stone-200.text-stone-500,
-  .dark .rounded-full.bg-stone-700.text-stone-400 {
-    background-color: hsl(240 5% 25%) !important;
-    color: hsl(240 5% 95%) !important; /* Much lighter text for 4.5:1 contrast */
-  }
-
-  /* Fix chatbot button contrast issues */
-  .bg-stone-200.text-stone-700 {
-    background-color: hsl(240 4.8% 90%) !important;
-    color: hsl(240 3.8% 25%) !important;
-  }
-
-  .dark .bg-stone-700.text-stone-300 {
-    background-color: hsl(240 5% 25%) !important;
-    color: hsl(240 5% 98%) !important;
-  }
-
-  /* Fix any other stone color combinations that might cause issues */
-  .text-stone-600 {
-    color: hsl(240 3.8% 35%) !important; /* Darker for better contrast */
-  }
-
-  .dark .text-stone-600 {
-    color: hsl(240 5% 90%) !important; /* Lighter for better contrast */
-  }
-  
-  /* Cross-browser color contrast fixes - simplified approach */
-  
-  /* Dark mode text color overrides for WCAG AA compliance */
-  .dark .text-stone-300,
-  .dark .text-stone-700 {
-    color: hsl(0 0% 100%) !important; /* Pure white for maximum contrast */
-  }
-  
-  /* Button contrast fixes - make text much darker for all states */
-  .text-stone-900,
-  .text-lg.font-semibold.text-stone-900 {
-    color: hsl(240 3.8% 5%) !important; /* Very dark for 4.5:1 contrast on all backgrounds */
-  }
-  
-  .dark .text-neutral-100,
-  .dark .text-neutral-200,
-  .dark .text-neutral-300,
-  .dark .text-neutral-400,
-  .dark .text-neutral-500,
-  .dark .text-neutral-600,
-  .dark .text-neutral-700,
-  .dark .text-neutral-800,
-  .dark .text-neutral-900 {
-    color: hsl(0 0% 100%) !important;
-  }
-  
-  /* Browser-specific fixes for cross-browser compatibility */
-  
-  /* Firefox-specific overrides */
-  @-moz-document url-prefix() {
-    .dark .text-stone-700,
-    .dark .text-stone-300 {
-      color: hsl(0 0% 100%) !important;
-    }
-    
-    .text-stone-900,
-    .text-lg.font-semibold.text-stone-900 {
-      color: hsl(240 3.8% 5%) !important;
-    }
-  }
-  
-  /* WebKit-specific overrides */
-  @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    .dark .text-stone-700,
-    .dark .text-stone-300 {
-      color: hsl(0 0% 100%) !important;
-    }
-    
-    .text-stone-900,
-    .text-lg.font-semibold.text-stone-900 {
-      color: hsl(240 3.8% 5%) !important;
-    }
   }
 }
 
