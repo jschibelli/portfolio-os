@@ -126,9 +126,11 @@ function FeaturedCaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           <div className="relative h-48 overflow-hidden rounded-t-lg">
             <Image
               src={caseStudy.coverImage}
-              alt={caseStudy.title}
+              alt={`${caseStudy.title} - Case study cover image`}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={caseStudy.featured}
             />
             <div className="absolute top-3 right-3">
               <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
@@ -209,9 +211,11 @@ function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           <div className="relative h-40 overflow-hidden rounded-t-lg">
             <Image
               src={caseStudy.coverImage}
-              alt={caseStudy.title}
+              alt={`${caseStudy.title} - Case study cover image`}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              loading="lazy"
             />
           </div>
         )}

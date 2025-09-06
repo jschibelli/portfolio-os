@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import NextImage from "next/image";
 import { Upload, Image, File, Video, Music, Archive, X, Eye, Download, Trash2, Search, Filter, FolderOpen } from "lucide-react";
 
 interface MediaFile {
@@ -305,10 +306,12 @@ export default function MediaUploadPage() {
           <div key={file.id} className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-square bg-slate-100 dark:bg-slate-700 flex items-center justify-center relative group">
               {file.thumbnail ? (
-                <img
+                <NextImage
                   src={file.thumbnail}
                   alt={file.name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  loading="lazy"
                 />
               ) : (
                 getFileIcon(file.type)

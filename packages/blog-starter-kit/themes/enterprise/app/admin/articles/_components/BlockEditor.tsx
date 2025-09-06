@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -193,10 +194,13 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
               className="w-full bg-transparent border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-400"
             />
             {block.content && (
-              <img 
+              <Image 
                 src={block.content} 
                 alt="Block content" 
+                width={800}
+                height={600}
                 className="max-w-full h-auto rounded-lg"
+                loading="lazy"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}

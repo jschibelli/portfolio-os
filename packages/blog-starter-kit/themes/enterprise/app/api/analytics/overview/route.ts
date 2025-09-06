@@ -7,6 +7,9 @@ import {
   getPersonalTimeSeriesData 
 } from '@/lib/integrations/google-analytics-personal';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+
 // Mock data for development and fallback
 const mockAnalyticsData = {
   overview: {

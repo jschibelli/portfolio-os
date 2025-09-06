@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Camera, Download, X } from 'lucide-react';
+import { Camera, Download, X, AlertCircle } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
@@ -15,6 +15,8 @@ interface ScreenshotProps {
 export default function Screenshot({ url, alt, className = '' }: ScreenshotProps) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [imageError, setImageError] = useState(false);
+	const [imageLoading, setImageLoading] = useState(true);
 
 	const handleScreenshot = async () => {
 		setIsLoading(true);
@@ -38,6 +40,16 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 		link.click();
 	};
 
+	const handleImageError = () => {
+		setImageError(true);
+		setImageLoading(false);
+	};
+
+	const handleImageLoad = () => {
+		setImageLoading(false);
+		setImageError(false);
+	};
+
 	return (
 		<>
 			<Card className={`relative overflow-hidden ${className}`}>
@@ -46,26 +58,47 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 				</CardHeader>
 				<CardContent className="p-0">
 					<div className="relative">
-						<Image
-							src={url}
-							alt={alt}
-							width={800}
-							height={600}
-							className="w-full h-auto object-cover"
-							loading="lazy"
-						/>
-						<div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
-							<Button
-								onClick={handleScreenshot}
-								disabled={isLoading}
-								variant="secondary"
-								size="sm"
-								className="opacity-0 hover:opacity-100 transition-opacity duration-200"
-							>
-								<Camera className="h-4 w-4 mr-2" />
-								{isLoading ? 'Capturing...' : 'Take Screenshot'}
-							</Button>
-						</div>
+						{imageError ? (
+							<div className="w-full h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+								<div className="text-center">
+									<AlertCircle className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+									<p className="text-sm text-slate-500 dark:text-slate-400">Failed to load image</p>
+								</div>
+							</div>
+						) : (
+							<>
+								{imageLoading && (
+									<div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center z-10">
+										<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-600"></div>
+									</div>
+								)}
+								<Image
+									src={url}
+									alt={alt}
+									width={800}
+									height={600}
+									className="w-full h-auto object-cover"
+									loading="lazy"
+									onError={handleImageError}
+									onLoad={handleImageLoad}
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+								/>
+							</>
+						)}
+						{!imageError && (
+							<div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
+								<Button
+									onClick={handleScreenshot}
+									disabled={isLoading || imageLoading}
+									variant="secondary"
+									size="sm"
+									className="opacity-0 hover:opacity-100 transition-opacity duration-200"
+								>
+									<Camera className="h-4 w-4 mr-2" />
+									{isLoading ? 'Capturing...' : 'Take Screenshot'}
+								</Button>
+							</div>
+						)}
 					</div>
 				</CardContent>
 			</Card>
@@ -88,10 +121,11 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 							<div className="relative">
 								<Image
 									src={url}
-									alt={alt}
+									alt={`${alt} - Full size preview`}
 									width={1200}
 									height={800}
 									className="w-full h-auto max-h-[70vh] object-contain"
+									sizes="(max-width: 1200px) 100vw, 1200px"
 								/>
 								<div className="absolute bottom-4 right-4">
 									<Button onClick={handleDownload} size="sm">

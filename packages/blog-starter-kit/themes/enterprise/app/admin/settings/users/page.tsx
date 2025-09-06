@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Users, User, Plus, Edit, Trash2, Search, Filter, Shield, Mail, Calendar, Activity, Eye, Loader2 } from "lucide-react";
 
 interface UserData {
@@ -334,10 +335,13 @@ export default function UsersPage() {
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
                           {user.avatar ? (
-                            <img
+                            <Image
                               className="h-10 w-10 rounded-full"
                               src={user.avatar}
                               alt={user.name}
+                              width={40}
+                              height={40}
+                              loading="lazy"
                             />
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-slate-300 dark:bg-slate-600 flex items-center justify-center">

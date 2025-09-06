@@ -3,6 +3,7 @@
 // Uses next-mdx-remote to render MDX content with custom components
 
 import React from 'react'
+import Image from 'next/image'
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { mdxComponents } from './mdxComponents'
 
@@ -58,7 +59,7 @@ export function RenderMdx({ mdxContent, className = '' }: RenderMdxProps) {
       const match = line.match(/!\[([^\]]*)\]\(([^)]+)\)/)
       if (match) {
         const [, alt, src] = match
-        return <img key={index} src={src} alt={alt} className="max-w-full h-auto rounded-lg my-4" />
+        return <Image key={index} src={src} alt={alt} width={800} height={600} className="max-w-full h-auto rounded-lg my-4" loading="lazy" />
       }
     }
     

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Image from "next/image";
 
 interface TiptapRendererProps {
   content: any;
@@ -119,11 +120,14 @@ export function TiptapRenderer({ content, className = "" }: TiptapRendererProps)
 
         case "image":
           return (
-            <img
+            <Image
               key={Math.random()}
               src={node.attrs.src}
               alt={node.attrs.alt || ""}
+              width={800}
+              height={600}
               className="max-w-full h-auto rounded-lg my-4"
+              loading="lazy"
             />
           );
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { 
@@ -370,10 +371,13 @@ export default function AdminMedia() {
                 
                 <div className="text-center mb-3">
                   {item.thumbnail ? (
-                    <img 
+                    <Image 
                       src={item.thumbnail} 
                       alt={item.name}
+                      width={300}
+                      height={128}
                       className="w-full h-32 object-cover rounded-lg mb-3"
+                      loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-32 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-3">
@@ -477,10 +481,13 @@ export default function AdminMedia() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3">
                         {item.thumbnail ? (
-                          <img 
+                          <Image 
                             src={item.thumbnail} 
                             alt={item.name}
+                            width={40}
+                            height={40}
                             className="w-10 h-10 object-cover rounded"
+                            loading="lazy"
                           />
                         ) : (
                           <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded flex items-center justify-center">

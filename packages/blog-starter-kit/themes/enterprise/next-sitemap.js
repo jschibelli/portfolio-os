@@ -1,4 +1,5 @@
-const { DOMAIN } = require('./config/constants');
+// Use environment variable or fallback domain
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'johnschibelli.dev';
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {

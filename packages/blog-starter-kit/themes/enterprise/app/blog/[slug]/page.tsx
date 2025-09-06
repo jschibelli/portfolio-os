@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Metadata } from "next";
+import Image from "next/image";
 import { TiptapRenderer } from "../../../components/blog/TiptapRenderer";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
@@ -122,10 +123,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <header className="mb-8">
             {post.cover && (
               <div className="mb-6">
-                <img
+                <Image
                   src={post.cover.url}
                   alt={post.cover.alt || post.title}
+                  width={1200}
+                  height={600}
                   className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                  priority
                 />
               </div>
             )}
