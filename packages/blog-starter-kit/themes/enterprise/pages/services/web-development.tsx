@@ -7,6 +7,7 @@ import { Layout } from '../../components/shared/layout';
 import { SEOHead } from '../../components/shared/seo-head';
 import { Button } from '../../components/ui';
 import { generateServiceStructuredData } from '../../lib/structured-data';
+import { SITE_CONFIG } from '../../config/constants';
 
 interface Props {
 	publication: any;
@@ -39,10 +40,10 @@ export default function WebDevelopmentPage({ publication }: Props) {
 						provider: {
 							name: 'John Schibelli',
 							description: 'Senior Front-End Developer with 15+ years of experience',
-							url: 'https://johnschibelli.dev',
+							url: SITE_CONFIG.BASE_URL,
 							jobTitle: 'Senior Front-End Developer',
 						},
-						url: 'https://johnschibelli.dev/services/web-development',
+						url: `${SITE_CONFIG.BASE_URL}/services/web-development`,
 						serviceType: 'Web Development',
 						areaServed: ['United States', 'Remote'],
 					})}

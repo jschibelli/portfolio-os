@@ -11,6 +11,7 @@ import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
 import { Badge, Button, Card, CardContent } from '../../components/ui';
+import { SITE_CONFIG } from '../../config/constants';
 
 // Mock publication data for the case study
 const mockPublication = {
@@ -40,7 +41,7 @@ const mockPublication = {
 		image: '/profile.jpg',
 		bio: 'Full-stack developer and SaaS entrepreneur',
 		location: 'United States',
-		website: 'https://johnschibelli.dev',
+		website: SITE_CONFIG.BASE_URL,
 		twitter: '@jschibelli',
 		github: 'jschibelli',
 		linkedin: 'jschibelli',

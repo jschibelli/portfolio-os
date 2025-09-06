@@ -1,6 +1,8 @@
+const { DOMAIN } = require('./config/constants');
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || `https://${DOMAIN}`,
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: [
@@ -29,7 +31,7 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev'}/sitemap.xml`,
+      `${process.env.NEXT_PUBLIC_SITE_URL || `https://${DOMAIN}`}/sitemap.xml`,
     ],
   },
   transform: async (config, path) => {

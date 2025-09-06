@@ -59,6 +59,10 @@ export const SITE_CONFIG = {
 	},
 } as const;
 
+// Domain constants for consistency
+export const DOMAIN = SITE_CONFIG.DOMAIN;
+export const BASE_URL = SITE_CONFIG.BASE_URL;
+
 // Environment-based configuration
 export const getSiteUrl = () => {
 	return process.env.NEXT_PUBLIC_SITE_URL || SITE_CONFIG.BASE_URL;
@@ -66,4 +70,15 @@ export const getSiteUrl = () => {
 
 export const getEmailAddress = (type: keyof typeof SITE_CONFIG.EMAIL = 'PRIMARY') => {
 	return SITE_CONFIG.EMAIL[type];
+};
+
+// URL construction utilities
+export const getFullUrl = (path: string = '') => {
+	const baseUrl = getSiteUrl();
+	return path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`;
+};
+
+export const getDomainUrl = (subdomain?: string) => {
+	const domain = SITE_CONFIG.DOMAIN;
+	return subdomain ? `https://${subdomain}.${domain}` : `https://${domain}`;
 };
