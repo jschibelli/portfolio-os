@@ -13,6 +13,8 @@ export default defineConfig({
 	workers: process.env.CI ? 1 : undefined,
 	// Use GitHub reporter in CI for PR comments, HTML reporter for local debugging
 	reporter: process.env.CI ? [['github'], ['html']] : [['html']],
+	// Global setup for handling missing snapshots
+	globalSetup: require.resolve('./tests/global-setup.ts'),
 	use: {
 		// Base URL for all tests
 		baseURL: 'http://localhost:3000',
@@ -24,6 +26,13 @@ export default defineConfig({
 		// Increase timeout for page operations
 		actionTimeout: 10000,
 		navigationTimeout: 30000,
+		// Visual comparison configuration
+		expect: {
+			// Threshold for visual comparisons (0.1% difference allowed)
+			threshold: 0.1,
+			// Animation handling for consistent screenshots
+			animations: 'disabled',
+		},
 	},
 	projects: [
 		{
