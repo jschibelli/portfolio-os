@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { motion } from 'framer-motion';
-import { Separator } from '../../ui/separator';
 
 export default function Intro() {
 	return (
@@ -50,16 +49,6 @@ export default function Intro() {
 					</div>
 				</motion.div>
 
-				{/* Light Divider */}
-				<motion.div
-					initial={{ opacity: 0, scaleX: 0 }}
-					whileInView={{ opacity: 1, scaleX: 1 }}
-					transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-					viewport={{ once: true }}
-					className="mt-16"
-				>
-					<Separator className="bg-stone-200 dark:bg-stone-800" />
-				</motion.div>
 			</div>
 		</section>
 	);

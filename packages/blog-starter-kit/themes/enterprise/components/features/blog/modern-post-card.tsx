@@ -1,4 +1,4 @@
-import { Badge, Card, CardContent, CardHeader } from '@/components/ui';
+import { Badge, Card, CardContent, CardHeader } from '../../ui';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';

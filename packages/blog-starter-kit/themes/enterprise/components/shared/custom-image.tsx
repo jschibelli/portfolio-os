@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { ImgHTMLAttributes } from 'react';
 
-import Image, { ImageProps } from 'next/legacy/image';
+import Image, { ImageProps } from 'next/image';
 
 type Props = {
 	src: any; // can be string or StaticImport of next/image
@@ -24,12 +24,9 @@ function CustomImage(props: Props) {
 		priority,
 		loading,
 		unoptimized,
-		objectFit,
-		objectPosition,
 		src,
 		width,
 		height,
-		layout,
 		placeholder,
 		blurDataURL,
 		...restOfTheProps
