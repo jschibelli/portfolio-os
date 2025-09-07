@@ -34,12 +34,22 @@ export async function GET() {
 				   hint.includes('SSL') ||
 				   hint.includes('TLS');
 		
-		// Enhanced SSL error logging for troubleshooting
+		// Enhanced SSL error logging for troubleshooting (without exposing sensitive data)
 		if (sslError) {
 			console.error('[schedule-health] SSL/TLS error detected:', {
-				error: hint,
+				errorType: 'SSL_TLS_ERROR',
+				errorCode: hint.includes('ERR_OSSL_UNSUPPORTED') ? 'ERR_OSSL_UNSUPPORTED' : 'SSL_DECODER_ERROR',
 				authMethod,
 				sslFixEnabled: sslConfig.fixEnabled,
+				environment: env.NODE_ENV,
+				timestamp: new Date().toISOString()
+			});
+		} else {
+			// Log non-SSL errors with appropriate level
+			console.warn('[schedule-health] Calendar API error:', {
+				errorType: 'CALENDAR_API_ERROR',
+				authMethod,
+				hasCredentials: features.googleCalendar,
 				timestamp: new Date().toISOString()
 			});
 		}
