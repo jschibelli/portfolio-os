@@ -2,6 +2,26 @@
 
 This file tracks all changes and updates to the documentation.
 
+## [1.2.0] - 2025-09-07
+
+### Upgraded
+- **Next.js**: Upgraded from 14.2.32 to 15.5.2 (latest stable)
+- **next-auth**: Updated to 4.24.11 for Next.js 15 compatibility
+- **next-sitemap**: Updated to 1.9.12 for Next.js 15 compatibility
+- **Dependencies**: All Next.js related packages updated for v15 compatibility
+
+### Enhanced
+- **Performance**: Leveraging Next.js 15 performance improvements including Turbopack support
+- **Build Process**: Optimized build times and bundle sizes with Next.js 15 enhancements
+- **Developer Experience**: Improved TypeScript support and error messages
+- **App Router**: Enhanced App Router performance and stability
+
+### Verified
+- **Build Process**: Production build completed successfully in 68 seconds
+- **TypeScript**: Full compatibility confirmed with no type errors
+- **Configuration**: next.config.js verified for Next.js 15 compatibility
+- **No Breaking Changes**: All existing functionality preserved
+
 ## [1.1.0] - 2025-01-04
 
 ### Fixed

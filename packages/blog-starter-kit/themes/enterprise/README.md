@@ -1,8 +1,15 @@
-# A statically generated blog example using Next.js, Markdown, and TypeScript with Hashnode 💫
+# A statically generated blog example using Next.js 15.5.2, Markdown, and TypeScript with Hashnode 💫
 
 This is the existing [blog-starter](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) plus TypeScript, wired with [Hashnode](https://hashnode.com).
 
 We've used [Hashnode APIs](https://apidocs.hashnode.com) and integrated them with this blog starter kit.
+
+## Requirements
+
+- **Node.js**: 18.18.0 or higher (required for Next.js 15)
+- **Next.js**: 15.5.2 (latest stable)
+- **React**: 18.3.1
+- **TypeScript**: 5.3.3 or higher
 
 ## Want to have your own?
 
