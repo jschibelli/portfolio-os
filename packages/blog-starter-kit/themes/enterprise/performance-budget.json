@@ -1,53 +1,72 @@
 {
+  "_comment": "Performance Budget Configuration - Defines thresholds for Core Web Vitals and resource optimization",
+  "_version": "1.0.0",
+  "_lastUpdated": "2025-01-07",
   "budget": [
     {
       "path": "/*",
+      "_description": "Global performance budget for all pages",
       "timings": [
         {
           "metric": "first-contentful-paint",
-          "budget": 1800
+          "budget": 1800,
+          "_description": "FCP should be under 1.8 seconds for good user experience"
         },
         {
           "metric": "largest-contentful-paint", 
-          "budget": 2500
+          "budget": 2500,
+          "_description": "LCP should be under 2.5 seconds for optimal performance"
         },
         {
           "metric": "first-input-delay",
-          "budget": 100
+          "budget": 100,
+          "_description": "FID should be under 100ms for responsive interactions"
         },
         {
           "metric": "cumulative-layout-shift",
-          "budget": 0.1
+          "budget": 0.1,
+          "_description": "CLS should be under 0.1 for stable visual experience"
         }
       ],
       "resourceSizes": [
         {
           "resourceType": "script",
-          "budget": 500
+          "budget": 500,
+          "_description": "Total JavaScript bundle size in KB"
         },
         {
           "resourceType": "total",
-          "budget": 2000
+          "budget": 2000,
+          "_description": "Total page weight in KB"
         },
         {
           "resourceType": "stylesheet",
-          "budget": 200
+          "budget": 200,
+          "_description": "Total CSS bundle size in KB"
         },
         {
           "resourceType": "image",
-          "budget": 1000
+          "budget": 1000,
+          "_description": "Total image assets size in KB"
         }
       ],
       "resourceCounts": [
         {
           "resourceType": "script",
-          "budget": 20
+          "budget": 20,
+          "_description": "Maximum number of JavaScript files"
         },
         {
           "resourceType": "total",
-          "budget": 50
+          "budget": 50,
+          "_description": "Maximum total number of resources"
         }
       ]
     }
-  ]
+  ],
+  "_validation": {
+    "enabled": true,
+    "failOnViolation": true,
+    "reportFormat": "json"
+  }
 }

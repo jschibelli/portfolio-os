@@ -11,27 +11,94 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Load performance budget configuration
-const BUDGET_CONFIG = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../performance-budget.json'), 'utf8')
-);
+// Load and validate performance budget configuration
+let BUDGET_CONFIG;
+try {
+  const configPath = path.join(__dirname, '../performance-budget.json');
+  if (!fs.existsSync(configPath)) {
+    throw new Error('Performance budget configuration file not found');
+  }
+  
+  const configContent = fs.readFileSync(configPath, 'utf8');
+  BUDGET_CONFIG = JSON.parse(configContent);
+  
+  // Validate configuration structure
+  if (!BUDGET_CONFIG.budget || !Array.isArray(BUDGET_CONFIG.budget)) {
+    throw new Error('Invalid budget configuration structure');
+  }
+  
+  console.log('✅ Performance budget configuration loaded successfully');
+} catch (error) {
+  console.error('❌ Failed to load performance budget configuration:', error.message);
+  process.exit(1);
+}
 
 /**
  * Run Lighthouse audit and extract metrics
+ * Enhanced with better error handling and validation
  */
 async function runLighthouseAudit(url = 'http://localhost:3000/blog') {
   console.log(`🔍 Running Lighthouse audit for: ${url}`);
   
   try {
+    // Validate URL format
+    if (!isValidUrl(url)) {
+      throw new Error(`Invalid URL format: ${url}`);
+    }
+    
+    // Check if Lighthouse is available
+    try {
+      execSync('npx lighthouse --version', { stdio: 'pipe' });
+    } catch (versionError) {
+      throw new Error('Lighthouse is not available. Please install it with: npm install -g lighthouse');
+    }
+    
     const output = execSync(
-      `npx lighthouse "${url}" --output=json --chrome-flags="--headless" --quiet`,
-      { encoding: 'utf8', timeout: 120000 }
+      `npx lighthouse "${url}" --output=json --chrome-flags="--headless --no-sandbox --disable-gpu" --quiet`,
+      { 
+        encoding: 'utf8', 
+        timeout: 120000,
+        maxBuffer: 1024 * 1024 * 10 // 10MB buffer for large reports
+      }
     );
     
-    return JSON.parse(output);
+    if (!output || output.trim() === '') {
+      throw new Error('Lighthouse returned empty output');
+    }
+    
+    const result = JSON.parse(output);
+    
+    // Validate Lighthouse result structure
+    if (!result || !result.lhr) {
+      throw new Error('Invalid Lighthouse result structure');
+    }
+    
+    return result;
   } catch (error) {
     console.error('❌ Lighthouse audit failed:', error.message);
+    
+    // Provide specific error guidance
+    if (error.message.includes('timeout')) {
+      console.error('💡 Try reducing the timeout or optimizing the page for faster loading');
+    } else if (error.message.includes('ECONNREFUSED')) {
+      console.error('💡 Make sure the development server is running on the specified URL');
+    } else if (error.message.includes('not available')) {
+      console.error('💡 Install Lighthouse globally: npm install -g lighthouse');
+    }
+    
     return null;
+  }
+}
+
+/**
+ * Validate URL format
+ */
+function isValidUrl(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
   }
 }
 
