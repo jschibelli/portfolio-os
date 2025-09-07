@@ -128,7 +128,8 @@ export function SEOHead({
 			<link rel="preconnect" href="https://www.google-analytics.com" />
 			<link rel="preconnect" href="https://www.googletagmanager.com" />
 
-			{/* Font preloading */}
+			{/* Font preloading - Commented out until fonts are available */}
+			{/* 
 			<link
 				rel="preload"
 				href="/assets/PlusJakartaSans-Regular.ttf"
@@ -150,13 +151,14 @@ export function SEOHead({
 				type="font/ttf"
 				crossOrigin="anonymous"
 			/>
+			*/}
 
 			{/* Favicon */}
 			<link rel="icon" href="/favicon.ico" />
 			<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-			<link rel="manifest" href="/site.webmanifest" />
+			{/* <link rel="manifest" href="/site.webmanifest" /> */}
 
 			{/* Structured Data */}
 			{structuredData && (

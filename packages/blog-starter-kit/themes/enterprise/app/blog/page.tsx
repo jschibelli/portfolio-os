@@ -1,13 +1,43 @@
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import { format } from "date-fns";
+import { Metadata } from "next";
 import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
-import { SEOHead } from '../../components/shared/seo-head';
 import { generateWebSiteStructuredData } from '../../lib/structured-data';
 
 const prisma = new PrismaClient();
+
+export const metadata: Metadata = {
+  title: "Blog - John Schibelli",
+  description: "Read the latest insights on web development, React, Next.js, TypeScript, and modern development practices from John Schibelli, Senior Front-End Developer.",
+  keywords: [
+    'Blog',
+    'Web Development',
+    'React',
+    'Next.js',
+    'TypeScript',
+    'Front-End Development',
+    'JavaScript',
+    'Programming',
+    'Software Development',
+    'Tech Blog',
+    'Developer Blog',
+    'John Schibelli'
+  ],
+  openGraph: {
+    title: "Blog - John Schibelli",
+    description: "Read the latest insights on web development, React, Next.js, TypeScript, and modern development practices from John Schibelli, Senior Front-End Developer.",
+    type: "website",
+    siteName: "John Schibelli",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog - John Schibelli",
+    description: "Read the latest insights on web development, React, Next.js, TypeScript, and modern development practices from John Schibelli, Senior Front-End Developer.",
+  },
+};
 
 export default async function BlogIndex() {
   try {
@@ -82,25 +112,6 @@ export default async function BlogIndex() {
 
     return (
       <AppProvider publication={publication}>
-        <SEOHead
-          title="Blog - John Schibelli"
-          description="Read the latest insights on web development, React, Next.js, TypeScript, and modern development practices from John Schibelli, Senior Front-End Developer."
-          keywords={[
-            'Blog',
-            'Web Development',
-            'React',
-            'Next.js',
-            'TypeScript',
-            'Front-End Development',
-            'JavaScript',
-            'Development Insights',
-            'Technology',
-            'Programming',
-          ]}
-          canonical="/blog"
-          ogType="website"
-          structuredData={generateWebSiteStructuredData()}
-        />
         <div className="min-h-screen bg-background text-foreground">
           {/* Main Navigation Header - Same as used across the app */}
           <ModernHeader publication={publication} />
