@@ -93,87 +93,23 @@ const config = {
 	},
 	async headers() {
 		try {
-			// Generate nonce for inline scripts/styles (in production, use proper nonce generation)
-			const crypto = require('crypto');
-			const nonce = process.env.NODE_ENV === 'production' 
-				? Buffer.from(crypto.randomBytes(16)).toString('base64')
-				: 'dev-nonce';
-
+			// Import security configuration
+			const { generateSecurityHeaders, getEnvironmentConfig } = require('./lib/security-config');
+			
+			// Get environment-specific configuration
+			const envConfig = getEnvironmentConfig();
+			
+			// Generate nonce for CSP
+			const { generateNonce } = require('./lib/security-config').SECURITY_CONFIG.csp;
+			const nonce = generateNonce();
+			
+			// Generate security headers using centralized configuration
+			const securityHeaders = generateSecurityHeaders(nonce);
+			
 			return [
 				{
 					source: '/(.*)',
-					headers: [
-						{
-							key: 'Content-Security-Policy',
-							value: [
-								"default-src 'self'",
-								// Script sources - using nonce for inline scripts instead of unsafe-inline
-								`script-src 'self' 'nonce-${nonce}' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com`,
-								// Style sources - using nonce for inline styles
-								`style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com`,
-								"font-src 'self' https://fonts.gstatic.com",
-								// Image sources - includes our image proxy
-								"img-src 'self' data: blob: https://cdn.hashnode.com https://unsplash.com https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://githubusercontent.com",
-								// Connect sources - includes our image proxy API
-								"connect-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
-								"frame-src 'self' https://www.google.com",
-								"object-src 'none'",
-								"base-uri 'self'",
-								"form-action 'self'",
-								"frame-ancestors 'none'",
-								"upgrade-insecure-requests",
-								// Add reporting endpoint for CSP violations
-								"report-uri /api/csp-report",
-								// Add report-to directive for future CSP reporting
-								"report-to csp-endpoint"
-							].join('; ')
-						},
-						{
-							key: 'Report-To',
-							value: JSON.stringify({
-								group: 'csp-endpoint',
-								max_age: 10886400,
-								endpoints: [{ url: '/api/csp-report' }]
-							})
-						},
-						{
-							key: 'X-Frame-Options',
-							value: 'DENY'
-						},
-						{
-							key: 'X-Content-Type-Options',
-							value: 'nosniff'
-						},
-						{
-							key: 'Referrer-Policy',
-							value: 'strict-origin-when-cross-origin'
-						},
-						{
-							key: 'Permissions-Policy',
-							value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
-						},
-						// Additional security headers
-						{
-							key: 'Strict-Transport-Security',
-							value: 'max-age=31536000; includeSubDomains; preload'
-						},
-						{
-							key: 'X-XSS-Protection',
-							value: '1; mode=block'
-						},
-						{
-							key: 'Cross-Origin-Embedder-Policy',
-							value: 'require-corp'
-						},
-						{
-							key: 'Cross-Origin-Opener-Policy',
-							value: 'same-origin'
-						},
-						{
-							key: 'Cross-Origin-Resource-Policy',
-							value: 'same-origin'
-						}
-					]
+					headers: securityHeaders
 				}
 			];
 		} catch (error) {
