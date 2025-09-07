@@ -433,7 +433,7 @@ export default function Chatbot() {
             recognitionRef.current.interimResults = false;
             recognitionRef.current.maxAlternatives = 1;
             // Mobile browsers often need shorter timeouts
-            recognitionRef.current.grammars = null;
+            // Note: grammars property is optional and can be omitted
           } else {
             recognitionRef.current.continuous = false;
             recognitionRef.current.interimResults = false;
@@ -1180,8 +1180,7 @@ export default function Chatbot() {
                 if (isMobile) {
                   // Try to set a shorter timeout for mobile
                   recognitionRef.current.maxAlternatives = 1;
-                  // Some mobile browsers need this
-                  recognitionRef.current.grammars = null;
+                  // Note: grammars property is optional and can be omitted
                 }
                
                // Re-attach event handlers
