@@ -93,6 +93,12 @@ const config = {
 	},
 	async headers() {
 		try {
+			// Generate nonce for inline scripts/styles (in production, use proper nonce generation)
+			const crypto = require('crypto');
+			const nonce = process.env.NODE_ENV === 'production' 
+				? Buffer.from(crypto.randomBytes(16)).toString('base64')
+				: 'dev-nonce';
+
 			return [
 				{
 					source: '/(.*)',
@@ -101,10 +107,10 @@ const config = {
 							key: 'Content-Security-Policy',
 							value: [
 								"default-src 'self'",
-								// Script sources - removed unsafe-inline and unsafe-eval for better security
-								"script-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
-								// Style sources - keeping unsafe-inline for CSS-in-JS libraries
-								"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+								// Script sources - using nonce for inline scripts instead of unsafe-inline
+								`script-src 'self' 'nonce-${nonce}' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com`,
+								// Style sources - using nonce for inline styles
+								`style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com`,
 								"font-src 'self' https://fonts.gstatic.com",
 								// Image sources - includes our image proxy
 								"img-src 'self' data: blob: https://cdn.hashnode.com https://unsplash.com https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://githubusercontent.com",
@@ -117,8 +123,18 @@ const config = {
 								"frame-ancestors 'none'",
 								"upgrade-insecure-requests",
 								// Add reporting endpoint for CSP violations
-								"report-uri /api/csp-report"
+								"report-uri /api/csp-report",
+								// Add report-to directive for future CSP reporting
+								"report-to csp-endpoint"
 							].join('; ')
+						},
+						{
+							key: 'Report-To',
+							value: JSON.stringify({
+								group: 'csp-endpoint',
+								max_age: 10886400,
+								endpoints: [{ url: '/api/csp-report' }]
+							})
 						},
 						{
 							key: 'X-Frame-Options',
@@ -134,7 +150,7 @@ const config = {
 						},
 						{
 							key: 'Permissions-Policy',
-							value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+							value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()'
 						},
 						// Additional security headers
 						{
@@ -144,13 +160,40 @@ const config = {
 						{
 							key: 'X-XSS-Protection',
 							value: '1; mode=block'
+						},
+						{
+							key: 'Cross-Origin-Embedder-Policy',
+							value: 'require-corp'
+						},
+						{
+							key: 'Cross-Origin-Opener-Policy',
+							value: 'same-origin'
+						},
+						{
+							key: 'Cross-Origin-Resource-Policy',
+							value: 'same-origin'
 						}
 					]
 				}
 			];
 		} catch (error) {
 			console.error('Error setting security headers:', error);
-			return [];
+			// Return basic headers if advanced configuration fails
+			return [
+				{
+					source: '/(.*)',
+					headers: [
+						{
+							key: 'X-Frame-Options',
+							value: 'DENY'
+						},
+						{
+							key: 'X-Content-Type-Options',
+							value: 'nosniff'
+						}
+					]
+				}
+			];
 		}
 	},
 	webpack: (config, { isServer }) => {
