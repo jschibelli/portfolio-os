@@ -15,6 +15,7 @@ permissions:
   security-events: write
   actions: read
   packages: read
+  id-token: write
 
 env:
   NODE_VERSION: '20'
@@ -27,6 +28,9 @@ jobs:
   validate-workflow:
     name: Validate Workflow Configuration
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -63,6 +67,9 @@ jobs:
     name: Lint & Type Check
     runs-on: ubuntu-latest
     needs: validate-workflow
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -106,6 +113,9 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -154,6 +164,7 @@ jobs:
       issues: write
       pull-requests: write
       actions: read
+      checks: write
     
     steps:
       - name: Checkout code
@@ -276,14 +287,20 @@ jobs:
             
             // Post comment to PR with proper error handling
             try {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
+              if (context.payload.pull_request) {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+                console.log('✅ Successfully posted visual test results comment');
+              } else {
+                console.log('ℹ️ Not a pull request, skipping comment posting');
+              }
             } catch (apiError) {
-              console.error('Failed to post comment:', apiError.message);
+              console.error('❌ Failed to post comment:', apiError.message);
+              console.error('Error details:', JSON.stringify(apiError, null, 2));
               // Don't fail the job if comment posting fails
             }
             
@@ -296,7 +313,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test, visual-regression]
+    needs: [lint-and-typecheck, test]
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -358,6 +379,8 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, test]
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
     permissions:
       contents: read
       security-events: write
@@ -386,12 +409,13 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build, security]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
     environment: production
     permissions:
       contents: read
       actions: read
       packages: read
+      id-token: write
     
     steps:
       - name: Checkout code
@@ -411,12 +435,13 @@ jobs:
     name: Deploy Preview
     runs-on: ubuntu-latest
     needs: [build, security]
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
     environment: preview
     permissions:
       contents: read
       actions: read
       packages: read
+      id-token: write
     
     steps:
       - name: Checkout code
@@ -431,23 +456,86 @@ jobs:
           working-directory: ./${{ env.WORKING_DIRECTORY }}
           vercel-args: '--target=preview'
 
-  # Notify on Success/Failure
-  notify:
-    name: Notify
+  # Workflow Status Summary
+  workflow-status:
+    name: Workflow Status Summary
     runs-on: ubuntu-latest
-    needs: [deploy-production, deploy-preview]
+    needs: [validate-workflow, lint-and-typecheck, test, visual-regression, build, security, deploy-production, deploy-preview]
     if: always()
     permissions:
       contents: read
       actions: read
+      issues: write
+      pull-requests: write
+      checks: write
     
     steps:
-      - name: Notify on Success
-        if: success()
-        run: |
-          echo "✅ All checks passed! Deployment successful."
-          
-      - name: Notify on Failure
-        if: failure()
-        run: |
-          echo "❌ Some checks failed. Please review the logs."
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Generate workflow status report
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const jobs = [
+              { name: 'validate-workflow', result: '${{ needs.validate-workflow.result }}' },
+              { name: 'lint-and-typecheck', result: '${{ needs.lint-and-typecheck.result }}' },
+              { name: 'test', result: '${{ needs.test.result }}' },
+              { name: 'visual-regression', result: '${{ needs.visual-regression.result }}' },
+              { name: 'build', result: '${{ needs.build.result }}' },
+              { name: 'security', result: '${{ needs.security.result }}' },
+              { name: 'deploy-production', result: '${{ needs.deploy-production.result }}' },
+              { name: 'deploy-preview', result: '${{ needs.deploy-preview.result }}' }
+            ];
+            
+            let statusReport = '## 🔄 Workflow Status Report\n\n';
+            let hasFailures = false;
+            let hasSkipped = false;
+            
+            jobs.forEach(job => {
+              if (job.result === 'success') {
+                statusReport += `✅ **${job.name}**: Success\n`;
+              } else if (job.result === 'failure') {
+                statusReport += `❌ **${job.name}**: Failed\n`;
+                hasFailures = true;
+              } else if (job.result === 'skipped') {
+                statusReport += `⏭️ **${job.name}**: Skipped\n`;
+                hasSkipped = true;
+              } else if (job.result === 'cancelled') {
+                statusReport += `🚫 **${job.name}**: Cancelled\n`;
+                hasFailures = true;
+              } else {
+                statusReport += `⏳ **${job.name}**: ${job.result}\n`;
+              }
+            });
+            
+            statusReport += '\n---\n';
+            
+            if (hasFailures) {
+              statusReport += '❌ **Workflow completed with failures.** Please review the logs above.\n';
+            } else if (hasSkipped) {
+              statusReport += '⚠️ **Workflow completed with some jobs skipped.** This may be expected behavior.\n';
+            } else {
+              statusReport += '✅ **All workflow jobs completed successfully!**\n';
+            }
+            
+            // Post status report as PR comment if this is a pull request
+            if (context.payload.pull_request) {
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: statusReport
+                });
+                console.log('✅ Posted workflow status report');
+              } catch (error) {
+                console.error('❌ Failed to post status report:', error.message);
+              }
+            }
+            
+            // Set job status based on results
+            if (hasFailures) {
+              core.setFailed('Workflow completed with failures');
+            }
