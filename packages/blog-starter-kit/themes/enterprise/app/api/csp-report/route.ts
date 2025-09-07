@@ -1,4 +1,7 @@
+// External libraries
 import { NextRequest, NextResponse } from 'next/server';
+
+// Internal modules
 import { 
   SECURITY_CONFIG, 
   validateCSPReport, 
@@ -9,8 +12,15 @@ import {
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic';
 
-// Initialize rate limiter
+// Initialize rate limiter with configuration validation
 const rateLimiter = new RateLimiter();
+
+// Validate rate limiting configuration
+const rateLimitConfig = SECURITY_CONFIG.rateLimit.cspReport;
+if (!rateLimitConfig || rateLimitConfig.maxReports <= 0 || rateLimitConfig.windowMs <= 0) {
+  console.error('Invalid CSP report rate limiting configuration');
+  throw new Error('CSP report rate limiting configuration is invalid');
+}
 
 
 /**
@@ -25,8 +35,7 @@ export async function POST(request: NextRequest) {
       request.headers.get('x-real-ip') || 
       'unknown';
 
-    // Check rate limit using centralized configuration
-    const rateLimitConfig = SECURITY_CONFIG.rateLimit.cspReport;
+    // Check rate limit using validated configuration
     const rateLimit = rateLimiter.checkLimit(clientIP, rateLimitConfig.maxReports, rateLimitConfig.windowMs);
     
     if (!rateLimit.allowed) {
@@ -42,22 +51,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse and validate request body
+    // Parse and validate request body with enhanced error handling
     let body;
     try {
       body = await request.json();
     } catch (parseError) {
+      // Log parse error for monitoring without exposing sensitive information
+      logSecurityEvent('csp_report_parse_error', 'warning', {
+        error: 'Invalid JSON format',
+        clientIP,
+        userAgent: request.headers.get('user-agent') || 'unknown'
+      });
+      
       return NextResponse.json(
-        { error: 'Invalid JSON in request body' },
+        { error: 'Invalid request format' },
         { status: 400 }
       );
     }
 
-    // Validate and sanitize CSP report data
+    // Validate and sanitize CSP report data with enhanced verification
     const validation = validateCSPReport(body);
     if (!validation.isValid) {
+      // Log validation error for monitoring
+      logSecurityEvent('csp_report_validation_error', 'warning', {
+        error: validation.error,
+        clientIP,
+        userAgent: request.headers.get('user-agent') || 'unknown'
+      });
+      
       return NextResponse.json(
-        { error: validation.error || 'Invalid CSP report data' },
+        { error: 'Invalid report data' },
         { status: 400 }
       );
     }
@@ -81,9 +104,15 @@ export async function POST(request: NextRequest) {
     
     return response;
   } catch (error) {
-    console.error('Error processing CSP report:', error);
+    // Log error for monitoring without exposing sensitive information
+    logSecurityEvent('csp_report_processing_error', 'error', {
+      error: 'Internal processing error',
+      clientIP: request.ip || 'unknown',
+      userAgent: request.headers.get('user-agent') || 'unknown'
+    });
+    
     return NextResponse.json(
-      { error: 'Internal server error processing CSP report' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

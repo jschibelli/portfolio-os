@@ -93,28 +93,55 @@ const config = {
 	},
 	async headers() {
 		try {
-			// Import security configuration
-			const { generateSecurityHeaders, getEnvironmentConfig } = require('./lib/security-config');
+			// Import security configuration with dependency injection
+			const securityConfig = require('./lib/security-config');
+			const { generateSecurityHeaders, getEnvironmentConfig } = securityConfig;
+			
+			// Validate imported functions
+			if (typeof generateSecurityHeaders !== 'function' || typeof getEnvironmentConfig !== 'function') {
+				throw new Error('Security configuration functions are not available');
+			}
 			
 			// Get environment-specific configuration
 			const envConfig = getEnvironmentConfig();
+			if (!envConfig) {
+				throw new Error('Environment configuration is not available');
+			}
 			
-			// Generate nonce for CSP
-			const { generateNonce } = require('./lib/security-config').SECURITY_CONFIG.csp;
+			// Generate nonce for CSP with entropy validation
+			const { generateNonce } = securityConfig.SECURITY_CONFIG.csp;
+			if (typeof generateNonce !== 'function') {
+				throw new Error('Nonce generation function is not available');
+			}
+			
 			const nonce = generateNonce();
+			if (!nonce || nonce.length < 16) {
+				throw new Error('Generated nonce does not meet entropy requirements');
+			}
 			
 			// Generate security headers using centralized configuration
 			const securityHeaders = generateSecurityHeaders(nonce);
+			if (!Array.isArray(securityHeaders) || securityHeaders.length === 0) {
+				throw new Error('Security headers generation failed');
+			}
+			
+			// Ensure CSP header is set first for security policy enforcement
+			const cspHeader = securityHeaders.find(header => header.key === 'Content-Security-Policy');
+			const otherHeaders = securityHeaders.filter(header => header.key !== 'Content-Security-Policy');
+			
+			const orderedHeaders = cspHeader ? [cspHeader, ...otherHeaders] : securityHeaders;
 			
 			return [
 				{
 					source: '/(.*)',
-					headers: securityHeaders
+					headers: orderedHeaders
 				}
 			];
 		} catch (error) {
-			console.error('Error setting security headers:', error);
-			// Return basic headers if advanced configuration fails
+			// Log generic error message without exposing sensitive information
+			console.error('Security headers configuration error:', 'Configuration validation failed');
+			
+			// Return basic security headers if advanced configuration fails
 			return [
 				{
 					source: '/(.*)',
@@ -126,22 +153,76 @@ const config = {
 						{
 							key: 'X-Content-Type-Options',
 							value: 'nosniff'
+						},
+						{
+							key: 'Referrer-Policy',
+							value: 'strict-origin-when-cross-origin'
 						}
 					]
 				}
 			];
 		}
 	},
-	webpack: (config, { isServer }) => {
-		config.resolve.fallback = {
-			...config.resolve.fallback,
-			encoding: false,
-			'cross-fetch': false,
-			googleapis: false,
-			fs: false,
-			net: false,
-			tls: false,
-		};
+	webpack: (config, { isServer, dev }) => {
+		// Import webpack configuration utilities
+		try {
+			const { generateWebpackConfig, getWebpackEnvironmentSettings } = require('./lib/webpack-config');
+			
+			// Get environment-specific settings
+			const webpackSettings = getWebpackEnvironmentSettings();
+			
+			// Generate environment-specific webpack configuration
+			const webpackConfig = generateWebpackConfig({
+				isServer,
+				dev,
+				isProduction: !dev && process.env.NODE_ENV === 'production'
+			});
+			
+			// Apply security-focused fallbacks
+			config.resolve.fallback = {
+				...config.resolve.fallback,
+				...webpackConfig.resolve?.fallback
+			};
+			
+			// Apply security-focused module rules
+			if (webpackConfig.module?.rules) {
+				config.module.rules = [
+					...config.module.rules,
+					...webpackConfig.module.rules
+				];
+			}
+			
+			// Apply environment-specific optimizations
+			if (webpackConfig.optimization) {
+				config.optimization = {
+					...config.optimization,
+					...webpackConfig.optimization
+				};
+			}
+			
+			// Apply server-side externals for security
+			if (isServer && webpackConfig.externals) {
+				config.externals = {
+					...config.externals,
+					...webpackConfig.externals
+				};
+			}
+			
+		} catch (error) {
+			// Fallback to basic security fallbacks if webpack config fails
+			console.error('Webpack configuration error:', 'Using fallback configuration');
+			
+			config.resolve.fallback = {
+				...config.resolve.fallback,
+				encoding: false,
+				'cross-fetch': false,
+				googleapis: false,
+				fs: false,
+				net: false,
+				tls: false,
+			};
+		}
+		
 		return config;
 	},
 	eslint: {
