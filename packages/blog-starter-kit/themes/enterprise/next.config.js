@@ -92,46 +92,66 @@ const config = {
 		scrollRestoration: true,
 	},
 	async headers() {
-		return [
-			{
-				source: '/(.*)',
-				headers: [
-					{
-						key: 'Content-Security-Policy',
-						value: [
-							"default-src 'self'",
-							"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
-							"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-							"font-src 'self' https://fonts.gstatic.com",
-							"img-src 'self' data: blob: https://cdn.hashnode.com https://unsplash.com https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://githubusercontent.com",
-							"connect-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
-							"frame-src 'self' https://www.google.com",
-							"object-src 'none'",
-							"base-uri 'self'",
-							"form-action 'self'",
-							"frame-ancestors 'none'",
-							"upgrade-insecure-requests"
-						].join('; ')
-					},
-					{
-						key: 'X-Frame-Options',
-						value: 'DENY'
-					},
-					{
-						key: 'X-Content-Type-Options',
-						value: 'nosniff'
-					},
-					{
-						key: 'Referrer-Policy',
-						value: 'strict-origin-when-cross-origin'
-					},
-					{
-						key: 'Permissions-Policy',
-						value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
-					}
-				]
-			}
-		];
+		try {
+			return [
+				{
+					source: '/(.*)',
+					headers: [
+						{
+							key: 'Content-Security-Policy',
+							value: [
+								"default-src 'self'",
+								// Script sources - removed unsafe-inline and unsafe-eval for better security
+								"script-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
+								// Style sources - keeping unsafe-inline for CSS-in-JS libraries
+								"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+								"font-src 'self' https://fonts.gstatic.com",
+								// Image sources - includes our image proxy
+								"img-src 'self' data: blob: https://cdn.hashnode.com https://unsplash.com https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://githubusercontent.com",
+								// Connect sources - includes our image proxy API
+								"connect-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
+								"frame-src 'self' https://www.google.com",
+								"object-src 'none'",
+								"base-uri 'self'",
+								"form-action 'self'",
+								"frame-ancestors 'none'",
+								"upgrade-insecure-requests",
+								// Add reporting endpoint for CSP violations
+								"report-uri /api/csp-report"
+							].join('; ')
+						},
+						{
+							key: 'X-Frame-Options',
+							value: 'DENY'
+						},
+						{
+							key: 'X-Content-Type-Options',
+							value: 'nosniff'
+						},
+						{
+							key: 'Referrer-Policy',
+							value: 'strict-origin-when-cross-origin'
+						},
+						{
+							key: 'Permissions-Policy',
+							value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+						},
+						// Additional security headers
+						{
+							key: 'Strict-Transport-Security',
+							value: 'max-age=31536000; includeSubDomains; preload'
+						},
+						{
+							key: 'X-XSS-Protection',
+							value: '1; mode=block'
+						}
+					]
+				}
+			];
+		} catch (error) {
+			console.error('Error setting security headers:', error);
+			return [];
+		}
 	},
 	webpack: (config, { isServer }) => {
 		config.resolve.fallback = {
