@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import {
 	BarChart3,
 	CheckCircle,
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { Badge, Card, CardContent, CardHeader, CardTitle } from '../components/ui';
+import { PerformanceImage } from '../components/ui/performance-image';
 
 export interface ParsedBlock {
 	type: string;
@@ -394,7 +394,7 @@ const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, r
 									<div className="text-gray-400 text-sm">Loading...</div>
 								</div>
 							)}
-							<Image 
+							<PerformanceImage
 								key={retryCount} // Force re-render on retry
 								src={url} 
 								alt={alt || 'Gallery image'} 
@@ -407,6 +407,8 @@ const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, r
 								blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
 								onError={handleError}
 								onLoad={handleLoad}
+								enablePerformanceTracking={true}
+								showLoadingIndicator={true}
 							/>
 						</div>
 					);

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { PerformanceImage } from '@/components/ui/performance-image'
 import { 
   // Icon components for UI controls
   Image as ImageIcon, // Renamed to avoid conflict with Next.js Image component
@@ -215,38 +215,22 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
               className="w-full bg-transparent border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-400"
             />
             {block.content && isValidImageUrl(block.content) && (
-              <div className="relative">
-                <Image 
-                  src={block.content} 
-                  alt="Block content" 
-                  width={800}
-                  height={600}
-                  className="max-w-full h-auto rounded-lg"
-                  loading="lazy"
-                  quality={85}
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-                  onError={(e) => {
-                    // Show error state instead of hiding the image
-                    const target = e.currentTarget
-                    target.style.display = 'none'
-                    const errorDiv = target.nextElementSibling as HTMLElement
-                    if (errorDiv) {
-                      errorDiv.style.display = 'block'
-                    }
-                  }}
-                />
-                <div 
-                  className="hidden bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
-                  style={{ display: 'none' }}
-                >
-                  <div className="text-gray-500 text-sm">
-                    <ImageIcon className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                    <p>Failed to load image</p>
-                    <p className="text-xs mt-1">Please check the URL and try again</p>
-                  </div>
-                </div>
-              </div>
+              <PerformanceImage
+                src={block.content}
+                alt="Block content"
+                width={800}
+                height={600}
+                className="max-w-full h-auto rounded-lg"
+                loading="lazy"
+                quality={85}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                enablePerformanceTracking={true}
+                showLoadingIndicator={true}
+                onError={(error) => {
+                  console.warn('Image load error:', error);
+                }}
+              />
             )}
             {block.content && !isValidImageUrl(block.content) && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">

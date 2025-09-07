@@ -103,7 +103,7 @@ const config = {
 							"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
 							"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 							"font-src 'self' https://fonts.gstatic.com",
-							"img-src 'self' data: https: blob:",
+							"img-src 'self' data: blob: https://cdn.hashnode.com https://unsplash.com https://images.unsplash.com https://picsum.photos https://via.placeholder.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://github.com https://githubusercontent.com",
 							"connect-src 'self' https://gql.hashnode.com https://hn-ping2.hashnode.com https://user-analytics.hashnode.com https://www.google-analytics.com https://www.googletagmanager.com",
 							"frame-src 'self' https://www.google.com",
 							"object-src 'none'",
@@ -157,6 +157,38 @@ const config = {
 			{
 				protocol: 'https',
 				hostname: 'cdn.hashnode.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'unsplash.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'picsum.photos',
+			},
+			{
+				protocol: 'https',
+				hostname: 'via.placeholder.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'cdn.jsdelivr.net',
+			},
+			{
+				protocol: 'https',
+				hostname: 'raw.githubusercontent.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'github.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'githubusercontent.com',
 			},
 		],
 	},
