@@ -128,6 +128,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
                   src={post.cover.url}
                   alt={post.cover.alt || post.title}
                   className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                  loading="lazy"
                 />
               </div>
             )}

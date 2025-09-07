@@ -272,7 +272,7 @@ importers:
         version: 3.25.76
     devDependencies:
       '@axe-core/playwright':
-        specifier: ^4.8.5
+        specifier: ^4.9.0
         version: 4.10.2(playwright-core@1.55.0)
       '@graphql-codegen/cli':
         specifier: ^5.0.0
@@ -290,7 +290,7 @@ importers:
         specifier: ^2.3.0
         version: 2.5.1
       '@playwright/test':
-        specifier: ^1.55.0
+        specifier: ^1.48.0
         version: 1.55.0
       '@starter-kit/eslint-config-custom':
         specifier: workspace:*
@@ -352,6 +352,9 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@18.19.120)(typescript@5.8.3)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.8.3
 
   packages/blog-starter-kit/themes/enterprise/packages/admin-dashboard:
     dependencies:

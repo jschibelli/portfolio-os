@@ -20,6 +20,7 @@ export default function Intro() {
 									src="/assets/hero/profile.png"
 									alt="John Schibelli - Senior Frontend Developer"
 									className="h-full w-full object-cover"
+									loading="lazy"
 								/>
 							</div>
 						</div>

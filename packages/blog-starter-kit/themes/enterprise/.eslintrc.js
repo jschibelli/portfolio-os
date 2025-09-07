@@ -11,6 +11,7 @@ module.exports = {
 		'jsx-a11y/click-events-have-key-events': 'warn', // Changed to warn
 		'jsx-a11y/no-static-element-interactions': 'warn', // Changed to warn
 		// Disable alt-text for lucide-react components (false positives)
+		// This prevents false positives with icon components that don't need alt text
 		'jsx-a11y/alt-text': 'off',
 		'jsx-a11y/heading-has-content': 'error',
 		'jsx-a11y/html-has-lang': 'error',

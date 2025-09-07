@@ -16,6 +16,9 @@
 		"test:visual": "playwright test tests/visual/",
 		"test:visual:update": "playwright test tests/visual/ --update-snapshots",
 		"test:visual:ui": "playwright test tests/visual/ --ui",
+		"test:ci": "playwright test tests/ci-integration.spec.ts --reporter=github",
+		"test:case-studies": "playwright test tests/case-study*.spec.ts",
+		"test:all": "playwright test --reporter=html",
 		"typecheck": "tsc",
 		"setup-auth": "node scripts/setup-auth.js",
 		"setup-admin": "node scripts/setup-admin-user.js",
@@ -104,13 +107,13 @@
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
-		"@axe-core/playwright": "^4.8.5",
+		"@axe-core/playwright": "^4.9.0",
 		"@graphql-codegen/cli": "^5.0.0",
 		"@graphql-codegen/typed-document-node": "^5.0.1",
 		"@graphql-codegen/typescript": "^4.0.1",
 		"@graphql-codegen/typescript-operations": "^4.0.1",
 		"@parcel/watcher": "^2.3.0",
-		"@playwright/test": "^1.55.0",
+		"@playwright/test": "^1.48.0",
 		"@starter-kit/eslint-config-custom": "workspace:*",
 		"@starter-kit/tsconfig": "workspace:*",
 		"@tailwindcss/line-clamp": "^0.4.4",
@@ -130,6 +133,7 @@
 		"prisma": "^5.0.0",
 		"tailwindcss": "^3.4.17",
 		"tailwindcss-animate": "^1.0.7",
-		"ts-node": "^10.9.2"
+		"ts-node": "^10.9.2",
+		"typescript": "^5.3.3"
 	}
 }
