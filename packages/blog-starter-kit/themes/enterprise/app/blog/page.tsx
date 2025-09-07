@@ -13,71 +13,16 @@ import { format } from "date-fns";
 import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
+import { generateMockPosts, PERFORMANCE_SCENARIOS } from '../../lib/mock-data-generator';
 
 export default async function BlogIndex() {
-  // Use mock data for better performance testing
-  const mockPosts = [
-    {
-      title: "Getting Started with Modern Web Development",
-      subtitle: "A comprehensive guide to building scalable web applications",
-      slug: "getting-started-modern-web-development",
-      excerpt: "Learn the fundamentals of modern web development with React, Next.js, and TypeScript. This guide covers everything from setup to deployment.",
-      publishedAt: new Date().toISOString(),
-      readingMinutes: 8,
-      views: 1250,
-      featured: true,
-      author: { name: "John Schibelli" },
-      cover: {
-        url: "/assets/placeholder-blog-1.jpg",
-        alt: "Modern web development concepts"
-      },
-      tags: [
-        { tag: { name: "Web Development" } },
-        { tag: { name: "React" } },
-        { tag: { name: "Next.js" } }
-      ]
-    },
-    {
-      title: "Building Scalable React Applications",
-      subtitle: "Best practices for large-scale React development",
-      slug: "building-scalable-react-applications",
-      excerpt: "Discover the key patterns and practices for building maintainable and scalable React applications that can grow with your business.",
-      publishedAt: new Date(Date.now() - 86400000).toISOString(),
-      readingMinutes: 12,
-      views: 890,
-      featured: false,
-      author: { name: "John Schibelli" },
-      cover: {
-        url: "/assets/placeholder-blog-2.jpg",
-        alt: "React application architecture"
-      },
-      tags: [
-        { tag: { name: "React" } },
-        { tag: { name: "Architecture" } },
-        { tag: { name: "Best Practices" } }
-      ]
-    },
-    {
-      title: "TypeScript for Modern Development",
-      subtitle: "Leveraging TypeScript for better code quality",
-      slug: "typescript-modern-development",
-      excerpt: "Explore how TypeScript can improve your development workflow and help you catch errors before they reach production.",
-      publishedAt: new Date(Date.now() - 172800000).toISOString(),
-      readingMinutes: 10,
-      views: 650,
-      featured: false,
-      author: { name: "John Schibelli" },
-      cover: {
-        url: "/assets/placeholder-blog-3.jpg",
-        alt: "TypeScript development workflow"
-      },
-      tags: [
-        { tag: { name: "TypeScript" } },
-        { tag: { name: "Development" } },
-        { tag: { name: "Code Quality" } }
-      ]
-    }
-  ];
+  // Use enhanced mock data generator for better performance testing
+  // Choose scenario based on environment or testing needs
+  const scenario = process.env.NODE_ENV === 'test' 
+    ? PERFORMANCE_SCENARIOS.minimal 
+    : PERFORMANCE_SCENARIOS.standard;
+    
+  const mockPosts = generateMockPosts(scenario);
 
   const featuredPost = mockPosts.find(post => post.featured) || mockPosts[0];
   const latestPosts = mockPosts.filter(post => post.slug !== featuredPost?.slug).slice(0, 3);

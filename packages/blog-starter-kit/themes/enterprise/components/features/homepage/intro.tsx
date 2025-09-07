@@ -26,7 +26,7 @@ export default function Intro() {
 									priority
 								/>
 							</div>
-						</div>
+What do you recommend 						</div>
 
 						{/* Introduction Text */}
 						<div className="flex-1 space-y-4">

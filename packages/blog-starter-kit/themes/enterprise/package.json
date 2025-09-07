@@ -25,6 +25,8 @@
 		"test:performance:all": "node scripts/run-all-performance-tests.js",
 		"test:performance:css": "node scripts/optimize-css.js",
 		"test:performance:lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 100",
+		"test:performance:budget": "node scripts/performance-budget-check.js",
+		"test:performance:rum": "node scripts/validate-rum-data.js",
 		"test:security": "node scripts/dependency-security-check.js",
 		"test:automation": "node scripts/test-automation-manager.js",
 		"test:consistency": "node scripts/script-consistency-checker.js",
