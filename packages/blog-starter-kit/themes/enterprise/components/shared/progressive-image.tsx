@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { resizeImage } from '@starter-kit/utils/image';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import { twMerge } from 'tailwind-merge';
 import { DEFAULT_AVATAR } from '../../utils/const';
@@ -12,57 +12,51 @@ import { DEFAULT_AVATAR } from '../../utils/const';
  * @param {string}    options.className   Classname string
  * @param {...[type]} options.restOfProps Rest of the props passed to the child
  */
-class ProgressiveImage extends React.Component<{
+interface ProgressiveImageProps {
 	resize: any;
 	src: string;
 	alt: string;
 	className: string;
 	css: string;
-}> {
-	image: HTMLImageElement | null = null;
+}
 
-	componentDidMount() {
-		if (!(window as any).lazySizes && this.image) {
-			this.image.setAttribute('src', this.image.getAttribute('data-src') || '');
+function ProgressiveImage({ resize, src, alt, className, ...restOfProps }: ProgressiveImageProps) {
+	const imageRef = useRef<HTMLImageElement>(null);
+
+	useEffect(() => {
+		if (!(window as any).lazySizes && imageRef.current) {
+			imageRef.current.setAttribute('src', imageRef.current.getAttribute('data-src') || '');
 		}
-	}
+	}, []);
 
 	// TODO: Improve type
-	replaceBadImage = (e: any) => {
-		// eslint-disable-next-line react/destructuring-assignment
-		if (this.props.resize && this.props.resize.c !== 'face') {
+	const replaceBadImage = (e: any) => {
+		if (resize && resize.c !== 'face') {
 			return;
 		}
 		e.target.onerror = null;
 		e.target.src = DEFAULT_AVATAR;
 	};
 
-	render() {
-		const { src, alt, className, resize = {}, ...restOfProps } = this.props;
+	if (!src || src.trim().length === 0) return null;
 
-		if (!src || src.trim().length === 0) return null;
+	const resizedImage = resizeImage(src, resize);
 
-		const resizedImage = resizeImage(src, resize);
-
-		return (
-			<img
-				data-sizes="auto"
-				loading="lazy"
-				src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-				// eslint-disable-next-line no-return-assign
-				ref={(c) => {
-					this.image = c;
-				}}
-				data-src={resizedImage}
-				width={resize.w}
-				height={resize.h}
-				onError={this.replaceBadImage}
-				alt={alt}
-				className={twMerge('lazyload block w-full', className)}
-				{...restOfProps}
-			/>
-		);
-	}
+	return (
+		<img
+			data-sizes="auto"
+			loading="lazy"
+			src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+			ref={imageRef}
+			data-src={resizedImage}
+			width={resize.w}
+			height={resize.h}
+			onError={replaceBadImage}
+			alt={alt}
+			className={twMerge('lazyload block w-full', className)}
+			{...restOfProps}
+		/>
+	);
 }
 
 export default ProgressiveImage;

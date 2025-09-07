@@ -67,7 +67,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 								<Badge variant="secondary" className="text-xs">
 									{language}
 								</Badge>
-								<Button variant="ghost" size="sm" onClick={copyToClipboard} className="h-8 w-8 p-0">
+								<Button variant="ghost" size="sm" onClick={copyToClipboard} className="h-11 w-11 p-0">
 									{copied ? (
 										<Check className="h-4 w-4 text-green-600" />
 									) : (

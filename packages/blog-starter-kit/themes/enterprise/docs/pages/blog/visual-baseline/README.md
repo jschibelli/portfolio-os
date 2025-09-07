@@ -1,115 +1,129 @@
-# Visual Baseline Documentation
+# Visual Regression Testing - Baseline Images
 
-## Overview
+This directory contains the baseline images for visual regression testing of the blog page. These images serve as the "golden standard" against which all future changes are compared.
 
-This directory contains visual baseline screenshots for the Blog page at different viewport sizes. These images serve as the "golden standard" for visual regression testing.
+## Directory Structure
 
-## Required Screenshots
+```
+visual-baseline/
+├── README.md (this file)
+├── blog-page-desktop.png
+├── blog-page-tablet.png
+├── blog-page-mobile.png
+├── blog-page-desktop-dark.png
+├── post-card-hover.png
+├── newsletter-form-default.png
+└── newsletter-form-filled.png
+```
 
-### Desktop View (1280×800)
-- **File**: `desktop.png`
-- **Description**: Full blog page on desktop viewport
-- **Captures**: Hero section, featured post, latest posts grid, newsletter CTA, social media icons
+## How It Works
 
-### Tablet View (834×1112)
-- **File**: `tablet.png`
-- **Description**: Blog page on tablet viewport (portrait)
-- **Captures**: Responsive layout adjustments, mobile navigation, grid changes
+1. **Baseline Creation**: When visual regression tests are first run, they create baseline images in the `test-results/` directory
+2. **Comparison**: Subsequent test runs compare new screenshots against these baseline images
+3. **Threshold**: Visual differences are flagged if they exceed 0.1% (configurable)
+4. **Updates**: Baseline images can be updated when intentional design changes are made
 
-### Mobile View (390×844)
-- **File**: `mobile.png`
-- **Description**: Blog page on mobile viewport
-- **Captures**: Single column layout, mobile menu, touch-friendly interactions
+## Updating Baseline Images
 
-## How to Capture Screenshots
-
-### Using Playwright
+### Local Development
 ```bash
-# Install Playwright if not already installed
-npm install -D @playwright/test
+# Update all visual regression baselines
+pnpm test:visual:update
 
-# Run the visual test
-npx playwright test tests/visual/blog-page.spec.ts --headed
+# Update specific test baselines
+pnpm test:visual --update-snapshots
 ```
 
-### Using Browser DevTools
-1. Open the blog page in Chrome/Firefox
-2. Open DevTools (F12)
-3. Set viewport to desired size
-4. Take screenshot (Cmd+Shift+P → "screenshot")
-5. Save as appropriate filename
+### CI/CD Integration
+- Visual regression tests run automatically on PRs that modify blog-related files
+- Failed tests block the build and post results as PR comments
+- Baseline updates require intentional approval via the update command
 
-### Using Playwright CLI
-```bash
-# Capture desktop screenshot
-npx playwright screenshot --viewport-size=1280,800 http://localhost:3000/blog docs/pages/blog/visual-baseline/desktop.png
+## Test Coverage
 
-# Capture tablet screenshot
-npx playwright screenshot --viewport-size=834,1112 http://localhost:3000/blog docs/pages/blog/visual-baseline/tablet.png
+The visual regression tests cover:
 
-# Capture mobile screenshot
-npx playwright screenshot --viewport-size=390,844 http://localhost:3000/blog docs/pages/blog/visual-baseline/mobile.png
-```
+### Viewport Sizes
+- **Desktop**: 1280x800px
+- **Tablet**: 834x1112px  
+- **Mobile**: 390x844px
 
-## Visual Regression Testing
+### Theme States
+- **Light Mode**: Default theme
+- **Dark Mode**: Toggled dark theme
 
-These baseline images are used for visual regression testing to ensure the blog page maintains its visual integrity across updates.
+### Component States
+- **Post Cards**: Default and hover states
+- **Newsletter Form**: Default and filled states
 
-### Test Configuration
-```typescript
-// tests/visual/blog-page.spec.ts
-test.describe('Blog Page Visual Regression', () => {
-  test('desktop view', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/blog');
-    await page.waitForTimeout(2000); // Wait for animations
-    await expect(page).toHaveScreenshot('desktop.png');
-  });
+### Page Sections
+- **Full Page**: Complete blog page layout
+- **Hero Section**: Top section with title and social links
+- **Featured Post**: Large featured article display
+- **Latest Posts**: Grid of recent articles
+- **Newsletter CTA**: Subscription form section
 
-  test('tablet view', async ({ page }) => {
-    await page.setViewportSize({ width: 834, height: 1112 });
-    await page.goto('/blog');
-    await page.waitForTimeout(2000);
-    await expect(page).toHaveScreenshot('tablet.png');
-  });
+## Configuration
 
-  test('mobile view', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/blog');
-    await page.waitForTimeout(2000);
-    await expect(page).toHaveScreenshot('mobile.png');
-  });
-});
-```
+### Threshold Settings
+- **Default**: 0.1% pixel difference threshold
+- **Animations**: Disabled for consistent screenshots
+- **Full Page**: Screenshots capture entire page content
 
-## Updating Baselines
-
-When the blog page design changes intentionally:
-
-1. **Update Screenshots**:
-   ```bash
-   npx playwright test tests/visual/blog-page.spec.ts --update-snapshots
-   ```
-
-2. **Review Changes**: Ensure the new screenshots reflect the intended design changes
-
-3. **Commit Changes**: Include the updated baseline images in your commit
+### File Naming Convention
+- `blog-page-{viewport}-{theme}.png` - Full page screenshots
+- `{component}-{state}.png` - Component-specific screenshots
 
 ## Troubleshooting
 
 ### Common Issues
-- **Animations**: Wait for animations to complete before capturing
-- **Loading States**: Ensure all content is loaded
-- **Dynamic Content**: Use consistent test data
-- **Font Loading**: Wait for fonts to load completely
 
-### Best Practices
-- Capture screenshots in consistent conditions
-- Use the same browser for all captures
-- Ensure consistent test data
-- Wait for all animations to complete
-- Check for any loading states
+1. **False Positives**: Minor rendering differences due to fonts, anti-aliasing
+   - **Solution**: Review diffs and update baselines if changes are acceptable
+
+2. **Animation Interference**: Moving elements causing test failures
+   - **Solution**: Animations are disabled in test environment
+
+3. **Timing Issues**: Elements not fully loaded before screenshot
+   - **Solution**: Tests wait for `networkidle` state and additional timeouts
+
+### Debugging Failed Tests
+
+1. **Check Test Results**: Review the `test-results/` directory for diff images
+2. **Compare Artifacts**: Download and compare actual vs expected images
+3. **Local Testing**: Run tests locally to reproduce issues
+4. **Update Baselines**: If changes are intentional, update the baseline images
+
+## Best Practices
+
+1. **Regular Updates**: Update baselines when making intentional design changes
+2. **Review Diffs**: Always review visual differences before accepting changes
+3. **Consistent Environment**: Run tests in consistent browser environments
+4. **Documentation**: Document any baseline updates in commit messages
+
+## Integration with CI/CD
+
+The visual regression tests are integrated into the GitHub Actions workflow:
+
+- **Trigger**: Runs on PRs that modify blog-related files
+- **Failure Handling**: Blocks build if visual differences exceed threshold
+- **Artifact Upload**: Uploads test results and screenshots for review
+- **PR Comments**: Posts test results directly to PR for easy review
+
+## Maintenance
+
+### Regular Tasks
+- Review and update baselines when design system changes
+- Monitor test performance and adjust timeouts if needed
+- Update test coverage when new components are added
+- Clean up old test artifacts periodically
+
+### Baseline Image Management
+- Keep baseline images in version control
+- Document any baseline updates in commit messages
+- Consider baseline image compression for repository size
+- Regular review of baseline accuracy and relevance
 
 ---
 
-*This visual baseline documentation was generated on $(date) and should be updated whenever the blog page design changes.*
+*This documentation is automatically updated when visual regression testing configuration changes.*

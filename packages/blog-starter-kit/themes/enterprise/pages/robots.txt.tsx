@@ -13,6 +13,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const robotsTxt = `
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
 # Google adsbot ignores robots.txt unless specifically named!
 User-agent: AdsBot-Google

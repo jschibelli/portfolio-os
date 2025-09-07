@@ -792,24 +792,132 @@ npm run test:all
 
 ### CI/CD Pipeline
 ```yaml
-# .github/workflows/test.yml
-name: Test Suite
-on: [push, pull_request]
+# .github/workflows/main.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
+  # Visual Regression Testing
+  visual-regression:
+    name: Visual Regression Tests
     runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
+    
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-      - run: npm ci
-      - run: npm run test
-      - run: npm run test:e2e
-      - run: npm run test:visual
-      - run: npm run test:a11y
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Build application
+        run: pnpm build
+      - name: Run visual regression tests
+        run: pnpm test:visual
+      - name: Upload visual test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-test-results
+          path: test-results/
+      - name: Comment PR with visual test results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Posts visual test results as PR comments
+            // Fails build if visual differences detected
 ```
+
+## Visual Regression Testing Implementation
+
+### Overview
+The visual regression testing system has been fully implemented to prevent blog page overwrites and ensure visual consistency across all changes.
+
+### Key Features
+- **Automated Testing**: Runs on every PR that modifies blog-related files
+- **Multi-Viewport Coverage**: Desktop (1280x800), Tablet (834x1112), Mobile (390x844)
+- **Theme Support**: Light and dark mode testing
+- **Component States**: Hover effects, form states, and interactive elements
+- **CI/CD Integration**: Blocks builds on visual differences > 0.1%
+- **PR Comments**: Automatic feedback with test results and diff images
+
+### Test Coverage
+```typescript
+// Full page screenshots
+- blog-page-desktop.png (1280x800, light mode)
+- blog-page-tablet.png (834x1112, light mode)  
+- blog-page-mobile.png (390x844, light mode)
+- blog-page-desktop-dark.png (1280x800, dark mode)
+
+// Component state screenshots
+- post-card-hover.png (hover state)
+- newsletter-form-default.png (empty form)
+- newsletter-form-filled.png (filled form)
+```
+
+### Configuration
+- **Threshold**: 0.1% pixel difference (configurable)
+- **Animations**: Disabled for consistent screenshots
+- **Full Page**: Captures entire page content
+- **Browser**: Chromium (primary), with Firefox/Safari support
+
+### Workflow Integration
+1. **Trigger Conditions**: 
+   - Pull requests modifying `/app/blog/`, `/components/blog/`, `/pages/blog`, or `/tests/visual/`
+   - Manual workflow dispatch
+   
+2. **Test Execution**:
+   - Builds application in production mode
+   - Runs Playwright visual regression tests
+   - Compares against baseline images
+   
+3. **Failure Handling**:
+   - Uploads test artifacts (screenshots, diffs)
+   - Posts detailed PR comments with results
+   - Blocks build if differences exceed threshold
+   
+4. **Success Flow**:
+   - Confirms no visual differences
+   - Allows build to proceed
+   - Posts success message to PR
+
+### Baseline Management
+- **Location**: `test-results/` directory (auto-generated)
+- **Version Control**: Baseline images tracked in git
+- **Updates**: Manual via `pnpm test:visual:update`
+- **Review Process**: All baseline updates require code review
+
+### Commands
+```bash
+# Run visual regression tests
+pnpm test:visual
+
+# Update baseline images (after intentional changes)
+pnpm test:visual:update
+
+# Run with UI for debugging
+pnpm test:visual:ui
+
+# Run specific test file
+npx playwright test tests/visual/blog-page.spec.ts
+```
+
+### Troubleshooting
+- **False Positives**: Review diffs and update baselines if acceptable
+- **Timing Issues**: Tests wait for `networkidle` + 1s timeout
+- **Animation Interference**: Animations disabled in test environment
+- **Environment Differences**: Consistent browser setup in CI
 
 ## Test Maintenance
 
@@ -818,12 +926,20 @@ jobs:
 - Refresh visual baselines when design changes
 - Update accessibility tests when new features are added
 - Monitor performance budgets and adjust thresholds
+- Review and update visual regression baselines quarterly
 
 ### Test Data Management
 - Use consistent mock data across tests
 - Create reusable test utilities
 - Maintain test data factories
 - Keep test data in sync with production data structure
+- Maintain baseline image repository
+
+### Visual Regression Maintenance
+- **Quarterly Review**: Audit baseline images for accuracy
+- **Design System Updates**: Update baselines when design tokens change
+- **Performance Monitoring**: Track test execution time and optimize
+- **Coverage Expansion**: Add new components and states as needed
 
 ---
 

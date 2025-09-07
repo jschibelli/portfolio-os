@@ -9,6 +9,12 @@ type Props = {
 };
 
 export const Layout = ({ children }: Props) => {
+	// Default publication object for the footer
+	const defaultPublication = {
+		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+	};
+
 	return (
 		<>
 			<Meta />
@@ -18,7 +24,7 @@ export const Layout = ({ children }: Props) => {
 					{children}
 				</main>
 			</div>
-			<Footer />
+			<Footer publication={defaultPublication} />
 			{/* <AnalyticsSafe /> */}
 			<Integrations />
 		</>

@@ -433,7 +433,7 @@ export default function Chatbot() {
             recognitionRef.current.interimResults = false;
             recognitionRef.current.maxAlternatives = 1;
             // Mobile browsers often need shorter timeouts
-            recognitionRef.current.grammars = null;
+            // Note: grammars property is optional and can be omitted
           } else {
             recognitionRef.current.continuous = false;
             recognitionRef.current.interimResults = false;
@@ -1180,8 +1180,7 @@ export default function Chatbot() {
                 if (isMobile) {
                   // Try to set a shorter timeout for mobile
                   recognitionRef.current.maxAlternatives = 1;
-                  // Some mobile browsers need this
-                  recognitionRef.current.grammars = null;
+                  // Note: grammars property is optional and can be omitted
                 }
                
                // Re-attach event handlers
@@ -1444,8 +1443,9 @@ export default function Chatbot() {
            }
            setIsOpen(!isOpen);
          }}
-				className="fixed bottom-4 right-4 z-[9999] rounded-full border border-stone-700 bg-stone-900 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-stone-800 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
-         aria-label="Toggle chatbot"
+				className="fixed bottom-4 right-4 z-[9999] rounded-full border-2 border-white bg-primary p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-primary/90 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-200 dark:bg-primary dark:text-white dark:hover:bg-primary/90"
+         aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
+         aria-expanded={isOpen}
          style={{ 
            display: 'flex', 
            alignItems: 'center', 
@@ -1458,7 +1458,7 @@ export default function Chatbot() {
 					height: '50px',
 				}}
 			>
-				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+				{isOpen ? <X className="h-6 w-6 text-white" /> : <MessageCircle className="h-6 w-6 text-white" />}
       </button>
 
              {/* Chat Window - Opens above the toggle button */}
@@ -1692,7 +1692,7 @@ export default function Chatbot() {
                     stopSpeaking();
                   }
                 }}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyPress}
 								placeholder={isListening ? 'Listening...' : 'Type your message...'}
 								className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-stone-500 md:text-base dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
                 disabled={isLoading || isListening}
@@ -1704,12 +1704,12 @@ export default function Chatbot() {
                                      <button
                      onClick={isListening ? stopListening : startListening}
                      disabled={isLoading}
-									className={`flex hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-10 sm:w-10 md:flex ${
+									className={`flex hidden h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-12 sm:w-12 md:flex ${
                        isListening
 											? 'animate-pulse bg-red-500 text-white hover:bg-red-600'
 											: 'bg-stone-600 text-white hover:bg-stone-700 dark:bg-stone-500 dark:hover:bg-stone-600'
                      }`}
-                     style={{ minWidth: '32px', minHeight: '32px' }}
+                     style={{ minWidth: '44px', minHeight: '44px' }}
                      aria-label={isListening ? 'Stop listening' : 'Start listening'}
                      title={isListening ? 'Stop listening' : 'Start voice input (tap to speak)'}
                    >
@@ -1724,7 +1724,7 @@ export default function Chatbot() {
                  <button
                    onClick={sendMessage}
                    disabled={!inputValue.trim() || isLoading || isListening}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
                    style={{ minWidth: '32px', minHeight: '32px' }}
                    aria-label="Send message"
                  >
@@ -1740,8 +1740,8 @@ export default function Chatbot() {
                      }
                      setIsOpen(false);
                    }}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
-                   style={{ minWidth: '32px', minHeight: '32px' }}
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+                   style={{ minWidth: '44px', minHeight: '44px' }}
                    aria-label="Close chat"
                  >
                    <X className="h-3 w-3 sm:h-4 sm:w-4" />

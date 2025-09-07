@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Badge } from '../../ui/badge';
+import { Badge } from '../../ui';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { PostFragment } from '../../../generated/graphql';
 import { useState, useEffect } from 'react';

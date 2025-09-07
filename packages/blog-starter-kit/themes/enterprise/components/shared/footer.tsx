@@ -1,11 +1,17 @@
 import Link from 'next/link';
-import { useAppContext } from '../contexts/appContext';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../icons';
 import { Container } from './container';
 
-export const Footer = () => {
-	const { publication } = useAppContext();
+interface FooterProps {
+	publication?: {
+		title: string;
+		displayTitle?: string | null;
+	};
+}
+
+export const Footer = ({ publication }: FooterProps) => {
 	const currentYear = new Date().getFullYear();
+	const siteTitle = publication?.title || 'John Schibelli';
 
 	return (
 		<footer className="border-t border-border bg-white dark:bg-stone-950" role="contentinfo">
@@ -80,7 +86,7 @@ export const Footer = () => {
 					{/* Copyright */}
 					<div className="text-sm text-stone-600 dark:text-stone-400">
 						<p>
-							&copy; {currentYear} {publication.title}. All rights reserved.
+							&copy; {currentYear} {siteTitle}. All rights reserved.
 						</p>
 					</div>
 				</div>

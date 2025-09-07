@@ -148,7 +148,7 @@ export default function ModernNewsletter({
 									type="email"
 									value={email}
 									onChange={handleEmailChange}
-									onKeyPress={handleKeyPress}
+									onKeyDown={handleKeyPress}
 									placeholder={placeholder}
 									className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring hover:border-primary/50 focus:border-primary flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 									disabled={requestInProgress}
