@@ -9,12 +9,50 @@ on:
 env:
   NODE_VERSION: '20'
   PNPM_VERSION: '8'
+  PNPM_CACHE_PATH: ~/.pnpm-store
+  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise
 
 jobs:
+  # Workflow Validation
+  validate-workflow:
+    name: Validate Workflow Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate environment variables
+        run: |
+          echo "Validating workflow environment variables..."
+          echo "NODE_VERSION: ${{ env.NODE_VERSION }}"
+          echo "PNPM_VERSION: ${{ env.PNPM_VERSION }}"
+          echo "PNPM_CACHE_PATH: ${{ env.PNPM_CACHE_PATH }}"
+          echo "WORKING_DIRECTORY: ${{ env.WORKING_DIRECTORY }}"
+          
+          # Validate required environment variables
+          if [ -z "${{ env.NODE_VERSION }}" ]; then
+            echo "❌ NODE_VERSION is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.PNPM_VERSION }}" ]; then
+            echo "❌ PNPM_VERSION is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.WORKING_DIRECTORY }}" ]; then
+            echo "❌ WORKING_DIRECTORY is not set"
+            exit 1
+          fi
+          
+          echo "✅ All environment variables are valid"
+
   # Lint and Type Check
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    needs: validate-workflow
     
     steps:
       - name: Checkout code
@@ -33,13 +71,19 @@ jobs:
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        
+      - name: Verify pnpm cache
+        run: |
+          echo "Verifying pnpm cache configuration..."
+          pnpm store path
+          echo "Cache verification completed"
         
       - name: Run ESLint
         run: pnpm lint
@@ -70,13 +114,19 @@ jobs:
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        
+      - name: Verify pnpm cache
+        run: |
+          echo "Verifying pnpm cache configuration..."
+          pnpm store path
+          echo "Cache verification completed"
         
       - name: Run tests
         run: pnpm test
@@ -107,7 +157,7 @@ jobs:
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
@@ -115,12 +165,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
+      - name: Verify pnpm cache
+        run: |
+          echo "Verifying pnpm cache configuration..."
+          pnpm store path
+          echo "Cache verification completed"
+        
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         
       - name: Build application
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
+          cd ${{ env.WORKING_DIRECTORY }}
           pnpm build
         env:
           NEXT_PUBLIC_MODE: production
@@ -135,7 +191,7 @@ jobs:
         
       - name: Run visual regression tests
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
+          cd ${{ env.WORKING_DIRECTORY }}
           pnpm test:visual
         env:
           CI: true
@@ -145,7 +201,7 @@ jobs:
         if: always()
         with:
           name: visual-test-results
-          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
           retention-days: 7
           
       - name: Upload visual test screenshots
@@ -153,7 +209,7 @@ jobs:
         if: always()
         with:
           name: visual-test-screenshots
-          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
           retention-days: 7
           
       - name: Comment PR with visual test results
@@ -165,7 +221,7 @@ jobs:
             const path = require('path');
             
             // Check if visual tests failed
-            const testResultsPath = 'packages/blog-starter-kit/themes/enterprise/test-results/';
+            const testResultsPath = '${{ env.WORKING_DIRECTORY }}/test-results/';
             let hasFailures = false;
             let comment = '## 🎨 Visual Regression Test Results\n\n';
             
@@ -238,7 +294,7 @@ jobs:
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ~/.pnpm-store
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
@@ -246,9 +302,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
         
+      - name: Verify pnpm cache
+        run: |
+          echo "Verifying pnpm cache configuration..."
+          pnpm store path
+          echo "Cache verification completed"
+        
       - name: Build application
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
+          cd ${{ env.WORKING_DIRECTORY }}
           pnpm build
         env:
           # Production build environment
@@ -268,7 +330,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-files
-          path: packages/blog-starter-kit/themes/enterprise/.next
+          path: ${{ env.WORKING_DIRECTORY }}/.next
           retention-days: 7
 
   # Security Scan
@@ -312,7 +374,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./packages/blog-starter-kit/themes/enterprise
+          working-directory: ./${{ env.WORKING_DIRECTORY }}
           vercel-args: '--prod'
 
   # Deploy to Vercel (Preview)
@@ -333,7 +395,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./packages/blog-starter-kit/themes/enterprise
+          working-directory: ./${{ env.WORKING_DIRECTORY }}
           vercel-args: '--target=preview'
 
   # Notify on Success/Failure
