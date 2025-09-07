@@ -25,6 +25,7 @@ playwright-report/
 playwright/.cache/
 test-results-*/
 playwright-report-*/
+blob-report/
 
 # Playwright configuration files (optional - uncomment if you want to exclude)
 # playwright.config.ts
