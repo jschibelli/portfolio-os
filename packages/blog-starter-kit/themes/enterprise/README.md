@@ -35,6 +35,7 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:3000/api/google/oauth/callback
 GOOGLE_OAUTH_REFRESH_TOKEN=your_google_refresh_token
 GOOGLE_CALENDAR_ID=your_calendar_id@gmail.com
+FIX_SSL_ISSUES=true
 
 # LinkedIn
 LINKEDIN_CLIENT_ID=your_linkedin_client_id
@@ -144,3 +145,13 @@ FEATURE_DEVOPS=true
 FEATURE_ANALYTICS=true
 FEATURE_FINANCE=true
 ```
+
+### SSL/TLS Compatibility
+
+For Node.js 20+ compatibility with Google Calendar API, set:
+
+```bash
+FIX_SSL_ISSUES=true
+```
+
+This enables SSL/TLS compatibility fixes for OpenSSL 3.0+ compatibility issues.
