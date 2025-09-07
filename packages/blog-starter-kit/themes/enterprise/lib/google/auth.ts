@@ -57,6 +57,10 @@ export function getOAuth2Client() {
 		GOOGLE_REDIRECT_URI,
 	);
 
+	if (!oauth2Client) {
+		throw new Error('Failed to create OAuth2 client instance');
+	}
+
 	// If we've already captured a refresh token, load it.
 	if (GOOGLE_OAUTH_REFRESH_TOKEN) {
 		oauth2Client.setCredentials({ refresh_token: GOOGLE_OAUTH_REFRESH_TOKEN });
@@ -69,7 +73,12 @@ export function getAuth() {
 		throw new Error('OAuth2 credentials not configured');
 	}
 
-	return getOAuth2Client();
+	const auth = getOAuth2Client();
+	if (!auth) {
+		throw new Error('Failed to create OAuth2 client');
+	}
+	
+	return auth;
 }
 
 export function getCalendar() {

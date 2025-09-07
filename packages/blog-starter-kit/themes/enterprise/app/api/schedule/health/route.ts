@@ -12,7 +12,7 @@ export async function GET() {
 
 	try {
 		const auth = getAuth();
-		authMethod = auth.constructor.name;
+		authMethod = auth?.constructor?.name || 'Unknown';
 		
 		const cal = getCalendar();
 		const now = new Date();
@@ -32,6 +32,16 @@ export async function GET() {
 				   hint.includes('DECODER routines') ||
 				   hint.includes('SSL') ||
 				   hint.includes('TLS');
+		
+		// Enhanced SSL error logging for troubleshooting
+		if (sslError) {
+			console.error('[schedule-health] SSL/TLS error detected:', {
+				error: hint,
+				authMethod,
+				sslFixEnabled: process.env.FIX_SSL_ISSUES === 'true',
+				timestamp: new Date().toISOString()
+			});
+		}
 	}
 
 	// Check OAuth2 credentials
