@@ -7,17 +7,10 @@ try {
 	google = null;
 }
 
-// Environment variables for OAuth2 authentication
-const { 
-	GOOGLE_CLIENT_ID, 
-	GOOGLE_CLIENT_SECRET, 
-	GOOGLE_REDIRECT_URI, 
-	GOOGLE_OAUTH_REFRESH_TOKEN,
-	FIX_SSL_ISSUES
-} = process.env;
+import { env, features, sslConfig } from '@/lib/env-validation';
 
 // Check if OAuth2 credentials are available
-const hasOAuth2Credentials = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REDIRECT_URI;
+const hasOAuth2Credentials = features.googleCalendar;
 
 if (!hasOAuth2Credentials) {
 	console.warn(
@@ -26,7 +19,7 @@ if (!hasOAuth2Credentials) {
 }
 
 // SSL/TLS fix for Node.js 20+ compatibility
-if (FIX_SSL_ISSUES === 'true') {
+if (sslConfig.fixEnabled) {
 	try {
 		const crypto = require('crypto');
 		const originalCreateHash = crypto.createHash;
@@ -52,9 +45,9 @@ export function getOAuth2Client() {
 	}
 
 	const oauth2Client = new google.auth.OAuth2(
-		GOOGLE_CLIENT_ID,
-		GOOGLE_CLIENT_SECRET,
-		GOOGLE_REDIRECT_URI,
+		env.GOOGLE_CLIENT_ID,
+		env.GOOGLE_CLIENT_SECRET,
+		env.GOOGLE_REDIRECT_URI,
 	);
 
 	if (!oauth2Client) {
@@ -62,8 +55,8 @@ export function getOAuth2Client() {
 	}
 
 	// If we've already captured a refresh token, load it.
-	if (GOOGLE_OAUTH_REFRESH_TOKEN) {
-		oauth2Client.setCredentials({ refresh_token: GOOGLE_OAUTH_REFRESH_TOKEN });
+	if (env.GOOGLE_OAUTH_REFRESH_TOKEN) {
+		oauth2Client.setCredentials({ refresh_token: env.GOOGLE_OAUTH_REFRESH_TOKEN });
 	}
 	return oauth2Client;
 }

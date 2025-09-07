@@ -1,10 +1,11 @@
 export const runtime = 'nodejs';
 
 import { getCalendar, getAuth } from '@/lib/google/auth';
+import { env, features, sslConfig } from '@/lib/env-validation';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-	const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
+	const calendarId = env.GOOGLE_CALENDAR_ID;
 	let freebusyOk = false;
 	let hint: string | null = null;
 	let authMethod: string | null = null;
@@ -38,14 +39,11 @@ export async function GET() {
 			console.error('[schedule-health] SSL/TLS error detected:', {
 				error: hint,
 				authMethod,
-				sslFixEnabled: process.env.FIX_SSL_ISSUES === 'true',
+				sslFixEnabled: sslConfig.fixEnabled,
 				timestamp: new Date().toISOString()
 			});
 		}
 	}
-
-	// Check OAuth2 credentials
-	const hasOAuth2Credentials = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REDIRECT_URI);
 
 	return NextResponse.json({
 		freebusyOk,
@@ -54,15 +52,17 @@ export async function GET() {
 		authMethod,
 		sslError,
 		authenticationMethod: 'OAuth2',
-		oauth2Configured: hasOAuth2Credentials,
+		oauth2Configured: features.googleCalendar,
 		requiredEnvs: {
-			GOOGLE_CLIENT_ID: Boolean(process.env.GOOGLE_CLIENT_ID),
-			GOOGLE_CLIENT_SECRET: Boolean(process.env.GOOGLE_CLIENT_SECRET),
-			GOOGLE_REDIRECT_URI: Boolean(process.env.GOOGLE_REDIRECT_URI),
-			GOOGLE_OAUTH_REFRESH_TOKEN: Boolean(process.env.GOOGLE_OAUTH_REFRESH_TOKEN),
+			GOOGLE_CLIENT_ID: Boolean(env.GOOGLE_CLIENT_ID),
+			GOOGLE_CLIENT_SECRET: Boolean(env.GOOGLE_CLIENT_SECRET),
+			GOOGLE_REDIRECT_URI: Boolean(env.GOOGLE_REDIRECT_URI),
+			GOOGLE_OAUTH_REFRESH_TOKEN: Boolean(env.GOOGLE_OAUTH_REFRESH_TOKEN),
 		},
 		sslFix: {
-			FIX_SSL_ISSUES: process.env.FIX_SSL_ISSUES === 'true',
+			FIX_SSL_ISSUES: sslConfig.fixEnabled,
 		},
+		features: features,
+		environment: env.NODE_ENV,
 	});
 }
