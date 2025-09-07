@@ -56,10 +56,28 @@ export default defineConfig({
 			use: { ...devices['iPhone 12'] },
 		},
 		{
+			name: 'Tablet Chrome',
+			use: { ...devices['iPad Pro'] },
+		},
+		{
+			name: 'Tablet Safari',
+			use: { ...devices['iPad (gen 7)'] },
+		},
+		{
 			name: 'accessibility',
 			use: { 
 				...devices['Desktop Chrome'],
 				// Enable accessibility testing
+				contextOptions: {
+					reducedMotion: 'reduce',
+				},
+			},
+		},
+		{
+			name: 'accessibility-mobile',
+			use: { 
+				...devices['Pixel 5'],
+				// Enable accessibility testing on mobile
 				contextOptions: {
 					reducedMotion: 'reduce',
 				},
