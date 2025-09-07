@@ -9,8 +9,7 @@ import {
 } from '../../../generated/graphql';
 import { cn } from '../../../lib/utils';
 import { useAppContext } from '../../contexts/appContext';
-import { Button, type ButtonProps } from '../../ui/button';
-import { Section } from '../../ui/section';
+import { Button, type ButtonProps, Section } from '../../ui';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
