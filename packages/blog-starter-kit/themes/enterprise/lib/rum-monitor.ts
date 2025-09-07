@@ -26,6 +26,12 @@ interface PerformanceMetrics {
     width: number;
     height: number;
   };
+  accessibility?: {
+    score?: number;
+    violations?: number;
+    warnings?: number;
+    assistiveTechnology?: string;
+  };
 }
 
 class RUMMonitor {
@@ -57,6 +63,7 @@ class RUMMonitor {
     this.setupCoreWebVitals();
     this.setupNavigationTiming();
     this.setupErrorTracking();
+    this.setupAccessibilityTracking();
   }
 
   private setupBasicMetrics() {
@@ -170,6 +177,69 @@ class RUMMonitor {
         }
       });
     });
+  }
+
+  private setupAccessibilityTracking() {
+    // Detect assistive technology usage
+    this.detectAssistiveTechnology();
+    
+    // Monitor accessibility-related events
+    this.monitorAccessibilityEvents();
+  }
+
+  private detectAssistiveTechnology() {
+    const assistiveTech = [];
+    
+    // Check for screen readers
+    if (window.speechSynthesis) {
+      assistiveTech.push('speech-synthesis');
+    }
+    
+    // Check for high contrast mode
+    if (window.matchMedia && window.matchMedia('(prefers-contrast: high)').matches) {
+      assistiveTech.push('high-contrast');
+    }
+    
+    // Check for reduced motion preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      assistiveTech.push('reduced-motion');
+    }
+    
+    // Check for keyboard navigation
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') {
+        assistiveTech.push('keyboard-navigation');
+      }
+    }, { once: true });
+    
+    this.metrics.accessibility = {
+      assistiveTechnology: assistiveTech.join(',')
+    };
+  }
+
+  private monitorAccessibilityEvents() {
+    // Monitor focus events
+    let focusEvents = 0;
+    document.addEventListener('focusin', () => {
+      focusEvents++;
+    });
+    
+    // Monitor keyboard events
+    let keyboardEvents = 0;
+    document.addEventListener('keydown', () => {
+      keyboardEvents++;
+    });
+    
+    // Send accessibility metrics periodically
+    setInterval(() => {
+      if (this.metrics.accessibility) {
+        this.metrics.accessibility = {
+          ...this.metrics.accessibility,
+          focusEvents,
+          keyboardEvents
+        };
+      }
+    }, 30000); // Every 30 seconds
   }
 
   private async sendMetrics(data: any) {
