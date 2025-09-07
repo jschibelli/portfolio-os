@@ -6,14 +6,76 @@ We've used [Hashnode APIs](https://apidocs.hashnode.com) and integrated them wit
 
 ## Requirements
 
-- **Node.js**: 18.18.0 or higher (required for Next.js 15)
+- **Node.js**: 20.11.0 or higher (required for Next.js 15)
+- **npm**: 10.2.4 or higher
 - **Next.js**: 15.5.2 (latest stable)
 - **React**: 18.3.1
 - **TypeScript**: 5.3.3 or higher
 
-## Want to have your own?
+## Quick Start
 
-Fork it and change the environment variable `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` to your host (engineering.hashnode.dev is the host in the example) and deploy it to Vercel. That's it! You now have your own frontend. You can still use Hashnode for writing your Articles.
+### 1. Clone and Install
+
+```bash
+# Clone the repository
+git clone https://github.com/jschibelli/mindware-blog.git
+cd mindware-blog/packages/blog-starter-kit/themes/enterprise
+
+# Install dependencies
+npm install
+```
+
+### 2. Environment Setup
+
+Create a `.env.local` file in the root directory and add your environment variables (see [Control Center Setup](#control-center-setup) section below).
+
+### 3. Database Setup
+
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Run database migrations
+npm run db:migrate
+
+# Seed the database (optional)
+npm run db:seed
+```
+
+### 4. Development
+
+```bash
+# Start the development server
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to see your blog.
+
+### 5. Production Build
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+## Hashnode Integration
+
+This blog starter kit integrates with [Hashnode APIs](https://apidocs.hashnode.com) to provide:
+
+- **Content Management**: Write articles on Hashnode and display them on your custom frontend
+- **Publication Host**: Set `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` to your Hashnode publication host
+- **API Integration**: Automatic fetching of articles, tags, and publication data
+- **SEO Optimization**: Built-in structured data and meta tags for better search visibility
+
+### Hashnode Setup
+
+1. Create a [Hashnode account](https://hashnode.com) and publication
+2. Get your publication host (e.g., `your-publication.hashnode.dev`)
+3. Set the environment variable: `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=your-publication.hashnode.dev`
+4. Deploy to Vercel or your preferred platform
 
 Demo of the `enterprise` theme: [https://demo.hashnode.com/engineering](https://demo.hashnode.com/engineering).
 
