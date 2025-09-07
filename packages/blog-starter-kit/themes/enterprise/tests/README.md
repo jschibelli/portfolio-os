@@ -193,3 +193,4 @@ When adding new tests:
 4. Add appropriate documentation
 5. Test across multiple browsers and devices
 6. Ensure accessibility compliance
+
