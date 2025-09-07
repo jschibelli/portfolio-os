@@ -60,8 +60,9 @@ export const validateCaseStudyStructure = (markdownContent: string): boolean => 
 	const content = markdownContent.toLowerCase();
 
 	return CASE_STUDY_SECTIONS.every((section) => {
+		const escapedTitle = section.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		const headingPattern = new RegExp(
-			`^##\\s+${section.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+			`^##\\s+${escapedTitle.toLowerCase()}`,
 			'm',
 		);
 		return headingPattern.test(content);
@@ -74,8 +75,9 @@ export const getMissingSections = (markdownContent: string): string[] => {
 	const missing: string[] = [];
 
 	CASE_STUDY_SECTIONS.forEach((section) => {
+		const escapedTitle = section.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 		const headingPattern = new RegExp(
-			`^##\\s+${section.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+			`^##\\s+${escapedTitle.toLowerCase()}`,
 			'm',
 		);
 		if (!headingPattern.test(content)) {
