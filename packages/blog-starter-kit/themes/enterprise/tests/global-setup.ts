@@ -56,12 +56,17 @@ async function globalSetup(config: FullConfig) {
     console.log(`⏱️  Setup completed in ${Date.now() - setupTime}ms`);
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    const errorStack = error instanceof Error ? error.stack : 'No stack trace available';
+    const errorStack = error instanceof Error && error.stack ? error.stack : 'No stack trace available';
     
     console.error('❌ Global test setup failed with detailed error information:');
     console.error(`   Error: ${errorMessage}`);
     console.error(`   Stack: ${errorStack}`);
     console.error(`   Config: ${JSON.stringify(config, null, 2)}`);
+    
+    // Log additional debugging information
+    console.error(`   Current working directory: ${process.cwd()}`);
+    console.error(`   Node version: ${process.version}`);
+    console.error(`   Platform: ${process.platform}`);
     
     // Re-throw with more context
     throw new Error(`Global setup failed: ${errorMessage}`);
