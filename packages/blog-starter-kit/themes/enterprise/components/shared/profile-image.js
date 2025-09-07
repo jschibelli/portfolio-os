@@ -1,4 +1,4 @@
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import React, { useRef, useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 

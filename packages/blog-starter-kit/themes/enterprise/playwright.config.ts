@@ -21,6 +21,9 @@ export default defineConfig({
 		// Visual regression testing configuration
 		screenshot: 'only-on-failure', // Capture screenshots only when tests fail
 		video: 'retain-on-failure',    // Record videos only when tests fail
+		// Increase timeout for page operations
+		actionTimeout: 10000,
+		navigationTimeout: 30000,
 	},
 	projects: [
 		{
@@ -58,5 +61,8 @@ export default defineConfig({
 		command: 'npm run dev',
 		url: 'http://localhost:3000',
 		reuseExistingServer: !process.env.CI,
+		timeout: 120 * 1000, // 2 minutes timeout for server startup
+		stdout: 'pipe',
+		stderr: 'pipe',
 	},
 });
