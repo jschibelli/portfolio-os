@@ -51,7 +51,27 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
-### 5. Production Build
+### 5. Testing
+
+```bash
+# Run all tests
+npm run test:all
+
+# Run specific test suites
+npm run test:accessibility  # Accessibility tests
+npm run test:functional     # Functional tests
+npm run test:seo           # SEO tests
+npm run test:visual        # Visual regression tests
+npm run test:case-studies  # Case study tests
+
+# Run tests with UI
+npm run test:visual:ui
+
+# Update visual snapshots
+npm run test:visual:update
+```
+
+### 6. Production Build
 
 ```bash
 # Build for production
@@ -59,6 +79,19 @@ npm run build
 
 # Start production server
 npm start
+```
+
+### 7. Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Type check
+npm run typecheck
+
+# Format code
+npm run format
 ```
 
 ## Hashnode Integration
@@ -69,6 +102,44 @@ This blog starter kit integrates with [Hashnode APIs](https://apidocs.hashnode.c
 - **Publication Host**: Set `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` to your Hashnode publication host
 - **API Integration**: Automatic fetching of articles, tags, and publication data
 - **SEO Optimization**: Built-in structured data and meta tags for better search visibility
+
+### Hashnode API Endpoints Used
+
+The integration uses these Hashnode GraphQL endpoints:
+
+- **Articles**: `https://gql.hashnode.com/` - Fetches published articles
+- **Publication**: Gets publication metadata and settings
+- **Tags**: Retrieves article tags and categories
+- **SEO Data**: Generates structured data for search engines
+
+### API Data Structures
+
+```typescript
+// Article structure from Hashnode API
+interface HashnodeArticle {
+  id: string;
+  title: string;
+  slug: string;
+  content: {
+    markdown: string;
+    html: string;
+  };
+  author: {
+    name: string;
+    username: string;
+    profilePicture: string;
+  };
+  tags: Array<{
+    name: string;
+    slug: string;
+  }>;
+  publishedAt: string;
+  readTimeInMinutes: number;
+  coverImage?: {
+    url: string;
+  };
+}
+```
 
 ### Hashnode Setup
 
@@ -217,3 +288,89 @@ FIX_SSL_ISSUES=true
 ```
 
 This enables SSL/TLS compatibility fixes for OpenSSL 3.0+ compatibility issues.
+
+## Security Best Practices
+
+### Environment Variables Security
+
+**⚠️ CRITICAL**: Never commit sensitive environment variables to version control.
+
+1. **Use `.env.local`** for local development (already in `.gitignore`)
+2. **Rotate credentials regularly** - especially API keys and OAuth tokens
+3. **Use different credentials** for development, staging, and production
+4. **Limit API permissions** to only what's necessary for each service
+5. **Monitor API usage** for unusual activity
+
+### Production Deployment Security
+
+- Set environment variables in your hosting platform's secure environment variable section
+- Use strong, unique values for all secrets
+- Enable 2FA on all service accounts
+- Regularly audit and rotate credentials
+- Monitor logs for authentication failures
+
+### OAuth2 Security
+
+- Use HTTPS in production (never HTTP)
+- Validate redirect URIs match exactly
+- Use state parameters to prevent CSRF attacks
+- Implement proper token refresh mechanisms
+- Store refresh tokens securely
+
+## CI/CD Pipeline
+
+This project includes automated CI/CD workflows:
+
+### GitHub Actions Workflow
+
+The project uses GitHub Actions for:
+- **Linting & Type Checking**: Automated code quality checks
+- **Testing**: Comprehensive test suite execution
+- **Deployment**: Automatic deployment to Vercel on push to main
+
+### Deployment
+
+#### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard
+3. Deploy automatically on every push to main branch
+
+#### Manual Deployment
+
+```bash
+# Build the project
+npm run build
+
+# Deploy to your preferred platform
+# (Vercel, Netlify, AWS, etc.)
+```
+
+### Environment Variables for Production
+
+Set these in your hosting platform:
+
+```bash
+# Required for production
+NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=your-production-host
+GOOGLE_CLIENT_ID=your-production-client-id
+GOOGLE_CLIENT_SECRET=your-production-client-secret
+GOOGLE_OAUTH_REFRESH_TOKEN=your-production-refresh-token
+OPENAI_API_KEY=your-production-openai-key
+FIX_SSL_ISSUES=true
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **SSL/TLS Errors**: Ensure `FIX_SSL_ISSUES=true` is set
+2. **Google Calendar Issues**: Verify OAuth2 credentials and refresh token
+3. **Hashnode API Issues**: Check publication host configuration
+4. **Build Failures**: Ensure all environment variables are set
+
+### Getting Help
+
+- Check the [documentation](./docs/) folder for detailed guides
+- Review [troubleshooting guides](./docs/development/) for common issues
+- Open an issue on GitHub for bugs or feature requests
