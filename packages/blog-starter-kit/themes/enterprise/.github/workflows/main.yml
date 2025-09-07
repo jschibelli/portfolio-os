@@ -6,6 +6,16 @@ on:
   pull_request:
     branches: [ main, development ]
 
+# Add explicit permissions for GitHub API access
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: write
+  security-events: write
+  actions: read
+  packages: read
+
 env:
   NODE_VERSION: '20'
   PNPM_VERSION: '8'
@@ -139,6 +149,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
     if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      actions: read
     
     steps:
       - name: Checkout code
@@ -216,6 +231,7 @@ jobs:
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -258,13 +274,18 @@ jobs:
               comment += '❌ **Error processing visual test results:** ' + error.message + '\n';
             }
             
-            // Post comment to PR
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            // Post comment to PR with proper error handling
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (apiError) {
+              console.error('Failed to post comment:', apiError.message);
+              // Don't fail the job if comment posting fails
+            }
             
             // Fail the job if there are visual differences
             if (hasFailures) {
@@ -337,6 +358,10 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     
     steps:
       - name: Checkout code
@@ -363,6 +388,10 @@ jobs:
     needs: [build, security]
     if: github.ref == 'refs/heads/main'
     environment: production
+    permissions:
+      contents: read
+      actions: read
+      packages: read
     
     steps:
       - name: Checkout code
@@ -383,7 +412,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, security]
     if: github.event_name == 'pull_request'
-    environment: preview-deployment
+    environment: preview
+    permissions:
+      contents: read
+      actions: read
+      packages: read
     
     steps:
       - name: Checkout code
@@ -404,6 +437,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-production, deploy-preview]
     if: always()
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Notify on Success
