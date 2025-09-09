@@ -3,6 +3,7 @@ import { z } from 'zod';
 // Detect if we're in a build/deployment environment
 const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV;
 const isVercelDeployment = Boolean(process.env.VERCEL);
+const _isDevelopment = process.env.NODE_ENV === 'development';
 
 // Environment validation schema
 const envSchema = z.object({
@@ -67,9 +68,9 @@ export function validateEnv() {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      // During build time or Vercel deployment, be more lenient with missing variables
-      if (isBuildTime || isVercelDeployment) {
-        console.warn('⚠️  Environment validation warnings (build time):');
+      // During build time, Vercel deployment, or development, be more lenient with missing variables
+      if (isBuildTime || isVercelDeployment || _isDevelopment) {
+        console.warn('⚠️  Environment validation warnings (development mode):');
         error.errors.forEach((err) => {
           console.warn(`  - ${err.path.join('.')}: ${err.message}`);
         });
