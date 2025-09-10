@@ -5,6 +5,7 @@ import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../i
 import { Button } from '../../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
 import { ThemeToggle } from '../../ui/theme-toggle';
+import { GlobalSearch } from '../search/global-search';
 
 interface ModernHeaderProps {
 	publication: {
@@ -73,6 +74,11 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 						</Link>
 					</nav>
 
+					{/* Global Search */}
+					<div className="hidden lg:block">
+						<GlobalSearch placeholder="Search..." />
+					</div>
+
 					{/* Actions */}
 					<div className="flex items-center space-x-4">
 						<ThemeToggle />
@@ -118,6 +124,11 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 								</SheetHeader>
 
 								<div className="mt-8">
+									{/* Mobile Search */}
+									<div className="mb-6 px-4">
+										<GlobalSearch placeholder="Search..." />
+									</div>
+
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
