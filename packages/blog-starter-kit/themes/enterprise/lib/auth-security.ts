@@ -84,6 +84,13 @@ export function clearFailedAttempts(identifier: string): void {
 }
 
 /**
+ * Clear all rate limit data (for testing)
+ */
+export function clearAllRateLimitData(): void {
+  rateLimitStore.clear();
+}
+
+/**
  * Get remaining lockout time in milliseconds
  */
 export function getLockoutTimeRemaining(identifier: string): number {
