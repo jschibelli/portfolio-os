@@ -1,40 +1,44 @@
 name: 'Setup pnpm with caching'
-description: 'Setup pnpm package manager with optimized caching'
+description: 'Setup pnpm package manager with optimized caching and cross-platform support'
 inputs:
   node-version:
-    description: 'Node.js version to use'
+    description: 'Node.js version to use (recommended: 18 LTS)'
     required: true
-    default: '20'
+    default: '18'
   pnpm-version:
-    description: 'pnpm version to use'
+    description: 'pnpm version to use (recommended: 8.x)'
     required: true
     default: '8'
   cache-path:
-    description: 'pnpm cache path'
+    description: 'pnpm cache path (cross-platform compatible)'
     required: false
     default: '~/.pnpm-store'
 
 runs:
   using: 'composite'
   steps:
+    # Setup Node.js environment with specified version
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         
+    # Install and configure pnpm package manager
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
       with:
         version: ${{ inputs.pnpm-version }}
         
+    # Configure pnpm cache for faster subsequent builds
     - name: Setup pnpm cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ inputs.cache-path }}
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
           
+    # Install project dependencies with frozen lockfile for reproducible builds
     - name: Install dependencies
       shell: bash
       run: pnpm install --frozen-lockfile

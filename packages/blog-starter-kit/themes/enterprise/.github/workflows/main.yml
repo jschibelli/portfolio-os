@@ -1,30 +1,35 @@
+# CI/CD Pipeline for Mindware Blog
+# This workflow handles linting, testing, building, security scanning, and deployment
+# to both production and preview environments on Vercel
+
 name: CI/CD Pipeline
 
+# Trigger workflow on pushes to main/develop branches and PRs to main/development
 on:
   push:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, development ]
 
-# Add explicit permissions for GitHub API access
+# Explicit permissions for GitHub API access and security scanning
 permissions:
-  contents: read
-  issues: write
-  pull-requests: write
-  checks: write
-  security-events: write
-  actions: read
-  packages: read
-  id-token: write
+  contents: read          # Read repository contents
+  issues: write           # Create/update issues
+  pull-requests: write    # Create/update PR comments
+  checks: write           # Create/update check runs
+  security-events: write  # Upload security scan results
+  actions: read           # Read workflow information
+  packages: read          # Read package information
+  id-token: write         # Generate OIDC tokens for deployment
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '8'
-  PNPM_CACHE_PATH: ~/.pnpm-store
+  NODE_VERSION: '18'  # Using Node.js 18 LTS for better compatibility
+  PNPM_VERSION: '8'   # Latest stable pnpm version
+  PNPM_CACHE_PATH: ~/.pnpm-store  # Cross-platform cache path
   WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise
 
 jobs:
-  # Workflow Validation
+  # Workflow Validation - Ensures all environment variables are properly configured
   validate-workflow:
     name: Validate Workflow Configuration
     runs-on: ubuntu-latest
@@ -33,6 +38,7 @@ jobs:
       actions: read
     
     steps:
+      # Checkout repository code for validation
       - name: Checkout code
         uses: actions/checkout@v4
         
@@ -62,7 +68,7 @@ jobs:
           
           echo "✅ All environment variables are valid"
 
-  # Lint and Type Check
+  # Lint and Type Check - Ensures code quality and type safety
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
@@ -72,9 +78,11 @@ jobs:
       actions: read
     
     steps:
+      # Checkout repository code
       - name: Checkout code
         uses: actions/checkout@v4
         
+      # Setup Node.js, pnpm, and caching for optimal performance
       - name: Setup pnpm with caching
         uses: ./.github/actions/setup-pnpm
         with:
@@ -82,13 +90,24 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
         
+      # Run ESLint to check code style and potential issues
       - name: Run ESLint
         run: pnpm lint
+        continue-on-error: false
         
+      # Run TypeScript compiler to check for type errors
       - name: Run TypeScript type check
         run: pnpm typecheck
+        continue-on-error: false
+        
+      # Notify on linting/type check failure
+      - name: Notify on linting failure
+        if: failure()
+        run: |
+          echo "❌ Linting or type checking failed. Please fix the issues and try again."
+          echo "Run 'pnpm lint' and 'pnpm typecheck' locally to see the errors."
 
-  # Test
+  # Test - Runs unit and integration tests
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -98,9 +117,11 @@ jobs:
       actions: read
     
     steps:
+      # Checkout repository code
       - name: Checkout code
         uses: actions/checkout@v4
         
+      # Setup Node.js, pnpm, and caching
       - name: Setup pnpm with caching
         uses: ./.github/actions/setup-pnpm
         with:
@@ -108,16 +129,26 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
         
+      # Run test suite with CI environment variables
       - name: Run tests
         run: pnpm test
         env:
           CI: true
+        continue-on-error: false
+        
+      # Notify on test failure
+      - name: Notify on test failure
+        if: failure()
+        run: |
+          echo "❌ Tests failed. Please check the test output and fix any issues."
+          echo "Run 'pnpm test' locally to reproduce the failures."
 
-  # Visual Regression Testing
+  # Visual Regression Testing - Ensures UI consistency across changes
   visual-regression:
     name: Visual Regression Tests
     runs-on: ubuntu-latest
     needs: lint-and-typecheck
+    # Only run on PRs or when blog-related files are modified
     if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
     permissions:
       contents: read
@@ -127,9 +158,11 @@ jobs:
       checks: write
     
     steps:
+      # Checkout repository code
       - name: Checkout code
         uses: actions/checkout@v4
         
+      # Setup Node.js, pnpm, and caching
       - name: Setup pnpm with caching
         uses: ./.github/actions/setup-pnpm
         with:
@@ -137,9 +170,12 @@ jobs:
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
         
+      # Install Playwright browsers and system dependencies
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+        continue-on-error: false
         
+      # Build application for visual testing
       - name: Build application
         run: |
           cd ${{ env.WORKING_DIRECTORY }}
@@ -154,6 +190,7 @@ jobs:
           FEATURE_SCHEDULING: 'true'
           FEATURE_CASE_STUDY: 'true'
           FEATURE_CLIENT_INTAKE: 'true'
+        continue-on-error: false
         
       - name: Run visual regression tests
         run: |
@@ -163,7 +200,7 @@ jobs:
           CI: true
           
       - name: Upload visual test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-test-results
@@ -171,7 +208,7 @@ jobs:
           retention-days: 7
           
       - name: Upload visual test screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-test-screenshots
@@ -180,7 +217,7 @@ jobs:
           
       - name: Comment PR with visual test results
         if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -249,11 +286,12 @@ jobs:
               core.setFailed('Visual regression tests failed - differences detected');
             }
 
-  # Build
+  # Build - Creates production-ready build artifacts
   build:
     name: Build
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    # Only build if linting and tests pass
     if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
     permissions:
       contents: read
@@ -289,17 +327,18 @@ jobs:
           FEATURE_CLIENT_INTAKE: 'true'
           
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: ${{ env.WORKING_DIRECTORY }}/.next
           retention-days: 7
 
-  # Security Scan
+  # Security Scan - Scans for vulnerabilities using Trivy
   security:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
+    # Only scan if linting and tests pass
     if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
     permissions:
       contents: read
@@ -311,7 +350,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.30.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -319,16 +358,17 @@ jobs:
           output: 'trivy-results.sarif'
           
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
 
-  # Deploy to Vercel (Production)
+  # Deploy to Vercel (Production) - Deploys to production environment on main branch
   deploy-production:
     name: Deploy to Production Environment
     runs-on: ubuntu-latest
     needs: [build, security]
+    # Only deploy to production from main branch if build and security pass
     if: github.ref == 'refs/heads/main' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
     environment: production
     permissions:
@@ -342,7 +382,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
+        uses: amondnet/vercel-action@v26
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -350,11 +390,12 @@ jobs:
           working-directory: ./${{ env.WORKING_DIRECTORY }}
           vercel-args: '--prod'
 
-  # Deploy to Vercel (Preview)
+  # Deploy to Vercel (Preview) - Creates preview deployments for pull requests
   deploy-preview:
     name: Deploy to Preview Environment
     runs-on: ubuntu-latest
     needs: [build, security]
+    # Only deploy preview for PRs if build and security pass
     if: github.event_name == 'pull_request' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
     environment: preview
     permissions:
@@ -368,7 +409,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v25
+        uses: amondnet/vercel-action@v26
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -376,11 +417,12 @@ jobs:
           working-directory: ./${{ env.WORKING_DIRECTORY }}
           vercel-args: '--target=preview'
 
-  # Workflow Status Summary
+  # Workflow Status Summary - Provides comprehensive status report and notifications
   workflow-status:
     name: Workflow Status Summary
     runs-on: ubuntu-latest
     needs: [validate-workflow, lint-and-typecheck, test, visual-regression, build, security, deploy-production, deploy-preview]
+    # Always run to provide status summary regardless of other job results
     if: always()
     permissions:
       contents: read
@@ -394,7 +436,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Generate workflow status report
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
