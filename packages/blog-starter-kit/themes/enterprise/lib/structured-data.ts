@@ -189,3 +189,86 @@ export function generateBreadcrumbStructuredData(items: Array<{ name: string; ur
 		})),
 	};
 }
+
+export interface CreativeWorkStructuredData {
+	name: string;
+	description: string;
+	url: string;
+	image?: string;
+	author: PersonStructuredData;
+	publisher: {
+		name: string;
+		url: string;
+	};
+	keywords?: string[];
+	dateCreated?: string;
+	dateModified?: string;
+}
+
+export interface SoftwareApplicationStructuredData {
+	name: string;
+	description: string;
+	url: string;
+	image?: string;
+	applicationCategory: string;
+	operatingSystem: string;
+	offers: {
+		price: string;
+		priceCurrency: string;
+	};
+	author: PersonStructuredData;
+	publisher: {
+		name: string;
+		url: string;
+	};
+	keywords?: string[];
+	dateCreated?: string;
+	dateModified?: string;
+}
+
+export function generateCreativeWorkStructuredData(data: CreativeWorkStructuredData) {
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'CreativeWork',
+		name: data.name,
+		description: data.description,
+		url: data.url,
+		...(data.image && { image: data.image }),
+		author: generatePersonStructuredData(data.author),
+		publisher: {
+			'@type': 'Organization',
+			name: data.publisher.name,
+			url: data.publisher.url,
+		},
+		...(data.keywords && { keywords: data.keywords.join(', ') }),
+		...(data.dateCreated && { dateCreated: data.dateCreated }),
+		...(data.dateModified && { dateModified: data.dateModified }),
+	};
+}
+
+export function generateSoftwareApplicationStructuredData(data: SoftwareApplicationStructuredData) {
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'SoftwareApplication',
+		name: data.name,
+		description: data.description,
+		url: data.url,
+		...(data.image && { image: data.image }),
+		applicationCategory: data.applicationCategory,
+		operatingSystem: data.operatingSystem,
+		offers: {
+			'@type': 'Offer',
+			price: data.offers.price,
+			priceCurrency: data.offers.priceCurrency,
+		},
+		author: generatePersonStructuredData(data.author),
+		publisher: {
+			'@type': 'Organization',
+			name: data.publisher.name,
+			url: data.publisher.url,
+		},
+		...(data.keywords && { keywords: data.keywords.join(', ') }),
+		...(data.dateCreated && { dateCreated: data.dateCreated }),
+		...(data.dateModified && { dateModified: data.dateModified }),
+	};
+}
