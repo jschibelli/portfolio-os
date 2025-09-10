@@ -1,5 +1,5 @@
-import nextJest from 'next/jest';
-import { resolve } from 'path';
+const nextJest = require('next/jest');
+const { resolve } = require('path');
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files
@@ -78,6 +78,9 @@ const customJestConfig = {
   // Performance optimizations
   maxWorkers: '50%',
   cache: true,
+  // Clear mocks between tests for better isolation
+  clearMocks: true,
+  restoreMocks: true,
   // Transform configuration for better TypeScript support
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', {
@@ -93,4 +96,4 @@ const customJestConfig = {
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-export default createJestConfig(customJestConfig);
+module.exports = createJestConfig(customJestConfig);

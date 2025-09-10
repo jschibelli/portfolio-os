@@ -3,8 +3,8 @@
 
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
-import { setupTestEnvironment, getTestTimeout, cleanupTestEnvironment } from './__tests__/test-utils/test-environment.js';
+require('@testing-library/jest-dom');
+const { setupTestEnvironment, getTestTimeout, cleanupTestEnvironment } = require('./__tests__/test-utils/test-environment.ts');
 
 /**
  * Jest Test Environment Setup
