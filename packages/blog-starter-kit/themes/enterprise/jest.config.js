@@ -1,10 +1,5 @@
-import nextJest from 'next/jest';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-// Get the directory of the current file for more robust path resolution
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const nextJest = require('next/jest');
+const { resolve } = require('path');
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files
@@ -15,7 +10,12 @@ const createJestConfig = nextJest({
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/.next/', 
+    '<rootDir>/node_modules/',
+    '<rootDir>/tests/.*\\.spec\\.ts$', // Exclude Playwright tests
+    '<rootDir>/tests/.*\\.spec\\.js$', // Exclude Playwright tests
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
@@ -30,7 +30,7 @@ const customJestConfig = {
   testMatch: [
     '<rootDir>/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/**/__tests__/**/*.{js,jsx,ts,tsx}',
-    '<rootDir>/tests/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}', // Only Jest test files
   ],
   // Enhanced error handling and configuration
   errorOnDeprecated: true,
@@ -47,4 +47,4 @@ const customJestConfig = {
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-export default createJestConfig(customJestConfig);
+module.exports = createJestConfig(customJestConfig);
