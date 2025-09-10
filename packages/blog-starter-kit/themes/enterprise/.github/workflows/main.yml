@@ -75,32 +75,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm with caching
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PNPM_CACHE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Verify pnpm cache
-        run: |
-          echo "Verifying pnpm cache configuration..."
-          pnpm store path
-          echo "Cache verification completed"
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
         
       - name: Run ESLint
         run: pnpm lint
@@ -121,32 +101,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm with caching
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PNPM_CACHE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Verify pnpm cache
-        run: |
-          echo "Verifying pnpm cache configuration..."
-          pnpm store path
-          echo "Cache verification completed"
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
         
       - name: Run tests
         run: pnpm test
@@ -170,32 +130,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm with caching
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PNPM_CACHE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Verify pnpm cache
-        run: |
-          echo "Verifying pnpm cache configuration..."
-          pnpm store path
-          echo "Cache verification completed"
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
         
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -323,32 +263,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm with caching
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.PNPM_CACHE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Verify pnpm cache
-        run: |
-          echo "Verifying pnpm cache configuration..."
-          pnpm store path
-          echo "Cache verification completed"
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
         
       - name: Build application
         run: |
@@ -406,7 +326,7 @@ jobs:
 
   # Deploy to Vercel (Production)
   deploy-production:
-    name: Deploy to Production
+    name: Deploy to Production Environment
     runs-on: ubuntu-latest
     needs: [build, security]
     if: github.ref == 'refs/heads/main' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
@@ -432,7 +352,7 @@ jobs:
 
   # Deploy to Vercel (Preview)
   deploy-preview:
-    name: Deploy Preview
+    name: Deploy to Preview Environment
     runs-on: ubuntu-latest
     needs: [build, security]
     if: github.event_name == 'pull_request' && always() && (needs.build.result == 'success' && needs.security.result == 'success')

@@ -31,7 +31,6 @@ export default function CallToAction({
 	return (
 		<section 
 			className={`relative overflow-hidden bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 py-16 dark:from-stone-800 dark:via-stone-900 dark:to-stone-950 ${className}`}
-			role="region"
 			aria-label="Call to action section with project showcase and contact options"
 			aria-describedby="cta-description"
 		>
