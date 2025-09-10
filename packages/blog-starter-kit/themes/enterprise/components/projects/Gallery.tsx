@@ -191,7 +191,6 @@ export function Gallery({ images, className, columns = 3 }: GalleryProps) {
                     height={800}
                     className="max-w-full max-h-full object-contain"
                     priority
-                    unoptimized
                   />
                 </div>
               </div>
