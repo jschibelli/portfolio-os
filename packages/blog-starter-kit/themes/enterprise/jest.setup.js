@@ -3,16 +3,39 @@
 
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
+import { setupTestEnvironment, getTestTimeout } from './__tests__/test-utils/test-environment';
 
-// Mock environment variables for testing
-// These are test-only values and should never be used in production
-process.env.NODE_ENV = 'test'
+/**
+ * Jest Test Environment Setup
+ * 
+ * This file configures the testing environment with secure defaults
+ * and proper environment variable management for tests.
+ */
 
-// Use environment variables for test secrets if available, otherwise use test defaults
-// This prevents hardcoding sensitive values in the repository
-process.env.NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || 'test-secret-key-for-testing-only'
-process.env.AUTH_SECRET = process.env.AUTH_SECRET || 'test-auth-secret-key-for-testing-only'
+// Ensure we're in test environment
+process.env.NODE_ENV = 'test';
 
-// Additional test environment setup
-process.env.DATABASE_URL = process.env.DATABASE_URL || 'file:./test.db'
+// Set up test environment with secure defaults
+setupTestEnvironment();
+
+// Global test utilities and mocks
+global.console = {
+  ...console,
+  // Suppress console.log in tests unless explicitly enabled
+  log: process.env.VERBOSE_TESTS ? console.log : jest.fn(),
+  warn: process.env.VERBOSE_TESTS ? console.warn : jest.fn(),
+  error: console.error, // Always show errors
+};
+
+// Mock fetch for API testing
+global.fetch = jest.fn();
+
+// Clean up after each test
+afterEach(() => {
+  jest.clearAllMocks();
+  // Reset any global state if needed
+});
+
+// Set global test timeout
+jest.setTimeout(getTestTimeout('default'));
