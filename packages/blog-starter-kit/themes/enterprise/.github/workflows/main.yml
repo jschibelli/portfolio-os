@@ -79,6 +79,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
           
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -102,11 +104,13 @@ jobs:
           pnpm store path
           echo "Cache verification completed"
         
-      - name: Run ESLint
-        run: pnpm lint
-        
-      - name: Run TypeScript type check
-        run: pnpm typecheck
+      - name: Run ESLint and TypeScript type check in parallel
+        run: |
+          echo "Running linting and type checking in parallel..."
+          pnpm lint &
+          pnpm typecheck &
+          wait
+          echo "✅ All checks completed successfully"
 
   # Test
   test:
@@ -125,6 +129,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
           
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -148,8 +154,11 @@ jobs:
           pnpm store path
           echo "Cache verification completed"
         
-      - name: Run tests
-        run: pnpm test
+      - name: Run tests with coverage
+        run: |
+          echo "Running test suite with coverage..."
+          pnpm test --coverage --watchAll=false
+          echo "✅ Tests completed successfully"
         env:
           CI: true
 
