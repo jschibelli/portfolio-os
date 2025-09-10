@@ -1,121 +1,275 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from '@jest/globals';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import FeatureGrid, { Feature } from '@/components/projects/FeatureGrid';
 
 // Mock framer-motion to avoid animation issues in tests
 jest.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-  },
+	motion: {
+		div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+	},
 }));
 
 describe('FeatureGrid Component', () => {
-  const mockFeatures: Feature[] = [
-    {
-      id: 'feature-1',
-      title: 'Test Feature 1',
-      description: 'This is a test feature description for feature 1.',
-    },
-    {
-      id: 'feature-2',
-      title: 'Test Feature 2',
-      description: 'This is a test feature description for feature 2.',
-    },
-    {
-      id: 'feature-3',
-      title: 'Test Feature 3',
-      description: 'This is a test feature description for feature 3.',
-    },
-  ];
+	const mockFeatures: Feature[] = [
+		{
+			id: 'feature-1',
+			title: 'Test Feature 1',
+			description: 'This is a test feature description',
+		},
+		{
+			id: 'feature-2',
+			title: 'Test Feature 2',
+			description: 'This is another test feature description',
+		},
+	];
 
-  it('renders with default title when no title prop is provided', () => {
-    render(<FeatureGrid features={mockFeatures} />);
-    
-    expect(screen.getByText('Features')).toBeInTheDocument();
-  });
+	const mockFeaturesWithIcons: Feature[] = [
+		{
+			id: 'feature-1',
+			title: 'Test Feature 1',
+			description: 'This is a test feature description',
+			icon: <span data-testid="icon-1">Icon 1</span>,
+		},
+		{
+			id: 'feature-2',
+			title: 'Test Feature 2',
+			description: 'This is another test feature description',
+			icon: <span data-testid="icon-2">Icon 2</span>,
+		},
+	];
 
-  it('renders with custom title when provided', () => {
-    const customTitle = 'Custom Features Title';
-    render(<FeatureGrid features={mockFeatures} title={customTitle} />);
-    
-    expect(screen.getByText(customTitle)).toBeInTheDocument();
-  });
+	beforeEach(() => {
+		// Clear console warnings/errors before each test
+		jest.clearAllMocks();
+	});
 
-  it('renders description when provided', () => {
-    const customDescription = 'This is a custom description for the features section.';
-    render(
-      <FeatureGrid 
-        features={mockFeatures} 
-        title="Test Features"
-        description={customDescription}
-      />
-    );
-    
-    expect(screen.getByText(customDescription)).toBeInTheDocument();
-  });
+	describe('Basic Rendering', () => {
+		it('renders with default props', () => {
+			render(<FeatureGrid features={mockFeatures} />);
+			
+			expect(screen.getByText('Features')).toBeInTheDocument();
+			expect(screen.getByText('Test Feature 1')).toBeInTheDocument();
+			expect(screen.getByText('Test Feature 2')).toBeInTheDocument();
+		});
 
-  it('renders all features with correct titles and descriptions', () => {
-    render(<FeatureGrid features={mockFeatures} />);
-    
-    mockFeatures.forEach((feature) => {
-      expect(screen.getByText(feature.title)).toBeInTheDocument();
-      expect(screen.getByText(feature.description)).toBeInTheDocument();
-    });
-  });
+		it('renders with custom title and description', () => {
+			render(
+				<FeatureGrid
+					features={mockFeatures}
+					title="Custom Title"
+					description="Custom description"
+				/>
+			);
+			
+			expect(screen.getByText('Custom Title')).toBeInTheDocument();
+			expect(screen.getByText('Custom description')).toBeInTheDocument();
+		});
 
-  it('applies custom className when provided', () => {
-    const customClassName = 'custom-feature-grid-class';
-    const { container } = render(
-      <FeatureGrid features={mockFeatures} className={customClassName} />
-    );
-    
-    const section = container.querySelector('section');
-    expect(section).toHaveClass(customClassName);
-  });
+		it('renders without description when not provided', () => {
+			render(<FeatureGrid features={mockFeatures} title="Test Title" />);
+			
+			expect(screen.getByText('Test Title')).toBeInTheDocument();
+			expect(screen.queryByText('Custom description')).not.toBeInTheDocument();
+		});
+	});
 
-  it('handles empty features array gracefully', () => {
-    render(<FeatureGrid features={[]} />);
-    
-    expect(screen.getByText('Features')).toBeInTheDocument();
-    // Should not crash and should render the section header
-  });
+	describe('Feature Display', () => {
+		it('displays all feature titles and descriptions', () => {
+			render(<FeatureGrid features={mockFeatures} />);
+			
+			mockFeatures.forEach(feature => {
+				expect(screen.getByText(feature.title)).toBeInTheDocument();
+				expect(screen.getByText(feature.description)).toBeInTheDocument();
+			});
+		});
 
-  it('renders features in a grid layout', () => {
-    const { container } = render(<FeatureGrid features={mockFeatures} />);
-    
-    const gridContainer = container.querySelector('.grid');
-    expect(gridContainer).toBeInTheDocument();
-    expect(gridContainer).toHaveClass('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
-  });
+		it('displays icons when showIcons is true and features have icons', () => {
+			render(
+				<FeatureGrid
+					features={mockFeaturesWithIcons}
+					showIcons={true}
+				/>
+			);
+			
+			expect(screen.getByTestId('icon-1')).toBeInTheDocument();
+			expect(screen.getByTestId('icon-2')).toBeInTheDocument();
+		});
 
-  it('applies stone theme classes correctly', () => {
-    const { container } = render(<FeatureGrid features={mockFeatures} />);
-    
-    const section = container.querySelector('section');
-    expect(section).toHaveClass('bg-white', 'dark:bg-stone-950');
-    
-    const title = screen.getByText('Features');
-    expect(title).toHaveClass('text-stone-900', 'dark:text-stone-100');
-  });
+		it('does not display icons when showIcons is false', () => {
+			render(
+				<FeatureGrid
+					features={mockFeaturesWithIcons}
+					showIcons={false}
+				/>
+			);
+			
+			expect(screen.queryByTestId('icon-1')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('icon-2')).not.toBeInTheDocument();
+		});
 
-  it('renders feature cards with proper structure', () => {
-    render(<FeatureGrid features={mockFeatures} />);
-    
-    // Check that each feature has a card structure
-    mockFeatures.forEach((feature) => {
-      const featureTitle = screen.getByText(feature.title);
-      const featureDescription = screen.getByText(feature.description);
-      
-      expect(featureTitle).toBeInTheDocument();
-      expect(featureDescription).toBeInTheDocument();
-    });
-  });
+		it('displays links when features have link property', () => {
+			const featuresWithLinks: Feature[] = [
+				{
+					id: 'feature-1',
+					title: 'Test Feature 1',
+					description: 'This is a test feature description',
+					link: '/test-link',
+				},
+			];
 
-  it('handles single feature correctly', () => {
-    const singleFeature = [mockFeatures[0]];
-    render(<FeatureGrid features={singleFeature} />);
-    
-    expect(screen.getByText(singleFeature[0].title)).toBeInTheDocument();
-    expect(screen.getByText(singleFeature[0].description)).toBeInTheDocument();
-  });
+			render(<FeatureGrid features={featuresWithLinks} />);
+			
+			const link = screen.getByText('Learn more →');
+			expect(link).toBeInTheDocument();
+			expect(link.closest('a')).toHaveAttribute('href', '/test-link');
+			expect(link.closest('a')).toHaveAttribute('target', '_blank');
+			expect(link.closest('a')).toHaveAttribute('rel', 'noopener noreferrer');
+		});
+	});
+
+	describe('Grid Layout', () => {
+		it('applies correct grid classes for maxColumns=2', () => {
+			const { container } = render(
+				<FeatureGrid features={mockFeatures} maxColumns={2} />
+			);
+			
+			const grid = container.querySelector('.grid');
+			expect(grid).toHaveClass('grid-cols-1', 'md:grid-cols-2');
+		});
+
+		it('applies correct grid classes for maxColumns=3', () => {
+			const { container } = render(
+				<FeatureGrid features={mockFeatures} maxColumns={3} />
+			);
+			
+			const grid = container.querySelector('.grid');
+			expect(grid).toHaveClass('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3');
+		});
+
+		it('applies correct grid classes for maxColumns=4 (default)', () => {
+			const { container } = render(
+				<FeatureGrid features={mockFeatures} maxColumns={4} />
+			);
+			
+			const grid = container.querySelector('.grid');
+			expect(grid).toHaveClass('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
+		});
+	});
+
+	describe('Error Handling', () => {
+		it('displays error message when features is not an array', () => {
+			const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+			
+			render(<FeatureGrid features={null as any} />);
+			
+			expect(screen.getByText('Error: Invalid features data provided')).toBeInTheDocument();
+			expect(consoleSpy).toHaveBeenCalledWith('FeatureGrid: features prop must be an array');
+			
+			consoleSpy.mockRestore();
+		});
+
+		it('displays empty state when features array is empty', () => {
+			render(<FeatureGrid features={[]} />);
+			
+			expect(screen.getByText('No features to display')).toBeInTheDocument();
+		});
+
+		it('filters out invalid feature objects and displays warnings', () => {
+			const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+			
+			const invalidFeatures = [
+				{ id: 'valid-1', title: 'Valid Feature', description: 'Valid description' },
+				null,
+				{ id: 'invalid-1', title: 'Invalid Feature' }, // Missing description
+				{ id: 'valid-2', title: 'Another Valid Feature', description: 'Another valid description' },
+			];
+
+			render(<FeatureGrid features={invalidFeatures as any} />);
+			
+			// Should only display valid features
+			expect(screen.getByText('Valid Feature')).toBeInTheDocument();
+			expect(screen.getByText('Another Valid Feature')).toBeInTheDocument();
+			expect(screen.queryByText('Invalid Feature')).not.toBeInTheDocument();
+			
+			// Should have logged warnings for invalid features
+			expect(consoleSpy).toHaveBeenCalled();
+			
+			consoleSpy.mockRestore();
+		});
+	});
+
+	describe('Interactions', () => {
+		it('calls onFeatureClick when a feature card is clicked', () => {
+			const mockOnFeatureClick = jest.fn();
+			
+			render(
+				<FeatureGrid
+					features={mockFeatures}
+					onFeatureClick={mockOnFeatureClick}
+				/>
+			);
+			
+			const firstFeatureCard = screen.getByText('Test Feature 1').closest('.cursor-pointer');
+			fireEvent.click(firstFeatureCard!);
+			
+			expect(mockOnFeatureClick).toHaveBeenCalledWith(mockFeatures[0]);
+		});
+
+		it('does not call onFeatureClick when not provided', () => {
+			render(<FeatureGrid features={mockFeatures} />);
+			
+			const firstFeatureCard = screen.getByText('Test Feature 1').closest('div');
+			expect(() => fireEvent.click(firstFeatureCard!)).not.toThrow();
+		});
+
+		it('applies cursor-pointer class when onFeatureClick is provided', () => {
+			const { container } = render(
+				<FeatureGrid
+					features={mockFeatures}
+					onFeatureClick={() => {}}
+				/>
+			);
+			
+			const cards = container.querySelectorAll('.cursor-pointer');
+			expect(cards.length).toBeGreaterThan(0);
+		});
+	});
+
+	describe('Accessibility', () => {
+		it('has proper heading structure', () => {
+			render(<FeatureGrid features={mockFeatures} title="Test Title" />);
+			
+			const heading = screen.getByRole('heading', { level: 2 });
+			expect(heading).toHaveTextContent('Test Title');
+		});
+
+		it('has proper alt text for images', () => {
+			const featuresWithImages: Feature[] = [
+				{
+					id: 'feature-1',
+					title: 'Test Feature 1',
+					description: 'This is a test feature description',
+					image: '/test-image.jpg',
+				},
+			];
+
+			render(<FeatureGrid features={featuresWithImages} />);
+			
+			const image = screen.getByAltText('Test Feature 1');
+			expect(image).toBeInTheDocument();
+			expect(image).toHaveAttribute('src', '/test-image.jpg');
+			expect(image).toHaveAttribute('loading', 'lazy');
+		});
+	});
+
+	describe('Custom Styling', () => {
+		it('applies custom className', () => {
+			const { container } = render(
+				<FeatureGrid features={mockFeatures} className="custom-class" />
+			);
+			
+			const section = container.querySelector('section');
+			expect(section).toHaveClass('custom-class');
+		});
+	});
 });
