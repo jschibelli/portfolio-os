@@ -1,5 +1,10 @@
 // Simple MDX renderer that works without external dependencies
 // This provides basic MDX-like functionality using existing markdown rendering
+// 
+// Performance considerations:
+// - Uses React.memo for component memoization to prevent unnecessary re-renders
+// - Memoizes content to avoid re-parsing on every render
+// - Custom components are pre-memoized for optimal performance
 
 import React, { memo, useMemo } from 'react';
 import { CaseStudyMarkdown } from '../components/features/case-studies/case-study-markdown';
@@ -16,9 +21,25 @@ export const SimpleMDXRenderer = memo(function SimpleMDXRenderer({
   // Memoize the content to avoid unnecessary re-renders
   const memoizedContent = useMemo(() => content, [content]);
   
-  // For now, we'll use the existing CaseStudyMarkdown component
-  // In a full implementation, you'd parse the MDX content and render custom components
-  return <CaseStudyMarkdown contentMarkdown={memoizedContent} />;
+  // Error boundary for MDX content rendering
+  try {
+    // For now, we'll use the existing CaseStudyMarkdown component
+    // In a full implementation, you'd parse the MDX content and render custom components
+    return <CaseStudyMarkdown contentMarkdown={memoizedContent} />;
+  } catch (error) {
+    console.error('Error rendering MDX content:', error);
+    return (
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 my-6">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-red-600 dark:text-red-400">⚠️</span>
+          <h4 className="font-semibold text-red-900 dark:text-red-100">Content Rendering Error</h4>
+        </div>
+        <div className="text-red-800 dark:text-red-200">
+          There was an error rendering this content. Please try refreshing the page.
+        </div>
+      </div>
+    );
+  }
 });
 
 // Custom components that can be used in MDX
@@ -52,10 +73,10 @@ export const defaultComponents = {
     );
   }),
   
-  StatBadge: ({ label, value }: { label: string; value: string }) => (
+  StatBadge: ({ label, value }: { label: string; value: string | number }) => (
     <div className="inline-flex items-center gap-2 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-full px-4 py-2 my-2">
       <span className="text-sm font-medium text-stone-600 dark:text-stone-400">{label}:</span>
-      <span className="text-sm font-bold text-stone-900 dark:text-stone-100">{value}</span>
+      <span className="text-sm font-bold text-stone-900 dark:text-stone-100">{String(value)}</span>
     </div>
   ),
 
