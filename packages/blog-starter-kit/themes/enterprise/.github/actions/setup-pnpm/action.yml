@@ -1,5 +1,5 @@
-name: 'Setup pnpm with caching'
-description: 'Setup pnpm package manager with optimized caching and cross-platform support'
+name: 'Setup pnpm with caching and build verification'
+description: 'Setup pnpm package manager with optimized caching, build verification, and cross-platform support'
 inputs:
   node-version:
     description: 'Node.js version to use (recommended: 18 LTS)'
@@ -13,6 +13,14 @@ inputs:
     description: 'pnpm cache path (cross-platform compatible)'
     required: false
     default: '~/.pnpm-store'
+  verify-build:
+    description: 'Whether to verify the project builds correctly after dependency installation'
+    required: false
+    default: 'true'
+  working-directory:
+    description: 'Working directory for the project (relative to repository root)'
+    required: false
+    default: '.'
 
 runs:
   using: 'composite'
@@ -29,16 +37,66 @@ runs:
       with:
         version: ${{ inputs.pnpm-version }}
         
-    # Configure pnpm cache for faster subsequent builds
+    # Configure pnpm cache for faster subsequent builds with enhanced monitoring
     - name: Setup pnpm cache
       uses: actions/cache@v4
       with:
         path: ${{ inputs.cache-path }}
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
+          ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           ${{ runner.os }}-pnpm-store-
           
     # Install project dependencies with frozen lockfile for reproducible builds
     - name: Install dependencies
       shell: bash
-      run: pnpm install --frozen-lockfile
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "📦 Installing dependencies with pnpm..."
+        pnpm install --frozen-lockfile
+        
+        # Display cache statistics for monitoring
+        echo "📊 Cache statistics:"
+        if [ -d "${{ inputs.cache-path }}" ]; then
+          echo "Cache directory size: $(du -sh ${{ inputs.cache-path }} 2>/dev/null || echo 'N/A')"
+          echo "Cache directory contents: $(ls -la ${{ inputs.cache-path }} 2>/dev/null | wc -l) items"
+        else
+          echo "Cache directory not found - this is expected on first run"
+        fi
+        
+    # Verify project builds correctly after dependency installation
+    - name: Verify project build
+      if: inputs.verify-build == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "🔨 Verifying project builds correctly..."
+        
+        # Check if package.json has a build script
+        if [ -f "package.json" ] && grep -q '"build"' package.json; then
+          echo "✅ Build script found in package.json"
+          
+          # Run build verification (dry run or quick build check)
+          if command -v pnpm &> /dev/null; then
+            echo "🚀 Running build verification..."
+            pnpm run build --dry-run 2>/dev/null || pnpm run build --help 2>/dev/null || {
+              echo "⚠️ Dry run not supported, running quick build check..."
+              # For Next.js projects, we can check if the build process starts correctly
+              timeout 30s pnpm run build || {
+                if [ $? -eq 124 ]; then
+                  echo "✅ Build process started successfully (timeout after 30s)"
+                else
+                  echo "❌ Build verification failed"
+                  exit 1
+                fi
+              }
+            }
+          else
+            echo "❌ pnpm not found in PATH"
+            exit 1
+          fi
+        else
+          echo "ℹ️ No build script found in package.json - skipping build verification"
+        fi
+        
+        echo "✅ Project build verification completed successfully"

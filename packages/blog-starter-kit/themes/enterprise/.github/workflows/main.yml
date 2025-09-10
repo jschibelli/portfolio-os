@@ -1,6 +1,24 @@
 # CI/CD Pipeline for Mindware Blog
-# This workflow handles linting, testing, building, security scanning, and deployment
-# to both production and preview environments on Vercel
+# ===================================
+# This comprehensive workflow handles the complete development lifecycle:
+# - Code quality checks (linting, type checking)
+# - Testing (unit, integration, visual regression)
+# - Security scanning (vulnerability detection)
+# - Building (production-ready artifacts)
+# - Deployment (production and preview environments)
+#
+# Key Features:
+# - Optimized parallel execution for faster CI/CD
+# - Enhanced pnpm caching with build verification
+# - Comprehensive error handling and notifications
+# - Security-first approach with vulnerability scanning
+# - Automated deployment to Vercel with environment separation
+#
+# Performance Optimizations:
+# - Parallel job execution where possible
+# - Intelligent caching strategies
+# - Build verification to catch issues early
+# - Conditional job execution based on file changes
 
 name: CI/CD Pipeline
 
@@ -12,6 +30,7 @@ on:
     branches: [ main, development ]
 
 # Explicit permissions for GitHub API access and security scanning
+# Following principle of least privilege for enhanced security
 permissions:
   contents: read          # Read repository contents
   issues: write           # Create/update issues
@@ -22,11 +41,12 @@ permissions:
   packages: read          # Read package information
   id-token: write         # Generate OIDC tokens for deployment
 
+# Global environment variables for consistency across all jobs
 env:
-  NODE_VERSION: '18'  # Using Node.js 18 LTS for better compatibility
-  PNPM_VERSION: '8'   # Latest stable pnpm version
-  PNPM_CACHE_PATH: ~/.pnpm-store  # Cross-platform cache path
-  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise
+  NODE_VERSION: '18'  # Using Node.js 18 LTS for better compatibility and security
+  PNPM_VERSION: '8'   # Latest stable pnpm version with improved performance
+  PNPM_CACHE_PATH: ~/.pnpm-store  # Cross-platform cache path for dependency caching
+  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise  # Project root directory
 
 jobs:
   # Workflow Validation - Ensures all environment variables are properly configured
@@ -82,13 +102,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      # Setup Node.js, pnpm, and caching for optimal performance
-      - name: Setup pnpm with caching
+      # Setup Node.js, pnpm, and caching for optimal performance with build verification
+      - name: Setup pnpm with caching and build verification
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'false'  # Skip build verification in lint job for speed
+          working-directory: ${{ env.WORKING_DIRECTORY }}
         
       # Run ESLint to check code style and potential issues
       - name: Run ESLint
@@ -107,7 +129,7 @@ jobs:
           echo "❌ Linting or type checking failed. Please fix the issues and try again."
           echo "Run 'pnpm lint' and 'pnpm typecheck' locally to see the errors."
 
-  # Test - Runs unit and integration tests
+  # Test - Runs unit and integration tests (can run in parallel with visual regression)
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -121,13 +143,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      # Setup Node.js, pnpm, and caching
-      - name: Setup pnpm with caching
+      # Setup Node.js, pnpm, and caching with build verification
+      - name: Setup pnpm with caching and build verification
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'true'  # Enable build verification for test job
+          working-directory: ${{ env.WORKING_DIRECTORY }}
         
       # Run test suite with CI environment variables
       - name: Run tests
@@ -143,7 +167,7 @@ jobs:
           echo "❌ Tests failed. Please check the test output and fix any issues."
           echo "Run 'pnpm test' locally to reproduce the failures."
 
-  # Visual Regression Testing - Ensures UI consistency across changes
+  # Visual Regression Testing - Ensures UI consistency across changes (runs in parallel with test)
   visual-regression:
     name: Visual Regression Tests
     runs-on: ubuntu-latest
@@ -162,13 +186,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      # Setup Node.js, pnpm, and caching
-      - name: Setup pnpm with caching
+      # Setup Node.js, pnpm, and caching with build verification
+      - name: Setup pnpm with caching and build verification
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'true'  # Enable build verification for visual regression
+          working-directory: ${{ env.WORKING_DIRECTORY }}
         
       # Install Playwright browsers and system dependencies
       - name: Install Playwright browsers
@@ -286,13 +312,13 @@ jobs:
               core.setFailed('Visual regression tests failed - differences detected');
             }
 
-  # Build - Creates production-ready build artifacts
+  # Build - Creates production-ready build artifacts (optimized for parallel execution)
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test]
-    # Only build if linting and tests pass
-    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
+    needs: [lint-and-typecheck, test, visual-regression]
+    # Only build if linting, tests, and visual regression pass
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success' && (needs.visual-regression.result == 'success' || needs.visual-regression.result == 'skipped'))
     permissions:
       contents: read
       actions: read
@@ -301,12 +327,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup pnpm with caching
+      - name: Setup pnpm with caching and build verification
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ env.NODE_VERSION }}
           pnpm-version: ${{ env.PNPM_VERSION }}
           cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'false'  # Skip build verification since we'll do a full build
+          working-directory: ${{ env.WORKING_DIRECTORY }}
         
       - name: Build application
         run: |
@@ -333,12 +361,12 @@ jobs:
           path: ${{ env.WORKING_DIRECTORY }}/.next
           retention-days: 7
 
-  # Security Scan - Scans for vulnerabilities using Trivy
+  # Security Scan - Scans for vulnerabilities using Trivy (runs in parallel with build)
   security:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, test]
-    # Only scan if linting and tests pass
+    # Only scan if linting and tests pass (can run in parallel with build)
     if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
     permissions:
       contents: read
@@ -350,7 +378,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.30.0
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -382,7 +410,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v26
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -409,7 +437,7 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v26
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
