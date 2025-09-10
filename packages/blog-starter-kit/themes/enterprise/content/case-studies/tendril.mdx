@@ -71,6 +71,8 @@ We interviewed 25 potential customers across different segments:
 ### Architecture Overview
 We designed a modern, scalable architecture using:
 
+<TechStack technologies={["Next.js", "TypeScript", "Prisma", "PostgreSQL", "OpenAI API", "Stripe", "Vercel"]} />
+
 ```typescript
 // Core architecture components
 interface TendrilArchitecture {
@@ -116,29 +118,23 @@ We implemented a comprehensive multi-tenant architecture:
 
 ### Development Phases
 
-**Phase 1: Core Platform (Months 1-2)**
-- Set up Next.js application with TypeScript
-- Implement Prisma database schema
-- Create authentication system
-- Build basic dashboard UI
-
-**Phase 2: Multi-tenant Architecture (Month 3)**
-- Implement tenant isolation
-- Create subdomain routing
-- Build tenant management system
-- Add billing integration
-
-**Phase 3: AI Integration (Month 4)**
-- Integrate OpenAI API
-- Build chatbot training system
-- Implement conversation management
-- Add analytics tracking
-
-**Phase 4: Advanced Features (Months 5-6)**
-- Real-time messaging
-- Custom branding
-- Advanced analytics
-- Performance optimization
+<Timeline>
+  <TimelineItem title="Core Platform" date="Months 1-2">
+    Set up Next.js application with TypeScript, implement Prisma database schema, create authentication system, and build basic dashboard UI.
+  </TimelineItem>
+  
+  <TimelineItem title="Multi-tenant Architecture" date="Month 3">
+    Implement tenant isolation, create subdomain routing, build tenant management system, and add billing integration.
+  </TimelineItem>
+  
+  <TimelineItem title="AI Integration" date="Month 4">
+    Integrate OpenAI API, build chatbot training system, implement conversation management, and add analytics tracking.
+  </TimelineItem>
+  
+  <TimelineItem title="Advanced Features" date="Months 5-6">
+    Real-time messaging, custom branding, advanced analytics, and performance optimization.
+  </TimelineItem>
+</Timeline>
 
 ### Technical Implementation
 
@@ -201,17 +197,26 @@ model Chatbot {
 
 ### Key Performance Indicators
 
-<InfoCard title="Revenue Growth">
-Our revenue increased by **150%** within the first 6 months of launch, exceeding our initial projections by 40%.
-</InfoCard>
-
-<InfoCard title="User Retention">
-We achieved a **91% user retention rate** after 30 days, significantly higher than the industry average of 65%.
-</InfoCard>
-
-<InfoCard title="Setup Time">
-Average setup time reduced to **18 minutes** compared to 2-4 hours for competitors, representing a 90% improvement.
-</InfoCard>
+<MetricsGrid>
+  <MetricCard 
+    title="Revenue Growth" 
+    value="150%" 
+    description="Within first 6 months" 
+    trend="up" 
+  />
+  <MetricCard 
+    title="User Retention" 
+    value="91%" 
+    description="After 30 days" 
+    trend="up" 
+  />
+  <MetricCard 
+    title="Setup Time" 
+    value="18 min" 
+    description="vs 2-4 hours competitors" 
+    trend="up" 
+  />
+</MetricsGrid>
 
 ### Detailed Metrics
 
@@ -224,9 +229,18 @@ Average setup time reduced to **18 minutes** compared to 2-4 hours for competito
 | Support Tickets | <50/month | 23/month | -54% |
 
 ### User Feedback
-- **"Finally, a chatbot platform that actually works for small businesses!"** - Sarah M., E-commerce Owner
-- **"The multi-tenant features are exactly what our agency needed."** - Mike R., Marketing Agency Owner
-- **"Setup was incredibly easy compared to other platforms."** - Jennifer L., Restaurant Owner
+
+<Quote author="Sarah M., E-commerce Owner">
+Finally, a chatbot platform that actually works for small businesses!
+</Quote>
+
+<Quote author="Mike R., Marketing Agency Owner">
+The multi-tenant features are exactly what our agency needed.
+</Quote>
+
+<Quote author="Jennifer L., Restaurant Owner">
+Setup was incredibly easy compared to other platforms.
+</Quote>
 
 ## Lessons Learned
 
