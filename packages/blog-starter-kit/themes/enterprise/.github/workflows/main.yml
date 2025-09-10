@@ -6,15 +6,107 @@ on:
   pull_request:
     branches: [ main, development ]
 
+# Add explicit permissions for GitHub API access
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: write
+  security-events: write
+  actions: read
+  packages: read
+  id-token: write
+
 env:
   NODE_VERSION: '20'
   PNPM_VERSION: '8'
+  PNPM_CACHE_PATH: ~/.pnpm-store
+  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise
 
 jobs:
+  # Workflow Validation
+  validate-workflow:
+    name: Validate Workflow Configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate environment variables
+        run: |
+          echo "🔍 Validating workflow environment variables..."
+          echo "NODE_VERSION: ${{ env.NODE_VERSION }}"
+          echo "PNPM_VERSION: ${{ env.PNPM_VERSION }}"
+          echo "PNPM_CACHE_PATH: ${{ env.PNPM_CACHE_PATH }}"
+          echo "WORKING_DIRECTORY: ${{ env.WORKING_DIRECTORY }}"
+          
+          # Validate required environment variables with detailed error messages
+          if [ -z "${{ env.NODE_VERSION }}" ]; then
+            echo "❌ NODE_VERSION is not set - this is required for Node.js setup"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.PNPM_VERSION }}" ]; then
+            echo "❌ PNPM_VERSION is not set - this is required for pnpm setup"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.WORKING_DIRECTORY }}" ]; then
+            echo "❌ WORKING_DIRECTORY is not set - this is required for build context"
+            exit 1
+          fi
+          
+          # Validate Node.js version format
+          if ! echo "${{ env.NODE_VERSION }}" | grep -E '^[0-9]+(\.[0-9]+)*$' > /dev/null; then
+            echo "❌ NODE_VERSION format is invalid. Expected format: '20' or '20.0.0'"
+            exit 1
+          fi
+          
+          # Validate pnpm version format
+          if ! echo "${{ env.PNPM_VERSION }}" | grep -E '^[0-9]+(\.[0-9]+)*$' > /dev/null; then
+            echo "❌ PNPM_VERSION format is invalid. Expected format: '8' or '8.0.0'"
+            exit 1
+          fi
+          
+          echo "✅ All environment variables validated successfully"
+          
+      - name: Validate working directory exists
+        run: |
+          echo "🔍 Validating working directory structure..."
+          
+          if [ ! -d "${{ env.WORKING_DIRECTORY }}" ]; then
+            echo "❌ Working directory '${{ env.WORKING_DIRECTORY }}' does not exist"
+            echo "Available directories:"
+            find . -maxdepth 3 -type d -name "*" | head -20
+            exit 1
+          fi
+          
+          # Check for essential files
+          if [ ! -f "${{ env.WORKING_DIRECTORY }}/package.json" ]; then
+            echo "❌ package.json not found in working directory"
+            exit 1
+          fi
+          
+          if [ ! -f "${{ env.WORKING_DIRECTORY }}/next.config.js" ]; then
+            echo "❌ next.config.js not found in working directory"
+            exit 1
+          fi
+          
+          echo "✅ Working directory structure validated successfully"
+
   # Lint and Type Check
   lint-and-typecheck:
-    name: Lint & Type Check
+    name: Lint and Type Check
     runs-on: ubuntu-latest
+    needs: validate-workflow
+    if: always() && needs.validate-workflow.result == 'success'
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -30,33 +122,58 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
           
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          echo "📦 Installing dependencies..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies"
+            echo "Check pnpm-lock.yaml and package.json for conflicts"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
         
       - name: Run ESLint
-        run: pnpm lint
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🔍 Running ESLint..."
+          pnpm lint
+          if [ $? -ne 0 ]; then
+            echo "❌ ESLint found issues that need to be fixed"
+            echo "Run 'pnpm lint' locally to see detailed errors"
+            exit 1
+          fi
+          echo "✅ ESLint passed successfully"
         
       - name: Run TypeScript type check
-        run: pnpm typecheck
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🔍 Running TypeScript type check..."
+          pnpm typecheck
+          if [ $? -ne 0 ]; then
+            echo "❌ TypeScript type check failed"
+            echo "Run 'pnpm typecheck' locally to see detailed errors"
+            exit 1
+          fi
+          echo "✅ TypeScript type check passed successfully"
 
   # Test
   test:
-    name: Test
+    name: Test Suite
     runs-on: ubuntu-latest
-    needs: lint-and-typecheck
+    needs: validate-workflow
+    if: always() && needs.validate-workflow.result == 'success'
+    permissions:
+      contents: read
+      actions: read
     
     steps:
       - name: Checkout code
@@ -72,33 +189,54 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
           
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          echo "📦 Installing dependencies..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
         
       - name: Run tests
-        run: pnpm test
-        env:
-          CI: true
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🧪 Running test suite..."
+          pnpm test --coverage --watchAll=false
+          if [ $? -ne 0 ]; then
+            echo "❌ Test suite failed"
+            echo "Run 'pnpm test' locally to see detailed test results"
+            exit 1
+          fi
+          echo "✅ All tests passed successfully"
+        
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-coverage
+          path: ${{ env.WORKING_DIRECTORY }}/coverage/
+          retention-days: 7
 
-  # Visual Regression Testing
-  visual-regression:
-    name: Visual Regression Tests
+  # Security Scan
+  security-scan:
+    name: Security Scan
     runs-on: ubuntu-latest
-    needs: lint-and-typecheck
-    if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
+    needs: validate-workflow
+    if: always() && needs.validate-workflow.result == 'success'
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     
     steps:
       - name: Checkout code
@@ -114,29 +252,122 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
           
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          echo "📦 Installing dependencies for security scan..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies for security scan"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
         
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Run security audit
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🔒 Running security audit..."
+          pnpm audit --audit-level moderate
+          if [ $? -ne 0 ]; then
+            echo "❌ Security audit found vulnerabilities"
+            echo "Run 'pnpm audit' locally to see detailed security issues"
+            echo "Consider running 'pnpm audit --fix' to automatically fix issues"
+            exit 1
+          fi
+          echo "✅ Security audit passed successfully"
+        
+      - name: Upload security results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-audit-results
+          path: ${{ env.WORKING_DIRECTORY }}/security-audit.json
+          retention-days: 30
+
+  # Build
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, test, security-scan]
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success' && needs.security-scan.result == 'success')
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PNPM_CACHE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+            
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies for build..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies for build"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
+        
+      - name: Validate environment variables for build
+        run: |
+          echo "🔍 Validating build environment variables..."
+          
+          # Check for required environment variables
+          required_vars=(
+            "NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT"
+            "NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST"
+          )
+          
+          for var in "${required_vars[@]}"; do
+            if [ -z "${!var}" ]; then
+              echo "⚠️  $var is not set, using default value"
+            else
+              echo "✅ $var is set"
+            fi
+          done
+          
+          echo "✅ Environment variable validation completed"
         
       - name: Build application
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🏗️  Building application..."
           pnpm build
+          if [ $? -ne 0 ]; then
+            echo "❌ Build failed"
+            echo "Check the build logs above for specific errors"
+            echo "Common issues:"
+            echo "  - TypeScript errors"
+            echo "  - Missing environment variables"
+            echo "  - Import/export issues"
+            exit 1
+          fi
+          echo "✅ Build completed successfully"
         env:
           NEXT_PUBLIC_MODE: production
           NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
@@ -148,10 +379,68 @@ jobs:
           FEATURE_CASE_STUDY: 'true'
           FEATURE_CLIENT_INTAKE: 'true'
         
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: build-artifacts
+          path: ${{ env.WORKING_DIRECTORY }}/.next/
+          retention-days: 7
+
+  # Visual Regression Tests
+  visual-tests:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    needs: build
+    if: always() && needs.build.result == 'success'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.PNPM_CACHE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+            
+      - name: Install dependencies
+        run: |
+          echo "📦 Installing dependencies for visual tests..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies for visual tests"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
+        
       - name: Run visual regression tests
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
+          cd ${{ env.WORKING_DIRECTORY }}
+          echo "🎨 Running visual regression tests..."
           pnpm test:visual
+          if [ $? -ne 0 ]; then
+            echo "❌ Visual regression tests failed"
+            echo "Check the test results and update baseline images if changes are intentional"
+            exit 1
+          fi
+          echo "✅ Visual regression tests passed successfully"
         env:
           CI: true
           
@@ -160,7 +449,7 @@ jobs:
         if: always()
         with:
           name: visual-test-results
-          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
           retention-days: 7
           
       - name: Upload visual test screenshots
@@ -168,19 +457,20 @@ jobs:
         if: always()
         with:
           name: visual-test-screenshots
-          path: packages/blog-starter-kit/themes/enterprise/test-results/
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
           retention-days: 7
           
       - name: Comment PR with visual test results
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const path = require('path');
             
             // Check if visual tests failed
-            const testResultsPath = 'packages/blog-starter-kit/themes/enterprise/test-results/';
+            const testResultsPath = '${{ env.WORKING_DIRECTORY }}/test-results/';
             let hasFailures = false;
             let comment = '## 🎨 Visual Regression Test Results\n\n';
             
@@ -214,27 +504,44 @@ jobs:
                 comment += '⚠️ **Visual test results not found.** Please check the test logs.\n';
               }
             } catch (error) {
-              comment += '❌ **Error processing visual test results:** ' + error.message + '\n';
+              console.error('Error reading visual test results:', error);
+              comment += '⚠️ **Error reading visual test results.** Please check the test logs.\n';
             }
             
-            // Post comment to PR
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            // Post comment to PR with proper error handling
+            try {
+              if (context.payload.pull_request) {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+                console.log('✅ Successfully posted visual test results comment');
+              } else {
+                console.log('ℹ️ Not a pull request, skipping comment posting');
+              }
+            } catch (apiError) {
+              console.error('❌ Failed to post comment:', apiError.message);
+              console.error('Error details:', JSON.stringify(apiError, null, 2));
+              // Don't fail the job if comment posting fails
+            }
             
             // Fail the job if there are visual differences
             if (hasFailures) {
               core.setFailed('Visual regression tests failed - differences detected');
             }
 
-  # Build
-  build:
-    name: Build
+  # Deploy to Vercel
+  deploy:
+    name: Deploy to Vercel
     runs-on: ubuntu-latest
-    needs: [lint-and-typecheck, test, visual-regression]
+    needs: [build, visual-tests]
+    if: always() && needs.build.result == 'success' && (needs.visual-tests.result == 'success' || needs.visual-tests.result == 'skipped')
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
     
     steps:
       - name: Checkout code
@@ -250,81 +557,23 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
           
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.STORE_PATH }}
+          path: ${{ env.PNPM_CACHE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Build application
         run: |
-          cd packages/blog-starter-kit/themes/enterprise
-          pnpm build
-        env:
-          # Production build environment
-          NEXT_PUBLIC_MODE: production
-          # Hashnode GraphQL (optional - will use fallback if not set)
-          NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
-          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: ${{ secrets.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev' }}
-          # Feature flags
-          NEXT_PUBLIC_FEATURE_SCHEDULING: 'true'
-          NEXT_PUBLIC_FEATURE_CASE_STUDY: 'true'
-          NEXT_PUBLIC_FEATURE_CLIENT_INTAKE: 'true'
-          FEATURE_SCHEDULING: 'true'
-          FEATURE_CASE_STUDY: 'true'
-          FEATURE_CLIENT_INTAKE: 'true'
-          
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-files
-          path: packages/blog-starter-kit/themes/enterprise/.next
-          retention-days: 7
-
-  # Security Scan
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-  # Deploy to Vercel (Production)
-  deploy-production:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [build, security]
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+          echo "📦 Installing dependencies for deployment..."
+          pnpm install --frozen-lockfile
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to install dependencies for deployment"
+            exit 1
+          fi
+          echo "✅ Dependencies installed successfully"
         
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -332,44 +581,96 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./packages/blog-starter-kit/themes/enterprise
-          vercel-args: '--prod'
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+        env:
+          NEXT_PUBLIC_MODE: production
+          NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
+          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: ${{ secrets.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev' }}
+          NEXT_PUBLIC_FEATURE_SCHEDULING: 'true'
+          NEXT_PUBLIC_FEATURE_CASE_STUDY: 'true'
+          NEXT_PUBLIC_FEATURE_CLIENT_INTAKE: 'true'
+          FEATURE_SCHEDULING: 'true'
+          FEATURE_CASE_STUDY: 'true'
+          FEATURE_CLIENT_INTAKE: 'true'
 
-  # Deploy to Vercel (Preview)
-  deploy-preview:
-    name: Deploy Preview
+  # Workflow Status Report
+  workflow-status:
+    name: Workflow Status Report
     runs-on: ubuntu-latest
-    needs: [build, security]
-    if: github.event_name == 'pull_request'
-    environment: preview
+    needs: [validate-workflow, lint-and-typecheck, test, security-scan, build, visual-tests, deploy]
+    if: always()
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Deploy to Vercel (Preview)
-        uses: amondnet/vercel-action@v25
+      - name: Generate workflow status report
+        uses: actions/github-script@v6
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./packages/blog-starter-kit/themes/enterprise
-          vercel-args: '--target=preview'
-
-  # Notify on Success/Failure
-  notify:
-    name: Notify
-    runs-on: ubuntu-latest
-    needs: [deploy-production, deploy-preview]
-    if: always()
-    
-    steps:
-      - name: Notify on Success
-        if: success()
-        run: |
-          echo "✅ All checks passed! Deployment successful."
-          
-      - name: Notify on Failure
-        if: failure()
-        run: |
-          echo "❌ Some checks failed. Please review the logs."
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const jobs = [
+              { name: 'validate-workflow', result: '${{ needs.validate-workflow.result }}' },
+              { name: 'lint-and-typecheck', result: '${{ needs.lint-and-typecheck.result }}' },
+              { name: 'test', result: '${{ needs.test.result }}' },
+              { name: 'security-scan', result: '${{ needs.security-scan.result }}' },
+              { name: 'build', result: '${{ needs.build.result }}' },
+              { name: 'visual-tests', result: '${{ needs.visual-tests.result }}' },
+              { name: 'deploy', result: '${{ needs.deploy.result }}' }
+            ];
+            
+            let comment = '## 🚀 CI/CD Pipeline Status Report\n\n';
+            comment += `**Workflow:** \`${{ github.workflow }}\`\n`;
+            comment += `**Triggered by:** \`${{ github.event_name }}\` on \`${{ github.ref }}\`\n`;
+            comment += `**Commit:** \`${{ github.sha }}\`\n\n`;
+            
+            comment += '### Job Results:\n\n';
+            
+            jobs.forEach(job => {
+              const status = job.result === 'success' ? '✅' : 
+                           job.result === 'failure' ? '❌' : 
+                           job.result === 'cancelled' ? '⏹️' : 
+                           job.result === 'skipped' ? '⏭️' : '❓';
+              comment += `- ${status} **${job.name}**: \`${job.result}\`\n`;
+            });
+            
+            const allSuccess = jobs.every(job => job.result === 'success');
+            const anyFailure = jobs.some(job => job.result === 'failure');
+            
+            comment += '\n### Summary:\n\n';
+            
+            if (allSuccess) {
+              comment += '🎉 **All jobs completed successfully!**\n';
+            } else if (anyFailure) {
+              comment += '⚠️ **Some jobs failed.** Please check the logs above for details.\n';
+            } else {
+              comment += 'ℹ️ **Workflow completed with mixed results.**\n';
+            }
+            
+            // Post comment to PR if this is a pull request
+            try {
+              if (context.payload.pull_request) {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+                console.log('✅ Successfully posted workflow status report');
+              } else {
+                console.log('ℹ️ Not a pull request, skipping status report comment');
+              }
+            } catch (apiError) {
+              console.error('❌ Failed to post status report:', apiError.message);
+              // Don't fail the job if comment posting fails
+            }
+            
+            // Set job status based on results
+            if (anyFailure) {
+              core.setFailed('One or more jobs failed in the CI/CD pipeline');
+            }
