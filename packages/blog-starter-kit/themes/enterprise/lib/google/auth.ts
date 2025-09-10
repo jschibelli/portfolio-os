@@ -1,11 +1,4 @@
-let google: any;
-
-try {
-	google = require('googleapis');
-} catch (error) {
-	console.warn('[google-auth] googleapis not available');
-	google = null;
-}
+import { google } from 'googleapis';
 
 import { env, features, sslConfig } from '@/lib/env-validation';
 
@@ -142,16 +135,6 @@ if (sslConfig.fixEnabled) {
  * @throws {Error} When googleapis is unavailable or credentials are missing
  */
 export function getOAuth2Client() {
-	if (!google) {
-		const error = new Error('googleapis library not available - ensure googleapis package is installed');
-		logger.error('OAuth2 client creation failed', {
-			error: error.message,
-			action: 'Creating OAuth2 client for Google Calendar API',
-			solution: 'Ensure googleapis package is installed: npm install googleapis'
-		});
-		throw error;
-	}
-
 	if (!hasOAuth2Credentials) {
 		const error = new Error('OAuth2 credentials not configured - check environment variables');
 		logger.error('OAuth2 client creation failed', {
@@ -207,6 +190,14 @@ export function getOAuth2Client() {
  * @throws {Error} When credentials are not configured or client creation fails
  */
 export function getAuth() {
+	console.log('🔐 [DEBUG] Checking OAuth2 credentials:', {
+		hasOAuth2Credentials,
+		GOOGLE_CLIENT_ID: !!env.GOOGLE_CLIENT_ID,
+		GOOGLE_CLIENT_SECRET: !!env.GOOGLE_CLIENT_SECRET,
+		GOOGLE_OAUTH_REFRESH_TOKEN: !!env.GOOGLE_OAUTH_REFRESH_TOKEN,
+		GOOGLE_CALENDAR_ID: !!env.GOOGLE_CALENDAR_ID
+	});
+
 	if (!hasOAuth2Credentials) {
 		const error = new Error('OAuth2 credentials not configured - check environment variables');
 		logger.error('Authentication failed', {

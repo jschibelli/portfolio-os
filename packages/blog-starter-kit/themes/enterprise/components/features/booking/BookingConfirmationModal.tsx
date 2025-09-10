@@ -28,7 +28,7 @@ export function BookingConfirmationModal({
 	const handleConfirm = async () => {
 		setIsLoading(true);
 		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 		setIsLoading(false);
 		onClose();
 	};
