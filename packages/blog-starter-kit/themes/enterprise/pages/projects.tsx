@@ -222,8 +222,8 @@ export default function ProjectsPage({ publication }: Props) {
 						<Container className="px-4">
 							<div className="space-y-6">
 								{/* Search and Sort Row */}
-								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-									<div className="flex flex-1 items-center gap-4">
+								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
+									<div className="flex flex-1 items-center gap-4 justify-center">
 										<div className="relative flex-1 max-w-md">
 											<Label htmlFor="search" className="sr-only">
 												Search projects
@@ -271,7 +271,7 @@ export default function ProjectsPage({ publication }: Props) {
 
 								{/* Active Filters Display */}
 								{hasActiveFilters && (
-									<div className="flex flex-wrap items-center gap-2">
+									<div className="flex flex-wrap items-center gap-2 justify-center">
 										<span className="text-sm font-medium text-stone-700 dark:text-stone-300">
 											Active filters:
 										</span>
@@ -318,11 +318,11 @@ export default function ProjectsPage({ publication }: Props) {
 								)}
 
 								{/* Technology Tags */}
-								<div className="space-y-3">
+								<div className="space-y-3 text-center">
 									<Label className="text-sm font-medium text-stone-700 dark:text-stone-300">
 										Filter by Technology:
 									</Label>
-									<div className="flex flex-wrap gap-2">
+									<div className="flex flex-wrap gap-2 justify-center">
 										{allTags.map((tag) => (
 											<button
 												key={tag}
