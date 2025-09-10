@@ -48,16 +48,10 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							Home
 						</Link>
 						<Link
-							href="/work"
+							href="/projects"
 							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
-							Work
-						</Link>
-						<Link
-							href="/case-studies"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-						>
-							Case Studies
+							Projects
 						</Link>
 						<Link
 							href="/blog"
@@ -132,16 +126,10 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 											Home
 										</Link>
 										<Link
-											href="/work"
+											href="/projects"
 											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
-											Work
-										</Link>
-										<Link
-											href="/case-studies"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-										>
-											Case Studies
+											Projects
 										</Link>
 										<Link
 											href="/blog"

@@ -292,9 +292,9 @@ export default function Chatbot() {
         pageType = 'home';
       } else if (pathname.includes('/about')) {
         pageType = 'about';
-      } else if (pathname.includes('/work') || pathname.includes('/portfolio')) {
+      } else if (pathname.includes('/projects') || pathname.includes('/portfolio')) {
         pageType = 'work';
-        specificType = pathname.includes('/portfolio') ? 'portfolio' : 'work';
+        specificType = pathname.includes('/portfolio') ? 'portfolio' : 'projects';
       } else if (pathname.includes('/contact')) {
         pageType = 'contact';
       } else if (pathname.includes('/blog') && pathname !== '/blog') {
