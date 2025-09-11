@@ -175,7 +175,7 @@ export function GlobalSearch({
         <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-96 overflow-y-auto rounded-md border bg-background shadow-lg">
           {results.length === 0 && !isLoading && query && (
             <div className="p-4 text-center text-sm text-muted-foreground">
-              No results found for "{query}"
+              No results found for &quot;{query}&quot;
             </div>
           )}
           

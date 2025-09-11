@@ -157,7 +157,7 @@ export default function SearchPage({ publication }: Props) {
                   ) : (
                     <>
                       <div className="text-sm text-stone-600 dark:text-stone-400">
-                        Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+                        Found {results.length} result{results.length !== 1 ? 's' : ''} for &quot;{query}&quot;
                       </div>
                       
                       <div className="space-y-4">
