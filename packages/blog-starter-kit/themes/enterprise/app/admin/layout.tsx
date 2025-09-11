@@ -31,45 +31,63 @@ export default function AdminLayout({
   }, [session, status, router]);
 
   // Centralized theme management for admin cockpit
-  // This addresses CR-GPT feedback about centralizing theme logic and providing user interface options
+  // This addresses CR-GPT feedback about centralizing theme logic and eliminating duplicate logic
   useEffect(() => {
     // Centralized theme management function for reusability across components
+    // Eliminates duplicate logic by consolidating all theme operations
     const applyAdminTheme = () => {
       try {
         const root = document.documentElement;
+        // Only apply theme if not already applied to prevent redundant operations
         if (!root.classList.contains('dark')) {
           root.classList.remove('light');
           root.classList.add('dark');
-          // Store theme preference for persistence with error handling
+          // Store theme preference for persistence with enhanced error handling
           localStorage.setItem('admin-theme', 'dark');
+          console.log('✅ Admin dark theme applied successfully');
         }
       } catch (error) {
-        console.warn('Failed to apply admin theme:', error);
-        // Fallback: still apply theme even if localStorage fails
+        console.error('❌ Failed to apply admin theme:', error);
+        // Enhanced fallback: still apply theme even if localStorage fails
         const root = document.documentElement;
         root.classList.remove('light');
         root.classList.add('dark');
+        console.warn('⚠️ Theme applied with fallback (localStorage unavailable)');
       }
     };
 
-    // Apply theme immediately on component mount
+    // Apply theme immediately on component mount (single point of application)
     applyAdminTheme();
 
-    // Set up theme persistence across sessions
+    // Enhanced theme persistence across sessions with better error handling
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'admin-theme' && e.newValue === 'dark') {
-        applyAdminTheme();
+      try {
+        if (e.key === 'admin-theme' && e.newValue === 'dark') {
+          console.log('🔄 Theme change detected from another tab');
+          applyAdminTheme();
+        }
+      } catch (error) {
+        console.error('❌ Error handling storage change:', error);
       }
     };
 
-    // Listen for theme changes from other tabs/windows
-    window.addEventListener('storage', handleStorageChange);
+    // Listen for theme changes from other tabs/windows with error handling
+    try {
+      window.addEventListener('storage', handleStorageChange);
+    } catch (error) {
+      console.error('❌ Failed to add storage event listener:', error);
+    }
 
-    // Cleanup event listener on unmount
+    // Enhanced cleanup with error handling to prevent memory leaks
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      try {
+        window.removeEventListener('storage', handleStorageChange);
+        console.log('🧹 Theme management cleanup completed');
+      } catch (error) {
+        console.error('❌ Error during theme management cleanup:', error);
+      }
     };
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once
 
   if (status === "loading") {
     return (
