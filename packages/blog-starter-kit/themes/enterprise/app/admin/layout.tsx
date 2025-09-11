@@ -33,14 +33,26 @@ export default function AdminLayout({
   // Ensure dark theme is applied immediately for admin cockpit
   // This addresses CR-GPT feedback about theme management after script removal
   useEffect(() => {
-    // Force dark theme on admin pages for consistent admin interface
-    const root = document.documentElement;
-    if (!root.classList.contains('dark')) {
-      root.classList.remove('light');
-      root.classList.add('dark');
-      // Store theme preference for persistence
-      localStorage.setItem('admin-theme', 'dark');
-    }
+    // Encapsulated theme management logic for better maintainability
+    const applyAdminTheme = () => {
+      try {
+        const root = document.documentElement;
+        if (!root.classList.contains('dark')) {
+          root.classList.remove('light');
+          root.classList.add('dark');
+          // Store theme preference for persistence with error handling
+          localStorage.setItem('admin-theme', 'dark');
+        }
+      } catch (error) {
+        console.warn('Failed to apply admin theme:', error);
+        // Fallback: still apply theme even if localStorage fails
+        const root = document.documentElement;
+        root.classList.remove('light');
+        root.classList.add('dark');
+      }
+    };
+
+    applyAdminTheme();
   }, []);
 
   if (status === "loading") {

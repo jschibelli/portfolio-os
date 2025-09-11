@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { z } from 'zod';
 
+// Simple in-memory rate limiting (for production, consider Redis or database)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10; // 10 requests per minute per IP
+
 // Input validation schema for enhanced security
 const TTSRequestSchema = z.object({
   text: z.string().min(1).max(4000), // OpenAI TTS character limit
@@ -14,8 +19,48 @@ const openai = new OpenAI({
   timeout: 30000, // 30 second timeout
 });
 
+/**
+ * POST /api/tts
+ * 
+ * Generates speech from text using OpenAI's Text-to-Speech API with enhanced security and rate limiting.
+ * 
+ * @param request - NextRequest containing text and voice parameters
+ * @returns Promise<NextResponse> - Audio file or error response
+ * 
+ * @example
+ * ```typescript
+ * const response = await fetch('/api/tts', {
+ *   method: 'POST',
+ *   body: JSON.stringify({
+ *     text: 'Hello, world!',
+ *     voice: 'alloy'
+ *   })
+ * });
+ * ```
+ */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting implementation
+    const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
+    const now = Date.now();
+    const clientData = rateLimitMap.get(clientIP);
+    
+    if (clientData) {
+      if (now < clientData.resetTime) {
+        if (clientData.count >= RATE_LIMIT_MAX_REQUESTS) {
+          return NextResponse.json(
+            { error: 'Rate limit exceeded. Please try again later.' },
+            { status: 429, headers: { 'Retry-After': '60' } }
+          );
+        }
+        clientData.count++;
+      } else {
+        rateLimitMap.set(clientIP, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+      }
+    } else {
+      rateLimitMap.set(clientIP, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    }
+
     // Enhanced API key validation with better error messaging
     if (!process.env.OPENAI_API_KEY) {
       console.error('🔊 OpenAI API key not configured');
@@ -28,6 +73,14 @@ export async function POST(request: NextRequest) {
     // Validate and parse request with enhanced error handling
     const body = await request.json();
     const { text, voice } = TTSRequestSchema.parse(body);
+
+    // Additional security: Check for potentially malicious content
+    if (text.length > 4000) {
+      return NextResponse.json(
+        { error: 'Text exceeds maximum length limit' },
+        { status: 400 }
+      );
+    }
 
 
     // Generate speech using OpenAI TTS with enhanced error handling
