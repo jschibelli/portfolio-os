@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { Badge, Card, CardContent, CardHeader, CardTitle } from '../components/ui';
+import { LegacyGallery } from '../components/projects/Gallery';
 
 export interface ParsedBlock {
 	type: string;
@@ -286,21 +287,7 @@ const KPIsGrid: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, 
 };
 
 const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => {
-	return (
-		<div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{rows.map((row, index) => {
-				const [url, alt] = row;
-				return (
-					<Card key={index} className="overflow-hidden">
-						<img src={url} alt={alt} className="h-48 w-full object-cover" />
-						<CardContent className="p-4">
-							<p className="text-muted-foreground text-sm">{alt}</p>
-						</CardContent>
-					</Card>
-				);
-			})}
-		</div>
-	);
+	return <LegacyGallery headers={headers} rows={rows} />;
 };
 
 const CTA: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => {

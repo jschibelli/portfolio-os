@@ -20,7 +20,7 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/mindware_blog
 # Authentication
 AUTH_SECRET=your_super_secret_auth_key_change_this_in_production
 AUTH_ADMIN_EMAIL=admin@mindware-blog.com
-AUTH_ADMIN_PASSWORD=admin123
+AUTH_ADMIN_PASSWORD=SecureAdmin2025!@#
 
 # Site Configuration
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
@@ -47,7 +47,7 @@ OPENAI_API_KEY=your_openai_api_key_here
     // Create admin user
     console.log('👤 Creating admin user...');
     const email = 'admin@mindware-blog.com';
-    const password = 'admin123';
+    const password = 'SecureAdmin2025!@#';
     const hash = await bcrypt.hash(password, 12);
     
     const admin = await prisma.user.upsert({

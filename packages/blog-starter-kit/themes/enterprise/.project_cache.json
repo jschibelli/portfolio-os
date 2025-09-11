@@ -1,4 +1,21 @@
 {
+  "version": "1.0.0",
   "number": 19,
-  "url": "https://github.com/users/jschibelli/projects/19"
+  "url": "https://github.com/users/jschibelli/projects/19",
+  "description": "GitHub Project cache for Portfolio Site - schibelli.dev project management",
+  "lastUpdated": "2025-01-11",
+  "purpose": "Stores GitHub Project metadata for automation scripts and project tracking",
+  "configurable": {
+    "note": "Project number can be updated via environment variable GITHUB_PROJECT_NUMBER if needed",
+    "environmentVariable": "GITHUB_PROJECT_NUMBER"
+  },
+  "validation": {
+    "schema": "project-cache-v1",
+    "required": ["number", "url", "description"],
+    "types": {
+      "number": "integer",
+      "url": "string",
+      "description": "string"
+    }
+  }
 }

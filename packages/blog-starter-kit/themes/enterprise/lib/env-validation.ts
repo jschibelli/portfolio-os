@@ -3,6 +3,7 @@ import { z } from 'zod';
 // Detect if we're in a build/deployment environment
 const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV;
 const isVercelDeployment = Boolean(process.env.VERCEL);
+const _isDevelopment = process.env.NODE_ENV === 'development';
 
 // Environment validation schema
 const envSchema = z.object({
@@ -51,6 +52,12 @@ const envSchema = z.object({
   // Security (optional during build, required at runtime)
   CRON_SECRET: z.string().min(32, 'CRON_SECRET must be at least 32 characters for security').optional(),
   
+  // Authentication Security (required for production)
+  AUTH_SECRET: z.string().min(32, 'AUTH_SECRET must be at least 32 characters for security').optional(),
+  NEXTAUTH_SECRET: z.string().min(32, 'NEXTAUTH_SECRET must be at least 32 characters for security').optional(),
+  AUTH_ADMIN_EMAIL: z.string().email('Invalid admin email format').optional(),
+  AUTH_ADMIN_PASSWORD: z.string().min(12, 'Admin password must be at least 12 characters').optional(),
+  
   // Database
   DATABASE_URL: z.string().url('Invalid database URL format').optional(),
 });
@@ -61,9 +68,9 @@ export function validateEnv() {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      // During build time or Vercel deployment, be more lenient with missing variables
-      if (isBuildTime || isVercelDeployment) {
-        console.warn('⚠️  Environment validation warnings (build time):');
+      // During build time, Vercel deployment, or development, be more lenient with missing variables
+      if (isBuildTime || isVercelDeployment || _isDevelopment) {
+        console.warn('⚠️  Environment validation warnings (development mode):');
         error.errors.forEach((err) => {
           console.warn(`  - ${err.path.join('.')}: ${err.message}`);
         });
@@ -95,6 +102,10 @@ export function validateEnv() {
           PLAUSIBLE_API_TOKEN: process.env.PLAUSIBLE_API_TOKEN || '',
           PLAUSIBLE_SITE_ID: process.env.PLAUSIBLE_SITE_ID || '',
           CRON_SECRET: process.env.CRON_SECRET || '',
+          AUTH_SECRET: process.env.AUTH_SECRET || '',
+          NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || '',
+          AUTH_ADMIN_EMAIL: process.env.AUTH_ADMIN_EMAIL || '',
+          AUTH_ADMIN_PASSWORD: process.env.AUTH_ADMIN_PASSWORD || '',
           DATABASE_URL: process.env.DATABASE_URL || '',
         };
       }
@@ -111,8 +122,10 @@ export function validateEnv() {
       console.error('  - GOOGLE_REDIRECT_URI (optional during build)');
       console.error('  - GOOGLE_OAUTH_REFRESH_TOKEN (optional during build)');
       console.error('  - GOOGLE_CALENDAR_ID (optional during build)');
-      console.error('  - CRON_SECRET (optional during build)');
-      console.error('\n💡 See README.md for complete setup instructions.');
+  console.error('  - CRON_SECRET (optional during build)');
+  console.error('  - AUTH_SECRET (required for production)');
+  console.error('  - NEXTAUTH_SECRET (required for production)');
+  console.error('\n💡 See README.md for complete setup instructions.');
       process.exit(1);
     }
     throw error;

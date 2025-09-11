@@ -273,7 +273,7 @@ export default function About({ publication }: Props) {
 												variant="outline"
 												asChild
 											>
-												<Link href="/work">View My Work</Link>
+												<Link href="/projects">View My Projects</Link>
 											</Button>
 										</div>
 									</div>
@@ -556,7 +556,7 @@ export default function About({ publication }: Props) {
 										variant="outline"
 										asChild
 									>
-										<Link href="/work">View My Work</Link>
+										<Link href="/projects">View My Projects</Link>
 									</Button>
 								</div>
 							</div>
@@ -564,8 +564,6 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 			</main>
-
-			<Footer publication={publication} />
 
 			{/* Chatbot */}
 			<Chatbot />

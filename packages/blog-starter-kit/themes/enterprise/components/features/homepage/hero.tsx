@@ -63,8 +63,8 @@ export default function Hero() {
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/work">
-								View My Work
+							<Link href="/projects">
+								View My Projects
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</Button>
