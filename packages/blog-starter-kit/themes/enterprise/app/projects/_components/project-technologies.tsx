@@ -1,3 +1,5 @@
+'use client';
+
 import { ProjectMeta } from '../../../data/projects/types';
 import { Badge } from '../../../components/ui/badge';
 

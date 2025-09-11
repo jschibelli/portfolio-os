@@ -1,3 +1,5 @@
+'use client';
+
 import { ProjectMeta } from '../../../data/projects/types';
 import { ExternalLinkIcon, GithubIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
 
@@ -26,10 +28,20 @@ function isValidUrl(url: string): boolean {
 
 /**
  * Checks if a URL is external (not same origin)
+ * Works both on server and client side
  */
 function isExternalUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
+    // Check if it's an absolute URL (starts with http/https)
+    const isAbsolute = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+    
+    // On server side, assume external if it's absolute and not localhost
+    if (typeof window === 'undefined') {
+      return isAbsolute && !urlObj.hostname.includes('localhost') && !urlObj.hostname.includes('127.0.0.1');
+    }
+    
+    // On client side, compare with current origin
     return urlObj.origin !== window.location.origin;
   } catch (error) {
     console.warn('External URL check failed:', error);
