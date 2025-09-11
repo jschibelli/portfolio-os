@@ -1,4 +1,58 @@
 {
+  "version": "1.0.0",
   "number": 19,
-  "url": "https://github.com/users/jschibelli/projects/19"
+  "url": "https://github.com/users/jschibelli/projects/19",
+  "description": "GitHub Project cache for Portfolio Site - schibelli.dev project management",
+  "lastUpdated": "2025-01-11",
+  "purpose": "Stores GitHub Project metadata for automation scripts and project tracking",
+  "configurable": {
+    "note": "Project number can be updated via environment variable GITHUB_PROJECT_NUMBER if needed",
+    "environmentVariable": "GITHUB_PROJECT_NUMBER"
+  },
+  "validation": {
+    "schema": "project-cache-v1",
+    "required": ["number", "url", "description"],
+    "types": {
+      "number": "integer",
+      "url": "string",
+      "description": "string"
+    },
+    "urlFormat": "https://github.com/users/{username}/projects/{number}",
+    "dateFormat": "YYYY-MM-DD",
+    "constraints": {
+      "number": {
+        "min": 1,
+        "max": 999999,
+        "description": "GitHub project number must be a positive integer"
+      },
+      "url": {
+        "pattern": "^https://github\\.com/users/[^/]+/projects/\\d+$",
+        "description": "URL must match GitHub projects format"
+      },
+      "description": {
+        "minLength": 10,
+        "maxLength": 500,
+        "description": "Description must be between 10 and 500 characters"
+      }
+    }
+  },
+  "errorHandling": {
+    "defaultValues": {
+      "number": 19,
+      "url": "https://github.com/users/jschibelli/projects/19",
+      "description": "Default project cache"
+    },
+    "fallbackStrategy": "useDefaultValues",
+    "errorCodes": {
+      "INVALID_NUMBER": "Project number must be a valid positive integer",
+      "INVALID_URL": "URL must match GitHub projects format",
+      "MISSING_REQUIRED_FIELD": "Required field is missing or empty",
+      "VALIDATION_FAILED": "Data validation failed"
+    }
+  },
+  "documentation": {
+    "schema": "This JSON file stores GitHub Project metadata for automation scripts",
+    "usage": "Used by project management automation to track and update project information",
+    "maintenance": "Update lastUpdated field when making changes to project configuration"
+  }
 }

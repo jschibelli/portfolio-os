@@ -4,6 +4,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
 
+// Shared styles for better maintainability
+const SHARED_BUTTON_STYLES = "group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl";
+
+// Animation variants for consistent motion
+const fadeInUp = {
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0 },
+	transition: { duration: 0.8, ease: 'easeOut' }
+};
+
+const fadeInUpDelayed = (delay: number) => ({
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0 },
+	transition: { duration: 0.8, delay, ease: 'easeOut' }
+});
+
 export default function Hero() {
 	return (
 		<section className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
@@ -23,9 +39,7 @@ export default function Hero() {
 			{/* Content */}
 			<div className="container relative z-10 mx-auto px-4 text-center">
 				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8, ease: 'easeOut' }}
+					{...fadeInUp}
 					className="mx-auto max-w-4xl space-y-8"
 				>
 					{/* Headline */}
@@ -43,37 +57,35 @@ export default function Hero() {
 
 					{/* Subhead */}
 					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+						{...fadeInUpDelayed(0.4)}
 						className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl"
 					>
 						React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
 					</motion.p>
 
-					{/* CTA Buttons */}
+					{/* CTA Buttons - Primary navigation actions for visitors */}
 					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+						{...fadeInUpDelayed(0.6)}
 						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
 					>
+						{/* Primary CTA: Navigate to portfolio projects showcase */}
 						<Button
 							size="lg"
-							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
+							className={SHARED_BUTTON_STYLES}
 							asChild
 						>
-							<Link href="/work">
-								View My Work
+							<Link href="/projects" aria-label="View my portfolio of web development projects and case studies">
+								View My Projects
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</Button>
+						{/* Secondary CTA: Navigate to blog for technical articles and insights */}
 						<Button
 							size="lg"
-							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
+							className={SHARED_BUTTON_STYLES}
 							asChild
 						>
-							<Link href="/blog">
+							<Link href="/blog" aria-label="Read my technical blog articles about web development and programming">
 								Read the Blog
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>

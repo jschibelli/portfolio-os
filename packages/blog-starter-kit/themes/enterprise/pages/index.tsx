@@ -95,6 +95,7 @@ export default function Home({ publication, recentPosts }: Props) {
 
 			{/* Footer */}
 			<Footer publication={publication} />
+
 		</AppProvider>
 	);
 }
