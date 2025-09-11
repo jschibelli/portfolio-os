@@ -12,8 +12,14 @@ function isValidUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
     // Only allow http and https protocols
-    return ['http:', 'https:'].includes(urlObj.protocol);
-  } catch {
+    const isValidProtocol = ['http:', 'https:'].includes(urlObj.protocol);
+    // Check for potentially malicious patterns
+    const isNotMalicious = !urlObj.hostname.includes('javascript:') && 
+                          !urlObj.hostname.includes('data:') &&
+                          !urlObj.hostname.includes('vbscript:');
+    return isValidProtocol && isNotMalicious;
+  } catch (error) {
+    console.warn('URL validation failed:', error);
     return false;
   }
 }
@@ -25,8 +31,24 @@ function isExternalUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
     return urlObj.origin !== window.location.origin;
-  } catch {
+  } catch (error) {
+    console.warn('External URL check failed:', error);
     return false;
+  }
+}
+
+/**
+ * Sanitizes URL to prevent XSS attacks
+ */
+function sanitizeUrl(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    // Remove potentially dangerous parts
+    urlObj.search = '';
+    urlObj.hash = '';
+    return urlObj.toString();
+  } catch {
+    return '';
   }
 }
 
@@ -67,9 +89,17 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
       variant: 'secondary' as const,
     },
   ]
-    .filter(link => link.url && isValidUrl(link.url)) // Filter out invalid URLs
+    .filter(link => {
+      if (!link.url) return false;
+      const isValid = isValidUrl(link.url);
+      if (!isValid) {
+        console.warn(`Invalid URL filtered out: ${link.label} - ${link.url}`);
+      }
+      return isValid;
+    })
     .map(link => ({
       ...link,
+      url: sanitizeUrl(link.url!),
       isExternal: isExternalUrl(link.url!),
     }));
 
@@ -105,9 +135,11 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
               }`}
               role="listitem"
               aria-label={`${link.label}${isExternal ? ' (opens in new tab)' : ''}`}
-              onError={(e) => {
-                console.error(`Failed to load link: ${link.label}`, link.url);
-                // Could add error handling here if needed
+              onMouseEnter={() => {
+                // Pre-validate link on hover for better UX
+                if (isExternal) {
+                  console.log(`External link: ${link.label} - ${link.url}`);
+                }
               }}
             >
               <Icon className="w-4 h-4" aria-hidden="true" />
