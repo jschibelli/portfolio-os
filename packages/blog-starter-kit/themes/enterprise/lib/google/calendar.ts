@@ -2,55 +2,80 @@ import { DateTime, Interval } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { getCalendar, getAuth } from './auth';
 
+// Simple in-memory cache for calendar data
+const cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+
+// Cache TTL in milliseconds (5 minutes for busy windows, 1 minute for free slots)
+const CACHE_TTL = {
+	BUSY_WINDOWS: 5 * 60 * 1000, // 5 minutes
+	FREE_SLOTS: 1 * 60 * 1000,   // 1 minute
+};
+
+// Generate cache key for requests
+function getCacheKey(type: string, params: Record<string, any>): string {
+	return `${type}:${JSON.stringify(params)}`;
+}
+
+// Get cached data if still valid
+function getCachedData(key: string): any | null {
+	const cached = cache.get(key);
+	if (!cached) return null;
+	
+	if (Date.now() - cached.timestamp > cached.ttl) {
+		cache.delete(key);
+		return null;
+	}
+	
+	return cached.data;
+}
+
+// Set cache data
+function setCachedData(key: string, data: any, ttl: number): void {
+	cache.set(key, {
+		data,
+		timestamp: Date.now(),
+		ttl
+	});
+}
+
+// Optimize time range to reduce API load
+function optimizeTimeRange(timeMinISO: string, timeMaxISO: string, timeZone: string): { timeMinISO: string; timeMaxISO: string } {
+	const start = DateTime.fromISO(timeMinISO, { zone: timeZone });
+	const end = DateTime.fromISO(timeMaxISO, { zone: timeZone });
+	
+	// Limit to maximum 30 days to prevent slow queries
+	const maxRange = 30;
+	const actualRange = end.diff(start, 'days').days;
+	
+	if (actualRange > maxRange) {
+		console.log(`⚡ [DEBUG] Optimizing time range from ${actualRange.toFixed(1)} days to ${maxRange} days`);
+		return {
+			timeMinISO: start.toISO()!,
+			timeMaxISO: start.plus({ days: maxRange }).toISO()!
+		};
+	}
+	
+	return { timeMinISO, timeMaxISO };
+}
+
+// Clear cache (useful for testing or when calendar data changes)
+export function clearCalendarCache(): void {
+	cache.clear();
+	console.log('🗑️ [DEBUG] Calendar cache cleared');
+}
+
+// Get cache statistics
+export function getCacheStats(): { size: number; entries: string[] } {
+	return {
+		size: cache.size,
+		entries: Array.from(cache.keys())
+	};
+}
+
 type Slot = { startISO: string; endISO: string };
 
 const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || 'primary';
 
-// Mock data for fallback when Google Calendar is unavailable
-function getMockAvailability(opts: {
-	timeMinISO: string;
-	timeMaxISO: string;
-	timeZone: string;
-	durationMinutes: number;
-	dayStartHour?: number;
-	dayEndHour?: number;
-	maxCandidates?: number;
-}): Slot[] {
-	const { timeMinISO, timeMaxISO, timeZone, durationMinutes, dayStartHour = 9, dayEndHour = 18, maxCandidates = 30 } = opts;
-	
-	const slots: Slot[] = [];
-	const start = DateTime.fromISO(timeMinISO, { zone: timeZone });
-	const end = DateTime.fromISO(timeMaxISO, { zone: timeZone });
-	
-	// Generate mock slots for the next 7 days
-	for (let day = 0; day < 7 && slots.length < maxCandidates; day++) {
-		const currentDay = start.plus({ days: day });
-		if (currentDay > end) break;
-		
-		// Skip weekends
-		if (currentDay.weekday > 5) continue;
-		
-		// Generate 3-4 slots per day
-		const slotsPerDay = Math.min(4, Math.floor(Math.random() * 2) + 3);
-		for (let i = 0; i < slotsPerDay && slots.length < maxCandidates; i++) {
-			const hour = dayStartHour + Math.floor(Math.random() * (dayEndHour - dayStartHour - 2));
-			const minute = Math.floor(Math.random() * 4) * 15; // 0, 15, 30, 45
-			
-			const slotStart = currentDay.set({ hour, minute, second: 0, millisecond: 0 });
-			const slotEnd = slotStart.plus({ minutes: durationMinutes });
-			
-			// Make sure slot is within business hours
-			if (slotStart.hour >= dayStartHour && slotEnd.hour <= dayEndHour) {
-				slots.push({
-					startISO: slotStart.toISO()!,
-					endISO: slotEnd.toISO()!
-				});
-			}
-		}
-	}
-	
-	return slots.slice(0, maxCandidates);
-}
 
 // Check if error is SSL/TLS related
 function isSSLError(error: any): boolean {
@@ -67,32 +92,76 @@ export async function getBusyWindows(opts: {
 	timeMaxISO: string;
 	timeZone: string;
 }) {
+	// Optimize time range for better performance
+	const optimizedRange = optimizeTimeRange(opts.timeMinISO, opts.timeMaxISO, opts.timeZone);
+	
+	// Check cache first
+	const cacheKey = getCacheKey('busy_windows', { ...opts, ...optimizedRange });
+	const cached = getCachedData(cacheKey);
+	if (cached) {
+		console.log('⚡ [DEBUG] Using cached busy windows data');
+		return cached;
+	}
+
+	console.log('🔍 [DEBUG] Fetching busy windows from API:', {
+		originalRange: { timeMinISO: opts.timeMinISO, timeMaxISO: opts.timeMaxISO },
+		optimizedRange,
+		timeZone: opts.timeZone,
+		calendarId: CALENDAR_ID
+	});
+
+	const startTime = Date.now();
+
 	try {
 		const calendar = getCalendar();
+		
+		// Optimize query parameters for better performance
 		const res = await calendar.freebusy.query({
 			requestBody: {
-				timeMin: opts.timeMinISO,
-				timeMax: opts.timeMaxISO,
+				timeMin: optimizedRange.timeMinISO,
+				timeMax: optimizedRange.timeMaxISO,
 				timeZone: opts.timeZone,
 				items: [{ id: CALENDAR_ID }],
+				// Add query optimization parameters
+				groupExpansionMax: 1, // Limit group expansion
+				calendarExpansionMax: 1, // Limit calendar expansion
 			},
 		});
+
+		const queryTime = Date.now() - startTime;
+		console.log(`⚡ [DEBUG] API query completed in ${queryTime}ms`);
 
 		const cal = res.data.calendars?.[CALENDAR_ID];
 		const busy = (cal?.busy ?? []).map((b) => ({
 			start: b.start!,
 			end: b.end!,
 		}));
+		
+		console.log('📊 [DEBUG] Found busy windows:', {
+			count: busy.length,
+			queryTime: `${queryTime}ms`
+		});
+		
+		// Cache the result
+		setCachedData(cacheKey, busy, CACHE_TTL.BUSY_WINDOWS);
+		
 		return busy;
 	} catch (error) {
-		console.error('Error fetching busy windows:', error);
+		const queryTime = Date.now() - startTime;
+		console.error('❌ [DEBUG] Error fetching busy windows:', {
+			error: error instanceof Error ? error.message : String(error),
+			queryTime: `${queryTime}ms`,
+			timeMinISO: opts.timeMinISO,
+			timeMaxISO: opts.timeMaxISO,
+			calendarId: CALENDAR_ID
+		});
 		
 		if (isSSLError(error)) {
-			console.warn('SSL/TLS error detected, returning empty busy windows for mock data fallback');
+			console.warn('🔒 [DEBUG] SSL/TLS error detected');
 		}
 		
-		// Return empty busy windows to allow mock data to work
-		return [];
+		// Always throw the error - no fallback to mock data
+		throw new Error(`Failed to fetch busy windows: ${error instanceof Error ? error.message : String(error)}`);
 	}
 }
 
@@ -118,8 +187,32 @@ export async function getFreeSlots(opts: {
 		maxCandidates = 30,
 	} = opts;
 
+	// Check cache first for free slots
+	const cacheKey = getCacheKey('free_slots', opts);
+	const cached = getCachedData(cacheKey);
+	if (cached) {
+		console.log('⚡ [DEBUG] Using cached free slots data');
+		return cached;
+	}
+
+	const startTime = Date.now();
+
 	try {
+		console.log('🎯 [DEBUG] Computing free slots with parameters:', {
+			timeMinISO,
+			timeMaxISO,
+			timeZone,
+			durationMinutes,
+			dayStartHour,
+			dayEndHour,
+			maxCandidates
+		});
+
 		const busy = await getBusyWindows({ timeMinISO, timeMaxISO, timeZone });
+		console.log('📋 [DEBUG] Received busy windows for free slot computation:', {
+			busyCount: busy.length
+		});
+		
 		const tz = timeZone;
 
 		const windowStart = DateTime.fromISO(timeMinISO, { zone: tz });
@@ -127,14 +220,14 @@ export async function getFreeSlots(opts: {
 
 		// Merge/normalize busy intervals.
 		const busyIntervals = busy
-			.map((b) =>
+			.map((b: { start: string; end: string }) =>
 				Interval.fromDateTimes(
 					DateTime.fromISO(b.start, { zone: tz }),
 					DateTime.fromISO(b.end, { zone: tz }),
 				),
 			)
-			.filter((i) => i.isValid)
-			.sort((a, b) => a.start!.toMillis() - b.start!.toMillis());
+			.filter((i: Interval) => i.isValid)
+			.sort((a: Interval, b: Interval) => a.start!.toMillis() - b.start!.toMillis());
 
 		const merged: Interval[] = [];
 		for (const i of busyIntervals) {
@@ -201,24 +294,30 @@ export async function getFreeSlots(opts: {
 			}
 			if (slots.length >= maxCandidates) break;
 		}
+		
+		const computationTime = Date.now() - startTime;
+		console.log('✅ [DEBUG] Generated free slots:', {
+			slotCount: slots.length,
+			computationTime: `${computationTime}ms`,
+			slots: slots.slice(0, 5).map(s => ({
+				start: new Date(s.startISO).toLocaleString(),
+				end: new Date(s.endISO).toLocaleString()
+			}))
+		});
+		
+		// Cache the result
+		setCachedData(cacheKey, slots, CACHE_TTL.FREE_SLOTS);
+		
 		return slots;
 	} catch (error) {
-		console.error('Error computing free slots:', error);
+		console.error('❌ [DEBUG] Error computing free slots:', error);
 		
 		if (isSSLError(error)) {
-			console.warn('SSL/TLS error detected, falling back to mock availability data');
+			console.warn('🔒 [DEBUG] SSL/TLS error detected');
 		}
 		
-		// Fallback to mock data
-		return getMockAvailability({
-			timeMinISO,
-			timeMaxISO,
-			timeZone,
-			durationMinutes,
-			dayStartHour,
-			dayEndHour,
-			maxCandidates
-		});
+		// Always throw the error - no fallback to mock data
+		throw new Error(`Failed to compute free slots: ${error instanceof Error ? error.message : String(error)}`);
 	}
 }
 
@@ -285,16 +384,10 @@ export async function createCalendarEventWithMeet(opts: {
 		console.error('Error creating calendar event:', error);
 		
 		if (isSSLError(error)) {
-			console.warn('SSL/TLS error detected, returning mock event creation response');
-			
-			// Return a mock response for SSL errors
-			return {
-				eventId: `mock-${uuidv4()}`,
-				htmlLink: `https://calendar.google.com/calendar/event?eid=mock-${uuidv4()}`,
-				meetUrl: `https://meet.google.com/mock-${uuidv4()}`,
-			};
+			console.warn('🔒 [DEBUG] SSL/TLS error detected');
 		}
 		
-		throw error;
+		// Always throw the error - no mock response
+		throw new Error(`Failed to create calendar event: ${error instanceof Error ? error.message : String(error)}`);
 	}
 }
