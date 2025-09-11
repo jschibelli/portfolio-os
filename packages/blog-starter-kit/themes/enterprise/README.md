@@ -49,9 +49,25 @@ npm run db:seed
 npm run dev
 ```
 
+### 5. GitHub Projects Setup (Optional)
+
+Set up a comprehensive GitHub Projects v2 board for portfolio management:
+
+```bash
+# Run the setup script (requires GitHub CLI and jq)
+bash scripts/setup_portfolio_project.sh
+```
+
+This script will:
+- Create a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
+- Set up issue templates for features and bugs
+- Configure automated workflows to add issues/PRs to the project
+- Create project views (Board and Table)
+- Set up GitHub secrets for automation
+
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
-### 5. Testing
+### 6. Testing
 
 This project includes comprehensive testing across multiple dimensions:
 

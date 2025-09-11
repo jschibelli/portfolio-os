@@ -1,0 +1,22 @@
+name: Add issues & PRs to Portfolio Project
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, ready_for_review]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to project
+        uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: ${{ secrets.PORTFOLIO_PROJECT_URL }}
+          github-token: ${{ secrets.PORTFOLIO_PROJECT_TOKEN }}
