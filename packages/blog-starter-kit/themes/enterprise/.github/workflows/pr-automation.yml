@@ -1,0 +1,69 @@
+name: PR Automation
+
+on:
+  pull_request:
+    types: [opened, synchronize, review_requested]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  pr-automation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Setup GitHub CLI
+        run: |
+          gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Run PR Monitor
+        run: |
+          chmod +x scripts/pr-monitor.ps1
+          pwsh scripts/pr-monitor.ps1 -PRNumber ${{ github.event.pull_request.number }}
+          
+      - name: Run CR-GPT Analyzer
+        run: |
+          chmod +x scripts/cr-gpt-analyzer.ps1
+          pwsh scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ github.event.pull_request.number }} -GenerateReport
+          
+      - name: Run Code Quality Checker
+        run: |
+          chmod +x scripts/code-quality-checker.ps1
+          pwsh scripts/code-quality-checker.ps1 -PRNumber ${{ github.event.pull_request.number }} -FixIssues -RunTests
+          
+      - name: Run Documentation Updater
+        run: |
+          chmod +x scripts/docs-updater.ps1
+          pwsh scripts/docs-updater.ps1 -PRNumber ${{ github.event.pull_request.number }} -UpdateChangelog -GenerateDocs
+          
+      - name: Upload generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-automation-files
+          path: |
+            cr-gpt-analysis-pr-*.md
+            quality-report-pr-*.md
+            CHANGELOG.md
+            docs/
+            
+      - name: Comment on PR
+        run: |
+          echo "## 🤖 PR Automation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ PR monitoring completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ CR-GPT analysis completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Code quality checks completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Documentation updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY
