@@ -16,6 +16,16 @@
       "number": "integer",
       "url": "string",
       "description": "string"
-    }
+    },
+    "urlFormat": "https://github.com/users/{username}/projects/{number}",
+    "dateFormat": "YYYY-MM-DD"
+  },
+  "errorHandling": {
+    "defaultValues": {
+      "number": 19,
+      "url": "https://github.com/users/jschibelli/projects/19",
+      "description": "Default project cache"
+    },
+    "fallbackStrategy": "useDefaultValues"
   }
 }
