@@ -1,22 +1,60 @@
 name: Add issues & PRs to Portfolio Project
 
+# This workflow automatically adds new issues and pull requests to the GitHub Project board
+# for better project management and tracking
+
 on:
   issues:
     types: [opened, labeled]
   pull_request:
     types: [opened, ready_for_review]
 
+# Required permissions for the workflow
 permissions:
   contents: read
   issues: read
   pull-requests: read
+  projects: write
 
 jobs:
-  add:
+  add-to-project:
     runs-on: ubuntu-latest
+    
+    # Only run if secrets are available
+    if: ${{ secrets.PORTFOLIO_PROJECT_URL && secrets.PORTFOLIO_PROJECT_TOKEN }}
+    
     steps:
+      - name: Validate secrets
+        run: |
+          if [ -z "${{ secrets.PORTFOLIO_PROJECT_URL }}" ]; then
+            echo "Error: PORTFOLIO_PROJECT_URL secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.PORTFOLIO_PROJECT_TOKEN }}" ]; then
+            echo "Error: PORTFOLIO_PROJECT_TOKEN secret is not set"
+            exit 1
+          fi
+          echo "✅ All required secrets are available"
+
       - name: Add to project
+        id: add-to-project
         uses: actions/add-to-project@v0.5.0
         with:
           project-url: ${{ secrets.PORTFOLIO_PROJECT_URL }}
           github-token: ${{ secrets.PORTFOLIO_PROJECT_TOKEN }}
+        continue-on-error: true
+
+      - name: Check result
+        if: steps.add-to-project.outcome == 'failure'
+        run: |
+          echo "❌ Failed to add item to project"
+          echo "This might be due to:"
+          echo "- Invalid project URL or token"
+          echo "- Insufficient permissions"
+          echo "- Project not found"
+          exit 1
+
+      - name: Success message
+        if: steps.add-to-project.outcome == 'success'
+        run: |
+          echo "✅ Successfully added item to project"

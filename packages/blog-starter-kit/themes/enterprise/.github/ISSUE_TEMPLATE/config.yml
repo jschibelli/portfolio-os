@@ -1,4 +1,10 @@
+# GitHub Issue Template Configuration
+# This file configures the issue templates and contact links for the repository
+
+# Disable blank issues to ensure users use proper templates
 blank_issues_enabled: false
+
+# Contact links for community support and discussions
 contact_links:
   - name: Questions
     url: https://github.com/jschibelli/mindware-blog/discussions

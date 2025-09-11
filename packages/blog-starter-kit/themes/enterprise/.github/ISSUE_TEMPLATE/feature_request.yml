@@ -20,8 +20,10 @@ body:
   attributes:
     label: Area
     options: ["Core","Blog","SEO","Accessibility","UI/Design","Infra"]
+  validations: { required: true }
 - type: dropdown
   id: size
   attributes:
     label: Size
     options: ["XS","S","M","L","XL"]
+  validations: { required: true }

@@ -53,17 +53,65 @@ npm run dev
 
 Set up a comprehensive GitHub Projects v2 board for portfolio management:
 
+#### Prerequisites
+Before running the setup script, ensure you have the following dependencies installed:
+
+- **GitHub CLI**: Required for GitHub API interactions
+  ```bash
+  # Install GitHub CLI (macOS)
+  brew install gh
+  
+  # Install GitHub CLI (Ubuntu/Debian)
+  sudo apt install gh
+  
+  # Install GitHub CLI (Windows)
+  winget install GitHub.cli
+  ```
+
+- **jq**: Required for JSON processing
+  ```bash
+  # Install jq (macOS)
+  brew install jq
+  
+  # Install jq (Ubuntu/Debian)
+  sudo apt install jq
+  
+  # Install jq (Windows)
+  winget install jqlang.jq
+  ```
+
+- **Authentication**: Ensure you're authenticated with GitHub CLI
+  ```bash
+  gh auth login
+  ```
+
+#### Setup Process
 ```bash
-# Run the setup script (requires GitHub CLI and jq)
+# Run the setup script
 bash scripts/setup_portfolio_project.sh
 ```
 
-This script will:
-- Create a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
-- Set up issue templates for features and bugs
-- Configure automated workflows to add issues/PRs to the project
-- Create project views (Board and Table)
-- Set up GitHub secrets for automation
+#### What the script does:
+- ✅ Creates a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
+- ✅ Sets up issue templates for features and bugs
+- ✅ Configures automated workflows to add issues/PRs to the project
+- ✅ Creates project views (Board and Table)
+- ✅ Sets up GitHub secrets for automation
+
+#### Error Handling
+If the setup script fails:
+
+1. **Check dependencies**: Ensure GitHub CLI and jq are installed and accessible
+2. **Verify authentication**: Run `gh auth status` to confirm you're logged in
+3. **Check permissions**: Ensure you have admin access to the repository
+4. **Review logs**: Check the script output for specific error messages
+5. **Manual setup**: If automated setup fails, you can manually create the project and configure the secrets
+
+#### Troubleshooting
+- **Permission denied**: Ensure you have admin access to the repository
+- **API rate limits**: Wait a few minutes and retry
+- **Invalid token**: Re-authenticate with `gh auth login`
+- **Project already exists**: The script will skip creation if a project already exists
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
