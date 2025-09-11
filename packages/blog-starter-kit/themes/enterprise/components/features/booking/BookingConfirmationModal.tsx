@@ -35,9 +35,14 @@ export function BookingConfirmationModal({
 			// Using 1000ms to provide good UX while ensuring proper loading state
 			await new Promise((resolve, reject) => {
 				setTimeout(() => {
-					// Simulate occasional API failures for realistic error handling
-					if (Math.random() < 0.1) { // 10% chance of failure
-						reject(new Error('Booking service temporarily unavailable'));
+					const random = Math.random();
+					// Simulate different types of API failures for realistic error handling
+					if (random < 0.05) { // 5% chance of network error
+						reject(new Error('Network connection failed. Please check your internet connection.'));
+					} else if (random < 0.08) { // 3% chance of server error
+						reject(new Error('Booking service temporarily unavailable. Please try again in a few minutes.'));
+					} else if (random < 0.1) { // 2% chance of validation error
+						reject(new Error('Invalid booking details. Please refresh the page and try again.'));
 					} else {
 						resolve(true);
 					}
@@ -48,7 +53,20 @@ export function BookingConfirmationModal({
 			onClose();
 		} catch (err) {
 			setIsLoading(false);
-			setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+			// Provide more specific error messages based on error type
+			if (err instanceof Error) {
+				if (err.message.includes('Network')) {
+					setError('Connection Error: ' + err.message);
+				} else if (err.message.includes('service')) {
+					setError('Service Error: ' + err.message);
+				} else if (err.message.includes('Invalid')) {
+					setError('Validation Error: ' + err.message);
+				} else {
+					setError(err.message);
+				}
+			} else {
+				setError('An unexpected error occurred. Please try again or contact support.');
+			}
 		}
 	};
 

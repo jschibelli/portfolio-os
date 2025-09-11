@@ -51,29 +51,31 @@ export default function Hero() {
 						React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
 					</motion.p>
 
-					{/* CTA Buttons */}
+					{/* CTA Buttons - Primary navigation actions for visitors */}
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
 						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
 					>
+						{/* Primary CTA: Navigate to portfolio projects showcase */}
 						<Button
 							size="lg"
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/projects" aria-label="View my portfolio projects">
+							<Link href="/projects" aria-label="View my portfolio of web development projects and case studies">
 								View My Projects
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</Button>
+						{/* Secondary CTA: Navigate to blog for technical articles and insights */}
 						<Button
 							size="lg"
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/blog" aria-label="Read my blog articles">
+							<Link href="/blog" aria-label="Read my technical blog articles about web development and programming">
 								Read the Blog
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
