@@ -4,6 +4,35 @@ import { getFreeSlots, getCacheStats } from '@/lib/google/calendar';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+// Define proper response interfaces for type safety
+interface TimeSlot {
+  start: string;
+  end: string;
+  available: boolean;
+}
+
+interface CacheStats {
+  hits: number;
+  misses: number;
+  hitRate: number;
+}
+
+interface SlotsResponse {
+  slots: TimeSlot[];
+  performance: {
+    totalTime: string;
+    slotCount: number;
+  };
+  cacheStats?: CacheStats;
+}
+
+interface ErrorResponse {
+  error: string;
+  performance: {
+    totalTime: string;
+  };
+}
+
 const Body = z.object({
 	durationMinutes: z.number().int().min(10).max(180),
 	// Window to search in (ISO, local time respected via timeZone).
@@ -18,18 +47,43 @@ const Body = z.object({
 	includeStats: z.boolean().optional().default(false),
 });
 
-export async function POST(req: NextRequest) {
+/**
+ * POST /api/schedule/slots-optimized
+ * 
+ * Retrieves available time slots for scheduling with enhanced performance and caching.
+ * 
+ * @param req - NextRequest containing scheduling parameters
+ * @returns Promise<NextResponse<SlotsResponse | ErrorResponse>>
+ * 
+ * @example
+ * ```typescript
+ * const response = await fetch('/api/schedule/slots-optimized', {
+ *   method: 'POST',
+ *   body: JSON.stringify({
+ *     durationMinutes: 60,
+ *     startISO: '2025-01-15T09:00:00Z',
+ *     endISO: '2025-01-15T17:00:00Z',
+ *     timeZone: 'America/New_York'
+ *   })
+ * });
+ * ```
+ */
+export async function POST(req: NextRequest): Promise<NextResponse<SlotsResponse | ErrorResponse>> {
 	const startTime = Date.now();
+	const requestId = crypto.randomUUID();
 	
 	try {
 		const json = await req.json();
 		const input = Body.parse(json);
 
+		// Enhanced logging with structured data and request tracking
 		console.log('🚀 [OPTIMIZED] Processing slots request:', {
+			requestId,
 			durationMinutes: input.durationMinutes,
 			timeRange: `${input.startISO} to ${input.endISO}`,
 			timeZone: input.timeZone,
-			useCache: input.useCache
+			useCache: input.useCache,
+			timestamp: new Date().toISOString()
 		});
 
 		const slots = await getFreeSlots({
@@ -44,7 +98,7 @@ export async function POST(req: NextRequest) {
 
 		const totalTime = Date.now() - startTime;
 		
-		const response: any = { 
+		const response: SlotsResponse = { 
 			slots,
 			performance: {
 				totalTime: `${totalTime}ms`,
@@ -57,20 +111,47 @@ export async function POST(req: NextRequest) {
 			response.cacheStats = getCacheStats();
 		}
 
-		console.log(`✅ [OPTIMIZED] Request completed in ${totalTime}ms`);
+		console.log(`✅ [OPTIMIZED] Request ${requestId} completed in ${totalTime}ms`);
 
 		return NextResponse.json(response);
 	} catch (e: any) {
 		const totalTime = Date.now() - startTime;
-		const msg = e?.issues ? JSON.stringify(e.issues) : e?.message || 'Unknown error';
 		
-		console.error(`❌ [OPTIMIZED] Request failed after ${totalTime}ms:`, msg);
+		// Enhanced error handling with specific error types
+		let statusCode = 400;
+		let errorMessage = 'Unknown error';
 		
-		return NextResponse.json({ 
-			error: msg,
+		if (e?.issues) {
+			// Zod validation errors
+			errorMessage = `Validation failed: ${JSON.stringify(e.issues)}`;
+			statusCode = 400;
+		} else if (e?.message) {
+			errorMessage = e.message;
+			// Determine status code based on error type
+			if (e.message.includes('timeout') || e.message.includes('network')) {
+				statusCode = 504; // Gateway Timeout
+			} else if (e.message.includes('unauthorized') || e.message.includes('permission')) {
+				statusCode = 401; // Unauthorized
+			} else if (e.message.includes('not found')) {
+				statusCode = 404; // Not Found
+			} else {
+				statusCode = 500; // Internal Server Error
+			}
+		}
+		
+		const errorResponse: ErrorResponse = {
+			error: errorMessage,
 			performance: {
 				totalTime: `${totalTime}ms`
 			}
-		}, { status: 400 });
+		};
+		
+		console.error(`❌ [OPTIMIZED] Request ${requestId} failed after ${totalTime}ms:`, {
+			error: errorMessage,
+			statusCode,
+			stack: e?.stack
+		});
+		
+		return NextResponse.json(errorResponse, { status: statusCode });
 	}
 }
