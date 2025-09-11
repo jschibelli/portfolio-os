@@ -9,10 +9,12 @@ import { Card, CardContent, CardHeader } from '../../ui/card';
 export interface Project {
 	id: string;
 	title: string;
+	slug?: string;
 	description: string;
 	image: string;
 	tags: string[];
 	caseStudyUrl: string;
+	liveUrl?: string;
 }
 
 interface ProjectCardProps {
@@ -78,18 +80,33 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						))}
 					</div>
 
-					{/* CTA Button */}
-					<Button
-						variant="outline"
-						size="sm"
-						className="group/btn w-full transition-all duration-300"
-						asChild
-					>
-						<Link href={project.caseStudyUrl}>
-							View Case Study
-							<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-						</Link>
-					</Button>
+					{/* CTA Buttons */}
+					<div className="flex gap-2">
+						{project.slug && (
+							<Button
+								variant="default"
+								size="sm"
+								className="group/btn flex-1 transition-all duration-300"
+								asChild
+							>
+								<Link href={`/projects/${project.slug}`}>
+									View Project
+									<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								</Link>
+							</Button>
+						)}
+						<Button
+							variant="outline"
+							size="sm"
+							className="group/btn flex-1 transition-all duration-300"
+							asChild
+						>
+							<Link href={project.caseStudyUrl}>
+								Case Study
+								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+							</Link>
+						</Button>
+					</div>
 				</CardContent>
 			</Card>
 		</motion.div>

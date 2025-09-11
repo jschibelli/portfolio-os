@@ -24,10 +24,12 @@ export default function WorkPage({ publication }: Props) {
 	const allProjects: Project[] = portfolioData.map((item: any) => ({
 		id: item.id,
 		title: item.title,
+		slug: item.slug,
 		description: item.description,
 		image: item.image,
 		tags: item.tags,
 		caseStudyUrl: item.caseStudyUrl,
+		liveUrl: item.liveUrl,
 	}));
 
 	// Featured projects (first 3)

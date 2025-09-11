@@ -94,12 +94,20 @@ export default function PortfolioPage({ publication }: Props) {
 												))}
 											</div>
 											<div className="flex gap-3">
+												{project.slug && (
+													<Link
+														href={`/projects/${project.slug}`}
+														className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+													>
+														View Project
+													</Link>
+												)}
 												{project.liveUrl && (
 													<a
 														href={project.liveUrl}
 														target="_blank"
 														rel="noopener noreferrer"
-														className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+														className="border-border hover:bg-muted rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
 													>
 														Live Demo
 													</a>
@@ -109,7 +117,7 @@ export default function PortfolioPage({ publication }: Props) {
 														href={project.caseStudyUrl}
 														className="border-border hover:bg-muted rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
 													>
-														View Case Study
+														Case Study
 													</Link>
 												)}
 											</div>
