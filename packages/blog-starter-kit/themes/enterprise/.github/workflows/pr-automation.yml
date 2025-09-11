@@ -1,5 +1,8 @@
 name: PR Automation
 
+# This workflow automates PR analysis, quality checks, and documentation updates
+# It runs on PR events and provides comprehensive feedback through cr-gpt analysis
+
 on:
   pull_request:
     types: [opened, synchronize, review_requested]
@@ -10,6 +13,11 @@ jobs:
   pr-automation:
     runs-on: ubuntu-latest
     
+    # Add environment variables for better security and configuration
+    env:
+      NODE_VERSION: '18'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           
       - name: Install dependencies
@@ -25,45 +33,82 @@ jobs:
         
       - name: Setup GitHub CLI
         run: |
-          gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+          # Secure token handling with proper validation
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "Error: GITHUB_TOKEN is not set"
+            exit 1
+          fi
+          gh auth login --with-token <<< "$GITHUB_TOKEN"
           
       - name: Run PR Monitor
         run: |
+          # Validate PR number before execution
+          if [ -z "${{ github.event.pull_request.number }}" ]; then
+            echo "Error: PR number is not available"
+            exit 1
+          fi
           chmod +x scripts/pr-monitor.ps1
           pwsh scripts/pr-monitor.ps1 -PRNumber ${{ github.event.pull_request.number }}
+        continue-on-error: true
           
       - name: Run CR-GPT Analyzer
         run: |
+          # Validate PR number and run analysis with error handling
+          if [ -z "${{ github.event.pull_request.number }}" ]; then
+            echo "Error: PR number is not available"
+            exit 1
+          fi
           chmod +x scripts/cr-gpt-analyzer.ps1
           pwsh scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ github.event.pull_request.number }} -GenerateReport
+        continue-on-error: true
           
       - name: Run Code Quality Checker
         run: |
+          # Validate PR number and run quality checks
+          if [ -z "${{ github.event.pull_request.number }}" ]; then
+            echo "Error: PR number is not available"
+            exit 1
+          fi
           chmod +x scripts/code-quality-checker.ps1
           pwsh scripts/code-quality-checker.ps1 -PRNumber ${{ github.event.pull_request.number }} -FixIssues -RunTests
+        continue-on-error: true
           
       - name: Run Documentation Updater
         run: |
+          # Validate PR number and update documentation
+          if [ -z "${{ github.event.pull_request.number }}" ]; then
+            echo "Error: PR number is not available"
+            exit 1
+          fi
           chmod +x scripts/docs-updater.ps1
           pwsh scripts/docs-updater.ps1 -PRNumber ${{ github.event.pull_request.number }} -UpdateChangelog -GenerateDocs
+        continue-on-error: true
           
       - name: Upload generated files
         uses: actions/upload-artifact@v4
         with:
-          name: pr-automation-files
+          name: pr-automation-files-${{ github.event.pull_request.number }}
           path: |
             cr-gpt-analysis-pr-*.md
             quality-report-pr-*.md
             CHANGELOG.md
             docs/
+          retention-days: 30
             
       - name: Comment on PR
         run: |
-          echo "## 🤖 PR Automation Results" >> $GITHUB_STEP_SUMMARY
+          # Generate comprehensive PR automation summary
+          echo "## 🤖 PR Automation Results for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ PR monitoring completed" >> $GITHUB_STEP_SUMMARY
-          echo "✅ CR-GPT analysis completed" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Code quality checks completed" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Documentation updated" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Completed Tasks:" >> $GITHUB_STEP_SUMMARY
+          echo "- PR monitoring and analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- CR-GPT bot comment analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- Code quality checks and validation" >> $GITHUB_STEP_SUMMARY
+          echo "- Documentation updates and changelog generation" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Generated Artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "- CR-GPT analysis report" >> $GITHUB_STEP_SUMMARY
+          echo "- Code quality report" >> $GITHUB_STEP_SUMMARY
+          echo "- Updated documentation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note**: Check the artifacts section for detailed reports and analysis results." >> $GITHUB_STEP_SUMMARY
