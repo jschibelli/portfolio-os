@@ -9,6 +9,11 @@ import { ProjectLinks } from '../_components/project-links';
 import { ProjectTimeline } from '../_components/project-timeline';
 import { Container } from '../../../components/shared/container';
 import { Badge } from '../../../components/ui/badge';
+import { Layout } from '../../../components/shared/layout';
+import ModernHeader from '../../../components/features/navigation/modern-header';
+import { Footer } from '../../../components/shared/footer';
+import Chatbot from '../../../components/features/chatbot/Chatbot';
+import { AppProvider } from '../../../components/contexts/appContext';
 
 interface ProjectPageProps {
   params: {
@@ -17,7 +22,8 @@ interface ProjectPageProps {
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
-  const project = await getProjectBySlug(params.slug);
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
   
   if (!project) {
     return {
@@ -30,6 +36,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const canonical = `https://schibelli.dev/projects/${project.slug}`;
 
   return {
+    metadataBase: new URL('https://schibelli.dev'),
     title,
     description,
     keywords: project.tags,
@@ -105,49 +112,72 @@ export async function generateStaticParams() {
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = await getProjectBySlug(params.slug);
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
 
+  // Default publication object for consistency
+  const publication = {
+    title: 'John Schibelli',
+    displayTitle: 'John Schibelli',
+    descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
+    url: 'https://schibelli.dev',
+    author: {
+      name: 'John Schibelli',
+    },
+    preferences: {
+      logo: null,
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-white dark:bg-stone-950">
-      <Container className="py-8">
-        <article className="max-w-4xl mx-auto">
-          {/* Project Header */}
-          <ProjectHeader project={project} />
-          
-          {/* Project Content */}
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              <ProjectContent project={project} />
-              <ProjectTechnologies project={project} />
-            </div>
-            
-            {/* Sidebar */}
-            <div className="space-y-8">
-              <ProjectLinks project={project} />
-              <ProjectTimeline project={project} />
+    <AppProvider publication={publication}>
+      <Layout>
+        <ModernHeader publication={publication} />
+        
+        <main className="min-h-screen bg-background">
+          <Container className="py-8">
+            <article className="max-w-4xl mx-auto">
+              {/* Project Header */}
+              <ProjectHeader project={project} />
               
-              {/* Project Tags */}
-              <div className="bg-stone-50 dark:bg-stone-900 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-                  Technologies & Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-sm">
-                      {tag}
-                    </Badge>
-                  ))}
+              {/* Project Content */}
+              <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+                {/* Main Content */}
+                <div className="lg:col-span-2 space-y-8">
+                  <ProjectContent project={project} />
+                  <ProjectTechnologies project={project} />
+                </div>
+                
+                {/* Sidebar */}
+                <div className="space-y-8">
+                  <ProjectLinks project={project} />
+                  <ProjectTimeline project={project} />
+                  
+                  {/* Project Tags */}
+                  <div className="bg-stone-50 dark:bg-stone-900 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+                      Technologies & Tags
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-sm">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </article>
-      </Container>
-    </div>
+            </article>
+          </Container>
+        </main>
+        
+        <Chatbot />
+      </Layout>
+    </AppProvider>
   );
 }

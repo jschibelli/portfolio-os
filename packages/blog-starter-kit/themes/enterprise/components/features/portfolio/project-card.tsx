@@ -12,7 +12,8 @@ export interface Project {
 	description: string;
 	image: string;
 	tags: string[];
-	caseStudyUrl: string;
+	caseStudyUrl?: string;
+	slug?: string;
 }
 
 interface ProjectCardProps {
@@ -51,7 +52,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 
 					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
 						<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
-							View Case Study
+							View Project
 						</div>
 					</div>
 				</div>
@@ -85,8 +86,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						className="group/btn w-full transition-all duration-300"
 						asChild
 					>
-						<Link href={project.caseStudyUrl}>
-							View Case Study
+						<Link href={project.slug ? `/projects/${project.slug}` : project.caseStudyUrl || '#'}>
+							View Project
 							<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
 						</Link>
 					</Button>

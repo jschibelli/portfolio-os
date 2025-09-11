@@ -565,8 +565,6 @@ export default function About({ publication }: Props) {
 				</section>
 			</main>
 
-			<Footer publication={publication} />
-
 			{/* Chatbot */}
 			<Chatbot />
 		</AppProvider>

@@ -1,3 +1,5 @@
+"use client";
+
 import parse from 'html-react-parser';
 import Head from 'next/head';
 import { useAppContext } from '../contexts/appContext';

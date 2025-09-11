@@ -16,7 +16,8 @@ interface OpengraphImageProps {
 }
 
 export default async function OpengraphImage({ params }: OpengraphImageProps) {
-  const project = await getProjectBySlug(params.slug);
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return new ImageResponse(

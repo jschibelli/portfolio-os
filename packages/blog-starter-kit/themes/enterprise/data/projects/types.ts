@@ -8,6 +8,7 @@ export interface ProjectMeta {
   liveUrl?: string;
   caseStudyUrl?: string;
   githubUrl?: string;
+  documentationUrl?: string;
   featured?: boolean;
   status: 'completed' | 'in-progress' | 'planned' | 'archived';
   startDate?: string;

@@ -72,7 +72,6 @@ export default function Post({ series, publication, posts }: Props) {
 						<div>No Posts found</div>
 					)}
 				</Container>
-				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);

@@ -10,6 +10,7 @@ export const synaplyai: ProjectMeta = {
   liveUrl: 'https://synaply.ai',
   caseStudyUrl: '/case-studies/synaplyai',
   githubUrl: 'https://github.com/jschibelli/synaplyai',
+  documentationUrl: 'https://docs.synaply.ai',
   featured: true,
   status: 'completed',
   startDate: '2024-01-15',

@@ -1,5 +1,5 @@
 import { ProjectMeta } from '../../../data/projects/types';
-import { ExternalLinkIcon, GithubIcon, FileTextIcon } from 'lucide-react';
+import { ExternalLinkIcon, GithubIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
 
 interface ProjectLinksProps {
   project: ProjectMeta;
@@ -23,6 +23,12 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
       label: 'Case Study',
       url: project.caseStudyUrl,
       icon: FileTextIcon,
+      variant: 'secondary' as const,
+    },
+    {
+      label: 'Documentation',
+      url: project.documentationUrl,
+      icon: BookOpenIcon,
       variant: 'secondary' as const,
     },
   ].filter(link => link.url);
@@ -51,6 +57,8 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
                   ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200'
                   : link.variant === 'outline'
                   ? 'border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800'
+                  : link.label === 'Documentation'
+                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30'
                   : 'bg-stone-200 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-stone-300 dark:hover:bg-stone-700'
               }`}
             >

@@ -1,9 +1,83 @@
 import { ProjectMeta } from '../../../data/projects/types';
 import { Badge } from '../../../components/ui/badge';
-import { CalendarIcon, CodeIcon, ExternalLinkIcon, GithubIcon, UsersIcon } from 'lucide-react';
+import { CalendarIcon, CodeIcon, ExternalLinkIcon, GithubIcon, UsersIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
+
+interface ContextualButton {
+  label: string;
+  url: string;
+  icon?: any;
+  external: boolean;
+  className: string;
+}
 
 interface ProjectHeaderProps {
   project: ProjectMeta;
+}
+
+// Smart contextual button selection based on project type and available links
+function getContextualHeaderButtons(project: ProjectMeta): ContextualButton[] {
+  const buttons: ContextualButton[] = [];
+  
+  // Define button configurations
+  const buttonConfigs = {
+    liveSite: {
+      label: 'View Live Site',
+      url: project.liveUrl!,
+      icon: ExternalLinkIcon,
+      external: true,
+      className: 'inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg font-medium hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors'
+    },
+    caseStudy: {
+      label: 'Read Case Study',
+      url: project.caseStudyUrl!,
+      icon: FileTextIcon,
+      external: false,
+      className: 'inline-flex items-center gap-2 px-6 py-3 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors'
+    },
+    documentation: {
+      label: 'Documentation',
+      url: project.documentationUrl!,
+      icon: BookOpenIcon,
+      external: true,
+      className: 'inline-flex items-center gap-2 px-6 py-3 border border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors'
+    },
+    viewCode: {
+      label: 'View Code',
+      url: project.githubUrl!,
+      icon: GithubIcon,
+      external: true,
+      className: 'inline-flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors'
+    }
+  };
+
+  // Priority-based selection logic - only add buttons if URLs exist
+  // 1. Live Site (highest priority for user-facing projects)
+  if (project.liveUrl) {
+    buttons.push(buttonConfigs.liveSite);
+  }
+  
+  // 2. Case Study (high priority for portfolio projects)
+  if (project.caseStudyUrl) {
+    buttons.push(buttonConfigs.caseStudy);
+  }
+  
+  // 3. Documentation (for technical projects without case studies)
+  if (project.documentationUrl && !project.caseStudyUrl) {
+    buttons.push(buttonConfigs.documentation);
+  }
+  
+  // 4. View Code (for open source or when no live site)
+  if (project.githubUrl && !project.liveUrl) {
+    buttons.push(buttonConfigs.viewCode);
+  }
+  
+  // If we have less than 2 buttons, add GitHub as a secondary action (only if it exists and not already added)
+  if (buttons.length < 2 && project.githubUrl && !buttons.some(b => b.url === project.githubUrl)) {
+    buttons.push(buttonConfigs.viewCode);
+  }
+  
+  // Limit to 3 buttons maximum for clean layout
+  return buttons.slice(0, 3);
 }
 
 export function ProjectHeader({ project }: ProjectHeaderProps) {
@@ -73,41 +147,23 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
         )}
       </div>
 
-      {/* Action Links */}
-      <div className="flex flex-wrap gap-4 pt-4">
-        {project.liveUrl && (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg font-medium hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors"
-          >
-            <ExternalLinkIcon className="w-4 h-4" />
-            View Live Site
-          </a>
-        )}
-        
-        {project.githubUrl && (
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
-          >
-            <GithubIcon className="w-4 h-4" />
-            View Code
-          </a>
-        )}
-        
-        {project.caseStudyUrl && (
-          <a
-            href={project.caseStudyUrl}
-            className="inline-flex items-center gap-2 px-6 py-3 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
-          >
-            Read Case Study
-          </a>
-        )}
-      </div>
+      {/* Action Links - Context-Aware Selection */}
+      {getContextualHeaderButtons(project).length > 0 && (
+        <div className="flex flex-wrap gap-4 pt-4">
+          {getContextualHeaderButtons(project).map((button, index) => (
+            <a
+              key={index}
+              href={button.url}
+              target={button.external ? '_blank' : undefined}
+              rel={button.external ? 'noopener noreferrer' : undefined}
+              className={button.className}
+            >
+              {button.icon && <button.icon className="w-4 h-4" />}
+              {button.label}
+            </a>
+          ))}
+        </div>
+      )}
     </header>
   );
 }

@@ -4,8 +4,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "../../components/admin/Sidebar";
-import { ThemeProvider } from "../../components/contexts/ThemeContext";
-import Script from "next/script";
 
 export default function AdminLayout({
   children,
@@ -55,28 +53,9 @@ export default function AdminLayout({
   }
 
   return (
-    <>
-      <Script
-        id="admin-dark-theme"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              // Force dark theme for admin cockpit
-              const root = document.documentElement;
-              root.classList.remove('light');
-              root.classList.add('dark');
-              localStorage.setItem('admin-theme', 'dark');
-            })();
-          `,
-        }}
-      />
-      <ThemeProvider>
-              <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors">
-        <Sidebar />
-        <main className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-900 overflow-auto transition-colors md:ml-0">{children}</main>
-      </div>
-      </ThemeProvider>
-    </>
+    <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors">
+      <Sidebar />
+      <main className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-900 overflow-auto transition-colors md:ml-0">{children}</main>
+    </div>
   );
 }

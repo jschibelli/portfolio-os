@@ -17,26 +17,19 @@ import { Badge, Button } from '../components/ui';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import portfolioData from '../data/portfolio.json';
+import { getAllProjects } from '../lib/project-utils';
 import { PublicationByHostDocument } from '../generated/graphql';
 
 interface Props {
 	publication: any;
 }
 
-export default function ProjectsPage({ publication }: Props) {
+export default function ProjectsPage({ publication, projects }: Props & { projects: Project[] }) {
 	const router = useRouter();
 	const { tags, search, sort } = router.query;
 
-	// Convert portfolio data to Project interface
-	const allProjects: Project[] = portfolioData.map((item: any) => ({
-		id: item.id,
-		title: item.title,
-		description: item.description,
-		image: item.image,
-		tags: item.tags,
-		caseStudyUrl: item.caseStudyUrl,
-	}));
+	// Use projects passed from getStaticProps
+	const allProjects: Project[] = projects;
 
 	// Extract all unique tags for filtering
 	const allTags = Array.from(new Set(allProjects.flatMap(project => project.tags))).sort();
@@ -553,14 +546,15 @@ export default function ProjectsPage({ publication }: Props) {
 	);
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props & { projects: Project[] }> = async () => {
 	const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 
 	try {
-		const data = await request(GQL_ENDPOINT, PublicationByHostDocument, {
-			host: host,
-		});
+		const [data, projects] = await Promise.all([
+			request(GQL_ENDPOINT, PublicationByHostDocument, { host }),
+			getAllProjects()
+		]);
 
 		const publication = data.publication;
 		if (!publication) {
@@ -569,15 +563,38 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 			};
 		}
 
+		// Convert project data to Project interface
+		const projectCards: Project[] = projects.map((project) => ({
+			id: project.id,
+			title: project.title,
+			description: project.description,
+			image: project.image,
+			tags: project.tags,
+			caseStudyUrl: project.caseStudyUrl,
+			slug: project.slug,
+		}));
+
 		return {
 			props: {
 				publication,
+				projects: projectCards,
 			},
 			revalidate: 1,
 		};
 	} catch (error) {
 		console.error('Error fetching publication data:', error);
 		// Return a fallback response to prevent the build from failing
+		const fallbackProjects = await getAllProjects().catch(() => []);
+		const projectCards: Project[] = fallbackProjects.map((project) => ({
+			id: project.id,
+			title: project.title,
+			description: project.description,
+			image: project.image,
+			tags: project.tags,
+			caseStudyUrl: project.caseStudyUrl,
+			slug: project.slug,
+		}));
+
 		return {
 			props: {
 				publication: {
@@ -603,6 +620,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 						image: null,
 					},
 				} as any,
+				projects: projectCards,
 			},
 			revalidate: 1,
 		};

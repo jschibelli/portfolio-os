@@ -1,7 +1,7 @@
 import { ProjectMeta } from '../data/projects/types';
 
 // Import all project data
-import { chatbotDemo } from '../data/projects/chatbot-demo';
+import { tendrilo } from '../data/projects/tendrilo';
 import { schibelliSite } from '../data/projects/schibelli-site';
 import { synaplyai } from '../data/projects/synaplyai';
 import { ecommerceShopifyChatbot } from '../data/projects/ecommerce-shopify-chatbot';
@@ -12,7 +12,7 @@ import { intraweb } from '../data/projects/intraweb';
 
 // Array of all projects
 const allProjects: ProjectMeta[] = [
-  chatbotDemo,
+  tendrilo,
   schibelliSite,
   synaplyai,
   ecommerceShopifyChatbot,
