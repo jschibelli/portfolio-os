@@ -19,7 +19,7 @@ interface CallToActionProps {
 export default function CallToAction({
 	showLiveDemo = true,
 	showContact = true,
-	liveDemoUrl = '/work',
+	liveDemoUrl = '/projects',
 	contactUrl = '/contact',
 	className = '',
 	title = 'Ready to Get Started?',

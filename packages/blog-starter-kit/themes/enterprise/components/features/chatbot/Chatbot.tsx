@@ -69,6 +69,7 @@ interface PageContext {
 		| 'home'
 		| 'about'
 		| 'work'
+		| 'projects'
 		| 'portfolio'
 		| 'contact'
 		| 'blog'
@@ -279,6 +280,7 @@ export default function Chatbot() {
 				| 'home'
 				| 'about'
 				| 'work'
+				| 'projects'
 				| 'portfolio'
 				| 'contact'
 				| 'blog'
@@ -288,39 +290,62 @@ export default function Chatbot() {
 				| 'page' = 'page';
       let specificType = '';
       
+      // Route detection configuration for better maintainability
+      const routeConfig = [
+        { path: ['/', '/index'], type: 'home' as const },
+        { path: ['/about'], type: 'about' as const },
+        { path: ['/contact'], type: 'contact' as const },
+        { path: ['/blog'], type: 'blog' as const, exact: true },
+        { path: ['/projects'], type: 'projects' as const },
+        { path: ['/portfolio'], type: 'portfolio' as const },
+        { path: ['/services'], type: 'services' as const },
+        { path: ['/case-studies', '/case-study'], type: 'case-study' as const },
+      ];
+
       // Analyze pathname to determine page type
-      if (pathname === '/' || pathname === '/index') {
-        pageType = 'home';
-      } else if (pathname.includes('/about')) {
-        pageType = 'about';
-      } else if (pathname.includes('/work') || pathname.includes('/portfolio')) {
-        pageType = 'work';
-        specificType = pathname.includes('/portfolio') ? 'portfolio' : 'work';
-      } else if (pathname.includes('/contact')) {
-        pageType = 'contact';
-      } else if (pathname.includes('/blog') && pathname !== '/blog') {
+      let routeMatched = false;
+      
+      for (const config of routeConfig) {
+        const isMatch = config.exact 
+          ? config.path.includes(pathname)
+          : config.path.some(path => pathname.includes(path));
+          
+        if (isMatch) {
+          pageType = config.type;
+          routeMatched = true;
+          
+          // Set specific type based on route
+          if (config.type === 'projects' || config.type === 'portfolio') {
+            specificType = config.type;
+          } else if (config.type === 'services') {
+            // Extract specific service type
+            if (pathname.includes('/web-development')) specificType = 'web-development';
+            else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
+            else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
+            else if (pathname.includes('/consulting')) specificType = 'consulting';
+            else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
+            else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
+          } else if (config.type === 'case-study') {
+            // Extract case study name from URL
+            const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
+            if (match) specificType = match[1];
+          }
+          break;
+        }
+      }
+
+      // Handle blog articles (individual blog posts)
+      if (!routeMatched && pathname.includes('/blog') && pathname !== '/blog') {
         pageType = 'article';
-      } else if (pathname === '/blog') {
-        pageType = 'blog';
-      } else if (pathname.includes('/services')) {
-        pageType = 'services';
-        // Extract specific service type
-        if (pathname.includes('/web-development')) specificType = 'web-development';
-        else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
-        else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
-        else if (pathname.includes('/consulting')) specificType = 'consulting';
-        else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
-        else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
-      } else if (pathname.includes('/case-studies') || pathname.includes('/case-study')) {
-        pageType = 'case-study';
-        // Extract case study name from URL
-        const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
-        if (match) specificType = match[1];
-      } else if (pathname !== '/') {
-        // Check if it looks like an article (has content and title)
-				if (pageHeading && pageContent && pageContent.length > 500) {
+        routeMatched = true;
+      }
+
+      // Fallback: Check if it looks like an article (has content and title)
+      if (!routeMatched && pathname !== '/') {
+        if (pageHeading && pageContent && pageContent.length > 500) {
           pageType = 'article';
         }
+        // If still no match, keep default 'page' type
       }
       
       // Always return context if we have any meaningful content

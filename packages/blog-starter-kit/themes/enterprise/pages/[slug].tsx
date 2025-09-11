@@ -247,7 +247,6 @@ export default function PostOrPage(props: Props) {
 						{props.type === 'page' && <Page {...props} />}
 					</article>
 				</Container>
-				<Footer publication={publication} />
 				<Chatbot />
 			</Layout>
 		</AppProvider>
