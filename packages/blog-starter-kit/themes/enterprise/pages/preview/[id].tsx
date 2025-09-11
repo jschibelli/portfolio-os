@@ -7,7 +7,7 @@ import { MarkdownToHtml } from '../../components/features/blog/markdown-to-html'
 import { PostHeader } from '../../components/features/blog/post-header';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
-import { Layout } from '../../components/shared/layout'; // Layout component includes Footer automatically
+import { Layout } from '../../components/shared/layout'; // Layout component automatically includes Footer - no need for explicit Footer import
 import type { Post } from '../../generated/graphql';
 import {
 	DraftByIdDocument,

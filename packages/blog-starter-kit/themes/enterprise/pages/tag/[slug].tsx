@@ -4,7 +4,7 @@ import { AppProvider } from '../../components/contexts/appContext';
 import { MorePosts } from '../../components/features/blog/more-posts';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
-import { Layout } from '../../components/shared/layout'; // Layout component includes Footer automatically
+import { Layout } from '../../components/shared/layout'; // Layout component automatically includes Footer - no need for explicit Footer import
 import type { Post } from '../../generated/graphql';
 import {
 	Publication,
