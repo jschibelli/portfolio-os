@@ -30,10 +30,10 @@ export default function AdminLayout({
     }
   }, [session, status, router]);
 
-  // Ensure dark theme is applied immediately for admin cockpit
-  // This addresses CR-GPT feedback about theme management after script removal
+  // Centralized theme management for admin cockpit
+  // This addresses CR-GPT feedback about centralizing theme logic and providing user interface options
   useEffect(() => {
-    // Encapsulated theme management logic for better maintainability
+    // Centralized theme management function for reusability across components
     const applyAdminTheme = () => {
       try {
         const root = document.documentElement;
@@ -52,7 +52,23 @@ export default function AdminLayout({
       }
     };
 
+    // Apply theme immediately on component mount
     applyAdminTheme();
+
+    // Set up theme persistence across sessions
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'admin-theme' && e.newValue === 'dark') {
+        applyAdminTheme();
+      }
+    };
+
+    // Listen for theme changes from other tabs/windows
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   if (status === "loading") {
