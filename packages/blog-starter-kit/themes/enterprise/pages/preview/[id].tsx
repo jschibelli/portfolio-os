@@ -68,7 +68,6 @@ export default function Post({ publication, post }: Props) {
 						</div>
 					</article>
 				</Container>
-				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);
