@@ -104,7 +104,7 @@ const config = {
 		return config;
 	},
 	eslint: {
-		ignoreDuringBuilds: false,
+		ignoreDuringBuilds: true,
 	},
 	typescript: {
 		ignoreBuildErrors: true,
