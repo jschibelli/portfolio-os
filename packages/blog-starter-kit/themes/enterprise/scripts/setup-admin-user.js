@@ -9,7 +9,7 @@ async function setupAdminUser() {
     
     // Get admin credentials from environment or prompt
     const adminEmail = process.env.AUTH_ADMIN_EMAIL || 'admin@mindware-blog.com';
-    const adminPassword = process.env.AUTH_ADMIN_PASSWORD || 'admin123';
+    const adminPassword = process.env.AUTH_ADMIN_PASSWORD || 'SecureAdmin2025!@#';
     const adminName = process.env.AUTH_ADMIN_NAME || 'Admin User';
     
     // Check if admin user already exists
