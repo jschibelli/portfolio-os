@@ -13,7 +13,7 @@ import { CaseStudyMarkdown } from '../components/features/case-studies/case-stud
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Container } from '../components/shared/container';
-import { Layout } from '../components/shared/layout';
+import { Layout } from '../components/shared/layout'; // Layout component includes Footer automatically
 import { SEOHead } from '../components/shared/seo-head';
 import {
 	PageByPublicationDocument,

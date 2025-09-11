@@ -284,7 +284,7 @@ export const CaseStudyLayout: React.FC<CaseStudyLayoutProps> = ({
 				</div>
 			</Container>
 
-			{/* Footer */}
+			{/* Footer - Case study pages now include footer for consistency */}
 			<Footer publication={publication} />
 		</div>
 	);
