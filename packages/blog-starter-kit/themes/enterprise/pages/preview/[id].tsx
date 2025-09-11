@@ -7,7 +7,6 @@ import { MarkdownToHtml } from '../../components/features/blog/markdown-to-html'
 import { PostHeader } from '../../components/features/blog/post-header';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
-import { Footer } from '../../components/shared/footer';
 import { Layout } from '../../components/shared/layout';
 import type { Post } from '../../generated/graphql';
 import {

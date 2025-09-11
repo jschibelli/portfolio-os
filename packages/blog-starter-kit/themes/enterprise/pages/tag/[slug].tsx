@@ -4,7 +4,6 @@ import { AppProvider } from '../../components/contexts/appContext';
 import { MorePosts } from '../../components/features/blog/more-posts';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
-import { Footer } from '../../components/shared/footer';
 import { Layout } from '../../components/shared/layout';
 import type { Post } from '../../generated/graphql';
 import {

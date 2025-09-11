@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { PostFullFragment, PublicationFragment } from '../../../generated/graphql';
 import { generateStandardizedTOC } from '../../../lib/case-study-template';
 import { Container } from '../../shared/container';
+import { Footer } from '../../shared/footer';
 import CustomScrollArea from '../../shared/scroll-area';
 import { Button } from '../../ui/button';
 import { Card, CardContent } from '../../ui/card';
@@ -282,6 +283,9 @@ export const CaseStudyLayout: React.FC<CaseStudyLayoutProps> = ({
 					)}
 				</div>
 			</Container>
+
+			{/* Footer */}
+			<Footer publication={publication} />
 		</div>
 	);
 };
