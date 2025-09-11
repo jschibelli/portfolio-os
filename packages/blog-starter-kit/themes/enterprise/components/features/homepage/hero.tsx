@@ -63,7 +63,7 @@ export default function Hero() {
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/projects">
+							<Link href="/projects" aria-label="View my portfolio projects">
 								View My Projects
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
@@ -73,7 +73,7 @@ export default function Hero() {
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/blog">
+							<Link href="/blog" aria-label="Read my blog articles">
 								Read the Blog
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>

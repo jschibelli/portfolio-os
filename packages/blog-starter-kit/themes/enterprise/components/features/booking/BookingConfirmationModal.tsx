@@ -24,13 +24,32 @@ export function BookingConfirmationModal({
 	bookingDetails,
 }: BookingConfirmationModalProps) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const handleConfirm = async () => {
 		setIsLoading(true);
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		setIsLoading(false);
-		onClose();
+		setError(null);
+		
+		try {
+			// Simulate API call with realistic timing
+			// Using 1000ms to provide good UX while ensuring proper loading state
+			await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					// Simulate occasional API failures for realistic error handling
+					if (Math.random() < 0.1) { // 10% chance of failure
+						reject(new Error('Booking service temporarily unavailable'));
+					} else {
+						resolve(true);
+					}
+				}, 1000);
+			});
+			
+			setIsLoading(false);
+			onClose();
+		} catch (err) {
+			setIsLoading(false);
+			setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+		}
 	};
 
 	return (
@@ -70,6 +89,17 @@ export function BookingConfirmationModal({
 						</div>
 					</div>
 
+					{error && (
+						<div className="bg-red-50 dark:bg-red-950/20 rounded-lg p-4">
+							<h4 className="font-medium text-red-900 dark:text-red-100 mb-2">
+								Booking Error
+							</h4>
+							<p className="text-sm text-red-800 dark:text-red-200">
+								{error}
+							</p>
+						</div>
+					)}
+
 					<div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4">
 						<h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
 							What happens next?
@@ -87,7 +117,7 @@ export function BookingConfirmationModal({
 							disabled={isLoading}
 							className="flex-1"
 						>
-							{isLoading ? 'Confirming...' : 'Confirm Booking'}
+							{isLoading ? 'Confirming...' : error ? 'Retry Booking' : 'Confirm Booking'}
 						</Button>
 						<Button
 							variant="outline"

@@ -15,23 +15,26 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 rounded-md transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+        className="p-2 rounded-md transition-colors hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
         disabled
+        aria-label="Theme toggle (loading)"
       >
         <Sun className="h-5 w-5" />
       </button>
     );
   }
 
-  const toggleTheme = () => {
+  const handleThemeToggle = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   return (
     <button
-      onClick={toggleTheme}
-      className="p-2 rounded-md transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+      onClick={handleThemeToggle}
+      className="p-2 rounded-md transition-colors hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100"
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+      aria-pressed={theme === 'dark'}
     >
       {theme === 'light' ? (
         <Moon className="h-5 w-5" />
