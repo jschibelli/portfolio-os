@@ -31,12 +31,15 @@ export default function AdminLayout({
   }, [session, status, router]);
 
   // Ensure dark theme is applied immediately for admin cockpit
+  // This addresses CR-GPT feedback about theme management after script removal
   useEffect(() => {
-    // Force dark theme on admin pages
+    // Force dark theme on admin pages for consistent admin interface
     const root = document.documentElement;
     if (!root.classList.contains('dark')) {
       root.classList.remove('light');
       root.classList.add('dark');
+      // Store theme preference for persistence
+      localStorage.setItem('admin-theme', 'dark');
     }
   }, []);
 

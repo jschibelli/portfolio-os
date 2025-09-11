@@ -1,41 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { z } from 'zod';
 
-// Initialize OpenAI client
+// Input validation schema for enhanced security
+const TTSRequestSchema = z.object({
+  text: z.string().min(1).max(4000), // OpenAI TTS character limit
+  voice: z.enum(['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer']).default('alloy')
+});
+
+// Initialize OpenAI client with enhanced configuration
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  timeout: 30000, // 30 second timeout
 });
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if OpenAI API key is configured first
+    // Enhanced API key validation with better error messaging
     if (!process.env.OPENAI_API_KEY) {
       console.error('🔊 OpenAI API key not configured');
       return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
+        { error: 'Service temporarily unavailable. Please contact support.' },
+        { status: 503 }
       );
     }
 
-    const { text, voice = 'alloy' } = await request.json();
-
-    if (!text) {
-      console.error('🔊 No text provided in request');
-      return NextResponse.json(
-        { error: 'Text is required' },
-        { status: 400 }
-      );
-    }
-
-    // Validate voice parameter
-    const validVoices = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
-    const selectedVoice = validVoices.includes(voice) ? voice : 'alloy';
+    // Validate and parse request with enhanced error handling
+    const body = await request.json();
+    const { text, voice } = TTSRequestSchema.parse(body);
 
 
-    // Generate speech using OpenAI TTS
+    // Generate speech using OpenAI TTS with enhanced error handling
     const mp3 = await openai.audio.speech.create({
       model: 'tts-1',
-      voice: selectedVoice as any,
+      voice: voice as any,
       input: text,
       response_format: 'mp3',
     });
@@ -43,27 +41,36 @@ export async function POST(request: NextRequest) {
     // Convert the response to a buffer
     const buffer = Buffer.from(await mp3.arrayBuffer());
 
-    // Return the audio file
+    // Return the audio file with enhanced security headers
     return new NextResponse(buffer, {
       status: 200,
       headers: {
         'Content-Type': 'audio/mpeg',
         'Content-Length': buffer.length.toString(),
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://johnschibelli.dev' : '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
       },
     });
 
   } catch (error) {
     console.error('🔊 TTS API Error:', error);
     
-    // Handle specific OpenAI API errors
+    // Enhanced error handling with specific error types
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request parameters', details: error.errors },
+        { status: 400 }
+      );
+    }
+    
     if (error instanceof Error) {
       if (error.message.includes('401') || error.message.includes('Unauthorized')) {
         return NextResponse.json(
-          { error: 'OpenAI API key is invalid or expired' },
+          { error: 'Authentication failed' },
           { status: 401 }
         );
       }
@@ -75,7 +82,7 @@ export async function POST(request: NextRequest) {
       }
       if (error.message.includes('insufficient_quota')) {
         return NextResponse.json(
-          { error: 'OpenAI API quota exceeded' },
+          { error: 'Service quota exceeded' },
           { status: 402 }
         );
       }
@@ -91,14 +98,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle CORS preflight requests
+// Handle CORS preflight requests with enhanced security
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://johnschibelli.dev' : '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });
 }
