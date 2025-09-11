@@ -8,10 +8,18 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isToggling, setIsToggling] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Clear error when theme changes successfully
+  useEffect(() => {
+    if (error && !isToggling) {
+      setError(null);
+    }
+  }, [theme, error, isToggling]);
 
   if (!mounted) {
     return (
@@ -28,19 +36,18 @@ export function ThemeToggle() {
   const handleThemeToggle = () => {
     try {
       setError(null);
+      setIsToggling(true);
       const newTheme = theme === 'light' ? 'dark' : 'light';
       setTheme(newTheme);
       
-      // Verify theme was set successfully
+      // Reset toggling state after a short delay
       setTimeout(() => {
-        if (theme === newTheme) {
-          console.warn('Theme toggle may have failed - theme did not change as expected');
-          setError('Theme toggle failed. Please try again.');
-        }
-      }, 100);
+        setIsToggling(false);
+      }, 200);
     } catch (err) {
       console.error('Error toggling theme:', err);
       setError('Failed to change theme. Please refresh the page.');
+      setIsToggling(false);
     }
   };
 
@@ -48,13 +55,16 @@ export function ThemeToggle() {
     <div className="relative">
       <button
         onClick={handleThemeToggle}
-        className="p-2 rounded-md transition-colors hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
-        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+        disabled={isToggling}
+        className="p-2 rounded-md transition-colors hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        title={isToggling ? 'Changing theme...' : `Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+        aria-label={isToggling ? 'Changing theme...' : `Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
         aria-pressed={theme === 'dark'}
         aria-describedby={error ? "theme-error" : undefined}
       >
-        {theme === 'light' ? (
+        {isToggling ? (
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-stone-300 border-t-stone-600 dark:border-stone-600 dark:border-t-stone-300" />
+        ) : theme === 'light' ? (
           <Moon className="h-5 w-5" />
         ) : (
           <Sun className="h-5 w-5" />
