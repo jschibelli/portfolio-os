@@ -26,10 +26,12 @@ export default function Intro() {
 						</div>
 
 						{/* Introduction Text */}
-						<div className="flex-1 space-y-4">
-							<h2 className="text-2xl font-bold text-stone-900 md:text-3xl dark:text-stone-100">
-								About Me
-							</h2>
+						<article className="flex-1 space-y-4">
+							<header>
+								<h2 className="text-2xl font-bold text-stone-900 md:text-3xl dark:text-stone-100">
+									About Me
+								</h2>
+							</header>
 							<div className="prose prose-stone dark:prose-invert max-w-none">
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
 									My journey into development started in an unexpected place—teaching web development 
@@ -51,7 +53,7 @@ export default function Intro() {
 									anyone can follow.
 								</p>
 							</div>
-						</div>
+						</article>
 					</div>
 				</motion.div>
 
