@@ -50,9 +50,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 			transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
 			viewport={{ once: true }}
 			whileHover={{ y: -8 }}
-			className="h-full"
+			className="h-full flex"
 		>
-			<Card className="group h-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl">
+			<Card className="group h-full w-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl flex flex-col">
 				{/* Image */}
 				<div className="relative h-48 overflow-hidden">
 					<Image
@@ -63,11 +63,18 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					/>
 					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
 
+					{/* Technology Tags - Positioned in top-right corner */}
 					{project.tags?.length ? (
-						<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
-							<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
-								{project.tags[0]}
-							</Badge>
+						<div className="absolute right-4 top-4 flex gap-1.5 transition-all duration-300 group-hover:scale-105">
+							{project.tags.slice(0, 2).map((tag, tagIndex) => (
+								<Badge 
+									key={tagIndex} 
+									variant="secondary" 
+									className="bg-white/90 border border-white/50 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-2 py-1"
+								>
+									{tag}
+								</Badge>
+							))}
 						</div>
 					) : null}
 
@@ -79,120 +86,65 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 				</div>
 
 				{/* Content */}
-				<CardHeader className="pb-4">
+				<CardHeader className="pb-2">
 					<h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
 						{project.title}
 					</h3>
 				</CardHeader>
 
-				<CardContent className="space-y-4">
-					{/* Description */}
-					<p className="leading-relaxed text-muted-foreground">
-						{project.description}
-					</p>
-
-					{/* Case Study Preview - Display problem/solution/results structure */}
-					{project.caseStudyPreview && (
-						<div className="rounded-lg bg-stone-50 p-4 dark:bg-stone-900">
-							<h4 className="mb-2 text-sm font-semibold text-stone-900 dark:text-stone-100">
-								Case Study Preview
-							</h4>
-							<div className="space-y-2 text-xs">
-								<div>
-									<span className="font-medium text-stone-700 dark:text-stone-300">Problem:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">
-										{project.caseStudyPreview.problem || 'No problem statement available'}
-									</span>
-								</div>
-								<div>
-									<span className="font-medium text-stone-700 dark:text-stone-300">Solution:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">
-										{project.caseStudyPreview.solution || 'No solution description available'}
-									</span>
-								</div>
-								<div>
-									<span className="font-medium text-stone-700 dark:text-stone-300">Results:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">
-										{project.caseStudyPreview.results || 'No results data available'}
-									</span>
-								</div>
-							</div>
-						</div>
-					)}
-
-					{/* Performance Metrics - Display key performance and business indicators */}
-					{project.metrics && (
-						<div className="space-y-3">
-							<h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
-								Key Results
-							</h4>
-							<div className="grid grid-cols-2 gap-3">
-								{/* Performance Metrics - Technical performance indicators */}
-								<div className="space-y-2">
-									<div className="flex items-center gap-2">
-										<TrendingUpIcon className="h-3 w-3 text-green-600" />
-										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Performance</span>
-									</div>
-									<div className="text-xs text-stone-600 dark:text-stone-400">
-										<div>⚡ {project.metrics.performance?.loadTimeImprovement || 'N/A'} faster</div>
-										<div>🕒 {project.metrics.performance?.responseTime || 'N/A'} response</div>
-										<div>🔄 {project.metrics.performance?.uptime || 'N/A'} uptime</div>
-									</div>
-								</div>
-
-								{/* Business Metrics - Business impact indicators */}
-								<div className="space-y-2">
-									<div className="flex items-center gap-2">
-										<UsersIcon className="h-3 w-3 text-blue-600" />
-										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Business</span>
-									</div>
-									<div className="text-xs text-stone-600 dark:text-stone-400">
-										{project.metrics.business && Object.entries(project.metrics.business).slice(0, 3).map(([key, value]) => (
-											<div key={key}>
-												📈 {value || 'N/A'} {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
-											</div>
-										))}
-									</div>
-								</div>
-							</div>
-						</div>
-					)}
-
-					{/* Tags */}
-					<div className="flex flex-wrap gap-2">
-						{project.tags?.slice(1, 3).map((tag, tagIndex) => (
-							<Badge key={tagIndex} variant="outline" className="text-xs">
-								{tag}
-							</Badge>
-						))}
+				<CardContent className="flex flex-col flex-1 p-6 pt-2">
+					{/* Description - Flexible content area */}
+					<div className="flex-1">
+						<p className="leading-relaxed text-muted-foreground">
+							{project.description}
+						</p>
 					</div>
 
-					{/* CTA Buttons */}
-					<div className="flex gap-2">
+					{/* Fixed bottom section for stats and button */}
+					<div className="mt-6 space-y-4">
+						{/* Key Results - Clean, professional metrics display */}
+						{project.metrics && (
+							<div className="border-t border-stone-200 pt-4 dark:border-stone-800">
+								<div className="grid grid-cols-2 gap-4">
+									{/* Performance Metric */}
+									{project.metrics.performance?.loadTimeImprovement && (
+										<div className="text-center">
+											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+												{project.metrics.performance.loadTimeImprovement}
+											</div>
+											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
+												Faster Load Time
+											</div>
+										</div>
+									)}
+									
+									{/* Business Metric */}
+									{project.metrics.business && Object.entries(project.metrics.business).slice(0, 1).map(([key, value]) => (
+										<div key={key} className="text-center">
+											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+												{value}
+											</div>
+											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
+												{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+
+						{/* CTA Button - Always at bottom */}
 						<Button
 							variant="outline"
 							size="sm"
-							className="group/btn flex-1 transition-all duration-300"
+							className="group/btn w-full transition-all duration-300"
 							asChild
 						>
-							<Link href={project.slug ? `/projects/${project.slug}` : project.caseStudyUrl || '#'}>
-								View Project
+							<Link href={project.caseStudyUrl || (project.slug ? `/projects/${project.slug}` : '#')}>
+								{project.caseStudyUrl ? 'View Case Study' : 'View Project'}
 								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
 							</Link>
 						</Button>
-						{project.caseStudyUrl && (
-							<Button
-								variant="secondary"
-								size="sm"
-								className="group/btn transition-all duration-300"
-								asChild
-							>
-								<Link href={project.caseStudyUrl}>
-									Case Study
-									<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-								</Link>
-							</Button>
-						)}
 					</div>
 				</CardContent>
 			</Card>

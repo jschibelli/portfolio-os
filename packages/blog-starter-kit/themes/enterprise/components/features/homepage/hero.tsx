@@ -22,7 +22,7 @@ const fadeInUpDelayed = (delay: number) => ({
 
 export default function Hero() {
 	return (
-		<section className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
+		<header className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
 			{/* Background Image */}
 			<div className="absolute inset-0 z-0">
 				<Image
@@ -40,63 +40,70 @@ export default function Hero() {
 			<div className="container relative z-10 mx-auto px-4 text-center">
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl space-y-8"
+					className="mx-auto max-w-4xl space-y-6"
 				>
 					{/* Hero Tagline */}
 					<motion.h1
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-						className="text-4xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl"
+						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
 					>
-						Building Smarter, Faster Web Applications
+						Building Smarter, Faster<br />
+						Web Applications
 					</motion.h1>
 
 					{/* Value Proposition */}
-					<motion.div
+					<motion.section
 						{...fadeInUpDelayed(0.4)}
-						className="space-y-4"
+						className="space-y-3"
+						aria-labelledby="hero-name"
 					>
-						<p className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
+						<p id="hero-name" className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
 							John Schibelli
 						</p>
-						<p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl">
+						<p className="text-lg font-semibold text-stone-300 md:text-xl lg:text-2xl">
 							Senior Front-End Developer
 						</p>
-						<p className="mx-auto max-w-3xl text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl">
+						<p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-stone-300 md:text-lg lg:text-xl">
 							Transforming ideas into high-performance digital experiences that drive business growth. 
 							Expert in React, Next.js, and TypeScript with 15+ years of proven results.
 						</p>
-					</motion.div>
+					</motion.section>
 
 					{/* CTA Buttons - Business-focused actions */}
-					<motion.div
+					<motion.nav
 						{...fadeInUpDelayed(0.6)}
 						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+						aria-label="Primary navigation actions"
 					>
 						{/* Primary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
-							className={SHARED_BUTTON_STYLES}
+							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
 							asChild
 						>
 							<Link href="/projects" aria-label="View proven results and case studies of successful web applications">
-								See My Results
-								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+								<span className="flex items-center">
+									See My Results
+									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+								</span>
 							</Link>
 						</Button>
 						{/* Secondary CTA: Start a conversation about your project */}
 						<Button
 							size="lg"
-							className={SHARED_BUTTON_STYLES}
+							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
 							asChild
 						>
 							<Link href="/contact" aria-label="Start a conversation about your web development project needs">
-								Start Your Project
-								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+								<span className="flex items-center">
+									Start Your Project
+									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+								</span>
 							</Link>
 						</Button>
-					</motion.div>
+					</motion.nav>
 				</motion.div>
 			</div>
 
@@ -119,6 +126,6 @@ export default function Hero() {
 					/>
 				</motion.div>
 			</motion.div>
-		</section>
+		</header>
 	);
 }
