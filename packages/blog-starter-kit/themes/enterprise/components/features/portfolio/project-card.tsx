@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowRightIcon, TrendingUpIcon, ClockIcon, UsersIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '../../ui/badge';
@@ -14,6 +14,21 @@ export interface Project {
 	tags: string[];
 	caseStudyUrl?: string;
 	slug?: string;
+	metrics?: {
+		performance: {
+			loadTimeImprovement: string;
+			responseTime: string;
+			uptime: string;
+		};
+		business: {
+			[key: string]: string;
+		};
+	};
+	caseStudyPreview?: {
+		problem: string;
+		solution: string;
+		results: string;
+	};
 }
 
 interface ProjectCardProps {
@@ -70,6 +85,67 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						{project.description}
 					</p>
 
+					{/* Case Study Preview */}
+					{project.caseStudyPreview && (
+						<div className="rounded-lg bg-stone-50 p-4 dark:bg-stone-900">
+							<h4 className="mb-2 text-sm font-semibold text-stone-900 dark:text-stone-100">
+								Case Study Preview
+							</h4>
+							<div className="space-y-2 text-xs">
+								<div>
+									<span className="font-medium text-stone-700 dark:text-stone-300">Problem:</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.problem}</span>
+								</div>
+								<div>
+									<span className="font-medium text-stone-700 dark:text-stone-300">Solution:</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.solution}</span>
+								</div>
+								<div>
+									<span className="font-medium text-stone-700 dark:text-stone-300">Results:</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.results}</span>
+								</div>
+							</div>
+						</div>
+					)}
+
+					{/* Performance Metrics */}
+					{project.metrics && (
+						<div className="space-y-3">
+							<h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+								Key Results
+							</h4>
+							<div className="grid grid-cols-2 gap-3">
+								{/* Performance Metrics */}
+								<div className="space-y-2">
+									<div className="flex items-center gap-2">
+										<TrendingUpIcon className="h-3 w-3 text-green-600" />
+										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Performance</span>
+									</div>
+									<div className="text-xs text-stone-600 dark:text-stone-400">
+										<div>⚡ {project.metrics.performance.loadTimeImprovement} faster</div>
+										<div>🕒 {project.metrics.performance.responseTime} response</div>
+										<div>🔄 {project.metrics.performance.uptime} uptime</div>
+									</div>
+								</div>
+
+								{/* Business Metrics */}
+								<div className="space-y-2">
+									<div className="flex items-center gap-2">
+										<UsersIcon className="h-3 w-3 text-blue-600" />
+										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Business</span>
+									</div>
+									<div className="text-xs text-stone-600 dark:text-stone-400">
+										{Object.entries(project.metrics.business).slice(0, 3).map(([key, value]) => (
+											<div key={key}>
+												📈 {value} {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						</div>
+					)}
+
 					{/* Tags */}
 					<div className="flex flex-wrap gap-2">
 						{project.tags?.slice(1, 3).map((tag, tagIndex) => (
@@ -79,18 +155,33 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						))}
 					</div>
 
-					{/* CTA Button */}
-					<Button
-						variant="outline"
-						size="sm"
-						className="group/btn w-full transition-all duration-300"
-						asChild
-					>
-						<Link href={project.slug ? `/projects/${project.slug}` : project.caseStudyUrl || '#'}>
-							View Project
-							<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-						</Link>
-					</Button>
+					{/* CTA Buttons */}
+					<div className="flex gap-2">
+						<Button
+							variant="outline"
+							size="sm"
+							className="group/btn flex-1 transition-all duration-300"
+							asChild
+						>
+							<Link href={project.slug ? `/projects/${project.slug}` : project.caseStudyUrl || '#'}>
+								View Project
+								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+							</Link>
+						</Button>
+						{project.caseStudyUrl && (
+							<Button
+								variant="secondary"
+								size="sm"
+								className="group/btn transition-all duration-300"
+								asChild
+							>
+								<Link href={project.caseStudyUrl}>
+									Case Study
+									<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								</Link>
+							</Button>
+						)}
+					</div>
 				</CardContent>
 			</Card>
 		</motion.div>

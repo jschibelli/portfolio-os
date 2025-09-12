@@ -14,6 +14,9 @@ export default function FeaturedProjects() {
 		image: item.image,
 		tags: item.tags,
 		caseStudyUrl: item.caseStudyUrl,
+		slug: item.slug,
+		metrics: item.metrics,
+		caseStudyPreview: item.caseStudyPreview,
 	}));
 
 	return (
@@ -30,7 +33,7 @@ export default function FeaturedProjects() {
 						Featured Projects
 					</h2>
 					<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
-						A selection of recent projects showcasing modern web development and design solutions
+						A selection of recent projects showcasing modern web development solutions with concrete results and case study insights
 					</p>
 				</motion.div>
 
