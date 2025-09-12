@@ -40,7 +40,7 @@ export default function Hero() {
 			<div className="container relative z-10 mx-auto px-4 text-center">
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl space-y-8"
+					className="mx-auto max-w-4xl space-y-6"
 				>
 					{/* Hero Tagline */}
 					<motion.h1
@@ -56,7 +56,7 @@ export default function Hero() {
 					{/* Value Proposition */}
 					<motion.div
 						{...fadeInUpDelayed(0.4)}
-						className="space-y-4"
+						className="space-y-3"
 					>
 						<p className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
 							John Schibelli
