@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../icons';
 import { Container } from './container';
+import { PersonalLogo } from './personal-logo';
 
 interface FooterProps {
 	publication?: {
@@ -17,6 +18,11 @@ export const Footer = ({ publication }: FooterProps) => {
 		<footer className="border-t border-border bg-white dark:bg-stone-950" role="contentinfo">
 			<Container className="px-5 py-12">
 				<div className="flex flex-col items-center justify-between gap-6 text-center">
+					{/* Logo */}
+					<div className="mb-4">
+						<PersonalLogo size="small" />
+					</div>
+					
 					{/* Social Links */}
 					<nav aria-label="Social media links">
 						<div className="flex items-center gap-4" role="list">
