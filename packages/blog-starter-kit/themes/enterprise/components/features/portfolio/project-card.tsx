@@ -37,6 +37,12 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, index }: ProjectCardProps) {
+	// Error handling for missing project data
+	if (!project) {
+		console.warn('ProjectCard: Missing project data');
+		return null;
+	}
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -85,7 +91,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						{project.description}
 					</p>
 
-					{/* Case Study Preview */}
+					{/* Case Study Preview - Display problem/solution/results structure */}
 					{project.caseStudyPreview && (
 						<div className="rounded-lg bg-stone-50 p-4 dark:bg-stone-900">
 							<h4 className="mb-2 text-sm font-semibold text-stone-900 dark:text-stone-100">
@@ -94,50 +100,56 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 							<div className="space-y-2 text-xs">
 								<div>
 									<span className="font-medium text-stone-700 dark:text-stone-300">Problem:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.problem}</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">
+										{project.caseStudyPreview.problem || 'No problem statement available'}
+									</span>
 								</div>
 								<div>
 									<span className="font-medium text-stone-700 dark:text-stone-300">Solution:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.solution}</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">
+										{project.caseStudyPreview.solution || 'No solution description available'}
+									</span>
 								</div>
 								<div>
 									<span className="font-medium text-stone-700 dark:text-stone-300">Results:</span>
-									<span className="ml-1 text-stone-600 dark:text-stone-400">{project.caseStudyPreview.results}</span>
+									<span className="ml-1 text-stone-600 dark:text-stone-400">
+										{project.caseStudyPreview.results || 'No results data available'}
+									</span>
 								</div>
 							</div>
 						</div>
 					)}
 
-					{/* Performance Metrics */}
+					{/* Performance Metrics - Display key performance and business indicators */}
 					{project.metrics && (
 						<div className="space-y-3">
 							<h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
 								Key Results
 							</h4>
 							<div className="grid grid-cols-2 gap-3">
-								{/* Performance Metrics */}
+								{/* Performance Metrics - Technical performance indicators */}
 								<div className="space-y-2">
 									<div className="flex items-center gap-2">
 										<TrendingUpIcon className="h-3 w-3 text-green-600" />
 										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Performance</span>
 									</div>
 									<div className="text-xs text-stone-600 dark:text-stone-400">
-										<div>⚡ {project.metrics.performance.loadTimeImprovement} faster</div>
-										<div>🕒 {project.metrics.performance.responseTime} response</div>
-										<div>🔄 {project.metrics.performance.uptime} uptime</div>
+										<div>⚡ {project.metrics.performance?.loadTimeImprovement || 'N/A'} faster</div>
+										<div>🕒 {project.metrics.performance?.responseTime || 'N/A'} response</div>
+										<div>🔄 {project.metrics.performance?.uptime || 'N/A'} uptime</div>
 									</div>
 								</div>
 
-								{/* Business Metrics */}
+								{/* Business Metrics - Business impact indicators */}
 								<div className="space-y-2">
 									<div className="flex items-center gap-2">
 										<UsersIcon className="h-3 w-3 text-blue-600" />
 										<span className="text-xs font-medium text-stone-700 dark:text-stone-300">Business</span>
 									</div>
 									<div className="text-xs text-stone-600 dark:text-stone-400">
-										{Object.entries(project.metrics.business).slice(0, 3).map(([key, value]) => (
+										{project.metrics.business && Object.entries(project.metrics.business).slice(0, 3).map(([key, value]) => (
 											<div key={key}>
-												📈 {value} {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
+												📈 {value || 'N/A'} {key.replace(/([A-Z])/g, ' $1').toLowerCase()}
 											</div>
 										))}
 									</div>
