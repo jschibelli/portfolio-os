@@ -93,6 +93,9 @@ export default function Home({ publication, recentPosts }: Props) {
 				<Chatbot />
 			</main>
 
+			{/* Footer */}
+			<Footer publication={publication} />
+
 		</AppProvider>
 	);
 }

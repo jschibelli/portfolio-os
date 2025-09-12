@@ -7,8 +7,7 @@ import { MorePosts } from '../../components/features/blog/more-posts';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
 import { CoverImage } from '../../components/shared/cover-image';
-import { Footer } from '../../components/shared/footer';
-import { Layout } from '../../components/shared/layout';
+import { Layout } from '../../components/shared/layout'; // Layout component automatically includes Footer - no need for explicit Footer import
 import {
 	PostFragment,
 	PublicationFragment,
