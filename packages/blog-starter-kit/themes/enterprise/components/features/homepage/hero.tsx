@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowRightIcon, MailIcon, MessageSquareIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
@@ -71,13 +71,28 @@ export default function Hero() {
 						</p>
 					</motion.section>
 
-					{/* CTA Buttons - Business-focused actions */}
+					{/* Enhanced CTA Button Hierarchy */}
 					<motion.nav
 						{...fadeInUpDelayed(0.6)}
-						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+						className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6"
 						aria-label="Primary navigation actions"
 					>
-						{/* Primary CTA: View proven results and case studies */}
+						{/* Primary CTA: Start conversation about project goals */}
+						<Button
+							size="lg"
+							className={`${SHARED_BUTTON_STYLES} min-w-[180px] justify-center bg-gradient-to-r from-stone-900 to-stone-700 text-white hover:from-stone-800 hover:to-stone-600`}
+							asChild
+						>
+							<Link href="/contact" aria-label="Start a conversation about your project goals and business objectives">
+								<span className="flex items-center">
+									<MessageSquareIcon className="mr-2 h-5 w-5" />
+									Discuss Your Goals
+									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+								</span>
+							</Link>
+						</Button>
+
+						{/* Secondary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
 							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
@@ -90,20 +105,24 @@ export default function Hero() {
 								</span>
 							</Link>
 						</Button>
-						{/* Secondary CTA: Start a conversation about your project */}
-						<Button
-							size="lg"
-							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
-							asChild
-						>
-							<Link href="/contact" aria-label="Start a conversation about your web development project needs">
-								<span className="flex items-center">
-									Start Your Project
-									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-								</span>
-							</Link>
-						</Button>
 					</motion.nav>
+
+					{/* Tertiary CTA: Direct email option */}
+					<motion.div
+						{...fadeInUpDelayed(0.8)}
+						className="flex flex-col items-center justify-center gap-2"
+					>
+						<p className="text-sm text-stone-300">
+							Prefer email? 
+							<a 
+								href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" 
+								className="ml-1 font-semibold text-white underline hover:text-stone-200 transition-colors"
+								aria-label="Send email directly to discuss your project"
+							>
+								Email me directly
+							</a>
+						</p>
+					</motion.div>
 				</motion.div>
 			</div>
 

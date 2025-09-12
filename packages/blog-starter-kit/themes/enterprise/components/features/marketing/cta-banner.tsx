@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ClockIcon, MailIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MessageSquareIcon, PhoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
 
@@ -25,44 +25,67 @@ export default function CTABanner() {
 					{/* Main CTA */}
 					<div className="space-y-4">
 						<h2 className="text-3xl font-bold text-white md:text-4xl">
-							Available for Freelance & Consulting
+							Let&apos;s Discuss Your Project Goals
 						</h2>
 						<p className="mx-auto max-w-2xl text-xl text-stone-200">
-							Let&apos;s work together to bring your ideas to life with modern, scalable solutions.
+							Ready to transform your ideas into high-performance digital experiences? Let&apos;s explore how we can achieve your business objectives together.
 						</p>
 					</div>
 
-					{/* Contact Button */}
+					{/* CTA Button Hierarchy */}
 					<motion.div
 						initial={{ opacity: 0, scale: 0.9 }}
 						whileInView={{ opacity: 1, scale: 1 }}
 						transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
 						viewport={{ once: true }}
+						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
 					>
+						{/* Primary CTA: Contact Form */}
 						<Button
 							size="lg"
 							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
 							asChild
 						>
-							<Link href="/contact">
-								<MailIcon className="mr-2 h-5 w-5" />
-								Contact Me
+							<Link href="/contact" aria-label="Start a conversation about your project goals">
+								<MessageSquareIcon className="mr-2 h-5 w-5" />
+								Start Conversation
 							</Link>
+						</Button>
+
+						{/* Secondary CTA: Direct Email */}
+						<Button
+							size="lg"
+							variant="outline"
+							className="group border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-stone-900 hover:shadow-xl"
+							asChild
+						>
+							<a href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" aria-label="Send email directly to discuss your project">
+								<MailIcon className="mr-2 h-5 w-5" />
+								Email Directly
+							</a>
 						</Button>
 					</motion.div>
 
-					{/* Subtext with icon */}
+					{/* Enhanced subtext with multiple contact options */}
 					<motion.div
 						initial={{ opacity: 0 }}
 						whileInView={{ opacity: 1 }}
 						transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
 						viewport={{ once: true }}
-						className="flex items-center justify-center gap-2 text-stone-300"
+						className="space-y-3"
 					>
-						<ClockIcon className="h-4 w-4" />
-						<span className="text-sm">
-							Quick response time and code samples available on request
-						</span>
+						<div className="flex items-center justify-center gap-2 text-stone-300">
+							<ClockIcon className="h-4 w-4" />
+							<span className="text-sm">
+								Quick response time and code samples available on request
+							</span>
+						</div>
+						<div className="flex items-center justify-center gap-2 text-stone-300">
+							<PhoneIcon className="h-4 w-4" />
+							<span className="text-sm">
+								Available for remote work and local projects in Northern NJ
+							</span>
+						</div>
 					</motion.div>
 
 					{/* Additional info */}
