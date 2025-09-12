@@ -6,15 +6,38 @@ import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
 
 export default function FeaturedProjects() {
-	// Convert portfolio data to Project interface
-	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => ({
-		id: item.id,
-		title: item.title,
-		description: item.description,
-		image: item.image,
-		tags: item.tags,
-		caseStudyUrl: item.caseStudyUrl,
-	}));
+	// Error handling for missing portfolio data
+	if (!portfolioData || !Array.isArray(portfolioData)) {
+		console.error('FeaturedProjects: Invalid or missing portfolio data');
+		return (
+			<section className="bg-white py-20 dark:bg-stone-950">
+				<div className="container mx-auto px-4 text-center">
+					<p className="text-stone-600 dark:text-stone-400">Unable to load featured projects.</p>
+				</div>
+			</section>
+		);
+	}
+
+	// Convert portfolio data to Project interface with error handling
+	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => {
+		// Validate required fields
+		if (!item.id || !item.title || !item.description) {
+			console.warn('FeaturedProjects: Invalid project data for item:', item);
+			return null;
+		}
+
+		return {
+			id: item.id,
+			title: item.title,
+			description: item.description,
+			image: item.image || '/placeholder-image.jpg', // Fallback image
+			tags: item.tags || [],
+			caseStudyUrl: item.caseStudyUrl,
+			slug: item.slug,
+			metrics: item.metrics,
+			caseStudyPreview: item.caseStudyPreview,
+		};
+	}).filter(Boolean); // Remove null entries
 
 	return (
 		<section className="bg-white py-20 dark:bg-stone-950">
@@ -30,7 +53,7 @@ export default function FeaturedProjects() {
 						Featured Projects
 					</h2>
 					<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
-						A selection of recent projects showcasing modern web development and design solutions
+						A selection of recent projects showcasing modern web development solutions with concrete results and case study insights
 					</p>
 				</motion.div>
 
