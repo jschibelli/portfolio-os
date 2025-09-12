@@ -42,51 +42,57 @@ export default function Hero() {
 					{...fadeInUp}
 					className="mx-auto max-w-4xl space-y-8"
 				>
-					{/* Headline */}
+					{/* Hero Tagline */}
 					<motion.h1
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
 						className="text-4xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl"
 					>
-						John Schibelli
-						<span className="mt-4 block text-2xl font-medium text-stone-200 md:text-3xl lg:text-4xl">
-							Senior Front-End Developer
-						</span>
+						Building Smarter, Faster Web Applications
 					</motion.h1>
 
-					{/* Subhead */}
-					<motion.p
+					{/* Value Proposition */}
+					<motion.div
 						{...fadeInUpDelayed(0.4)}
-						className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl"
+						className="space-y-4"
 					>
-						React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
-					</motion.p>
+						<p className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
+							John Schibelli
+						</p>
+						<p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl">
+							Senior Front-End Developer
+						</p>
+						<p className="mx-auto max-w-3xl text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl">
+							Transforming ideas into high-performance digital experiences that drive business growth. 
+							Expert in React, Next.js, and TypeScript with 15+ years of proven results.
+						</p>
+					</motion.div>
 
-					{/* CTA Buttons - Primary navigation actions for visitors */}
+					{/* CTA Buttons - Business-focused actions */}
 					<motion.div
 						{...fadeInUpDelayed(0.6)}
 						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
 					>
-						{/* Primary CTA: Navigate to portfolio projects showcase */}
+						{/* Primary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
 							className={SHARED_BUTTON_STYLES}
 							asChild
 						>
-							<Link href="/projects" aria-label="View my portfolio of web development projects and case studies">
-								View My Projects
+							<Link href="/projects" aria-label="View proven results and case studies of successful web applications">
+								See My Results
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</Button>
-						{/* Secondary CTA: Navigate to blog for technical articles and insights */}
+						{/* Secondary CTA: Start a conversation about your project */}
 						<Button
 							size="lg"
 							className={SHARED_BUTTON_STYLES}
 							asChild
 						>
-							<Link href="/blog" aria-label="Read my technical blog articles about web development and programming">
-								Read the Blog
+							<Link href="/contact" aria-label="Start a conversation about your web development project needs">
+								Start Your Project
 								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 							</Link>
 						</Button>
