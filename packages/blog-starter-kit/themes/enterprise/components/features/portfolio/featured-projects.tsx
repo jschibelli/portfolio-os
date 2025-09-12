@@ -40,25 +40,25 @@ export default function FeaturedProjects() {
 	}).filter(Boolean); // Remove null entries
 
 	return (
-		<section className="bg-white py-20 dark:bg-stone-950">
+		<section className="bg-white py-16 dark:bg-stone-950">
 			<div className="container mx-auto px-4">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, ease: 'easeOut' }}
 					viewport={{ once: true }}
-					className="mb-16 text-center"
+					className="mb-12 text-center"
 				>
-					<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+					<h2 className="mb-3 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 						Featured Projects
 					</h2>
-					<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
+					<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
 						A selection of recent projects showcasing modern web development solutions with concrete results and case study insights
 					</p>
 				</motion.div>
 
 				{/* Projects Grid */}
-				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch">
 					{featuredProjects.map((project, index) => (
 						<ProjectCard key={project.id} project={project} index={index} />
 					))}

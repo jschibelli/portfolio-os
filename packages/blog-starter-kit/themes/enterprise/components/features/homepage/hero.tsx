@@ -47,9 +47,10 @@ export default function Hero() {
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-						className="text-4xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl"
+						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
 					>
-						Building Smarter, Faster Web Applications
+						Building Smarter, Faster<br />
+						Web Applications
 					</motion.h1>
 
 					{/* Value Proposition */}
