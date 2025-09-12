@@ -101,7 +101,6 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
 				aria-expanded={isOpen}
 				aria-controls={`case-study-content-${section.id}`}
 				aria-describedby={section.description ? `case-study-desc-${section.id}` : undefined}
-				role="button"
 				tabIndex={0}
 			>
 				<div className="flex items-center gap-3">
