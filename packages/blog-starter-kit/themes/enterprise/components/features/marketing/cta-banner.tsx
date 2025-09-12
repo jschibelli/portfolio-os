@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ClockIcon, MailIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MessageSquareIcon, PhoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
 
@@ -25,10 +25,10 @@ export default function CTABanner() {
 					{/* Main CTA */}
 					<div className="space-y-4">
 						<h2 className="text-3xl font-bold text-white md:text-4xl">
-							Available for Freelance & Consulting
+							Let&apos;s Discuss Your Project Goals
 						</h2>
 						<p className="mx-auto max-w-2xl text-xl text-stone-200">
-							Let&apos;s work together to bring your ideas to life with modern, scalable solutions.
+							Ready to transform your ideas into high-performance digital experiences? Let&apos;s explore how we can achieve your business objectives together.
 						</p>
 					</div>
 
