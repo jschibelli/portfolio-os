@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowRightIcon, MailIcon, MessageSquareIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
@@ -22,7 +22,7 @@ const fadeInUpDelayed = (delay: number) => ({
 
 export default function Hero() {
 	return (
-		<section className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
+		<header className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
 			{/* Background Image */}
 			<div className="absolute inset-0 z-0">
 				<Image
@@ -40,56 +40,88 @@ export default function Hero() {
 			<div className="container relative z-10 mx-auto px-4 text-center">
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl space-y-8"
+					className="mx-auto max-w-4xl space-y-6"
 				>
-					{/* Headline */}
+					{/* Hero Tagline */}
 					<motion.h1
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-						className="text-4xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl"
+						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
 					>
-						John Schibelli
-						<span className="mt-4 block text-2xl font-medium text-stone-200 md:text-3xl lg:text-4xl">
-							Senior Front-End Developer
-						</span>
+						Building Smarter, Faster<br />
+						Web Applications
 					</motion.h1>
 
-					{/* Subhead */}
-					<motion.p
+					{/* Value Proposition */}
+					<motion.section
 						{...fadeInUpDelayed(0.4)}
-						className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl"
+						className="space-y-3"
+						aria-labelledby="hero-name"
 					>
-						React · Next.js · TypeScript · Tailwind CSS · Towaco, NJ
-					</motion.p>
+						<p id="hero-name" className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
+							John Schibelli
+						</p>
+						<p className="text-lg font-semibold text-stone-300 md:text-xl lg:text-2xl">
+							Senior Front-End Developer
+						</p>
+						<p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-stone-300 md:text-lg lg:text-xl">
+							Transforming ideas into high-performance digital experiences that drive business growth. 
+							Expert in React, Next.js, and TypeScript with 15+ years of proven results.
+						</p>
+					</motion.section>
 
-					{/* CTA Buttons - Primary navigation actions for visitors */}
-					<motion.div
+					{/* Enhanced CTA Button Hierarchy */}
+					<motion.nav
 						{...fadeInUpDelayed(0.6)}
-						className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+						className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6"
+						aria-label="Primary navigation actions"
 					>
-						{/* Primary CTA: Navigate to portfolio projects showcase */}
+						{/* Primary CTA: Start conversation about project goals */}
 						<Button
 							size="lg"
-							className={SHARED_BUTTON_STYLES}
+							className={`${SHARED_BUTTON_STYLES} min-w-[180px] justify-center bg-gradient-to-r from-stone-900 to-stone-700 text-white hover:from-stone-800 hover:to-stone-600`}
 							asChild
 						>
-							<Link href="/projects" aria-label="View my portfolio of web development projects and case studies">
-								View My Projects
-								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+							<Link href="/contact" aria-label="Start a conversation about your project goals and business objectives">
+								<span className="flex items-center">
+									<MessageSquareIcon className="mr-2 h-5 w-5" />
+									Discuss Your Goals
+									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+								</span>
 							</Link>
 						</Button>
-						{/* Secondary CTA: Navigate to blog for technical articles and insights */}
+
+						{/* Secondary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
-							className={SHARED_BUTTON_STYLES}
+							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
 							asChild
 						>
-							<Link href="/blog" aria-label="Read my technical blog articles about web development and programming">
-								Read the Blog
-								<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+							<Link href="/projects" aria-label="View proven results and case studies of successful web applications">
+								<span className="flex items-center">
+									See My Results
+									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+								</span>
 							</Link>
 						</Button>
+					</motion.nav>
+
+					{/* Tertiary CTA: Direct email option */}
+					<motion.div
+						{...fadeInUpDelayed(0.8)}
+						className="flex flex-col items-center justify-center gap-2"
+					>
+						<p className="text-sm text-stone-300">
+							Prefer email? 
+							<a 
+								href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" 
+								className="ml-1 font-semibold text-white underline hover:text-stone-200 transition-colors"
+								aria-label="Send email directly to discuss your project"
+							>
+								Email me directly
+							</a>
+						</p>
 					</motion.div>
 				</motion.div>
 			</div>
@@ -113,6 +145,6 @@ export default function Hero() {
 					/>
 				</motion.div>
 			</motion.div>
-		</section>
+		</header>
 	);
 }
