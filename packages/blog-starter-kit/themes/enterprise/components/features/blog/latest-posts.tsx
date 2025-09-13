@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { recentPosts } from '../../../data/posts';
 import { Button } from '../../ui/button';
 import PostCard from './post-card';
+import { PRIMARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 export default function LatestPosts() {
 	return (
@@ -41,12 +42,12 @@ export default function LatestPosts() {
 				>
 					<Button
 						size="lg"
-						className="group bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 hover:shadow-xl dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+						className={PRIMARY_BUTTON_STYLES}
 						asChild
 					>
 						<Link href="/blog">
 							Read the Blog
-							<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+							<ArrowRightIcon className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} />
 						</Link>
 					</Button>
 				</motion.div>
