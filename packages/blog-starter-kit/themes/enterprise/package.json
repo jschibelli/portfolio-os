@@ -23,6 +23,7 @@
 		"test:visual:update": "playwright test tests/visual/ --update-snapshots",
 		"test:visual:ui": "playwright test tests/visual/ --ui",
 		"test:case-studies": "playwright test tests/case-study*.spec.ts",
+		"test:performance": "playwright test tests/blog-performance.spec.ts",
 		"test:all": "playwright test --reporter=html",
 		"test:all:ci": "npm run test:unit:ci && npm run test:accessibility",
 		"typecheck": "tsc",

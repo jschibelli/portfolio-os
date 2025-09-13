@@ -14,8 +14,8 @@ bot-service.json
 test-*.js
 test-*.ts
 test-*.json
-*.test.js
-*.test.ts
+# Note: Keeping *.test.js and *.test.ts for Jest unit tests
+# Playwright spec files (*.spec.ts) are kept for e2e testing
 
 # Playwright test results and artifacts
 test-results/
@@ -23,6 +23,7 @@ playwright-report/
 playwright/.cache/
 test-results-*/
 playwright-report-*/
+# Blob report directory for Playwright blob storage artifacts
 blob-report/
 
 # Playwright configuration files (optional - uncomment if you want to exclude)
