@@ -53,7 +53,7 @@ export default function About({ publication }: Props) {
 	let skills: Record<string, string[]> = {};
 	
 	try {
-		const { skills: skillsData } = require('../../data/skills');
+		const { skills: skillsData } = require('../data/skills');
 		
 		// Validate skills data structure
 		if (Array.isArray(skillsData)) {
