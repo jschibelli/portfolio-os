@@ -31,7 +31,7 @@ export function ProjectContent({ project }: ProjectContentProps) {
             Project Information Unavailable
           </h2>
           <p className="text-red-800 dark:text-red-200">
-            We're sorry, but the project information is currently not available. Please try again later or contact support if the issue persists.
+            We&apos;re sorry, but the project information is currently not available. Please try again later or contact support if the issue persists.
           </p>
         </div>
       </section>
