@@ -43,18 +43,38 @@ type Props = {
 	publication: PublicationFragment;
 };
 
+/**
+ * About page component displaying professional information and experience
+ * @param publication - Publication data from Hashnode
+ * @returns JSX element for the about page
+ */
 export default function About({ publication }: Props) {
 	// Import skills from centralized data source to avoid duplication
-	const { skills: skillsData } = require('../../data/skills');
+	let skills: Record<string, string[]> = {};
 	
-	// Group skills by category for display
-	const skills = skillsData.reduce((acc: any, skill: any) => {
-		if (!acc[skill.category]) {
-			acc[skill.category] = [];
+	try {
+		const { skills: skillsData } = require('../../data/skills');
+		
+		// Validate skills data structure
+		if (Array.isArray(skillsData)) {
+			// Group skills by category for display with proper error handling
+			skills = skillsData.reduce((acc: Record<string, string[]>, skill: any) => {
+				if (skill && typeof skill === 'object' && skill.category && skill.name) {
+					if (!acc[skill.category]) {
+						acc[skill.category] = [];
+					}
+					acc[skill.category].push(skill.name);
+				}
+				return acc;
+			}, {});
+		} else {
+			console.warn('Skills data is not in expected array format');
 		}
-		acc[skill.category].push(skill.name);
-		return acc;
-	}, {});
+	} catch (error) {
+		console.error('Error loading skills data:', error);
+		// Fallback to empty skills object to prevent page crash
+		skills = {};
+	}
 
 	const experience = [
 		{
@@ -603,8 +623,17 @@ export default function About({ publication }: Props) {
 	);
 }
 
+/**
+ * Static props generation for About page with comprehensive error handling
+ * @returns Promise with publication data or fallback data
+ */
 export const getStaticProps: GetStaticProps<Props> = async () => {
 	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+
+	// Validate environment variables
+	if (!process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT) {
+		console.warn('NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT environment variable is not set');
+	}
 
 	try {
 		const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
@@ -618,9 +647,15 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
 		const publication = data.publication;
 		if (!publication) {
+			console.error('No publication data found for host:', host);
 			return {
 				notFound: true,
 			};
+		}
+
+		// Validate publication data structure
+		if (!publication.title && !publication.displayTitle) {
+			console.warn('Publication missing title and displayTitle');
 		}
 
 		return {
@@ -630,33 +665,36 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 			revalidate: 1,
 		};
 	} catch (error) {
-		console.error('Error fetching publication data:', error);
-		// Return a fallback response to prevent the build from failing
+		console.error('Error fetching publication data for About page:', error);
+		
+		// Enhanced fallback response with better error handling
+		const fallbackPublication = {
+			id: 'fallback-about',
+			title: 'John Schibelli',
+			displayTitle: 'John Schibelli',
+			descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
+			url: 'https://johnschibelli.com',
+			posts: {
+				totalDocuments: 0,
+			},
+			preferences: {
+				logo: null,
+			},
+			author: {
+				name: 'John Schibelli',
+				profilePicture: null,
+			},
+			followersCount: 0,
+			isTeam: false,
+			favicon: null,
+			ogMetaData: {
+				image: null,
+			},
+		};
+
 		return {
 			props: {
-				publication: {
-					id: 'fallback',
-					title: 'John Schibelli',
-					displayTitle: 'John Schibelli',
-					descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
-					url: 'https://mindware.hashnode.dev',
-					posts: {
-						totalDocuments: 0,
-					},
-					preferences: {
-						logo: null,
-					},
-					author: {
-						name: 'John Schibelli',
-						profilePicture: null,
-					},
-					followersCount: 0,
-					isTeam: false,
-					favicon: null,
-					ogMetaData: {
-						image: null,
-					},
-				} as any,
+				publication: fallbackPublication as any,
 			},
 			revalidate: 1,
 		};
