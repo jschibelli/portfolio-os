@@ -142,10 +142,15 @@ const config = {
 		
 		// Remote patterns for external images - SECURITY: Only allow trusted domains
 		// Hashnode CDN is trusted for blog content images
+		// Unsplash is trusted for high-quality stock photos
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'cdn.hashnode.com', // Only Hashnode's CDN is allowed
+				hostname: 'cdn.hashnode.com', // Hashnode's CDN for blog content
+			},
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com', // Unsplash for stock photos
 			},
 		],
 	},
