@@ -53,8 +53,12 @@ npm run dev
 
 Set up a comprehensive GitHub Projects v2 board for portfolio management:
 
+**Prerequisites:**
+- [GitHub CLI](https://cli.github.com/) installed and authenticated
+- [jq](https://stedolan.github.io/jq/) installed for JSON processing
+
 ```bash
-# Run the setup script (requires GitHub CLI and jq)
+# Run the setup script
 bash scripts/setup_portfolio_project.sh
 ```
 
@@ -64,6 +68,8 @@ This script will:
 - Configure automated workflows to add issues/PRs to the project
 - Create project views (Board and Table)
 - Set up GitHub secrets for automation
+
+**Note:** If the script fails, ensure you have the required permissions and dependencies installed.
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
