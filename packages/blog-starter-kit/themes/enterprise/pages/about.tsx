@@ -33,7 +33,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '../components/ui/accordion';
-import { Badge, Button } from '../components/ui';
+import { Badge, Button, Timeline, TimelineItem } from '../components/ui';
 import { generatePersonStructuredData } from '../lib/structured-data';
 import {
 	PostsByPublicationDocument,
@@ -94,6 +94,7 @@ export default function About({ publication }: Props) {
 				'Scoped requirements, owned timelines, and served as primary client liaison to ensure quality delivery and satisfaction.',
 				'Incubated SynaplyAI (multi-tenant AI content collaboration) with front-end architecture, OpenAI integrations, real-time collab editing, and adaptive AI content generation.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Full-Stack Developer',
@@ -106,6 +107,7 @@ export default function About({ publication }: Props) {
 				'Integrated and validated Nest.js APIs; ensured stable data flow and interface alignment.',
 				'Partnered with QA, design, and product to support sprint delivery and UI improvements.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Senior Front-End Developer',
@@ -118,6 +120,7 @@ export default function About({ publication }: Props) {
 				'Integrated Limo Anywhere API for real-time reservations and back-office sync.',
 				'Streamlined dispatch workflows by connecting booking front-end to internal systems.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Front-End Developer',
@@ -131,6 +134,7 @@ export default function About({ publication }: Props) {
 				'Delivered front-end features aligned with enterprise UX guidelines in Agile cycles.',
 				'Led multiple internal WordPress projects and mentored junior developers on front-end best practices.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Web Developer (Contract)',
@@ -143,6 +147,7 @@ export default function About({ publication }: Props) {
 				'Built reusable UI components for responsive, cross-browser performance.',
 				'Customized themes/plugins to support marketing workflows and SEO.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Web Development Program Director',
@@ -155,6 +160,7 @@ export default function About({ publication }: Props) {
 				'Managed a team of 8 instructors across 4 campuses; ensured curriculum alignment.',
 				'Oversaw accreditation compliance; partnered with Pearson VUE for certification programs.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 	];
 
@@ -879,8 +885,70 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* Resume Accordion Section */}
+				{/* Experience Timeline Section */}
 				<section className="bg-muted py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-6xl"
+						>
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									Career Journey
+								</h2>
+								<p className="mb-8 text-lg text-stone-600 dark:text-stone-400">
+									My professional experience and key achievements over 15+ years
+								</p>
+								
+								{/* Career Progression Summary */}
+								<div className="mx-auto max-w-4xl rounded-lg border border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100 p-6 dark:border-stone-700 dark:from-stone-800 dark:to-stone-900">
+									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">15+</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+										</div>
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">6</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Companies</div>
+										</div>
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">AI</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Innovation Focus</div>
+										</div>
+									</div>
+									<div className="mt-4 text-center">
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											From teaching web development to leading AI-driven projects, my journey spans the evolution of modern web technologies.
+										</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Experience Timeline */}
+							<Timeline>
+								{experience.map((job, index) => (
+									<TimelineItem
+										key={index}
+										title={job.title}
+										company={job.company}
+										period={job.period}
+										location={job.location}
+										description={job.description}
+										achievements={job.achievements}
+										index={index}
+										isLast={index === experience.length - 1}
+									/>
+								))}
+							</Timeline>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Skills and Other Sections */}
+				<section className="bg-background py-20">
 					<Container className="px-4">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -889,66 +957,7 @@ export default function About({ publication }: Props) {
 							viewport={{ once: true }}
 							className="mx-auto max-w-4xl"
 						>
-							<div className="mb-12 text-center">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-									Professional Background
-								</h2>
-								<p className="text-lg text-stone-600 dark:text-stone-400">
-									Explore my experience, skills, and qualifications
-								</p>
-							</div>
-
 							<Accordion type="single" collapsible className="w-full space-y-4">
-								{/* Experience */}
-								<AccordionItem
-									value="experience"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<BriefcaseIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Professional Experience</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="space-y-8">
-											{experience.map((job, index) => (
-												<div
-													key={index}
-													className="border-l-4 border-primary/40 pl-6"
-												>
-													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-															{job.title}
-														</h3>
-														<div className="mt-1 text-sm text-stone-500 sm:mt-0 dark:text-stone-400">
-															{job.period}
-														</div>
-													</div>
-													<div className="mb-3 flex items-center gap-2 text-stone-600 dark:text-stone-400">
-														<span className="font-medium">{job.company}</span>
-														<span>•</span>
-														<span>{job.location}</span>
-													</div>
-													<p className="mb-4 text-stone-600 dark:text-stone-400">
-														{job.description}
-													</p>
-													<ul className="space-y-2">
-														{job.achievements.map((achievement, idx) => (
-															<li
-																key={idx}
-																className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-400"
-															>
-																<StarIcon className="mt-1 h-3 w-3 flex-shrink-0 text-stone-400 dark:text-stone-500" />
-																{achievement}
-															</li>
-														))}
-													</ul>
-												</div>
-											))}
-										</div>
-									</AccordionContent>
-								</AccordionItem>
 
 								{/* Skills */}
 								<AccordionItem
