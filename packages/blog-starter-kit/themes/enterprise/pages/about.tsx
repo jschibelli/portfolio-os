@@ -12,6 +12,12 @@ import {
 	GraduationCapIcon,
 	MapPinIcon,
 	StarIcon,
+	MailIcon,
+	LinkedinIcon,
+	ClockIcon,
+	UsersIcon,
+	BuildingIcon,
+	CodeIcon,
 } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
@@ -527,7 +533,7 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* CTA Section */}
+				{/* Enhanced Contact Section */}
 				<section className="bg-background py-20">
 					<Container className="px-4">
 						<motion.div
@@ -535,34 +541,245 @@ export default function About({ publication }: Props) {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: 'easeOut' }}
 							viewport={{ once: true }}
-							className="mx-auto max-w-4xl text-center"
+							className="mx-auto max-w-6xl"
 						>
-							<div className="rounded-lg border border-border bg-accent p-8 shadow-sm">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100">
-									Let&apos;s Work Together
+							{/* Header */}
+							<div className="mb-12 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									Let&apos;s Connect & Collaborate
 								</h2>
-								<p className="mb-8 text-lg text-stone-600 dark:text-stone-400">
-									I&apos;m available for freelance projects and consulting opportunities. Whether
-									you need a complete application built from scratch or help optimizing an existing
-									codebase, I&apos;d love to hear about your project.
+								<p className="text-lg text-stone-600 dark:text-stone-400">
+									Ready to bring your ideas to life? I&apos;m here to help you succeed.
 								</p>
-								<div className="flex flex-col justify-center gap-4 sm:flex-row">
-									<Button
-										size="lg"
-										asChild
-									>
+							</div>
+
+							{/* Primary CTAs */}
+							<div className="mb-12 grid gap-6 md:grid-cols-2">
+								{/* Start Your Project */}
+								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
+									<div className="mb-4 flex items-center gap-3">
+										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+											<CodeIcon className="h-6 w-6 text-primary" />
+										</div>
+										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Start Your Project
+										</h3>
+									</div>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Ready to build something amazing? Let&apos;s discuss your project requirements and bring your vision to life.
+									</p>
+									<Button size="lg" className="w-full" asChild>
 										<Link href="/contact">
-											Start a Project
+											Get Started Today
 											<ArrowRightIcon className="ml-2 h-4 w-4" />
 										</Link>
 									</Button>
-									<Button
-										size="lg"
-										variant="outline"
-										asChild
-									>
-										<Link href="/projects">View My Projects</Link>
+								</div>
+
+								{/* View Portfolio */}
+								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
+									<div className="mb-4 flex items-center gap-3">
+										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+											<BriefcaseIcon className="h-6 w-6 text-primary" />
+										</div>
+										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+											View My Work
+										</h3>
+									</div>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Explore my portfolio of projects and see the quality of work I deliver for clients.
+									</p>
+									<Button size="lg" variant="outline" className="w-full" asChild>
+										<Link href="/projects">
+											View Portfolio
+											<ArrowRightIcon className="ml-2 h-4 w-4" />
+										</Link>
 									</Button>
+								</div>
+							</div>
+
+							{/* Audience-Specific CTAs */}
+							<div className="mb-12">
+								<h3 className="mb-6 text-center text-2xl font-semibold text-stone-900 dark:text-stone-100">
+									I Work With
+								</h3>
+								<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+									{/* Recruiters */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+												<UsersIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Recruiters
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Open to new opportunities and exciting roles
+										</p>
+									</div>
+
+									{/* Startup Founders */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+												<StarIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Startup Founders
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											MVP development and technical consulting
+										</p>
+									</div>
+
+									{/* Enterprise */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+												<BuildingIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Enterprise
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Technical consulting and architecture
+										</p>
+									</div>
+
+									{/* Fellow Developers */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
+												<CodeIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Developers
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Collaboration and knowledge sharing
+										</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Contact Information & Social Links */}
+							<div className="rounded-lg border border-border bg-accent p-8">
+								<div className="grid gap-8 md:grid-cols-2">
+									{/* Contact Info */}
+									<div>
+										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Get In Touch
+										</h3>
+										<div className="space-y-4">
+											<div className="flex items-center gap-3">
+												<MailIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Email
+													</p>
+													<a 
+														href="mailto:john@johnschibelli.com" 
+														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+													>
+														john@johnschibelli.com
+													</a>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<MapPinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Location
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Towaco, NJ (Remote Available)
+													</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<ClockIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Response Time
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Within 24 hours
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									{/* Social Links & Availability */}
+									<div>
+										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Connect & Availability
+										</h3>
+										<div className="space-y-4">
+											<div className="flex items-center gap-3">
+												<LinkedinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														LinkedIn
+													</p>
+													<a 
+														href="https://linkedin.com/in/johnschibelli" 
+														target="_blank" 
+														rel="noopener noreferrer"
+														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+													>
+														Connect with me
+													</a>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<CalendarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Availability
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Available for new projects
+													</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<StarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Specialties
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														React, Next.js, TypeScript, AI Integration
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Tertiary CTA */}
+								<div className="mt-8 border-t border-border pt-6">
+									<div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+										<div className="text-center sm:text-left">
+											<h4 className="font-semibold text-stone-900 dark:text-stone-100">
+												Ready to start your project?
+											</h4>
+											<p className="text-sm text-stone-600 dark:text-stone-400">
+												Let&apos;s discuss your requirements and create something amazing together.
+											</p>
+										</div>
+										<Button size="lg" asChild>
+											<Link href="/contact">
+												Start Your Project
+												<ArrowRightIcon className="ml-2 h-4 w-4" />
+											</Link>
+										</Button>
+									</div>
 								</div>
 							</div>
 						</motion.div>
