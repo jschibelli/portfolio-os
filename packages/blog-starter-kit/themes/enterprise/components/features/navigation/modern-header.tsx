@@ -1,10 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';
+import { PersonalLogo } from '../../shared/personal-logo';
 import { Button } from '../../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
 import { ThemeToggle } from '../../ui/theme-toggle';
+import { GlobalSearch } from '../search/global-search';
 
 interface ModernHeaderProps {
 	publication: {
@@ -25,18 +26,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<div className="flex-shrink-0">
-						<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
-							{publication.logo?.url && (
-								<img
-									src={publication.logo.url}
-									alt={`${siteTitle} logo`}
-									className="h-8 w-8 rounded-lg"
-								/>
-							)}
-							<span className="text-xl font-bold text-foreground">
-								{siteTitle}
-							</span>
-						</Link>
+						<PersonalLogo size="small" />
 					</div>
 
 					{/* Desktop Navigation */}
@@ -48,16 +38,10 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							Home
 						</Link>
 						<Link
-							href="/work"
+							href="/projects"
 							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 						>
-							Work
-						</Link>
-						<Link
-							href="/case-studies"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-						>
-							Case Studies
+							Projects
 						</Link>
 						<Link
 							href="/blog"
@@ -78,6 +62,11 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							Contact
 						</Link>
 					</nav>
+
+					{/* Global Search */}
+					<div className="hidden lg:block">
+						<GlobalSearch placeholder="Search..." />
+					</div>
 
 					{/* Actions */}
 					<div className="flex items-center space-x-4">
@@ -108,22 +97,16 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							<SheetContent side="right" className="w-[300px] sm:w-[400px]" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
 								<SheetHeader>
 									<SheetTitle className="text-left">
-										<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
-											{publication.logo?.url && (
-												<img
-													src={publication.logo.url}
-													alt={`${siteTitle} logo`}
-													className="h-6 w-6 rounded"
-												/>
-											)}
-											<span className="text-lg font-bold text-foreground">
-												{siteTitle}
-											</span>
-										</Link>
+										<PersonalLogo size="small" />
 									</SheetTitle>
 								</SheetHeader>
 
 								<div className="mt-8">
+									{/* Mobile Search */}
+									<div className="mb-6 px-4">
+										<GlobalSearch placeholder="Search..." />
+									</div>
+
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
@@ -132,16 +115,10 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 											Home
 										</Link>
 										<Link
-											href="/work"
+											href="/projects"
 											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 										>
-											Work
-										</Link>
-										<Link
-											href="/case-studies"
-											className="rounded-md px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-										>
-											Case Studies
+											Projects
 										</Link>
 										<Link
 											href="/blog"

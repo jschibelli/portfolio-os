@@ -1,0 +1,29 @@
+name: "Feature request"
+description: Propose a new capability
+labels: ["feature","P2"]
+body:
+- type: input
+  id: summary
+  attributes:
+    label: Summary
+    placeholder: One sentence user-facing value
+  validations: { required: true }
+- type: textarea
+  id: details
+  attributes:
+    label: Details
+    description: What/why, acceptance criteria, edge cases
+    placeholder: As a visitor, I want...
+  validations: { required: true }
+- type: dropdown
+  id: area
+  attributes:
+    label: Area
+    options: ["Core","Blog","SEO","Accessibility","UI/Design","Infra"]
+  validations: { required: true }
+- type: dropdown
+  id: size
+  attributes:
+    label: Size
+    options: ["XS","S","M","L","XL"]
+  validations: { required: true }

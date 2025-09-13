@@ -24,8 +24,8 @@ export const Layout = ({ children }: Props) => {
 					{children}
 				</main>
 			</div>
+			{/* Global Footer - automatically included for all pages using Layout component */}
 			<Footer publication={defaultPublication} />
-			{/* <AnalyticsSafe /> */}
 			<Integrations />
 		</>
 	);
