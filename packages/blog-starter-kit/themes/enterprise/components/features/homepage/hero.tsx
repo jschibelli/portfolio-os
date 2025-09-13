@@ -26,8 +26,8 @@ export default function Hero() {
 			{/* Background Image with optimized loading */}
 			<div className="absolute inset-0 z-0">
 				<Image
-					src="/assets/hero/hero-image.webp"
-					alt="Abstract stone palette background"
+					src="/assets/hero/hero-bg.png"
+					alt="Professional background for John Schibelli's portfolio"
 					fill
 					className="object-cover"
 					priority
