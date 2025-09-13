@@ -10,7 +10,6 @@ import {
 	BriefcaseIcon,
 	CalendarIcon,
 	GraduationCapIcon,
-	LightbulbIcon,
 	MapPinIcon,
 	StarIcon,
 } from 'lucide-react';
@@ -19,6 +18,7 @@ import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
+import VisualSkillsShowcase from '../components/features/about/visual-skills-showcase';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { SEOHead } from '../components/shared/seo-head';
@@ -28,7 +28,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '../components/ui/accordion';
-import { Badge, Button } from '../components/ui';
+import { Button } from '../components/ui';
 import { generatePersonStructuredData } from '../lib/structured-data';
 import {
 	PostsByPublicationDocument,
@@ -49,32 +49,6 @@ type Props = {
  * @returns JSX element for the about page
  */
 export default function About({ publication }: Props) {
-	// Import skills from centralized data source to avoid duplication
-	let skills: Record<string, string[]> = {};
-	
-	try {
-		const { skills: skillsData } = require('../../data/skills');
-		
-		// Validate skills data structure
-		if (Array.isArray(skillsData)) {
-			// Group skills by category for display with proper error handling
-			skills = skillsData.reduce((acc: Record<string, string[]>, skill: any) => {
-				if (skill && typeof skill === 'object' && skill.category && skill.name) {
-					if (!acc[skill.category]) {
-						acc[skill.category] = [];
-					}
-					acc[skill.category].push(skill.name);
-				}
-				return acc;
-			}, {});
-		} else {
-			console.warn('Skills data is not in expected array format');
-		}
-	} catch (error) {
-		console.error('Error loading skills data:', error);
-		// Fallback to empty skills object to prevent page crash
-		skills = {};
-	}
 
 	const experience = [
 		{
@@ -434,30 +408,12 @@ export default function About({ publication }: Props) {
 								>
 									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<LightbulbIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
+											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
 											<span className="text-lg font-semibold">Skills & Technologies</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="px-6">
-										<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-											{Object.entries(skills).map(([category, skillList]) => (
-												<div key={category} className="space-y-3">
-													<h4 className="font-semibold text-stone-900 dark:text-stone-100">
-														{category}
-													</h4>
-													<div className="flex flex-wrap gap-2">
-														{skillList.map((skill) => (
-															<Badge
-																key={skill}
-																variant="secondary"
-															>
-																{skill}
-															</Badge>
-														))}
-													</div>
-												</div>
-											))}
-										</div>
+										<VisualSkillsShowcase />
 									</AccordionContent>
 								</AccordionItem>
 
