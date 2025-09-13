@@ -130,25 +130,6 @@ export default function Hero() {
 				</motion.div>
 			</div>
 
-			{/* Scroll indicator */}
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ duration: 1, delay: 1.2 }}
-				className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 transform"
-			>
-				<motion.div
-					animate={{ y: [0, 10, 0] }}
-					transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-					className="flex h-10 w-6 justify-center rounded-full border-2 border-white"
-				>
-					<motion.div
-						animate={{ y: [0, 12, 0] }}
-						transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-						className="mt-2 h-3 w-1 rounded-full bg-white"
-					/>
-				</motion.div>
-			</motion.div>
 		</header>
 	);
 }
