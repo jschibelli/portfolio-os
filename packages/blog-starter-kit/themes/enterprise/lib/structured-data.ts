@@ -9,6 +9,18 @@ export interface PersonStructuredData {
 		name: string;
 		url: string;
 	};
+	knowsAbout?: string[];
+	alumniOf?: {
+		name: string;
+		url?: string;
+	}[];
+	hasCredential?: {
+		name: string;
+		credentialCategory: string;
+		recognizedBy?: {
+			name: string;
+		};
+	}[];
 }
 
 export interface ArticleStructuredData {
@@ -75,6 +87,27 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 				name: data.worksFor.name,
 				url: data.worksFor.url,
 			},
+		}),
+		...(data.knowsAbout && { knowsAbout: data.knowsAbout }),
+		...(data.alumniOf && {
+			alumniOf: data.alumniOf.map(education => ({
+				'@type': 'EducationalOrganization',
+				name: education.name,
+				...(education.url && { url: education.url }),
+			})),
+		}),
+		...(data.hasCredential && {
+			hasCredential: data.hasCredential.map(credential => ({
+				'@type': 'EducationalOccupationalCredential',
+				name: credential.name,
+				credentialCategory: credential.credentialCategory,
+				...(credential.recognizedBy && {
+					recognizedBy: {
+						'@type': 'Organization',
+						name: credential.recognizedBy.name,
+					},
+				}),
+			})),
 		}),
 	};
 }
@@ -158,6 +191,39 @@ export function generateWebSiteStructuredData() {
 			description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
 			url: 'https://johnschibelli.com',
 			jobTitle: 'Senior Front-End Developer',
+			knowsAbout: [
+				'JavaScript (ES6+)',
+				'TypeScript',
+				'React',
+				'Next.js',
+				'Node.js',
+				'HTML5',
+				'CSS3',
+				'Tailwind CSS',
+				'GraphQL',
+				'REST APIs',
+				'Web Accessibility',
+				'SEO Optimization',
+				'Performance Optimization',
+				'UI/UX Design',
+				'Testing',
+				'DevOps',
+				'Cloud Computing',
+			],
+			alumniOf: [
+				{
+					name: 'The Chubb Institute',
+				},
+			],
+			hasCredential: [
+				{
+					name: '15+ Years Experience',
+					credentialCategory: 'Work Experience',
+					recognizedBy: {
+						name: 'Web Development Industry',
+					},
+				},
+			],
 			sameAs: [
 				'https://linkedin.com/in/johnschibelli',
 				'https://github.com/johnschibelli',

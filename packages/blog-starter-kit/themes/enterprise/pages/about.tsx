@@ -44,21 +44,17 @@ type Props = {
 };
 
 export default function About({ publication }: Props) {
-	const skills = {
-		'Languages & Scripting': [
-			'JavaScript (ES6+)',
-			'TypeScript',
-			'PHP',
-			'HTML5',
-			'CSS3',
-			'Sass/SCSS',
-		],
-		'Front-End': ['React', 'Next.js', 'AngularJS', 'Tailwind CSS'],
-		'Back-End & APIs': ['Node.js', 'Express', 'Nest.js', 'GraphQL', 'REST', 'JSON'],
-		Testing: ['Playwright', 'Jest'],
-		'CI/CD & DevOps': ['GitHub Actions', 'Docker', 'Kubernetes', 'Vercel'],
-		'Databases & CMS': ['SQL Server', 'MySQL', 'WordPress (Custom Themes & Plugins)', 'Contentful'],
-	};
+	// Import skills from centralized data source to avoid duplication
+	const { skills: skillsData } = require('../../data/skills');
+	
+	// Group skills by category for display
+	const skills = skillsData.reduce((acc: any, skill: any) => {
+		if (!acc[skill.category]) {
+			acc[skill.category] = [];
+		}
+		acc[skill.category].push(skill.name);
+		return acc;
+	}, {});
 
 	const experience = [
 		{
@@ -179,6 +175,39 @@ export default function About({ publication }: Props) {
 					description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
 					url: 'https://johnschibelli.com',
 					jobTitle: 'Senior Front-End Developer',
+					knowsAbout: [
+						'JavaScript (ES6+)',
+						'TypeScript',
+						'React',
+						'Next.js',
+						'Node.js',
+						'HTML5',
+						'CSS3',
+						'Tailwind CSS',
+						'GraphQL',
+						'REST APIs',
+						'Web Accessibility',
+						'SEO Optimization',
+						'Performance Optimization',
+						'UI/UX Design',
+						'Testing',
+						'DevOps',
+						'Cloud Computing',
+					],
+					alumniOf: [
+						{
+							name: 'The Chubb Institute',
+						},
+					],
+					hasCredential: [
+						{
+							name: '15+ Years Experience',
+							credentialCategory: 'Work Experience',
+							recognizedBy: {
+								name: 'Web Development Industry',
+							},
+						},
+					],
 					sameAs: [
 						'https://linkedin.com/in/johnschibelli',
 						'https://github.com/johnschibelli',
