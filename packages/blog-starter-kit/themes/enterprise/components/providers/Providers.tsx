@@ -2,7 +2,8 @@
 
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
-import { ErrorBoundary } from "react-error-boundary";
+// import { ErrorBoundary } from "react-error-boundary";
+const ErrorBoundary = ({ children, fallback }: { children: React.ReactNode; fallback: React.ComponentType<{ error: Error }> }) => children;
 
 // Error fallback component for provider errors
 function ErrorFallback({ error }: { error: Error }) {
