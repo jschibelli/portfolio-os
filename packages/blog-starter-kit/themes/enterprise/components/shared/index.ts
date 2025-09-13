@@ -3,7 +3,7 @@ export { Footer } from './footer';
 export { Header } from './header';
 export { Layout } from './layout';
 export { Meta } from './meta';
-export { PersonalLogo, PersonalLogoSmall, PersonalLogoMedium, PersonalLogoLarge, PersonalLogoXLarge } from './personal-logo';
+export { PersonalLogo, PersonalLogoLarge, PersonalLogoMedium, PersonalLogoSmall, PersonalLogoXLarge } from './personal-logo';
 export { PublicationLogo } from './publication-logo';
 export { Scripts } from './scripts';
 export { ScrollArea } from './scroll-area';

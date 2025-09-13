@@ -62,7 +62,7 @@ export const PersonalLogo = ({
   alt = 'John Schibelli',
   showLoadingState = true 
 }: PersonalLogoProps) => {
-  const { theme, resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -71,12 +71,9 @@ export const PersonalLogo = ({
 
   // Determine which logo to use based on theme
   const getLogoSrc = () => {
-    // Use resolvedTheme to handle system theme preference
-    const currentTheme = resolvedTheme || theme;
-    
     // For dark backgrounds, use the regular logo (white/light logo)
     // For light backgrounds, use the black logo
-    if (currentTheme === 'dark') {
+    if (resolvedTheme === 'dark') {
       return '/assets/personal-logo.png';
     } else {
       return '/assets/personal-logo-black.png';
@@ -104,6 +101,11 @@ export const PersonalLogo = ({
       className={`${config.className} ${className} object-contain transition-opacity duration-200`}
       priority={size === 'large' || size === 'xlarge'} // Prioritize loading for larger sizes
       quality={95} // High quality for crisp logo display
+      onError={(e) => {
+        console.warn('PersonalLogo: Failed to load logo image', logoSrc);
+        // Fallback to a simple text logo if image fails
+        e.currentTarget.style.display = 'none';
+      }}
     />
   );
 
