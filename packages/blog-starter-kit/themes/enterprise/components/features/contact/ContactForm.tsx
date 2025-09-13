@@ -6,6 +6,7 @@ import { Button } from '../../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
+import { PRIMARY_BUTTON_STYLES, SECONDARY_BUTTON_STYLES } from '../../../lib/button-styles';
 
 interface ContactFormProps {
 	isOpen: boolean;
@@ -185,10 +186,10 @@ export function ContactForm({
 						)}
 
 						<div className="flex space-x-3 pt-4">
-							<Button variant="outline" onClick={onClose} className="flex-1">
+							<Button variant="outline" onClick={onClose} className={`${SECONDARY_BUTTON_STYLES} flex-1 justify-center`}>
 								Cancel
 							</Button>
-							<Button type="submit" className="flex-1">
+							<Button type="submit" className={`${PRIMARY_BUTTON_STYLES} flex-1 justify-center`}>
 								Submit
 							</Button>
 						</div>

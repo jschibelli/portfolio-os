@@ -2,46 +2,83 @@ import { motion } from 'framer-motion';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import portfolioData from '../../../data/portfolio.json';
+import { ICON_SPACING } from '../../../lib/button-styles';
 import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
 
+/**
+ * FeaturedProjects component displays a selection of featured portfolio projects
+ * with proper error handling, accessibility, and responsive design
+ */
 export default function FeaturedProjects() {
-	// Convert portfolio data to Project interface
-	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => ({
-		id: item.id,
-		title: item.title,
-		description: item.description,
-		image: item.image,
-		tags: item.tags,
-		caseStudyUrl: item.caseStudyUrl,
-	}));
+	// Comprehensive error handling for missing or invalid portfolio data
+	if (!portfolioData || !Array.isArray(portfolioData)) {
+		console.error('FeaturedProjects: Invalid or missing portfolio data');
+		return (
+			<section 
+				className="bg-white py-20 dark:bg-stone-950"
+				aria-label="Featured projects section"
+			>
+				<div className="container mx-auto px-4 text-center">
+					<p className="text-stone-600 dark:text-stone-400">
+						Unable to load featured projects. Please try again later.
+					</p>
+				</div>
+			</section>
+		);
+	}
+
+	// Convert portfolio data to Project interface with error handling
+	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => {
+		// Validate required fields
+		if (!item.id || !item.title || !item.description) {
+			console.warn('FeaturedProjects: Invalid project data for item:', item);
+			return null;
+		}
+
+		return {
+			id: item.id,
+			title: item.title,
+			description: item.description,
+			image: item.image || '/placeholder-image.jpg', // Fallback image
+			tags: item.tags || [],
+			caseStudyUrl: item.caseStudyUrl,
+			slug: item.slug,
+			metrics: item.metrics,
+			caseStudyPreview: item.caseStudyPreview,
+		};
+	}).filter(Boolean); // Remove null entries
 
 	return (
-		<section className="bg-white py-20 dark:bg-stone-950">
+		<section 
+			className="bg-white py-16 dark:bg-stone-950"
+			aria-label="Featured portfolio projects"
+		>
 			<div className="container mx-auto px-4">
+				{/* Section header with smooth animations */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, ease: 'easeOut' }}
 					viewport={{ once: true }}
-					className="mb-16 text-center"
+					className="mb-12 text-center"
 				>
-					<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+					<h2 className="mb-3 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 						Featured Projects
 					</h2>
-					<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
-						A selection of recent projects showcasing modern web development and design solutions
+					<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
+						A selection of recent projects showcasing modern web development solutions with concrete results and case study insights
 					</p>
 				</motion.div>
 
 				{/* Projects Grid */}
-				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch">
 					{featuredProjects.map((project, index) => (
 						<ProjectCard key={project.id} project={project} index={index} />
 					))}
 				</div>
 
-				{/* View All Projects CTA */}
+				{/* View All Projects CTA with enhanced accessibility */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -55,9 +92,15 @@ export default function FeaturedProjects() {
 						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
 					>
-						<Link href="/projects">
+						<Link 
+							href="/projects"
+							aria-label="View all portfolio projects"
+						>
 							View All Projects
-							<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+							<ArrowRightIcon 
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} 
+								aria-hidden="true"
+							/>
 						</Link>
 					</Button>
 				</motion.div>

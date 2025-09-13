@@ -47,7 +47,6 @@ export default function QuickStats({
         "flex flex-wrap gap-2 list-none p-0 m-0",
         className
       )}
-      role="list"
       aria-label={ariaLabel}
     >
       {items.map((item, index) => (

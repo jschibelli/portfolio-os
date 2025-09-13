@@ -113,6 +113,8 @@ If the setup script fails:
 - **Invalid token**: Re-authenticate with `gh auth login`
 - **Project already exists**: The script will skip creation if a project already exists
 
+**Note:** If the script fails, ensure you have the required permissions and dependencies installed.
+
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
 ### 6. Testing

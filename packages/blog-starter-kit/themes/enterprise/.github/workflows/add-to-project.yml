@@ -1,7 +1,7 @@
 name: Add issues & PRs to Portfolio Project
 
-# This workflow automatically adds new issues and pull requests to the GitHub Project board
-# for better project management and tracking
+# This workflow automatically adds new issues and pull requests to the Portfolio Project
+# for better project management and tracking.
 
 on:
   issues:
@@ -19,13 +19,12 @@ permissions:
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
-    
-    # Only run if secrets are available
-    if: ${{ secrets.PORTFOLIO_PROJECT_URL && secrets.PORTFOLIO_PROJECT_TOKEN }}
-    
+    # Only run if the required secrets are available
+    if: ${{ secrets.PORTFOLIO_PROJECT_URL != '' && secrets.PORTFOLIO_PROJECT_TOKEN != '' }}
     steps:
-      - name: Validate secrets
+      - name: Validate environment
         run: |
+          echo "Validating required environment variables..."
           if [ -z "${{ secrets.PORTFOLIO_PROJECT_URL }}" ]; then
             echo "Error: PORTFOLIO_PROJECT_URL secret is not set"
             exit 1
@@ -34,11 +33,11 @@ jobs:
             echo "Error: PORTFOLIO_PROJECT_TOKEN secret is not set"
             exit 1
           fi
-          echo "✅ All required secrets are available"
+          echo "Environment validation passed"
 
       - name: Add to project
         id: add-to-project
-        uses: actions/add-to-project@v0.5.0
+        uses: actions/add-to-project@v0.6.0
         with:
           project-url: ${{ secrets.PORTFOLIO_PROJECT_URL }}
           github-token: ${{ secrets.PORTFOLIO_PROJECT_TOKEN }}
@@ -47,14 +46,13 @@ jobs:
       - name: Check result
         if: steps.add-to-project.outcome == 'failure'
         run: |
-          echo "❌ Failed to add item to project"
-          echo "This might be due to:"
-          echo "- Invalid project URL or token"
-          echo "- Insufficient permissions"
-          echo "- Project not found"
-          exit 1
+          echo "Warning: Failed to add item to project. This is non-critical and will not fail the workflow."
+          echo "Item: ${{ github.event.issue.html_url || github.event.pull_request.html_url }}"
+          echo "Project URL: ${{ secrets.PORTFOLIO_PROJECT_URL }}"
+        continue-on-error: true
 
-      - name: Success message
+      - name: Success notification
         if: steps.add-to-project.outcome == 'success'
         run: |
-          echo "✅ Successfully added item to project"
+          echo "Successfully added item to Portfolio Project"
+          echo "Item: ${{ github.event.issue.html_url || github.event.pull_request.html_url }}"
