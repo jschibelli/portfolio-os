@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect } from 'react';
 import { useAppContext } from '../contexts/appContext';
 
@@ -90,12 +88,16 @@ export function Integrations() {
 
 	useEffect(() => {
 		// Check if gtag is available before calling it
-		if (typeof window !== 'undefined' && window.gtag) {
-			// @ts-ignore
-			window.gtag('config', gaTrackingID, {
-				transport_url: 'https://ping.hashnode.com',
-				first_party_collection: true,
-			});
+		if (typeof window !== 'undefined' && window.gtag && gaTrackingID) {
+			try {
+				// @ts-ignore
+				window.gtag('config', gaTrackingID, {
+					transport_url: 'https://ping.hashnode.com',
+					first_party_collection: true,
+				});
+			} catch (error) {
+				console.error('Error configuring Google Analytics:', error);
+			}
 		}
 	}, [gaTrackingID]);
 

@@ -226,49 +226,138 @@ export interface SoftwareApplicationStructuredData {
 	dateModified?: string;
 }
 
+/**
+ * Generates structured data for a CreativeWork entity following schema.org standards
+ * @param data - CreativeWork data object containing required and optional fields
+ * @returns Structured data object for JSON-LD implementation
+ * @throws Error if required fields are missing or invalid
+ */
 export function generateCreativeWorkStructuredData(data: CreativeWorkStructuredData) {
-	return {
-		'@context': 'https://schema.org',
-		'@type': 'CreativeWork',
-		name: data.name,
-		description: data.description,
-		url: data.url,
-		...(data.image && { image: data.image }),
-		author: generatePersonStructuredData(data.author),
-		publisher: {
-			'@type': 'Organization',
-			name: data.publisher.name,
-			url: data.publisher.url,
-		},
-		...(data.keywords && { keywords: data.keywords.join(', ') }),
-		...(data.dateCreated && { dateCreated: data.dateCreated }),
-		...(data.dateModified && { dateModified: data.dateModified }),
-	};
+	// Input validation for required fields
+	if (!data || typeof data !== 'object') {
+		throw new Error('CreativeWork data is required and must be an object');
+	}
+	
+	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
+		throw new Error('CreativeWork name is required and must be a non-empty string');
+	}
+	
+	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
+		throw new Error('CreativeWork description is required and must be a non-empty string');
+	}
+	
+	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
+		throw new Error('CreativeWork URL is required and must be a non-empty string');
+	}
+	
+	if (!data.author || typeof data.author !== 'object') {
+		throw new Error('CreativeWork author is required and must be an object');
+	}
+	
+	if (!data.publisher || !data.publisher.name || !data.publisher.url) {
+		throw new Error('CreativeWork publisher with name and URL is required');
+	}
+
+	try {
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'CreativeWork',
+			name: data.name.trim(),
+			description: data.description.trim(),
+			url: data.url.trim(),
+			...(data.image && { image: data.image.trim() }),
+			author: generatePersonStructuredData(data.author),
+			publisher: {
+				'@type': 'Organization',
+				name: data.publisher.name.trim(),
+				url: data.publisher.url.trim(),
+			},
+			...(data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0 && { 
+				keywords: data.keywords.filter(k => typeof k === 'string' && k.trim() !== '').join(', ') 
+			}),
+			...(data.dateCreated && { dateCreated: data.dateCreated }),
+			...(data.dateModified && { dateModified: data.dateModified }),
+		};
+	} catch (error) {
+		console.error('Error generating creative work structured data:', error);
+		throw new Error(`Failed to generate creative work structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+	}
 }
 
+/**
+ * Generates structured data for a SoftwareApplication entity following schema.org standards
+ * @param data - SoftwareApplication data object containing required and optional fields
+ * @returns Structured data object for JSON-LD implementation
+ * @throws Error if required fields are missing or invalid
+ */
 export function generateSoftwareApplicationStructuredData(data: SoftwareApplicationStructuredData) {
-	return {
-		'@context': 'https://schema.org',
-		'@type': 'SoftwareApplication',
-		name: data.name,
-		description: data.description,
-		url: data.url,
-		...(data.image && { image: data.image }),
-		applicationCategory: data.applicationCategory,
-		operatingSystem: data.operatingSystem,
-		offers: {
-			'@type': 'Offer',
-			price: data.offers.price,
-			priceCurrency: data.offers.priceCurrency,
-		},
-		author: generatePersonStructuredData(data.author),
-		publisher: {
-			'@type': 'Organization',
-			name: data.publisher.name,
-			url: data.publisher.url,
-		},
-		...(data.keywords && { keywords: data.keywords.join(', ') }),
-		...(data.dateCreated && { dateCreated: data.dateCreated }),
-		...(data.dateModified && { dateModified: data.dateModified }),
-	};
-}
+	// Input validation for required fields
+	if (!data || typeof data !== 'object') {
+		throw new Error('SoftwareApplication data is required and must be an object');
+	}
+	
+	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
+		throw new Error('SoftwareApplication name is required and must be a non-empty string');
+	}
+	
+	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
+		throw new Error('SoftwareApplication description is required and must be a non-empty string');
+	}
+	
+	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
+		throw new Error('SoftwareApplication URL is required and must be a non-empty string');
+	}
+	
+	if (!data.applicationCategory || typeof data.applicationCategory !== 'string' || data.applicationCategory.trim() === '') {
+		throw new Error('SoftwareApplication applicationCategory is required and must be a non-empty string');
+	}
+	
+	if (!data.operatingSystem || typeof data.operatingSystem !== 'string' || data.operatingSystem.trim() === '') {
+		throw new Error('SoftwareApplication operatingSystem is required and must be a non-empty string');
+	}
+	
+	if (!data.offers || !data.offers.price || !data.offers.priceCurrency) {
+		throw new Error('SoftwareApplication offers with price and priceCurrency is required');
+	}
+	
+	if (!data.author || typeof data.author !== 'object') {
+		throw new Error('SoftwareApplication author is required and must be an object');
+	}
+	
+	if (!data.publisher || !data.publisher.name || !data.publisher.url) {
+		throw new Error('SoftwareApplication publisher with name and URL is required');
+	}
+
+	try {
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'SoftwareApplication',
+			name: data.name.trim(),
+			description: data.description.trim(),
+			url: data.url.trim(),
+			...(data.image && { image: data.image.trim() }),
+			applicationCategory: data.applicationCategory.trim(),
+			operatingSystem: data.operatingSystem.trim(),
+			offers: {
+				'@type': 'Offer',
+				price: data.offers.price.trim(),
+				priceCurrency: data.offers.priceCurrency.trim(),
+			},
+			author: generatePersonStructuredData(data.author),
+			publisher: {
+				'@type': 'Organization',
+				name: data.publisher.name.trim(),
+				url: data.publisher.url.trim(),
+			},
+			...(data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0 && { 
+				keywords: data.keywords.filter(k => typeof k === 'string' && k.trim() !== '').join(', ') 
+			}),
+			...(data.dateCreated && { dateCreated: data.dateCreated }),
+			...(data.dateModified && { dateModified: data.dateModified }),
+		};
+	} catch (error) {
+		console.error('Error generating software application structured data:', error);
+		throw new Error(`Failed to generate software application structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+	}
+} 
+ 
