@@ -359,5 +359,6 @@ export function generateSoftwareApplicationStructuredData(data: SoftwareApplicat
 		console.error('Error generating software application structured data:', error);
 		throw new Error(`Failed to generate software application structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
 	}
-} 
+}
+ 
  
