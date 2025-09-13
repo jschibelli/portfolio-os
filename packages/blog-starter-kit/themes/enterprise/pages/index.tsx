@@ -14,7 +14,6 @@ import {
 import LatestPosts from '../components/features/blog/latest-posts';
 import Hero from '../components/features/homepage/hero';
 import Intro from '../components/features/homepage/intro';
-import SkillsTicker from '../components/features/homepage/skills-ticker';
 import CTABanner from '../components/features/marketing/cta-banner';
 import FeaturedProjects from '../components/features/portfolio/featured-projects';
 
@@ -100,16 +99,13 @@ export default function Home({ publication, recentPosts }: Props) {
 				{/* 3. Featured Projects */}
 				<FeaturedProjects />
 
-				{/* 4. Skills & Tools Ticker */}
-				<SkillsTicker />
-
-				{/* 5. Latest Blog Posts */}
+				{/* 4. Latest Blog Posts */}
 				<LatestPosts />
 
-				{/* 6. CTA Banner */}
+				{/* 5. CTA Banner */}
 				<CTABanner />
 
-				{/* 7. Chatbot */}
+				{/* 6. Chatbot */}
 				<Chatbot />
 			</main>
 
