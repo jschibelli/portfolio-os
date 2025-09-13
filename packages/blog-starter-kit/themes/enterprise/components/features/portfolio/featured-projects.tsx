@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import portfolioData from '../../../data/portfolio.json';
+import { ICON_SPACING } from '../../../lib/button-styles';
 import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
 
@@ -97,7 +98,7 @@ export default function FeaturedProjects() {
 						>
 							View All Projects
 							<ArrowRightIcon 
-								className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" 
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} 
 								aria-hidden="true"
 							/>
 						</Link>
