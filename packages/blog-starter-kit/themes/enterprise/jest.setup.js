@@ -25,15 +25,9 @@ jest.mock('next/router', () => ({
         emit: jest.fn(),
       },
       isFallback: false,
-<<<<<<< HEAD
-    };
-  },
-}));
-=======
     }
   },
 }))
->>>>>>> feature/accessibility-unit-tests
 
 // Mock Next.js navigation (App Router)
 jest.mock('next/navigation', () => ({
