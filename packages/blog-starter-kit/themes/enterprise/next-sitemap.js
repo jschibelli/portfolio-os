@@ -18,7 +18,7 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.com'}/sitemap.xml`,
+      `${process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev'}/sitemap.xml`,
     ],
   },
   transform: async (config, path) => {

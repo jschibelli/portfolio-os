@@ -7,8 +7,7 @@ import { MarkdownToHtml } from '../../components/features/blog/markdown-to-html'
 import { PostHeader } from '../../components/features/blog/post-header';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Container } from '../../components/shared/container';
-import { Footer } from '../../components/shared/footer';
-import { Layout } from '../../components/shared/layout';
+import { Layout } from '../../components/shared/layout'; // Layout component automatically includes Footer - no need for explicit Footer import
 import type { Post } from '../../generated/graphql';
 import {
 	DraftByIdDocument,
@@ -68,7 +67,6 @@ export default function Post({ publication, post }: Props) {
 						</div>
 					</article>
 				</Container>
-				<Footer publication={publication} />
 			</Layout>
 		</AppProvider>
 	);
