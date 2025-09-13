@@ -4,7 +4,6 @@ import Link from 'next/link';
 import portfolioData from '../../../data/portfolio.json';
 import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
-import { SECONDARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 export default function FeaturedProjects() {
 	// Error handling for missing portfolio data
@@ -76,12 +75,12 @@ export default function FeaturedProjects() {
 					<Button
 						size="lg"
 						variant="outline"
-						className={SECONDARY_BUTTON_STYLES}
+						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
 					>
 						<Link href="/projects">
 							View All Projects
-							<ArrowRightIcon className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} />
+							<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 						</Link>
 					</Button>
 				</motion.div>
