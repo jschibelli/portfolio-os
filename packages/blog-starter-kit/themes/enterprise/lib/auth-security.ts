@@ -1,8 +1,4 @@
-// import bcrypt from 'bcrypt';
-const bcrypt = {
-  hash: async (password: string, rounds: number) => 'mock-hash',
-  compare: async (password: string, hash: string) => true
-};
+import bcrypt from 'bcrypt';
 import { prisma } from './prisma';
 
 // Rate limiting configuration

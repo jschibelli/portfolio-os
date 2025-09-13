@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-// import { Octokit } from '@octokit/rest';
-const Octokit = class { constructor() {} };
+import { Octokit } from '@octokit/rest';
 import { remark } from 'remark';
 import { html } from 'remark-html';
 import { remarkGfm } from 'remark-gfm';
