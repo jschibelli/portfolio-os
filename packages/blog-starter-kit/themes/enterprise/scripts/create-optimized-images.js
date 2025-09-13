@@ -1,72 +1,187 @@
 const fs = require('fs');
 const path = require('path');
 
-// Script to create optimized versions of hero images
-// This provides instructions and creates placeholder files for optimization
+/**
+ * Image Optimization Script
+ * 
+ * This script provides instructions and creates placeholder files for optimizing hero images.
+ * It includes error handling, modular functions, and comprehensive logging.
+ */
 
-const heroDir = path.join(__dirname, '../public/assets/hero');
-const outputDir = path.join(__dirname, '../public/assets/hero/optimized');
+// Configuration constants
+const CONFIG = {
+  heroDir: path.join(__dirname, '../public/assets/hero'),
+  outputDir: path.join(__dirname, '../public/assets/hero/optimized'),
+  largeImages: [
+    'hero-bg-fb.png',
+    'hero-bg-og.png', 
+    'hero-bg.png',
+    'hero-bg1.png',
+    'hero-bg2.png',
+    'hero-bg3.png',
+    'hero-bg4.png'
+  ],
+  targetFileSize: 200, // KB
+  targetQuality: '80-85%',
+  maxWidth: 1920
+};
 
-// Create optimized directory if it doesn't exist
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+/**
+ * Safely create directory if it doesn't exist
+ * @param {string} dirPath - Directory path to create
+ * @returns {boolean} - Success status
+ */
+function createDirectory(dirPath) {
+  try {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      console.log(`✅ Created directory: ${dirPath}`);
+      return true;
+    }
+    return true;
+  } catch (error) {
+    console.error(`❌ Failed to create directory ${dirPath}:`, error.message);
+    return false;
+  }
 }
 
-const largeImages = [
-  'hero-bg-fb.png',
-  'hero-bg-og.png', 
-  'hero-bg.png',
-  'hero-bg1.png',
-  'hero-bg2.png',
-  'hero-bg3.png',
-  'hero-bg4.png'
-];
-
-console.log('🚀 Image Optimization Instructions\n');
-console.log('The following images need optimization:');
-largeImages.forEach(image => {
-  const inputPath = path.join(heroDir, image);
-  if (fs.existsSync(inputPath)) {
-    const stats = fs.statSync(inputPath);
-    const sizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-    console.log(`  📸 ${image}: ${sizeMB}MB`);
+/**
+ * Get file size in MB with error handling
+ * @param {string} filePath - Path to the file
+ * @returns {string} - File size in MB or 'Unknown'
+ */
+function getFileSize(filePath) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      return (stats.size / (1024 * 1024)).toFixed(2);
+    }
+    return 'Unknown';
+  } catch (error) {
+    console.warn(`⚠️  Could not get size for ${filePath}:`, error.message);
+    return 'Unknown';
   }
-});
+}
 
-console.log('\n💡 Optimization Steps:');
-console.log('1. Use an online tool like:');
-console.log('   - https://squoosh.app/ (Google\'s image optimizer)');
-console.log('   - https://tinypng.com/ (PNG compression)');
-console.log('   - https://convertio.co/png-webp/ (PNG to WebP converter)');
-console.log('2. Target file sizes:');
-console.log('   - Hero backgrounds: < 200KB each');
-console.log('   - Use WebP format for better compression');
-console.log('   - Maintain quality at 80-85%');
-console.log('3. Save optimized images to: public/assets/hero/optimized/');
+/**
+ * Display image optimization instructions
+ */
+function displayOptimizationInstructions() {
+  console.log('🚀 Image Optimization Instructions\n');
+  console.log('The following images need optimization:');
+  
+  CONFIG.largeImages.forEach(image => {
+    const inputPath = path.join(CONFIG.heroDir, image);
+    const sizeMB = getFileSize(inputPath);
+    const status = fs.existsSync(inputPath) ? '📸' : '❌';
+    console.log(`  ${status} ${image}: ${sizeMB}MB`);
+  });
 
-console.log('\n📋 Recommended settings:');
-console.log('- Format: WebP');
-console.log('- Quality: 80-85%');
-console.log('- Resize if needed: Max width 1920px');
-console.log('- Progressive: Yes');
+  console.log('\n💡 Optimization Steps:');
+  console.log('1. Use an online tool like:');
+  console.log('   - https://squoosh.app/ (Google\'s image optimizer)');
+  console.log('   - https://tinypng.com/ (PNG compression)');
+  console.log('   - https://convertio.co/png-webp/ (PNG to WebP converter)');
+  console.log('2. Target file sizes:');
+  console.log(`   - Hero backgrounds: < ${CONFIG.targetFileSize}KB each`);
+  console.log('   - Use WebP format for better compression');
+  console.log(`   - Maintain quality at ${CONFIG.targetQuality}`);
+  console.log('3. Save optimized images to: public/assets/hero/optimized/');
 
-// Create a README for the optimized folder
-const readmeContent = `# Optimized Images
+  console.log('\n📋 Recommended settings:');
+  console.log('- Format: WebP');
+  console.log(`- Quality: ${CONFIG.targetQuality}`);
+  console.log(`- Resize if needed: Max width ${CONFIG.maxWidth}px`);
+  console.log('- Progressive: Yes');
+}
+
+/**
+ * Create README file with optimization guidelines
+ * @returns {boolean} - Success status
+ */
+function createReadmeFile() {
+  try {
+    const readmeContent = `# Optimized Images
 
 This folder contains optimized versions of hero background images.
 
 ## Optimization Guidelines:
 - Format: WebP preferred, PNG as fallback
-- Quality: 80-85%
-- Max file size: 200KB per image
-- Max dimensions: 1920px width
+- Quality: ${CONFIG.targetQuality}
+- Max file size: ${CONFIG.targetFileSize}KB per image
+- Max dimensions: ${CONFIG.maxWidth}px width
 
 ## Files to optimize:
-${largeImages.map(img => `- ${img}`).join('\n')}
+${CONFIG.largeImages.map(img => `- ${img}`).join('\n')}
 
 ## Usage:
 Update the hero component to use optimized images from this folder.
+
+## Performance Impact:
+- Reduced file sizes improve page load times
+- WebP format provides better compression than PNG
+- Optimized images reduce bandwidth usage
+- Better Core Web Vitals scores (LCP, CLS)
+
+## Generated by: create-optimized-images.js
+## Last updated: ${new Date().toISOString()}
 `;
 
-fs.writeFileSync(path.join(outputDir, 'README.md'), readmeContent);
-console.log('\n✅ Created optimization instructions in public/assets/hero/optimized/README.md');
+    const readmePath = path.join(CONFIG.outputDir, 'README.md');
+    fs.writeFileSync(readmePath, readmeContent);
+    console.log(`\n✅ Created optimization instructions in ${readmePath}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to create README file:', error.message);
+    return false;
+  }
+}
+
+/**
+ * Main execution function with error handling
+ */
+function main() {
+  try {
+    console.log('🔧 Starting image optimization setup...\n');
+    
+    // Create output directory
+    if (!createDirectory(CONFIG.outputDir)) {
+      console.error('❌ Cannot proceed without output directory');
+      process.exit(1);
+    }
+    
+    // Display instructions
+    displayOptimizationInstructions();
+    
+    // Create README file
+    if (!createReadmeFile()) {
+      console.warn('⚠️  README file creation failed, but script completed');
+    }
+    
+    console.log('\n🎉 Image optimization setup completed successfully!');
+    console.log('📝 Next steps:');
+    console.log('   1. Follow the optimization steps above');
+    console.log('   2. Place optimized images in the output directory');
+    console.log('   3. Update hero component to use optimized images');
+    console.log('   4. Test performance improvements with Lighthouse');
+    
+  } catch (error) {
+    console.error('❌ Script execution failed:', error.message);
+    console.error('Stack trace:', error.stack);
+    process.exit(1);
+  }
+}
+
+// Execute main function if script is run directly
+if (require.main === module) {
+  main();
+}
+
+// Export functions for potential reuse
+module.exports = {
+  createDirectory,
+  getFileSize,
+  displayOptimizationInstructions,
+  createReadmeFile,
+  CONFIG
+};

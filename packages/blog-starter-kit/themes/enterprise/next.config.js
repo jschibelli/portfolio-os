@@ -115,17 +115,37 @@ const config = {
 		ignoreBuildErrors: true,
 	},
 	images: {
+		// Enable Next.js image optimization for better performance
 		unoptimized: false,
+		
+		// Support modern image formats for better compression
 		formats: ['image/webp', 'image/avif'],
+		
+		// Device sizes for responsive images - covers most common screen sizes
+		// Security note: These sizes are safe as they only affect image generation
 		deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+		
+		// Image sizes for thumbnails and small images
+		// Security note: These are standard thumbnail sizes, no security risk
 		imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+		
+		// Cache TTL for optimized images - 60 seconds is reasonable for performance
 		minimumCacheTTL: 60,
+		
+		// Allow SVG images - SECURITY CONSIDERATION: Only enable if needed
+		// SVG files can contain scripts, but we have CSP protection below
 		dangerouslyAllowSVG: true,
+		
+		// Content Security Policy for SVG images - CRITICAL for security
+		// This prevents SVG files from executing scripts or accessing external resources
 		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+		
+		// Remote patterns for external images - SECURITY: Only allow trusted domains
+		// Hashnode CDN is trusted for blog content images
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'cdn.hashnode.com',
+				hostname: 'cdn.hashnode.com', // Only Hashnode's CDN is allowed
 			},
 		],
 	},

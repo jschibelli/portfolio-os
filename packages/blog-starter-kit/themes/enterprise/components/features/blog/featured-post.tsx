@@ -64,7 +64,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
               {!imageError && coverImage ? (
                 <Image
                   src={coverImage}
-                  alt={post.title}
+                  alt={`Featured article cover image: ${post.title}`}
                   width={600}
                   height={500}
                   className="h-[400px] w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[500px]"
@@ -77,9 +77,14 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
                 />
               ) : (
                 <div className="flex h-[400px] w-full items-center justify-center bg-stone-200 dark:bg-stone-800 lg:h-[500px]">
-                  <span className="text-sm text-stone-500 dark:text-stone-400">
-                    {imageError ? 'Image failed to load' : 'No image available'}
-                  </span>
+                  <div className="text-center">
+                    <div className="text-sm text-stone-500 dark:text-stone-400 mb-1">
+                      {imageError ? 'Image failed to load' : 'No image available'}
+                    </div>
+                    <div className="text-xs text-stone-400 dark:text-stone-500">
+                      {post.title}
+                    </div>
+                  </div>
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

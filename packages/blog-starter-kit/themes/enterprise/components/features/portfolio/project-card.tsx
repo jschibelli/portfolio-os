@@ -36,7 +36,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 				<div className="relative h-48 overflow-hidden">
 					<Image
 						src={project.image}
-						alt={project.title}
+						alt={`Screenshot of ${project.title} project - ${project.description}`}
 						fill
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
