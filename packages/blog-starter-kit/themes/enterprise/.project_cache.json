@@ -1,4 +1,12 @@
 {
   "number": 19,
-  "url": "https://github.com/users/jschibelli/projects/19"
+  "url": "https://github.com/users/jschibelli/projects/19",
+  "description": "Portfolio Project cache for GitHub Projects v2 integration",
+  "lastUpdated": "2025-09-11T03:43:07Z",
+  "schema": {
+    "number": "GitHub Project number (integer)",
+    "url": "GitHub Project URL (string)",
+    "description": "Project description (string)",
+    "lastUpdated": "ISO 8601 timestamp of last update (string)"
+  }
 }
