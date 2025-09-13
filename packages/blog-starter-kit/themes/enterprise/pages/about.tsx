@@ -675,10 +675,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-indigo-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-blue-950/20 dark:to-indigo-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<CheckCircleIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -687,7 +687,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											Project Delivery
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-blue-600 dark:text-blue-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											25+ Projects
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -706,10 +706,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-green-50/50 via-transparent to-emerald-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-green-950/20 dark:to-emerald-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<UsersIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -718,7 +718,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											Client Success
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-green-600 dark:text-green-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											100% Retention
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -737,10 +737,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-orange-50/50 via-transparent to-amber-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-orange-950/20 dark:to-amber-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<ClockIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -749,7 +749,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											Response Time
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-orange-600 dark:text-orange-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											24h Response
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -768,10 +768,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-transparent to-violet-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-purple-950/20 dark:to-violet-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<ZapIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -780,7 +780,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											AI-Enhanced Development
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-purple-600 dark:text-purple-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											Future-Ready
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -799,10 +799,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 via-transparent to-cyan-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-teal-950/20 dark:to-cyan-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<TrendingUpIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -811,7 +811,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											Accessibility & SEO
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-teal-600 dark:text-teal-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											WCAG Compliant
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -830,10 +830,10 @@ export default function About({ publication }: Props) {
 									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
 								>
 									{/* Card Background Gradient */}
-									<div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 via-transparent to-pink-50/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-rose-950/20 dark:to-pink-950/10" />
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
 									
 									{/* Icon */}
-									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 shadow-lg">
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
 										<StarIcon className="h-8 w-8 text-white" />
 									</div>
 									
@@ -842,7 +842,7 @@ export default function About({ publication }: Props) {
 										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
 											Process Excellence
 										</h3>
-										<div className="mb-4 text-3xl font-bold text-rose-600 dark:text-rose-400">
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
 											15+ Years
 										</div>
 										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -866,7 +866,7 @@ export default function About({ publication }: Props) {
 								</p>
 								<Button
 									size="lg"
-									className="bg-gradient-to-r from-stone-700 to-stone-800 text-white hover:from-stone-800 hover:to-stone-900 shadow-lg hover:shadow-xl transition-all duration-300"
+									className="bg-stone-900 text-white hover:bg-stone-800 shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
 									asChild
 								>
 									<Link href="/contact">
