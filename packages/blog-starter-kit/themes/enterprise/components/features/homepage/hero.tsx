@@ -3,9 +3,7 @@ import { ArrowRightIcon, MailIcon, MessageSquareIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
-
-// Shared styles for better maintainability
-const SHARED_BUTTON_STYLES = "group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl";
+import { PRIMARY_BUTTON_STYLES, SECONDARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 // Animation variants for consistent motion
 const fadeInUp = {
@@ -84,14 +82,14 @@ export default function Hero() {
 						{/* Primary CTA: Start conversation about project goals */}
 						<Button
 							size="lg"
-							className={`${SHARED_BUTTON_STYLES} min-w-[180px] justify-center bg-gradient-to-r from-stone-900 to-stone-700 text-white hover:from-stone-800 hover:to-stone-600`}
+							className={`${PRIMARY_BUTTON_STYLES} min-w-[180px] justify-center`}
 							asChild
 						>
 							<Link href="/contact" aria-label="Start a conversation about your project goals and business objectives">
 								<span className="flex items-center">
-									<MessageSquareIcon className="mr-2 h-5 w-5" />
+									<MessageSquareIcon className={ICON_SPACING.left} />
 									Discuss Your Goals
-									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+									<ArrowRightIcon className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} aria-hidden="true" />
 								</span>
 							</Link>
 						</Button>
@@ -99,13 +97,13 @@ export default function Hero() {
 						{/* Secondary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
-							className={`${SHARED_BUTTON_STYLES} min-w-[160px] justify-center`}
+							className={`${SECONDARY_BUTTON_STYLES} min-w-[160px] justify-center`}
 							asChild
 						>
 							<Link href="/projects" aria-label="View proven results and case studies of successful web applications">
 								<span className="flex items-center">
 									See My Results
-									<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+									<ArrowRightIcon className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} aria-hidden="true" />
 								</span>
 							</Link>
 						</Button>
