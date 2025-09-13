@@ -23,14 +23,18 @@ const fadeInUpDelayed = (delay: number) => ({
 export default function Hero() {
 	return (
 		<header className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
-			{/* Background Image */}
+			{/* Background Image with optimized loading */}
 			<div className="absolute inset-0 z-0">
 				<Image
-					src="/assets/hero/hero-bg1.png"
+					src="/assets/hero/hero-image.webp"
 					alt="Abstract stone palette background"
 					fill
 					className="object-cover"
 					priority
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+					quality={85}
+					placeholder="blur"
+					blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
 				/>
 				{/* Radial gradient overlay for readability */}
 				<div className="bg-gradient-radial absolute inset-0 from-stone-900/80 via-stone-900/60 to-stone-900/40" />
