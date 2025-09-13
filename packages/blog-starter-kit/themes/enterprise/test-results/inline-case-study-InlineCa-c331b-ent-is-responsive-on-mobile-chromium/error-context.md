@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic [active]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - navigation [ref=e6]:
+          - button "previous" [disabled] [ref=e7]:
+            - img "previous" [ref=e8]
+          - generic [ref=e10]:
+            - generic [ref=e11]: 1/
+            - generic [ref=e12]: "1"
+          - button "next" [disabled] [ref=e13]:
+            - img "next" [ref=e14]
+        - generic [ref=e17]:
+          - img [ref=e18]
+          - generic "Latest available version is detected (15.5.2)." [ref=e20]: Next.js 15.5.2
+          - generic [ref=e21]: Webpack
+      - dialog "Build Error" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e30]: Build Error
+              - generic [ref=e31]:
+                - button "Copy Error Info" [ref=e32] [cursor=pointer]:
+                  - img [ref=e33] [cursor=pointer]
+                - link "Go to related documentation" [ref=e35] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/messages/module-not-found
+                  - img [ref=e36] [cursor=pointer]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e38] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e39] [cursor=pointer]
+            - paragraph [ref=e48]: "Module not found: Can't resolve '../components/providers/AppProvider'"
+          - generic [ref=e50]:
+            - generic [ref=e52]:
+              - img [ref=e54]
+              - generic [ref=e57]: ./pages/inline-case-study-demo.tsx (5:1)
+              - button "Open in editor" [ref=e58] [cursor=pointer]:
+                - img [ref=e60] [cursor=pointer]
+            - generic [ref=e63]:
+              - generic [ref=e64]: Module not found
+              - generic [ref=e65]: ": Can't resolve '"
+              - generic [ref=e66]: ../components/providers/AppProvider
+              - generic [ref=e67]:
+                - text: "' 3 | import { InlineCaseStudyDemo } from '../components/projects/InlineCaseStudyDemo'; 4 | import { Layout } from '../components/shared/Layout'; > 5 | import { AppProvider } from '../components/providers/AppProvider'; | ^ 6 | 7 | interface DemoPageProps { 8 | // Add any props if needed"
+                - link "https://nextjs.org/docs/messages/module-not-found" [ref=e68] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/messages/module-not-found
+        - generic [ref=e69]:
+          - generic [ref=e70]: "1"
+          - generic [ref=e71]: "2"
+    - generic [ref=e76] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e77] [cursor=pointer]:
+        - img [ref=e78] [cursor=pointer]
+      - button "Open issues overlay" [ref=e82] [cursor=pointer]:
+        - generic [ref=e83] [cursor=pointer]:
+          - generic [ref=e84] [cursor=pointer]: "0"
+          - generic [ref=e85] [cursor=pointer]: "1"
+        - generic [ref=e86] [cursor=pointer]: Issue
+  - alert [ref=e87]
+```

@@ -1,0 +1,170 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - banner [ref=e5]:
+        - generic [ref=e7]:
+          - link "John Schibelli - Home" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e10] [cursor=pointer]: John Schibelli
+          - navigation "Main navigation" [ref=e11]:
+            - link "Home" [ref=e12] [cursor=pointer]:
+              - /url: /
+            - link "Work" [ref=e13] [cursor=pointer]:
+              - /url: /work
+            - link "Case Studies" [ref=e14] [cursor=pointer]:
+              - /url: /case-studies
+            - link "Blog" [ref=e15] [cursor=pointer]:
+              - /url: /blog
+            - link "About" [ref=e16] [cursor=pointer]:
+              - /url: /about
+            - link "Contact" [ref=e17] [cursor=pointer]:
+              - /url: /contact
+          - generic [ref=e18]:
+            - button "Switch to light theme" [pressed] [ref=e19] [cursor=pointer]:
+              - img
+              - generic [ref=e20] [cursor=pointer]: Toggle theme
+            - button "Subscribe to newsletter" [ref=e21] [cursor=pointer]: Subscribe
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - heading "Technology & Development" [level=2] [ref=e30]
+          - heading "The Developer's Lens" [level=1] [ref=e31]
+        - paragraph [ref=e32]: Unfiltered perspectives on code, creativity, and the constant evolution of technology.
+      - generic [ref=e36]:
+        - link "Find us on Facebook, external website, opens in new tab" [ref=e37] [cursor=pointer]:
+          - /url: https://facebook.com
+          - img [ref=e38] [cursor=pointer]
+        - link "Find us on Github, external website, opens in new tab" [ref=e40] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e41] [cursor=pointer]
+        - link "Find us on Linkedin, external website, opens in new tab" [ref=e43] [cursor=pointer]:
+          - /url: https://linkedin.com
+          - img [ref=e44] [cursor=pointer]
+        - link "Find us on Bluesky, external website, opens in new tab" [ref=e46] [cursor=pointer]:
+          - /url: https://bsky.app
+          - img [ref=e47] [cursor=pointer]
+        - link "Open blog XML Feed, opens in new tab" [ref=e49] [cursor=pointer]:
+          - /url: /rss.xml
+          - img [ref=e50] [cursor=pointer]
+      - generic [ref=e52]:
+        - generic [ref=e53]:
+          - generic [ref=e55]:
+            - generic [ref=e57]:
+              - heading "Featured Post" [level=2] [ref=e58]
+              - generic [ref=e59]: Featured
+            - generic [ref=e60]:
+              - generic [ref=e62]:
+                - img "How I Use GPT to Scope and Estimate Freelance Projects (Without Burning Hours)" [ref=e63]
+                - generic [ref=e65]: Featured
+              - generic [ref=e66]:
+                - generic [ref=e67]:
+                  - generic [ref=e68]:
+                    - img [ref=e69]
+                    - generic [ref=e71]: Jul 25, 2025
+                  - generic [ref=e72]:
+                    - img [ref=e73]
+                    - generic [ref=e76]: 5 min read
+                - heading "How I Use GPT to Scope and Estimate Freelance Projects (Without Burning Hours)" [level=3] [ref=e77]
+                - paragraph [ref=e78]: Scoping freelance work used to be the part I dreaded most. Endless back-and-forth with vague client requests, a half-baked idea of what they wanted, and pressure to give a number — fast. And when I got it wrong? It usually cost me time, energy, and r...
+                - generic [ref=e79]:
+                  - generic [ref=e80]: Featured
+                  - generic [ref=e81]: Technology
+                  - generic [ref=e82]: Insights
+                - link "Read full article" [ref=e83] [cursor=pointer]:
+                  - /url: /how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours
+                  - text: Read full article
+                  - img [ref=e84] [cursor=pointer]
+          - generic [ref=e86]:
+            - heading "Latest Posts" [level=2] [ref=e87]
+            - generic [ref=e88]:
+              - 'link "From Setback to Comeback: My Stroke Recovery Journey with AI Technology Read Article May 02, 2025 • 3 min read From Setback to Comeback: My Stroke Recovery Journey with AI Three years ago, everything changed in an instant. While driving on the highway, I had a stroke. There was no warning or time to prepare, just a sudden and life-altering event that brought everything to a standstill. The immediate aftermath was surre... Development Read more →" [ref=e91] [cursor=pointer]':
+                - /url: /from-setback-to-comeback-my-stroke-recovery-journey-with-ai
+                - generic [ref=e92] [cursor=pointer]:
+                  - generic [ref=e93] [cursor=pointer]:
+                    - 'img "From Setback to Comeback: My Stroke Recovery Journey with AI" [ref=e95] [cursor=pointer]'
+                    - generic [ref=e98] [cursor=pointer]: Technology
+                    - generic [ref=e100] [cursor=pointer]: Read Article
+                  - generic [ref=e102] [cursor=pointer]:
+                    - generic [ref=e103] [cursor=pointer]:
+                      - time [ref=e104] [cursor=pointer]: May 02, 2025
+                      - generic [ref=e105] [cursor=pointer]: •
+                      - generic [ref=e106] [cursor=pointer]: 3 min read
+                    - 'heading "From Setback to Comeback: My Stroke Recovery Journey with AI" [level=3] [ref=e107] [cursor=pointer]'
+                  - generic [ref=e108] [cursor=pointer]:
+                    - paragraph [ref=e109] [cursor=pointer]: Three years ago, everything changed in an instant. While driving on the highway, I had a stroke. There was no warning or time to prepare, just a sudden and life-altering event that brought everything to a standstill. The immediate aftermath was surre...
+                    - generic [ref=e110] [cursor=pointer]:
+                      - generic [ref=e112] [cursor=pointer]: Development
+                      - generic [ref=e113] [cursor=pointer]:
+                        - generic [ref=e114] [cursor=pointer]: Read more
+                        - generic [ref=e115] [cursor=pointer]: →
+              - link "How We Built SynaplyAI Technology Read Article Apr 08, 2025 • 3 min read How We Built SynaplyAI SynaplyAI started with a problem I faced myself. I was creating content for multiple platforms — blog posts, social media updates, technical articles — and it was exhausting to track everything across different tools. I’d use one platform to draft co... Development Read more →" [ref=e118] [cursor=pointer]:
+                - /url: /how-we-built-synaplyai
+                - generic [ref=e119] [cursor=pointer]:
+                  - generic [ref=e120] [cursor=pointer]:
+                    - img "How We Built SynaplyAI" [ref=e122] [cursor=pointer]
+                    - generic [ref=e125] [cursor=pointer]: Technology
+                    - generic [ref=e127] [cursor=pointer]: Read Article
+                  - generic [ref=e129] [cursor=pointer]:
+                    - generic [ref=e130] [cursor=pointer]:
+                      - time [ref=e131] [cursor=pointer]: Apr 08, 2025
+                      - generic [ref=e132] [cursor=pointer]: •
+                      - generic [ref=e133] [cursor=pointer]: 3 min read
+                    - heading "How We Built SynaplyAI" [level=3] [ref=e134] [cursor=pointer]
+                  - generic [ref=e135] [cursor=pointer]:
+                    - paragraph [ref=e136] [cursor=pointer]: SynaplyAI started with a problem I faced myself. I was creating content for multiple platforms — blog posts, social media updates, technical articles — and it was exhausting to track everything across different tools. I’d use one platform to draft co...
+                    - generic [ref=e137] [cursor=pointer]:
+                      - generic [ref=e139] [cursor=pointer]: Development
+                      - generic [ref=e140] [cursor=pointer]:
+                        - generic [ref=e141] [cursor=pointer]: Read more
+                        - generic [ref=e142] [cursor=pointer]: →
+              - 'link "Advanced State Management in React: When to Use Context, Redux, or Zustand Technology Read Article Feb 28, 2025 • 3 min read Advanced State Management in React: When to Use Context, Redux, or Zustand State management in React can be a game-changer for your app’s performance and maintainability. But with so many options—useState, Context API, Redux, Zustand—how do you know which one to pick? Choosing the right solution means the difference between... Development Read more →" [ref=e145] [cursor=pointer]':
+                - /url: /advanced-state-management-in-react-when-to-use-context-redux-or-zustand
+                - generic [ref=e146] [cursor=pointer]:
+                  - generic [ref=e147] [cursor=pointer]:
+                    - 'img "Advanced State Management in React: When to Use Context, Redux, or Zustand" [ref=e149] [cursor=pointer]'
+                    - generic [ref=e152] [cursor=pointer]: Technology
+                    - generic [ref=e154] [cursor=pointer]: Read Article
+                  - generic [ref=e156] [cursor=pointer]:
+                    - generic [ref=e157] [cursor=pointer]:
+                      - time [ref=e158] [cursor=pointer]: Feb 28, 2025
+                      - generic [ref=e159] [cursor=pointer]: •
+                      - generic [ref=e160] [cursor=pointer]: 3 min read
+                    - 'heading "Advanced State Management in React: When to Use Context, Redux, or Zustand" [level=3] [ref=e161] [cursor=pointer]'
+                  - generic [ref=e162] [cursor=pointer]:
+                    - paragraph [ref=e163] [cursor=pointer]: State management in React can be a game-changer for your app’s performance and maintainability. But with so many options—useState, Context API, Redux, Zustand—how do you know which one to pick? Choosing the right solution means the difference between...
+                    - generic [ref=e164] [cursor=pointer]:
+                      - generic [ref=e166] [cursor=pointer]: Development
+                      - generic [ref=e167] [cursor=pointer]:
+                        - generic [ref=e168] [cursor=pointer]: Read more
+                        - generic [ref=e169] [cursor=pointer]: →
+        - generic [ref=e173]:
+          - heading "Stay updated with our newsletter" [level=2] [ref=e174]
+          - generic [ref=e175]:
+            - generic [ref=e176]:
+              - textbox "Email address" [ref=e177]
+              - button "Subscribe" [disabled]:
+                - generic: Subscribe
+            - paragraph [ref=e178]: No spam, unsubscribe at any time. We respect your privacy.
+      - button "Open chatbot" [ref=e180] [cursor=pointer]:
+        - img [ref=e181] [cursor=pointer]
+    - contentinfo [ref=e183]:
+      - generic [ref=e185]:
+        - navigation "Social media links" [ref=e186]:
+          - list [ref=e187]:
+            - listitem "Find us on Facebook, external website, opens in new tab" [ref=e188] [cursor=pointer]:
+              - img [ref=e189] [cursor=pointer]
+            - listitem "Find us on Github, external website, opens in new tab" [ref=e191] [cursor=pointer]:
+              - img [ref=e192] [cursor=pointer]
+            - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e194] [cursor=pointer]:
+              - img [ref=e195] [cursor=pointer]
+            - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e197] [cursor=pointer]:
+              - img [ref=e198] [cursor=pointer]
+            - listitem "Open blog XML Feed, opens in new tab" [ref=e200] [cursor=pointer]:
+              - img [ref=e201] [cursor=pointer]
+        - paragraph [ref=e204]: © 2025 John Schibelli. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e210] [cursor=pointer]:
+    - img [ref=e211] [cursor=pointer]
+  - alert [ref=e214]
+```
