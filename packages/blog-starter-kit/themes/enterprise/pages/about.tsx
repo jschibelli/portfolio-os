@@ -432,6 +432,213 @@ export default function About({ publication }: Props) {
 					</div>
 				</section>
 
+				{/* Personal Story Section */}
+				<section className="bg-muted py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-6xl"
+						>
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									My Journey
+								</h2>
+								<p className="text-lg text-stone-600 dark:text-stone-400">
+									From teaching to development: A story of resilience, learning, and growth
+								</p>
+							</div>
+
+							{/* Timeline Container */}
+							<div className="relative">
+								{/* Vertical Timeline Line */}
+								<div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-stone-300 via-stone-400 to-stone-300 dark:from-stone-600 dark:via-stone-500 dark:to-stone-600 md:left-1/2 md:-translate-x-px"></div>
+
+								{/* Timeline Items */}
+								<div className="space-y-12">
+									{/* Teaching Era */}
+									<motion.div
+										initial={{ opacity: 0, x: -30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pr-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<GraduationCapIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															The Teaching Years
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">2005 - 2009</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													As Web Development Program Director at Anthem Institute, I discovered my passion for making complex concepts accessible. 
+													Teaching HTML, CSS, JavaScript, and PHP to students across multiple campuses taught me that <strong className="text-stone-900 dark:text-stone-100">code should be teachable and maintainable</strong> – 
+													principles that still guide my development approach today.
+												</p>
+											</div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+									</motion.div>
+
+									{/* Challenge & Recovery */}
+									<motion.div
+										initial={{ opacity: 0, x: 30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pl-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<StarIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Overcoming Challenges
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">Personal Growth</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													Life threw unexpected challenges my way, including a stroke that tested my resilience. 
+													Through recovery, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. 
+													This experience deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
+												</p>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Evolution to Modern Development */}
+									<motion.div
+										initial={{ opacity: 0, x: -30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pr-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<BracketsIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Modern Development
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">2009 - Present</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													My journey evolved from WordPress customization to building enterprise-scale applications with React, Next.js, and AI integrations. 
+													The educator in me still shines through – I believe in <strong className="text-stone-900 dark:text-stone-100">writing code that tells a story</strong>, 
+													documenting thoroughly, and mentoring team members to ensure every project is built for the long term.
+												</p>
+											</div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+									</motion.div>
+
+									{/* Current Mission */}
+									<motion.div
+										initial={{ opacity: 0, x: 30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-stone-600 to-stone-800 shadow-lg md:left-1/2 md:-translate-x-2 dark:from-stone-300 dark:to-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pl-12">
+											<div className="rounded-lg border-2 border-primary/20 bg-gradient-to-br from-card to-accent/10 p-6 shadow-lg">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/20">
+														<LightbulbIcon className="h-6 w-6 text-primary" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Today's Mission
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">Building the Future</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													As Founder and Lead Developer at IntraWeb Technologies, I'm building the future of web development with AI-driven solutions like SynaplyAI. 
+													My mission: <strong className="text-stone-900 dark:text-stone-100">creating technology that empowers people</strong> – 
+													whether that's through accessible interfaces, intelligent automation, or mentoring the next generation of developers.
+												</p>
+											</div>
+										</div>
+									</motion.div>
+								</div>
+							</div>
+
+							{/* Philosophy Section */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+								viewport={{ once: true }}
+								className="mt-16 rounded-lg border border-border bg-card p-8 shadow-sm"
+							>
+								<div className="text-center">
+									<h3 className="mb-4 text-2xl font-bold text-stone-900 dark:text-stone-100">
+										My Development Philosophy
+									</h3>
+									<p className="text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+										<strong className="text-stone-900 dark:text-stone-100">Code is communication.</strong> Every line should be clear, 
+										every function should tell a story, and every system should be built with future developers in mind. 
+										This educator mindset drives me to create solutions that are not just functional, but truly maintainable and scalable.
+									</p>
+								</div>
+							</motion.div>
+						</motion.div>
+					</Container>
+				</section>
+
 				{/* Professional Summary */}
 				<section className="bg-background py-16">
 					<Container className="px-4">
