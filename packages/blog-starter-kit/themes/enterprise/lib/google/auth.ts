@@ -2,6 +2,11 @@ let google: any;
 
 try {
 	google = require('googleapis');
+	// For googleapis v128+, ensure OAuth2 is available
+	if (!google.auth || !google.auth.OAuth2) {
+		console.warn('[google-auth] OAuth2 not available in googleapis');
+		google = null;
+	}
 } catch (error) {
 	console.warn('[google-auth] googleapis not available');
 	google = null;
