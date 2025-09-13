@@ -10,14 +10,12 @@ bot-service.json
 .env.production
 .env.development
 
-# Test files
+# Test files (keep spec files for Playwright tests)
 test-*.js
 test-*.ts
 test-*.json
 *.test.js
 *.test.ts
-*.spec.js
-*.spec.ts
 
 # Playwright test results and artifacts
 test-results/
@@ -25,6 +23,7 @@ playwright-report/
 playwright/.cache/
 test-results-*/
 playwright-report-*/
+blob-report/
 
 # Playwright configuration files (optional - uncomment if you want to exclude)
 # playwright.config.ts

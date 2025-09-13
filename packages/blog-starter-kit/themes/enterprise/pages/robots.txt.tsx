@@ -13,12 +13,55 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	const robotsTxt = `
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
 
 # Google adsbot ignores robots.txt unless specifically named!
 User-agent: AdsBot-Google
 Allow: /
 
+# Allow Facebook crawler
+User-agent: facebookexternalhit
+Allow: /
+
+# Allow Twitter crawler
+User-agent: Twitterbot
+Allow: /
+
+# Allow LinkedIn crawler
+User-agent: LinkedInBot
+Allow: /
+
+# Allow WhatsApp crawler
+User-agent: WhatsApp
+Allow: /
+
+# Allow Telegram crawler
+User-agent: TelegramBot
+Allow: /
+
+# Allow Pinterest crawler
+User-agent: Pinterestbot
+Allow: /
+
+# Allow Discord crawler
+User-agent: DiscordBot
+Allow: /
+
+# Block AI training crawlers
 User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
 Disallow: /
 
 Sitemap: ${sitemapUrl}

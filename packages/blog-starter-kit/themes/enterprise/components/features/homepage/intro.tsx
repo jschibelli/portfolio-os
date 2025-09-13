@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { Separator } from '../../ui/separator';
 
 export default function Intro() {
 	return (
@@ -23,45 +21,43 @@ export default function Intro() {
 									width={96}
 									height={96}
 									className="h-full w-full object-cover"
-									priority
+									loading="lazy"
 								/>
 							</div>
 What do you recommend 						</div>
 
 						{/* Introduction Text */}
-						<div className="flex-1 space-y-4">
-							<h2 className="text-2xl font-bold text-stone-900 md:text-3xl dark:text-stone-100">
-								About Me
-							</h2>
+						<article className="flex-1 space-y-4">
+							<header>
+								<h2 className="text-2xl font-bold text-stone-900 md:text-3xl dark:text-stone-100">
+									About Me
+								</h2>
+							</header>
 							<div className="prose prose-stone dark:prose-invert max-w-none">
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-									I&apos;m a senior front-end developer with over 15 years of experience building
-									scalable, high-performance web apps and company websites. I specialize in React,
-									Next.js, TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO,
-									and client success. I&apos;m the technical lead behind IntraWeb Technologies&apos;
-									digital presence and AI-driven content collaboration tooling (SynaplyAI).
+									My journey into development started in an unexpected place—teaching web development 
+									at Anthem Institute, where I discovered my passion for turning complex problems into 
+									elegant solutions. That experience shaped my philosophy: great code isn&apos;t just 
+									functional, it&apos;s teachable, maintainable, and built with the end user in mind.
 								</p>
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-									Based in Towaco, NJ, I&apos;ve delivered custom WordPress and Shopify builds,
-									incubated AI-powered collaboration tools, and built enterprise UIs for financial
-									platforms. My expertise spans from modern React applications to legacy system
-									integrations.
+									Today, I&apos;m a senior front-end developer with over 15 years of experience, 
+									but I still approach every project with that educator&apos;s mindset. Whether I&apos;m 
+									building React applications, incubating AI-powered tools like SynaplyAI, or crafting 
+									enterprise UIs for financial platforms, I believe in creating solutions that not only 
+									work beautifully but can be understood and maintained by the next developer.
+								</p>
+								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
+									Based in Towaco, NJ, I specialize in React, Next.js, TypeScript, and Tailwind CSS, 
+									with a particular focus on accessibility and SEO. My unique approach combines technical 
+									excellence with clear communication—because the best code is the kind that tells a story 
+									anyone can follow.
 								</p>
 							</div>
-						</div>
+						</article>
 					</div>
 				</motion.div>
 
-				{/* Light Divider */}
-				<motion.div
-					initial={{ opacity: 0, scaleX: 0 }}
-					whileInView={{ opacity: 1, scaleX: 1 }}
-					transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-					viewport={{ once: true }}
-					className="mt-16"
-				>
-					<Separator className="bg-stone-200 dark:bg-stone-800" />
-				</motion.div>
 			</div>
 		</section>
 	);

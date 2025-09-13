@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Badge } from '../../ui/badge';
+import { Badge } from '../../ui';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { PostFragment } from '../../../generated/graphql';
 import { useState, useEffect } from 'react';
@@ -64,17 +64,27 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
               {!imageError && coverImage ? (
                 <Image
                   src={coverImage}
-                  alt={post.title}
+                  alt={`Featured article cover image: ${post.title}`}
                   width={600}
                   height={500}
                   className="h-[400px] w-full object-cover transition-transform duration-500 group-hover:scale-105 lg:h-[500px]"
                   onError={handleImageError}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
+                  quality={85}
+                  loading="lazy"
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 />
               ) : (
                 <div className="flex h-[400px] w-full items-center justify-center bg-stone-200 dark:bg-stone-800 lg:h-[500px]">
-                  <span className="text-sm text-stone-500 dark:text-stone-400">
-                    {imageError ? 'Image failed to load' : 'No image available'}
-                  </span>
+                  <div className="text-center">
+                    <div className="text-sm text-stone-500 dark:text-stone-400 mb-1">
+                      {imageError ? 'Image failed to load' : 'No image available'}
+                    </div>
+                    <div className="text-xs text-stone-400 dark:text-stone-500">
+                      {post.title}
+                    </div>
+                  </div>
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

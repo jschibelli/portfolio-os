@@ -71,7 +71,7 @@ export default function ContactPage({ publication }: Props) {
 			<Layout>
 				<SEOHead
 					title={`Contact - ${publication.displayTitle || publication.title || 'John Schibelli'}`}
-					description="Get in touch to discuss your next project. Based in Northern New Jersey, available for remote work and local projects. Let's build something amazing together."
+					description="Contact John Schibelli to discuss your next web development project. Get in touch for custom React, Next.js, and TypeScript solutions. Contact us for remote work and local projects."
 					keywords={[
 						'Contact',
 						'Web Development',

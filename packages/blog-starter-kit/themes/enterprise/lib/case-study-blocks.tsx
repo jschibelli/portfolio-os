@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import { Badge, Card, CardContent, CardHeader, CardTitle } from '../components/ui';
-import { PerformanceImage } from '../components/ui/performance-image';
+import { LegacyGallery } from '../components/projects/Gallery';
 
 export interface ParsedBlock {
 	type: string;
@@ -343,88 +343,7 @@ const PlaceholderImage: React.FC<{ alt?: string }> = ({ alt = "Gallery image" })
 );
 
 const Gallery: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => {
-	return (
-		<div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{rows.map((row, index) => {
-				const [url, alt] = row;
-				const isValidUrl = isValidImageUrl(url);
-				
-				// Component for individual gallery item with retry functionality
-				const GalleryItem: React.FC = () => {
-					const [hasError, setHasError] = React.useState(false);
-					const [retryCount, setRetryCount] = React.useState(0);
-					const [isLoading, setIsLoading] = React.useState(true);
-					
-					const handleRetry = () => {
-						setHasError(false);
-						setRetryCount(prev => prev + 1);
-						setIsLoading(true);
-					};
-					
-					const handleError = () => {
-						setHasError(true);
-						setIsLoading(false);
-					};
-					
-					const handleLoad = () => {
-						setIsLoading(false);
-						setHasError(false);
-					};
-					
-					// Cleanup function for resource management
-					React.useEffect(() => {
-						return () => {
-							// Cleanup any pending image loads
-							setIsLoading(false);
-						};
-					}, []);
-					
-					if (!isValidUrl) {
-						return <ImageErrorState message="Invalid image URL" showRetry={false} />;
-					}
-					
-					if (hasError) {
-						return <ImageErrorState onRetry={handleRetry} message="Failed to load image" />;
-					}
-					
-					return (
-						<div className="relative">
-							{isLoading && (
-								<div className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">
-									<div className="text-gray-400 text-sm">Loading...</div>
-								</div>
-							)}
-							<PerformanceImage
-								key={retryCount} // Force re-render on retry
-								src={url} 
-								alt={alt || 'Gallery image'} 
-								width={400} 
-								height={192} 
-								className="h-48 w-full object-cover" 
-								loading="lazy"
-								quality={85}
-								placeholder="blur"
-								blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-								onError={handleError}
-								onLoad={handleLoad}
-								enablePerformanceTracking={true}
-								showLoadingIndicator={true}
-							/>
-						</div>
-					);
-				};
-				
-				return (
-					<Card key={index} className="overflow-hidden">
-						<GalleryItem />
-						<CardContent className="p-4">
-							<p className="text-muted-foreground text-sm">{alt || 'Gallery image'}</p>
-						</CardContent>
-					</Card>
-				);
-			})}
-		</div>
-	);
+	return <LegacyGallery headers={headers} rows={rows} />;
 };
 
 const CTA: React.FC<{ headers: string[]; rows: string[][] }> = ({ headers, rows }) => {

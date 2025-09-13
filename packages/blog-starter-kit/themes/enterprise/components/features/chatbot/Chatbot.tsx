@@ -23,6 +23,7 @@ import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
 import { ContactForm } from '../contact/ContactForm';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface TimeSlot {
   start: string;
@@ -68,6 +69,7 @@ interface PageContext {
 		| 'home'
 		| 'about'
 		| 'work'
+		| 'projects'
 		| 'portfolio'
 		| 'contact'
 		| 'blog'
@@ -278,6 +280,7 @@ export default function Chatbot() {
 				| 'home'
 				| 'about'
 				| 'work'
+				| 'projects'
 				| 'portfolio'
 				| 'contact'
 				| 'blog'
@@ -287,39 +290,62 @@ export default function Chatbot() {
 				| 'page' = 'page';
       let specificType = '';
       
+      // Route detection configuration for better maintainability
+      const routeConfig = [
+        { path: ['/', '/index'], type: 'home' as const },
+        { path: ['/about'], type: 'about' as const },
+        { path: ['/contact'], type: 'contact' as const },
+        { path: ['/blog'], type: 'blog' as const, exact: true },
+        { path: ['/projects'], type: 'projects' as const },
+        { path: ['/portfolio'], type: 'portfolio' as const },
+        { path: ['/services'], type: 'services' as const },
+        { path: ['/case-studies', '/case-study'], type: 'case-study' as const },
+      ];
+
       // Analyze pathname to determine page type
-      if (pathname === '/' || pathname === '/index') {
-        pageType = 'home';
-      } else if (pathname.includes('/about')) {
-        pageType = 'about';
-      } else if (pathname.includes('/work') || pathname.includes('/portfolio')) {
-        pageType = 'work';
-        specificType = pathname.includes('/portfolio') ? 'portfolio' : 'work';
-      } else if (pathname.includes('/contact')) {
-        pageType = 'contact';
-      } else if (pathname.includes('/blog') && pathname !== '/blog') {
+      let routeMatched = false;
+      
+      for (const config of routeConfig) {
+        const isMatch = config.exact 
+          ? config.path.includes(pathname)
+          : config.path.some(path => pathname.includes(path));
+          
+        if (isMatch) {
+          pageType = config.type;
+          routeMatched = true;
+          
+          // Set specific type based on route
+          if (config.type === 'projects' || config.type === 'portfolio') {
+            specificType = config.type;
+          } else if (config.type === 'services') {
+            // Extract specific service type
+            if (pathname.includes('/web-development')) specificType = 'web-development';
+            else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
+            else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
+            else if (pathname.includes('/consulting')) specificType = 'consulting';
+            else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
+            else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
+          } else if (config.type === 'case-study') {
+            // Extract case study name from URL
+            const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
+            if (match) specificType = match[1];
+          }
+          break;
+        }
+      }
+
+      // Handle blog articles (individual blog posts)
+      if (!routeMatched && pathname.includes('/blog') && pathname !== '/blog') {
         pageType = 'article';
-      } else if (pathname === '/blog') {
-        pageType = 'blog';
-      } else if (pathname.includes('/services')) {
-        pageType = 'services';
-        // Extract specific service type
-        if (pathname.includes('/web-development')) specificType = 'web-development';
-        else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
-        else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
-        else if (pathname.includes('/consulting')) specificType = 'consulting';
-        else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
-        else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
-      } else if (pathname.includes('/case-studies') || pathname.includes('/case-study')) {
-        pageType = 'case-study';
-        // Extract case study name from URL
-        const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
-        if (match) specificType = match[1];
-      } else if (pathname !== '/') {
-        // Check if it looks like an article (has content and title)
-				if (pageHeading && pageContent && pageContent.length > 500) {
+        routeMatched = true;
+      }
+
+      // Fallback: Check if it looks like an article (has content and title)
+      if (!routeMatched && pathname !== '/') {
+        if (pageHeading && pageContent && pageContent.length > 500) {
           pageType = 'article';
         }
+        // If still no match, keep default 'page' type
       }
       
       // Always return context if we have any meaningful content
@@ -412,16 +438,8 @@ export default function Chatbot() {
 				navigator.userAgent,
 			);
       
-      console.log('🎤 Speech recognition check:', { 
-        hasSpeechRecognition, 
-        isMobile, 
-        userAgent: navigator.userAgent.substring(0, 100),
-        webkitSpeechRecognition: 'webkitSpeechRecognition' in window,
-				SpeechRecognition: 'SpeechRecognition' in window,
-      });
       
       if (hasSpeechRecognition) {
-        console.log('🎤 Initializing speech recognition...');
         try {
 					const SpeechRecognition =
 						(window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
@@ -433,7 +451,7 @@ export default function Chatbot() {
             recognitionRef.current.interimResults = false;
             recognitionRef.current.maxAlternatives = 1;
             // Mobile browsers often need shorter timeouts
-            recognitionRef.current.grammars = null;
+            // Note: grammars property is optional and can be omitted
           } else {
             recognitionRef.current.continuous = false;
             recognitionRef.current.interimResults = false;
@@ -443,7 +461,6 @@ export default function Chatbot() {
 
           recognitionRef.current.onresult = (event: any) => {
             const transcript = event.results[0][0].transcript;
-            console.log('🎤 Speech recognized:', transcript);
             setInputValue(transcript);
             setIsListening(false);
           };
@@ -485,29 +502,22 @@ export default function Chatbot() {
           };
 
           recognitionRef.current.onend = () => {
-            console.log('🎤 Speech recognition ended');
             setIsListening(false);
           };
 
           recognitionRef.current.onstart = () => {
-            console.log('🎤 Speech recognition started');
             setIsListening(true);
           };
 
           recognitionRef.current.onnomatch = () => {
-            console.log('🎤 No speech match found');
             setIsListening(false);
             if (isMobile) {
               alert('No speech match found. Please try speaking more clearly.');
             }
           };
-
-          console.log('🎤 Speech recognition initialized successfully');
         } catch (error) {
           console.error('🎤 Error initializing speech recognition:', error);
         }
-      } else {
-        console.log('🎤 Speech recognition not supported in this browser');
       }
     }
   }, []);
@@ -536,17 +546,14 @@ export default function Chatbot() {
       setAudioRef(audio);
       
       audio.onplay = () => {
-        console.log('🔊 OpenAI TTS started');
         setIsSpeaking(true);
       };
       
       audio.onended = () => {
-        console.log('🔊 OpenAI TTS ended');
         setIsSpeaking(false);
       };
       
       audio.onerror = () => {
-        console.error('🔊 OpenAI TTS error');
         setIsSpeaking(false);
       };
     }
@@ -559,7 +566,6 @@ export default function Chatbot() {
       const timer = setTimeout(() => {
         const initialMessage = messages[0];
         if (initialMessage && initialMessage.sender === 'bot') {
-          console.log('🔊 Speaking initial message:', initialMessage.text.substring(0, 50) + '...');
           speakMessage(initialMessage.text);
         }
       }, 500);
@@ -638,10 +644,7 @@ export default function Chatbot() {
       
       // Handle UI actions if present
       if (data.uiActions && data.uiActions.length > 0) {
-        console.log('🔍 Received UI actions from API:', data.uiActions);
         handleUIAction(data.uiActions);
-      } else {
-        console.log('🔍 No UI actions received from API');
       }
       
       // Update conversation ID if provided
@@ -676,15 +679,12 @@ export default function Chatbot() {
     // Check if permission has been stored in localStorage
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('chatbot-ui-permission');
-      console.log('🔍 Stored UI permission:', stored);
       if (stored !== null) {
         const permission = stored === 'true';
         setUiPermissionGranted(permission);
-        console.log('🔍 Returning stored permission:', permission);
         return permission;
       }
     }
-    console.log('🔍 Returning current state permission:', uiPermissionGranted);
     return uiPermissionGranted;
   };
 
@@ -725,107 +725,97 @@ export default function Chatbot() {
   };
 
   const executeUIAction = (action: UIAction) => {
-    console.log('🔍 executeUIAction called with:', action.action, action.data);
     switch (action.action) {
       case 'show_calendar_modal':
-        console.log('🔍 Opening calendar modal with data:', action.data);
         setCalendarData(action.data);
         setIsCalendarModalOpen(true);
         break;
       case 'show_contact_form':
-        console.log('🔍 Opening contact form with data:', action.data);
         setContactFormData(action.data);
         setIsContactFormOpen(true);
         break;
       case 'show_booking_modal':
-        console.log('🔍 Opening booking modal with data:', action.data);
-        // If caller didn't supply slots, fetch from API for real data
-        (async () => {
-          try {
-            const now = new Date();
-            const end = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
-            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York';
-            const res = await fetch('/api/schedule/slots', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-								durationMinutes: action.data?.meetingDurations?.[0] || 30,
-                startISO: now.toISOString(),
-                endISO: end.toISOString(),
-                timeZone: tz,
-                dayStartHour: action.data?.businessHours?.start ?? 9,
-                dayEndHour: action.data?.businessHours?.end ?? 18,
-                maxCandidates: 24,
-							}),
-            });
-            if (res.ok) {
-              const data = await res.json();
-							const slots = (data.slots || []).map((s: any) => ({
-								start: s.startISO,
-								end: s.endISO,
-								duration: action.data?.meetingDurations?.[0] || 30,
-							}));
-              setBookingModalData({
-                availableSlots: slots,
-                timezone: action.data?.timezone || tz,
-                businessHours: action.data?.businessHours || { start: 9, end: 18, timezone: tz },
-                meetingDurations: action.data?.meetingDurations || [30, 60],
-                message: 'Schedule a meeting with John',
-                initialStep: action.data?.initialStep || 'contact',
+        
+        // If caller already provided slots, use them directly
+        if (action.data?.availableSlots && action.data.availableSlots.length > 0) {
+          setBookingModalData(action.data);
+          setIsBookingModalOpen(true);
+        } else {
+          // If no slots provided, fetch from API for real data
+          (async () => {
+            try {
+              const now = new Date();
+              const end = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+              const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York';
+              const res = await fetch('/api/schedule/slots', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+									durationMinutes: action.data?.meetingDurations?.[0] || 30,
+                  startISO: now.toISOString(),
+                  endISO: end.toISOString(),
+                  timeZone: tz,
+                  dayStartHour: action.data?.businessHours?.start ?? 9,
+                  dayEndHour: action.data?.businessHours?.end ?? 18,
+                  maxCandidates: 24,
+								}),
               });
-            } else {
-              // Fallback to provided data if API fails
+              if (res.ok) {
+                const data = await res.json();
+								const slots = (data.slots || []).map((s: any) => ({
+									start: s.startISO,
+									end: s.endISO,
+									duration: action.data?.meetingDurations?.[0] || 30,
+								}));
+                setBookingModalData({
+                  availableSlots: slots,
+                  timezone: action.data?.timezone || tz,
+                  businessHours: action.data?.businessHours || { start: 9, end: 18, timezone: tz },
+                  meetingDurations: action.data?.meetingDurations || [30, 60],
+                  message: 'Schedule a meeting with John',
+                  initialStep: action.data?.initialStep || 'contact',
+                });
+              } else {
+                // Fallback to provided data if API fails
+                setBookingModalData(action.data);
+              }
+            } catch (err) {
+              console.error('Failed to fetch real slots, falling back to provided data', err);
               setBookingModalData(action.data);
+            } finally {
+              setIsBookingModalOpen(true);
             }
-          } catch (err) {
-            console.error('Failed to fetch real slots, falling back to provided data', err);
-            setBookingModalData(action.data);
-          } finally {
-            setIsBookingModalOpen(true);
-          }
-        })();
+          })();
+        }
         break;
       case 'show_existing_booking':
-        console.log('🔍 Showing existing booking:', action.data.booking);
         setExistingBooking(action.data.booking);
         break;
       case 'show_booking_confirmation':
-        console.log('🔍 Opening booking confirmation with data:', action.data);
         setConfirmationModalData(action.data);
         setIsConfirmationModalOpen(true);
         break;
       default:
-        console.log('🔍 Unknown UI action:', action.action);
+        break;
     }
   };
 
   const handleUIAction = (uiActions: UIAction[]) => {
-    console.log('🔍 handleUIAction called with:', uiActions);
     for (const action of uiActions) {
-      console.log('🔍 Processing UI action:', action.action, action.data);
       const permission = checkUIPermission();
-      console.log('🔍 UI permission status:', permission);
       
       if (permission === null) {
         // First time - ask for permission
-        console.log('🔍 Requesting UI permission for:', action.action);
         requestUIPermission(action);
       } else if (permission === true) {
         // Permission granted - execute immediately
-        console.log('🔍 Executing UI action:', action.action);
         executeUIAction(action);
-      } else {
-        // Permission denied - ignore the action
-        console.log('🔍 UI action ignored - permission denied');
       }
+      // Permission denied - ignore the action
     }
   };
 
   const handleCalendarSlotSelect = (slot: TimeSlot) => {
-    // Here you can handle the slot selection
-    // For example, you could automatically send a message to book the meeting
-    console.log('Selected slot:', slot);
-    
     // You could also trigger a booking flow here
     const bookingMessage = `I'd like to book the ${slot.duration}-minute meeting at ${new Date(slot.start).toLocaleString()}.`;
     setInputValue(bookingMessage);
@@ -1180,8 +1170,7 @@ export default function Chatbot() {
                 if (isMobile) {
                   // Try to set a shorter timeout for mobile
                   recognitionRef.current.maxAlternatives = 1;
-                  // Some mobile browsers need this
-                  recognitionRef.current.grammars = null;
+                  // Note: grammars property is optional and can be omitted
                 }
                
                // Re-attach event handlers
@@ -1317,15 +1306,8 @@ export default function Chatbot() {
   };
 
   const speakMessage = async (text: string) => {
-		console.log('🔊 speakMessage called:', {
-			text: text.substring(0, 50) + '...',
-			isVoiceEnabled,
-			hasAudioRef: !!audioRef,
-		});
-    
     // Only speak if voice is explicitly enabled by user
     if (!isVoiceEnabled) {
-      console.log('🔊 Voice is disabled, not speaking message');
       return;
     }
     
@@ -1334,8 +1316,6 @@ export default function Chatbot() {
         // Stop any current speech before starting new one
         audioRef.pause();
         audioRef.currentTime = 0;
-        
-        console.log('🔊 Generating OpenAI TTS for:', text.substring(0, 50) + '...');
         
         const response = await fetch('/api/tts', {
           method: 'POST',
@@ -1361,11 +1341,6 @@ export default function Chatbot() {
         console.error('🔊 Error in speakMessage:', error);
         setIsSpeaking(false);
       }
-    } else {
-      console.log('🔊 Audio element not available:', { 
-        hasAudioRef: !!audioRef, 
-				isVoiceEnabled,
-      });
     }
   };
 
@@ -1379,7 +1354,6 @@ export default function Chatbot() {
 
   const toggleVoice = () => {
     const newState = !isVoiceEnabled;
-    console.log('🔊 Toggling voice from', isVoiceEnabled, 'to', newState);
     setIsVoiceEnabled(newState);
     
     // Save preference to localStorage
@@ -1388,12 +1362,10 @@ export default function Chatbot() {
     if (audioRef) {
       audioRef.pause();
       audioRef.currentTime = 0;
-      console.log('🔊 Cancelled any ongoing speech');
     }
     
     // Test voice when enabling
     if (newState) {
-      console.log('🔊 Testing voice with sample text...');
       setTimeout(() => {
         speakMessage('Voice enabled');
       }, 100);
@@ -1403,7 +1375,6 @@ export default function Chatbot() {
   const handleVoiceSelection = (voiceName: string) => {
     setSelectedOpenAIVoice(voiceName);
     localStorage.setItem('chatbot-openai-voice', voiceName);
-    console.log('🔊 OpenAI voice selected:', voiceName);
     
     // Test the selected voice
     if (isVoiceEnabled) {
@@ -1444,8 +1415,9 @@ export default function Chatbot() {
            }
            setIsOpen(!isOpen);
          }}
-				className="fixed bottom-4 right-4 z-[9999] rounded-full border border-stone-700 bg-stone-900 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-stone-800 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
-         aria-label="Toggle chatbot"
+				className="fixed bottom-4 right-4 z-[9999] rounded-full border-2 border-white bg-primary p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:bg-primary/90 hover:shadow-xl md:bottom-6 md:right-6 md:p-4 dark:border-stone-200 dark:bg-primary dark:text-white dark:hover:bg-primary/90"
+         aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
+         aria-expanded={isOpen}
          style={{ 
            display: 'flex', 
            alignItems: 'center', 
@@ -1458,7 +1430,7 @@ export default function Chatbot() {
 					height: '50px',
 				}}
 			>
-				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+				{isOpen ? <X className="h-6 w-6 text-white" /> : <MessageCircle className="h-6 w-6 text-white" />}
       </button>
 
              {/* Chat Window - Opens above the toggle button */}
@@ -1478,38 +1450,6 @@ export default function Chatbot() {
               </div>
             </div>
 						<div className="flex flex-shrink-0 items-center space-x-1 sm:space-x-2 md:space-x-3">
-               {/* Test Booking Modal Button - Hidden on small screens */}
-               <button
-                 onClick={() => {
-                   // Test: Manually triggering booking modal
-                   const testAction = {
-                     type: 'ui_action',
-                     action: 'show_booking_modal',
-                     data: {
-                       availableSlots: [
-                         {
-                           start: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-													end: new Date(
-														Date.now() + 24 * 60 * 60 * 1000 + 60 * 60 * 1000,
-													).toISOString(),
-													duration: 60,
-												},
-                       ],
-                       timezone: 'America/New_York',
-                       businessHours: { start: 9, end: 18, timezone: 'America/New_York' },
-                       meetingDurations: [30, 60],
-                       message: 'Test booking modal',
-											initialStep: 'contact',
-										},
-                   };
-                   executeUIAction(testAction);
-                 }}
-								className="hidden rounded-full p-2 text-blue-400 transition-colors hover:text-blue-300 sm:p-3 md:flex md:p-4"
-                 aria-label="Test Booking Modal"
-                 title="Test Booking Modal"
-               >
-                 <Calendar className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-               </button>
                              <button
                  onClick={() => setShowSettings(true)}
 								className="rounded-full p-2 text-stone-400 transition-colors hover:text-stone-300 sm:p-3 md:p-4"
@@ -1554,9 +1494,16 @@ export default function Chatbot() {
 												<Bot className="mt-0.5 h-4 w-4 flex-shrink-0 text-stone-500 md:h-5 md:w-5 dark:text-stone-400" />
 											)}
 											<div className="min-w-0 flex-1">
-												<p className="whitespace-pre-wrap text-sm leading-relaxed md:text-sm">
-													{message.text}
-												</p>
+												{message.sender === 'bot' ? (
+													<MarkdownRenderer 
+														content={message.text} 
+														className="text-sm leading-relaxed md:text-sm"
+													/>
+												) : (
+													<p className="whitespace-pre-wrap text-sm leading-relaxed md:text-sm">
+														{message.text}
+													</p>
+												)}
 												<p className="mt-1 text-xs opacity-60">{formatTime(message.timestamp)}</p>
                       </div>
                       {message.sender === 'user' && (
@@ -1704,12 +1651,12 @@ export default function Chatbot() {
                                      <button
                      onClick={isListening ? stopListening : startListening}
                      disabled={isLoading}
-									className={`flex hidden h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-10 sm:w-10 md:flex ${
+									className={`flex hidden h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg transition-colors sm:h-12 sm:w-12 md:flex ${
                        isListening
 											? 'animate-pulse bg-red-500 text-white hover:bg-red-600'
 											: 'bg-stone-600 text-white hover:bg-stone-700 dark:bg-stone-500 dark:hover:bg-stone-600'
                      }`}
-                     style={{ minWidth: '32px', minHeight: '32px' }}
+                     style={{ minWidth: '44px', minHeight: '44px' }}
                      aria-label={isListening ? 'Stop listening' : 'Start listening'}
                      title={isListening ? 'Stop listening' : 'Start voice input (tap to speak)'}
                    >
@@ -1724,7 +1671,7 @@ export default function Chatbot() {
                  <button
                    onClick={sendMessage}
                    disabled={!inputValue.trim() || isLoading || isListening}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition-colors hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:disabled:bg-stone-600"
                    style={{ minWidth: '32px', minHeight: '32px' }}
                    aria-label="Send message"
                  >
@@ -1740,8 +1687,8 @@ export default function Chatbot() {
                      }
                      setIsOpen(false);
                    }}
-									className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-10 sm:w-10 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
-                   style={{ minWidth: '32px', minHeight: '32px' }}
+									className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-stone-200 text-stone-700 transition-colors hover:bg-stone-300 sm:h-12 sm:w-12 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+                   style={{ minWidth: '44px', minHeight: '44px' }}
                    aria-label="Close chat"
                  >
                    <X className="h-3 w-3 sm:h-4 sm:w-4" />

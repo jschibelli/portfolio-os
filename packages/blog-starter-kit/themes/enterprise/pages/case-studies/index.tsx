@@ -9,6 +9,7 @@ import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
 import { Badge, Card, CardContent } from '../../components/ui';
 import { siteConfig } from '../../config/site';
+import { getAllCaseStudies, getPublishedCaseStudies, MDXCaseStudy } from '../../lib/mdx-case-study-loader';
 
 interface CaseStudy {
   id: string;
@@ -36,10 +37,36 @@ interface CaseStudy {
 
 interface Props {
   caseStudies: CaseStudy[];
+  mdxCaseStudies: MDXCaseStudy[];
   publication: any;
 }
 
-export default function CaseStudiesPage({ caseStudies, publication }: Props) {
+export default function CaseStudiesPage({ caseStudies, mdxCaseStudies, publication }: Props) {
+  // Combine and sort all case studies (MDX takes priority for duplicates)
+  const allCaseStudies = [
+    ...mdxCaseStudies.map(mdx => ({
+      id: `mdx-${mdx.meta.slug}`,
+      title: mdx.meta.title,
+      slug: mdx.meta.slug,
+      excerpt: mdx.meta.excerpt || '',
+      status: mdx.meta.status || 'PUBLISHED',
+      visibility: mdx.meta.visibility || 'PUBLIC',
+      publishedAt: mdx.meta.publishedAt || new Date().toISOString(),
+      featured: mdx.meta.featured || false,
+      client: mdx.meta.client,
+      industry: mdx.meta.industry,
+      duration: mdx.meta.duration,
+      teamSize: mdx.meta.teamSize,
+      technologies: mdx.meta.technologies || [],
+      coverImage: mdx.meta.coverImage,
+      tags: mdx.meta.tags || [],
+      category: mdx.meta.category,
+      views: mdx.meta.views || 0,
+      author: mdx.meta.author
+    })),
+    // Filter out API case studies that have MDX equivalents
+    ...caseStudies.filter(api => !mdxCaseStudies.some(mdx => mdx.meta.slug === api.slug))
+  ].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
   return (
     <AppProvider publication={publication}>
       <Layout>
@@ -65,13 +92,13 @@ export default function CaseStudiesPage({ caseStudies, publication }: Props) {
               </div>
 
               {/* Featured Case Studies */}
-              {caseStudies.filter(cs => cs.featured).length > 0 && (
+              {allCaseStudies.filter(cs => cs.featured).length > 0 && (
                 <div className="mb-16">
                   <h2 className="text-2xl font-semibold text-stone-900 dark:text-stone-100 mb-6">
                     Featured Case Studies
                   </h2>
                   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {caseStudies
+                    {allCaseStudies
                       .filter(cs => cs.featured)
                       .map((caseStudy) => (
                         <FeaturedCaseStudyCard key={caseStudy.id} caseStudy={caseStudy} />
@@ -86,14 +113,14 @@ export default function CaseStudiesPage({ caseStudies, publication }: Props) {
                   All Case Studies
                 </h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {caseStudies.map((caseStudy) => (
+                  {allCaseStudies.map((caseStudy) => (
                     <CaseStudyCard key={caseStudy.id} caseStudy={caseStudy} />
                   ))}
                 </div>
               </div>
 
               {/* Empty State */}
-              {caseStudies.length === 0 && (
+              {allCaseStudies.length === 0 && (
                 <div className="text-center py-16">
                   <div className="mx-auto w-24 h-24 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-6">
                     <svg className="h-12 w-12 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,11 +153,9 @@ function FeaturedCaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           <div className="relative h-48 overflow-hidden rounded-t-lg">
             <Image
               src={caseStudy.coverImage}
-              alt={`${caseStudy.title} - Case study cover image`}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority={caseStudy.featured}
+              alt={caseStudy.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
             />
             <div className="absolute top-3 right-3">
               <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200">
@@ -211,10 +236,8 @@ function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           <div className="relative h-40 overflow-hidden rounded-t-lg">
             <Image
               src={caseStudy.coverImage}
-              alt={`${caseStudy.title} - Case study cover image`}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              alt={caseStudy.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loading="lazy"
             />
           </div>
@@ -267,23 +290,21 @@ function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    // Fetch case studies from API
-    const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/case-studies`);
+    // Fetch case studies from both sources
+    const [apiResponse, mdxCaseStudies] = await Promise.all([
+      fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/case-studies`),
+      getPublishedCaseStudies()
+    ]);
     
-    if (!response.ok) {
-      return {
-        props: {
-          caseStudies: [],
-          publication: siteConfig,
-        },
-      };
+    let apiCaseStudies = [];
+    if (apiResponse.ok) {
+      apiCaseStudies = await apiResponse.json();
     }
-
-    const caseStudies = await response.json();
 
     return {
       props: {
-        caseStudies,
+        caseStudies: apiCaseStudies,
+        mdxCaseStudies,
         publication: siteConfig,
       },
     };
@@ -292,6 +313,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return {
       props: {
         caseStudies: [],
+        mdxCaseStudies: [],
         publication: siteConfig,
       },
     };

@@ -6,6 +6,36 @@ import { Button } from '../../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialog';
 import { Badge } from '../../ui/badge';
 
+// Centralized error types for better maintainability
+enum BookingErrorType {
+  NETWORK = 'NETWORK',
+  SERVICE = 'SERVICE',
+  VALIDATION = 'VALIDATION',
+  UNKNOWN = 'UNKNOWN'
+}
+
+interface BookingError {
+  type: BookingErrorType;
+  message: string;
+  userMessage: string;
+}
+
+// Centralized error handling utility
+const createBookingError = (type: BookingErrorType, message: string): BookingError => {
+  const errorMessages = {
+    [BookingErrorType.NETWORK]: 'Connection Error: Please check your internet connection and try again.',
+    [BookingErrorType.SERVICE]: 'Service Error: Our booking service is temporarily unavailable. Please try again in a few minutes.',
+    [BookingErrorType.VALIDATION]: 'Validation Error: Invalid booking details. Please refresh the page and try again.',
+    [BookingErrorType.UNKNOWN]: 'An unexpected error occurred. Please try again or contact support.'
+  };
+
+  return {
+    type,
+    message,
+    userMessage: errorMessages[type]
+  };
+};
+
 interface BookingConfirmationModalProps {
 	isOpen: boolean;
 	onClose: () => void;
@@ -24,13 +54,42 @@ export function BookingConfirmationModal({
 	bookingDetails,
 }: BookingConfirmationModalProps) {
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<BookingError | null>(null);
 
 	const handleConfirm = async () => {
 		setIsLoading(true);
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-		setIsLoading(false);
-		onClose();
+		setError(null);
+		
+		try {
+			// Simulate API call with realistic timing
+			// Using 1000ms to provide good UX while ensuring proper loading state
+			await new Promise((resolve, reject) => {
+				setTimeout(() => {
+					const random = Math.random();
+					// Simulate different types of API failures for realistic error handling
+					if (random < 0.05) { // 5% chance of network error
+						reject(createBookingError(BookingErrorType.NETWORK, 'Network connection failed'));
+					} else if (random < 0.08) { // 3% chance of server error
+						reject(createBookingError(BookingErrorType.SERVICE, 'Booking service temporarily unavailable'));
+					} else if (random < 0.1) { // 2% chance of validation error
+						reject(createBookingError(BookingErrorType.VALIDATION, 'Invalid booking details'));
+					} else {
+						resolve(true);
+					}
+				}, 1000);
+			});
+			
+			setIsLoading(false);
+			onClose();
+		} catch (err) {
+			setIsLoading(false);
+			// Handle different error types with centralized error management
+			if (err && typeof err === 'object' && 'type' in err && 'userMessage' in err) {
+				setError(err as BookingError);
+			} else {
+				setError(createBookingError(BookingErrorType.UNKNOWN, 'Unexpected error occurred'));
+			}
+		}
 	};
 
 	return (
@@ -70,6 +129,27 @@ export function BookingConfirmationModal({
 						</div>
 					</div>
 
+					{error && (
+						<div className="bg-red-50 dark:bg-red-950/20 rounded-lg p-4" role="alert" aria-live="polite">
+							<h4 className="font-medium text-red-900 dark:text-red-100 mb-2">
+								Booking Error
+							</h4>
+							<p className="text-sm text-red-800 dark:text-red-200">
+								{error.userMessage}
+							</p>
+							{process.env.NODE_ENV === 'development' && (
+								<details className="mt-2">
+									<summary className="text-xs text-red-600 dark:text-red-400 cursor-pointer">
+										Technical Details
+									</summary>
+									<p className="text-xs text-red-600 dark:text-red-400 mt-1">
+										Type: {error.type} | Message: {error.message}
+									</p>
+								</details>
+							)}
+						</div>
+					)}
+
 					<div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4">
 						<h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
 							What happens next?
@@ -87,7 +167,7 @@ export function BookingConfirmationModal({
 							disabled={isLoading}
 							className="flex-1"
 						>
-							{isLoading ? 'Confirming...' : 'Confirm Booking'}
+							{isLoading ? 'Confirming...' : error ? 'Retry Booking' : 'Confirm Booking'}
 						</Button>
 						<Button
 							variant="outline"

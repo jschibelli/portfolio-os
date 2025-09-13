@@ -10,12 +10,13 @@ import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
 const prisma = new PrismaClient();
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
+  const params = await props.params;
   const post = await prisma.article.findUnique({
     where: {
       slug: params.slug,
@@ -64,7 +65,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   };
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage(props: BlogPostPageProps) {
+  const params = await props.params;
   const post = await prisma.article.findUnique({
     where: {
       slug: params.slug,
@@ -129,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   width={1200}
                   height={600}
                   className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-                  priority
+                  loading="lazy"
                 />
               </div>
             )}
