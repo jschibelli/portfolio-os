@@ -29,7 +29,7 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 				viewport={{ once: true }}
 				className="relative flex w-full items-center"
 			>
-				{/* Timeline Line - Hidden on mobile, visible on desktop */}
+				{/* Desktop Timeline Line - Hidden on mobile */}
 				<div className="absolute left-1/2 top-0 h-full w-0.5 -translate-x-1/2 bg-gradient-to-b from-stone-300 via-stone-400 to-stone-300 dark:from-stone-600 dark:via-stone-500 dark:to-stone-600 hidden md:block">
 					{!isLast && (
 						<motion.div
@@ -42,8 +42,8 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 					)}
 				</div>
 
-				{/* Timeline Dot - Positioned differently for mobile vs desktop */}
-				<div className="absolute left-4 top-8 z-10 h-4 w-4 rounded-full border-4 border-background bg-primary shadow-lg md:left-1/2 md:-translate-x-1/2">
+				{/* Desktop Timeline Dot - Hidden on mobile */}
+				<div className="absolute left-1/2 top-8 z-10 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-background bg-primary shadow-lg hidden md:block">
 					<motion.div
 						initial={{ scale: 0 }}
 						whileInView={{ scale: 1 }}
@@ -53,14 +53,13 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 					/>
 				</div>
 
-				{/* Content Card - Full width on mobile, alternating on desktop */}
+				{/* Content Card - Different layouts for mobile vs desktop */}
 				<div className={cn(
 					"w-full",
-					// Mobile: full width with left padding
-					"ml-12 pl-4 md:ml-0 md:pl-0",
-					// Desktop: alternating layout
+					// Mobile: full width, no timeline elements
 					"md:max-w-md",
-					isEven ? "md:mr-auto md:pr-8 md:text-right" : "md:ml-auto md:pl-8 md:text-left"
+					// Desktop: alternating layout
+					isEven ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
 				)}>
 					<Card className="group relative overflow-hidden border-stone-200 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 dark:border-stone-700">
 						{/* Company Logo */}
@@ -76,26 +75,26 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 
 						<CardContent className="p-4 md:p-6">
 							{/* Period Badge */}
-							<div className={cn("mb-3", isEven ? "md:flex md:justify-end" : "flex justify-start")}>
-								<Badge variant="secondary" className="text-xs font-medium">
+							<div className="mb-3 flex justify-start">
+								<Badge variant="secondary" className="text-sm font-medium">
 									{period}
 								</Badge>
 							</div>
 
 							{/* Title and Company */}
 							<div className="mb-3">
-								<h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+								<h3 className="text-lg md:text-lg font-semibold text-stone-900 dark:text-stone-100">
 									{title}
 								</h3>
 								<div className="flex flex-col gap-1 text-stone-600 dark:text-stone-400 sm:flex-row sm:items-center sm:gap-2">
-									<span className="font-medium">{company}</span>
+									<span className="text-base font-medium">{company}</span>
 									<span className="hidden sm:inline">•</span>
 									<span className="text-sm">{location}</span>
 								</div>
 							</div>
 
 							{/* Description */}
-							<p className="mb-4 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+							<p className="mb-4 text-sm md:text-sm leading-relaxed text-stone-600 dark:text-stone-400">
 								{description}
 							</p>
 
@@ -108,9 +107,9 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 										whileInView={{ opacity: 1, x: 0 }}
 										transition={{ duration: 0.4, delay: index * 0.1 + 0.4 + idx * 0.1 }}
 										viewport={{ once: true }}
-										className="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-400"
+										className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-400"
 									>
-										<div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary/60" />
+										<div className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-primary/60" />
 										<span className="leading-relaxed">{achievement}</span>
 									</motion.div>
 								))}
