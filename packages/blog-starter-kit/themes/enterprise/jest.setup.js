@@ -39,59 +39,6 @@ jest.mock('next/navigation', () => ({
       back: jest.fn(),
       forward: jest.fn(),
       refresh: jest.fn(),
-<<<<<<< HEAD
-    };
-  },
-  useSearchParams() {
-    return new URLSearchParams();
-  },
-  usePathname() {
-    return '/';
-  },
-}));
-
-// Mock environment variables for security
-const originalEnv = process.env;
-
-beforeEach(() => {
-  // Reset environment variables to test defaults
-  process.env = { ...originalEnv };
-  setupTestEnvironment();
-  
-  // Clear all mocks
-  jest.clearAllMocks();
-});
-
-afterEach(() => {
-  // Clean up test environment
-  cleanupTestEnvironment();
-  
-  // Reset environment variables
-  process.env = originalEnv;
-});
-
-// Set global test timeout
-jest.setTimeout(getTestTimeout('default'));
-
-// Global error handler for unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-// Suppress specific warnings in tests
-const originalWarn = console.warn;
-console.warn = (...args) => {
-  // Suppress known test warnings
-  if (
-    args[0]?.includes?.('Warning: ReactDOM.render is deprecated') ||
-    args[0]?.includes?.('Warning: componentWillReceiveProps') ||
-    args[0]?.includes?.('act() is not supported')
-  ) {
-    return;
-  }
-  originalWarn(...args);
-};
-=======
     }
   },
   useSearchParams() {
@@ -218,4 +165,3 @@ afterAll(() => {
   console.warn = originalWarn
   console.error = originalError
 })
->>>>>>> feature/accessibility-unit-tests
