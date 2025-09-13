@@ -240,7 +240,7 @@ export default function About({ publication }: Props) {
 
 			<main className="min-h-screen bg-background">
 				{/* Enhanced Hero Section - Redesigned to match homepage aesthetic */}
-				<section className="relative min-h-[600px] overflow-hidden py-20 md:py-32">
+				<section className="relative min-h-[500px] overflow-hidden py-16 md:py-24">
 					{/* Background Image with optimized loading */}
 					<div className="absolute inset-0 z-0">
 						<div
@@ -275,8 +275,8 @@ export default function About({ publication }: Props) {
 									<div className="relative group">
 										{/* Enhanced glass-morphism container with glow effect */}
 										<div className="absolute -inset-4 rounded-full bg-gradient-to-r from-white/20 via-white/10 to-white/20 backdrop-blur-md opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-										{/* Main image container - Increased size to 320px */}
-										<div className="relative h-80 w-80 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/30 to-stone-300/20 backdrop-blur-sm shadow-2xl md:h-96 md:w-96 lg:h-[400px] lg:w-[400px]">
+										{/* Main image container - Balanced size */}
+										<div className="relative h-64 w-64 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/30 to-stone-300/20 backdrop-blur-sm shadow-2xl md:h-80 md:w-80 lg:h-96 lg:w-96">
 											<img
 												src="/assets/hero/profile.png"
 												alt="John Schibelli - Senior Frontend Developer"
@@ -288,9 +288,9 @@ export default function About({ publication }: Props) {
 											initial={{ opacity: 0, scale: 0, rotate: -180 }}
 											animate={{ opacity: 1, scale: 1, rotate: 0 }}
 											transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
-											className="absolute -bottom-3 -right-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 shadow-2xl backdrop-blur-sm border-2 border-white/20 md:h-24 md:w-24"
+											className="absolute -bottom-3 -right-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 shadow-2xl backdrop-blur-sm border-2 border-white/20 md:h-20 md:w-20"
 										>
-											<BracketsIcon className="h-10 w-10 text-white md:h-12 md:w-12" />
+											<BracketsIcon className="h-8 w-8 text-white md:h-10 md:w-10" />
 										</motion.div>
 									</div>
 								</motion.div>
@@ -319,7 +319,7 @@ export default function About({ publication }: Props) {
 										initial={{ opacity: 0, y: 25 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 1.0, delay: 0.8, ease: 'easeOut' }}
-										className="mb-6 text-5xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl xl:text-8xl"
+										className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl xl:text-7xl"
 									>
 										John Schibelli
 									</motion.h1>
@@ -329,7 +329,7 @@ export default function About({ publication }: Props) {
 										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
-										className="mb-8 text-2xl font-semibold text-stone-200 md:text-3xl lg:text-4xl"
+										className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl"
 									>
 										Senior Front-End Developer
 									</motion.p>
@@ -339,7 +339,7 @@ export default function About({ publication }: Props) {
 										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.8, delay: 1.0, ease: 'easeOut' }}
-										className="mb-10 text-lg leading-relaxed text-stone-300 md:text-xl lg:text-2xl max-w-2xl mx-auto lg:mx-0"
+										className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0"
 									>
 										Delivering high-performance web applications that drive business growth. 
 										Expert in React, Next.js, and TypeScript with 15+ years of proven results 
