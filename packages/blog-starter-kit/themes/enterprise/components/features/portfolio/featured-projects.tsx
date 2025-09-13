@@ -88,8 +88,8 @@ export default function FeaturedProjects() {
 				>
 					<Button
 						size="lg"
-						variant="secondary"
-						className="group"
+						variant="outline"
+						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
 					>
 						<Link 
