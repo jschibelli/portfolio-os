@@ -239,8 +239,8 @@ export default function About({ publication }: Props) {
 			<ModernHeader publication={publication} />
 
 			<main className="min-h-screen bg-background">
-				{/* Enhanced Hero Section */}
-				<section className="relative min-h-[500px] overflow-hidden py-16 md:py-24">
+				{/* Enhanced Hero Section - Redesigned to match homepage aesthetic */}
+				<section className="relative min-h-[600px] overflow-hidden py-20 md:py-32">
 					{/* Background Image with optimized loading */}
 					<div className="absolute inset-0 z-0">
 						<div
@@ -249,148 +249,182 @@ export default function About({ publication }: Props) {
 								backgroundImage: 'url(/assets/hero/hero-bg.png)',
 							}}
 						/>
-						{/* Enhanced gradient overlays for better contrast */}
-						<div className="absolute inset-0 bg-gradient-to-br from-stone-900/90 via-stone-900/80 to-stone-800/70" />
-						<div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-stone-900/40" />
+						{/* Enhanced gradient overlays for better contrast and modern look */}
+						<div className="absolute inset-0 bg-gradient-to-br from-stone-900/95 via-stone-900/85 to-stone-800/75" />
+						<div className="absolute inset-0 bg-gradient-to-t from-stone-900/70 via-transparent to-stone-900/50" />
+						{/* Additional radial gradient for depth */}
+						<div className="absolute inset-0 bg-gradient-radial from-transparent via-stone-900/20 to-stone-900/60" />
 					</div>
 
 					{/* Content */}
 					<div className="container relative z-10 mx-auto px-4">
 						<motion.div
-							initial={{ opacity: 0, y: 20 }}
+							initial={{ opacity: 0, y: 30 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, ease: 'easeOut' }}
-							className="mx-auto max-w-6xl"
+							transition={{ duration: 1.0, ease: 'easeOut' }}
+							className="mx-auto max-w-7xl"
 						>
-							<div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-								{/* Enhanced Profile Image */}
+							<div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-20">
+								{/* Enhanced Profile Image - Larger and more prominent */}
 								<motion.div
-									initial={{ opacity: 0, scale: 0.9 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+									initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+									animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+									transition={{ duration: 1.2, delay: 0.3, ease: 'easeOut' }}
 									className="flex justify-center lg:justify-start"
 								>
-									<div className="relative">
-										{/* Glass-morphism container */}
-										<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />
-										{/* Main image container */}
-										<div className="relative h-64 w-64 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/20 to-stone-300/20 backdrop-blur-sm md:h-72 md:w-72 lg:h-80 lg:w-80">
+									<div className="relative group">
+										{/* Enhanced glass-morphism container with glow effect */}
+										<div className="absolute -inset-4 rounded-full bg-gradient-to-r from-white/20 via-white/10 to-white/20 backdrop-blur-md opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+										{/* Main image container - Increased size to 320px */}
+										<div className="relative h-80 w-80 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/30 to-stone-300/20 backdrop-blur-sm shadow-2xl md:h-96 md:w-96 lg:h-[400px] lg:w-[400px]">
 											<img
 												src="/assets/hero/profile.png"
 												alt="John Schibelli - Senior Frontend Developer"
-												className="h-full w-full object-cover"
+												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
 											/>
 										</div>
-										{/* Enhanced floating icon badge */}
-										<div className="absolute -bottom-2 -right-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 to-stone-800 shadow-2xl backdrop-blur-sm md:h-18 md:w-18">
-											<BracketsIcon className="h-8 w-8 text-white md:h-9 md:w-9" />
-										</div>
+										{/* Enhanced floating icon badge with animation */}
+										<motion.div 
+											initial={{ opacity: 0, scale: 0, rotate: -180 }}
+											animate={{ opacity: 1, scale: 1, rotate: 0 }}
+											transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+											className="absolute -bottom-3 -right-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 shadow-2xl backdrop-blur-sm border-2 border-white/20 md:h-24 md:w-24"
+										>
+											<BracketsIcon className="h-10 w-10 text-white md:h-12 md:w-12" />
+										</motion.div>
 									</div>
 								</motion.div>
 
-								{/* Enhanced Hero Content */}
+								{/* Enhanced Hero Content with improved typography hierarchy */}
 								<motion.div
-									initial={{ opacity: 0, x: 20 }}
+									initial={{ opacity: 0, x: 30 }}
 									animate={{ opacity: 1, x: 0 }}
-									transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+									transition={{ duration: 1.0, delay: 0.5, ease: 'easeOut' }}
 									className="text-center lg:text-left"
 								>
-									{/* Business-focused tagline */}
+									{/* Business-focused tagline with enhanced styling */}
 									<motion.div
-										initial={{ opacity: 0, y: 10 }}
+										initial={{ opacity: 0, y: 15 }}
 										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
-										className="mb-4"
+										transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
+										className="mb-6"
 									>
-										<p className="text-lg font-medium text-stone-300 md:text-xl">
+										<p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl tracking-wide">
 											Transforming Ideas Into Digital Success
 										</p>
 									</motion.div>
 
-									{/* Enhanced name with better typography */}
+									{/* Enhanced name with better typography matching homepage */}
 									<motion.h1
-										initial={{ opacity: 0, y: 20 }}
+										initial={{ opacity: 0, y: 25 }}
 										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
-										className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
+										transition={{ duration: 1.0, delay: 0.8, ease: 'easeOut' }}
+										className="mb-6 text-5xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl xl:text-8xl"
 									>
 										John Schibelli
 									</motion.h1>
 
-									{/* Enhanced title */}
+									{/* Enhanced title with improved hierarchy */}
 									<motion.p
-										initial={{ opacity: 0, y: 15 }}
+										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
-										className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl"
+										transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
+										className="mb-8 text-2xl font-semibold text-stone-200 md:text-3xl lg:text-4xl"
 									>
 										Senior Front-End Developer
 									</motion.p>
 
 									{/* Enhanced description with business outcomes */}
 									<motion.p
-										initial={{ opacity: 0, y: 15 }}
+										initial={{ opacity: 0, y: 20 }}
 										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
-										className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl"
+										transition={{ duration: 0.8, delay: 1.0, ease: 'easeOut' }}
+										className="mb-10 text-lg leading-relaxed text-stone-300 md:text-xl lg:text-2xl max-w-2xl mx-auto lg:mx-0"
 									>
 										Delivering high-performance web applications that drive business growth. 
 										Expert in React, Next.js, and TypeScript with 15+ years of proven results 
 										in building scalable digital experiences that exceed client expectations.
 									</motion.p>
 
-									{/* Glass-morphism stats cards */}
+									{/* Enhanced glass-morphism stats cards with improved effects */}
 									<motion.div
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.8, delay: 1.0, ease: 'easeOut' }}
-										className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start"
-									>
-										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
-											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
-												<MapPinIcon className="h-5 w-5" />
-												<span className="text-sm font-medium md:text-base">Towaco, NJ</span>
-											</div>
-										</div>
-										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
-											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
-												<BriefcaseIcon className="h-5 w-5" />
-												<span className="text-sm font-medium md:text-base">15+ Years</span>
-											</div>
-										</div>
-										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
-											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
-												<CalendarIcon className="h-5 w-5" />
-												<span className="text-sm font-medium md:text-base">Available</span>
-											</div>
-										</div>
-									</motion.div>
-
-									{/* Enhanced CTA buttons with staggered animation */}
-									<motion.div
-										initial={{ opacity: 0, y: 20 }}
+										initial={{ opacity: 0, y: 25 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
-										className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start"
+										className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:justify-start"
 									>
-										<Button
-											size="lg"
-											className="min-w-[180px] justify-center bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/50 transition-all duration-300"
-											asChild
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.2, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
 										>
-											<Link href="/contact">
-												Get In Touch
-												<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-											</Link>
-										</Button>
-										<Button
-											size="lg"
-											variant="outline"
-											className="min-w-[160px] justify-center border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300"
-											asChild
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<MapPinIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">Towaco, NJ</span>
+											</div>
+										</motion.div>
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.3, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
 										>
-											<Link href="/projects">View My Projects</Link>
-										</Button>
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<BriefcaseIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">15+ Years</span>
+											</div>
+										</motion.div>
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.4, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
+										>
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<CalendarIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">Available</span>
+											</div>
+										</motion.div>
+									</motion.div>
+
+									{/* Enhanced CTA buttons with staggered animation and improved styling */}
+									<motion.div
+										initial={{ opacity: 0, y: 25 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.5, ease: 'easeOut' }}
+										className="flex flex-col justify-center gap-6 sm:flex-row lg:justify-start"
+									>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 0.6, delay: 1.6, ease: 'easeOut' }}
+										>
+											<Button
+												size="lg"
+												className="min-w-[200px] justify-center bg-white/25 backdrop-blur-md border border-white/40 text-white hover:bg-white/35 hover:border-white/60 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg font-semibold py-6"
+												asChild
+											>
+												<Link href="/contact">
+													Get In Touch
+													<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+												</Link>
+											</Button>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: 20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 0.6, delay: 1.7, ease: 'easeOut' }}
+										>
+											<Button
+												size="lg"
+												variant="outline"
+												className="min-w-[180px] justify-center border-white/40 text-white hover:bg-white/15 hover:border-white/60 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg font-semibold py-6 backdrop-blur-sm"
+												asChild
+											>
+												<Link href="/projects">View My Projects</Link>
+											</Button>
+										</motion.div>
 									</motion.div>
 								</motion.div>
 							</div>
