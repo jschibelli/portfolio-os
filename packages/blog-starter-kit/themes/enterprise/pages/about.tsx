@@ -239,96 +239,162 @@ export default function About({ publication }: Props) {
 			<ModernHeader publication={publication} />
 
 			<main className="min-h-screen bg-background">
-				{/* Hero Section */}
-				<section
-					className="relative min-h-[400px] overflow-hidden bg-muted py-12 md:py-16"
-					style={{
-						backgroundImage: 'url(/assets/hero/hero-bg.png)',
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat',
-					}}
-				>
-					{/* Background Overlay */}
-					<div className="absolute inset-0 z-0 bg-muted/70"></div>
-					{/* Content Overlay */}
-					<div className="relative z-10">
-						<Container className="px-4">
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.8, ease: 'easeOut' }}
-								className="mx-auto max-w-5xl"
-							>
-								<div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-3 lg:gap-10">
-									{/* Profile Image */}
-									<div className="flex justify-center lg:col-span-1">
-										<div className="relative">
-											<div className="h-48 w-48 overflow-hidden rounded-full bg-gradient-to-br from-stone-200 to-stone-300 md:h-56 md:w-56 lg:h-52 lg:w-52 dark:from-stone-700 dark:to-stone-600">
-												<img
-													src="/assets/hero/profile.png"
-													alt="John Schibelli - Senior Frontend Developer"
-													className="h-full w-full object-cover"
-												/>
-											</div>
-											<div className="absolute -bottom-1 -right-1 flex h-12 w-12 items-center justify-center rounded-full bg-stone-900 md:h-14 md:w-14 dark:bg-stone-100">
-												<BracketsIcon className="h-6 w-6 text-white md:h-7 md:w-7 dark:text-stone-900" />
-											</div>
+				{/* Enhanced Hero Section */}
+				<section className="relative min-h-[500px] overflow-hidden py-16 md:py-24">
+					{/* Background Image with optimized loading */}
+					<div className="absolute inset-0 z-0">
+						<div
+							className="h-full w-full bg-cover bg-center bg-no-repeat"
+							style={{
+								backgroundImage: 'url(/assets/hero/hero-bg.png)',
+							}}
+						/>
+						{/* Enhanced gradient overlays for better contrast */}
+						<div className="absolute inset-0 bg-gradient-to-br from-stone-900/90 via-stone-900/80 to-stone-800/70" />
+						<div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-stone-900/40" />
+					</div>
+
+					{/* Content */}
+					<div className="container relative z-10 mx-auto px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							className="mx-auto max-w-6xl"
+						>
+							<div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+								{/* Enhanced Profile Image */}
+								<motion.div
+									initial={{ opacity: 0, scale: 0.9 }}
+									animate={{ opacity: 1, scale: 1 }}
+									transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+									className="flex justify-center lg:justify-start"
+								>
+									<div className="relative">
+										{/* Glass-morphism container */}
+										<div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-sm" />
+										{/* Main image container */}
+										<div className="relative h-64 w-64 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/20 to-stone-300/20 backdrop-blur-sm md:h-72 md:w-72 lg:h-80 lg:w-80">
+											<img
+												src="/assets/hero/profile.png"
+												alt="John Schibelli - Senior Frontend Developer"
+												className="h-full w-full object-cover"
+											/>
+										</div>
+										{/* Enhanced floating icon badge */}
+										<div className="absolute -bottom-2 -right-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 to-stone-800 shadow-2xl backdrop-blur-sm md:h-18 md:w-18">
+											<BracketsIcon className="h-8 w-8 text-white md:h-9 md:w-9" />
 										</div>
 									</div>
+								</motion.div>
 
-									{/* Hero Content */}
-									<div className="text-center lg:col-span-2 lg:text-left">
-										<h1 className="mb-4 text-4xl font-bold text-stone-900 md:text-5xl lg:text-6xl dark:text-stone-100">
-											John Schibelli
-										</h1>
-										<p className="mb-4 text-xl text-stone-600 md:text-2xl lg:text-3xl dark:text-stone-400">
-											Senior Front-End Developer
+								{/* Enhanced Hero Content */}
+								<motion.div
+									initial={{ opacity: 0, x: 20 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+									className="text-center lg:text-left"
+								>
+									{/* Business-focused tagline */}
+									<motion.div
+										initial={{ opacity: 0, y: 10 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
+										className="mb-4"
+									>
+										<p className="text-lg font-medium text-stone-300 md:text-xl">
+											Transforming Ideas Into Digital Success
 										</p>
-										<p className="mb-6 text-base leading-relaxed text-stone-600 md:text-lg dark:text-stone-400">
-											Senior Front-End Developer with 15+ years of experience building scalable,
-											high-performance web apps and company websites. Skilled in React, Next.js,
-											TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and
-											client success.
-										</p>
+									</motion.div>
 
-										<div className="mb-6 flex flex-wrap justify-center gap-3 text-sm text-stone-500 md:gap-4 lg:justify-start dark:text-stone-400">
-											<div className="flex items-center gap-2">
-												<MapPinIcon className="h-4 w-4" />
-												<span>Towaco, NJ</span>
-											</div>
-											<div className="flex items-center gap-2">
-												<BriefcaseIcon className="h-4 w-4" />
-												<span>15+ Years Experience</span>
-											</div>
-											<div className="flex items-center gap-2">
-												<CalendarIcon className="h-4 w-4" />
-												<span>Available for Projects</span>
+									{/* Enhanced name with better typography */}
+									<motion.h1
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
+										className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-6xl"
+									>
+										John Schibelli
+									</motion.h1>
+
+									{/* Enhanced title */}
+									<motion.p
+										initial={{ opacity: 0, y: 15 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+										className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl"
+									>
+										Senior Front-End Developer
+									</motion.p>
+
+									{/* Enhanced description with business outcomes */}
+									<motion.p
+										initial={{ opacity: 0, y: 15 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
+										className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl"
+									>
+										Delivering high-performance web applications that drive business growth. 
+										Expert in React, Next.js, and TypeScript with 15+ years of proven results 
+										in building scalable digital experiences that exceed client expectations.
+									</motion.p>
+
+									{/* Glass-morphism stats cards */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.0, ease: 'easeOut' }}
+										className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start"
+									>
+										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
+											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
+												<MapPinIcon className="h-5 w-5" />
+												<span className="text-sm font-medium md:text-base">Towaco, NJ</span>
 											</div>
 										</div>
-
-										<div className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-											<Button
-												size="lg"
-												asChild
-											>
-												<Link href="/contact">
-													Get In Touch
-													<ArrowRightIcon className="ml-2 h-4 w-4" />
-												</Link>
-											</Button>
-											<Button
-												size="lg"
-												variant="outline"
-												asChild
-											>
-												<Link href="/projects">View My Projects</Link>
-											</Button>
+										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
+											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
+												<BriefcaseIcon className="h-5 w-5" />
+												<span className="text-sm font-medium md:text-base">15+ Years</span>
+											</div>
 										</div>
-									</div>
-								</div>
-							</motion.div>
-						</Container>
+										<div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm border border-white/20">
+											<div className="flex items-center justify-center gap-2 text-stone-300 lg:justify-start">
+												<CalendarIcon className="h-5 w-5" />
+												<span className="text-sm font-medium md:text-base">Available</span>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Enhanced CTA buttons with staggered animation */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
+										className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start"
+									>
+										<Button
+											size="lg"
+											className="min-w-[180px] justify-center bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:border-white/50 transition-all duration-300"
+											asChild
+										>
+											<Link href="/contact">
+												Get In Touch
+												<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+											</Link>
+										</Button>
+										<Button
+											size="lg"
+											variant="outline"
+											className="min-w-[160px] justify-center border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+											asChild
+										>
+											<Link href="/projects">View My Projects</Link>
+										</Button>
+									</motion.div>
+								</motion.div>
+							</div>
+						</motion.div>
 					</div>
 				</section>
 
