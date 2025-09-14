@@ -883,7 +883,6 @@ export default function About({ publication }: Props) {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: 'easeOut' }}
 							viewport={{ once: true }}
->>>>>>> Stashed changes
 							className="mx-auto max-w-4xl"
 						>
 							<div className="mb-12 text-center">
