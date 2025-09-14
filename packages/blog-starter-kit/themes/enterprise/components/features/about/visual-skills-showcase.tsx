@@ -27,10 +27,24 @@ export default function VisualSkillsShowcase({ className = '' }: VisualSkillsSho
 
 	// Define category colors and icons for visual hierarchy
 	const categoryConfig = {
-		'Frontend': { 
+		'Languages': { 
 			color: 'from-blue-500 to-blue-600', 
 			bgColor: 'bg-blue-50 dark:bg-blue-950/20',
 			borderColor: 'border-blue-200 dark:border-blue-800',
+			icon: '💻',
+			description: 'Programming languages and core technologies'
+		},
+		'Frontend': { 
+			color: 'from-green-500 to-green-600', 
+			bgColor: 'bg-green-50 dark:bg-green-950/20',
+			borderColor: 'border-green-200 dark:border-green-800',
+			icon: '⚛️',
+			description: 'Modern frontend frameworks and technologies'
+		},
+		'Front-End': { 
+			color: 'from-green-500 to-green-600', 
+			bgColor: 'bg-green-50 dark:bg-green-950/20',
+			borderColor: 'border-green-200 dark:border-green-800',
 			icon: '⚛️',
 			description: 'Modern frontend frameworks and technologies'
 		},
@@ -41,12 +55,54 @@ export default function VisualSkillsShowcase({ className = '' }: VisualSkillsSho
 			icon: '🖥️',
 			description: 'Server-side development and APIs'
 		},
+		'Back-End': { 
+			color: 'from-purple-500 to-purple-600', 
+			bgColor: 'bg-purple-50 dark:bg-purple-950/20',
+			borderColor: 'border-purple-200 dark:border-purple-800',
+			icon: '🖥️',
+			description: 'Server-side development and APIs'
+		},
+		'APIs': { 
+			color: 'from-orange-500 to-orange-600', 
+			bgColor: 'bg-orange-50 dark:bg-orange-950/20',
+			borderColor: 'border-orange-200 dark:border-orange-800',
+			icon: '🔗',
+			description: 'API development and integration'
+		},
+		'Testing': { 
+			color: 'from-red-500 to-red-600', 
+			bgColor: 'bg-red-50 dark:bg-red-950/20',
+			borderColor: 'border-red-200 dark:border-red-800',
+			icon: '🧪',
+			description: 'Testing frameworks and quality assurance'
+		},
+		'DevOps': { 
+			color: 'from-indigo-500 to-indigo-600', 
+			bgColor: 'bg-indigo-50 dark:bg-indigo-950/20',
+			borderColor: 'border-indigo-200 dark:border-indigo-800',
+			icon: '⚙️',
+			description: 'Development tools and cloud platforms'
+		},
 		'Tools & Platforms': { 
 			color: 'from-orange-500 to-orange-600', 
 			bgColor: 'bg-orange-50 dark:bg-orange-950/20',
 			borderColor: 'border-orange-200 dark:border-orange-800',
 			icon: '⚙️',
 			description: 'Development tools and cloud platforms'
+		},
+		'Databases': { 
+			color: 'from-teal-500 to-teal-600', 
+			bgColor: 'bg-teal-50 dark:bg-teal-950/20',
+			borderColor: 'border-teal-200 dark:border-teal-800',
+			icon: '🗄️',
+			description: 'Database technologies and data management'
+		},
+		'CMS': { 
+			color: 'from-pink-500 to-pink-600', 
+			bgColor: 'bg-pink-50 dark:bg-pink-950/20',
+			borderColor: 'border-pink-200 dark:border-pink-800',
+			icon: '📝',
+			description: 'Content management systems'
 		},
 		'Specialties': { 
 			color: 'from-emerald-500 to-emerald-600', 

@@ -1,5 +1,21 @@
+# GitHub Issue Template Configuration
+# This file configures the issue templates and contact links for the repository
+
+# Disable blank issues to ensure users use proper templates
+# This enforces structured issue creation for better project management
 blank_issues_enabled: false
+
+# Contact links for community support and discussions
 contact_links:
-  - name: Questions
+  - name: 💬 Questions & Discussions
     url: https://github.com/jschibelli/mindware-blog/discussions
-    about: Ask and discuss here
+    about: Ask questions, share ideas, and discuss the project
+  - name: 📖 Documentation
+    url: https://github.com/jschibelli/mindware-blog/wiki
+    about: Browse project documentation, setup guides, and API references
+  - name: 🐛 Bug Reports
+    url: https://github.com/jschibelli/mindware-blog/issues/new?template=bug_report.yml
+    about: Report bugs and issues using the structured template
+  - name: ✨ Feature Requests
+    url: https://github.com/jschibelli/mindware-blog/issues/new?template=feature_request.yml
+    about: Propose new features and improvements

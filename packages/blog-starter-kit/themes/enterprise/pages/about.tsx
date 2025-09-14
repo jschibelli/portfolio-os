@@ -8,11 +8,15 @@ import {
 	BookOpenIcon,
 	BracketsIcon,
 	BriefcaseIcon,
+	BuildingIcon,
 	CalendarIcon,
 	CheckCircleIcon,
 	ClockIcon,
+	CodeIcon,
 	GraduationCapIcon,
 	LightbulbIcon,
+	LinkedinIcon,
+	MailIcon,
 	MapPinIcon,
 	StarIcon,
 	TrendingUpIcon,
@@ -69,6 +73,7 @@ export default function About({ publication }: Props) {
 				'Scoped requirements, owned timelines, and served as primary client liaison to ensure quality delivery and satisfaction.',
 				'Incubated SynaplyAI (multi-tenant AI content collaboration) with front-end architecture, OpenAI integrations, real-time collab editing, and adaptive AI content generation.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Full-Stack Developer',
@@ -81,6 +86,7 @@ export default function About({ publication }: Props) {
 				'Integrated and validated Nest.js APIs; ensured stable data flow and interface alignment.',
 				'Partnered with QA, design, and product to support sprint delivery and UI improvements.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Senior Front-End Developer',
@@ -93,6 +99,7 @@ export default function About({ publication }: Props) {
 				'Integrated Limo Anywhere API for real-time reservations and back-office sync.',
 				'Streamlined dispatch workflows by connecting booking front-end to internal systems.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Front-End Developer',
@@ -106,6 +113,7 @@ export default function About({ publication }: Props) {
 				'Delivered front-end features aligned with enterprise UX guidelines in Agile cycles.',
 				'Led multiple internal WordPress projects and mentored junior developers on front-end best practices.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Web Developer (Contract)',
@@ -118,6 +126,7 @@ export default function About({ publication }: Props) {
 				'Built reusable UI components for responsive, cross-browser performance.',
 				'Customized themes/plugins to support marketing workflows and SEO.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 		{
 			title: 'Web Development Program Director',
@@ -130,6 +139,7 @@ export default function About({ publication }: Props) {
 				'Managed a team of 8 instructors across 4 campuses; ensured curriculum alignment.',
 				'Oversaw accreditation compliance; partnered with Pearson VUE for certification programs.',
 			],
+			logo: '/assets/personal-logo.png', // Using personal logo as placeholder
 		},
 	];
 
@@ -219,124 +229,200 @@ export default function About({ publication }: Props) {
 			<ModernHeader publication={publication} />
 
 			<main className="min-h-screen bg-background">
-				{/* Hero Section */}
-				<section
-					className="relative min-h-[400px] overflow-hidden bg-muted py-12 md:py-16"
-					style={{
-						backgroundImage: 'url(/assets/hero/hero-bg.png)',
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat',
-					}}
-				>
-					{/* Background Overlay */}
-					<div className="absolute inset-0 z-0 bg-muted/70"></div>
-					{/* Content Overlay */}
-					<div className="relative z-10">
-						<Container className="px-4">
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.8, ease: 'easeOut' }}
-								className="mx-auto max-w-5xl"
-							>
-								<div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-3 lg:gap-10">
-									{/* Profile Image */}
-									<div className="flex justify-center lg:col-span-1">
-										<div className="relative">
-											<div className="h-48 w-48 overflow-hidden rounded-full bg-gradient-to-br from-stone-200 to-stone-300 md:h-56 md:w-56 lg:h-52 lg:w-52 dark:from-stone-700 dark:to-stone-600">
-												<img
-													src="/assets/hero/profile.png"
-													alt="John Schibelli - Senior Frontend Developer"
-													className="h-full w-full object-cover"
-												/>
-											</div>
-											<div className="absolute -bottom-1 -right-1 flex h-12 w-12 items-center justify-center rounded-full bg-stone-900 md:h-14 md:w-14 dark:bg-stone-100">
-												<BracketsIcon className="h-6 w-6 text-white md:h-7 md:w-7 dark:text-stone-900" />
-											</div>
+				{/* Enhanced Hero Section - Redesigned to match homepage aesthetic */}
+				<section className="relative min-h-[500px] overflow-hidden py-16 md:py-24">
+					{/* Background Image with optimized loading */}
+					<div className="absolute inset-0 z-0">
+						<div
+							className="h-full w-full bg-cover bg-center bg-no-repeat"
+							style={{
+								backgroundImage: 'url(/assets/hero/hero-bg.png)',
+							}}
+						/>
+						{/* Enhanced gradient overlays for better contrast and modern look */}
+						<div className="absolute inset-0 bg-gradient-to-br from-stone-900/95 via-stone-900/85 to-stone-800/75" />
+						<div className="absolute inset-0 bg-gradient-to-t from-stone-900/70 via-transparent to-stone-900/50" />
+						{/* Additional radial gradient for depth */}
+						<div className="absolute inset-0 bg-gradient-radial from-transparent via-stone-900/20 to-stone-900/60" />
+					</div>
+
+					{/* Content */}
+					<div className="container relative z-10 mx-auto px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 30 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 1.0, ease: 'easeOut' }}
+							className="mx-auto max-w-7xl"
+						>
+							<div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-20">
+								{/* Enhanced Profile Image - Larger and more prominent */}
+								<motion.div
+									initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+									animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+									transition={{ duration: 1.2, delay: 0.3, ease: 'easeOut' }}
+									className="flex justify-center lg:justify-start"
+								>
+									<div className="relative group">
+										{/* Enhanced glass-morphism container with glow effect */}
+										<div className="absolute -inset-4 rounded-full bg-gradient-to-r from-white/20 via-white/10 to-white/20 backdrop-blur-md opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+										{/* Main image container - Balanced size */}
+										<div className="relative h-64 w-64 overflow-hidden rounded-full bg-gradient-to-br from-stone-200/30 to-stone-300/20 backdrop-blur-sm shadow-2xl md:h-80 md:w-80 lg:h-96 lg:w-96">
+											<img
+												src="/assets/hero/profile.png"
+												alt="John Schibelli - Senior Frontend Developer"
+												className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+											/>
 										</div>
+										{/* Enhanced floating icon badge with animation */}
+										<motion.div 
+											initial={{ opacity: 0, scale: 0, rotate: -180 }}
+											animate={{ opacity: 1, scale: 1, rotate: 0 }}
+											transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+											className="absolute -bottom-3 -right-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 shadow-2xl backdrop-blur-sm border-2 border-white/20 md:h-20 md:w-20"
+										>
+											<BracketsIcon className="h-8 w-8 text-white md:h-10 md:w-10" />
+										</motion.div>
 									</div>
+								</motion.div>
 
-									{/* Hero Content */}
-									<div className="text-center lg:col-span-2 lg:text-left">
-										<h1 className="mb-4 text-4xl font-bold text-stone-900 md:text-5xl lg:text-6xl dark:text-stone-100">
-											John Schibelli
-										</h1>
-										<p className="mb-4 text-xl text-stone-600 md:text-2xl lg:text-3xl dark:text-stone-400">
-											Senior Front-End Developer
+								{/* Enhanced Hero Content with improved typography hierarchy */}
+								<motion.div
+									initial={{ opacity: 0, x: 30 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ duration: 1.0, delay: 0.5, ease: 'easeOut' }}
+									className="text-center lg:text-left"
+								>
+									{/* Business-focused tagline with enhanced styling */}
+									<motion.div
+										initial={{ opacity: 0, y: 15 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
+										className="mb-6"
+									>
+										<p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl tracking-wide">
+											Transforming Ideas Into Digital Success
 										</p>
-										<p className="mb-6 text-base leading-relaxed text-stone-600 md:text-lg dark:text-stone-400">
-											Senior Front-End Developer with 15+ years of experience building scalable,
-											high-performance web apps and company websites. Skilled in React, Next.js,
-											TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and
-											client success.
-										</p>
+									</motion.div>
 
-										<div className="mb-6 flex flex-wrap justify-center gap-3 text-sm text-stone-500 md:gap-4 lg:justify-start dark:text-stone-400">
-											<div className="flex items-center gap-2">
-												<MapPinIcon className="h-4 w-4" />
-												<span>Towaco, NJ</span>
-											</div>
-											<div className="flex items-center gap-2">
-												<BriefcaseIcon className="h-4 w-4" />
-												<span>15+ Years Experience</span>
-											</div>
-											<div className="flex items-center gap-2">
-												<CalendarIcon className="h-4 w-4" />
-												<span>Available for Projects</span>
-											</div>
-										</div>
+									{/* Enhanced name with better typography matching homepage */}
+									<motion.h1
+										initial={{ opacity: 0, y: 25 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 1.0, delay: 0.8, ease: 'easeOut' }}
+										className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl xl:text-7xl"
+									>
+										John Schibelli
+									</motion.h1>
 
-										<div className="flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+									{/* Enhanced title with improved hierarchy */}
+									<motion.p
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.9, ease: 'easeOut' }}
+										className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl"
+									>
+										Senior Front-End Developer
+									</motion.p>
+
+									{/* Enhanced description with business outcomes */}
+									<motion.p
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.0, ease: 'easeOut' }}
+										className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0"
+									>
+										Delivering high-performance web applications that drive business growth. 
+										Expert in React, Next.js, and TypeScript with 15+ years of proven results 
+										in building scalable digital experiences that exceed client expectations.
+									</motion.p>
+
+									{/* Enhanced glass-morphism stats cards with improved effects */}
+									<motion.div
+										initial={{ opacity: 0, y: 25 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.1, ease: 'easeOut' }}
+										className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:justify-start"
+									>
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.2, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
+										>
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<MapPinIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">Towaco, NJ</span>
+											</div>
+										</motion.div>
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.3, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
+										>
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<BriefcaseIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">15+ Years</span>
+											</div>
+										</motion.div>
+										<motion.div 
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={{ duration: 0.6, delay: 1.4, ease: 'easeOut' }}
+											className="rounded-xl bg-white/15 p-6 backdrop-blur-md border border-white/25 shadow-xl hover:bg-white/20 hover:border-white/35 transition-all duration-300"
+										>
+											<div className="flex items-center justify-center gap-3 text-stone-200 lg:justify-start">
+												<CalendarIcon className="h-6 w-6 text-stone-300" />
+												<span className="text-base font-semibold md:text-lg">Available</span>
+											</div>
+										</motion.div>
+									</motion.div>
+
+									{/* Enhanced CTA buttons with staggered animation and improved styling */}
+									<motion.div
+										initial={{ opacity: 0, y: 25 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 1.5, ease: 'easeOut' }}
+										className="flex flex-col justify-center gap-6 sm:flex-row lg:justify-start"
+									>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 0.6, delay: 1.6, ease: 'easeOut' }}
+										>
 											<Button
 												size="lg"
+												className="min-w-[200px] justify-center bg-white/25 backdrop-blur-md border border-white/40 text-white hover:bg-white/35 hover:border-white/60 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg font-semibold py-6"
 												asChild
 											>
 												<Link href="/contact">
 													Get In Touch
-													<ArrowRightIcon className="ml-2 h-4 w-4" />
+													<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
 												</Link>
 											</Button>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: 20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 0.6, delay: 1.7, ease: 'easeOut' }}
+										>
 											<Button
 												size="lg"
 												variant="outline"
+												className="min-w-[180px] justify-center border-white/40 text-white hover:bg-white/15 hover:border-white/60 transition-all duration-300 shadow-xl hover:shadow-2xl text-lg font-semibold py-6 backdrop-blur-sm"
 												asChild
 											>
 												<Link href="/projects">View My Projects</Link>
 											</Button>
-										</div>
-									</div>
-								</div>
-							</motion.div>
-						</Container>
+										</motion.div>
+									</motion.div>
+								</motion.div>
+							</div>
+						</motion.div>
 					</div>
 				</section>
 
-				{/* Professional Summary */}
-				<section className="bg-background py-16">
-					<Container className="px-4">
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, ease: 'easeOut' }}
-							viewport={{ once: true }}
-							className="mx-auto max-w-4xl text-center"
-						>
-							<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-								What I Do
-							</h2>
-							<p className="text-lg leading-relaxed text-stone-600 md:text-xl dark:text-stone-400">
-								Senior Front-End Developer with 15+ years of experience building scalable,
-								high-performance web apps and company websites. Skilled in React, Next.js,
-								TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and client
-								success. Technical lead behind IntraWeb Technologies&apos; digital presence and
-								AI-driven content collaboration tooling (SynaplyAI).
-							</p>
-						</motion.div>
-					</Container>
-				</section>
-
-				{/* Resume Accordion Section */}
+				{/* Personal Story Section */}
 				<section className="bg-muted py-20">
 					<Container className="px-4">
 						<motion.div
@@ -831,6 +917,7 @@ export default function About({ publication }: Props) {
 										location={job.location}
 										description={job.description}
 										achievements={job.achievements}
+										logo={job.logo}
 										index={index}
 										isLast={index === experience.length - 1}
 									/>
@@ -865,67 +952,23 @@ export default function About({ publication }: Props) {
 							viewport={{ once: true }}
 							className="mx-auto max-w-4xl"
 						>
-							<div className="mb-12 text-center">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-									Professional Background
-								</h2>
-								<p className="text-lg text-stone-600 dark:text-stone-400">
-									Explore my experience, skills, and qualifications
-								</p>
-							</div>
-
 							<Accordion type="single" collapsible className="w-full space-y-4">
-								{/* Experience */}
+
+								{/* Skills */}
 								<AccordionItem
-									value="experience"
+									value="skills"
 									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
 								>
 									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
 										<div className="flex items-center gap-3">
-											<BriefcaseIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Professional Experience</span>
+											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
+											<span className="text-lg font-semibold">Skills & Technologies</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="px-6">
-										<div className="space-y-8">
-											{experience.map((job, index) => (
-												<div
-													key={index}
-													className="border-l-4 border-primary/40 pl-6"
-												>
-													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-															{job.title}
-														</h3>
-														<div className="mt-1 text-sm text-stone-500 sm:mt-0 dark:text-stone-400">
-															{job.period}
-														</div>
-													</div>
-													<div className="mb-3 flex items-center gap-2 text-stone-600 dark:text-stone-400">
-														<span className="font-medium">{job.company}</span>
-														<span>•</span>
-														<span>{job.location}</span>
-													</div>
-													<p className="mb-4 text-stone-600 dark:text-stone-400">
-														{job.description}
-													</p>
-													<ul className="space-y-2">
-														{job.achievements.map((achievement, idx) => (
-															<li
-																key={idx}
-																className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-400"
-															>
-																<StarIcon className="mt-1 h-3 w-3 flex-shrink-0 text-stone-400 dark:text-stone-500" />
-																{achievement}
-															</li>
-														))}
-													</ul>
-												</div>
-											))}
-										</div>
+										<VisualSkillsShowcase />
 									</AccordionContent>
 								</AccordionItem>
-
 								{/* Education */}
 								<AccordionItem
 									value="education"
@@ -1036,7 +1079,7 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* CTA Section */}
+				{/* Enhanced Contact Section */}
 				<section className="bg-background py-20">
 					<Container className="px-4">
 						<motion.div
@@ -1044,34 +1087,245 @@ export default function About({ publication }: Props) {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: 'easeOut' }}
 							viewport={{ once: true }}
-							className="mx-auto max-w-4xl text-center"
+							className="mx-auto max-w-6xl"
 						>
-							<div className="rounded-lg border border-border bg-accent p-8 shadow-sm">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100">
-									Let&apos;s Work Together
+							{/* Header */}
+							<div className="mb-12 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									Let&apos;s Connect & Collaborate
 								</h2>
-								<p className="mb-8 text-lg text-stone-600 dark:text-stone-400">
-									I&apos;m available for freelance projects and consulting opportunities. Whether
-									you need a complete application built from scratch or help optimizing an existing
-									codebase, I&apos;d love to hear about your project.
+								<p className="text-lg text-stone-600 dark:text-stone-400">
+									Ready to bring your ideas to life? I&apos;m here to help you succeed.
 								</p>
-								<div className="flex flex-col justify-center gap-4 sm:flex-row">
-									<Button
-										size="lg"
-										asChild
-									>
+							</div>
+
+							{/* Primary CTAs */}
+							<div className="mb-12 grid gap-6 md:grid-cols-2">
+								{/* Start Your Project */}
+								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
+									<div className="mb-4 flex items-center gap-3">
+										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+											<CodeIcon className="h-6 w-6 text-primary" />
+										</div>
+										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Start Your Project
+										</h3>
+									</div>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Ready to build something amazing? Let&apos;s discuss your project requirements and bring your vision to life.
+									</p>
+									<Button size="lg" className="w-full" asChild>
 										<Link href="/contact">
-											Start a Project
+											Get Started Today
 											<ArrowRightIcon className="ml-2 h-4 w-4" />
 										</Link>
 									</Button>
-									<Button
-										size="lg"
-										variant="outline"
-										asChild
-									>
-										<Link href="/projects">View My Projects</Link>
+								</div>
+
+								{/* View Portfolio */}
+								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
+									<div className="mb-4 flex items-center gap-3">
+										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+											<BriefcaseIcon className="h-6 w-6 text-primary" />
+										</div>
+										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+											View My Work
+										</h3>
+									</div>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Explore my portfolio of projects and see the quality of work I deliver for clients.
+									</p>
+									<Button size="lg" variant="outline" className="w-full" asChild>
+										<Link href="/projects">
+											View Portfolio
+											<ArrowRightIcon className="ml-2 h-4 w-4" />
+										</Link>
 									</Button>
+								</div>
+							</div>
+
+							{/* Audience-Specific CTAs */}
+							<div className="mb-12">
+								<h3 className="mb-6 text-center text-2xl font-semibold text-stone-900 dark:text-stone-100">
+									I Work With
+								</h3>
+								<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+									{/* Recruiters */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
+												<UsersIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Recruiters
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Open to new opportunities and exciting roles
+										</p>
+									</div>
+
+									{/* Startup Founders */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+												<StarIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Startup Founders
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											MVP development and technical consulting
+										</p>
+									</div>
+
+									{/* Enterprise */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+												<BuildingIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Enterprise
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Technical consulting and architecture
+										</p>
+									</div>
+
+									{/* Fellow Developers */}
+									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
+												<CodeIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Developers
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Collaboration and knowledge sharing
+										</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Contact Information & Social Links */}
+							<div className="rounded-lg border border-border bg-accent p-8">
+								<div className="grid gap-8 md:grid-cols-2">
+									{/* Contact Info */}
+									<div>
+										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Get In Touch
+										</h3>
+										<div className="space-y-4">
+											<div className="flex items-center gap-3">
+												<MailIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Email
+													</p>
+													<a 
+														href="mailto:john@johnschibelli.com" 
+														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+													>
+														john@johnschibelli.com
+													</a>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<MapPinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Location
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Towaco, NJ (Remote Available)
+													</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<ClockIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Response Time
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Within 24 hours
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									{/* Social Links & Availability */}
+									<div>
+										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Connect & Availability
+										</h3>
+										<div className="space-y-4">
+											<div className="flex items-center gap-3">
+												<LinkedinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														LinkedIn
+													</p>
+													<a 
+														href="https://linkedin.com/in/johnschibelli" 
+														target="_blank" 
+														rel="noopener noreferrer"
+														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+													>
+														Connect with me
+													</a>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<CalendarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Availability
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														Available for new projects
+													</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<StarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">
+														Specialties
+													</p>
+													<p className="text-stone-600 dark:text-stone-400">
+														React, Next.js, TypeScript, AI Integration
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{/* Tertiary CTA */}
+								<div className="mt-8 border-t border-border pt-6">
+									<div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+										<div className="text-center sm:text-left">
+											<h4 className="font-semibold text-stone-900 dark:text-stone-100">
+												Ready to start your project?
+											</h4>
+											<p className="text-sm text-stone-600 dark:text-stone-400">
+												Let&apos;s discuss your requirements and create something amazing together.
+											</p>
+										</div>
+										<Button size="lg" asChild>
+											<Link href="/contact">
+												Start Your Project
+												<ArrowRightIcon className="ml-2 h-4 w-4" />
+											</Link>
+										</Button>
+									</div>
 								</div>
 							</div>
 						</motion.div>

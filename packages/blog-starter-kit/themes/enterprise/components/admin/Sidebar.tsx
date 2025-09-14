@@ -31,6 +31,7 @@ import {
   Activity
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { PersonalLogo } from "../shared/personal-logo";
 
 const navigation = [
   { 
@@ -236,9 +237,12 @@ export function Sidebar() {
       }`}>
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Admin Panel</h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Blog Management</p>
+            <div className="flex items-center space-x-3">
+              <PersonalLogo size="small" />
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Admin Panel</h2>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Blog Management</p>
+              </div>
             </div>
             <ThemeToggle />
           </div>

@@ -109,7 +109,7 @@ export default function PortfolioPage({ publication }: Props) {
 														href={project.caseStudyUrl}
 														className="border-border hover:bg-muted rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
 													>
-														View Case Study
+														Case Study
 													</Link>
 												)}
 											</div>
