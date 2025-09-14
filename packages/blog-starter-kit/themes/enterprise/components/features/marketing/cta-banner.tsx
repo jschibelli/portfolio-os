@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ClockIcon, MailIcon, MessageSquareIcon, PhoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
+import { SECONDARY_BUTTON_STYLES, OUTLINE_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 export default function CTABanner() {
 	return (
@@ -43,11 +44,11 @@ export default function CTABanner() {
 						{/* Primary CTA: Contact Form */}
 						<Button
 							size="lg"
-							className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
+							className={SECONDARY_BUTTON_STYLES}
 							asChild
 						>
 							<Link href="/contact" aria-label="Start a conversation about your project goals">
-								<MessageSquareIcon className="mr-2 h-5 w-5" />
+								<MessageSquareIcon className={ICON_SPACING.left} />
 								Start Conversation
 							</Link>
 						</Button>
@@ -56,11 +57,11 @@ export default function CTABanner() {
 						<Button
 							size="lg"
 							variant="outline"
-							className="group border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-stone-900 hover:shadow-xl"
+							className={OUTLINE_BUTTON_STYLES}
 							asChild
 						>
 							<a href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" aria-label="Send email directly to discuss your project">
-								<MailIcon className="mr-2 h-5 w-5" />
+								<MailIcon className={ICON_SPACING.left} />
 								Email Directly
 							</a>
 						</Button>

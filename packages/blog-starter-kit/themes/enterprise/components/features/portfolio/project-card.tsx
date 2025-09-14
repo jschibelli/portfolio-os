@@ -12,8 +12,12 @@ export interface Project {
 	description: string;
 	image: string;
 	tags: string[];
+	/** Optional case study URL for legacy projects */
 	caseStudyUrl?: string;
+	/** Optional slug for SEO-friendly project URLs */
 	slug?: string;
+	/** Optional live URL for deployed projects */
+	liveUrl?: string;
 	metrics?: {
 		performance: {
 			loadTimeImprovement: string;
@@ -36,13 +40,29 @@ interface ProjectCardProps {
 	index: number;
 }
 
+/**
+ * Helper function to determine the project link URL
+ * Priority: slug-based URL > case study URL > fallback
+ */
+const getProjectLink = (project: Project): string => {
+	if (project?.slug) {
+		return `/projects/${project.slug}`;
+	}
+	if (project?.caseStudyUrl) {
+		return project.caseStudyUrl;
+	}
+	// Fallback to projects page if no specific link is available
+	return '/projects';
+};
+
 export default function ProjectCard({ project, index }: ProjectCardProps) {
-	// Error handling for missing project data
-	if (!project) {
-		console.warn('ProjectCard: Missing project data');
+	// Validate required project data
+	if (!project || !project.id || !project.title) {
+		console.warn('ProjectCard: Invalid project data provided');
 		return null;
 	}
 
+	const projectLink = getProjectLink(project);
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -145,7 +165,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 							className="group/btn w-full transition-all duration-300"
 							asChild
 						>
-							<Link href={project.caseStudyUrl || (project.slug ? `/projects/${project.slug}` : '#')}>
+							<Link 
+								href={projectLink}
+								aria-label={`View details for ${project.title} project`}
+							>
 								{project.caseStudyUrl ? 'View Case Study' : 'View Project'}
 								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
 							</Link>

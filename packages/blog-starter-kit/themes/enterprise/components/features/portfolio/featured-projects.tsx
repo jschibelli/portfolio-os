@@ -2,17 +2,27 @@ import { motion } from 'framer-motion';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import portfolioData from '../../../data/portfolio.json';
+import { ICON_SPACING } from '../../../lib/button-styles';
 import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
 
+/**
+ * FeaturedProjects component displays a selection of featured portfolio projects
+ * with proper error handling, accessibility, and responsive design
+ */
 export default function FeaturedProjects() {
-	// Error handling for missing portfolio data
+	// Comprehensive error handling for missing or invalid portfolio data
 	if (!portfolioData || !Array.isArray(portfolioData)) {
 		console.error('FeaturedProjects: Invalid or missing portfolio data');
 		return (
-			<section className="bg-white py-20 dark:bg-stone-950">
+			<section 
+				className="bg-white py-20 dark:bg-stone-950"
+				aria-label="Featured projects section"
+			>
 				<div className="container mx-auto px-4 text-center">
-					<p className="text-stone-600 dark:text-stone-400">Unable to load featured projects.</p>
+					<p className="text-stone-600 dark:text-stone-400">
+						Unable to load featured projects. Please try again later.
+					</p>
 				</div>
 			</section>
 		);
@@ -40,8 +50,12 @@ export default function FeaturedProjects() {
 	}).filter(Boolean); // Remove null entries
 
 	return (
-		<section className="bg-white py-16 dark:bg-stone-950">
+		<section 
+			className="bg-white py-16 dark:bg-stone-950"
+			aria-label="Featured portfolio projects"
+		>
 			<div className="container mx-auto px-4">
+				{/* Section header with smooth animations */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +78,7 @@ export default function FeaturedProjects() {
 					))}
 				</div>
 
-				{/* View All Projects CTA */}
+				{/* View All Projects CTA with enhanced accessibility */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -78,9 +92,15 @@ export default function FeaturedProjects() {
 						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
 					>
-						<Link href="/projects">
+						<Link 
+							href="/projects"
+							aria-label="View all portfolio projects"
+						>
 							View All Projects
-							<ArrowRightIcon className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+							<ArrowRightIcon 
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} 
+								aria-hidden="true"
+							/>
 						</Link>
 					</Button>
 				</motion.div>

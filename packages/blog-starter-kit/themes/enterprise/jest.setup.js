@@ -3,48 +3,7 @@
 
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
-require('@testing-library/jest-dom');
-const { setupTestEnvironment, getTestTimeout, cleanupTestEnvironment } = require('./__tests__/test-utils/test-environment.ts');
-
-/**
- * Jest Test Environment Setup
- * 
- * This file configures the testing environment with secure defaults
- * and proper environment variable management for tests.
- * 
- * Security considerations:
- * - Uses secure test secrets with minimum length requirements
- * - Prevents accidental exposure of production secrets
- * - Implements proper cleanup after tests
- */
-
-// Ensure we're in test environment
-process.env.NODE_ENV = 'test';
-
-// Set up test environment with secure defaults
-setupTestEnvironment();
-
-// Global test utilities and mocks
-global.console = {
-  ...console,
-  // Suppress console.log in tests unless explicitly enabled
-  log: process.env.VERBOSE_TESTS ? console.log : jest.fn(),
-  warn: process.env.VERBOSE_TESTS ? console.warn : jest.fn(),
-  error: console.error, // Always show errors
-  info: process.env.VERBOSE_TESTS ? console.info : jest.fn(),
-  debug: process.env.VERBOSE_TESTS ? console.debug : jest.fn(),
-};
-
-// Mock fetch for API testing with proper error handling
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve({}),
-    text: () => Promise.resolve(''),
-    headers: new Headers(),
-  })
-);
+import '@testing-library/jest-dom'
 
 // Mock Next.js router
 jest.mock('next/router', () => ({
@@ -66,9 +25,9 @@ jest.mock('next/router', () => ({
         emit: jest.fn(),
       },
       isFallback: false,
-    };
+    }
   },
-}));
+}))
 
 // Mock Next.js navigation (App Router)
 jest.mock('next/navigation', () => ({
@@ -80,54 +39,129 @@ jest.mock('next/navigation', () => ({
       back: jest.fn(),
       forward: jest.fn(),
       refresh: jest.fn(),
-    };
+    }
   },
   useSearchParams() {
-    return new URLSearchParams();
+    return new URLSearchParams()
   },
   usePathname() {
-    return '/';
+    return '/'
   },
-}));
+}))
 
-// Mock environment variables for security
-const originalEnv = process.env;
+// Mock framer-motion to avoid animation issues in tests
+jest.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }) => <div {...props}>{children}</div>,
+    section: ({ children, ...props }) => <section {...props}>{children}</section>,
+    span: ({ children, ...props }) => <span {...props}>{children}</span>,
+    h1: ({ children, ...props }) => <h1 {...props}>{children}</h1>,
+    h2: ({ children, ...props }) => <h2 {...props}>{children}</h2>,
+    h3: ({ children, ...props }) => <h3 {...props}>{children}</h3>,
+    p: ({ children, ...props }) => <p {...props}>{children}</p>,
+    button: ({ children, ...props }) => <button {...props}>{children}</button>,
+    a: ({ children, ...props }) => <a {...props}>{children}</a>,
+    img: ({ children, ...props }) => <img {...props}>{children}</img>,
+    Card: ({ children, ...props }) => <div {...props}>{children}</div>,
+    CardContent: ({ children, ...props }) => <div {...props}>{children}</div>,
+    CardHeader: ({ children, ...props }) => <div {...props}>{children}</div>,
+  },
+  AnimatePresence: ({ children }) => children,
+}))
 
-beforeEach(() => {
-  // Reset environment variables to test defaults
-  process.env = { ...originalEnv };
-  setupTestEnvironment();
-  
-  // Clear all mocks
-  jest.clearAllMocks();
-});
+// Mock Lucide React icons
+jest.mock('lucide-react', () => ({
+  ArrowRightIcon: () => <div data-testid="arrow-right-icon" />,
+  TrendingUp: () => <div data-testid="trending-up-icon" />,
+  TrendingDown: () => <div data-testid="trending-down-icon" />,
+  Minus: () => <div data-testid="minus-icon" />,
+}))
 
-afterEach(() => {
-  // Clean up test environment
-  cleanupTestEnvironment();
-  
-  // Reset environment variables
-  process.env = originalEnv;
-});
+// Mock Next.js Image component
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img {...props} />
+  },
+}))
 
-// Set global test timeout
-jest.setTimeout(getTestTimeout('default'));
+// Mock Next.js Link component
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href, ...props }) => {
+    return (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    )
+  },
+}))
 
-// Global error handler for unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
+// Global test utilities
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}))
 
-// Suppress specific warnings in tests
-const originalWarn = console.warn;
-console.warn = (...args) => {
-  // Suppress known test warnings
-  if (
-    args[0]?.includes?.('Warning: ReactDOM.render is deprecated') ||
-    args[0]?.includes?.('Warning: componentWillReceiveProps') ||
-    args[0]?.includes?.('act() is not supported')
-  ) {
-    return;
+// Mock IntersectionObserver
+global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}))
+
+// Mock matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+})
+
+// Mock window.getComputedStyle
+Object.defineProperty(window, 'getComputedStyle', {
+  value: () => ({
+    getPropertyValue: () => '',
+  }),
+})
+
+// Suppress console warnings in tests
+const originalWarn = console.warn
+const originalError = console.error
+
+beforeAll(() => {
+  console.warn = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Warning: ReactDOM.render is no longer supported')
+    ) {
+      return
+    }
+    originalWarn.call(console, ...args)
   }
-  originalWarn(...args);
-};
+
+  console.error = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      (args[0].includes('Warning: ReactDOM.render is no longer supported') ||
+       args[0].includes('act()'))
+    ) {
+      return
+    }
+    originalError.call(console, ...args)
+  }
+})
+
+afterAll(() => {
+  console.warn = originalWarn
+  console.error = originalError
+})

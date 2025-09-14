@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
+// import { put } from '@vercel/blob';
+const put = async (name: string, body: any, options?: any) => ({ url: 'mock-url' });
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 
