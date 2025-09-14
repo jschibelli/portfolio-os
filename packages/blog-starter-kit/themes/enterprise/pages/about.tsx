@@ -34,7 +34,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '../components/ui/accordion';
-import { Badge, Button } from '../components/ui';
+import { Badge, Button, Timeline, TimelineItem } from '../components/ui';
 import { generatePersonStructuredData } from '../lib/structured-data';
 import {
 	PostsByPublicationDocument,
