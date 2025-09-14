@@ -302,6 +302,16 @@ export default function Chatbot() {
         { path: ['/case-studies', '/case-study'], type: 'case-study' as const },
       ];
 
+      // Service type mapping for better maintainability
+      const serviceTypeMap: Record<string, string> = {
+        '/web-development': 'web-development',
+        '/mobile-development': 'mobile-development',
+        '/ui-ux-design': 'ui-ux-design',
+        '/consulting': 'consulting',
+        '/cloud-solutions': 'cloud-solutions',
+        '/maintenance-support': 'maintenance-support',
+      };
+
       // Analyze pathname to determine page type
       let routeMatched = false;
       
@@ -314,27 +324,33 @@ export default function Chatbot() {
           pageType = config.type;
           routeMatched = true;
           
-          // Set specific type based on route
-          if (config.type === 'projects' || config.type === 'portfolio') {
-            specificType = config.type;
-          } else if (config.type === 'services') {
-            // Extract specific service type
-            if (pathname.includes('/web-development')) specificType = 'web-development';
-            else if (pathname.includes('/mobile-development')) specificType = 'mobile-development';
-            else if (pathname.includes('/ui-ux-design')) specificType = 'ui-ux-design';
-            else if (pathname.includes('/consulting')) specificType = 'consulting';
-            else if (pathname.includes('/cloud-solutions')) specificType = 'cloud-solutions';
-            else if (pathname.includes('/maintenance-support')) specificType = 'maintenance-support';
-          } else if (config.type === 'case-study') {
-            // Extract case study name from URL
-            const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
-            if (match) specificType = match[1];
+          // Set specific type based on route with improved logic
+          switch (config.type) {
+            case 'projects':
+            case 'portfolio':
+              specificType = config.type;
+              break;
+            case 'services':
+              // Extract specific service type using mapping
+              for (const [servicePath, serviceType] of Object.entries(serviceTypeMap)) {
+                if (pathname.includes(servicePath)) {
+                  specificType = serviceType;
+                  break;
+                }
+              }
+              break;
+            case 'case-study':
+              // Extract case study name from URL
+              const match = pathname.match(/\/case-stud(?:y|ies)\/([^\/]+)/);
+              if (match) specificType = match[1];
+              break;
           }
           break;
         }
       }
 
       // Handle blog articles (individual blog posts)
+      // This condition correctly identifies blog articles vs main blog page
       if (!routeMatched && pathname.includes('/blog') && pathname !== '/blog') {
         pageType = 'article';
         routeMatched = true;

@@ -5,7 +5,7 @@ import { PublicationNavbarItem } from '../generated/graphql';
 import { Button } from './button';
 import { useAppContext } from './contexts/appContext';
 import CloseSVG from './icons/svgs/CloseSVG';
-import { PublicationLogo } from './publication-logo';
+import { PersonalLogo } from '../../shared/personal-logo';
 import { SocialLinks } from './social-links';
 
 type Props = {
@@ -46,7 +46,7 @@ function PublicationSidebar(props: Props) {
 					<div className="blog-sidebar-header w-full shrink-0 py-6">
 						<div className="flex items-center justify-between pl-8 pr-4">
 							<div className="!text-xl">
-								<PublicationLogo isSidebar />
+								<PersonalLogo size="medium" />
 							</div>
 
 							<DialogPrimitive.Close asChild>
