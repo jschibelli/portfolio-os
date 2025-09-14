@@ -49,32 +49,6 @@ type Props = {
  * @returns JSX element for the about page
  */
 export default function About({ publication }: Props) {
-	// Import skills from centralized data source to avoid duplication
-	let skills: Record<string, string[]> = {};
-	
-	try {
-		const { skills: skillsData } = require('../../data/skills');
-		
-		// Validate skills data structure
-		if (Array.isArray(skillsData)) {
-			// Group skills by category for display with proper error handling
-			skills = skillsData.reduce((acc: Record<string, string[]>, skill: any) => {
-				if (skill && typeof skill === 'object' && skill.category && skill.name) {
-					if (!acc[skill.category]) {
-						acc[skill.category] = [];
-					}
-					acc[skill.category].push(skill.name);
-				}
-				return acc;
-			}, {});
-		} else {
-			console.warn('Skills data is not in expected array format');
-		}
-	} catch (error) {
-		console.error('Error loading skills data:', error);
-		// Fallback to empty skills object to prevent page crash
-		skills = {};
-	}
 
 	const experience = [
 		{
