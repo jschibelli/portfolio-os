@@ -9,16 +9,22 @@ import {
 	BracketsIcon,
 	BriefcaseIcon,
 	CalendarIcon,
+	CheckCircleIcon,
+	ClockIcon,
 	GraduationCapIcon,
 	LightbulbIcon,
 	MapPinIcon,
 	StarIcon,
+	TrendingUpIcon,
+	UsersIcon,
+	ZapIcon,
 } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
+import VisualSkillsShowcase from '../components/features/about/visual-skills-showcase';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { SEOHead } from '../components/shared/seo-head';
