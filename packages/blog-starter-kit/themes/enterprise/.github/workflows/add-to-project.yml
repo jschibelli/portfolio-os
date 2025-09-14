@@ -2,6 +2,11 @@ name: Add issues & PRs to Portfolio Project
 
 # This workflow automatically adds new issues and pull requests to the Portfolio Project
 # for better project management and tracking.
+#
+# Purpose: Automatically manage GitHub Project items
+# Triggers: New issues and pull requests
+# Dependencies: Requires PORTFOLIO_PROJECT_URL and PORTFOLIO_PROJECT_TOKEN secrets
+# Actions: Creates project items, validates environment, handles errors gracefully
 
 on:
   issues:

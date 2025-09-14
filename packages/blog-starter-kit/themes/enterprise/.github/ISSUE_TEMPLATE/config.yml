@@ -12,7 +12,7 @@ contact_links:
     about: Ask questions, share ideas, and discuss the project
   - name: 📖 Documentation
     url: https://github.com/jschibelli/mindware-blog/wiki
-    about: Browse documentation and guides
+    about: Browse project documentation, setup guides, and API references
   - name: 🐛 Bug Reports
     url: https://github.com/jschibelli/mindware-blog/issues/new?template=bug_report.yml
     about: Report bugs and issues using the structured template

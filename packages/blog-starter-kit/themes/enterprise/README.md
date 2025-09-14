@@ -96,9 +96,14 @@ The setup script includes validation checks for:
 
 #### Setup Process
 ```bash
-# Run the setup script
+# Navigate to the project root directory (where this README is located)
+cd /path/to/mindware-blog/packages/blog-starter-kit/themes/enterprise
+
+# Run the setup script from the project root
 bash scripts/setup_portfolio_project.sh
 ```
+
+**Important:** Always run the setup script from the project root directory to ensure all relative paths work correctly.
 
 #### What the script does:
 - ✅ Creates a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
@@ -146,11 +151,18 @@ The setup script includes comprehensive error handling and detailed logging:
 
 **Detailed Error Messages:**
 The script provides specific error codes and messages to help diagnose issues:
-- `DEPENDENCY_MISSING`: Required tools not installed
-- `AUTH_FAILED`: GitHub authentication issues
-- `PERMISSION_DENIED`: Insufficient repository permissions
-- `API_ERROR`: GitHub API communication problems
-- `VALIDATION_FAILED`: Configuration validation errors
+- `DEPENDENCY_MISSING`: Required tools not installed - Install GitHub CLI and jq
+- `AUTH_FAILED`: GitHub authentication issues - Run `gh auth login --web`
+- `PERMISSION_DENIED`: Insufficient repository permissions - Check admin access
+- `API_ERROR`: GitHub API communication problems - Check network connectivity
+- `VALIDATION_FAILED`: Configuration validation errors - Review input parameters
+
+**Script Behavior on Failures:**
+- **Dependency Check Failure**: Script terminates with clear instructions
+- **Authentication Failure**: Provides re-authentication commands
+- **Permission Issues**: Lists required permissions and access levels
+- **API Errors**: Suggests retry after rate limit cooldown
+- **Validation Errors**: Shows specific field requirements
 
 **Manual Fallback:**
 If automated setup fails, you can manually:
@@ -162,6 +174,18 @@ If automated setup fails, you can manually:
 - Check the script logs for detailed error information
 - Review the troubleshooting section in this README
 - Open an issue with the error details and system information
+
+**Automated Retry Logic:**
+The script includes automatic retry mechanisms for:
+- **Network timeouts**: Retries up to 3 times with exponential backoff
+- **Rate limiting**: Automatically waits and retries when API limits are hit
+- **Temporary failures**: Retries transient errors with increasing delays
+
+**Logging and Traceability:**
+- All script actions are logged with timestamps
+- Error details include context and suggested resolutions
+- Progress indicators show current step and completion status
+- Debug mode available with `--verbose` flag for detailed output
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 
