@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ProjectMeta } from '../../../data/projects/types';
 import { getAllProjects, getProjectBySlug } from '../../../lib/project-utils';
+import { generateCreativeWorkStructuredData, generateSoftwareApplicationStructuredData } from '../../../lib/structured-data';
 import { ProjectHeader } from '../_components/project-header';
 import { ProjectContent } from '../_components/project-content';
 import { ProjectTechnologies } from '../_components/project-technologies';
@@ -119,6 +120,53 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  // Generate structured data based on project type
+  const isSoftwareProject = project.tags.some(tag => 
+    ['Next.js', 'TypeScript', 'React', 'JavaScript', 'SaaS', 'AI/ML'].includes(tag)
+  );
+
+  const structuredData = isSoftwareProject 
+    ? generateSoftwareApplicationStructuredData({
+        name: project.title,
+        description: project.description,
+        url: `https://schibelli.dev/projects/${project.slug}`,
+        image: project.image,
+        applicationCategory: 'WebApplication',
+        operatingSystem: 'Web Browser',
+        offers: {
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        author: {
+          name: 'John Schibelli',
+          description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
+          url: 'https://schibelli.dev',
+          jobTitle: 'Senior Front-End Developer',
+        },
+        publisher: {
+          name: 'John Schibelli',
+          url: 'https://schibelli.dev',
+        },
+        keywords: project.tags,
+      })
+    : generateCreativeWorkStructuredData({
+        name: project.title,
+        description: project.description,
+        url: `https://schibelli.dev/projects/${project.slug}`,
+        image: project.image,
+        author: {
+          name: 'John Schibelli',
+          description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
+          url: 'https://schibelli.dev',
+          jobTitle: 'Senior Front-End Developer',
+        },
+        publisher: {
+          name: 'John Schibelli',
+          url: 'https://schibelli.dev',
+        },
+        keywords: project.tags,
+      });
+
   // Default publication object for consistency
   const publication = {
     title: 'John Schibelli',
@@ -136,6 +184,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <AppProvider publication={publication}>
       <Layout>
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
+        
         <ModernHeader publication={publication} />
         
         <main className="min-h-screen bg-background">

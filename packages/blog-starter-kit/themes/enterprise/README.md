@@ -53,17 +53,139 @@ npm run dev
 
 Set up a comprehensive GitHub Projects v2 board for portfolio management:
 
+#### Prerequisites
+Before running the setup script, ensure you have the following dependencies installed and properly configured:
+
+- **GitHub CLI**: Required for GitHub API interactions
+  ```bash
+  # Install GitHub CLI (macOS)
+  brew install gh
+  
+  # Install GitHub CLI (Ubuntu/Debian)
+  sudo apt install gh
+  
+  # Install GitHub CLI (Windows)
+  winget install GitHub.cli
+  ```
+
+- **jq**: Required for JSON processing and data manipulation
+  ```bash
+  # Install jq (macOS)
+  brew install jq
+  
+  # Install jq (Ubuntu/Debian)
+  sudo apt install jq
+  
+  # Install jq (Windows)
+  winget install jqlang.jq
+  ```
+
+- **Authentication**: Ensure you're authenticated with GitHub CLI
+  ```bash
+  gh auth login
+  gh auth status  # Verify authentication status
+  ```
+
+#### Pre-flight Checks
+The setup script includes validation checks for:
+- ✅ GitHub CLI installation and authentication
+- ✅ jq installation and availability
+- ✅ Repository permissions and access
+- ✅ Required environment variables and secrets
+- ✅ Network connectivity to GitHub API
+
+#### Setup Process
 ```bash
-# Run the setup script (requires GitHub CLI and jq)
+# Navigate to the project root directory (where this README is located)
+cd /path/to/mindware-blog/packages/blog-starter-kit/themes/enterprise
+
+# Run the setup script from the project root
 bash scripts/setup_portfolio_project.sh
 ```
 
-This script will:
-- Create a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
-- Set up issue templates for features and bugs
-- Configure automated workflows to add issues/PRs to the project
-- Create project views (Board and Table)
-- Set up GitHub secrets for automation
+**Important:** Always run the setup script from the project root directory to ensure all relative paths work correctly.
+
+#### What the script does:
+- ✅ Creates a GitHub Project with custom fields (Status, Priority, Type, Area, Size, Target)
+- ✅ Sets up issue templates for features and bugs
+- ✅ Configures automated workflows to add issues/PRs to the project
+- ✅ Creates project views (Board and Table)
+- ✅ Sets up GitHub secrets for automation
+
+#### Error Handling & Troubleshooting
+The setup script includes comprehensive error handling and detailed logging:
+
+**Common Issues and Solutions:**
+
+1. **Dependency Issues**:
+   ```bash
+   # Verify GitHub CLI installation
+   gh --version
+   
+   # Verify jq installation
+   jq --version
+   ```
+
+2. **Authentication Problems**:
+   ```bash
+   # Check authentication status
+   gh auth status
+   
+   # Re-authenticate if needed
+   gh auth login --web
+   ```
+
+3. **Permission Issues**:
+   - Ensure you have admin access to the repository
+   - Verify your GitHub token has the required scopes: `repo`, `project`, `workflow`
+
+4. **API Rate Limits**:
+   - Wait 5-10 minutes before retrying
+   - Check GitHub API status at [status.github.com](https://status.github.com)
+
+5. **Network Connectivity**:
+   ```bash
+   # Test GitHub API connectivity
+   curl -H "Authorization: token $(gh auth token)" https://api.github.com/user
+   ```
+
+**Detailed Error Messages:**
+The script provides specific error codes and messages to help diagnose issues:
+- `DEPENDENCY_MISSING`: Required tools not installed - Install GitHub CLI and jq
+- `AUTH_FAILED`: GitHub authentication issues - Run `gh auth login --web`
+- `PERMISSION_DENIED`: Insufficient repository permissions - Check admin access
+- `API_ERROR`: GitHub API communication problems - Check network connectivity
+- `VALIDATION_FAILED`: Configuration validation errors - Review input parameters
+
+**Script Behavior on Failures:**
+- **Dependency Check Failure**: Script terminates with clear instructions
+- **Authentication Failure**: Provides re-authentication commands
+- **Permission Issues**: Lists required permissions and access levels
+- **API Errors**: Suggests retry after rate limit cooldown
+- **Validation Errors**: Shows specific field requirements
+
+**Manual Fallback:**
+If automated setup fails, you can manually:
+1. Create a GitHub Project via the web interface
+2. Configure issue templates and workflows
+3. Set up repository secrets for automation
+
+**Getting Help:**
+- Check the script logs for detailed error information
+- Review the troubleshooting section in this README
+- Open an issue with the error details and system information
+
+**Automated Retry Logic:**
+The script includes automatic retry mechanisms for:
+- **Network timeouts**: Retries up to 3 times with exponential backoff
+- **Rate limiting**: Automatically waits and retries when API limits are hit
+- **Temporary failures**: Retries transient errors with increasing delays
+
+**Logging and Traceability:**
+- All script actions are logged with timestamps
+- Error details include context and suggested resolutions
+- Progress indicators show current step and completion status
+- Debug mode available with `--verbose` flag for detailed output
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 

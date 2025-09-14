@@ -11,6 +11,7 @@ interface ProjectLinksProps {
  * Validates if a URL is safe and properly formatted
  */
 function isValidUrl(url: string): boolean {
+  if (!url) return false;
   try {
     const urlObj = new URL(url);
     // Only allow http and https protocols
@@ -21,6 +22,10 @@ function isValidUrl(url: string): boolean {
                           !urlObj.hostname.includes('vbscript:');
     return isValidProtocol && isNotMalicious;
   } catch (error) {
+    // Check if it's a relative URL
+    if (url.startsWith('/') || url.startsWith('#')) {
+      return true;
+    }
     console.warn('URL validation failed:', error);
     return false;
   }
@@ -60,9 +65,28 @@ function sanitizeUrl(url: string): string {
     urlObj.hash = '';
     return urlObj.toString();
   } catch {
-    return '';
+    return url; // Return original URL if it's relative
   }
 }
+
+// Helper function to get link styling classes
+const getLinkStyles = (variant: string, label: string): string => {
+  const baseStyles = 'flex items-center gap-3 p-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900';
+  
+  switch (variant) {
+    case 'default':
+      return `${baseStyles} bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200`;
+    case 'outline':
+      return `${baseStyles} border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800`;
+    case 'secondary':
+      if (label === 'Documentation') {
+        return `${baseStyles} bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30`;
+      }
+      return `${baseStyles} bg-stone-200 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-stone-300 dark:hover:bg-stone-700`;
+    default:
+      return `${baseStyles} bg-stone-200 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-stone-300 dark:hover:bg-stone-700`;
+  }
+};
 
 /**
  * ProjectLinks component displays project-related links with security validation and error handling.
@@ -136,15 +160,7 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
               href={link.url}
               target={isExternal ? '_blank' : undefined}
               rel={isExternal ? 'noopener noreferrer' : undefined}
-              className={`flex items-center gap-3 p-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900 ${
-                link.variant === 'default'
-                  ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200'
-                  : link.variant === 'outline'
-                  ? 'border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800'
-                  : link.label === 'Documentation'
-                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30'
-                  : 'bg-stone-200 dark:bg-stone-800 text-stone-900 dark:text-stone-100 hover:bg-stone-300 dark:hover:bg-stone-700'
-              }`}
+              className={getLinkStyles(link.variant, link.label)}
               role="listitem"
               aria-label={`${link.label}${isExternal ? ' (opens in new tab)' : ''}`}
               onMouseEnter={() => {

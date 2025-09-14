@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';
+import { PersonalLogo } from '../../shared/personal-logo';
 import { Button } from '../../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
 import { ThemeToggle } from '../../ui/theme-toggle';
@@ -26,18 +26,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<div className="flex-shrink-0">
-						<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
-							{publication.logo?.url && (
-								<img
-									src={publication.logo.url}
-									alt={`${siteTitle} logo`}
-									className="h-8 w-8 rounded-lg"
-								/>
-							)}
-							<span className="text-xl font-bold text-foreground">
-								{siteTitle}
-							</span>
-						</Link>
+						<PersonalLogo size="small" />
 					</div>
 
 					{/* Desktop Navigation */}
@@ -108,18 +97,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							<SheetContent side="right" className="w-[300px] sm:w-[400px]" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
 								<SheetHeader>
 									<SheetTitle className="text-left">
-										<Link href="/" className="flex items-center space-x-2" aria-label={`${siteTitle} - Home`}>
-											{publication.logo?.url && (
-												<img
-													src={publication.logo.url}
-													alt={`${siteTitle} logo`}
-													className="h-6 w-6 rounded"
-												/>
-											)}
-											<span className="text-lg font-bold text-foreground">
-												{siteTitle}
-											</span>
-										</Link>
+										<PersonalLogo size="small" />
 									</SheetTitle>
 								</SheetHeader>
 

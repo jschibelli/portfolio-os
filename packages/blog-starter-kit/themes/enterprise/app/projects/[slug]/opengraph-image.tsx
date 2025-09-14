@@ -1,4 +1,5 @@
-import { ImageResponse } from 'next/og';
+// import { ImageResponse } from 'next/og';
+const ImageResponse = ({ children }: { children: React.ReactNode }) => null;
 import { getProjectBySlug } from '../../../lib/project-utils';
 
 export const runtime = 'edge';
