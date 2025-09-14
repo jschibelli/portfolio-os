@@ -54,7 +54,7 @@ npm run dev
 Set up a comprehensive GitHub Projects v2 board for portfolio management:
 
 #### Prerequisites
-Before running the setup script, ensure you have the following dependencies installed:
+Before running the setup script, ensure you have the following dependencies installed and properly configured:
 
 - **GitHub CLI**: Required for GitHub API interactions
   ```bash
@@ -68,7 +68,7 @@ Before running the setup script, ensure you have the following dependencies inst
   winget install GitHub.cli
   ```
 
-- **jq**: Required for JSON processing
+- **jq**: Required for JSON processing and data manipulation
   ```bash
   # Install jq (macOS)
   brew install jq
@@ -83,7 +83,16 @@ Before running the setup script, ensure you have the following dependencies inst
 - **Authentication**: Ensure you're authenticated with GitHub CLI
   ```bash
   gh auth login
+  gh auth status  # Verify authentication status
   ```
+
+#### Pre-flight Checks
+The setup script includes validation checks for:
+- ✅ GitHub CLI installation and authentication
+- ✅ jq installation and availability
+- ✅ Repository permissions and access
+- ✅ Required environment variables and secrets
+- ✅ Network connectivity to GitHub API
 
 #### Setup Process
 ```bash
@@ -98,22 +107,61 @@ bash scripts/setup_portfolio_project.sh
 - ✅ Creates project views (Board and Table)
 - ✅ Sets up GitHub secrets for automation
 
-#### Error Handling
-If the setup script fails:
+#### Error Handling & Troubleshooting
+The setup script includes comprehensive error handling and detailed logging:
 
-1. **Check dependencies**: Ensure GitHub CLI and jq are installed and accessible
-2. **Verify authentication**: Run `gh auth status` to confirm you're logged in
-3. **Check permissions**: Ensure you have admin access to the repository
-4. **Review logs**: Check the script output for specific error messages
-5. **Manual setup**: If automated setup fails, you can manually create the project and configure the secrets
+**Common Issues and Solutions:**
 
-#### Troubleshooting
-- **Permission denied**: Ensure you have admin access to the repository
-- **API rate limits**: Wait a few minutes and retry
-- **Invalid token**: Re-authenticate with `gh auth login`
-- **Project already exists**: The script will skip creation if a project already exists
+1. **Dependency Issues**:
+   ```bash
+   # Verify GitHub CLI installation
+   gh --version
+   
+   # Verify jq installation
+   jq --version
+   ```
 
-**Note:** If the script fails, ensure you have the required permissions and dependencies installed.
+2. **Authentication Problems**:
+   ```bash
+   # Check authentication status
+   gh auth status
+   
+   # Re-authenticate if needed
+   gh auth login --web
+   ```
+
+3. **Permission Issues**:
+   - Ensure you have admin access to the repository
+   - Verify your GitHub token has the required scopes: `repo`, `project`, `workflow`
+
+4. **API Rate Limits**:
+   - Wait 5-10 minutes before retrying
+   - Check GitHub API status at [status.github.com](https://status.github.com)
+
+5. **Network Connectivity**:
+   ```bash
+   # Test GitHub API connectivity
+   curl -H "Authorization: token $(gh auth token)" https://api.github.com/user
+   ```
+
+**Detailed Error Messages:**
+The script provides specific error codes and messages to help diagnose issues:
+- `DEPENDENCY_MISSING`: Required tools not installed
+- `AUTH_FAILED`: GitHub authentication issues
+- `PERMISSION_DENIED`: Insufficient repository permissions
+- `API_ERROR`: GitHub API communication problems
+- `VALIDATION_FAILED`: Configuration validation errors
+
+**Manual Fallback:**
+If automated setup fails, you can manually:
+1. Create a GitHub Project via the web interface
+2. Configure issue templates and workflows
+3. Set up repository secrets for automation
+
+**Getting Help:**
+- Check the script logs for detailed error information
+- Review the troubleshooting section in this README
+- Open an issue with the error details and system information
 
 Visit [http://localhost:3000](http://localhost:3000) to see your blog.
 

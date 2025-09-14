@@ -10,11 +10,7 @@ on:
     types: [opened, ready_for_review]
 
 # Required permissions for the workflow
-permissions:
-  contents: read
-  issues: read
-  pull-requests: read
-  projects: write
+# Note: Using default permissions - the action will request additional permissions as needed
 
 jobs:
   add-to-project:

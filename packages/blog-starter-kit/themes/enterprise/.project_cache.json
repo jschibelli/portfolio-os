@@ -3,7 +3,7 @@
   "number": 19,
   "url": "https://github.com/users/jschibelli/projects/19",
   "description": "GitHub Project cache for Portfolio Site - schibelli.dev project management",
-  "lastUpdated": "2025-09-11T03:43:07Z",
+  "lastUpdated": "2025-09-14T12:00:00Z",
   "purpose": "Stores GitHub Project metadata for automation scripts and project tracking",
   "configurable": {
     "note": "Project number can be updated via environment variable GITHUB_PROJECT_NUMBER if needed",
@@ -18,7 +18,7 @@
       "description": "string"
     },
     "urlFormat": "https://github.com/users/{username}/projects/{number}",
-    "dateFormat": "YYYY-MM-DD",
+    "dateFormat": "YYYY-MM-DDTHH:mm:ssZ",
     "constraints": {
       "number": {
         "min": 1,
@@ -53,6 +53,6 @@
   "documentation": {
     "schema": "This JSON file stores GitHub Project metadata for automation scripts",
     "usage": "Used by project management automation to track and update project information",
-    "maintenance": "Update lastUpdated field when making changes to project configuration"
+    "maintenance": "Update lastUpdated field when making changes to project configuration. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ) for consistency with GitHub API timestamps."
   }
 }

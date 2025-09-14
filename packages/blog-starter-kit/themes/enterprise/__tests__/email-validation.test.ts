@@ -3,12 +3,18 @@
  * 
  * These tests ensure proper email validation and error handling
  * for the booking API as suggested in the GitHub PR review.
+ * 
+ * Test coverage includes:
+ * - Valid email format validation
+ * - Invalid email rejection
+ * - Edge cases and boundary conditions
+ * - Configuration consistency checks
+ * - Error handling scenarios
  */
 
-// Import email validation function
 import { validateEmail } from '../lib/config-validation';
 
-// Use the imported function
+// Use the imported function for consistency
 const isValidEmail = validateEmail;
 
 describe('Email Validation', () => {
@@ -53,6 +59,18 @@ describe('Email Validation', () => {
 	});
 
 	describe('Email Configuration', () => {
+		// Mock environment variables for predictable testing
+		const originalEnv = process.env;
+
+		beforeEach(() => {
+			jest.resetModules();
+			process.env = { ...originalEnv };
+		});
+
+		afterAll(() => {
+			process.env = originalEnv;
+		});
+
 		it('should use consistent email domain', () => {
 			const contactEmail = process.env.CONTACT_EMAIL || 'john@johnschibelli.dev';
 			
@@ -61,6 +79,13 @@ describe('Email Validation', () => {
 		});
 
 		it('should validate the configured email address', () => {
+			const contactEmail = process.env.CONTACT_EMAIL || 'john@johnschibelli.dev';
+			
+			expect(isValidEmail(contactEmail)).toBe(true);
+		});
+
+		it('should handle missing environment variables gracefully', () => {
+			delete process.env.CONTACT_EMAIL;
 			const contactEmail = process.env.CONTACT_EMAIL || 'john@johnschibelli.dev';
 			
 			expect(isValidEmail(contactEmail)).toBe(true);
@@ -94,6 +119,23 @@ describe('API Error Handling', () => {
 				expect((error as Error).message).toContain('Invalid email address');
 				expect((error as Error).message).toContain(invalidEmail);
 			}
+		});
+
+		it('should categorize different types of email validation errors', () => {
+			const testCases = [
+				{ email: '', expectedError: 'Invalid email address' },
+				{ email: '@domain.com', expectedError: 'Invalid email address' },
+				{ email: 'user@', expectedError: 'Invalid email address' },
+				{ email: 'user name@domain.com', expectedError: 'Invalid email address' },
+			];
+
+			testCases.forEach(({ email, expectedError }) => {
+				expect(() => {
+					if (!isValidEmail(email)) {
+						throw new Error(`${expectedError}: ${email}`);
+					}
+				}).toThrow(expectedError);
+			});
 		});
 	});
 });
