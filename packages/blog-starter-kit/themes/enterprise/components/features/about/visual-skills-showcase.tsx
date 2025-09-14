@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { skills } from '../../../data/skills';
 
 interface Skill {
@@ -12,351 +13,338 @@ interface VisualSkillsShowcaseProps {
 }
 
 /**
- * Visual Skills Showcase Component
- * Displays skills in a visually appealing grid with icons, categories, and hover effects
+ * Rotating Skills Sphere Component
+ * Creates a 3D-like rotating sphere of interconnected skills with dynamic focus
  */
 export default function VisualSkillsShowcase({ className = '' }: VisualSkillsShowcaseProps) {
-	// Group skills by category
-	const skillsByCategory = skills.reduce((acc: Record<string, Skill[]>, skill) => {
-		if (!acc[skill.category]) {
-			acc[skill.category] = [];
-		}
-		acc[skill.category].push(skill);
-		return acc;
-	}, {});
+	const [focusedSkill, setFocusedSkill] = useState<Skill | null>(null);
+	const [isHovered, setIsHovered] = useState(false);
+	const controls = useAnimation();
 
-	// Define category colors and icons for visual hierarchy
-	const categoryConfig = {
-		'Languages': { 
-			color: 'from-blue-500 to-blue-600', 
-			bgColor: 'bg-blue-50 dark:bg-blue-950/20',
-			borderColor: 'border-blue-200 dark:border-blue-800',
-			icon: '💻',
-			description: 'Programming languages and core technologies'
-		},
-		'Frontend': { 
-			color: 'from-green-500 to-green-600', 
-			bgColor: 'bg-green-50 dark:bg-green-950/20',
-			borderColor: 'border-green-200 dark:border-green-800',
-			icon: '⚛️',
-			description: 'Modern frontend frameworks and technologies'
-		},
-		'Front-End': { 
-			color: 'from-green-500 to-green-600', 
-			bgColor: 'bg-green-50 dark:bg-green-950/20',
-			borderColor: 'border-green-200 dark:border-green-800',
-			icon: '⚛️',
-			description: 'Modern frontend frameworks and technologies'
-		},
-		'Backend': { 
-			color: 'from-purple-500 to-purple-600', 
-			bgColor: 'bg-purple-50 dark:bg-purple-950/20',
-			borderColor: 'border-purple-200 dark:border-purple-800',
-			icon: '🖥️',
-			description: 'Server-side development and APIs'
-		},
-		'Back-End': { 
-			color: 'from-purple-500 to-purple-600', 
-			bgColor: 'bg-purple-50 dark:bg-purple-950/20',
-			borderColor: 'border-purple-200 dark:border-purple-800',
-			icon: '🖥️',
-			description: 'Server-side development and APIs'
-		},
-		'APIs': { 
-			color: 'from-orange-500 to-orange-600', 
-			bgColor: 'bg-orange-50 dark:bg-orange-950/20',
-			borderColor: 'border-orange-200 dark:border-orange-800',
-			icon: '🔗',
-			description: 'API development and integration'
-		},
-		'Testing': { 
-			color: 'from-red-500 to-red-600', 
-			bgColor: 'bg-red-50 dark:bg-red-950/20',
-			borderColor: 'border-red-200 dark:border-red-800',
-			icon: '🧪',
-			description: 'Testing frameworks and quality assurance'
-		},
-		'DevOps': { 
-			color: 'from-indigo-500 to-indigo-600', 
-			bgColor: 'bg-indigo-50 dark:bg-indigo-950/20',
-			borderColor: 'border-indigo-200 dark:border-indigo-800',
-			icon: '⚙️',
-			description: 'Development tools and cloud platforms'
-		},
-		'Tools & Platforms': { 
-			color: 'from-orange-500 to-orange-600', 
-			bgColor: 'bg-orange-50 dark:bg-orange-950/20',
-			borderColor: 'border-orange-200 dark:border-orange-800',
-			icon: '⚙️',
-			description: 'Development tools and cloud platforms'
-		},
-		'Databases': { 
-			color: 'from-teal-500 to-teal-600', 
-			bgColor: 'bg-teal-50 dark:bg-teal-950/20',
-			borderColor: 'border-teal-200 dark:border-teal-800',
-			icon: '🗄️',
-			description: 'Database technologies and data management'
-		},
-		'CMS': { 
-			color: 'from-pink-500 to-pink-600', 
-			bgColor: 'bg-pink-50 dark:bg-pink-950/20',
-			borderColor: 'border-pink-200 dark:border-pink-800',
-			icon: '📝',
-			description: 'Content management systems'
-		},
-		'Specialties': { 
-			color: 'from-emerald-500 to-emerald-600', 
-			bgColor: 'bg-emerald-50 dark:bg-emerald-950/20',
-			borderColor: 'border-emerald-200 dark:border-emerald-800',
-			icon: '✨',
-			description: 'Specialized skills and expertise areas'
-		},
+	// Generate 3D sphere positions for skills with proper connections
+	const generateSpherePositions = (skills: Skill[]) => {
+		const positions: Array<{ skill: Skill; x: number; y: number; z: number; connections: number[] }> = [];
+		const radius = 180;
+		
+		// Create a more structured sphere with proper connections
+		skills.forEach((skill, index) => {
+			// Use Fibonacci spiral for better distribution
+			const goldenRatio = (1 + Math.sqrt(5)) / 2;
+			const theta = index * 2 * Math.PI / goldenRatio;
+			const phi = Math.acos(1 - 2 * index / skills.length);
+			
+			const x = radius * Math.sin(phi) * Math.cos(theta);
+			const y = radius * Math.sin(phi) * Math.sin(theta);
+			const z = radius * Math.cos(phi);
+			
+			// Find nearby skills to connect to
+			const connections: number[] = [];
+			positions.forEach((pos, i) => {
+				const distance = Math.sqrt(
+					Math.pow(x - pos.x, 2) + 
+					Math.pow(y - pos.y, 2) + 
+					Math.pow(z - pos.z, 2)
+				);
+				// Connect to nearby skills (within 120 units)
+				if (distance < 120) {
+					connections.push(i);
+					pos.connections.push(positions.length);
+				}
+			});
+			
+			positions.push({ skill, x, y, z, connections });
+		});
+		
+		return positions;
+	};
+
+	const spherePositions = generateSpherePositions(skills);
+
+	// Auto-rotate and focus on skills
+	useEffect(() => {
+		if (!isHovered) {
+			const interval = setInterval(() => {
+				const randomIndex = Math.floor(Math.random() * skills.length);
+				setFocusedSkill(skills[randomIndex]);
+			}, 3000);
+
+			return () => clearInterval(interval);
+		}
+	}, [isHovered]);
+
+	// Category color mapping
+	const getCategoryColor = (category: string) => {
+		const colors = {
+			'Frontend': '#10b981', // emerald-500
+			'Backend': '#8b5cf6', // violet-500
+			'Tools & Platforms': '#f59e0b', // amber-500
+			'Specialties': '#ec4899' // pink-500
+		};
+		return colors[category as keyof typeof colors] || '#6b7280';
 	};
 
 	return (
-		<div className={`space-y-12 ${className}`}>
-			{/* Enhanced Header */}
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6, ease: 'easeOut' }}
-				viewport={{ once: true }}
-				className="text-center"
-			>
-				<div className="mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">
-					<span className="text-lg">🚀</span>
-					<span>Technical Expertise</span>
-				</div>
-				<h3 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100 md:text-4xl">
-					Skills & Technologies
-				</h3>
-				<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
-					Cutting-edge technologies and tools I use to build modern, scalable applications that drive business success
-				</p>
-			</motion.div>
-
-			{/* Skills Grid by Category */}
-			<div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-				{Object.entries(skillsByCategory).map(([category, categorySkills], categoryIndex) => {
-					const config = categoryConfig[category as keyof typeof categoryConfig] || {
-						color: 'from-stone-500 to-stone-600',
-						bgColor: 'bg-stone-50 dark:bg-stone-950/20',
-						borderColor: 'border-stone-200 dark:border-stone-800',
-						icon: '🔧'
-					};
-
-					return (
-						<motion.div
-							key={category}
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ 
-								duration: 0.6, 
-								ease: 'easeOut',
-								delay: categoryIndex * 0.1 
-							}}
-							viewport={{ once: true }}
-							className={`relative overflow-hidden rounded-xl border-2 ${config.borderColor} ${config.bgColor} p-4 transition-all duration-300 hover:shadow-lg hover:scale-105 sm:p-6`}
-						>
-							{/* Enhanced Category Header */}
-							<div className="mb-4 flex items-start gap-3 sm:mb-6 sm:gap-4">
-								<div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r ${config.color} text-white shadow-lg sm:h-14 sm:w-14`}>
-									<span className="text-lg sm:text-xl" role="img" aria-label={category}>
-										{config.icon}
-									</span>
-								</div>
-								<div className="flex-1">
-									<h4 className="mb-1 text-lg font-bold text-stone-900 dark:text-stone-100 sm:text-xl">
-										{category}
-									</h4>
-									<p className="mb-2 text-sm text-stone-600 dark:text-stone-400">
-										{config.description}
-									</p>
-									<div className="flex items-center gap-2">
-										<div className="h-1.5 w-16 rounded-full bg-stone-200 dark:bg-stone-700">
-											<div className={`h-full rounded-full bg-gradient-to-r ${config.color}`}></div>
-										</div>
-										<span className="text-xs font-medium text-stone-500 dark:text-stone-400">
-											{categorySkills.length} skills
-										</span>
-									</div>
-								</div>
-							</div>
-
-							{/* Enhanced Skills Grid */}
-							<div className="grid grid-cols-2 gap-3 sm:gap-4">
-								{categorySkills.map((skill, skillIndex) => {
-									// Generate proficiency level based on skill name (for demo purposes)
-									const proficiencyLevel = skill.name.includes('React') || skill.name.includes('Next.js') || skill.name.includes('TypeScript') ? 90 :
-															skill.name.includes('Node.js') || skill.name.includes('JavaScript') ? 85 :
-															skill.name.includes('Tailwind') || skill.name.includes('CSS') ? 80 : 75;
-
-									return (
-										<motion.div
-											key={skill.name}
-											initial={{ opacity: 0, scale: 0.8 }}
-											whileInView={{ opacity: 1, scale: 1 }}
-											transition={{ 
-												duration: 0.4, 
-												ease: 'easeOut',
-												delay: (categoryIndex * 0.1) + (skillIndex * 0.05)
-											}}
-											viewport={{ once: true }}
-											whileHover={{ 
-												scale: 1.05, 
-												y: -3,
-												transition: { duration: 0.2 }
-											}}
-											whileTap={{ scale: 0.95 }}
-											className="group cursor-pointer"
-										>
-											<div 
-												className="relative overflow-hidden rounded-xl border border-stone-200 bg-white p-3 text-center transition-all duration-300 hover:border-stone-300 hover:shadow-lg hover:shadow-stone-200/50 dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600 dark:hover:shadow-stone-900/50 sm:p-4"
-												tabIndex={0}
-												role="button"
-												aria-label={`${skill.name} skill in ${category} category - ${proficiencyLevel}% proficiency`}
-												onKeyDown={(e) => {
-													if (e.key === 'Enter' || e.key === ' ') {
-														e.preventDefault();
-													}
-												}}
-											>
-												{/* Skill Icon */}
-												<div className="mb-2 flex justify-center">
-													<span 
-														className="text-2xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 sm:text-3xl" 
-														role="img" 
-														aria-hidden="true"
-													>
-														{skill.icon}
-													</span>
-												</div>
-												
-												{/* Skill Name */}
-												<h5 className="mb-2 text-xs font-semibold text-stone-800 dark:text-stone-200 sm:text-sm">
-													{skill.name}
-												</h5>
-												
-												{/* Proficiency Indicator */}
-												<div className="space-y-1">
-													<div className="h-1.5 w-full rounded-full bg-stone-200 dark:bg-stone-700">
-														<motion.div 
-															initial={{ width: 0 }}
-															whileInView={{ width: `${proficiencyLevel}%` }}
-															transition={{ 
-																duration: 0.8, 
-																ease: 'easeOut',
-																delay: (categoryIndex * 0.1) + (skillIndex * 0.05) + 0.3
-															}}
-															viewport={{ once: true }}
-															className={`h-full rounded-full bg-gradient-to-r ${config.color}`}
-														/>
-													</div>
-													<div className="text-xs font-medium text-stone-500 dark:text-stone-400">
-														{proficiencyLevel}%
-													</div>
-												</div>
-
-												{/* Hover Effect Overlay */}
-												<div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${config.color} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
-											</div>
-										</motion.div>
-									);
-								})}
-							</div>
-
-							{/* Decorative gradient overlay */}
-							<div className={`absolute -right-4 -top-4 h-16 w-16 rounded-full bg-gradient-to-r ${config.color} opacity-10 blur-xl`} />
-						</motion.div>
-					);
-				})}
-			</div>
-
-			{/* Enhanced Summary Stats */}
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
-				viewport={{ once: true }}
-				className="relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50 via-white to-stone-100 p-6 shadow-lg dark:border-stone-700 dark:from-stone-800 dark:via-stone-900 dark:to-stone-800 sm:p-8"
-			>
-				{/* Background decoration */}
-				<div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-2xl" />
-				<div className="absolute -bottom-4 -left-4 h-16 w-16 rounded-full bg-gradient-to-br from-orange-500/20 to-emerald-500/20 blur-xl" />
-				
-				<div className="relative">
-					<div className="mb-4 text-center">
-						<h4 className="text-lg font-bold text-stone-900 dark:text-stone-100 sm:text-xl">
-							Experience Summary
-						</h4>
-						<p className="text-sm text-stone-600 dark:text-stone-400">
-							Comprehensive expertise across modern technologies
-						</p>
-					</div>
+		<div className={`relative overflow-hidden ${className}`}>
+			{/* Subtle Background */}
+			<div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-white to-stone-100 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900" />
+			
+			<div className="relative py-20">
+				{/* Header */}
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8 }}
+					viewport={{ once: true }}
+					className="mb-16 text-center"
+				>
+					<motion.div
+						initial={{ scale: 0.8, opacity: 0 }}
+						whileInView={{ scale: 1, opacity: 1 }}
+						transition={{ duration: 0.6, delay: 0.2 }}
+						viewport={{ once: true }}
+						className="mb-6 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 px-6 py-3 backdrop-blur-sm"
+					>
+						<span className="text-2xl">🚀</span>
+						<span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Technical Expertise</span>
+					</motion.div>
 					
-					<div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
-						<motion.div 
-							initial={{ opacity: 0, scale: 0.8 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.4, delay: 0.4 }}
-							viewport={{ once: true }}
-							className="text-center"
+					<motion.h3
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.3 }}
+						viewport={{ once: true }}
+						className="mb-6 bg-gradient-to-r from-stone-900 via-stone-800 to-stone-900 bg-clip-text text-4xl font-bold text-transparent dark:from-stone-100 dark:via-stone-200 dark:to-stone-100 md:text-5xl"
+					>
+						Skills & Technologies
+					</motion.h3>
+					
+					<motion.p
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.4 }}
+						viewport={{ once: true }}
+						className="mx-auto max-w-3xl text-lg text-stone-600 dark:text-stone-400"
+					>
+						Building modern, scalable applications with cutting-edge technologies that drive business success
+					</motion.p>
+				</motion.div>
+
+				{/* Rotating Skills Globe */}
+				<div className="relative flex items-center justify-center">
+					<div 
+						className="relative h-[600px] w-[600px] md:h-[700px] md:w-[700px]"
+						onMouseEnter={() => setIsHovered(true)}
+						onMouseLeave={() => setIsHovered(false)}
+					>
+						{/* Globe Container with 3D perspective */}
+						<motion.div
+							className="absolute inset-0"
+							animate={{ 
+								rotateY: isHovered ? 0 : 360,
+								rotateX: isHovered ? 0 : 15
+							}}
+							transition={{ 
+								duration: 30, 
+								repeat: Infinity, 
+								ease: "linear" 
+							}}
+							style={{ 
+								transformStyle: 'preserve-3d',
+								perspective: '1000px'
+							}}
 						>
-							<div className="mb-2 text-2xl font-bold text-blue-600 dark:text-blue-400 sm:text-3xl">
-								{skills.length}
-							</div>
-							<div className="text-xs font-medium text-stone-600 dark:text-stone-400 sm:text-sm">
-								Total Skills
-							</div>
-						</motion.div>
-						
-						<motion.div 
-							initial={{ opacity: 0, scale: 0.8 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.4, delay: 0.5 }}
-							viewport={{ once: true }}
-							className="text-center"
-						>
-							<div className="mb-2 text-2xl font-bold text-purple-600 dark:text-purple-400 sm:text-3xl">
-								{Object.keys(skillsByCategory).length}
-							</div>
-							<div className="text-xs font-medium text-stone-600 dark:text-stone-400 sm:text-sm">
-								Categories
-							</div>
-						</motion.div>
-						
-						<motion.div 
-							initial={{ opacity: 0, scale: 0.8 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.4, delay: 0.6 }}
-							viewport={{ once: true }}
-							className="text-center"
-						>
-							<div className="mb-2 text-2xl font-bold text-orange-600 dark:text-orange-400 sm:text-3xl">
-								15+
-							</div>
-							<div className="text-xs font-medium text-stone-600 dark:text-stone-400 sm:text-sm">
-								Years Experience
-							</div>
-						</motion.div>
-						
-						<motion.div 
-							initial={{ opacity: 0, scale: 0.8 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.4, delay: 0.7 }}
-							viewport={{ once: true }}
-							className="text-center"
-						>
-							<div className="mb-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400 sm:text-3xl">
-								100%
-							</div>
-							<div className="text-xs font-medium text-stone-600 dark:text-stone-400 sm:text-sm">
-								Client Satisfaction
-							</div>
+							{/* Connection Lines - Globe Network */}
+							<svg className="absolute inset-0 h-full w-full" style={{ zIndex: 1 }}>
+								{spherePositions.map((pos, i) => 
+									pos.connections.map((connectionIndex) => {
+										const connectedPos = spherePositions[connectionIndex];
+										if (!connectedPos) return null;
+										
+										const isFocused = focusedSkill && 
+											(focusedSkill.name === pos.skill.name || focusedSkill.name === connectedPos.skill.name);
+										
+										// Convert 3D to 2D screen coordinates
+										const x1 = 50 + (pos.x / 3.5);
+										const y1 = 50 + (pos.y / 3.5);
+										const x2 = 50 + (connectedPos.x / 3.5);
+										const y2 = 50 + (connectedPos.y / 3.5);
+										
+										return (
+											<motion.line
+												key={`${i}-${connectionIndex}`}
+												x1={`${x1}%`}
+												y1={`${y1}%`}
+												x2={`${x2}%`}
+												y2={`${y2}%`}
+												stroke={isFocused ? getCategoryColor(pos.skill.category) : '#d1d5db'}
+												strokeWidth={isFocused ? 3 : 1.5}
+												opacity={isFocused ? 0.9 : 0.4}
+												initial={{ pathLength: 0 }}
+												animate={{ pathLength: 1 }}
+												transition={{ duration: 3, delay: i * 0.02 }}
+											/>
+										);
+									})
+								)}
+							</svg>
+
+							{/* Skills Nodes */}
+							{spherePositions.map((pos, index) => {
+								const isFocused = focusedSkill?.name === pos.skill.name;
+								const categoryColor = getCategoryColor(pos.skill.category);
+								
+								// Convert 3D coordinates to 2D screen coordinates
+								const screenX = 50 + (pos.x / 3.5);
+								const screenY = 50 + (pos.y / 3.5);
+								const scale = isFocused ? 1.8 : 1;
+								const zIndex = isFocused ? 10 : 2;
+								
+								return (
+									<motion.div
+										key={pos.skill.name}
+										className="absolute cursor-pointer"
+										style={{
+											left: `${screenX}%`,
+											top: `${screenY}%`,
+											transform: 'translate(-50%, -50%)',
+											zIndex
+										}}
+										initial={{ opacity: 0, scale: 0 }}
+										animate={{ 
+											opacity: isFocused ? 1 : 0.8,
+											scale
+										}}
+										transition={{ 
+											duration: 0.6,
+											delay: index * 0.03
+										}}
+										whileHover={{ 
+											scale: 1.4,
+											transition: { duration: 0.2 }
+										}}
+										onClick={() => setFocusedSkill(isFocused ? null : pos.skill)}
+									>
+										{/* Skill Node with Glow */}
+										<div 
+											className="relative flex h-14 w-14 items-center justify-center rounded-full border-2 bg-white/95 shadow-xl backdrop-blur-sm transition-all duration-300 dark:bg-stone-800/95"
+											style={{
+												borderColor: categoryColor,
+												boxShadow: isFocused 
+													? `0 0 30px ${categoryColor}60, 0 0 60px ${categoryColor}30` 
+													: `0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px ${categoryColor}20`
+											}}
+										>
+											{/* Inner glow */}
+											<div 
+												className="absolute inset-1 rounded-full opacity-20"
+												style={{ backgroundColor: categoryColor }}
+											/>
+											
+											<span className="relative text-xl" role="img" aria-label={pos.skill.name}>
+												{pos.skill.icon}
+											</span>
+										</div>
+										
+										{/* Skill Label */}
+										{isFocused && (
+											<motion.div
+												initial={{ opacity: 0, y: 15, scale: 0.8 }}
+												animate={{ opacity: 1, y: 0, scale: 1 }}
+												className="absolute top-16 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xl bg-stone-900 px-4 py-2 text-sm font-semibold text-white shadow-2xl dark:bg-stone-100 dark:text-stone-900"
+											>
+												{pos.skill.name}
+												<div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2 w-2 rotate-45 bg-stone-900 dark:bg-stone-100" />
+											</motion.div>
+										)}
+									</motion.div>
+								);
+							})}
 						</motion.div>
 					</div>
 				</div>
-			</motion.div>
+
+				{/* Focused Skill Details */}
+				{focusedSkill && (
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -20 }}
+						className="mt-12 text-center"
+					>
+						<div className="mx-auto max-w-md rounded-2xl border border-stone-200 bg-white/50 p-6 backdrop-blur-sm dark:border-stone-700 dark:bg-stone-800/50">
+							<div 
+								className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 bg-white shadow-lg dark:bg-stone-800"
+								style={{ borderColor: getCategoryColor(focusedSkill.category) }}
+							>
+								<span className="text-2xl" role="img" aria-label={focusedSkill.name}>
+									{focusedSkill.icon}
+								</span>
+							</div>
+							<h4 className="mb-2 text-xl font-bold text-stone-900 dark:text-stone-100">
+								{focusedSkill.name}
+							</h4>
+							<p className="text-sm text-stone-600 dark:text-stone-400">
+								{focusedSkill.category}
+							</p>
+						</div>
+					</motion.div>
+				)}
+
+				{/* Experience Summary */}
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, delay: 0.3 }}
+					viewport={{ once: true }}
+					className="mt-20"
+				>
+					<div className="mx-auto max-w-4xl rounded-3xl border border-stone-200/50 bg-white/30 p-8 backdrop-blur-sm dark:border-stone-700/50 dark:bg-stone-800/30">
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.6, delay: 0.5 }}
+							viewport={{ once: true }}
+							className="text-center"
+						>
+							<h4 className="mb-2 text-2xl font-bold text-stone-900 dark:text-stone-100">
+								Experience Summary
+							</h4>
+							<p className="mb-8 text-stone-600 dark:text-stone-400">
+								Comprehensive expertise across modern technologies
+							</p>
+						</motion.div>
+						
+						<div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+							{[
+								{ value: skills.length, label: 'Total Skills', color: 'from-emerald-500 to-teal-500' },
+								{ value: 4, label: 'Categories', color: 'from-purple-500 to-violet-500' },
+								{ value: '15+', label: 'Years Experience', color: 'from-orange-500 to-amber-500' },
+								{ value: '100%', label: 'Client Satisfaction', color: 'from-rose-500 to-pink-500' }
+							].map((stat, index) => (
+								<motion.div
+									key={stat.label}
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
+									viewport={{ once: true }}
+									className="text-center"
+								>
+									<motion.div
+										whileHover={{ scale: 1.1 }}
+										transition={{ duration: 0.2 }}
+										className={`mb-2 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${stat.color} text-white shadow-lg`}
+									>
+										<span className="text-xl font-bold">{stat.value}</span>
+									</motion.div>
+									<div className="text-sm font-medium text-stone-600 dark:text-stone-400">
+										{stat.label}
+									</div>
+								</motion.div>
+							))}
+						</div>
+					</div>
+				</motion.div>
+			</div>
 		</div>
 	);
 }

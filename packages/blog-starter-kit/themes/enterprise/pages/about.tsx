@@ -13,7 +13,6 @@ import {
 	CheckCircleIcon,
 	ClockIcon,
 	CodeIcon,
-	GraduationCapIcon,
 	LightbulbIcon,
 	LinkedinIcon,
 	MailIcon,
@@ -28,16 +27,9 @@ import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
-import VisualSkillsShowcase from '../components/features/about/visual-skills-showcase';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { SEOHead } from '../components/shared/seo-head';
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '../components/ui/accordion';
 import { Badge, Button, Timeline, TimelineItem } from '../components/ui';
 import { generatePersonStructuredData } from '../lib/structured-data';
 import {
@@ -466,7 +458,7 @@ export default function About({ publication }: Props) {
 											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
 												<div className="mb-4 flex items-center gap-3">
 													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
-														<GraduationCapIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+														<LightbulbIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
 													</div>
 													<div>
 														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
@@ -927,157 +919,6 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* Visual Skills Showcase Section */}
-				<section className="bg-background py-20">
-					<Container className="px-4">
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, ease: 'easeOut' }}
-							viewport={{ once: true }}
-							className="mx-auto max-w-7xl"
-						>
-							<VisualSkillsShowcase />
-						</motion.div>
-					</Container>
-				</section>
-
-				{/* Additional Sections */}
-				<section className="bg-muted py-20">
-					<Container className="px-4">
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, ease: 'easeOut' }}
-							viewport={{ once: true }}
-							className="mx-auto max-w-4xl"
-						>
-							<Accordion type="single" collapsible className="w-full space-y-4">
-
-								{/* Skills */}
-								<AccordionItem
-									value="skills"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Skills & Technologies</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<VisualSkillsShowcase />
-									</AccordionContent>
-								</AccordionItem>
-								{/* Education */}
-								<AccordionItem
-									value="education"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<GraduationCapIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Education & Certifications</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="space-y-6">
-											{education.map((edu, index) => (
-												<div
-													key={index}
-													className="border-l-4 border-primary/40 pl-6"
-												>
-													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-														<h4 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-															{edu.degree}
-														</h4>
-														<div className="mt-1 text-sm text-stone-500 sm:mt-0 dark:text-stone-400">
-															{edu.period}
-														</div>
-													</div>
-													<div className="mb-2 flex items-center gap-2 text-stone-600 dark:text-stone-400">
-														<span>{edu.school}</span>
-														<span>•</span>
-														<span>{edu.location}</span>
-													</div>
-													<p className="text-sm text-stone-600 dark:text-stone-400">
-														{edu.description}
-													</p>
-												</div>
-											))}
-
-											<div className="border-t border-stone-200 pt-4 dark:border-stone-600">
-												<h4 className="mb-3 font-semibold text-stone-900 dark:text-stone-100">
-													Certifications
-												</h4>
-												<div className="space-y-2">
-													{certifications.map((cert, index) => (
-														<div key={index} className="flex items-center justify-between">
-															<span className="text-stone-600 dark:text-stone-400">
-																{cert.name}
-															</span>
-															<span className="text-sm text-stone-500 dark:text-stone-500">
-																{cert.year}
-															</span>
-														</div>
-													))}
-												</div>
-											</div>
-										</div>
-									</AccordionContent>
-								</AccordionItem>
-
-								{/* Approach */}
-								<AccordionItem
-									value="approach"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">My Approach & Philosophy</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="space-y-4">
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Development Philosophy
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													I believe in writing clean, maintainable code and staying up-to-date with
-													the latest industry best practices. I&apos;m passionate about AI-driven
-													development and finding innovative ways to improve the development
-													workflow.
-												</p>
-											</div>
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Work Style
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													I thrive in collaborative environments and believe in the power of clear
-													communication. I&apos;m committed to delivering high-quality solutions
-													that exceed expectations while meeting deadlines.
-												</p>
-											</div>
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Continuous Learning
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													When I&apos;m not coding, you&apos;ll find me exploring new technologies,
-													contributing to open source projects, or sharing knowledge with the
-													developer community.
-												</p>
-											</div>
-										</div>
-									</AccordionContent>
-								</AccordionItem>
-							</Accordion>
-						</motion.div>
-					</Container>
-				</section>
 
 				{/* Enhanced Contact Section */}
 				<section className="bg-background py-20">
