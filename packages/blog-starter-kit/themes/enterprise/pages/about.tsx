@@ -364,6 +364,526 @@ export default function About({ publication }: Props) {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: 'easeOut' }}
 							viewport={{ once: true }}
+							className="mx-auto max-w-6xl"
+						>
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									My Journey
+								</h2>
+								<p className="text-lg text-stone-600 dark:text-stone-400">
+									From teaching to development: A story of resilience, learning, and growth
+								</p>
+							</div>
+
+							{/* Timeline Container */}
+							<div className="relative">
+								{/* Vertical Timeline Line */}
+								<div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-stone-300 via-stone-400 to-stone-300 dark:from-stone-600 dark:via-stone-500 dark:to-stone-600 md:left-1/2 md:-translate-x-px"></div>
+
+								{/* Timeline Items */}
+								<div className="space-y-12">
+									{/* Teaching Era */}
+									<motion.div
+										initial={{ opacity: 0, x: -30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pr-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<GraduationCapIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															The Teaching Years
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">2005 - 2009</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													As Web Development Program Director at Anthem Institute, I discovered my passion for making complex concepts accessible. 
+													Teaching HTML, CSS, JavaScript, and PHP to students across multiple campuses taught me that <strong className="text-stone-900 dark:text-stone-100">code should be teachable and maintainable</strong> – 
+													principles that still guide my development approach today.
+												</p>
+											</div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+									</motion.div>
+
+									{/* Challenge & Recovery */}
+									<motion.div
+										initial={{ opacity: 0, x: 30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pl-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<StarIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Overcoming Challenges
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">Personal Growth</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													Life threw unexpected challenges my way, including a stroke that tested my resilience. 
+													Through recovery, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. 
+													This experience deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
+												</p>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Evolution to Modern Development */}
+									<motion.div
+										initial={{ opacity: 0, x: -30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-stone-900 shadow-lg md:left-1/2 md:-translate-x-2 dark:bg-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pr-12">
+											<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
+														<BracketsIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Modern Development
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">2009 - Present</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													My journey evolved from WordPress customization to building enterprise-scale applications with React, Next.js, and AI integrations. 
+													The educator in me still shines through – I believe in <strong className="text-stone-900 dark:text-stone-100">writing code that tells a story</strong>, 
+													documenting thoroughly, and mentoring team members to ensure every project is built for the long term.
+												</p>
+											</div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+									</motion.div>
+
+									{/* Current Mission */}
+									<motion.div
+										initial={{ opacity: 0, x: 30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.8, ease: 'easeOut' }}
+										viewport={{ once: true }}
+										className="relative flex items-start gap-8 md:gap-12"
+									>
+										{/* Timeline Dot */}
+										<div className="absolute left-6 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-r from-stone-600 to-stone-800 shadow-lg md:left-1/2 md:-translate-x-2 dark:from-stone-300 dark:to-stone-100">
+											<div className="h-2 w-2 rounded-full bg-white dark:bg-stone-900"></div>
+										</div>
+
+										{/* Spacer for alternating layout */}
+										<div className="hidden md:block md:w-1/2"></div>
+
+										{/* Content */}
+										<div className="ml-16 flex-1 md:ml-0 md:flex-none md:w-1/2 md:pl-12">
+											<div className="rounded-lg border-2 border-primary/20 bg-gradient-to-br from-card to-accent/10 p-6 shadow-lg">
+												<div className="mb-4 flex items-center gap-3">
+													<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/20">
+														<LightbulbIcon className="h-6 w-6 text-primary" />
+													</div>
+													<div>
+														<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
+															Today's Mission
+														</h3>
+														<p className="text-sm text-stone-500 dark:text-stone-400">Building the Future</p>
+													</div>
+												</div>
+												<p className="text-stone-600 dark:text-stone-400">
+													As Founder and Lead Developer at IntraWeb Technologies, I'm building the future of web development with AI-driven solutions like SynaplyAI. 
+													My mission: <strong className="text-stone-900 dark:text-stone-100">creating technology that empowers people</strong> – 
+													whether that's through accessible interfaces, intelligent automation, or mentoring the next generation of developers.
+												</p>
+											</div>
+										</div>
+									</motion.div>
+								</div>
+							</div>
+
+							{/* Philosophy Section */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+								viewport={{ once: true }}
+								className="mt-16 rounded-lg border border-border bg-card p-8 shadow-sm"
+							>
+								<div className="text-center">
+									<h3 className="mb-4 text-2xl font-bold text-stone-900 dark:text-stone-100">
+										My Development Philosophy
+									</h3>
+									<p className="text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+										<strong className="text-stone-900 dark:text-stone-100">Code is communication.</strong> Every line should be clear, 
+										every function should tell a story, and every system should be built with future developers in mind. 
+										This educator mindset drives me to create solutions that are not just functional, but truly maintainable and scalable.
+									</p>
+								</div>
+							</motion.div>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Value Proposition Cards Section */}
+				<section className="bg-background py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-7xl"
+						>
+							{/* Section Header */}
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									Why Choose Me
+								</h2>
+								<p className="text-lg text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">
+									Proven results that drive business growth through exceptional web development and client success
+								</p>
+							</div>
+
+							{/* Value Proposition Cards Grid */}
+							<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+								{/* Project Delivery Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<CheckCircleIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											Project Delivery
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											25+ Projects
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Successfully delivered complex web applications and digital solutions across various industries, 
+											from e-commerce platforms to AI-driven collaboration tools.
+										</p>
+									</div>
+								</motion.div>
+
+								{/* Client Success Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<UsersIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											Client Success
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											100% Retention
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Maintained perfect client retention through exceptional service delivery, clear communication, 
+											and exceeding project expectations every time.
+										</p>
+									</div>
+								</motion.div>
+
+								{/* Response Time Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<ClockIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											Response Time
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											24h Response
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Committed to rapid communication and quick turnaround times. Your project needs are 
+											my priority with guaranteed response within 24 hours.
+										</p>
+									</div>
+								</motion.div>
+
+								{/* AI-Enhanced Development Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<ZapIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											AI-Enhanced Development
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											Future-Ready
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Leveraging cutting-edge AI tools and modern development practices to build 
+											intelligent, scalable solutions that adapt to your business needs.
+										</p>
+									</div>
+								</motion.div>
+
+								{/* Accessibility & SEO Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.5, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<TrendingUpIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											Accessibility & SEO
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											WCAG Compliant
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Building inclusive, accessible web experiences that reach all users while 
+											optimizing for search engines to maximize your digital presence.
+										</p>
+									</div>
+								</motion.div>
+
+								{/* Process Excellence Card */}
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-stone-300 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-600"
+								>
+									{/* Card Background Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-br from-stone-50/50 via-transparent to-stone-100/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-stone-800/20 dark:to-stone-700/10" />
+									
+									{/* Icon */}
+									<div className="relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300 dark:bg-stone-500 dark:group-hover:bg-stone-400">
+										<StarIcon className="h-8 w-8 text-white" />
+									</div>
+									
+									{/* Content */}
+									<div className="relative">
+										<h3 className="mb-3 text-xl font-bold text-stone-900 dark:text-stone-100">
+											Process Excellence
+										</h3>
+										<div className="mb-4 text-3xl font-bold text-stone-700 dark:text-stone-300">
+											15+ Years
+										</div>
+										<p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+											Refined development processes through years of experience, ensuring consistent 
+											quality, on-time delivery, and seamless project execution.
+										</p>
+									</div>
+								</motion.div>
+							</div>
+
+							{/* Bottom CTA */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.8, delay: 0.7, ease: 'easeOut' }}
+								viewport={{ once: true }}
+								className="mt-16 text-center"
+							>
+								<p className="mb-6 text-lg text-stone-600 dark:text-stone-400">
+									Ready to experience these results for your project?
+								</p>
+								<Button
+									size="lg"
+									className="bg-stone-900 text-white hover:bg-stone-800 shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+									asChild
+								>
+									<Link href="/contact">
+										Start Your Project
+										<ArrowRightIcon className="ml-2 h-5 w-5" />
+									</Link>
+								</Button>
+							</motion.div>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Experience Timeline Section */}
+				<section className="bg-muted py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-6xl"
+						>
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+									Career Journey
+								</h2>
+								<p className="mb-8 text-lg text-stone-600 dark:text-stone-400">
+									My professional experience and key achievements over 15+ years
+								</p>
+								
+								{/* Career Progression Summary */}
+								<div className="mx-auto max-w-4xl rounded-lg border border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100 p-6 dark:border-stone-700 dark:from-stone-800 dark:to-stone-900">
+									<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">15+</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+										</div>
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">6</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Companies</div>
+										</div>
+										<div className="text-center">
+											<div className="mb-2 text-3xl font-bold text-primary">AI</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">Innovation Focus</div>
+										</div>
+									</div>
+									<div className="mt-4 text-center">
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											From teaching web development to leading AI-driven projects, my journey spans the evolution of modern web technologies.
+										</p>
+									</div>
+								</div>
+							</div>
+
+							{/* Experience Timeline */}
+							<Timeline>
+								{experience.map((job, index) => (
+									<TimelineItem
+										key={index}
+										title={job.title}
+										company={job.company}
+										period={job.period}
+										location={job.location}
+										description={job.description}
+										achievements={job.achievements}
+										index={index}
+										isLast={index === experience.length - 1}
+									/>
+								))}
+							</Timeline>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Visual Skills Showcase Section */}
+				<section className="bg-background py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-7xl"
+						>
+							<VisualSkillsShowcase />
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Additional Sections */}
+				<section className="bg-muted py-20">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+>>>>>>> Stashed changes
 							className="mx-auto max-w-4xl"
 						>
 							<div className="mb-12 text-center">
@@ -421,40 +941,6 @@ export default function About({ publication }: Props) {
 															</li>
 														))}
 													</ul>
-												</div>
-											))}
-										</div>
-									</AccordionContent>
-								</AccordionItem>
-
-								{/* Skills */}
-								<AccordionItem
-									value="skills"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<LightbulbIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Skills & Technologies</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-											{Object.entries(skills).map(([category, skillList]) => (
-												<div key={category} className="space-y-3">
-													<h4 className="font-semibold text-stone-900 dark:text-stone-100">
-														{category}
-													</h4>
-													<div className="flex flex-wrap gap-2">
-														{skillList.map((skill) => (
-															<Badge
-																key={skill}
-																variant="secondary"
-															>
-																{skill}
-															</Badge>
-														))}
-													</div>
 												</div>
 											))}
 										</div>
