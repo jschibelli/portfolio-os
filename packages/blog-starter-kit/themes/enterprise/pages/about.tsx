@@ -12,6 +12,13 @@ import {
 	GraduationCapIcon,
 	LightbulbIcon,
 	MapPinIcon,
+	MailIcon,
+	LinkedinIcon,
+	ClockIcon,
+	UsersIcon,
+	RocketIcon,
+	BuildingIcon,
+	CodeIcon,
 	StarIcon,
 } from 'lucide-react';
 import { GetStaticProps } from 'next';
@@ -53,7 +60,7 @@ export default function About({ publication }: Props) {
 	let skills: Record<string, string[]> = {};
 	
 	try {
-		const { skills: skillsData } = require('../../data/skills');
+		const { skills: skillsData } = require('../data/skills');
 		
 		// Validate skills data structure
 		if (Array.isArray(skillsData)) {
@@ -571,7 +578,7 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* CTA Section */}
+				{/* Enhanced Contact Section */}
 				<section className="bg-background py-20">
 					<Container className="px-4">
 						<motion.div
@@ -579,36 +586,277 @@ export default function About({ publication }: Props) {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: 'easeOut' }}
 							viewport={{ once: true }}
-							className="mx-auto max-w-4xl text-center"
+							className="mx-auto max-w-6xl"
 						>
-							<div className="rounded-lg border border-border bg-accent p-8 shadow-sm">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100">
+							{/* Section Header */}
+							<div className="mb-16 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 									Let&apos;s Work Together
 								</h2>
-								<p className="mb-8 text-lg text-stone-600 dark:text-stone-400">
-									I&apos;m available for freelance projects and consulting opportunities. Whether
-									you need a complete application built from scratch or help optimizing an existing
-									codebase, I&apos;d love to hear about your project.
+								<p className="mx-auto max-w-3xl text-lg text-stone-600 dark:text-stone-400">
+									Ready to bring your vision to life? I&apos;m here to help you create exceptional digital experiences. 
+									Choose the best way to connect based on your needs.
 								</p>
-								<div className="flex flex-col justify-center gap-4 sm:flex-row">
+							</div>
+
+							{/* Primary CTAs */}
+							<div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+								{/* Start Your Project - Primary CTA */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.1 }}
+									viewport={{ once: true }}
+									className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg"
+								>
+									<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+										<RocketIcon className="h-6 w-6" />
+									</div>
+									<h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">
+										Start Your Project
+									</h3>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Ready to build something amazing? Let&apos;s discuss your project requirements and timeline.
+									</p>
 									<Button
 										size="lg"
+										className="w-full group-hover:bg-primary/90"
 										asChild
 									>
 										<Link href="/contact">
-											Start a Project
+											Get Started
 											<ArrowRightIcon className="ml-2 h-4 w-4" />
 										</Link>
 									</Button>
+								</motion.div>
+
+								{/* View Portfolio - Secondary CTA */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.2 }}
+									viewport={{ once: true }}
+									className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg"
+								>
+									<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+										<BriefcaseIcon className="h-6 w-6" />
+									</div>
+									<h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">
+										View Portfolio
+									</h3>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Explore my recent projects and see the quality of work I deliver for clients.
+									</p>
 									<Button
 										size="lg"
 										variant="outline"
+										className="w-full group-hover:border-primary group-hover:text-primary"
 										asChild
 									>
-										<Link href="/projects">View My Projects</Link>
+										<Link href="/projects">
+											View Projects
+											<ArrowRightIcon className="ml-2 h-4 w-4" />
+										</Link>
 									</Button>
+								</motion.div>
+
+								{/* Connect on LinkedIn - Tertiary CTA */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.3 }}
+									viewport={{ once: true }}
+									className="group rounded-xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg"
+								>
+									<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+										<LinkedinIcon className="h-6 w-6" />
+									</div>
+									<h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">
+										Connect on LinkedIn
+									</h3>
+									<p className="mb-6 text-stone-600 dark:text-stone-400">
+										Let&apos;s connect professionally and stay updated on each other&apos;s work.
+									</p>
+									<Button
+										size="lg"
+										variant="outline"
+										className="w-full group-hover:border-primary group-hover:text-primary"
+										asChild
+									>
+										<a
+											href="https://linkedin.com/in/johnschibelli"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											Connect
+											<ArrowRightIcon className="ml-2 h-4 w-4" />
+										</a>
+									</Button>
+								</motion.div>
+							</div>
+
+							{/* Audience-Specific CTAs */}
+							<div className="mb-12">
+								<h3 className="mb-8 text-center text-2xl font-semibold text-stone-900 dark:text-stone-100">
+									I Work With
+								</h3>
+								<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+									{/* Recruiters */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.1 }}
+										viewport={{ once: true }}
+										className="rounded-lg border border-border bg-muted/50 p-6 text-center transition-all duration-300 hover:bg-muted"
+									>
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400">
+												<UsersIcon className="h-5 w-5" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Recruiters
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Open to new opportunities and remote positions
+										</p>
+									</motion.div>
+
+									{/* Startup Founders */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.2 }}
+										viewport={{ once: true }}
+										className="rounded-lg border border-border bg-muted/50 p-6 text-center transition-all duration-300 hover:bg-muted"
+									>
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400">
+												<RocketIcon className="h-5 w-5" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Startup Founders
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											MVP development and rapid prototyping services
+										</p>
+									</motion.div>
+
+									{/* Enterprise */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.3 }}
+										viewport={{ once: true }}
+										className="rounded-lg border border-border bg-muted/50 p-6 text-center transition-all duration-300 hover:bg-muted"
+									>
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+												<BuildingIcon className="h-5 w-5" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Enterprise
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Technical consulting and architecture guidance
+										</p>
+									</motion.div>
+
+									{/* Fellow Developers */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.4 }}
+										viewport={{ once: true }}
+										className="rounded-lg border border-border bg-muted/50 p-6 text-center transition-all duration-300 hover:bg-muted"
+									>
+										<div className="mb-3 flex justify-center">
+											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400">
+												<CodeIcon className="h-5 w-5" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Fellow Developers
+										</h4>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											Collaboration opportunities and knowledge sharing
+										</p>
+									</motion.div>
 								</div>
 							</div>
+
+							{/* Contact Information */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, delay: 0.5 }}
+								viewport={{ once: true }}
+								className="rounded-xl border border-border bg-accent p-8 shadow-sm"
+							>
+								<div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+									{/* Email Contact */}
+									<div className="text-center">
+										<div className="mb-4 flex justify-center">
+											<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+												<MailIcon className="h-6 w-6" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Email Me
+										</h4>
+										<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
+											john@johnschibelli.com
+										</p>
+										<Button
+											variant="outline"
+											size="sm"
+											asChild
+										>
+											<a href="mailto:john@johnschibelli.com">
+												Send Email
+											</a>
+										</Button>
+									</div>
+
+									{/* Location */}
+									<div className="text-center">
+										<div className="mb-4 flex justify-center">
+											<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+												<MapPinIcon className="h-6 w-6" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Location
+										</h4>
+										<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
+											Northern New Jersey
+										</p>
+										<p className="text-xs text-stone-500 dark:text-stone-500">
+											Available for remote work worldwide
+										</p>
+									</div>
+
+									{/* Response Time */}
+									<div className="text-center">
+										<div className="mb-4 flex justify-center">
+											<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400">
+												<ClockIcon className="h-6 w-6" />
+											</div>
+										</div>
+										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
+											Response Time
+										</h4>
+										<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
+											Within 24 hours
+										</p>
+										<p className="text-xs text-stone-500 dark:text-stone-500">
+											Usually much faster
+										</p>
+									</div>
+								</div>
+							</motion.div>
 						</motion.div>
 					</Container>
 				</section>
