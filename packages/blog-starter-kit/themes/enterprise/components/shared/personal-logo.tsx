@@ -82,6 +82,15 @@ export const PersonalLogo = ({
 
   const config = sizeConfig[size];
   const logoSrc = getLogoSrc();
+  
+  // Debug logging
+  console.log('PersonalLogo Debug:', {
+    resolvedTheme,
+    logoSrc,
+    size,
+    mounted,
+    config
+  });
 
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
@@ -93,23 +102,24 @@ export const PersonalLogo = ({
   }
 
   const logoElement = (
-    <Image
+    <img
       src={logoSrc}
       alt={alt}
       width={config.width}
       height={config.height}
       className={`${config.className} ${className} object-contain transition-opacity duration-200`}
-      priority={size === 'large' || size === 'xlarge'} // Prioritize loading for larger sizes
-      quality={95} // High quality for crisp logo display
       onError={(e) => {
         console.warn('PersonalLogo: Failed to load logo image', logoSrc);
-        // Fallback to a simple text logo if image fails
+        // Hide the image and show fallback
         e.currentTarget.style.display = 'none';
         // Show fallback text
         const fallback = document.createElement('div');
         fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
         fallback.textContent = 'JS';
         e.currentTarget.parentNode?.appendChild(fallback);
+      }}
+      onLoad={() => {
+        console.log('PersonalLogo: Successfully loaded', logoSrc);
       }}
     />
   );
