@@ -89,7 +89,8 @@ export const PersonalLogo = ({
     logoSrc,
     size,
     mounted,
-    config
+    config,
+    window: typeof window !== 'undefined' ? window.location.href : 'server'
   });
 
   // Show loading state while theme is being determined
