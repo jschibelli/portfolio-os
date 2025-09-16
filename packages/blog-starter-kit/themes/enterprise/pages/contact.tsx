@@ -47,22 +47,47 @@ export default function ContactPage({ publication }: Props) {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
+		setSubmitStatus('idle');
 
-		// Simulate form submission (replace with actual form handling)
-		setTimeout(() => {
-			setIsSubmitting(false);
-			setSubmitStatus('success');
-			setFormData({
-				name: '',
-				email: '',
-				company: '',
-				projectType: '',
-				message: '',
+		try {
+			const response = await fetch('/api/contact', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(formData),
 			});
 
-			// Reset success message after 5 seconds
+			const result = await response.json();
+
+			if (response.ok) {
+				setSubmitStatus('success');
+				setFormData({
+					name: '',
+					email: '',
+					company: '',
+					projectType: '',
+					message: '',
+				});
+				
+				// Reset success message after 10 seconds
+				setTimeout(() => setSubmitStatus('idle'), 10000);
+			} else {
+				setSubmitStatus('error');
+				console.error('Contact form submission failed:', result);
+				
+				// Reset error message after 5 seconds
+				setTimeout(() => setSubmitStatus('idle'), 5000);
+			}
+		} catch (error) {
+			console.error('Contact form submission error:', error);
+			setSubmitStatus('error');
+			
+			// Reset error message after 5 seconds
 			setTimeout(() => setSubmitStatus('idle'), 5000);
-		}, 2000);
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -88,11 +113,11 @@ export default function ContactPage({ publication }: Props) {
 					structuredData={generateOrganizationStructuredData({
 						name: 'John Schibelli',
 						description: 'Senior Front-End Developer providing web development services',
-						url: 'https://johnschibelli.com',
+						url: 'https://johnschibelli.dev',
 						contactPoint: {
 							telephone: '+1-555-0123',
 							contactType: 'customer service',
-							email: 'john@johnschibelli.com',
+							email: 'john@schibelli.dev',
 						},
 						address: {
 							streetAddress: 'Northern New Jersey',
