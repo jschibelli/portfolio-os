@@ -13,14 +13,19 @@ import ProjectCard, { Project } from './project-card';
 export default function FeaturedProjects() {
 	// Comprehensive error handling for missing or invalid portfolio data
 	if (!portfolioData || !Array.isArray(portfolioData)) {
-		console.error('FeaturedProjects: Invalid or missing portfolio data');
+		console.error('FeaturedProjects: Invalid or missing portfolio data', {
+			portfolioData,
+			isArray: Array.isArray(portfolioData),
+			timestamp: new Date().toISOString()
+		});
 		return (
 			<section 
 				className="bg-white py-20 dark:bg-stone-950"
 				aria-label="Featured projects section"
+				role="region"
 			>
 				<div className="container mx-auto px-4 text-center">
-					<p className="text-stone-600 dark:text-stone-400">
+					<p className="text-stone-600 dark:text-stone-400" role="alert">
 						Unable to load featured projects. Please try again later.
 					</p>
 				</div>
@@ -32,7 +37,15 @@ export default function FeaturedProjects() {
 	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => {
 		// Validate required fields
 		if (!item.id || !item.title || !item.description) {
-			console.warn('FeaturedProjects: Invalid project data for item:', item);
+			console.warn('FeaturedProjects: Invalid project data for item:', {
+				item,
+				missingFields: {
+					id: !item.id,
+					title: !item.title,
+					description: !item.description
+				},
+				timestamp: new Date().toISOString()
+			});
 			return null;
 		}
 
@@ -53,6 +66,7 @@ export default function FeaturedProjects() {
 		<section 
 			className="bg-white py-16 dark:bg-stone-950"
 			aria-label="Featured portfolio projects"
+			role="region"
 		>
 			<div className="container mx-auto px-4">
 				{/* Section header with smooth animations */}
@@ -91,6 +105,7 @@ export default function FeaturedProjects() {
 						variant="outline"
 						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 						asChild
+						aria-describedby="view-all-projects-description"
 					>
 						<Link 
 							href="/projects"

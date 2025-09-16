@@ -44,12 +44,48 @@ export default function ContactPage({ publication }: Props) {
 		});
 	};
 
+	const validateForm = () => {
+		const errors: string[] = [];
+		
+		if (!formData.name.trim()) {
+			errors.push('Name is required');
+		}
+		
+		if (!formData.email.trim()) {
+			errors.push('Email is required');
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+			errors.push('Please enter a valid email address');
+		}
+		
+		if (!formData.message.trim()) {
+			errors.push('Project details are required');
+		} else if (formData.message.trim().length < 10) {
+			errors.push('Please provide more detailed project information (at least 10 characters)');
+		}
+		
+		return errors;
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setSubmitStatus('idle');
+		
+		// Validate form before submission
+		const validationErrors = validateForm();
+		if (validationErrors.length > 0) {
+			setSubmitStatus('error');
+			console.error('Form validation errors:', validationErrors);
+			// Reset error message after 5 seconds
+			setTimeout(() => setSubmitStatus('idle'), 5000);
+			return;
+		}
+		
 		setIsSubmitting(true);
 
-		// Simulate form submission (replace with actual form handling)
-		setTimeout(() => {
+		try {
+			// Simulate form submission (replace with actual form handling)
+			await new Promise(resolve => setTimeout(resolve, 2000));
+			
 			setIsSubmitting(false);
 			setSubmitStatus('success');
 			setFormData({
@@ -62,7 +98,13 @@ export default function ContactPage({ publication }: Props) {
 
 			// Reset success message after 5 seconds
 			setTimeout(() => setSubmitStatus('idle'), 5000);
-		}, 2000);
+		} catch (error) {
+			console.error('Form submission error:', error);
+			setIsSubmitting(false);
+			setSubmitStatus('error');
+			// Reset error message after 5 seconds
+			setTimeout(() => setSubmitStatus('idle'), 5000);
+		}
 	};
 
 	return (
@@ -92,7 +134,7 @@ export default function ContactPage({ publication }: Props) {
 						contactPoint: {
 							telephone: '+1-555-0123',
 							contactType: 'customer service',
-							email: 'john@johnschibelli.com',
+							email: 'john@schibelli.dev',
 						},
 						address: {
 							streetAddress: 'Northern New Jersey',
@@ -194,8 +236,28 @@ export default function ContactPage({ publication }: Props) {
 												</div>
 											</div>
 										</motion.div>
+									) : submitStatus === 'error' ? (
+										<motion.div
+											initial={{ opacity: 0, scale: 0.95 }}
+											animate={{ opacity: 1, scale: 1 }}
+											className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20"
+										>
+											<div className="flex items-center gap-3">
+												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-800">
+													<SendIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+												</div>
+												<div>
+													<h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
+														Validation Error
+													</h3>
+													<p className="text-red-700 dark:text-red-300">
+														Please check your form inputs and try again.
+													</p>
+												</div>
+											</div>
+										</motion.div>
 									) : (
-										<form onSubmit={handleSubmit} className="space-y-6">
+										<form onSubmit={handleSubmit} className="space-y-6" role="form" aria-label="Contact form">
 											<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 												<div>
 													<label
@@ -211,6 +273,8 @@ export default function ContactPage({ publication }: Props) {
 														value={formData.name}
 														onChange={handleInputChange}
 														required
+														aria-required="true"
+														aria-describedby="name-error"
 														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
 														placeholder="Your name"
 													/>
@@ -229,6 +293,8 @@ export default function ContactPage({ publication }: Props) {
 														value={formData.email}
 														onChange={handleInputChange}
 														required
+														aria-required="true"
+														aria-describedby="email-error"
 														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
 														placeholder="your.email@example.com"
 													/>
@@ -290,6 +356,8 @@ export default function ContactPage({ publication }: Props) {
 													value={formData.message}
 													onChange={handleInputChange}
 													required
+													aria-required="true"
+													aria-describedby="message-error"
 													rows={6}
 													className="w-full resize-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
 													placeholder="Tell me about your project, timeline, budget, and any specific requirements..."
@@ -300,6 +368,7 @@ export default function ContactPage({ publication }: Props) {
 												type="submit"
 												disabled={isSubmitting}
 												size="lg"
+												aria-describedby="submit-status"
 												className="w-full px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
 											>
 												{isSubmitting ? (
