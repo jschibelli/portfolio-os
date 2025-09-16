@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import request from 'graphql-request';
 import {
 	ArrowRightIcon,
-	BookOpenIcon,
 	BracketsIcon,
 	BriefcaseIcon,
 	BuildingIcon,
@@ -28,16 +27,9 @@ import Link from 'next/link';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
-import VisualSkillsShowcase from '../components/features/about/visual-skills-showcase';
 import { Container } from '../components/shared/container';
 import { Footer } from '../components/shared/footer';
 import { SEOHead } from '../components/shared/seo-head';
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '../components/ui/accordion';
 import { Badge, Button, Timeline, TimelineItem } from '../components/ui';
 import { generatePersonStructuredData } from '../lib/structured-data';
 import {
@@ -59,6 +51,32 @@ type Props = {
  * @returns JSX element for the about page
  */
 export default function About({ publication }: Props) {
+	// Import skills from centralized data source to avoid duplication
+	let skills: Record<string, string[]> = {};
+	
+	try {
+		const { skills: skillsData } = require('../data/skills');
+		
+		// Validate skills data structure
+		if (Array.isArray(skillsData)) {
+			// Group skills by category for display with proper error handling
+			skills = skillsData.reduce((acc: Record<string, string[]>, skill: any) => {
+				if (skill && typeof skill === 'object' && skill.category && skill.name) {
+					if (!acc[skill.category]) {
+						acc[skill.category] = [];
+					}
+					acc[skill.category].push(skill.name);
+				}
+				return acc;
+			}, {});
+		} else {
+			console.warn('Skills data is not in expected array format');
+		}
+	} catch (error) {
+		console.error('Error loading skills data:', error);
+		// Fallback to empty skills object to prevent page crash
+		skills = {};
+	}
 
 	const experience = [
 		{
@@ -926,146 +944,8 @@ export default function About({ publication }: Props) {
 					</Container>
 				</section>
 
-				{/* Skills and Other Sections */}
-				<section className="bg-background py-20">
-					<Container className="px-4">
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, ease: 'easeOut' }}
-							viewport={{ once: true }}
-							className="mx-auto max-w-4xl"
-						>
-							<Accordion type="single" collapsible className="w-full space-y-4">
-
-								{/* Skills */}
-								<AccordionItem
-									value="skills"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Skills & Technologies</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<VisualSkillsShowcase />
-									</AccordionContent>
-								</AccordionItem>
-
-								{/* Education */}
-								<AccordionItem
-									value="education"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<GraduationCapIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">Education & Certifications</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="space-y-6">
-											{education.map((edu, index) => (
-												<div
-													key={index}
-													className="border-l-4 border-primary/40 pl-6"
-												>
-													<div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-														<h4 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-															{edu.degree}
-														</h4>
-														<div className="mt-1 text-sm text-stone-500 sm:mt-0 dark:text-stone-400">
-															{edu.period}
-														</div>
-													</div>
-													<div className="mb-2 flex items-center gap-2 text-stone-600 dark:text-stone-400">
-														<span>{edu.school}</span>
-														<span>•</span>
-														<span>{edu.location}</span>
-													</div>
-													<p className="text-sm text-stone-600 dark:text-stone-400">
-														{edu.description}
-													</p>
-												</div>
-											))}
-
-											<div className="border-t border-stone-200 pt-4 dark:border-stone-600">
-												<h4 className="mb-3 font-semibold text-stone-900 dark:text-stone-100">
-													Certifications
-												</h4>
-												<div className="space-y-2">
-													{certifications.map((cert, index) => (
-														<div key={index} className="flex items-center justify-between">
-															<span className="text-stone-600 dark:text-stone-400">
-																{cert.name}
-															</span>
-															<span className="text-sm text-stone-500 dark:text-stone-500">
-																{cert.year}
-															</span>
-														</div>
-													))}
-												</div>
-											</div>
-										</div>
-									</AccordionContent>
-								</AccordionItem>
-
-								{/* Approach */}
-								<AccordionItem
-									value="approach"
-									className="rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:border-border hover:shadow-md"
-								>
-									<AccordionTrigger className="rounded-t-lg px-6 py-4 text-left transition-colors duration-200">
-										<div className="flex items-center gap-3">
-											<BookOpenIcon className="h-5 w-5 text-muted-foreground transition-colors duration-200" />
-											<span className="text-lg font-semibold">My Approach & Philosophy</span>
-										</div>
-									</AccordionTrigger>
-									<AccordionContent className="px-6">
-										<div className="space-y-4">
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Development Philosophy
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													I believe in writing clean, maintainable code and staying up-to-date with
-													the latest industry best practices. I&apos;m passionate about AI-driven
-													development and finding innovative ways to improve the development
-													workflow.
-												</p>
-											</div>
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Work Style
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													I thrive in collaborative environments and believe in the power of clear
-													communication. I&apos;m committed to delivering high-quality solutions
-													that exceed expectations while meeting deadlines.
-												</p>
-											</div>
-											<div>
-												<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-													Continuous Learning
-												</h4>
-												<p className="text-stone-600 dark:text-stone-400">
-													When I&apos;m not coding, you&apos;ll find me exploring new technologies,
-													contributing to open source projects, or sharing knowledge with the
-													developer community.
-												</p>
-											</div>
-										</div>
-									</AccordionContent>
-								</AccordionItem>
-							</Accordion>
-						</motion.div>
-					</Container>
-				</section>
-
-				{/* Enhanced Contact Section */}
-				<section className="bg-background py-20">
+				{/* Who I Work With Section */}
+				<section className="bg-background py-16">
 					<Container className="px-4">
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -1074,170 +954,214 @@ export default function About({ publication }: Props) {
 							viewport={{ once: true }}
 							className="mx-auto max-w-6xl"
 						>
-							{/* Header */}
-							<div className="mb-12 text-center">
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-									Let&apos;s Connect & Collaborate
+							<div className="mb-8 text-center">
+								<h2 className="mb-4 text-3xl font-bold text-stone-900 dark:text-stone-100">
+									Who I Work With
 								</h2>
 								<p className="text-lg text-stone-600 dark:text-stone-400">
-									Ready to bring your ideas to life? I&apos;m here to help you succeed.
+									Tailored solutions for different audiences and project types
 								</p>
 							</div>
-
-							{/* Primary CTAs */}
-							<div className="mb-12 grid gap-6 md:grid-cols-2">
-								{/* Start Your Project */}
-								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
-									<div className="mb-4 flex items-center gap-3">
-										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-											<CodeIcon className="h-6 w-6 text-primary" />
+							
+							<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+								{/* Recruiters */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group rounded-xl border-2 border-stone-200 bg-gradient-to-br from-stone-50 to-stone-100/50 p-6 text-center transition-all duration-300 hover:border-stone-300 hover:shadow-lg hover:scale-105 dark:border-stone-700 dark:from-stone-800/30 dark:to-stone-700/20"
+								>
+									<div className="mb-4 flex justify-center">
+										<div className="flex h-14 w-14 items-center justify-center rounded-full bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300">
+											<UsersIcon className="h-7 w-7 text-white" />
 										</div>
-										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-											Start Your Project
-										</h3>
 									</div>
-									<p className="mb-6 text-stone-600 dark:text-stone-400">
-										Ready to build something amazing? Let&apos;s discuss your project requirements and bring your vision to life.
+									<h4 className="mb-3 text-lg font-bold text-stone-900 dark:text-stone-100">
+										Recruiters
+									</h4>
+									<p className="mb-4 text-sm text-stone-700 dark:text-stone-300 leading-relaxed">
+										Open to new opportunities and exciting roles in front-end development and technical leadership
 									</p>
-									<Button size="lg" className="w-full" asChild>
-										<Link href="/contact">
-											Get Started Today
-											<ArrowRightIcon className="ml-2 h-4 w-4" />
-										</Link>
-									</Button>
-								</div>
+									<div className="text-xs text-stone-600 dark:text-stone-400 font-medium">
+										Available Now • Remote OK
+									</div>
+								</motion.div>
 
-								{/* View Portfolio */}
-								<div className="rounded-lg border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:shadow-md">
-									<div className="mb-4 flex items-center gap-3">
-										<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-											<BriefcaseIcon className="h-6 w-6 text-primary" />
+								{/* Startup Founders */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group rounded-xl border-2 border-stone-200 bg-gradient-to-br from-stone-50 to-stone-100/50 p-6 text-center transition-all duration-300 hover:border-stone-300 hover:shadow-lg hover:scale-105 dark:border-stone-700 dark:from-stone-800/30 dark:to-stone-700/20"
+								>
+									<div className="mb-4 flex justify-center">
+										<div className="flex h-14 w-14 items-center justify-center rounded-full bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300">
+											<StarIcon className="h-7 w-7 text-white" />
 										</div>
-										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-											View My Work
-										</h3>
 									</div>
-									<p className="mb-6 text-stone-600 dark:text-stone-400">
-										Explore my portfolio of projects and see the quality of work I deliver for clients.
+									<h4 className="mb-3 text-lg font-bold text-stone-900 dark:text-stone-100">
+										Startup Founders
+									</h4>
+									<p className="mb-4 text-sm text-stone-700 dark:text-stone-300 leading-relaxed">
+										MVP development, technical consulting, and scaling your product from idea to market
 									</p>
-									<Button size="lg" variant="outline" className="w-full" asChild>
-										<Link href="/projects">
-											View Portfolio
-											<ArrowRightIcon className="ml-2 h-4 w-4" />
-										</Link>
-									</Button>
-								</div>
+									<div className="text-xs text-stone-600 dark:text-stone-400 font-medium">
+										Fast Turnaround • Proven Results
+									</div>
+								</motion.div>
+
+								{/* Enterprise */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group rounded-xl border-2 border-stone-200 bg-gradient-to-br from-stone-50 to-stone-100/50 p-6 text-center transition-all duration-300 hover:border-stone-300 hover:shadow-lg hover:scale-105 dark:border-stone-700 dark:from-stone-800/30 dark:to-stone-700/20"
+								>
+									<div className="mb-4 flex justify-center">
+										<div className="flex h-14 w-14 items-center justify-center rounded-full bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300">
+											<BuildingIcon className="h-7 w-7 text-white" />
+										</div>
+									</div>
+									<h4 className="mb-3 text-lg font-bold text-stone-900 dark:text-stone-100">
+										Enterprise
+									</h4>
+									<p className="mb-4 text-sm text-stone-700 dark:text-stone-300 leading-relaxed">
+										Technical consulting, architecture design, and enterprise-scale application development
+									</p>
+									<div className="text-xs text-stone-600 dark:text-stone-400 font-medium">
+										Enterprise Ready • Scalable Solutions
+									</div>
+								</motion.div>
+
+								{/* Fellow Developers */}
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="group rounded-xl border-2 border-stone-200 bg-gradient-to-br from-stone-50 to-stone-100/50 p-6 text-center transition-all duration-300 hover:border-stone-300 hover:shadow-lg hover:scale-105 dark:border-stone-700 dark:from-stone-800/30 dark:to-stone-700/20"
+								>
+									<div className="mb-4 flex justify-center">
+										<div className="flex h-14 w-14 items-center justify-center rounded-full bg-stone-600 shadow-lg group-hover:bg-stone-700 transition-colors duration-300">
+											<CodeIcon className="h-7 w-7 text-white" />
+										</div>
+									</div>
+									<h4 className="mb-3 text-lg font-bold text-stone-900 dark:text-stone-100">
+										Developers
+									</h4>
+									<p className="mb-4 text-sm text-stone-700 dark:text-stone-300 leading-relaxed">
+										Collaboration opportunities, knowledge sharing, and contributing to the developer community
+									</p>
+									<div className="text-xs text-stone-600 dark:text-stone-400 font-medium">
+										Open Source • Mentoring
+									</div>
+								</motion.div>
+							</div>
+						</motion.div>
+					</Container>
+				</section>
+
+				{/* Enhanced Contact Section with Clear CTAs */}
+				<section className="bg-gradient-to-br from-stone-50 via-white to-stone-100 py-20 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900">
+					<Container className="px-4">
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.8, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mx-auto max-w-7xl"
+						>
+							{/* Enhanced Header */}
+							<div className="mb-16 text-center">
+								<motion.div
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+								>
+									<h2 className="mb-6 text-4xl font-bold text-stone-900 md:text-5xl dark:text-stone-100">
+										Let&apos;s Build Something Amazing
+									</h2>
+									<p className="mx-auto max-w-3xl text-xl text-stone-600 dark:text-stone-400">
+										Ready to transform your ideas into digital success? I&apos;m here to help you achieve your goals with expert development and strategic guidance.
+									</p>
+								</motion.div>
+								
+								{/* Availability Status */}
+								<motion.div
+									initial={{ opacity: 0, scale: 0.9 }}
+									whileInView={{ opacity: 1, scale: 1 }}
+									transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="mt-8 inline-flex items-center gap-3 rounded-full bg-stone-100 px-6 py-3 dark:bg-stone-800/50"
+								>
+									<div className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></div>
+									<span className="font-semibold text-stone-800 dark:text-stone-200">
+										Available for New Projects
+									</span>
+								</motion.div>
 							</div>
 
-							{/* Audience-Specific CTAs */}
-							<div className="mb-12">
-								<h3 className="mb-6 text-center text-2xl font-semibold text-stone-900 dark:text-stone-100">
-									I Work With
-								</h3>
-								<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-									{/* Recruiters */}
-									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
-										<div className="mb-3 flex justify-center">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30">
-												<UsersIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-											</div>
-										</div>
-										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-											Recruiters
-										</h4>
-										<p className="text-sm text-stone-600 dark:text-stone-400">
-											Open to new opportunities and exciting roles
-										</p>
-									</div>
 
-									{/* Startup Founders */}
-									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
-										<div className="mb-3 flex justify-center">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-												<StarIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
-											</div>
-										</div>
-										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-											Startup Founders
-										</h4>
-										<p className="text-sm text-stone-600 dark:text-stone-400">
-											MVP development and technical consulting
-										</p>
-									</div>
 
-									{/* Enterprise */}
-									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
-										<div className="mb-3 flex justify-center">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
-												<BuildingIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-											</div>
-										</div>
-										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-											Enterprise
-										</h4>
-										<p className="text-sm text-stone-600 dark:text-stone-400">
-											Technical consulting and architecture
-										</p>
-									</div>
-
-									{/* Fellow Developers */}
-									<div className="rounded-lg border border-border bg-card p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-sm">
-										<div className="mb-3 flex justify-center">
-											<div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
-												<CodeIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-											</div>
-										</div>
-										<h4 className="mb-2 font-semibold text-stone-900 dark:text-stone-100">
-											Developers
-										</h4>
-										<p className="text-sm text-stone-600 dark:text-stone-400">
-											Collaboration and knowledge sharing
-										</p>
-									</div>
-								</div>
-							</div>
-
-							{/* Contact Information & Social Links */}
-							<div className="rounded-lg border border-border bg-accent p-8">
-								<div className="grid gap-8 md:grid-cols-2">
-									{/* Contact Info */}
+							{/* Enhanced Contact Information & Social Links */}
+							<motion.div
+								initial={{ opacity: 0, y: 30 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+								viewport={{ once: true }}
+								className="rounded-2xl border-2 border-stone-200 bg-gradient-to-br from-white to-stone-50/50 p-8 shadow-xl dark:border-stone-700 dark:from-stone-900 dark:to-stone-800/50"
+							>
+								<div className="grid gap-8 lg:grid-cols-2">
+									{/* Contact Information */}
 									<div>
-										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+										<h3 className="mb-6 text-2xl font-bold text-stone-900 dark:text-stone-100">
 											Get In Touch
 										</h3>
-										<div className="space-y-4">
-											<div className="flex items-center gap-3">
-												<MailIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+										<div className="space-y-6">
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+													<MailIcon className="h-6 w-6 text-primary" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
 														Email
 													</p>
 													<a 
-														href="mailto:john@johnschibelli.com" 
-														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+														href="mailto:john@schibelli.dev" 
+														className="text-lg text-primary hover:text-primary/80 transition-colors duration-200"
 													>
-														john@johnschibelli.com
+														john@schibelli.dev
 													</a>
 												</div>
 											</div>
-											<div className="flex items-center gap-3">
-												<MapPinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+											
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<MapPinIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
 														Location
 													</p>
-													<p className="text-stone-600 dark:text-stone-400">
-														Towaco, NJ (Remote Available)
+													<p className="text-lg text-stone-600 dark:text-stone-400">
+														Northern NJ
 													</p>
 												</div>
 											</div>
-											<div className="flex items-center gap-3">
-												<ClockIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+											
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<ClockIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
 														Response Time
 													</p>
-													<p className="text-stone-600 dark:text-stone-400">
+													<p className="text-lg text-stone-600 dark:text-stone-400 font-medium">
 														Within 24 hours
 													</p>
 												</div>
@@ -1245,46 +1169,54 @@ export default function About({ publication }: Props) {
 										</div>
 									</div>
 
-									{/* Social Links & Availability */}
+									{/* Social Links & Professional Info */}
 									<div>
-										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
-											Connect & Availability
+										<h3 className="mb-6 text-2xl font-bold text-stone-900 dark:text-stone-100">
+											Connect & Learn More
 										</h3>
-										<div className="space-y-4">
-											<div className="flex items-center gap-3">
-												<LinkedinIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+										<div className="space-y-6">
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<LinkedinIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
 														LinkedIn
 													</p>
 													<a 
 														href="https://linkedin.com/in/johnschibelli" 
 														target="_blank" 
 														rel="noopener noreferrer"
-														className="text-stone-600 hover:text-primary dark:text-stone-400 dark:hover:text-primary"
+														className="text-lg text-primary hover:text-primary/80 dark:text-primary dark:hover:text-primary/80 transition-colors duration-200"
 													>
 														Connect with me
 													</a>
 												</div>
 											</div>
-											<div className="flex items-center gap-3">
-												<CalendarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+											
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<CalendarIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
 														Availability
 													</p>
-													<p className="text-stone-600 dark:text-stone-400">
+													<p className="text-lg text-stone-600 dark:text-stone-400 font-medium">
 														Available for new projects
 													</p>
 												</div>
 											</div>
-											<div className="flex items-center gap-3">
-												<StarIcon className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+											
+											<div className="flex items-start gap-4">
+												<div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<StarIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
 												<div>
-													<p className="font-medium text-stone-900 dark:text-stone-100">
-														Specialties
+													<p className="font-semibold text-stone-900 dark:text-stone-100">
+														Core Specialties
 													</p>
-													<p className="text-stone-600 dark:text-stone-400">
+													<p className="text-lg text-stone-600 dark:text-stone-400 font-medium">
 														React, Next.js, TypeScript, AI Integration
 													</p>
 												</div>
@@ -1293,26 +1225,7 @@ export default function About({ publication }: Props) {
 									</div>
 								</div>
 
-								{/* Tertiary CTA */}
-								<div className="mt-8 border-t border-border pt-6">
-									<div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-										<div className="text-center sm:text-left">
-											<h4 className="font-semibold text-stone-900 dark:text-stone-100">
-												Ready to start your project?
-											</h4>
-											<p className="text-sm text-stone-600 dark:text-stone-400">
-												Let&apos;s discuss your requirements and create something amazing together.
-											</p>
-										</div>
-										<Button size="lg" asChild>
-											<Link href="/contact">
-												Start Your Project
-												<ArrowRightIcon className="ml-2 h-4 w-4" />
-											</Link>
-										</Button>
-									</div>
-								</div>
-							</div>
+							</motion.div>
 						</motion.div>
 					</Container>
 				</section>
@@ -1377,7 +1290,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 			title: 'John Schibelli',
 			displayTitle: 'John Schibelli',
 			descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
-			url: 'https://johnschibelli.com',
+			url: 'https://johnschibelli.dev',
 			posts: {
 				totalDocuments: 0,
 			},
