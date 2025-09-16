@@ -118,6 +118,9 @@ export default function FeaturedProjects() {
 							/>
 						</Link>
 					</Button>
+					<div id="view-all-projects-description" className="sr-only">
+						Navigate to the projects page to view all portfolio projects and case studies
+					</div>
 				</motion.div>
 			</div>
 		</section>

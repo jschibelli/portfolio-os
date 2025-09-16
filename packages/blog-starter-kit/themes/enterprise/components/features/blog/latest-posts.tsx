@@ -6,9 +6,39 @@ import { Button } from '../../ui/button';
 import PostCard from './post-card';
 import { PRIMARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
+/**
+ * LatestPosts component displays recent blog posts with proper error handling,
+ * accessibility, and consistent button styling
+ */
 export default function LatestPosts() {
+	// Error handling for missing or invalid posts data
+	if (!recentPosts || !Array.isArray(recentPosts)) {
+		console.error('LatestPosts: Invalid or missing posts data', {
+			recentPosts,
+			isArray: Array.isArray(recentPosts),
+			timestamp: new Date().toISOString()
+		});
+		return (
+			<section 
+				className="bg-stone-50 py-20 dark:bg-stone-900"
+				aria-label="Latest blog posts section"
+				role="region"
+			>
+				<div className="container mx-auto px-4 text-center">
+					<p className="text-stone-600 dark:text-stone-400" role="alert">
+						Unable to load recent posts. Please try again later.
+					</p>
+				</div>
+			</section>
+		);
+	}
+
 	return (
-		<section className="bg-stone-50 py-20 dark:bg-stone-900">
+		<section 
+			className="bg-stone-50 py-20 dark:bg-stone-900"
+			aria-label="Latest blog posts section"
+			role="region"
+		>
 			<div className="container mx-auto px-4">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
@@ -32,7 +62,7 @@ export default function LatestPosts() {
 					))}
 				</div>
 
-				{/* Read the Blog CTA */}
+				{/* Read the Blog CTA with enhanced accessibility */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -44,12 +74,22 @@ export default function LatestPosts() {
 						size="lg"
 						className={PRIMARY_BUTTON_STYLES}
 						asChild
+						aria-describedby="read-blog-description"
 					>
-						<Link href="/blog">
+						<Link 
+							href="/blog"
+							aria-label="Read all blog posts and articles"
+						>
 							Read the Blog
-							<ArrowRightIcon className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} />
+							<ArrowRightIcon 
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`}
+								aria-hidden="true"
+							/>
 						</Link>
 					</Button>
+					<div id="read-blog-description" className="sr-only">
+						Navigate to the blog page to read all available articles and posts
+					</div>
 				</motion.div>
 			</div>
 		</section>
