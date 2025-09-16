@@ -82,14 +82,6 @@ export const PersonalLogo = ({
 
   const config = sizeConfig[size];
   const logoSrc = getLogoSrc();
-  
-  // Debug logging
-  console.log('PersonalLogo Debug:', {
-    resolvedTheme,
-    logoSrc,
-    size,
-    mounted
-  });
 
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
