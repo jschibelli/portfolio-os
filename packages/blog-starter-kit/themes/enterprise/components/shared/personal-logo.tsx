@@ -36,22 +36,22 @@ const sizeConfig = {
   small: {
     width: 120,
     height: 40,
-    className: 'w-30 h-10',
+    className: 'w-[120px] h-[40px]',
   },
   medium: {
     width: 160,
     height: 53,
-    className: 'w-40 h-13',
+    className: 'w-[160px] h-[53px]',
   },
   large: {
     width: 200,
     height: 67,
-    className: 'w-50 h-17',
+    className: 'w-[200px] h-[67px]',
   },
   xlarge: {
     width: 240,
     height: 80,
-    className: 'w-60 h-20',
+    className: 'w-[240px] h-[80px]',
   },
 };
 
@@ -82,6 +82,14 @@ export const PersonalLogo = ({
 
   const config = sizeConfig[size];
   const logoSrc = getLogoSrc();
+  
+  // Debug logging
+  console.log('PersonalLogo Debug:', {
+    resolvedTheme,
+    logoSrc,
+    size,
+    mounted
+  });
 
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
@@ -105,6 +113,11 @@ export const PersonalLogo = ({
         console.warn('PersonalLogo: Failed to load logo image', logoSrc);
         // Fallback to a simple text logo if image fails
         e.currentTarget.style.display = 'none';
+        // Show fallback text
+        const fallback = document.createElement('div');
+        fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
+        fallback.textContent = 'JS';
+        e.currentTarget.parentNode?.appendChild(fallback);
       }}
     />
   );
