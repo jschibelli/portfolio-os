@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ClockIcon, MailIcon, MapPinIcon, SendIcon, StarIcon, CheckCircleIcon, ZapIcon, GlobeIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MapPinIcon, SendIcon, StarIcon, CheckCircleIcon, GlobeIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
+import { TrustSignals } from '../components/features/contact/TrustSignals';
+import { CaseStudyHighlights } from '../components/features/contact/CaseStudyHighlights';
+import { QuickStats } from '../components/features/contact/QuickStats';
 import ModernHeader from '../components/features/navigation/modern-header';
 import {
 	BlueskySVG as BlueskyIcon,
@@ -13,7 +16,6 @@ import {
 	LinkedinSVG as LinkedinIcon,
 } from '../components/icons';
 import { Container } from '../components/shared/container';
-
 import { Layout } from '../components/shared/layout';
 import { SEOHead } from '../components/shared/seo-head';
 import { Badge, Button } from '../components/ui';
@@ -44,19 +46,26 @@ export default function ContactPage({ publication }: Props) {
 		});
 	};
 
-	const validateForm = () => {
+	/**
+	 * Validates the contact form data and returns an array of error messages
+	 * @returns Array of validation error messages
+	 */
+	const validateForm = (): string[] => {
 		const errors: string[] = [];
 		
+		// Validate name field
 		if (!formData.name.trim()) {
 			errors.push('Name is required');
 		}
 		
+		// Validate email field with regex pattern
 		if (!formData.email.trim()) {
 			errors.push('Email is required');
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
 			errors.push('Please enter a valid email address');
 		}
 		
+		// Validate message field with minimum length requirement
 		if (!formData.message.trim()) {
 			errors.push('Project details are required');
 		} else if (formData.message.trim().length < 10) {
@@ -66,7 +75,11 @@ export default function ContactPage({ publication }: Props) {
 		return errors;
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	/**
+	 * Handles form submission with validation and error handling
+	 * @param e - Form submission event
+	 */
+	const handleSubmit = async (e: React.FormEvent): Promise<void> => {
 		e.preventDefault();
 		setSubmitStatus('idle');
 		
@@ -83,11 +96,14 @@ export default function ContactPage({ publication }: Props) {
 		setIsSubmitting(true);
 
 		try {
-			// Simulate form submission (replace with actual form handling)
+			// TODO: Replace with actual form submission endpoint
+			// Simulate form submission for demo purposes
 			await new Promise(resolve => setTimeout(resolve, 2000));
 			
 			setIsSubmitting(false);
 			setSubmitStatus('success');
+			
+			// Reset form data after successful submission
 			setFormData({
 				name: '',
 				email: '',
@@ -254,7 +270,7 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 										</div>
 										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
-											<ZapIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											<ClockIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
 											<div className="text-center">
 												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">24h</div>
 												<div className="text-sm text-stone-600 dark:text-stone-400">Response Time</div>
@@ -310,9 +326,23 @@ export default function ContactPage({ publication }: Props) {
 										<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 											Start Your Project
 										</h2>
-										<p className="text-lg text-stone-600 dark:text-stone-400">
+										<p className="mb-4 text-lg text-stone-600 dark:text-stone-400">
 											Tell me about your project and I&apos;ll get back to you within 24 hours.
 										</p>
+										<div className="flex flex-wrap gap-3 text-sm">
+											<Badge variant="outline" className="flex items-center gap-1">
+												<ClockIcon className="h-3 w-3" />
+												24h Response Time
+											</Badge>
+											<Badge variant="outline" className="flex items-center gap-1">
+												<SendIcon className="h-3 w-3" />
+												Free Consultation
+											</Badge>
+											<Badge variant="outline" className="flex items-center gap-1">
+												<MailIcon className="h-3 w-3" />
+												No Commitment
+											</Badge>
+										</div>
 									</div>
 
 									{submitStatus === 'success' ? (
@@ -608,17 +638,17 @@ export default function ContactPage({ publication }: Props) {
 										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
 											Professional Presence
 										</h3>
-										<div className="space-y-4">
+										<div className="space-y-4" role="list" aria-label="Professional social media links">
 											{/* LinkedIn - Professional Network */}
-											<div className="flex items-center gap-4">
+											<div className="flex items-center gap-4" role="listitem">
 												<a
 													href="https://linkedin.com/in/johnschibelli"
 													target="_blank"
 													rel="noopener noreferrer"
-													aria-label="Connect with John Schibelli on LinkedIn for professional networking, external website, opens in new tab"
+													aria-label="Connect with John Schibelli on LinkedIn for professional networking (opens in new tab)"
 													className="flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 p-3 text-blue-600 transition-all duration-200 hover:bg-blue-100 hover:scale-105 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
 												>
-													<LinkedinIcon className="h-5 w-5 stroke-current" />
+													<LinkedinIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 												</a>
 												<div>
 													<p className="font-medium text-stone-900 dark:text-stone-100">LinkedIn</p>
@@ -627,15 +657,15 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 
 											{/* GitHub - Technical Portfolio */}
-											<div className="flex items-center gap-4">
+											<div className="flex items-center gap-4" role="listitem">
 												<a
 													href="https://github.com/jschibelli"
 													target="_blank"
 													rel="noopener noreferrer"
-													aria-label="View John Schibelli's GitHub profile for technical projects and code samples, external website, opens in new tab"
+													aria-label="View John Schibelli's GitHub profile for technical projects and code samples (opens in new tab)"
 													className="flex items-center justify-center rounded-full border border-stone-200 bg-stone-50 p-3 text-stone-700 transition-all duration-200 hover:bg-stone-100 hover:scale-105 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
 												>
-													<GithubIcon className="h-5 w-5 stroke-current" />
+													<GithubIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 												</a>
 												<div>
 													<p className="font-medium text-stone-900 dark:text-stone-100">GitHub</p>
@@ -644,15 +674,15 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 
 											{/* Twitter/X - Thought Leadership */}
-											<div className="flex items-center gap-4">
+											<div className="flex items-center gap-4" role="listitem">
 												<a
 													href="https://twitter.com/johnschibelli"
 													target="_blank"
 													rel="noopener noreferrer"
-													aria-label="Follow John Schibelli on Twitter for web development insights and thought leadership, external website, opens in new tab"
+													aria-label="Follow John Schibelli on Twitter for web development insights and thought leadership (opens in new tab)"
 													className="flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 p-3 text-sky-600 transition-all duration-200 hover:bg-sky-100 hover:scale-105 dark:border-sky-800 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/30"
 												>
-													<svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+													<svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
 														<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
 													</svg>
 												</a>
@@ -663,15 +693,15 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 
 											{/* Bluesky - Alternative Social */}
-											<div className="flex items-center gap-4">
+											<div className="flex items-center gap-4" role="listitem">
 												<a
 													href="https://bsky.app/profile/johnschibelli.bsky.social"
 													target="_blank"
 													rel="noopener noreferrer"
-													aria-label="Follow John Schibelli on Bluesky for tech discussions and updates, external website, opens in new tab"
+													aria-label="Follow John Schibelli on Bluesky for tech discussions and updates (opens in new tab)"
 													className="flex items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 p-3 text-cyan-600 transition-all duration-200 hover:bg-cyan-100 hover:scale-105 dark:border-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400 dark:hover:bg-cyan-900/30"
 												>
-													<BlueskyIcon className="h-5 w-5 stroke-current" />
+													<BlueskyIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 												</a>
 												<div>
 													<p className="font-medium text-stone-900 dark:text-stone-100">Bluesky</p>
@@ -720,6 +750,15 @@ export default function ContactPage({ publication }: Props) {
 							</div>
 						</Container>
 					</section>
+
+					{/* Trust Signals Section */}
+					<TrustSignals />
+
+					{/* Quick Stats Section */}
+					<QuickStats />
+
+					{/* Case Study Highlights Section */}
+					<CaseStudyHighlights />
 				</main>
 				<Chatbot />
 			</Layout>
