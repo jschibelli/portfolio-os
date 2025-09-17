@@ -1,11 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, CalendarIcon, MailIcon, MessageSquareIcon, PhoneIcon, StarIcon, UsersIcon, ZapIcon } from 'lucide-react';
+import { MailIcon, PhoneIcon, StarIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent } from '../../ui/card';
+import { commonIcons, handleInvalidAudience, sharedStyles, validateAudience, type AudienceType } from './shared-cta-config';
 
 interface TestimonialProps {
 	quote: string;
@@ -16,8 +17,28 @@ interface TestimonialProps {
 }
 
 interface EnhancedCTASectionProps {
-	audience: 'recruiters' | 'startup-founders' | 'clients' | 'general';
+	audience: AudienceType;
 	className?: string;
+}
+
+// Shared configuration interface for better maintainability
+interface AudienceConfig {
+	title: string;
+	subtitle: string;
+	description: string;
+	primaryCTA: {
+		text: string;
+		url: string;
+		icon: React.ReactNode;
+	};
+	secondaryCTA: {
+		text: string;
+		url: string;
+		icon: React.ReactNode;
+	};
+	valueProps: string[];
+	availability: string;
+	availabilityStatus: 'available' | 'busy';
 }
 
 const testimonials: TestimonialProps[] = [
@@ -52,12 +73,12 @@ const audienceConfig = {
 		primaryCTA: {
 			text: "View Resume",
 			url: "/resume",
-			icon: <ArrowRightIcon className="h-5 w-5" />
+			icon: commonIcons.arrowRight
 		},
 		secondaryCTA: {
 			text: "Schedule Interview",
 			url: "mailto:john@johnschibelli.com?subject=Interview%20Opportunity",
-			icon: <CalendarIcon className="h-5 w-5" />
+			icon: commonIcons.calendar
 		},
 		valueProps: [
 			"15+ years of front-end development experience",
@@ -75,12 +96,12 @@ const audienceConfig = {
 		primaryCTA: {
 			text: "Start Your Project",
 			url: "/contact",
-			icon: <ZapIcon className="h-5 w-5" />
+			icon: commonIcons.zap
 		},
 		secondaryCTA: {
 			text: "Free Consultation",
 			url: "mailto:john@johnschibelli.com?subject=Startup%20Consultation",
-			icon: <MessageSquareIcon className="h-5 w-5" />
+			icon: commonIcons.message
 		},
 		valueProps: [
 			"Rapid MVP development and deployment",
@@ -98,12 +119,12 @@ const audienceConfig = {
 		primaryCTA: {
 			text: "Get Quote",
 			url: "/contact",
-			icon: <ArrowRightIcon className="h-5 w-5" />
+			icon: commonIcons.arrowRight
 		},
 		secondaryCTA: {
 			text: "View Portfolio",
 			url: "/projects",
-			icon: <UsersIcon className="h-5 w-5" />
+			icon: commonIcons.users
 		},
 		valueProps: [
 			"Custom web applications and websites",
@@ -121,12 +142,12 @@ const audienceConfig = {
 		primaryCTA: {
 			text: "Get In Touch",
 			url: "/contact",
-			icon: <MessageSquareIcon className="h-5 w-5" />
+			icon: commonIcons.message
 		},
 		secondaryCTA: {
 			text: "View My Work",
 			url: "/projects",
-			icon: <ArrowRightIcon className="h-5 w-5" />
+			icon: commonIcons.arrowRight
 		},
 		valueProps: [
 			"15+ years of development experience",
@@ -140,7 +161,15 @@ const audienceConfig = {
 };
 
 export default function EnhancedCTASection({ audience, className = '' }: EnhancedCTASectionProps) {
-	const config = audienceConfig[audience];
+	// Validate audience and provide fallback
+	const validAudience = validateAudience(audience, 'general');
+	const config = audienceConfig[validAudience];
+	
+	// Error handling for invalid audience values
+	if (!config) {
+		handleInvalidAudience(audience, 'general');
+		return <EnhancedCTASection audience="general" className={className} />;
+	}
 	
 	const renderStars = (rating: number) => {
 		return Array.from({ length: 5 }, (_, i) => (
@@ -180,13 +209,13 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 								variant="secondary" 
 								className={`px-4 py-2 text-sm font-medium ${
 									config.availabilityStatus === 'available' 
-										? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
-										: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
+										? sharedStyles.availability.available
+										: sharedStyles.availability.busy
 								}`}
 							>
 								<div className="flex items-center gap-2">
 									<div className={`h-2 w-2 rounded-full ${
-										config.availabilityStatus === 'available' ? 'bg-green-500' : 'bg-yellow-500'
+										config.availabilityStatus === 'available' ? sharedStyles.statusIndicator.available : sharedStyles.statusIndicator.busy
 									}`}></div>
 									{config.availability}
 								</div>
@@ -213,7 +242,7 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 						>
 							<Button
 								size="lg"
-								className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
+								className={sharedStyles.button.enhanced}
 								asChild
 							>
 								<Link href={config.primaryCTA.url}>
@@ -224,7 +253,7 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 							<Button
 								size="lg"
 								variant="outline"
-								className="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900 border-white hover:border-white"
+								className={sharedStyles.button.enhancedOutline}
 								asChild
 							>
 								<Link href={config.secondaryCTA.url}>

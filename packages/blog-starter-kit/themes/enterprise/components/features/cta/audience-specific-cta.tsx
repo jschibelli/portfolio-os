@@ -1,32 +1,54 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, BriefcaseIcon, BuildingIcon, CalendarIcon, MailIcon, MessageSquareIcon, StarIcon, UsersIcon, ZapIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent } from '../../ui/card';
+import { commonIcons, handleInvalidAudience, sharedStyles, validateAudience, type AudienceType } from './shared-cta-config';
 
 interface AudienceSpecificCTAProps {
-	audience: 'recruiters' | 'startup-founders' | 'clients';
+	audience: AudienceType;
 	className?: string;
+}
+
+// Shared configuration interface for better maintainability
+interface AudienceConfig {
+	icon: React.ReactNode;
+	title: string;
+	subtitle: string;
+	description: string;
+	primaryCTA: {
+		text: string;
+		url: string;
+		icon: React.ReactNode;
+	};
+	secondaryCTA: {
+		text: string;
+		url: string;
+		icon: React.ReactNode;
+	};
+	highlights: string[];
+	stats: Array<{ label: string; value: string }>;
+	availability: string;
+	availabilityColor: 'green' | 'yellow';
 }
 
 const audienceData = {
 	recruiters: {
-		icon: <BriefcaseIcon className="h-8 w-8" />,
+		icon: commonIcons.briefcase,
 		title: "For Recruiters & Hiring Managers",
 		subtitle: "Senior Front-End Developer Available",
 		description: "I'm actively seeking new opportunities and ready to bring my 15+ years of experience to your team. Let's discuss how I can contribute to your organization's success.",
 		primaryCTA: {
 			text: "View Resume",
 			url: "/resume",
-			icon: <ArrowRightIcon className="h-5 w-5" />
+			icon: commonIcons.arrowRight
 		},
 		secondaryCTA: {
 			text: "Schedule Interview",
 			url: "mailto:john@johnschibelli.com?subject=Interview%20Opportunity",
-			icon: <CalendarIcon className="h-5 w-5" />
+			icon: commonIcons.calendar
 		},
 		highlights: [
 			"15+ years of front-end development experience",
@@ -45,19 +67,19 @@ const audienceData = {
 		availabilityColor: "green"
 	},
 	'startup-founders': {
-		icon: <ZapIcon className="h-8 w-8" />,
+		icon: commonIcons.zap,
 		title: "For Startup Founders",
 		subtitle: "Build Your MVP & Scale Fast",
 		description: "I specialize in helping startups build scalable, high-performance web applications from the ground up. From MVP development to full-scale platforms, I'll help you launch faster and scale smarter.",
 		primaryCTA: {
 			text: "Start Your Project",
 			url: "/contact",
-			icon: <ZapIcon className="h-5 w-5" />
+			icon: commonIcons.zap
 		},
 		secondaryCTA: {
 			text: "Free Consultation",
 			url: "mailto:john@johnschibelli.com?subject=Startup%20Consultation",
-			icon: <MessageSquareIcon className="h-5 w-5" />
+			icon: commonIcons.message
 		},
 		highlights: [
 			"Rapid MVP development and deployment",
@@ -76,19 +98,19 @@ const audienceData = {
 		availabilityColor: "green"
 	},
 	clients: {
-		icon: <BuildingIcon className="h-8 w-8" />,
+		icon: commonIcons.building,
 		title: "For Business Owners",
 		subtitle: "Transform Your Digital Presence",
 		description: "Whether you need a complete website redesign, e-commerce platform, or custom web application, I deliver exceptional results that drive business growth and user engagement.",
 		primaryCTA: {
 			text: "Get Quote",
 			url: "/contact",
-			icon: <ArrowRightIcon className="h-5 w-5" />
+			icon: commonIcons.arrowRight
 		},
 		secondaryCTA: {
 			text: "View Portfolio",
 			url: "/projects",
-			icon: <UsersIcon className="h-5 w-5" />
+			icon: commonIcons.users
 		},
 		highlights: [
 			"Custom web applications and websites",
@@ -109,7 +131,15 @@ const audienceData = {
 };
 
 export default function AudienceSpecificCTA({ audience, className = '' }: AudienceSpecificCTAProps) {
-	const data = audienceData[audience];
+	// Validate audience and provide fallback
+	const validAudience = validateAudience(audience, 'clients');
+	const data = audienceData[validAudience];
+	
+	// Error handling for invalid audience values
+	if (!data) {
+		handleInvalidAudience(audience, 'clients');
+		return <AudienceSpecificCTA audience="clients" className={className} />;
+	}
 	
 	return (
 		<section className={`py-16 ${className}`}>
@@ -139,16 +169,16 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 
 								<Badge 
 									variant="secondary" 
-									className={`mb-4 px-4 py-2 text-sm font-medium ${
-										data.availabilityColor === 'green' 
-											? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
-											: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
-									}`}
+												className={`mb-4 px-4 py-2 text-sm font-medium ${
+													data.availabilityColor === 'green' 
+														? sharedStyles.availability.available
+														: sharedStyles.availability.busy
+												}`}
 								>
 									<div className="flex items-center gap-2">
-										<div className={`h-2 w-2 rounded-full ${
-											data.availabilityColor === 'green' ? 'bg-green-500' : 'bg-yellow-500'
-										}`}></div>
+														<div className={`h-2 w-2 rounded-full ${
+															data.availabilityColor === 'green' ? sharedStyles.statusIndicator.available : sharedStyles.statusIndicator.busy
+														}`}></div>
 										{data.availability}
 									</div>
 								</Badge>
@@ -231,22 +261,22 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								viewport={{ once: true }}
 								className="flex flex-col justify-center gap-4 sm:flex-row"
 							>
-								<Button
-									size="lg"
-									className="bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
-									asChild
-								>
+												<Button
+													size="lg"
+													className={sharedStyles.button.primary}
+													asChild
+												>
 									<Link href={data.primaryCTA.url}>
 										{data.primaryCTA.icon}
 										{data.primaryCTA.text}
 									</Link>
 								</Button>
-								<Button
-									size="lg"
-									variant="outline"
-									className="px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
-									asChild
-								>
+												<Button
+													size="lg"
+													variant="outline"
+													className={sharedStyles.button.secondary}
+													asChild
+												>
 									<Link href={data.secondaryCTA.url}>
 										{data.secondaryCTA.icon}
 										{data.secondaryCTA.text}
