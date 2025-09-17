@@ -28,13 +28,26 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_MAX_REQUESTS = 5;
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
 
+// Predefined budget ranges for validation
+const BUDGET_RANGES = ['under-5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '100k-plus'] as const;
+
+// Budget validation regex for monetary amounts
+const BUDGET_REGEX = /^\$?[\d,]+(\.\d{2})?$/;
+
 /**
  * POST /api/contact
  * 
- * Handles contact form submissions with validation, rate limiting, and email notification.
+ * Handles contact form submissions with comprehensive validation, rate limiting, and email notification.
+ * 
+ * Features:
+ * - Rate limiting (5 requests per hour per IP)
+ * - Input validation using Zod schema
+ * - Budget field validation (predefined ranges or monetary amounts)
+ * - Comprehensive error handling with detailed messages
+ * - Security measures against spam and abuse
  * 
  * @param request - NextRequest containing contact form data
- * @returns Promise<NextResponse> - Success or error response
+ * @returns Promise<NextResponse> - Success or error response with detailed validation messages
  * 
  * @example
  * ```typescript
@@ -46,10 +59,15 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  *     email: 'john@example.com',
  *     company: 'Acme Corp',
  *     projectType: 'web-development',
+ *     budget: '10k-25k', // or '$15,000.00'
  *     message: 'I would like to discuss a new project...'
  *   })
  * });
  * ```
+ * 
+ * @throws {400} Validation errors with detailed field-specific messages
+ * @throws {429} Rate limit exceeded
+ * @throws {500} Internal server errors
  */
 export async function POST(request: NextRequest) {
   try {
@@ -94,17 +112,43 @@ export async function POST(request: NextRequest) {
     });
 
     // Additional validation for business logic
-    if (validatedData.budget && !['under-5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '100k-plus'].includes(validatedData.budget)) {
-      // If budget is provided but not a predefined range, validate it's a proper monetary format
-      const budgetRegex = /^\$?[\d,]+(\.\d{2})?$/;
-      if (!budgetRegex.test(validatedData.budget)) {
-        return NextResponse.json(
-          { 
-            error: 'Invalid budget format. Please use a predefined range or valid monetary amount.',
-            details: [{ field: 'budget', message: 'Budget must be a valid amount or predefined range' }]
-          },
-          { status: 400 }
-        );
+    if (validatedData.budget) {
+      if (!BUDGET_RANGES.includes(validatedData.budget as any)) {
+        // If budget is provided but not a predefined range, validate it's a proper monetary format
+        if (!BUDGET_REGEX.test(validatedData.budget)) {
+          return NextResponse.json(
+            { 
+              error: 'Invalid budget format. Please use a predefined range or valid monetary amount.',
+              details: [{ 
+                field: 'budget', 
+                message: `Budget must be one of: ${BUDGET_RANGES.join(', ')}, or a valid monetary amount (e.g., $1,000.00)` 
+              }]
+            },
+            { status: 400 }
+          );
+        }
+        
+        // Additional validation for monetary amounts
+        try {
+          const numericValue = parseFloat(validatedData.budget.replace(/[$,]/g, ''));
+          if (isNaN(numericValue) || numericValue < 0) {
+            return NextResponse.json(
+              { 
+                error: 'Budget amount must be a valid positive number.',
+                details: [{ field: 'budget', message: 'Budget must be a valid positive monetary amount' }]
+              },
+              { status: 400 }
+            );
+          }
+        } catch (error) {
+          return NextResponse.json(
+            { 
+              error: 'Invalid budget format.',
+              details: [{ field: 'budget', message: 'Budget must be a valid monetary amount or predefined range' }]
+            },
+            { status: 400 }
+          );
+        }
       }
     }
 
