@@ -11,6 +11,8 @@ import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
 import ProjectCard, { Project } from '../components/features/portfolio/project-card';
 import { Container } from '../components/shared/container';
+import AudienceSpecificCTA from '../components/features/cta/audience-specific-cta';
+import EnhancedCTASection from '../components/features/cta/enhanced-cta-section';
 
 import { Layout } from '../components/shared/layout';
 import { Badge, Button } from '../components/ui';
@@ -494,49 +496,13 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						</Container>
 					</section>
 
-					{/* CTA Section */}
-					<section className="bg-gradient-to-br from-stone-900 to-stone-800 py-20 dark:from-stone-800 dark:to-stone-900">
-						<Container className="px-4">
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.8, ease: 'easeOut' }}
-								viewport={{ once: true }}
-								className="mx-auto max-w-3xl text-center"
-							>
-								<h2 className="mb-6 text-3xl font-bold text-white md:text-4xl">
-									Ready to Start Your Project?
-								</h2>
-								<p className="mb-8 text-xl text-stone-300">
-									Let&apos;s discuss how we can help bring your vision to life with cutting-edge
-									technology solutions.
-								</p>
-								<div className="flex flex-col justify-center gap-4 sm:flex-row">
-									<Button
-										size="lg"
-										className="px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
-										asChild
-									>
-										<Link href="/about">
-											Get In Touch
-											<ArrowRightIcon className="ml-2 h-5 w-5" />
-										</Link>
-									</Button>
-									<Button
-										size="lg"
-										variant="outline"
-										className="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900"
-										asChild
-									>
-										<Link href="/blog">
-											Read Our Blog
-											<ExternalLinkIcon className="ml-2 h-5 w-5" />
-										</Link>
-									</Button>
-								</div>
-							</motion.div>
-						</Container>
-					</section>
+					{/* Audience-Specific CTA Sections */}
+					<AudienceSpecificCTA audience="recruiters" className="bg-stone-50 dark:bg-stone-900" />
+					<AudienceSpecificCTA audience="startup-founders" className="bg-white dark:bg-stone-950" />
+					<AudienceSpecificCTA audience="clients" className="bg-stone-50 dark:bg-stone-900" />
+
+					{/* Enhanced Main CTA Section */}
+					<EnhancedCTASection audience="general" />
 				</main>
 
 				{/* Chatbot */}

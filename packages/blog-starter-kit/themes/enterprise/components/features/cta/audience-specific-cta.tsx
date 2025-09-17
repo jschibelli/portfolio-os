@@ -1,0 +1,262 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { ArrowRightIcon, BriefcaseIcon, BuildingIcon, CalendarIcon, MailIcon, MessageSquareIcon, StarIcon, UsersIcon, ZapIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../../ui';
+import { Badge } from '../../ui/badge';
+import { Card, CardContent } from '../../ui/card';
+
+interface AudienceSpecificCTAProps {
+	audience: 'recruiters' | 'startup-founders' | 'clients';
+	className?: string;
+}
+
+const audienceData = {
+	recruiters: {
+		icon: <BriefcaseIcon className="h-8 w-8" />,
+		title: "For Recruiters & Hiring Managers",
+		subtitle: "Senior Front-End Developer Available",
+		description: "I'm actively seeking new opportunities and ready to bring my 15+ years of experience to your team. Let's discuss how I can contribute to your organization's success.",
+		primaryCTA: {
+			text: "View Resume",
+			url: "/resume",
+			icon: <ArrowRightIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "Schedule Interview",
+			url: "mailto:john@johnschibelli.com?subject=Interview%20Opportunity",
+			icon: <CalendarIcon className="h-5 w-5" />
+		},
+		highlights: [
+			"15+ years of front-end development experience",
+			"Expert in React, Next.js, TypeScript, and modern frameworks",
+			"Proven track record of delivering high-performance applications",
+			"Strong collaboration and leadership skills",
+			"Available for immediate start"
+		],
+		stats: [
+			{ label: "Years Experience", value: "15+" },
+			{ label: "Projects Delivered", value: "50+" },
+			{ label: "Client Satisfaction", value: "100%" },
+			{ label: "On-Time Delivery", value: "98%" }
+		],
+		availability: "Available for new opportunities",
+		availabilityColor: "green"
+	},
+	'startup-founders': {
+		icon: <ZapIcon className="h-8 w-8" />,
+		title: "For Startup Founders",
+		subtitle: "Build Your MVP & Scale Fast",
+		description: "I specialize in helping startups build scalable, high-performance web applications from the ground up. From MVP development to full-scale platforms, I'll help you launch faster and scale smarter.",
+		primaryCTA: {
+			text: "Start Your Project",
+			url: "/contact",
+			icon: <ZapIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "Free Consultation",
+			url: "mailto:john@johnschibelli.com?subject=Startup%20Consultation",
+			icon: <MessageSquareIcon className="h-5 w-5" />
+		},
+		highlights: [
+			"Rapid MVP development and deployment",
+			"Scalable architecture from day one",
+			"Modern tech stack for competitive advantage",
+			"Ongoing support and maintenance",
+			"Startup-friendly pricing and terms"
+		],
+		stats: [
+			{ label: "MVPs Delivered", value: "25+" },
+			{ label: "Time to Market", value: "4-8 weeks" },
+			{ label: "Client Success Rate", value: "95%" },
+			{ label: "Post-Launch Support", value: "6+ months" }
+		],
+		availability: "Taking on new startup projects",
+		availabilityColor: "green"
+	},
+	clients: {
+		icon: <BuildingIcon className="h-8 w-8" />,
+		title: "For Business Owners",
+		subtitle: "Transform Your Digital Presence",
+		description: "Whether you need a complete website redesign, e-commerce platform, or custom web application, I deliver exceptional results that drive business growth and user engagement.",
+		primaryCTA: {
+			text: "Get Quote",
+			url: "/contact",
+			icon: <ArrowRightIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "View Portfolio",
+			url: "/projects",
+			icon: <UsersIcon className="h-5 w-5" />
+		},
+		highlights: [
+			"Custom web applications and websites",
+			"E-commerce and business platforms",
+			"Performance optimization and SEO",
+			"Ongoing maintenance and support",
+			"Proven ROI and business results"
+		],
+		stats: [
+			{ label: "Businesses Helped", value: "30+" },
+			{ label: "Average ROI", value: "150%" },
+			{ label: "Performance Improvement", value: "60%" },
+			{ label: "Client Retention", value: "90%" }
+		],
+		availability: "Available for new projects",
+		availabilityColor: "green"
+	}
+};
+
+export default function AudienceSpecificCTA({ audience, className = '' }: AudienceSpecificCTAProps) {
+	const data = audienceData[audience];
+	
+	return (
+		<section className={`py-16 ${className}`}>
+			<div className="container mx-auto px-4">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, ease: 'easeOut' }}
+					viewport={{ once: true }}
+					className="mx-auto max-w-4xl"
+				>
+					<Card className="overflow-hidden bg-gradient-to-br from-stone-50 to-stone-100 dark:from-stone-900 dark:to-stone-800">
+						<CardContent className="p-8">
+							{/* Header */}
+							<div className="mb-8 text-center">
+								<motion.div
+									initial={{ opacity: 0, scale: 0.9 }}
+									whileInView={{ opacity: 1, scale: 1 }}
+									transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="mb-4 flex justify-center"
+								>
+									<div className="rounded-full bg-stone-900 p-3 text-white dark:bg-stone-100 dark:text-stone-900">
+										{data.icon}
+									</div>
+								</motion.div>
+
+								<Badge 
+									variant="secondary" 
+									className={`mb-4 px-4 py-2 text-sm font-medium ${
+										data.availabilityColor === 'green' 
+											? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+											: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
+									}`}
+								>
+									<div className="flex items-center gap-2">
+										<div className={`h-2 w-2 rounded-full ${
+											data.availabilityColor === 'green' ? 'bg-green-500' : 'bg-yellow-500'
+										}`}></div>
+										{data.availability}
+									</div>
+								</Badge>
+
+								<h2 className="mb-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">
+									{data.title}
+								</h2>
+								<p className="mb-4 text-lg text-stone-600 dark:text-stone-400">
+									{data.subtitle}
+								</p>
+								<p className="mx-auto max-w-2xl text-stone-700 dark:text-stone-300">
+									{data.description}
+								</p>
+							</div>
+
+							{/* Stats */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+								viewport={{ once: true }}
+								className="mb-8"
+							>
+								<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+									{data.stats.map((stat, index) => (
+										<motion.div
+											key={index}
+											initial={{ opacity: 0, scale: 0.9 }}
+											whileInView={{ opacity: 1, scale: 1 }}
+											transition={{ duration: 0.4, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
+											viewport={{ once: true }}
+											className="rounded-lg bg-white p-4 text-center shadow-sm dark:bg-stone-800"
+										>
+											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+												{stat.value}
+											</div>
+											<div className="text-sm text-stone-600 dark:text-stone-400">
+												{stat.label}
+											</div>
+										</motion.div>
+									))}
+								</div>
+							</motion.div>
+
+							{/* Highlights */}
+							<motion.div
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+								viewport={{ once: true }}
+								className="mb-8"
+							>
+								<h3 className="mb-4 text-lg font-semibold text-stone-900 dark:text-stone-100">
+									Why Choose Me:
+								</h3>
+								<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+									{data.highlights.map((highlight, index) => (
+										<motion.div
+											key={index}
+											initial={{ opacity: 0, x: -20 }}
+											whileInView={{ opacity: 1, x: 0 }}
+											transition={{ duration: 0.4, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
+											viewport={{ once: true }}
+											className="flex items-start gap-3"
+										>
+											<div className="mt-1 h-2 w-2 rounded-full bg-stone-900 dark:bg-stone-100"></div>
+											<p className="text-sm text-stone-700 dark:text-stone-300">
+												{highlight}
+											</p>
+										</motion.div>
+									))}
+								</div>
+							</motion.div>
+
+							{/* CTA Buttons */}
+							<motion.div
+								initial={{ opacity: 0, scale: 0.9 }}
+								whileInView={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
+								viewport={{ once: true }}
+								className="flex flex-col justify-center gap-4 sm:flex-row"
+							>
+								<Button
+									size="lg"
+									className="bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
+									asChild
+								>
+									<Link href={data.primaryCTA.url}>
+										{data.primaryCTA.icon}
+										{data.primaryCTA.text}
+									</Link>
+								</Button>
+								<Button
+									size="lg"
+									variant="outline"
+									className="px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
+									asChild
+								>
+									<Link href={data.secondaryCTA.url}>
+										{data.secondaryCTA.icon}
+										{data.secondaryCTA.text}
+									</Link>
+								</Button>
+							</motion.div>
+						</CardContent>
+					</Card>
+				</motion.div>
+			</div>
+		</section>
+	);
+}

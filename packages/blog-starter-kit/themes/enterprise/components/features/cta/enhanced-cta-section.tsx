@@ -1,0 +1,337 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { ArrowRightIcon, CalendarIcon, MailIcon, MessageSquareIcon, PhoneIcon, StarIcon, UsersIcon, ZapIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '../../ui';
+import { Badge } from '../../ui/badge';
+import { Card, CardContent } from '../../ui/card';
+
+interface TestimonialProps {
+	quote: string;
+	author: string;
+	role: string;
+	company: string;
+	rating: number;
+}
+
+interface EnhancedCTASectionProps {
+	audience: 'recruiters' | 'startup-founders' | 'clients' | 'general';
+	className?: string;
+}
+
+const testimonials: TestimonialProps[] = [
+	{
+		quote: "John delivered exceptional results that exceeded our expectations. His technical expertise and attention to detail transformed our project from concept to reality.",
+		author: "Sarah Chen",
+		role: "CTO",
+		company: "TechStart Inc.",
+		rating: 5
+	},
+	{
+		quote: "Working with John was a game-changer for our startup. He understood our vision and delivered a solution that scaled perfectly with our growth.",
+		author: "Michael Rodriguez",
+		role: "Founder",
+		company: "InnovateLab",
+		rating: 5
+	},
+	{
+		quote: "John's ability to translate complex requirements into elegant solutions is unmatched. He's become our go-to developer for critical projects.",
+		author: "Emily Watson",
+		role: "Product Manager",
+		company: "Digital Solutions Co.",
+		rating: 5
+	}
+];
+
+const audienceConfig = {
+	recruiters: {
+		title: "Looking for a Senior Front-End Developer?",
+		subtitle: "I'm actively seeking new opportunities",
+		description: "With 15+ years of experience building scalable web applications, I bring proven expertise in React, Next.js, TypeScript, and modern development practices. Available for full-time positions and ready to make an immediate impact.",
+		primaryCTA: {
+			text: "View Resume",
+			url: "/resume",
+			icon: <ArrowRightIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "Schedule Interview",
+			url: "mailto:john@johnschibelli.com?subject=Interview%20Opportunity",
+			icon: <CalendarIcon className="h-5 w-5" />
+		},
+		valueProps: [
+			"15+ years of front-end development experience",
+			"Expert in React, Next.js, TypeScript, and modern frameworks",
+			"Proven track record of delivering high-performance applications",
+			"Strong collaboration and leadership skills"
+		],
+		availability: "Available for new opportunities",
+		availabilityStatus: "available"
+	},
+	'startup-founders': {
+		title: "Ready to Build Your MVP?",
+		subtitle: "Let's turn your startup vision into reality",
+		description: "I specialize in helping startups build scalable, high-performance web applications from the ground up. From MVP development to full-scale platforms, I'll help you launch faster and scale smarter.",
+		primaryCTA: {
+			text: "Start Your Project",
+			url: "/contact",
+			icon: <ZapIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "Free Consultation",
+			url: "mailto:john@johnschibelli.com?subject=Startup%20Consultation",
+			icon: <MessageSquareIcon className="h-5 w-5" />
+		},
+		valueProps: [
+			"Rapid MVP development and deployment",
+			"Scalable architecture from day one",
+			"Modern tech stack for competitive advantage",
+			"Ongoing support and maintenance"
+		],
+		availability: "Taking on new startup projects",
+		availabilityStatus: "available"
+	},
+	clients: {
+		title: "Transform Your Digital Presence",
+		subtitle: "Professional web development services",
+		description: "Whether you need a complete website redesign, e-commerce platform, or custom web application, I deliver exceptional results that drive business growth and user engagement.",
+		primaryCTA: {
+			text: "Get Quote",
+			url: "/contact",
+			icon: <ArrowRightIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "View Portfolio",
+			url: "/projects",
+			icon: <UsersIcon className="h-5 w-5" />
+		},
+		valueProps: [
+			"Custom web applications and websites",
+			"E-commerce and business platforms",
+			"Performance optimization and SEO",
+			"Ongoing maintenance and support"
+		],
+		availability: "Available for new projects",
+		availabilityStatus: "available"
+	},
+	general: {
+		title: "Ready to Start Your Project?",
+		subtitle: "Let's discuss how I can help",
+		description: "I'm passionate about creating exceptional digital experiences that drive results. Whether you're a recruiter, startup founder, or business owner, let's explore how we can work together.",
+		primaryCTA: {
+			text: "Get In Touch",
+			url: "/contact",
+			icon: <MessageSquareIcon className="h-5 w-5" />
+		},
+		secondaryCTA: {
+			text: "View My Work",
+			url: "/projects",
+			icon: <ArrowRightIcon className="h-5 w-5" />
+		},
+		valueProps: [
+			"15+ years of development experience",
+			"Modern tech stack expertise",
+			"Proven track record of success",
+			"Collaborative and results-driven approach"
+		],
+		availability: "Available for new opportunities",
+		availabilityStatus: "available"
+	}
+};
+
+export default function EnhancedCTASection({ audience, className = '' }: EnhancedCTASectionProps) {
+	const config = audienceConfig[audience];
+	
+	const renderStars = (rating: number) => {
+		return Array.from({ length: 5 }, (_, i) => (
+			<StarIcon 
+				key={i} 
+				className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-stone-300'}`} 
+			/>
+		));
+	};
+
+	return (
+		<section className={`relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 py-20 dark:from-stone-800 dark:via-stone-900 dark:to-stone-950 ${className}`}>
+			{/* Background Pattern */}
+			<div className="absolute inset-0 opacity-5">
+				<div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.1%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%221%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+			</div>
+
+			<div className="container relative z-10 mx-auto px-4">
+				<div className="mx-auto max-w-6xl">
+					{/* Main CTA Content */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, ease: 'easeOut' }}
+						viewport={{ once: true }}
+						className="mb-16 text-center"
+					>
+						{/* Availability Badge */}
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="mb-6"
+						>
+							<Badge 
+								variant="secondary" 
+								className={`px-4 py-2 text-sm font-medium ${
+									config.availabilityStatus === 'available' 
+										? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' 
+										: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800'
+								}`}
+							>
+								<div className="flex items-center gap-2">
+									<div className={`h-2 w-2 rounded-full ${
+										config.availabilityStatus === 'available' ? 'bg-green-500' : 'bg-yellow-500'
+									}`}></div>
+									{config.availability}
+								</div>
+							</Badge>
+						</motion.div>
+
+						<h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+							{config.title}
+						</h2>
+						<p className="mb-6 text-xl text-stone-300 md:text-2xl">
+							{config.subtitle}
+						</p>
+						<p className="mx-auto mb-8 max-w-3xl text-lg text-stone-400">
+							{config.description}
+						</p>
+
+						{/* CTA Buttons */}
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+							viewport={{ once: true }}
+							className="flex flex-col justify-center gap-4 sm:flex-row"
+						>
+							<Button
+								size="lg"
+								className="group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl"
+								asChild
+							>
+								<Link href={config.primaryCTA.url}>
+									{config.primaryCTA.icon}
+									{config.primaryCTA.text}
+								</Link>
+							</Button>
+							<Button
+								size="lg"
+								variant="outline"
+								className="px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900 border-white hover:border-white"
+								asChild
+							>
+								<Link href={config.secondaryCTA.url}>
+									{config.secondaryCTA.icon}
+									{config.secondaryCTA.text}
+								</Link>
+							</Button>
+						</motion.div>
+					</motion.div>
+
+					{/* Value Propositions */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+						viewport={{ once: true }}
+						className="mb-16"
+					>
+						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+							{config.valueProps.map((prop, index) => (
+								<motion.div
+									key={index}
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+									className="rounded-lg bg-stone-800/50 p-4 text-center backdrop-blur-sm"
+								>
+									<p className="text-sm text-stone-300">{prop}</p>
+								</motion.div>
+							))}
+						</div>
+					</motion.div>
+
+					{/* Testimonials */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+						viewport={{ once: true }}
+						className="mb-16"
+					>
+						<h3 className="mb-8 text-center text-2xl font-bold text-white">
+							What Clients Say
+						</h3>
+						<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+							{testimonials.map((testimonial, index) => (
+								<motion.div
+									key={index}
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.7 + index * 0.1, ease: 'easeOut' }}
+									viewport={{ once: true }}
+								>
+									<Card className="h-full bg-stone-800/50 backdrop-blur-sm border-stone-700">
+										<CardContent className="p-6">
+											<div className="mb-4 flex items-center gap-1">
+												{renderStars(testimonial.rating)}
+											</div>
+											<blockquote className="mb-4 text-stone-300 italic">
+												"{testimonial.quote}"
+											</blockquote>
+											<div className="text-sm">
+												<div className="font-semibold text-white">{testimonial.author}</div>
+												<div className="text-stone-400">
+													{testimonial.role} at {testimonial.company}
+												</div>
+											</div>
+										</CardContent>
+									</Card>
+								</motion.div>
+							))}
+						</div>
+					</motion.div>
+
+					{/* Contact Information */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+						viewport={{ once: true }}
+						className="text-center"
+					>
+						<div className="mx-auto max-w-2xl rounded-lg bg-stone-800/50 p-6 backdrop-blur-sm">
+							<h4 className="mb-4 text-lg font-semibold text-white">
+								Ready to Connect?
+							</h4>
+							<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+								<a
+									href="mailto:john@johnschibelli.com"
+									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
+								>
+									<MailIcon className="h-4 w-4" />
+									john@johnschibelli.com
+								</a>
+								<a
+									href="tel:+1234567890"
+									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
+								>
+									<PhoneIcon className="h-4 w-4" />
+									(123) 456-7890
+								</a>
+							</div>
+						</div>
+					</motion.div>
+				</div>
+			</div>
+		</section>
+	);
+}
