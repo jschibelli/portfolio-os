@@ -73,11 +73,18 @@ export const PersonalLogo = ({
   const getLogoSrc = () => {
     // For dark backgrounds, use the regular logo (white/light logo)
     // For light backgrounds, use the black logo
-    if (resolvedTheme === 'dark') {
-      return '/assets/personal-logo.png';
-    } else {
-      return '/assets/personal-logo-black.png';
-    }
+    // Default to dark theme if theme is not resolved yet
+    const theme = resolvedTheme || 'dark';
+    
+    // Try hardcoded path first for debugging
+    return '/assets/personal-logo.png';
+    
+    // Original logic (commented out for debugging)
+    // if (theme === 'dark') {
+    //   return '/assets/personal-logo.png';
+    // } else {
+    //   return '/assets/personal-logo-black.png';
+    // }
   };
 
   const config = sizeConfig[size];
