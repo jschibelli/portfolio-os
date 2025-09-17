@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X, MapPinIcon, CheckCircleIcon, SearchIcon, AwardIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -165,7 +165,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 				<main className="min-h-screen bg-white dark:bg-stone-950">
 					{/* Hero Section */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[500px] overflow-hidden bg-stone-50 py-16 md:py-20 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg2.png)',
 							backgroundSize: 'cover',
@@ -174,7 +174,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						}}
 					>
 						{/* Background Overlay */}
-						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+						<div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
 						{/* Content Overlay */}
 						<div className="relative z-10">
 							<Container className="px-4">
@@ -182,29 +182,82 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center space-y-8"
 								>
-								<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-									Projects & Case Studies
-								</h1>
-								<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-									A collection of projects that showcase modern web development, innovative design
-									solutions, and impactful digital experiences.
-								</p>
-								<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-									<div className="flex items-center gap-2">
-										<CalendarIcon className="h-4 w-4" />
-										<span>{allProjects.length} Projects</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<UsersIcon className="h-4 w-4" />
-										<span>Client Success Stories</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<CodeIcon className="h-4 w-4" />
-										<span>{allTags.length} Technologies</span>
-									</div>
-								</div>
+									{/* Main Hero Title */}
+									<motion.h1
+										initial={{ opacity: 0, y: 30 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+										className="text-4xl font-bold text-stone-900 md:text-5xl lg:text-6xl dark:text-stone-100 leading-tight"
+									>
+										Building Smarter, Faster<br />
+										Web Applications
+									</motion.h1>
+
+									{/* Personal Branding Section */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+										className="space-y-4"
+									>
+										<h2 className="text-2xl font-semibold text-stone-800 md:text-3xl dark:text-stone-200">
+											John Schibelli
+										</h2>
+										<p className="text-lg font-medium text-stone-700 md:text-xl dark:text-stone-300">
+											15+ years of experience turning ideas into high-performance web apps
+										</p>
+									</motion.div>
+
+									{/* Value Propositions */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+										className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+									>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">Accessibility First</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">WCAG compliant, inclusive design</p>
+										</div>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<SearchIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">SEO Optimized</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">Performance & search visibility</p>
+										</div>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<AwardIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">Client Success</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">Proven results & partnerships</p>
+										</div>
+									</motion.div>
+
+									{/* Location & Stats */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+										className="flex flex-wrap justify-center gap-6 text-sm text-stone-600 dark:text-stone-400"
+									>
+										<div className="flex items-center gap-2">
+											<MapPinIcon className="h-4 w-4" />
+											<span>Towaco, NJ</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CalendarIcon className="h-4 w-4" />
+											<span>{allProjects.length} Projects</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<UsersIcon className="h-4 w-4" />
+											<span>Client Success Stories</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CodeIcon className="h-4 w-4" />
+											<span>{allTags.length} Technologies</span>
+										</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
