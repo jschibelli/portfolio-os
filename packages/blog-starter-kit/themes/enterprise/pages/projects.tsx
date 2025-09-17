@@ -163,9 +163,9 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 				<ModernHeader publication={publication} />
 
 				<main className="min-h-screen bg-white dark:bg-stone-950">
-					{/* Hero Section */}
+					{/* Hero Section - Mobile Optimized */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[300px] sm:min-h-[400px] overflow-hidden bg-stone-50 py-8 sm:py-12 md:py-16 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg2.png)',
 							backgroundSize: 'cover',
@@ -177,65 +177,75 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
 						{/* Content Overlay */}
 						<div className="relative z-10">
-							<Container className="px-4">
+							<Container className="px-4 sm:px-6">
 								<motion.div
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
 									className="mx-auto max-w-4xl text-center"
 								>
-								<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-									Projects & Case Studies
-								</h1>
-								<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-									A collection of projects that showcase modern web development, innovative design
-									solutions, and impactful digital experiences.
-								</p>
-								<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-									<div className="flex items-center gap-2">
-										<CalendarIcon className="h-4 w-4" />
-										<span>{allProjects.length} Projects</span>
+									<h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
+										Projects & Case Studies
+									</h1>
+									<p className="mb-6 sm:mb-8 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-stone-600 dark:text-stone-400 px-2 sm:px-0">
+										A collection of projects that showcase modern web development, innovative design
+										solutions, and impactful digital experiences.
+									</p>
+									<div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-stone-500 dark:text-stone-400">
+										<div className="flex items-center justify-center gap-2">
+											<CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+											<span>{allProjects.length} Projects</span>
+										</div>
+										<div className="flex items-center justify-center gap-2">
+											<UsersIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+											<span className="hidden sm:inline">Client Success Stories</span>
+											<span className="sm:hidden">Success Stories</span>
+										</div>
+										<div className="flex items-center justify-center gap-2">
+											<CodeIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+											<span>{allTags.length} Technologies</span>
+										</div>
 									</div>
-									<div className="flex items-center gap-2">
-										<UsersIcon className="h-4 w-4" />
-										<span>Client Success Stories</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<CodeIcon className="h-4 w-4" />
-										<span>{allTags.length} Technologies</span>
-									</div>
-								</div>
 								</motion.div>
 							</Container>
 						</div>
 					</section>
 
-					{/* Filters Section */}
-					<section className="border-b border-stone-200 bg-white py-8 dark:border-stone-800 dark:bg-stone-950">
-						<Container className="px-4">
-							<div className="space-y-6">
-								{/* Search and Sort Row */}
-								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
-									<div className="flex flex-1 items-center gap-4 justify-center">
-										<div className="relative flex-1 max-w-md">
-											<Label htmlFor="search" className="sr-only">
-												Search projects
-											</Label>
-											<Input
-												id="search"
-												type="text"
-												placeholder="Search projects..."
-												value={currentSearch}
-												onChange={(e) => handleSearchChange(e.target.value)}
-												className="pl-4"
-											/>
-										</div>
-										<div className="flex items-center gap-2">
-											<Label htmlFor="sort" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+					{/* Filters Section - Mobile Optimized */}
+					<section className="border-b border-stone-200 bg-white py-6 sm:py-8 dark:border-stone-800 dark:bg-stone-950">
+						<Container className="px-4 sm:px-6">
+							<div className="space-y-4 sm:space-y-6">
+								{/* Search and Sort Row - Mobile First */}
+								<div className="flex flex-col gap-3 sm:gap-4">
+									{/* Search Input - Full width on mobile */}
+									<div className="w-full">
+									<Label htmlFor="search" className="sr-only">
+										Search projects
+									</Label>
+									<Input
+										id="search"
+										type="text"
+										placeholder="Search projects..."
+										value={currentSearch}
+										onChange={(e) => handleSearchChange(e.target.value)}
+										className="w-full h-12 text-base pl-4 touch-manipulation"
+										aria-describedby="search-help"
+										autoComplete="off"
+										spellCheck="false"
+									/>
+									<div id="search-help" className="sr-only">
+										Search through project titles, descriptions, and technologies
+									</div>
+									</div>
+
+									{/* Sort and Clear Filters Row */}
+									<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:justify-center">
+										<div className="flex items-center gap-2 w-full sm:w-auto">
+											<Label htmlFor="sort" className="text-sm font-medium text-stone-700 dark:text-stone-300 whitespace-nowrap">
 												Sort:
 											</Label>
 											<Select value={currentSort} onValueChange={handleSortChange}>
-												<SelectTrigger id="sort" className="w-40">
+												<SelectTrigger id="sort" className="w-full sm:w-40 h-12 text-base touch-manipulation" aria-label="Sort projects">
 													<SelectValue />
 												</SelectTrigger>
 												<SelectContent>
@@ -247,34 +257,34 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 												</SelectContent>
 											</Select>
 										</div>
-									</div>
 
-									{hasActiveFilters && (
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={clearAllFilters}
-											className="flex items-center gap-2"
-										>
-											<X className="h-4 w-4" />
-											Clear Filters
-										</Button>
-									)}
+										{hasActiveFilters && (
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={clearAllFilters}
+												className="flex items-center gap-2 h-12 px-4 touch-manipulation w-full sm:w-auto"
+											>
+												<X className="h-4 w-4" />
+												Clear Filters
+											</Button>
+										)}
+									</div>
 								</div>
 
-								{/* Active Filters Display */}
+								{/* Active Filters Display - Mobile Optimized */}
 								{hasActiveFilters && (
 									<div className="flex flex-wrap items-center gap-2 justify-center">
-										<span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+										<span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 w-full text-center sm:w-auto">
 											Active filters:
 										</span>
 										
 										{currentSearch && (
-											<Badge variant="secondary" className="flex items-center gap-1">
-												Search: &quot;{currentSearch}&quot;
+											<Badge variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1 touch-manipulation">
+												<span className="truncate max-w-[120px] sm:max-w-none">Search: &quot;{currentSearch}&quot;</span>
 												<button
 													onClick={() => handleSearchChange('')}
-													className="ml-1 hover:text-red-600"
+													className="ml-1 hover:text-red-600 touch-manipulation p-1"
 													aria-label="Remove search filter"
 												>
 													<X className="h-3 w-3" />
@@ -283,11 +293,11 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										)}
 
 										{currentSort !== 'default' && (
-											<Badge variant="secondary" className="flex items-center gap-1">
+											<Badge variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1 touch-manipulation">
 												Sort: {currentSort.replace('-', ' ')}
 												<button
 													onClick={() => handleSortChange('default')}
-													className="ml-1 hover:text-red-600"
+													className="ml-1 hover:text-red-600 touch-manipulation p-1"
 													aria-label="Remove sort filter"
 												>
 													<X className="h-3 w-3" />
@@ -296,11 +306,11 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										)}
 
 										{currentTags.map((tag) => (
-											<Badge key={tag} variant="secondary" className="flex items-center gap-1">
-												{tag}
+											<Badge key={tag} variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1 touch-manipulation">
+												<span className="truncate max-w-[80px] sm:max-w-none">{tag}</span>
 												<button
 													onClick={() => handleTagToggle(tag)}
-													className="ml-1 hover:text-red-600"
+													className="ml-1 hover:text-red-600 touch-manipulation p-1"
 													aria-label={`Remove ${tag} filter`}
 												>
 													<X className="h-3 w-3" />
@@ -310,17 +320,17 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</div>
 								)}
 
-								{/* Technology Tags */}
+								{/* Technology Tags - Mobile Optimized */}
 								<div className="space-y-3 text-center">
 									<Label className="text-sm font-medium text-stone-700 dark:text-stone-300">
 										Filter by Technology:
 									</Label>
-									<div className="flex flex-wrap gap-2 justify-center">
+									<div className="flex flex-wrap gap-2 justify-center max-h-32 sm:max-h-none overflow-y-auto sm:overflow-visible">
 										{allTags.map((tag) => (
 											<button
 												key={tag}
 												onClick={() => handleTagToggle(tag)}
-												className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 ${
+												className={`inline-flex items-center rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 touch-manipulation min-h-[44px] ${
 													currentTags.includes(tag)
 														? 'bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200'
 														: 'bg-stone-200 text-stone-700 hover:bg-stone-300 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
@@ -334,13 +344,23 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</div>
 								</div>
 
-								{/* Results Summary */}
-								<div className="text-sm text-stone-600 dark:text-stone-400">
+								{/* Results Summary - Mobile Optimized */}
+								<div className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 text-center px-2">
 									{hasActiveFilters ? (
 										<span>
 											Showing {filteredAndSortedProjects.length} of {allProjects.length} projects
-											{currentTags.length > 0 && ` for ${currentTags.length} technology filter${currentTags.length > 1 ? 's' : ''}`}
-											{currentSearch && ` matching &quot;${currentSearch}&quot;`}
+											{currentTags.length > 0 && (
+												<span className="block sm:inline">
+													<br className="sm:hidden" />
+													for {currentTags.length} technology filter{currentTags.length > 1 ? 's' : ''}
+												</span>
+											)}
+											{currentSearch && (
+												<span className="block sm:inline">
+													<br className="sm:hidden" />
+													matching &quot;{currentSearch}&quot;
+												</span>
+											)}
 										</span>
 									) : (
 										<span>Showing all {allProjects.length} projects</span>
@@ -350,19 +370,19 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						</Container>
 					</section>
 
-					{/* Projects Grid Section */}
-					<section className="bg-stone-50 py-20 dark:bg-stone-900">
-						<Container className="px-4">
+					{/* Projects Grid Section - Mobile Optimized */}
+					<section className="bg-stone-50 py-12 sm:py-16 lg:py-20 dark:bg-stone-900">
+						<Container className="px-4 sm:px-6">
 							{filteredAndSortedProjects.length === 0 ? (
-								<div className="text-center py-16">
-									<div className="mx-auto max-w-md">
-										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-4">
+								<div className="text-center py-12 sm:py-16">
+									<div className="mx-auto max-w-md px-4">
+										<h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100 mb-4">
 											No projects found
 										</h3>
-										<p className="text-stone-600 dark:text-stone-400 mb-6">
+										<p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 mb-6">
 											Try adjusting your search criteria or clearing the filters to see all projects.
 										</p>
-										<div className="space-y-2 text-sm text-stone-500 dark:text-stone-500">
+										<div className="space-y-2 text-xs sm:text-sm text-stone-500 dark:text-stone-500">
 											<p>• Check your search terms for typos</p>
 											<p>• Try different technology filters</p>
 											<p>• Clear all filters to see everything</p>
@@ -376,12 +396,12 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										whileInView={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.8, ease: 'easeOut' }}
 										viewport={{ once: true }}
-										className="mb-16 text-center"
+										className="mb-12 sm:mb-16 text-center"
 									>
-										<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+										<h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">
 											Projects
 										</h2>
-										<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
+										<p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-stone-600 dark:text-stone-400 px-4">
 											{hasActiveFilters 
 												? `Showing ${filteredAndSortedProjects.length} of ${allProjects.length} projects`
 												: 'Explore our complete portfolio of projects and case studies.'
@@ -389,8 +409,8 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										</p>
 									</motion.div>
 
-									{/* Projects Grid */}
-									<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+									{/* Projects Grid - Mobile Optimized */}
+									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
 										{filteredAndSortedProjects.map((project, index) => (
 											<ProjectCard
 												key={project.id}
@@ -400,10 +420,10 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										))}
 									</div>
 
-									{/* Results Footer */}
+									{/* Results Footer - Mobile Optimized */}
 									{filteredAndSortedProjects.length > 0 && (
-										<div className="text-center pt-8 border-t border-stone-200 dark:border-stone-800 mt-16">
-											<p className="text-sm text-stone-600 dark:text-stone-400">
+										<div className="text-center pt-6 sm:pt-8 border-t border-stone-200 dark:border-stone-800 mt-12 sm:mt-16">
+											<p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
 												Showing {filteredAndSortedProjects.length} project{filteredAndSortedProjects.length !== 1 ? 's' : ''}
 												{filteredAndSortedProjects.length < allProjects.length && (
 													<span> of {allProjects.length} total</span>
@@ -416,26 +436,26 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						</Container>
 					</section>
 
-					{/* Technologies & Skills Section */}
-					<section className="bg-white py-20 dark:bg-stone-950">
-						<Container className="px-4">
+					{/* Technologies & Skills Section - Mobile Optimized */}
+					<section className="bg-white py-12 sm:py-16 lg:py-20 dark:bg-stone-950">
+						<Container className="px-4 sm:px-6">
 							<motion.div
 								initial={{ opacity: 0, y: 20 }}
 								whileInView={{ opacity: 1, y: 0 }}
 								transition={{ duration: 0.8, ease: 'easeOut' }}
 								viewport={{ once: true }}
-								className="mb-16 text-center"
+								className="mb-12 sm:mb-16 text-center"
 							>
-								<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+								<h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">
 									Technologies & Skills
 								</h2>
-								<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
+								<p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-stone-600 dark:text-stone-400 px-4">
 									We work with modern technologies to deliver exceptional digital experiences.
 								</p>
 							</motion.div>
 
-							{/* Technology Categories */}
-							<div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+							{/* Technology Categories - Mobile Optimized */}
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
 								{[
 									{
 										category: 'Frontend',
@@ -472,17 +492,17 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										whileInView={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
 										viewport={{ once: true }}
-										className="rounded-lg bg-stone-50 p-6 dark:bg-stone-900"
+										className="rounded-lg bg-stone-50 p-4 sm:p-6 dark:bg-stone-900"
 									>
-										<h3 className="mb-4 text-lg font-semibold text-stone-900 dark:text-stone-100">
+										<h3 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-stone-900 dark:text-stone-100">
 											{category.category}
 										</h3>
-										<div className="space-y-2">
+										<div className="flex flex-wrap gap-2">
 											{category.technologies.map((tech) => (
 												<Badge
 													key={tech}
 													variant="secondary"
-													className="border border-stone-200 bg-white text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300"
+													className="text-xs px-2 py-1 border border-stone-200 bg-white text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300"
 												>
 													{tech}
 												</Badge>

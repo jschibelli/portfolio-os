@@ -70,17 +70,17 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 			transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
 			viewport={{ once: true }}
 			whileHover={{ y: -8 }}
-			className="h-full flex"
+			className="h-full flex touch-manipulation"
 		>
-			<Card className="group h-full w-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl flex flex-col">
-				{/* Image */}
-				<div className="relative h-48 overflow-hidden">
+			<Card className="group h-full w-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl flex flex-col touch-manipulation">
+				{/* Image - Mobile Optimized */}
+				<div className="relative h-40 sm:h-48 overflow-hidden">
 					<Image
 						src={project.image}
 						alt={`Screenshot of ${project.title} project - ${project.description}`}
 						fill
 						className="object-cover transition-transform duration-300 group-hover:scale-105"
-						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+						sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
 						quality={85}
 						loading="lazy"
 						placeholder="blur"
@@ -88,14 +88,14 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					/>
 					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
 
-					{/* Technology Tags - Positioned in top-right corner */}
+					{/* Technology Tags - Mobile Optimized */}
 					{project.tags?.length ? (
-						<div className="absolute right-4 top-4 flex gap-1.5 transition-all duration-300 group-hover:scale-105">
+						<div className="absolute right-2 sm:right-4 top-2 sm:top-4 flex gap-1 sm:gap-1.5 transition-all duration-300 group-hover:scale-105">
 							{project.tags.slice(0, 2).map((tag, tagIndex) => (
 								<Badge 
 									key={tagIndex} 
 									variant="secondary" 
-									className="bg-white/90 border border-white/50 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-2 py-1"
+									className="bg-white/90 border border-white/50 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-1.5 sm:px-2 py-0.5 sm:py-1 touch-manipulation"
 								>
 									{tag}
 								</Badge>
@@ -104,37 +104,37 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					) : null}
 
 					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
-						<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
+						<div className="bg-primary/90 text-primary-foreground rounded-full px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium backdrop-blur-sm touch-manipulation">
 							View Project
 						</div>
 					</div>
 				</div>
 
-				{/* Content */}
-				<CardHeader className="pb-2">
-					<h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
+				{/* Content - Mobile Optimized */}
+				<CardHeader className="pb-2 px-4 sm:px-6 pt-4 sm:pt-6">
+					<h3 className="text-lg sm:text-xl font-bold text-foreground transition-colors group-hover:text-foreground leading-tight">
 						{project.title}
 					</h3>
 				</CardHeader>
 
-				<CardContent className="flex flex-col flex-1 p-6 pt-2">
-					{/* Description - Flexible content area */}
+				<CardContent className="flex flex-col flex-1 p-4 sm:p-6 pt-2">
+					{/* Description - Mobile Optimized */}
 					<div className="flex-1">
-						<p className="leading-relaxed text-muted-foreground">
+						<p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
 							{project.description}
 						</p>
 					</div>
 
-					{/* Fixed bottom section for stats and button */}
-					<div className="mt-6 space-y-4">
-						{/* Key Results - Clean, professional metrics display */}
+					{/* Fixed bottom section for stats and button - Mobile Optimized */}
+					<div className="mt-4 sm:mt-6 space-y-3 sm:space-y-4">
+						{/* Key Results - Mobile Optimized */}
 						{project.metrics && (
-							<div className="border-t border-stone-200 pt-4 dark:border-stone-800">
-								<div className="grid grid-cols-2 gap-4">
+							<div className="border-t border-stone-200 pt-3 sm:pt-4 dark:border-stone-800">
+								<div className="grid grid-cols-2 gap-3 sm:gap-4">
 									{/* Performance Metric */}
 									{project.metrics.performance?.loadTimeImprovement && (
 										<div className="text-center">
-											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+											<div className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
 												{project.metrics.performance.loadTimeImprovement}
 											</div>
 											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
@@ -146,7 +146,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 									{/* Business Metric */}
 									{project.metrics.business && Object.entries(project.metrics.business).slice(0, 1).map(([key, value]) => (
 										<div key={key} className="text-center">
-											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+											<div className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
 												{value}
 											</div>
 											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
@@ -158,19 +158,20 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 							</div>
 						)}
 
-						{/* CTA Button - Always at bottom */}
+						{/* CTA Button - Mobile Optimized */}
 						<Button
 							variant="outline"
 							size="sm"
-							className="group/btn w-full transition-all duration-300"
+							className="group/btn w-full transition-all duration-300 h-12 text-sm sm:text-base touch-manipulation"
 							asChild
 						>
 							<Link 
 								href={projectLink}
 								aria-label={`View details for ${project.title} project`}
+								className="flex items-center justify-center gap-2"
 							>
 								{project.caseStudyUrl ? 'View Case Study' : 'View Project'}
-								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								<ArrowRightIcon className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
 							</Link>
 						</Button>
 					</div>
