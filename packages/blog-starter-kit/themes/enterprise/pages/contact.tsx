@@ -211,7 +211,7 @@ export default function ContactPage({ publication }: Props) {
 										</span>
 									</h1>
 									<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-										I'm John Schibelli, and I don't just build websites – I craft digital experiences that turn visitors into customers and ideas into reality. With 15+ years of web development experience and deep expertise in React and Next.js, I've helped startups scale and enterprises innovate.
+										I craft digital experiences that turn visitors into customers and ideas into reality.
 									</p>
 									<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
 										<div className="flex items-center gap-2">
