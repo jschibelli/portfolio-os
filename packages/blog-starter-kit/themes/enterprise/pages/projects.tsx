@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X, MapPinIcon, CheckCircleIcon, SearchIcon, AwardIcon, FilterIcon, SortAscIcon, SortDescIcon, ChevronDownIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
@@ -26,13 +26,21 @@ interface Props {
 
 export default function ProjectsPage({ publication, projects }: Props & { projects: Project[] }) {
 	const router = useRouter();
-	const { tags, search, sort } = router.query;
+	const { tags, search, sort, category, status, technology, client } = router.query;
 
 	// Use projects passed from getStaticProps
 	const allProjects: Project[] = projects;
 
-	// Extract all unique tags for filtering
+	// Extract all unique values for filtering
 	const allTags = Array.from(new Set(allProjects.flatMap(project => project.tags))).sort();
+	const allTechnologies = Array.from(new Set(allProjects.flatMap(project => project.tags))).sort();
+	const allCategories = Array.from(new Set(allProjects.map(project => project.category || 'other'))).sort();
+	const allStatuses = Array.from(new Set(allProjects.map(project => project.status || 'completed'))).sort();
+	const allClients = Array.from(new Set(allProjects.map(project => project.client).filter(Boolean))).sort();
+
+	// Search suggestions state
+	const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+	const [showSuggestions, setShowSuggestions] = useState(false);
 
 	// Get current filter values from URL
 	const currentTags = useMemo(() => {
@@ -48,18 +56,68 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		return Array.isArray(sort) ? sort[0] : sort || 'default';
 	}, [sort]);
 
+	const currentCategory = useMemo(() => {
+		return Array.isArray(category) ? category[0] : category || '';
+	}, [category]);
+
+	const currentStatus = useMemo(() => {
+		return Array.isArray(status) ? status[0] : status || '';
+	}, [status]);
+
+	const currentTechnology = useMemo(() => {
+		return Array.isArray(technology) ? technology[0] : technology || '';
+	}, [technology]);
+
+	const currentClient = useMemo(() => {
+		return Array.isArray(client) ? client[0] : client || '';
+	}, [client]);
+
+	// Enhanced search function with better matching
+	const enhancedSearch = useCallback((query: string, projects: Project[]) => {
+		if (!query) return projects;
+		
+		const searchLower = query.toLowerCase();
+		const searchTerms = searchLower.split(' ').filter(term => term.length > 0);
+		
+		return projects.filter(project => {
+			const searchableText = [
+				project.title,
+				project.description,
+				...project.tags,
+				...(project.technologies || []),
+				...(project.client ? [project.client] : []),
+				...(project.industry ? [project.industry] : [])
+			].join(' ').toLowerCase();
+			
+			// Check if all search terms are found
+			return searchTerms.every(term => searchableText.includes(term));
+		});
+	}, []);
+
+	// Generate search suggestions
+	useEffect(() => {
+		if (currentSearch && currentSearch.length > 1) {
+			const suggestions = [
+				...allTags.filter(tag => tag.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allTechnologies.filter(tech => tech.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allClients.filter(client => client.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allCategories.filter(cat => cat.toLowerCase().includes(currentSearch.toLowerCase()))
+			].slice(0, 5);
+			setSearchSuggestions(suggestions);
+			setShowSuggestions(suggestions.length > 0);
+		} else {
+			setSearchSuggestions([]);
+			setShowSuggestions(false);
+		}
+	}, [currentSearch, allTags, allTechnologies, allClients, allCategories]);
+
 	// Filter and sort projects based on URL params
 	const filteredAndSortedProjects = useMemo(() => {
 		let filtered = [...allProjects];
 
-		// Apply search filter
+		// Apply enhanced search filter
 		if (currentSearch) {
-			const searchLower = currentSearch.toLowerCase();
-			filtered = filtered.filter(project =>
-				project.title.toLowerCase().includes(searchLower) ||
-				project.description.toLowerCase().includes(searchLower) ||
-				project.tags.some(tag => tag.toLowerCase().includes(searchLower))
-			);
+			filtered = enhancedSearch(currentSearch, filtered);
 		}
 
 		// Apply tag filters
@@ -69,7 +127,35 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 			);
 		}
 
-		// Apply sorting
+		// Apply category filter
+		if (currentCategory) {
+			filtered = filtered.filter(project =>
+				(project.category || 'other') === currentCategory
+			);
+		}
+
+		// Apply status filter
+		if (currentStatus) {
+			filtered = filtered.filter(project =>
+				(project.status || 'completed') === currentStatus
+			);
+		}
+
+		// Apply technology filter
+		if (currentTechnology) {
+			filtered = filtered.filter(project =>
+				project.tags.includes(currentTechnology)
+			);
+		}
+
+		// Apply client filter
+		if (currentClient) {
+			filtered = filtered.filter(project =>
+				project.client === currentClient
+			);
+		}
+
+		// Apply enhanced sorting
 		switch (currentSort) {
 			case 'title-asc':
 				filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -83,13 +169,33 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 			case 'tags-desc':
 				filtered.sort((a, b) => a.tags.length - b.tags.length);
 				break;
+			case 'date-newest':
+				filtered.sort((a, b) => {
+					const dateA = new Date(a.endDate || a.startDate || '');
+					const dateB = new Date(b.endDate || b.startDate || '');
+					return dateB.getTime() - dateA.getTime();
+				});
+				break;
+			case 'date-oldest':
+				filtered.sort((a, b) => {
+					const dateA = new Date(a.startDate || a.endDate || '');
+					const dateB = new Date(b.startDate || b.endDate || '');
+					return dateA.getTime() - dateB.getTime();
+				});
+				break;
+			case 'client-asc':
+				filtered.sort((a, b) => (a.client || '').localeCompare(b.client || ''));
+				break;
+			case 'client-desc':
+				filtered.sort((a, b) => (b.client || '').localeCompare(a.client || ''));
+				break;
 			default:
 				// Keep original order
 				break;
 		}
 
 		return filtered;
-	}, [allProjects, currentSearch, currentTags, currentSort]);
+	}, [allProjects, currentSearch, currentTags, currentSort, currentCategory, currentStatus, currentTechnology, currentClient, enhancedSearch]);
 
 	// Update URL with new filters
 	const updateFilters = useCallback((updates: Record<string, string | null>) => {
@@ -120,9 +226,35 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		updateFilters({ search: value || null });
 	}, [updateFilters]);
 
+	// Handle search suggestion click
+	const handleSuggestionClick = useCallback((suggestion: string) => {
+		handleSearchChange(suggestion);
+		setShowSuggestions(false);
+	}, [handleSearchChange]);
+
 	// Handle sort change
 	const handleSortChange = useCallback((value: string) => {
 		updateFilters({ sort: value === 'default' ? null : value });
+	}, [updateFilters]);
+
+	// Handle category filter
+	const handleCategoryChange = useCallback((value: string) => {
+		updateFilters({ category: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle status filter
+	const handleStatusChange = useCallback((value: string) => {
+		updateFilters({ status: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle technology filter
+	const handleTechnologyChange = useCallback((value: string) => {
+		updateFilters({ technology: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle client filter
+	const handleClientChange = useCallback((value: string) => {
+		updateFilters({ client: value === 'all' ? null : value });
 	}, [updateFilters]);
 
 	// Clear all filters
@@ -130,7 +262,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		router.push('/projects', undefined, { shallow: true });
 	}, [router]);
 
-	const hasActiveFilters = currentTags.length > 0 || currentSearch || currentSort !== 'default';
+	const hasActiveFilters = currentTags.length > 0 || currentSearch || currentSort !== 'default' || currentCategory || currentStatus || currentTechnology || currentClient;
 
 	return (
 		<AppProvider publication={publication}>
@@ -165,7 +297,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 				<main className="min-h-screen bg-white dark:bg-stone-950">
 					{/* Hero Section */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[500px] overflow-hidden bg-stone-50 py-16 md:py-20 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg2.png)',
 							backgroundSize: 'cover',
@@ -174,7 +306,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						}}
 					>
 						{/* Background Overlay */}
-						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+						<div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
 						{/* Content Overlay */}
 						<div className="relative z-10">
 							<Container className="px-4">
@@ -182,35 +314,88 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center space-y-8"
 								>
-								<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-									Projects & Case Studies
-								</h1>
-								<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-									A collection of projects that showcase modern web development, innovative design
-									solutions, and impactful digital experiences.
-								</p>
-								<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-									<div className="flex items-center gap-2">
-										<CalendarIcon className="h-4 w-4" />
-										<span>{allProjects.length} Projects</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<UsersIcon className="h-4 w-4" />
-										<span>Client Success Stories</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<CodeIcon className="h-4 w-4" />
-										<span>{allTags.length} Technologies</span>
-									</div>
-								</div>
+									{/* Main Hero Title */}
+									<motion.h1
+										initial={{ opacity: 0, y: 30 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+										className="text-4xl font-bold text-stone-900 md:text-5xl lg:text-6xl dark:text-stone-100 leading-tight"
+									>
+										Building Smarter, Faster<br />
+										Web Applications
+									</motion.h1>
+
+									{/* Personal Branding Section */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+										className="space-y-4"
+									>
+										<h2 className="text-2xl font-semibold text-stone-800 md:text-3xl dark:text-stone-200">
+											John Schibelli
+										</h2>
+										<p className="text-lg font-medium text-stone-700 md:text-xl dark:text-stone-300">
+											15+ years of experience turning ideas into high-performance web apps
+										</p>
+									</motion.div>
+
+									{/* Value Propositions */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+										className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+									>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">Accessibility First</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">WCAG compliant, inclusive design</p>
+										</div>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<SearchIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">SEO Optimized</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">Performance & search visibility</p>
+										</div>
+										<div className="flex flex-col items-center space-y-2 p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm">
+											<AwardIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+											<h3 className="font-semibold text-stone-900 dark:text-stone-100">Client Success</h3>
+											<p className="text-sm text-stone-600 dark:text-stone-400 text-center">Proven results & partnerships</p>
+										</div>
+									</motion.div>
+
+									{/* Location & Stats */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+										className="flex flex-wrap justify-center gap-6 text-sm text-stone-600 dark:text-stone-400"
+									>
+										<div className="flex items-center gap-2">
+											<MapPinIcon className="h-4 w-4" />
+											<span>Towaco, NJ</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CalendarIcon className="h-4 w-4" />
+											<span>{allProjects.length} Projects</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<UsersIcon className="h-4 w-4" />
+											<span>Client Success Stories</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<CodeIcon className="h-4 w-4" />
+											<span>{allTags.length} Technologies</span>
+										</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
 					</section>
 
-					{/* Filters Section */}
+					{/* Enhanced Filters Section */}
 					<section className="border-b border-stone-200 bg-white py-8 dark:border-stone-800 dark:bg-stone-950">
 						<Container className="px-4">
 							<div className="space-y-6">
@@ -221,14 +406,34 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											<Label htmlFor="search" className="sr-only">
 												Search projects
 											</Label>
-											<Input
-												id="search"
-												type="text"
-												placeholder="Search projects..."
-												value={currentSearch}
-												onChange={(e) => handleSearchChange(e.target.value)}
-												className="pl-4"
-											/>
+											<div className="relative">
+												<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+												<Input
+													id="search"
+													type="text"
+													placeholder="Search projects, technologies, clients..."
+													value={currentSearch}
+													onChange={(e) => handleSearchChange(e.target.value)}
+													onFocus={() => setShowSuggestions(true)}
+													onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+													className="pl-10"
+												/>
+												
+												{/* Search Suggestions Dropdown */}
+												{showSuggestions && searchSuggestions.length > 0 && (
+													<div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto rounded-md border border-stone-200 bg-white shadow-lg dark:border-stone-700 dark:bg-stone-800">
+														{searchSuggestions.map((suggestion, index) => (
+															<button
+																key={index}
+																onClick={() => handleSuggestionClick(suggestion)}
+																className="w-full px-4 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700"
+															>
+																{suggestion}
+															</button>
+														))}
+													</div>
+												)}
+											</div>
 										</div>
 										<div className="flex items-center gap-2">
 											<Label htmlFor="sort" className="text-sm font-medium text-stone-700 dark:text-stone-300">
@@ -242,6 +447,10 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 													<SelectItem value="default">Default</SelectItem>
 													<SelectItem value="title-asc">Title A-Z</SelectItem>
 													<SelectItem value="title-desc">Title Z-A</SelectItem>
+													<SelectItem value="date-newest">Newest First</SelectItem>
+													<SelectItem value="date-oldest">Oldest First</SelectItem>
+													<SelectItem value="client-asc">Client A-Z</SelectItem>
+													<SelectItem value="client-desc">Client Z-A</SelectItem>
 													<SelectItem value="tags-asc">Most Tags</SelectItem>
 													<SelectItem value="tags-desc">Fewest Tags</SelectItem>
 												</SelectContent>
@@ -260,6 +469,89 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											Clear Filters
 										</Button>
 									)}
+								</div>
+
+								{/* Advanced Filters Row */}
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+									{/* Project Type Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="category" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Project Type
+										</Label>
+										<Select value={currentCategory || 'all'} onValueChange={handleCategoryChange}>
+											<SelectTrigger id="category">
+												<SelectValue placeholder="All Types" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Types</SelectItem>
+												{allCategories.map((category) => (
+													<SelectItem key={category} value={category}>
+														{category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Status Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="status" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Status
+										</Label>
+										<Select value={currentStatus || 'all'} onValueChange={handleStatusChange}>
+											<SelectTrigger id="status">
+												<SelectValue placeholder="All Status" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Status</SelectItem>
+												{allStatuses.map((status) => (
+													<SelectItem key={status} value={status}>
+														{status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Technology Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="technology" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Technology
+										</Label>
+										<Select value={currentTechnology || 'all'} onValueChange={handleTechnologyChange}>
+											<SelectTrigger id="technology">
+												<SelectValue placeholder="All Technologies" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Technologies</SelectItem>
+												{allTechnologies.slice(0, 20).map((tech) => (
+													<SelectItem key={tech} value={tech}>
+														{tech}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Client Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="client" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Client
+										</Label>
+										<Select value={currentClient || 'all'} onValueChange={handleClientChange}>
+											<SelectTrigger id="client">
+												<SelectValue placeholder="All Clients" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Clients</SelectItem>
+												{allClients.map((client) => (
+													<SelectItem key={client} value={client}>
+														{client}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
 								</div>
 
 								{/* Active Filters Display */}
@@ -282,9 +574,61 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											</Badge>
 										)}
 
+										{currentCategory && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Type: {currentCategory.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+												<button
+													onClick={() => handleCategoryChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove category filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentStatus && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Status: {currentStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+												<button
+													onClick={() => handleStatusChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove status filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentTechnology && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Tech: {currentTechnology}
+												<button
+													onClick={() => handleTechnologyChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove technology filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentClient && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Client: {currentClient}
+												<button
+													onClick={() => handleClientChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove client filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
 										{currentSort !== 'default' && (
 											<Badge variant="secondary" className="flex items-center gap-1">
-												Sort: {currentSort.replace('-', ' ')}
+												Sort: {currentSort.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
 												<button
 													onClick={() => handleSortChange('default')}
 													className="ml-1 hover:text-red-600"
@@ -339,8 +683,12 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									{hasActiveFilters ? (
 										<span>
 											Showing {filteredAndSortedProjects.length} of {allProjects.length} projects
-											{currentTags.length > 0 && ` for ${currentTags.length} technology filter${currentTags.length > 1 ? 's' : ''}`}
 											{currentSearch && ` matching &quot;${currentSearch}&quot;`}
+											{currentCategory && ` in ${currentCategory.replace('-', ' ')} category`}
+											{currentStatus && ` with ${currentStatus.replace('-', ' ')} status`}
+											{currentTechnology && ` using ${currentTechnology}`}
+											{currentClient && ` for ${currentClient}`}
+											{currentTags.length > 0 && ` with ${currentTags.length} technology filter${currentTags.length > 1 ? 's' : ''}`}
 										</span>
 									) : (
 										<span>Showing all {allProjects.length} projects</span>
@@ -572,6 +920,14 @@ export const getStaticProps: GetStaticProps<Props & { projects: Project[] }> = a
 			tags: project.tags,
 			caseStudyUrl: project.caseStudyUrl,
 			slug: project.slug,
+			liveUrl: project.liveUrl,
+			category: project.category,
+			status: project.status,
+			technologies: project.technologies,
+			client: project.client,
+			industry: project.industry,
+			startDate: project.startDate,
+			endDate: project.endDate,
 		}));
 
 		return {
@@ -593,6 +949,14 @@ export const getStaticProps: GetStaticProps<Props & { projects: Project[] }> = a
 			tags: project.tags,
 			caseStudyUrl: project.caseStudyUrl,
 			slug: project.slug,
+			liveUrl: project.liveUrl,
+			category: project.category,
+			status: project.status,
+			technologies: project.technologies,
+			client: project.client,
+			industry: project.industry,
+			startDate: project.startDate,
+			endDate: project.endDate,
 		}));
 
 		return {
