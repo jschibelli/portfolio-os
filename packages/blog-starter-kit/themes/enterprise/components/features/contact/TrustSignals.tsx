@@ -90,9 +90,13 @@ const itemVariants = {
   }
 };
 
+/**
+ * TrustSignals component displays key trust indicators and social proof
+ * to build confidence with potential clients
+ */
 export function TrustSignals() {
   return (
-    <section className="bg-stone-50 py-16 dark:bg-stone-900">
+    <section className="bg-stone-50 py-16 dark:bg-stone-900" aria-labelledby="trust-signals-heading">
       <Container className="px-4">
         <motion.div
           initial="hidden"
@@ -103,7 +107,7 @@ export function TrustSignals() {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+            <h2 id="trust-signals-heading" className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
               Why Choose Me?
             </h2>
             <p className="text-lg text-stone-600 dark:text-stone-400">

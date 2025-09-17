@@ -80,9 +80,13 @@ const itemVariants = {
   }
 };
 
+/**
+ * QuickStats component displays key performance metrics and statistics
+ * to showcase experience and success rate
+ */
 export function QuickStats() {
   return (
-    <section className="bg-stone-100 py-16 dark:bg-stone-800">
+    <section className="bg-stone-100 py-16 dark:bg-stone-800" aria-labelledby="quick-stats-heading">
       <Container className="px-4">
         <motion.div
           initial="hidden"
@@ -93,7 +97,7 @@ export function QuickStats() {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+            <h2 id="quick-stats-heading" className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
               By the Numbers
             </h2>
             <p className="text-lg text-stone-600 dark:text-stone-400">

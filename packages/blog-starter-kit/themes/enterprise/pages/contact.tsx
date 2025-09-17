@@ -16,7 +16,6 @@ import {
 	LinkedinSVG as LinkedinIcon,
 } from '../components/icons';
 import { Container } from '../components/shared/container';
-
 import { Layout } from '../components/shared/layout';
 import { SEOHead } from '../components/shared/seo-head';
 import { Badge, Button } from '../components/ui';
@@ -47,19 +46,26 @@ export default function ContactPage({ publication }: Props) {
 		});
 	};
 
-	const validateForm = () => {
+	/**
+	 * Validates the contact form data and returns an array of error messages
+	 * @returns Array of validation error messages
+	 */
+	const validateForm = (): string[] => {
 		const errors: string[] = [];
 		
+		// Validate name field
 		if (!formData.name.trim()) {
 			errors.push('Name is required');
 		}
 		
+		// Validate email field with regex pattern
 		if (!formData.email.trim()) {
 			errors.push('Email is required');
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
 			errors.push('Please enter a valid email address');
 		}
 		
+		// Validate message field with minimum length requirement
 		if (!formData.message.trim()) {
 			errors.push('Project details are required');
 		} else if (formData.message.trim().length < 10) {
@@ -69,7 +75,11 @@ export default function ContactPage({ publication }: Props) {
 		return errors;
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	/**
+	 * Handles form submission with validation and error handling
+	 * @param e - Form submission event
+	 */
+	const handleSubmit = async (e: React.FormEvent): Promise<void> => {
 		e.preventDefault();
 		setSubmitStatus('idle');
 		
@@ -86,11 +96,14 @@ export default function ContactPage({ publication }: Props) {
 		setIsSubmitting(true);
 
 		try {
-			// Simulate form submission (replace with actual form handling)
+			// TODO: Replace with actual form submission endpoint
+			// Simulate form submission for demo purposes
 			await new Promise(resolve => setTimeout(resolve, 2000));
 			
 			setIsSubmitting(false);
 			setSubmitStatus('success');
+			
+			// Reset form data after successful submission
 			setFormData({
 				name: '',
 				email: '',
@@ -503,45 +516,49 @@ export default function ContactPage({ publication }: Props) {
 										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
 											Connect With Me
 										</h3>
-										<div className="flex items-center gap-4">
+										<div className="flex items-center gap-4" role="list" aria-label="Social media links">
 											<a
 												href="https://facebook.com"
 												target="_blank"
 												rel="noopener noreferrer"
-												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												aria-label="Connect with John Schibelli on Facebook (opens in new tab)"
+												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
+												role="listitem"
 											>
-												<FacebookIcon className="h-5 w-5" />
+												<FacebookIcon className="h-5 w-5" aria-hidden="true" />
 											</a>
 
 											<a
-												href="https://github.com"
+												href="https://github.com/jschibelli"
 												target="_blank"
 												rel="noopener noreferrer"
-												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												aria-label="View John Schibelli's GitHub profile (opens in new tab)"
+												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
+												role="listitem"
 											>
-												<GithubIcon className="h-5 w-5 stroke-current" />
+												<GithubIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 
 											<a
-												href="https://linkedin.com"
+												href="https://linkedin.com/in/johnschibelli"
 												target="_blank"
 												rel="noopener noreferrer"
-												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												aria-label="Connect with John Schibelli on LinkedIn (opens in new tab)"
+												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
+												role="listitem"
 											>
-												<LinkedinIcon className="h-5 w-5 stroke-current" />
+												<LinkedinIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 
 											<a
-												href="https://bsky.app"
+												href="https://bsky.app/profile/johnschibelli.bsky.social"
 												target="_blank"
 												rel="noopener noreferrer"
-												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+												aria-label="Follow John Schibelli on Bluesky (opens in new tab)"
+												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
+												role="listitem"
 											>
-												<BlueskyIcon className="h-5 w-5 stroke-current" />
+												<BlueskyIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 										</div>
 									</div>

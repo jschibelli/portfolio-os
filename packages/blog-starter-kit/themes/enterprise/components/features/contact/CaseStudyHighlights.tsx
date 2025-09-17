@@ -81,9 +81,13 @@ const itemVariants = {
   }
 };
 
+/**
+ * CaseStudyHighlights component displays featured case studies with metrics
+ * to demonstrate successful project outcomes and build credibility
+ */
 export function CaseStudyHighlights() {
   return (
-    <section className="bg-white py-16 dark:bg-stone-950">
+    <section className="bg-white py-16 dark:bg-stone-950" aria-labelledby="case-studies-heading">
       <Container className="px-4">
         <motion.div
           initial="hidden"
@@ -94,7 +98,7 @@ export function CaseStudyHighlights() {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
+            <h2 id="case-studies-heading" className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
               Recent Success Stories
             </h2>
             <p className="text-lg text-stone-600 dark:text-stone-400">
@@ -117,8 +121,9 @@ export function CaseStudyHighlights() {
                 <div className="relative h-48 overflow-hidden">
                   <img
                     src={caseStudy.image}
-                    alt={caseStudy.title}
+                    alt={`${caseStudy.title} - ${caseStudy.description}`}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   
