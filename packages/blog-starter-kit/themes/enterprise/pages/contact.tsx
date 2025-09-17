@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ClockIcon, MailIcon, MapPinIcon, SendIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MapPinIcon, SendIcon, StarIcon, CheckCircleIcon, GlobeIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
@@ -164,9 +164,9 @@ export default function ContactPage({ publication }: Props) {
 				<ModernHeader publication={publication} />
 
 				<main className="min-h-screen bg-white dark:bg-stone-950">
-					{/* Hero Section */}
+					{/* Enhanced Hero Section */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[500px] overflow-hidden bg-stone-50 py-16 md:py-24 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg4.png)',
 							backgroundSize: 'cover',
@@ -175,24 +175,123 @@ export default function ContactPage({ publication }: Props) {
 						}}
 					>
 						{/* Background Overlay */}
-						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+						<div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
+						
+						{/* Animated Background Elements */}
+						<div className="absolute inset-0 z-0">
+							<motion.div
+								animate={{
+									scale: [1, 1.1, 1],
+									opacity: [0.1, 0.2, 0.1],
+								}}
+								transition={{
+									duration: 8,
+									repeat: Infinity,
+									ease: "easeInOut"
+								}}
+								className="absolute top-1/4 left-1/4 h-32 w-32 rounded-full bg-stone-300/20 dark:bg-stone-600/20"
+							/>
+							<motion.div
+								animate={{
+									scale: [1.1, 1, 1.1],
+									opacity: [0.15, 0.25, 0.15],
+								}}
+								transition={{
+									duration: 6,
+									repeat: Infinity,
+									ease: "easeInOut",
+									delay: 2
+								}}
+								className="absolute bottom-1/4 right-1/4 h-24 w-24 rounded-full bg-stone-400/20 dark:bg-stone-500/20"
+							/>
+						</div>
+
 						{/* Content Overlay */}
 						<div className="relative z-10">
 							<Container className="px-4">
 								<motion.div
-									initial={{ opacity: 0, y: 20 }}
+									initial={{ opacity: 0, y: 30 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center"
 								>
-									<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-										Let&apos;s Work Together
-									</h1>
-									<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-										Ready to bring your vision to life? I&apos;m here to help you create exceptional
-										digital experiences.
-									</p>
-									<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+									{/* Value Proposition Badge */}
+									<motion.div
+										initial={{ opacity: 0, scale: 0.9 }}
+										animate={{ opacity: 1, scale: 1 }}
+										transition={{ duration: 0.6, delay: 0.2 }}
+										className="mb-6"
+									>
+										<Badge 
+											variant="outline" 
+											className="border-stone-300 bg-stone-100/80 px-4 py-2 text-sm font-medium text-stone-700 dark:border-stone-600 dark:bg-stone-800/80 dark:text-stone-300"
+										>
+											<StarIcon className="mr-2 h-4 w-4 text-amber-500" />
+											15+ Years of Proven Results
+										</Badge>
+									</motion.div>
+
+									{/* Main Headline */}
+									<motion.h1 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.3 }}
+										className="mb-6 text-4xl font-bold leading-tight text-stone-900 md:text-6xl lg:text-7xl dark:text-stone-100"
+									>
+										Building Smarter, Faster
+										<br />
+										<span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">
+											Web Applications
+										</span>
+									</motion.h1>
+
+									{/* Value Proposition Tagline */}
+									<motion.p 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4 }}
+										className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400"
+									>
+										Transform your ideas into exceptional digital experiences with a senior developer who delivers results, not just code.
+									</motion.p>
+
+									{/* Key Metrics & Achievements */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.5 }}
+										className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3"
+									>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">100%</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Client Satisfaction</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<ClockIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">24h</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Response Time</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<StarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">15+</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Location & Availability Info */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6 }}
+										className="flex flex-wrap justify-center gap-6 text-sm text-stone-500 dark:text-stone-400"
+									>
 										<div className="flex items-center gap-2">
 											<MapPinIcon className="h-4 w-4" />
 											<span>Northern New Jersey</span>
@@ -205,7 +304,7 @@ export default function ContactPage({ publication }: Props) {
 											<MailIcon className="h-4 w-4" />
 											<span>Remote & Local Work</span>
 										</div>
-									</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
@@ -435,38 +534,61 @@ export default function ContactPage({ publication }: Props) {
 										</p>
 									</div>
 
-									{/* Location & Availability */}
+									{/* Professional Contact Information */}
 									<div className="space-y-6">
+										{/* Primary Email Contact */}
+										<div className="flex items-start gap-4">
+											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+												<MailIcon className="h-6 w-6 text-primary" />
+											</div>
+											<div>
+												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
+													Professional Email
+												</h3>
+												<a 
+													href="mailto:john@schibelli.dev" 
+													className="text-lg font-medium text-primary hover:text-primary/80 transition-colors duration-200"
+												>
+													john@schibelli.dev
+												</a>
+												<p className="text-sm text-stone-500 dark:text-stone-500">
+													Preferred contact method
+												</p>
+											</div>
+										</div>
+
+										{/* Response Time & Availability */}
+										<div className="flex items-start gap-4">
+											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/20">
+												<CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+											</div>
+											<div>
+												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
+													Response Time
+												</h3>
+												<p className="text-stone-600 dark:text-stone-400">
+													24-hour response guarantee
+												</p>
+												<p className="text-sm text-stone-500 dark:text-stone-500">
+													Currently accepting new projects
+												</p>
+											</div>
+										</div>
+
+										{/* Location & Timezone */}
 										<div className="flex items-start gap-4">
 											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
 												<MapPinIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
 											</div>
 											<div>
 												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
-													Location
+													Location & Timezone
 												</h3>
 												<p className="text-stone-600 dark:text-stone-400">
 													Northern New Jersey, USA
 												</p>
 												<p className="text-sm text-stone-500 dark:text-stone-500">
-													Available for remote work worldwide
-												</p>
-											</div>
-										</div>
-
-										<div className="flex items-start gap-4">
-											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
-												<ClockIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
-											</div>
-											<div>
-												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
-													Availability
-												</h3>
-												<p className="text-stone-600 dark:text-stone-400">
-													Available for new projects
-												</p>
-												<p className="text-sm text-stone-500 dark:text-stone-500">
-													Response within 24 hours
+													UTC-5 (Eastern Time) • Available for remote work worldwide
 												</p>
 											</div>
 										</div>
@@ -511,55 +633,117 @@ export default function ContactPage({ publication }: Props) {
 										</div>
 									</div>
 
-									{/* Social Media */}
+									{/* Professional Social Media & Networking */}
 									<div>
 										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
-											Connect With Me
+											Professional Presence
 										</h3>
-										<div className="flex items-center gap-4" role="list" aria-label="Social media links">
-											<a
-												href="https://facebook.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Connect with John Schibelli on Facebook (opens in new tab)"
-												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
-												role="listitem"
-											>
-												<FacebookIcon className="h-5 w-5" aria-hidden="true" />
-											</a>
+										<div className="space-y-4" role="list" aria-label="Professional social media links">
+											{/* LinkedIn - Professional Network */}
+											<div className="flex items-center gap-4" role="listitem">
+												<a
+													href="https://linkedin.com/in/johnschibelli"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Connect with John Schibelli on LinkedIn for professional networking (opens in new tab)"
+													className="flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 p-3 text-blue-600 transition-all duration-200 hover:bg-blue-100 hover:scale-105 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
+												>
+													<LinkedinIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
+												</a>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">LinkedIn</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Professional networking & career updates</p>
+												</div>
+											</div>
 
-											<a
-												href="https://github.com/jschibelli"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="View John Schibelli's GitHub profile (opens in new tab)"
-												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
-												role="listitem"
-											>
-												<GithubIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
-											</a>
+											{/* GitHub - Technical Portfolio */}
+											<div className="flex items-center gap-4" role="listitem">
+												<a
+													href="https://github.com/jschibelli"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="View John Schibelli's GitHub profile for technical projects and code samples (opens in new tab)"
+													className="flex items-center justify-center rounded-full border border-stone-200 bg-stone-50 p-3 text-stone-700 transition-all duration-200 hover:bg-stone-100 hover:scale-105 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+												>
+													<GithubIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
+												</a>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">GitHub</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Open source projects & technical portfolio</p>
+												</div>
+											</div>
 
-											<a
-												href="https://linkedin.com/in/johnschibelli"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Connect with John Schibelli on LinkedIn (opens in new tab)"
-												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
-												role="listitem"
-											>
-												<LinkedinIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
-											</a>
+											{/* Twitter/X - Thought Leadership */}
+											<div className="flex items-center gap-4" role="listitem">
+												<a
+													href="https://twitter.com/johnschibelli"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Follow John Schibelli on Twitter for web development insights and thought leadership (opens in new tab)"
+													className="flex items-center justify-center rounded-full border border-sky-200 bg-sky-50 p-3 text-sky-600 transition-all duration-200 hover:bg-sky-100 hover:scale-105 dark:border-sky-800 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/30"
+												>
+													<svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+														<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+													</svg>
+												</a>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">Twitter/X</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Web development insights & industry thoughts</p>
+												</div>
+											</div>
 
-											<a
-												href="https://bsky.app/profile/johnschibelli.bsky.social"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Follow John Schibelli on Bluesky (opens in new tab)"
-												className="flex items-center justify-center rounded-full border border-stone-300 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-600 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-100"
-												role="listitem"
-											>
-												<BlueskyIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
-											</a>
+											{/* Bluesky - Alternative Social */}
+											<div className="flex items-center gap-4" role="listitem">
+												<a
+													href="https://bsky.app/profile/johnschibelli.bsky.social"
+													target="_blank"
+													rel="noopener noreferrer"
+													aria-label="Follow John Schibelli on Bluesky for tech discussions and updates (opens in new tab)"
+													className="flex items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 p-3 text-cyan-600 transition-all duration-200 hover:bg-cyan-100 hover:scale-105 dark:border-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-400 dark:hover:bg-cyan-900/30"
+												>
+													<BlueskyIcon className="h-5 w-5 stroke-current" aria-hidden="true" />
+												</a>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">Bluesky</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Tech discussions & community engagement</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									{/* Contact Preferences */}
+									<div>
+										<h3 className="mb-4 text-xl font-semibold text-stone-900 dark:text-stone-100">
+											Contact Preferences
+										</h3>
+										<div className="space-y-3">
+											<div className="flex items-center gap-3">
+												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+													<MailIcon className="h-4 w-4 text-primary" />
+												</div>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">Email Preferred</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Best for project discussions and detailed inquiries</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800">
+													<GlobeIcon className="h-4 w-4 text-stone-600 dark:text-stone-400" />
+												</div>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">Remote Collaboration</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">Comfortable working across time zones and locations</p>
+												</div>
+											</div>
+											<div className="flex items-center gap-3">
+												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+													<CheckCircleIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+												</div>
+												<div>
+													<p className="font-medium text-stone-900 dark:text-stone-100">Quick Response</p>
+													<p className="text-sm text-stone-600 dark:text-stone-400">24-hour response time for all inquiries</p>
+												</div>
+											</div>
 										</div>
 									</div>
 								</motion.div>
