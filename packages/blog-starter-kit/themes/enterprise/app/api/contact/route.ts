@@ -7,7 +7,10 @@ const ContactFormSchema = z.object({
   email: z.string().email('Invalid email address'),
   company: z.string().optional(),
   projectType: z.string().optional(),
-  budget: z.string().optional(),
+  budget: z.string().optional().refine(
+    (val) => !val || /^\$?[\d,]+(\.\d{2})?$/.test(val) || ['under-5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '100k-plus'].includes(val),
+    { message: 'Budget must be a valid amount or predefined range' }
+  ),
   message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message too long'),
 });
 
@@ -89,6 +92,21 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
       clientIP
     });
+
+    // Additional validation for business logic
+    if (validatedData.budget && !['under-5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '100k-plus'].includes(validatedData.budget)) {
+      // If budget is provided but not a predefined range, validate it's a proper monetary format
+      const budgetRegex = /^\$?[\d,]+(\.\d{2})?$/;
+      if (!budgetRegex.test(validatedData.budget)) {
+        return NextResponse.json(
+          { 
+            error: 'Invalid budget format. Please use a predefined range or valid monetary amount.',
+            details: [{ field: 'budget', message: 'Budget must be a valid amount or predefined range' }]
+          },
+          { status: 400 }
+        );
+      }
+    }
 
     // In a real implementation, you would:
     // 1. Send an email notification to the site owner
