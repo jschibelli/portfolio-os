@@ -103,26 +103,36 @@ export const PersonalLogo = ({
   }
 
   const logoElement = (
-    <img
-      src={logoSrc}
-      alt={alt}
-      width={config.width}
-      height={config.height}
-      className={`${config.className} ${className} object-contain transition-opacity duration-200`}
-      onError={(e) => {
-        console.warn('PersonalLogo: Failed to load logo image', logoSrc);
-        // Hide the image and show fallback
-        e.currentTarget.style.display = 'none';
-        // Show fallback text
-        const fallback = document.createElement('div');
-        fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
-        fallback.textContent = 'JS';
-        e.currentTarget.parentNode?.appendChild(fallback);
-      }}
-      onLoad={() => {
-        console.log('PersonalLogo: Successfully loaded', logoSrc);
-      }}
-    />
+    <div className={`${config.className} ${className} relative`}>
+      <img
+        src={logoSrc}
+        alt={alt}
+        width={config.width}
+        height={config.height}
+        className="object-contain transition-opacity duration-200"
+        onError={(e) => {
+          console.warn('PersonalLogo: Failed to load logo image', logoSrc);
+          console.warn('Error details:', e);
+          // Hide the image and show fallback
+          e.currentTarget.style.display = 'none';
+          // Show fallback text
+          const fallback = document.createElement('div');
+          fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
+          fallback.textContent = 'JS';
+          e.currentTarget.parentNode?.appendChild(fallback);
+        }}
+        onLoad={() => {
+          console.log('PersonalLogo: Successfully loaded', logoSrc);
+        }}
+      />
+      {/* Always show fallback for debugging */}
+      <div 
+        className="absolute inset-0 flex items-center justify-center bg-red-200 text-red-800 font-semibold text-xs"
+        style={{ display: 'block' }}
+      >
+        DEBUG: {logoSrc}
+      </div>
+    </div>
   );
 
   if (linkToHome) {
