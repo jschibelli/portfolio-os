@@ -464,14 +464,11 @@ export default function ContactPage({ publication }: Props) {
 												>
 													john@schibelli.dev
 												</a>
-												<p className="text-sm text-stone-500 dark:text-stone-500">
-													Preferred contact method
-												</p>
 											</div>
 										</div>
 
 
-										{/* Location & Timezone */}
+										{/* Location & Services */}
 										<div className="flex items-start gap-4">
 											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
 												<MapPinIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" aria-hidden="true" />
@@ -481,9 +478,6 @@ export default function ContactPage({ publication }: Props) {
 													Northern New Jersey Development Services
 												</h3>
 												<p className="text-stone-600 dark:text-stone-400">
-													Northern New Jersey, USA
-												</p>
-												<p className="text-sm text-stone-500 dark:text-stone-500">
 													Serving clients worldwide with remote React and Next.js development
 												</p>
 											</div>
