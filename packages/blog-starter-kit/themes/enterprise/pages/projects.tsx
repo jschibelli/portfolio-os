@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, MapPinIcon, UsersIcon, X } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -182,16 +182,81 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center"
 								>
-									<h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
-										Projects & Case Studies
-									</h1>
-									<p className="mb-6 sm:mb-8 text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed text-stone-600 dark:text-stone-400 px-2 sm:px-0">
-										A collection of projects that showcase modern web development, innovative design
-										solutions, and impactful digital experiences.
-									</p>
-									<div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-stone-500 dark:text-stone-400">
+									{/* Enhanced Hero Title */}
+									<motion.h1
+										initial={{ opacity: 0, y: 30 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+										className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight"
+									>
+										Building Smarter, Faster<br />
+										Web Applications
+									</motion.h1>
+
+									{/* Personal Branding Section */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+										className="mb-6 sm:mb-8 space-y-3"
+									>
+										<p className="text-lg sm:text-xl md:text-2xl font-semibold text-stone-800 dark:text-stone-200">
+											John Schibelli
+										</p>
+										<p className="text-base sm:text-lg md:text-xl font-medium text-stone-700 dark:text-stone-300">
+											Senior Front-End Developer with 15+ Years of Experience
+										</p>
+										<p className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg leading-relaxed text-stone-600 dark:text-stone-400 px-2 sm:px-0">
+											Transforming ideas into high-performance digital experiences that drive business growth. 
+											Expert in React, Next.js, and TypeScript with proven results.
+										</p>
+									</motion.div>
+
+									{/* Value Propositions Grid */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+										className="mb-6 sm:mb-8"
+									>
+										<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+											<div className="flex flex-col items-center p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm border border-stone-200/50 dark:border-stone-700/50">
+												<div className="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center mb-3">
+													<UsersIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
+												<h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-1">Client Success</h3>
+												<p className="text-xs text-stone-600 dark:text-stone-400 text-center">Proven track record of delivering exceptional results</p>
+											</div>
+											<div className="flex flex-col items-center p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm border border-stone-200/50 dark:border-stone-700/50">
+												<div className="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center mb-3">
+													<CodeIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
+												<h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-1">Accessibility & SEO</h3>
+												<p className="text-xs text-stone-600 dark:text-stone-400 text-center">Built-in best practices for optimal performance</p>
+											</div>
+											<div className="flex flex-col items-center p-4 rounded-lg bg-white/50 dark:bg-stone-800/50 backdrop-blur-sm border border-stone-200/50 dark:border-stone-700/50">
+												<div className="w-12 h-12 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center mb-3">
+													<CalendarIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" />
+												</div>
+												<h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-1">Modern Solutions</h3>
+												<p className="text-xs text-stone-600 dark:text-stone-400 text-center">Cutting-edge technology and innovative approaches</p>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Location and Stats */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+										className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-stone-500 dark:text-stone-400"
+									>
+										<div className="flex items-center justify-center gap-2">
+											<MapPinIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+											<span>Towaco, NJ</span>
+										</div>
 										<div className="flex items-center justify-center gap-2">
 											<CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
 											<span>{allProjects.length} Projects</span>
@@ -205,7 +270,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											<CodeIcon className="h-3 w-3 sm:h-4 sm:w-4" />
 											<span>{allTags.length} Technologies</span>
 										</div>
-									</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
