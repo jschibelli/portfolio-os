@@ -204,10 +204,14 @@ export default function ContactPage({ publication }: Props) {
 									className="mx-auto max-w-5xl text-center"
 								>
 									<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-										Contact John Schibelli - Senior Front-End Developer
+										Let's Build Something
+										<br />
+										<span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">
+											Extraordinary
+										</span>
 									</h1>
 									<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-										Ready to bring your vision to life? Get in touch with a senior React and Next.js expert with 15+ years of experience creating exceptional digital experiences.
+										I'm John Schibelli, and I don't just build websites – I craft digital experiences that turn visitors into customers and ideas into reality. With 15+ years of React and Next.js expertise, I've helped startups scale and enterprises innovate.
 									</p>
 									<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
 										<div className="flex items-center gap-2">
@@ -238,10 +242,10 @@ export default function ContactPage({ publication }: Props) {
 								>
 									<div>
 										<h2 id="contact-form-heading" className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-											Start Your React & Next.js Project
+											Ready to Transform Your Vision?
 										</h2>
 										<p className="mb-6 text-lg text-stone-600 dark:text-stone-400">
-											Ready to build your next web application? Tell me about your project requirements and I&apos;ll provide a detailed response quickly. Specializing in React, Next.js, TypeScript, and AI integration.
+											Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – let's discuss how we can build something that not only meets your goals but exceeds your expectations.
 										</p>
 										<div className="flex flex-wrap gap-3 text-sm">
 											<Badge variant="outline" className="flex items-center gap-1">
@@ -440,10 +444,10 @@ export default function ContactPage({ publication }: Props) {
 								>
 									<div>
 										<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-											Connect With a Senior Front-End Developer
+											Why Choose John Schibelli?
 										</h2>
 										<p className="text-lg text-stone-600 dark:text-stone-400">
-											Based in Northern New Jersey, I serve clients worldwide with expert React, Next.js, and TypeScript development services. Available for both remote and local projects.
+											I'm not just another developer – I'm your strategic partner in digital transformation. Based in Northern New Jersey, I combine technical excellence with business acumen to deliver solutions that drive real results.
 										</p>
 									</div>
 
