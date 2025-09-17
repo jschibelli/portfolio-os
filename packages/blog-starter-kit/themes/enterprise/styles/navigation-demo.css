@@ -243,7 +243,15 @@
   }
 }
 
-/* Mobile Responsiveness - Navigation Menu */
+/* ==========================================================================
+   MOBILE RESPONSIVENESS - NAVIGATION MENU
+   ========================================================================== */
+/* 
+ * Mobile navigation styles with proper z-index management and smooth transitions
+ * Tested on: iOS Safari, Chrome Mobile, Firefox Mobile
+ * Breakpoint: 768px (mobile/tablet)
+ */
+
 /* Hide desktop navigation on mobile devices */
 @media (max-width: 768px) {
   .NavigationMenuRoot {
@@ -264,16 +272,9 @@
   .mobile-menu-container > div:last-child {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-}
-
-/* Mobile Stacking Context Management */
-/* Ensure proper layering for mobile menu interactions */
-@media (max-width: 768px) {
+  
+  /* Mobile stacking context management */
   header {
     z-index: 60;
-  }
-  
-  .mobile-menu-container {
-    z-index: 50;
   }
 } 

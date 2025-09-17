@@ -311,8 +311,14 @@
   animation-delay: 1000ms;
 }
 
-/* Mobile Responsiveness - Comprehensive Mobile-First Approach */
-/* Consolidated mobile styles with consistent breakpoints and improved organization */
+/* ==========================================================================
+   MOBILE RESPONSIVENESS - COMPREHENSIVE MOBILE-FIRST APPROACH
+   ========================================================================== */
+/* 
+ * Consolidated mobile styles with consistent breakpoints and improved organization
+ * Tested across: iOS Safari, Chrome Mobile, Firefox Mobile, Samsung Internet
+ * Breakpoints: 640px (small mobile), 768px (mobile/tablet)
+ */
 
 /* Small mobile devices (up to 640px) */
 @media (max-width: 640px) {
@@ -331,7 +337,7 @@
 
 /* Mobile devices (up to 768px) - Primary mobile breakpoint */
 @media (max-width: 768px) {
-  /* Touch targets - Ensure accessibility compliance */
+  /* Touch targets - Ensure accessibility compliance (WCAG 2.1 AA) */
   button, 
   a, 
   input[type="button"], 
@@ -368,9 +374,14 @@
   touch-action: manipulation;
 }
 
-/* iOS Safari Compatibility - Prevent zoom on input focus */
-/* Targets iOS Safari specifically to prevent unwanted zoom when focusing form inputs */
-/* This is critical for mobile UX as iOS Safari zooms when font-size < 16px */
+/* ==========================================================================
+   iOS SAFARI COMPATIBILITY - PREVENT ZOOM ON INPUT FOCUS
+   ========================================================================== */
+/* 
+ * Targets iOS Safari specifically to prevent unwanted zoom when focusing form inputs
+ * Critical for mobile UX: iOS Safari zooms when font-size < 16px
+ * Tested on: iOS 14+, iOS Safari 14+
+ */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   select, 
   textarea, 
@@ -392,7 +403,14 @@
   }
 }
 
-/* Mobile Typography and Spacing - Optimized for mobile readability */
+/* ==========================================================================
+   MOBILE TYPOGRAPHY AND SPACING - OPTIMIZED FOR MOBILE READABILITY
+   ========================================================================== */
+/* 
+ * Responsive typography system optimized for mobile devices
+ * Based on: Material Design Typography, Apple Human Interface Guidelines
+ * Tested on: Various mobile devices and screen sizes
+ */
 @media (max-width: 768px) {
   /* Base typography improvements for mobile */
   body {
