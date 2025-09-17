@@ -243,35 +243,38 @@
   }
 }
 
-/* Responsive adjustments */
+/* ==========================================================================
+   MOBILE RESPONSIVENESS - NAVIGATION MENU
+   ========================================================================== */
+/* 
+ * Mobile navigation styles with proper z-index management and smooth transitions
+ * Tested on: iOS Safari, Chrome Mobile, Firefox Mobile
+ * Breakpoint: 768px (mobile/tablet)
+ */
+
+/* Hide desktop navigation on mobile devices */
 @media (max-width: 768px) {
   .NavigationMenuRoot {
     display: none;
   }
   
-  /* Ensure mobile menu has proper z-index */
+  /* Mobile menu container with proper z-index for overlay */
   .mobile-menu-container {
     z-index: 50;
   }
   
-  /* Improve mobile menu backdrop */
+  /* Enhanced mobile menu backdrop with blur effect */
   .mobile-menu-container > div:first-child {
     backdrop-filter: blur(4px);
   }
   
-  /* Smooth mobile menu transitions */
+  /* Smooth mobile menu slide transitions */
   .mobile-menu-container > div:last-child {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-}
-
-/* Ensure proper stacking context for mobile menu */
-@media (max-width: 768px) {
+  
+  /* Mobile stacking context management */
   header {
     z-index: 60;
-  }
-  
-  .mobile-menu-container {
-    z-index: 50;
   }
 } 
