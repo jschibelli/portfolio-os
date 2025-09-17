@@ -240,7 +240,7 @@ export default function ContactPage({ publication }: Props) {
 										<h2 id="contact-form-heading" className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 											Start Your React & Next.js Project
 										</h2>
-										<p className="text-lg text-stone-600 dark:text-stone-400">
+										<p className="mb-6 text-lg text-stone-600 dark:text-stone-400">
 											Ready to build your next web application? Tell me about your project requirements and I&apos;ll provide a detailed response quickly. Specializing in React, Next.js, TypeScript, and AI integration.
 										</p>
 										<div className="flex flex-wrap gap-3 text-sm">
