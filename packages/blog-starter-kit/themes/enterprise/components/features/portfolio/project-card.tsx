@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, TrendingUpIcon, ClockIcon, UsersIcon } from 'lucide-react';
+import { ArrowRightIcon, TrendingUpIcon, ClockIcon, UsersIcon, TargetIcon, CheckCircleIcon, BarChart3Icon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '../../ui/badge';
@@ -63,6 +63,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 	}
 
 	const projectLink = getProjectLink(project);
+	const hasCaseStudy = project.caseStudyUrl || project.caseStudyPreview;
+	
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -73,8 +75,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 			className="h-full flex"
 		>
 			<Card className="group h-full w-full overflow-hidden border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-xl flex flex-col">
-				{/* Image */}
-				<div className="relative h-48 overflow-hidden">
+				{/* Enhanced Image Section with Better Visual Hierarchy */}
+				<div className="relative h-52 overflow-hidden">
 					<Image
 						src={project.image}
 						alt={`Screenshot of ${project.title} project - ${project.description}`}
@@ -86,16 +88,16 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						placeholder="blur"
 						blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
 					/>
-					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+					<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
 
-					{/* Technology Tags - Positioned in top-right corner */}
+					{/* Enhanced Technology Tags */}
 					{project.tags?.length ? (
-						<div className="absolute right-4 top-4 flex gap-1.5 transition-all duration-300 group-hover:scale-105">
-							{project.tags.slice(0, 2).map((tag, tagIndex) => (
+						<div className="absolute right-3 top-3 flex flex-wrap gap-1.5 transition-all duration-300 group-hover:scale-105">
+							{project.tags.slice(0, 3).map((tag, tagIndex) => (
 								<Badge 
 									key={tagIndex} 
 									variant="secondary" 
-									className="bg-white/90 border border-white/50 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-2 py-1"
+									className="bg-white/95 border border-white/60 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-2.5 py-1 font-medium"
 								>
 									{tag}
 								</Badge>
@@ -103,76 +105,166 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						</div>
 					) : null}
 
+					{/* Enhanced Hover Overlay with Case Study Indicator */}
 					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
-						<div className="bg-primary/90 text-primary-foreground rounded-full px-4 py-2 text-sm font-medium backdrop-blur-sm">
-							View Project
+						<div className="bg-primary/95 text-primary-foreground rounded-lg px-6 py-3 text-sm font-semibold backdrop-blur-sm shadow-lg">
+							{hasCaseStudy ? 'View Case Study' : 'View Project'}
 						</div>
 					</div>
+
+					{/* Case Study Badge */}
+					{hasCaseStudy && (
+						<div className="absolute left-3 top-3">
+							<Badge className="bg-primary/90 text-primary-foreground border-0 shadow-lg">
+								<BarChart3Icon className="w-3 h-3 mr-1" />
+								Case Study
+							</Badge>
+						</div>
+					)}
 				</div>
 
-				{/* Content */}
-				<CardHeader className="pb-2">
-					<h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
+				{/* Enhanced Content Section */}
+				<CardHeader className="pb-3">
+					<h3 className="text-xl font-bold text-foreground transition-colors group-hover:text-primary">
 						{project.title}
 					</h3>
 				</CardHeader>
 
-				<CardContent className="flex flex-col flex-1 p-6 pt-2">
-					{/* Description - Flexible content area */}
-					<div className="flex-1">
-						<p className="leading-relaxed text-muted-foreground">
+				<CardContent className="flex flex-col flex-1 p-6 pt-0">
+					{/* Description */}
+					<div className="flex-1 mb-4">
+						<p className="leading-relaxed text-muted-foreground text-sm">
 							{project.description}
 						</p>
 					</div>
 
-					{/* Fixed bottom section for stats and button */}
-					<div className="mt-6 space-y-4">
-						{/* Key Results - Clean, professional metrics display */}
-						{project.metrics && (
-							<div className="border-t border-stone-200 pt-4 dark:border-stone-800">
-								<div className="grid grid-cols-2 gap-4">
-									{/* Performance Metric */}
-									{project.metrics.performance?.loadTimeImprovement && (
-										<div className="text-center">
-											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-												{project.metrics.performance.loadTimeImprovement}
-											</div>
-											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
-												Faster Load Time
-											</div>
+					{/* Enhanced Case Study Preview Section */}
+					{project.caseStudyPreview && (
+						<div className="mb-6 p-4 bg-stone-50 dark:bg-stone-900/50 rounded-lg border border-stone-200 dark:border-stone-800">
+							<div className="space-y-3">
+								<div className="flex items-start gap-2">
+									<TargetIcon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+									<div>
+										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
+											Problem
 										</div>
-									)}
-									
-									{/* Business Metric */}
-									{project.metrics.business && Object.entries(project.metrics.business).slice(0, 1).map(([key, value]) => (
-										<div key={key} className="text-center">
-											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-												{value}
-											</div>
-											<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide">
-												{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-											</div>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											{project.caseStudyPreview.problem}
+										</p>
+									</div>
+								</div>
+								
+								<div className="flex items-start gap-2">
+									<CheckCircleIcon className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+									<div>
+										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
+											Solution
 										</div>
-									))}
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											{project.caseStudyPreview.solution}
+										</p>
+									</div>
+								</div>
+								
+								<div className="flex items-start gap-2">
+									<TrendingUpIcon className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+									<div>
+										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
+											Results
+										</div>
+										<p className="text-sm text-stone-600 dark:text-stone-400">
+											{project.caseStudyPreview.results}
+										</p>
+									</div>
 								</div>
 							</div>
-						)}
+						</div>
+					)}
 
-						{/* CTA Button - Always at bottom */}
-						<Button
-							variant="outline"
-							size="sm"
-							className="group/btn w-full transition-all duration-300"
-							asChild
-						>
-							<Link 
-								href={projectLink}
-								aria-label={`View details for ${project.title} project`}
+					{/* Enhanced Metrics Display */}
+					{project.metrics && (
+						<div className="mb-6 border-t border-stone-200 dark:border-stone-800 pt-4">
+							<div className="grid grid-cols-2 gap-4">
+								{/* Performance Metric */}
+								{project.metrics.performance?.loadTimeImprovement && (
+									<div className="text-center p-3 bg-stone-50 dark:bg-stone-900/30 rounded-lg">
+										<div className="text-2xl font-bold text-primary">
+											{project.metrics.performance.loadTimeImprovement}
+										</div>
+										<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide font-medium">
+											Faster Load Time
+										</div>
+									</div>
+								)}
+								
+								{/* Business Metric */}
+								{project.metrics.business && Object.entries(project.metrics.business).slice(0, 1).map(([key, value]) => (
+									<div key={key} className="text-center p-3 bg-stone-50 dark:bg-stone-900/30 rounded-lg">
+										<div className="text-2xl font-bold text-primary">
+											{value}
+										</div>
+										<div className="text-xs text-stone-600 dark:text-stone-400 uppercase tracking-wide font-medium">
+											{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					)}
+
+					{/* Enhanced CTA Buttons */}
+					<div className="space-y-2">
+						{hasCaseStudy ? (
+							<div className="grid grid-cols-2 gap-2">
+								<Button
+									variant="default"
+									size="sm"
+									className="group/btn transition-all duration-300"
+									asChild
+								>
+									<Link 
+										href={projectLink}
+										aria-label={`View case study for ${project.title}`}
+									>
+										<BarChart3Icon className="mr-2 h-4 w-4" />
+										Case Study
+									</Link>
+								</Button>
+								{project.liveUrl && (
+									<Button
+										variant="outline"
+										size="sm"
+										className="group/btn transition-all duration-300"
+										asChild
+									>
+										<Link 
+											href={project.liveUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+											aria-label={`View live ${project.title} project`}
+										>
+											<ArrowRightIcon className="mr-2 h-4 w-4" />
+											Live Site
+										</Link>
+									</Button>
+								)}
+							</div>
+						) : (
+							<Button
+								variant="outline"
+								size="sm"
+								className="group/btn w-full transition-all duration-300"
+								asChild
 							>
-								{project.caseStudyUrl ? 'View Case Study' : 'View Project'}
-								<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-							</Link>
-						</Button>
+								<Link 
+									href={projectLink}
+									aria-label={`View details for ${project.title} project`}
+								>
+									View Project
+									<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								</Link>
+							</Button>
+						)}
 					</div>
 				</CardContent>
 			</Card>
