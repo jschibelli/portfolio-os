@@ -129,7 +129,7 @@ export default function ContactPage({ publication }: Props) {
 			<Layout>
 				<SEOHead
 					title="Contact John Schibelli - Senior Front-End Developer | React & Next.js Expert"
-					description="Get in touch with John Schibelli, a senior front-end developer with 15+ years experience. Specializing in React, Next.js, and AI integration. 24h response time guaranteed."
+					description="Get in touch with John Schibelli, a senior front-end developer with 15+ years experience. Specializing in React, Next.js, and AI integration. Quick response guaranteed."
 					keywords={[
 						'contact',
 						'front-end developer',
@@ -215,10 +215,6 @@ export default function ContactPage({ publication }: Props) {
 											<span>Northern New Jersey, USA</span>
 										</div>
 										<div className="flex items-center gap-2">
-											<ClockIcon className="h-4 w-4" aria-hidden="true" />
-											<span>24h Response Time Guaranteed</span>
-										</div>
-										<div className="flex items-center gap-2">
 											<MailIcon className="h-4 w-4" aria-hidden="true" />
 											<span>Remote & Local Development</span>
 										</div>
@@ -245,13 +241,9 @@ export default function ContactPage({ publication }: Props) {
 											Start Your React & Next.js Project
 										</h2>
 										<p className="text-lg text-stone-600 dark:text-stone-400">
-											Ready to build your next web application? Tell me about your project requirements and I&apos;ll provide a detailed response within 24 hours. Specializing in React, Next.js, TypeScript, and AI integration.
+											Ready to build your next web application? Tell me about your project requirements and I&apos;ll provide a detailed response quickly. Specializing in React, Next.js, TypeScript, and AI integration.
 										</p>
 										<div className="flex flex-wrap gap-3 text-sm">
-											<Badge variant="outline" className="flex items-center gap-1">
-												<ClockIcon className="h-3 w-3" />
-												24h Response Time
-											</Badge>
 											<Badge variant="outline" className="flex items-center gap-1">
 												<SendIcon className="h-3 w-3" />
 												Free Consultation
@@ -259,6 +251,10 @@ export default function ContactPage({ publication }: Props) {
 											<Badge variant="outline" className="flex items-center gap-1">
 												<MailIcon className="h-3 w-3" />
 												No Commitment
+											</Badge>
+											<Badge variant="outline" className="flex items-center gap-1">
+												<CheckCircleIcon className="h-3 w-3" />
+												Quick Response
 											</Badge>
 										</div>
 									</div>
@@ -278,7 +274,7 @@ export default function ContactPage({ publication }: Props) {
 														Message Sent!
 													</h3>
 													<p className="text-green-700 dark:text-green-300">
-														Thank you for reaching out. I&apos;ll get back to you within 24 hours.
+														Thank you for reaching out. I&apos;ll get back to you soon.
 													</p>
 												</div>
 											</div>
@@ -474,23 +470,6 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 										</div>
 
-										{/* Response Time & Availability */}
-										<div className="flex items-start gap-4">
-											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/20">
-												<CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
-											</div>
-											<div>
-												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
-													Response Time
-												</h3>
-												<p className="text-stone-600 dark:text-stone-400">
-													24-hour response guarantee
-												</p>
-												<p className="text-sm text-stone-500 dark:text-stone-500">
-													Currently accepting new projects
-												</p>
-											</div>
-										</div>
 
 										{/* Location & Timezone */}
 										<div className="flex items-start gap-4">
@@ -510,22 +489,6 @@ export default function ContactPage({ publication }: Props) {
 											</div>
 										</div>
 
-										<div className="flex items-start gap-4">
-											<div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-800">
-												<ClockIcon className="h-6 w-6 text-stone-600 dark:text-stone-400" aria-hidden="true" />
-											</div>
-											<div>
-												<h3 className="mb-1 text-lg font-semibold text-stone-900 dark:text-stone-100">
-													Fast Response Time Guaranteed
-												</h3>
-												<p className="text-stone-600 dark:text-stone-400">
-													Available for new React and Next.js projects
-												</p>
-												<p className="text-sm text-stone-500 dark:text-stone-500">
-													Professional response within 24 hours guaranteed
-												</p>
-											</div>
-										</div>
 									</div>
 
 									{/* Services */}
@@ -661,10 +624,10 @@ export default function ContactPage({ publication }: Props) {
 									</div>
 									<div className="text-left">
 										<h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">
-											Fast Response Time & Professional Service
+											Professional Service & Quality Code
 										</h3>
 										<p className="text-stone-600 dark:text-stone-400">
-											I guarantee a response within 24 hours for all project inquiries. My focus is on delivering clean, maintainable code with excellent performance and SEO optimization for your business success.
+											My focus is on delivering clean, maintainable code with excellent performance and SEO optimization for your business success. Quick response times and professional communication throughout the project.
 										</p>
 									</div>
 									<div className="text-left">
