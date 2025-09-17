@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ClockIcon, MailIcon, MapPinIcon, SendIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MapPinIcon, SendIcon, StarIcon, CheckCircleIcon, ZapIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
@@ -148,9 +148,9 @@ export default function ContactPage({ publication }: Props) {
 				<ModernHeader publication={publication} />
 
 				<main className="min-h-screen bg-white dark:bg-stone-950">
-					{/* Hero Section */}
+					{/* Enhanced Hero Section */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[500px] overflow-hidden bg-stone-50 py-16 md:py-24 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg4.png)',
 							backgroundSize: 'cover',
@@ -159,24 +159,123 @@ export default function ContactPage({ publication }: Props) {
 						}}
 					>
 						{/* Background Overlay */}
-						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+						<div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
+						
+						{/* Animated Background Elements */}
+						<div className="absolute inset-0 z-0">
+							<motion.div
+								animate={{
+									scale: [1, 1.1, 1],
+									opacity: [0.1, 0.2, 0.1],
+								}}
+								transition={{
+									duration: 8,
+									repeat: Infinity,
+									ease: "easeInOut"
+								}}
+								className="absolute top-1/4 left-1/4 h-32 w-32 rounded-full bg-stone-300/20 dark:bg-stone-600/20"
+							/>
+							<motion.div
+								animate={{
+									scale: [1.1, 1, 1.1],
+									opacity: [0.15, 0.25, 0.15],
+								}}
+								transition={{
+									duration: 6,
+									repeat: Infinity,
+									ease: "easeInOut",
+									delay: 2
+								}}
+								className="absolute bottom-1/4 right-1/4 h-24 w-24 rounded-full bg-stone-400/20 dark:bg-stone-500/20"
+							/>
+						</div>
+
 						{/* Content Overlay */}
 						<div className="relative z-10">
 							<Container className="px-4">
 								<motion.div
-									initial={{ opacity: 0, y: 20 }}
+									initial={{ opacity: 0, y: 30 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center"
 								>
-									<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-										Let&apos;s Work Together
-									</h1>
-									<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-										Ready to bring your vision to life? I&apos;m here to help you create exceptional
-										digital experiences.
-									</p>
-									<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+									{/* Value Proposition Badge */}
+									<motion.div
+										initial={{ opacity: 0, scale: 0.9 }}
+										animate={{ opacity: 1, scale: 1 }}
+										transition={{ duration: 0.6, delay: 0.2 }}
+										className="mb-6"
+									>
+										<Badge 
+											variant="outline" 
+											className="border-stone-300 bg-stone-100/80 px-4 py-2 text-sm font-medium text-stone-700 dark:border-stone-600 dark:bg-stone-800/80 dark:text-stone-300"
+										>
+											<StarIcon className="mr-2 h-4 w-4 text-amber-500" />
+											15+ Years of Proven Results
+										</Badge>
+									</motion.div>
+
+									{/* Main Headline */}
+									<motion.h1 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.3 }}
+										className="mb-6 text-4xl font-bold leading-tight text-stone-900 md:text-6xl lg:text-7xl dark:text-stone-100"
+									>
+										Building Smarter, Faster
+										<br />
+										<span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">
+											Web Applications
+										</span>
+									</motion.h1>
+
+									{/* Value Proposition Tagline */}
+									<motion.p 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4 }}
+										className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400"
+									>
+										Transform your ideas into exceptional digital experiences with a senior developer who delivers results, not just code.
+									</motion.p>
+
+									{/* Key Metrics & Achievements */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.5 }}
+										className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3"
+									>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">100%</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Client Satisfaction</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<ZapIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">24h</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Response Time</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<StarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">15+</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Location & Availability Info */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6 }}
+										className="flex flex-wrap justify-center gap-6 text-sm text-stone-500 dark:text-stone-400"
+									>
 										<div className="flex items-center gap-2">
 											<MapPinIcon className="h-4 w-4" />
 											<span>Northern New Jersey</span>
@@ -189,7 +288,7 @@ export default function ContactPage({ publication }: Props) {
 											<MailIcon className="h-4 w-4" />
 											<span>Remote & Local Work</span>
 										</div>
-									</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
