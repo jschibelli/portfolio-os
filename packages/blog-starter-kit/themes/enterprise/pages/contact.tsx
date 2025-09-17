@@ -5,6 +5,9 @@ import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
+import { TrustSignals } from '../components/features/contact/TrustSignals';
+import { CaseStudyHighlights } from '../components/features/contact/CaseStudyHighlights';
+import { QuickStats } from '../components/features/contact/QuickStats';
 import ModernHeader from '../components/features/navigation/modern-header';
 import {
 	BlueskySVG as BlueskyIcon,
@@ -211,9 +214,23 @@ export default function ContactPage({ publication }: Props) {
 										<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
 											Start Your Project
 										</h2>
-										<p className="text-lg text-stone-600 dark:text-stone-400">
+										<p className="mb-4 text-lg text-stone-600 dark:text-stone-400">
 											Tell me about your project and I&apos;ll get back to you within 24 hours.
 										</p>
+										<div className="flex flex-wrap gap-3 text-sm">
+											<Badge variant="outline" className="flex items-center gap-1">
+												<ClockIcon className="h-3 w-3" />
+												24h Response Time
+											</Badge>
+											<Badge variant="outline" className="flex items-center gap-1">
+												<SendIcon className="h-3 w-3" />
+												Free Consultation
+											</Badge>
+											<Badge variant="outline" className="flex items-center gap-1">
+												<MailIcon className="h-3 w-3" />
+												No Commitment
+											</Badge>
+										</div>
 									</div>
 
 									{submitStatus === 'success' ? (
@@ -532,6 +549,15 @@ export default function ContactPage({ publication }: Props) {
 							</div>
 						</Container>
 					</section>
+
+					{/* Trust Signals Section */}
+					<TrustSignals />
+
+					{/* Quick Stats Section */}
+					<QuickStats />
+
+					{/* Case Study Highlights Section */}
+					<CaseStudyHighlights />
 				</main>
 				<Chatbot />
 			</Layout>
