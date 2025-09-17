@@ -7,6 +7,7 @@ const ContactFormSchema = z.object({
   email: z.string().email('Invalid email address'),
   company: z.string().optional(),
   projectType: z.string().optional(),
+  budget: z.string().optional(),
   message: z.string().min(10, 'Message must be at least 10 characters').max(2000, 'Message too long'),
 });
 
@@ -15,6 +16,7 @@ interface ContactFormData {
   email: string;
   company?: string;
   projectType?: string;
+  budget?: string;
   message: string;
 }
 
@@ -82,6 +84,7 @@ export async function POST(request: NextRequest) {
       email: validatedData.email,
       company: validatedData.company,
       projectType: validatedData.projectType,
+      budget: validatedData.budget,
       messageLength: validatedData.message.length,
       timestamp: new Date().toISOString(),
       clientIP

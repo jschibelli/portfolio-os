@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ClockIcon, MailIcon, MapPinIcon, SendIcon } from 'lucide-react';
+import { ClockIcon, MailIcon, MapPinIcon, SendIcon, StarIcon, CheckCircleIcon, ZapIcon, DollarSignIcon, ShieldIcon, AlertCircleIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
@@ -30,40 +30,111 @@ export default function ContactPage({ publication }: Props) {
 		email: '',
 		company: '',
 		projectType: '',
+		budget: '',
 		message: '',
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [formProgress, setFormProgress] = useState(0);
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
 	) => {
+		const { name, value } = e.target;
 		setFormData({
 			...formData,
-			[e.target.name]: e.target.value,
+			[name]: value,
 		});
+		
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors(prev => ({ ...prev, [name]: '' }));
+		}
+		
+		// Update form progress
+		updateFormProgress();
+	};
+
+	// Calculate form progress based on filled fields
+	const updateFormProgress = () => {
+		const requiredFields = ['name', 'email', 'message'];
+		const optionalFields = ['company', 'projectType', 'budget'];
+		const totalFields = requiredFields.length + optionalFields.length;
+		
+		let filledFields = 0;
+		requiredFields.forEach(field => {
+			if (formData[field as keyof typeof formData]?.trim()) filledFields++;
+		});
+		optionalFields.forEach(field => {
+			if (formData[field as keyof typeof formData]?.trim()) filledFields++;
+		});
+		
+		setFormProgress((filledFields / totalFields) * 100);
+	};
+
+	// Real-time validation
+	const validateField = (name: string, value: string) => {
+		const newErrors = { ...errors };
+		
+		switch (name) {
+			case 'name':
+				if (!value.trim()) {
+					newErrors.name = 'Name is required';
+				} else if (value.trim().length < 2) {
+					newErrors.name = 'Name must be at least 2 characters';
+				} else {
+					delete newErrors.name;
+				}
+				break;
+			case 'email':
+				if (!value.trim()) {
+					newErrors.email = 'Email is required';
+				} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+					newErrors.email = 'Please enter a valid email address';
+				} else {
+					delete newErrors.email;
+				}
+				break;
+			case 'message':
+				if (!value.trim()) {
+					newErrors.message = 'Project details are required';
+				} else if (value.trim().length < 10) {
+					newErrors.message = 'Please provide more detailed project information (at least 10 characters)';
+				} else {
+					delete newErrors.message;
+				}
+				break;
+		}
+		
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
 	};
 
 	const validateForm = () => {
-		const errors: string[] = [];
+		const newErrors: Record<string, string> = {};
 		
+		// Validate required fields
 		if (!formData.name.trim()) {
-			errors.push('Name is required');
+			newErrors.name = 'Name is required';
+		} else if (formData.name.trim().length < 2) {
+			newErrors.name = 'Name must be at least 2 characters';
 		}
 		
 		if (!formData.email.trim()) {
-			errors.push('Email is required');
+			newErrors.email = 'Email is required';
 		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-			errors.push('Please enter a valid email address');
+			newErrors.email = 'Please enter a valid email address';
 		}
 		
 		if (!formData.message.trim()) {
-			errors.push('Project details are required');
+			newErrors.message = 'Project details are required';
 		} else if (formData.message.trim().length < 10) {
-			errors.push('Please provide more detailed project information (at least 10 characters)');
+			newErrors.message = 'Please provide more detailed project information (at least 10 characters)';
 		}
 		
-		return errors;
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -71,10 +142,10 @@ export default function ContactPage({ publication }: Props) {
 		setSubmitStatus('idle');
 		
 		// Validate form before submission
-		const validationErrors = validateForm();
-		if (validationErrors.length > 0) {
+		const isValid = validateForm();
+		if (!isValid) {
 			setSubmitStatus('error');
-			console.error('Form validation errors:', validationErrors);
+			console.error('Form validation errors:', errors);
 			// Reset error message after 5 seconds
 			setTimeout(() => setSubmitStatus('idle'), 5000);
 			return;
@@ -83,21 +154,36 @@ export default function ContactPage({ publication }: Props) {
 		setIsSubmitting(true);
 
 		try {
-			// Simulate form submission (replace with actual form handling)
-			await new Promise(resolve => setTimeout(resolve, 2000));
-			
-			setIsSubmitting(false);
-			setSubmitStatus('success');
-			setFormData({
-				name: '',
-				email: '',
-				company: '',
-				projectType: '',
-				message: '',
+			// Submit to API endpoint
+			const response = await fetch('/api/contact', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(formData),
 			});
 
-			// Reset success message after 5 seconds
-			setTimeout(() => setSubmitStatus('idle'), 5000);
+			const result = await response.json();
+
+			if (response.ok && result.success) {
+				setIsSubmitting(false);
+				setSubmitStatus('success');
+				setFormData({
+					name: '',
+					email: '',
+					company: '',
+					projectType: '',
+					budget: '',
+					message: '',
+				});
+				setFormProgress(0);
+				setErrors({});
+
+				// Reset success message after 5 seconds
+				setTimeout(() => setSubmitStatus('idle'), 5000);
+			} else {
+				throw new Error(result.error || 'Failed to submit form');
+			}
 		} catch (error) {
 			console.error('Form submission error:', error);
 			setIsSubmitting(false);
@@ -148,9 +234,9 @@ export default function ContactPage({ publication }: Props) {
 				<ModernHeader publication={publication} />
 
 				<main className="min-h-screen bg-white dark:bg-stone-950">
-					{/* Hero Section */}
+					{/* Enhanced Hero Section */}
 					<section
-						className="relative min-h-[400px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
+						className="relative min-h-[500px] overflow-hidden bg-stone-50 py-16 md:py-24 dark:bg-stone-900"
 						style={{
 							backgroundImage: 'url(/assets/hero/hero-bg4.png)',
 							backgroundSize: 'cover',
@@ -159,24 +245,123 @@ export default function ContactPage({ publication }: Props) {
 						}}
 					>
 						{/* Background Overlay */}
-						<div className="absolute inset-0 z-0 bg-stone-50/70 dark:bg-stone-900/70"></div>
+						<div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
+						
+						{/* Animated Background Elements */}
+						<div className="absolute inset-0 z-0">
+							<motion.div
+								animate={{
+									scale: [1, 1.1, 1],
+									opacity: [0.1, 0.2, 0.1],
+								}}
+								transition={{
+									duration: 8,
+									repeat: Infinity,
+									ease: "easeInOut"
+								}}
+								className="absolute top-1/4 left-1/4 h-32 w-32 rounded-full bg-stone-300/20 dark:bg-stone-600/20"
+							/>
+							<motion.div
+								animate={{
+									scale: [1.1, 1, 1.1],
+									opacity: [0.15, 0.25, 0.15],
+								}}
+								transition={{
+									duration: 6,
+									repeat: Infinity,
+									ease: "easeInOut",
+									delay: 2
+								}}
+								className="absolute bottom-1/4 right-1/4 h-24 w-24 rounded-full bg-stone-400/20 dark:bg-stone-500/20"
+							/>
+						</div>
+
 						{/* Content Overlay */}
 						<div className="relative z-10">
 							<Container className="px-4">
 								<motion.div
-									initial={{ opacity: 0, y: 20 }}
+									initial={{ opacity: 0, y: 30 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.8, ease: 'easeOut' }}
-									className="mx-auto max-w-4xl text-center"
+									className="mx-auto max-w-5xl text-center"
 								>
-									<h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">
-										Let&apos;s Work Together
-									</h1>
-									<p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">
-										Ready to bring your vision to life? I&apos;m here to help you create exceptional
-										digital experiences.
-									</p>
-									<div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+									{/* Value Proposition Badge */}
+									<motion.div
+										initial={{ opacity: 0, scale: 0.9 }}
+										animate={{ opacity: 1, scale: 1 }}
+										transition={{ duration: 0.6, delay: 0.2 }}
+										className="mb-6"
+									>
+										<Badge 
+											variant="outline" 
+											className="border-stone-300 bg-stone-100/80 px-4 py-2 text-sm font-medium text-stone-700 dark:border-stone-600 dark:bg-stone-800/80 dark:text-stone-300"
+										>
+											<StarIcon className="mr-2 h-4 w-4 text-amber-500" />
+											15+ Years of Proven Results
+										</Badge>
+									</motion.div>
+
+									{/* Main Headline */}
+									<motion.h1 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.3 }}
+										className="mb-6 text-4xl font-bold leading-tight text-stone-900 md:text-6xl lg:text-7xl dark:text-stone-100"
+									>
+										Building Smarter, Faster
+										<br />
+										<span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">
+											Web Applications
+										</span>
+									</motion.h1>
+
+									{/* Value Proposition Tagline */}
+									<motion.p 
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.4 }}
+										className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400"
+									>
+										Transform your ideas into exceptional digital experiences with a senior developer who delivers results, not just code.
+									</motion.p>
+
+									{/* Key Metrics & Achievements */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.5 }}
+										className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3"
+									>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">100%</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Client Satisfaction</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<ZapIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">24h</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Response Time</div>
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-3 rounded-lg bg-white/60 px-4 py-3 backdrop-blur-sm dark:bg-stone-800/60">
+											<StarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+											<div className="text-center">
+												<div className="text-lg font-bold text-stone-900 dark:text-stone-100">15+</div>
+												<div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+											</div>
+										</div>
+									</motion.div>
+
+									{/* Location & Availability Info */}
+									<motion.div
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.8, delay: 0.6 }}
+										className="flex flex-wrap justify-center gap-6 text-sm text-stone-500 dark:text-stone-400"
+									>
 										<div className="flex items-center gap-2">
 											<MapPinIcon className="h-4 w-4" />
 											<span>Northern New Jersey</span>
@@ -189,7 +374,7 @@ export default function ContactPage({ publication }: Props) {
 											<MailIcon className="h-4 w-4" />
 											<span>Remote & Local Work</span>
 										</div>
-									</div>
+									</motion.div>
 								</motion.div>
 							</Container>
 						</div>
@@ -209,10 +394,10 @@ export default function ContactPage({ publication }: Props) {
 								>
 									<div>
 										<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-											Start Your Project
+											Let's Discuss Your Project Goals
 										</h2>
 										<p className="text-lg text-stone-600 dark:text-stone-400">
-											Tell me about your project and I&apos;ll get back to you within 24 hours.
+											Get a free consultation and detailed project proposal within 24 hours. I&apos;ll help you transform your ideas into exceptional digital experiences.
 										</p>
 									</div>
 
@@ -224,14 +409,14 @@ export default function ContactPage({ publication }: Props) {
 										>
 											<div className="flex items-center gap-3">
 												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-800">
-													<SendIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+													<CheckCircleIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
 												</div>
 												<div>
 													<h3 className="text-lg font-semibold text-green-800 dark:text-green-200">
-														Message Sent!
+														Project Consultation Requested!
 													</h3>
 													<p className="text-green-700 dark:text-green-300">
-														Thank you for reaching out. I&apos;ll get back to you within 24 hours.
+														Thank you for your interest! I&apos;ll review your project details and get back to you within 24 hours with a detailed proposal and next steps.
 													</p>
 												</div>
 											</div>
@@ -244,27 +429,52 @@ export default function ContactPage({ publication }: Props) {
 										>
 											<div className="flex items-center gap-3">
 												<div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-800">
-													<SendIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+													<AlertCircleIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
 												</div>
 												<div>
 													<h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
-														Validation Error
+														Please Fix the Following Issues
 													</h3>
-													<p className="text-red-700 dark:text-red-300">
-														Please check your form inputs and try again.
-													</p>
+													<div className="text-red-700 dark:text-red-300">
+														{Object.keys(errors).length > 0 ? (
+															<ul className="list-disc list-inside space-y-1">
+																{Object.values(errors).map((error, index) => (
+																	<li key={index}>{error}</li>
+																))}
+															</ul>
+														) : (
+															<p>Please check your form inputs and try again.</p>
+														)}
+													</div>
 												</div>
 											</div>
 										</motion.div>
 									) : (
-										<form onSubmit={handleSubmit} className="space-y-6" role="form" aria-label="Contact form">
-											<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+										<div className="space-y-6">
+											{/* Form Progress Indicator */}
+											<div className="space-y-2">
+												<div className="flex items-center justify-between text-sm text-stone-600 dark:text-stone-400">
+													<span>Form Progress</span>
+													<span>{Math.round(formProgress)}% Complete</span>
+												</div>
+												<div className="h-2 w-full rounded-full bg-stone-200 dark:bg-stone-700">
+													<motion.div
+														className="h-2 rounded-full bg-gradient-to-r from-stone-500 to-stone-600 dark:from-stone-400 dark:to-stone-500"
+														initial={{ width: 0 }}
+														animate={{ width: `${formProgress}%` }}
+														transition={{ duration: 0.3, ease: 'easeOut' }}
+													/>
+												</div>
+											</div>
+
+											<form onSubmit={handleSubmit} className="space-y-6" aria-label="Contact form">
+												<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 												<div>
 													<label
 														htmlFor="name"
 														className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
 													>
-														Name *
+														Full Name *
 													</label>
 													<input
 														type="text"
@@ -272,19 +482,30 @@ export default function ContactPage({ publication }: Props) {
 														name="name"
 														value={formData.name}
 														onChange={handleInputChange}
+														onBlur={(e) => validateField('name', e.target.value)}
 														required
 														aria-required="true"
-														aria-describedby="name-error"
-														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
-														placeholder="Your name"
+														aria-describedby={errors.name ? "name-error" : undefined}
+														aria-invalid={!!errors.name}
+														className={`w-full rounded-lg border px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:text-stone-100 ${
+															errors.name 
+																? 'border-red-300 bg-red-50 dark:border-red-600 dark:bg-red-900/20' 
+																: 'border-stone-300 bg-white dark:border-stone-600 dark:bg-stone-800'
+														}`}
+														placeholder="Enter your full name"
 													/>
+													{errors.name && (
+														<p id="name-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+															{errors.name}
+														</p>
+													)}
 												</div>
 												<div>
 													<label
 														htmlFor="email"
 														className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
 													>
-														Email *
+														Email Address *
 													</label>
 													<input
 														type="email"
@@ -292,12 +513,23 @@ export default function ContactPage({ publication }: Props) {
 														name="email"
 														value={formData.email}
 														onChange={handleInputChange}
+														onBlur={(e) => validateField('email', e.target.value)}
 														required
 														aria-required="true"
-														aria-describedby="email-error"
-														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
+														aria-describedby={errors.email ? "email-error" : undefined}
+														aria-invalid={!!errors.email}
+														className={`w-full rounded-lg border px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:text-stone-100 ${
+															errors.email 
+																? 'border-red-300 bg-red-50 dark:border-red-600 dark:bg-red-900/20' 
+																: 'border-stone-300 bg-white dark:border-stone-600 dark:bg-stone-800'
+														}`}
 														placeholder="your.email@example.com"
 													/>
+													{errors.email && (
+														<p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+															{errors.email}
+														</p>
+													)}
 												</div>
 											</div>
 
@@ -306,7 +538,7 @@ export default function ContactPage({ publication }: Props) {
 													htmlFor="company"
 													className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
 												>
-													Company
+													Company / Organization
 												</label>
 												<input
 													type="text"
@@ -315,32 +547,59 @@ export default function ContactPage({ publication }: Props) {
 													value={formData.company}
 													onChange={handleInputChange}
 													className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
-													placeholder="Your company (optional)"
+													placeholder="Your company or organization (optional)"
 												/>
 											</div>
 
-											<div>
-												<label
-													htmlFor="projectType"
-													className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
-												>
-													Project Type
-												</label>
-												<select
-													id="projectType"
-													name="projectType"
-													value={formData.projectType}
-													onChange={handleInputChange}
-													className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
-												>
-													<option value="">Select project type</option>
-													<option value="web-app">Web Application</option>
-													<option value="website">Website</option>
-													<option value="ecommerce">E-commerce</option>
-													<option value="consulting">Consulting</option>
-													<option value="maintenance">Maintenance & Support</option>
-													<option value="other">Other</option>
-												</select>
+											<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+												<div>
+													<label
+														htmlFor="projectType"
+														className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
+													>
+														Project Type
+													</label>
+													<select
+														id="projectType"
+														name="projectType"
+														value={formData.projectType}
+														onChange={handleInputChange}
+														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
+													>
+														<option value="">Select project type</option>
+														<option value="web-development">Web Development</option>
+														<option value="website-redesign">Website Redesign</option>
+														<option value="e-commerce">E-commerce Platform</option>
+														<option value="ai-integration">AI Integration</option>
+														<option value="consulting">Technical Consulting</option>
+														<option value="maintenance">Maintenance & Support</option>
+														<option value="mobile-app">Mobile Application</option>
+														<option value="other">Other</option>
+													</select>
+												</div>
+												<div>
+													<label
+														htmlFor="budget"
+														className="mb-2 block text-sm font-medium text-stone-700 dark:text-stone-300"
+													>
+														Budget Range
+													</label>
+													<select
+														id="budget"
+														name="budget"
+														value={formData.budget}
+														onChange={handleInputChange}
+														className="w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
+													>
+														<option value="">Select budget range</option>
+														<option value="under-5k">Under $5,000</option>
+														<option value="5k-15k">$5,000 - $15,000</option>
+														<option value="15k-30k">$15,000 - $30,000</option>
+														<option value="30k-50k">$30,000 - $50,000</option>
+														<option value="50k-plus">$50,000+</option>
+														<option value="discuss">Let's discuss</option>
+													</select>
+												</div>
 											</div>
 
 											<div>
@@ -355,13 +614,33 @@ export default function ContactPage({ publication }: Props) {
 													name="message"
 													value={formData.message}
 													onChange={handleInputChange}
+													onBlur={(e) => validateField('message', e.target.value)}
 													required
 													aria-required="true"
-													aria-describedby="message-error"
+													aria-describedby={errors.message ? "message-error" : undefined}
+													aria-invalid={!!errors.message}
 													rows={6}
-													className="w-full resize-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100"
-													placeholder="Tell me about your project, timeline, budget, and any specific requirements..."
+													className={`w-full resize-none rounded-lg border px-4 py-3 text-stone-900 transition-colors focus:border-transparent focus:ring-2 focus:ring-stone-500 dark:text-stone-100 ${
+														errors.message 
+															? 'border-red-300 bg-red-50 dark:border-red-600 dark:bg-red-900/20' 
+															: 'border-stone-300 bg-white dark:border-stone-600 dark:bg-stone-800'
+													}`}
+													placeholder="Tell me about your project goals, timeline, specific requirements, and any challenges you&apos;re facing..."
 												/>
+												{errors.message && (
+													<p id="message-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
+														{errors.message}
+													</p>
+												)}
+											</div>
+
+											{/* Privacy Assurance */}
+											<div className="flex items-start gap-3 rounded-lg bg-stone-50 p-4 dark:bg-stone-800/50">
+												<ShieldIcon className="h-5 w-5 text-stone-600 dark:text-stone-400 mt-0.5 flex-shrink-0" />
+												<div className="text-sm text-stone-600 dark:text-stone-400">
+													<p className="font-medium mb-1">Your information is secure</p>
+													<p>I respect your privacy and will never share your contact information. Your project details are kept confidential and used solely for project consultation purposes.</p>
+												</div>
 											</div>
 
 											<Button
@@ -374,16 +653,17 @@ export default function ContactPage({ publication }: Props) {
 												{isSubmitting ? (
 													<div className="flex items-center gap-2">
 														<div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
-														Sending Message...
+														Submitting Request...
 													</div>
 												) : (
 													<>
-														Send Message
+														Get Free Consultation
 														<SendIcon className="ml-2 h-5 w-5" />
 													</>
 												)}
 											</Button>
 										</form>
+									</div>
 									)}
 								</motion.div>
 
