@@ -57,13 +57,15 @@ const sizeConfig = {
 
 export const PersonalLogo = ({ 
   size = 'medium', 
-  linkToHome = true, 
+  linkToHome = true,
   className = '', 
   alt = 'John Schibelli',
   showLoadingState = true 
 }: PersonalLogoProps) => {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [currentLogoSrc, setCurrentLogoSrc] = useState<string>('');
 
   useEffect(() => {
     setMounted(true);
@@ -85,38 +87,67 @@ export const PersonalLogo = ({
   const config = sizeConfig[size];
   const logoSrc = getLogoSrc();
 
+  // Update current logo source when theme changes
+  useEffect(() => {
+    if (mounted) {
+      console.log('PersonalLogo: Setting logo source', logoSrc, 'theme:', resolvedTheme);
+      setCurrentLogoSrc(logoSrc);
+      setImageError(false);
+    }
+  }, [mounted, logoSrc, resolvedTheme]);
+
+  // Handle image error with fallback logic
+  const handleImageError = () => {
+    console.warn('PersonalLogo: Failed to load logo image', currentLogoSrc);
+    
+    if (!imageError) {
+      // Try the alternative logo first
+      const alternativeSrc = currentLogoSrc.includes('black') 
+        ? '/assets/personal-logo.png' 
+        : '/assets/personal-logo-black.png';
+      
+      console.log('PersonalLogo: Trying alternative logo', alternativeSrc);
+      setCurrentLogoSrc(alternativeSrc);
+      setImageError(true);
+    } else {
+      console.error('PersonalLogo: Both logos failed to load, showing fallback');
+    }
+  };
+
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
     return (
       <div className={`${config.className} ${className} flex items-center justify-center`}>
-        <img
-          src="/assets/personal-logo.png"
+        <Image
+          src={logoSrc}
           alt={alt}
           width={config.width}
           height={config.height}
           className="object-contain transition-opacity duration-200"
+          priority
         />
       </div>
     );
   }
 
+  // Show fallback if both logos failed to load
+  if (imageError && currentLogoSrc) {
+    return (
+      <div className={`${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`}>
+        JS
+      </div>
+    );
+  }
+
   const logoElement = (
-    <img
-      src={logoSrc}
+    <Image
+      src={currentLogoSrc || logoSrc}
       alt={alt}
       width={config.width}
       height={config.height}
       className={`${config.className} ${className} object-contain transition-opacity duration-200`}
-      onError={(e) => {
-        console.warn('PersonalLogo: Failed to load logo image', logoSrc);
-        // Hide the image and show fallback
-        e.currentTarget.style.display = 'none';
-        // Show fallback text
-        const fallback = document.createElement('div');
-        fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
-        fallback.textContent = 'JS';
-        e.currentTarget.parentNode?.appendChild(fallback);
-      }}
+      priority
+      onError={handleImageError}
     />
   );
 
