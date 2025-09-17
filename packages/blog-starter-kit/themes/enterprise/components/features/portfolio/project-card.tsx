@@ -18,6 +18,20 @@ export interface Project {
 	slug?: string;
 	/** Optional live URL for deployed projects */
 	liveUrl?: string;
+	/** Project category */
+	category?: string;
+	/** Project status */
+	status?: string;
+	/** Technologies used */
+	technologies?: string[];
+	/** Client name */
+	client?: string;
+	/** Industry */
+	industry?: string;
+	/** Start date */
+	startDate?: string;
+	/** End date */
+	endDate?: string;
 	metrics?: {
 		performance: {
 			loadTimeImprovement: string;

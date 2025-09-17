@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import request from 'graphql-request';
-import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, CodeIcon, ExternalLinkIcon, UsersIcon, X, SearchIcon, FilterIcon, SortAscIcon, SortDescIcon, ChevronDownIcon } from 'lucide-react';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { AppProvider } from '../components/contexts/appContext';
 import Chatbot from '../components/features/chatbot/Chatbot';
 import ModernHeader from '../components/features/navigation/modern-header';
@@ -26,13 +26,21 @@ interface Props {
 
 export default function ProjectsPage({ publication, projects }: Props & { projects: Project[] }) {
 	const router = useRouter();
-	const { tags, search, sort } = router.query;
+	const { tags, search, sort, category, status, technology, client } = router.query;
 
 	// Use projects passed from getStaticProps
 	const allProjects: Project[] = projects;
 
-	// Extract all unique tags for filtering
+	// Extract all unique values for filtering
 	const allTags = Array.from(new Set(allProjects.flatMap(project => project.tags))).sort();
+	const allTechnologies = Array.from(new Set(allProjects.flatMap(project => project.tags))).sort();
+	const allCategories = Array.from(new Set(allProjects.map(project => project.category || 'other'))).sort();
+	const allStatuses = Array.from(new Set(allProjects.map(project => project.status || 'completed'))).sort();
+	const allClients = Array.from(new Set(allProjects.map(project => project.client).filter(Boolean))).sort();
+
+	// Search suggestions state
+	const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+	const [showSuggestions, setShowSuggestions] = useState(false);
 
 	// Get current filter values from URL
 	const currentTags = useMemo(() => {
@@ -48,18 +56,68 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		return Array.isArray(sort) ? sort[0] : sort || 'default';
 	}, [sort]);
 
+	const currentCategory = useMemo(() => {
+		return Array.isArray(category) ? category[0] : category || '';
+	}, [category]);
+
+	const currentStatus = useMemo(() => {
+		return Array.isArray(status) ? status[0] : status || '';
+	}, [status]);
+
+	const currentTechnology = useMemo(() => {
+		return Array.isArray(technology) ? technology[0] : technology || '';
+	}, [technology]);
+
+	const currentClient = useMemo(() => {
+		return Array.isArray(client) ? client[0] : client || '';
+	}, [client]);
+
+	// Enhanced search function with better matching
+	const enhancedSearch = useCallback((query: string, projects: Project[]) => {
+		if (!query) return projects;
+		
+		const searchLower = query.toLowerCase();
+		const searchTerms = searchLower.split(' ').filter(term => term.length > 0);
+		
+		return projects.filter(project => {
+			const searchableText = [
+				project.title,
+				project.description,
+				...project.tags,
+				...(project.technologies || []),
+				...(project.client ? [project.client] : []),
+				...(project.industry ? [project.industry] : [])
+			].join(' ').toLowerCase();
+			
+			// Check if all search terms are found
+			return searchTerms.every(term => searchableText.includes(term));
+		});
+	}, []);
+
+	// Generate search suggestions
+	useEffect(() => {
+		if (currentSearch && currentSearch.length > 1) {
+			const suggestions = [
+				...allTags.filter(tag => tag.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allTechnologies.filter(tech => tech.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allClients.filter(client => client.toLowerCase().includes(currentSearch.toLowerCase())),
+				...allCategories.filter(cat => cat.toLowerCase().includes(currentSearch.toLowerCase()))
+			].slice(0, 5);
+			setSearchSuggestions(suggestions);
+			setShowSuggestions(suggestions.length > 0);
+		} else {
+			setSearchSuggestions([]);
+			setShowSuggestions(false);
+		}
+	}, [currentSearch, allTags, allTechnologies, allClients, allCategories]);
+
 	// Filter and sort projects based on URL params
 	const filteredAndSortedProjects = useMemo(() => {
 		let filtered = [...allProjects];
 
-		// Apply search filter
+		// Apply enhanced search filter
 		if (currentSearch) {
-			const searchLower = currentSearch.toLowerCase();
-			filtered = filtered.filter(project =>
-				project.title.toLowerCase().includes(searchLower) ||
-				project.description.toLowerCase().includes(searchLower) ||
-				project.tags.some(tag => tag.toLowerCase().includes(searchLower))
-			);
+			filtered = enhancedSearch(currentSearch, filtered);
 		}
 
 		// Apply tag filters
@@ -69,7 +127,35 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 			);
 		}
 
-		// Apply sorting
+		// Apply category filter
+		if (currentCategory) {
+			filtered = filtered.filter(project =>
+				(project.category || 'other') === currentCategory
+			);
+		}
+
+		// Apply status filter
+		if (currentStatus) {
+			filtered = filtered.filter(project =>
+				(project.status || 'completed') === currentStatus
+			);
+		}
+
+		// Apply technology filter
+		if (currentTechnology) {
+			filtered = filtered.filter(project =>
+				project.tags.includes(currentTechnology)
+			);
+		}
+
+		// Apply client filter
+		if (currentClient) {
+			filtered = filtered.filter(project =>
+				project.client === currentClient
+			);
+		}
+
+		// Apply enhanced sorting
 		switch (currentSort) {
 			case 'title-asc':
 				filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -83,13 +169,33 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 			case 'tags-desc':
 				filtered.sort((a, b) => a.tags.length - b.tags.length);
 				break;
+			case 'date-newest':
+				filtered.sort((a, b) => {
+					const dateA = new Date(a.endDate || a.startDate || '');
+					const dateB = new Date(b.endDate || b.startDate || '');
+					return dateB.getTime() - dateA.getTime();
+				});
+				break;
+			case 'date-oldest':
+				filtered.sort((a, b) => {
+					const dateA = new Date(a.startDate || a.endDate || '');
+					const dateB = new Date(b.startDate || b.endDate || '');
+					return dateA.getTime() - dateB.getTime();
+				});
+				break;
+			case 'client-asc':
+				filtered.sort((a, b) => (a.client || '').localeCompare(b.client || ''));
+				break;
+			case 'client-desc':
+				filtered.sort((a, b) => (b.client || '').localeCompare(a.client || ''));
+				break;
 			default:
 				// Keep original order
 				break;
 		}
 
 		return filtered;
-	}, [allProjects, currentSearch, currentTags, currentSort]);
+	}, [allProjects, currentSearch, currentTags, currentSort, currentCategory, currentStatus, currentTechnology, currentClient, enhancedSearch]);
 
 	// Update URL with new filters
 	const updateFilters = useCallback((updates: Record<string, string | null>) => {
@@ -120,9 +226,35 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		updateFilters({ search: value || null });
 	}, [updateFilters]);
 
+	// Handle search suggestion click
+	const handleSuggestionClick = useCallback((suggestion: string) => {
+		handleSearchChange(suggestion);
+		setShowSuggestions(false);
+	}, [handleSearchChange]);
+
 	// Handle sort change
 	const handleSortChange = useCallback((value: string) => {
 		updateFilters({ sort: value === 'default' ? null : value });
+	}, [updateFilters]);
+
+	// Handle category filter
+	const handleCategoryChange = useCallback((value: string) => {
+		updateFilters({ category: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle status filter
+	const handleStatusChange = useCallback((value: string) => {
+		updateFilters({ status: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle technology filter
+	const handleTechnologyChange = useCallback((value: string) => {
+		updateFilters({ technology: value === 'all' ? null : value });
+	}, [updateFilters]);
+
+	// Handle client filter
+	const handleClientChange = useCallback((value: string) => {
+		updateFilters({ client: value === 'all' ? null : value });
 	}, [updateFilters]);
 
 	// Clear all filters
@@ -130,7 +262,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 		router.push('/projects', undefined, { shallow: true });
 	}, [router]);
 
-	const hasActiveFilters = currentTags.length > 0 || currentSearch || currentSort !== 'default';
+	const hasActiveFilters = currentTags.length > 0 || currentSearch || currentSort !== 'default' || currentCategory || currentStatus || currentTechnology || currentClient;
 
 	return (
 		<AppProvider publication={publication}>
@@ -210,7 +342,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 						</div>
 					</section>
 
-					{/* Filters Section */}
+					{/* Enhanced Filters Section */}
 					<section className="border-b border-stone-200 bg-white py-8 dark:border-stone-800 dark:bg-stone-950">
 						<Container className="px-4">
 							<div className="space-y-6">
@@ -221,14 +353,34 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											<Label htmlFor="search" className="sr-only">
 												Search projects
 											</Label>
-											<Input
-												id="search"
-												type="text"
-												placeholder="Search projects..."
-												value={currentSearch}
-												onChange={(e) => handleSearchChange(e.target.value)}
-												className="pl-4"
-											/>
+											<div className="relative">
+												<SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+												<Input
+													id="search"
+													type="text"
+													placeholder="Search projects, technologies, clients..."
+													value={currentSearch}
+													onChange={(e) => handleSearchChange(e.target.value)}
+													onFocus={() => setShowSuggestions(true)}
+													onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+													className="pl-10"
+												/>
+												
+												{/* Search Suggestions Dropdown */}
+												{showSuggestions && searchSuggestions.length > 0 && (
+													<div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-auto rounded-md border border-stone-200 bg-white shadow-lg dark:border-stone-700 dark:bg-stone-800">
+														{searchSuggestions.map((suggestion, index) => (
+															<button
+																key={index}
+																onClick={() => handleSuggestionClick(suggestion)}
+																className="w-full px-4 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700"
+															>
+																{suggestion}
+															</button>
+														))}
+													</div>
+												)}
+											</div>
 										</div>
 										<div className="flex items-center gap-2">
 											<Label htmlFor="sort" className="text-sm font-medium text-stone-700 dark:text-stone-300">
@@ -242,6 +394,10 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 													<SelectItem value="default">Default</SelectItem>
 													<SelectItem value="title-asc">Title A-Z</SelectItem>
 													<SelectItem value="title-desc">Title Z-A</SelectItem>
+													<SelectItem value="date-newest">Newest First</SelectItem>
+													<SelectItem value="date-oldest">Oldest First</SelectItem>
+													<SelectItem value="client-asc">Client A-Z</SelectItem>
+													<SelectItem value="client-desc">Client Z-A</SelectItem>
 													<SelectItem value="tags-asc">Most Tags</SelectItem>
 													<SelectItem value="tags-desc">Fewest Tags</SelectItem>
 												</SelectContent>
@@ -260,6 +416,89 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											Clear Filters
 										</Button>
 									)}
+								</div>
+
+								{/* Advanced Filters Row */}
+								<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+									{/* Project Type Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="category" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Project Type
+										</Label>
+										<Select value={currentCategory || 'all'} onValueChange={handleCategoryChange}>
+											<SelectTrigger id="category">
+												<SelectValue placeholder="All Types" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Types</SelectItem>
+												{allCategories.map((category) => (
+													<SelectItem key={category} value={category}>
+														{category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Status Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="status" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Status
+										</Label>
+										<Select value={currentStatus || 'all'} onValueChange={handleStatusChange}>
+											<SelectTrigger id="status">
+												<SelectValue placeholder="All Status" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Status</SelectItem>
+												{allStatuses.map((status) => (
+													<SelectItem key={status} value={status}>
+														{status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Technology Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="technology" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Technology
+										</Label>
+										<Select value={currentTechnology || 'all'} onValueChange={handleTechnologyChange}>
+											<SelectTrigger id="technology">
+												<SelectValue placeholder="All Technologies" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Technologies</SelectItem>
+												{allTechnologies.slice(0, 20).map((tech) => (
+													<SelectItem key={tech} value={tech}>
+														{tech}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Client Filter */}
+									<div className="space-y-2">
+										<Label htmlFor="client" className="text-sm font-medium text-stone-700 dark:text-stone-300">
+											Client
+										</Label>
+										<Select value={currentClient || 'all'} onValueChange={handleClientChange}>
+											<SelectTrigger id="client">
+												<SelectValue placeholder="All Clients" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">All Clients</SelectItem>
+												{allClients.map((client) => (
+													<SelectItem key={client} value={client}>
+														{client}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									</div>
 								</div>
 
 								{/* Active Filters Display */}
@@ -282,9 +521,61 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 											</Badge>
 										)}
 
+										{currentCategory && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Type: {currentCategory.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+												<button
+													onClick={() => handleCategoryChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove category filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentStatus && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Status: {currentStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+												<button
+													onClick={() => handleStatusChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove status filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentTechnology && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Tech: {currentTechnology}
+												<button
+													onClick={() => handleTechnologyChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove technology filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
+										{currentClient && (
+											<Badge variant="secondary" className="flex items-center gap-1">
+												Client: {currentClient}
+												<button
+													onClick={() => handleClientChange('all')}
+													className="ml-1 hover:text-red-600"
+													aria-label="Remove client filter"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											</Badge>
+										)}
+
 										{currentSort !== 'default' && (
 											<Badge variant="secondary" className="flex items-center gap-1">
-												Sort: {currentSort.replace('-', ' ')}
+												Sort: {currentSort.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
 												<button
 													onClick={() => handleSortChange('default')}
 													className="ml-1 hover:text-red-600"
@@ -339,8 +630,12 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									{hasActiveFilters ? (
 										<span>
 											Showing {filteredAndSortedProjects.length} of {allProjects.length} projects
-											{currentTags.length > 0 && ` for ${currentTags.length} technology filter${currentTags.length > 1 ? 's' : ''}`}
 											{currentSearch && ` matching &quot;${currentSearch}&quot;`}
+											{currentCategory && ` in ${currentCategory.replace('-', ' ')} category`}
+											{currentStatus && ` with ${currentStatus.replace('-', ' ')} status`}
+											{currentTechnology && ` using ${currentTechnology}`}
+											{currentClient && ` for ${currentClient}`}
+											{currentTags.length > 0 && ` with ${currentTags.length} technology filter${currentTags.length > 1 ? 's' : ''}`}
 										</span>
 									) : (
 										<span>Showing all {allProjects.length} projects</span>
@@ -572,6 +867,14 @@ export const getStaticProps: GetStaticProps<Props & { projects: Project[] }> = a
 			tags: project.tags,
 			caseStudyUrl: project.caseStudyUrl,
 			slug: project.slug,
+			liveUrl: project.liveUrl,
+			category: project.category,
+			status: project.status,
+			technologies: project.technologies,
+			client: project.client,
+			industry: project.industry,
+			startDate: project.startDate,
+			endDate: project.endDate,
 		}));
 
 		return {
@@ -593,6 +896,14 @@ export const getStaticProps: GetStaticProps<Props & { projects: Project[] }> = a
 			tags: project.tags,
 			caseStudyUrl: project.caseStudyUrl,
 			slug: project.slug,
+			liveUrl: project.liveUrl,
+			category: project.category,
+			status: project.status,
+			technologies: project.technologies,
+			client: project.client,
+			industry: project.industry,
+			startDate: project.startDate,
+			endDate: project.endDate,
 		}));
 
 		return {
