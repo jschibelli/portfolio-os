@@ -75,30 +75,15 @@ export const PersonalLogo = ({
     // For light backgrounds, use the black logo
     // Default to dark theme if theme is not resolved yet
     const theme = resolvedTheme || 'dark';
-    
-    // Try hardcoded path first for debugging
-    return '/assets/personal-logo.png';
-    
-    // Original logic (commented out for debugging)
-    // if (theme === 'dark') {
-    //   return '/assets/personal-logo.png';
-    // } else {
-    //   return '/assets/personal-logo-black.png';
-    // }
+    if (theme === 'dark') {
+      return '/assets/personal-logo.png';
+    } else {
+      return '/assets/personal-logo-black.png';
+    }
   };
 
   const config = sizeConfig[size];
   const logoSrc = getLogoSrc();
-  
-  // Debug logging
-  console.log('PersonalLogo Debug:', {
-    resolvedTheme,
-    logoSrc,
-    size,
-    mounted,
-    config,
-    window: typeof window !== 'undefined' ? window.location.href : 'server'
-  });
 
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
@@ -110,36 +95,23 @@ export const PersonalLogo = ({
   }
 
   const logoElement = (
-    <div className={`${config.className} ${className} relative`}>
-      <img
-        src={logoSrc}
-        alt={alt}
-        width={config.width}
-        height={config.height}
-        className="object-contain transition-opacity duration-200"
-        onError={(e) => {
-          console.warn('PersonalLogo: Failed to load logo image', logoSrc);
-          console.warn('Error details:', e);
-          // Hide the image and show fallback
-          e.currentTarget.style.display = 'none';
-          // Show fallback text
-          const fallback = document.createElement('div');
-          fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
-          fallback.textContent = 'JS';
-          e.currentTarget.parentNode?.appendChild(fallback);
-        }}
-        onLoad={() => {
-          console.log('PersonalLogo: Successfully loaded', logoSrc);
-        }}
-      />
-      {/* Always show fallback for debugging */}
-      <div 
-        className="absolute inset-0 flex items-center justify-center bg-red-200 text-red-800 font-semibold text-xs"
-        style={{ display: 'block' }}
-      >
-        DEBUG: {logoSrc}
-      </div>
-    </div>
+    <img
+      src={logoSrc}
+      alt={alt}
+      width={config.width}
+      height={config.height}
+      className={`${config.className} ${className} object-contain transition-opacity duration-200`}
+      onError={(e) => {
+        console.warn('PersonalLogo: Failed to load logo image', logoSrc);
+        // Hide the image and show fallback
+        e.currentTarget.style.display = 'none';
+        // Show fallback text
+        const fallback = document.createElement('div');
+        fallback.className = `${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300 font-semibold`;
+        fallback.textContent = 'JS';
+        e.currentTarget.parentNode?.appendChild(fallback);
+      }}
+    />
   );
 
   if (linkToHome) {
