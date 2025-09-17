@@ -311,35 +311,27 @@
   animation-delay: 1000ms;
 }
 
-/* Mobile-specific improvements */
+/* Mobile Responsiveness - Comprehensive Mobile-First Approach */
+/* Consolidated mobile styles with consistent breakpoints and improved organization */
+
+/* Small mobile devices (up to 640px) */
 @media (max-width: 640px) {
-  /* Improve touch targets */
-  button, a, input, select, textarea {
-    min-height: 44px;
-  }
-  
-  /* Better spacing for mobile */
+  /* Container spacing for small screens */
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
   }
   
-  /* Improve text readability */
+  /* Text size adjustment for small screens */
   body {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
-  
-  /* Better scrolling on iOS */
-  .overflow-y-auto {
-    -webkit-overflow-scrolling: touch;
-  }
 }
 
-/* Mobile Touch and Interaction Improvements */
-/* Enhanced touch targets for mobile devices */
+/* Mobile devices (up to 768px) - Primary mobile breakpoint */
 @media (max-width: 768px) {
-  /* Ensure minimum touch target size of 44px for accessibility */
+  /* Touch targets - Ensure accessibility compliance */
   button, 
   a, 
   input[type="button"], 
@@ -350,7 +342,7 @@
     min-width: 44px;
   }
   
-  /* Improve touch feedback for interactive elements */
+  /* Touch feedback for better user interaction */
   button:active,
   a:active,
   .touch-feedback:active {
@@ -358,13 +350,14 @@
     transition: transform 0.1s ease;
   }
   
-  /* Enhanced scrolling performance on mobile */
-  .scroll-container {
+  /* Enhanced scrolling performance */
+  .scroll-container,
+  .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
   
-  /* Improve tap highlighting */
+  /* Improved tap highlighting for mobile */
   * {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
@@ -375,45 +368,77 @@
   touch-action: manipulation;
 }
 
-/* iOS Device Compatibility - Prevent zoom on input focus */
-/* This targets iOS Safari specifically to prevent unwanted zoom when focusing inputs */
+/* iOS Safari Compatibility - Prevent zoom on input focus */
+/* Targets iOS Safari specifically to prevent unwanted zoom when focusing form inputs */
+/* This is critical for mobile UX as iOS Safari zooms when font-size < 16px */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  select, textarea, input[type="text"], input[type="password"], 
-  input[type="datetime"], input[type="datetime-local"], 
-  input[type="date"], input[type="month"], input[type="time"], 
-  input[type="week"], input[type="number"], input[type="email"], 
-  input[type="url"], input[type="search"], input[type="tel"], 
+  select, 
+  textarea, 
+  input[type="text"], 
+  input[type="password"], 
+  input[type="datetime"], 
+  input[type="datetime-local"], 
+  input[type="date"], 
+  input[type="month"], 
+  input[type="time"], 
+  input[type="week"], 
+  input[type="number"], 
+  input[type="email"], 
+  input[type="url"], 
+  input[type="search"], 
+  input[type="tel"], 
   input[type="color"] {
     font-size: 16px;
   }
 }
 
-/* Mobile-specific spacing and typography adjustments */
+/* Mobile Typography and Spacing - Optimized for mobile readability */
 @media (max-width: 768px) {
-  /* Increase line height for better readability on mobile */
+  /* Base typography improvements for mobile */
   body {
     line-height: 1.6;
+    font-size: 16px; /* Ensure readable base font size */
   }
   
-  /* Optimize heading sizes for mobile screens */
+  /* Responsive heading hierarchy for mobile */
   h1 {
     font-size: 2rem;
     line-height: 1.2;
+    margin-bottom: 1rem;
   }
   
   h2 {
     font-size: 1.75rem;
     line-height: 1.3;
+    margin-bottom: 0.875rem;
   }
   
   h3 {
     font-size: 1.5rem;
     line-height: 1.4;
+    margin-bottom: 0.75rem;
   }
   
-  /* Improve paragraph spacing on mobile */
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-bottom: 0.625rem;
+  }
+  
+  /* Improved paragraph spacing and readability */
   p {
     margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Better list spacing on mobile */
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin-bottom: 0.5rem;
   }
 }
 
