@@ -71,6 +71,31 @@ export interface OrganizationStructuredData {
 	};
 }
 
+export interface LocalBusinessStructuredData {
+	name: string;
+	description: string;
+	url: string;
+	image?: string;
+	logo?: string;
+	telephone?: string;
+	email?: string;
+	address?: {
+		streetAddress: string;
+		addressLocality: string;
+		addressRegion: string;
+		postalCode: string;
+		addressCountry: string;
+	};
+	geo?: {
+		latitude: string;
+		longitude: string;
+	};
+	openingHours?: string[];
+	priceRange?: string;
+	servedArea?: string[];
+	sameAs?: string[];
+}
+
 /**
  * Generates structured data for a Person entity following schema.org standards
  * @param data - Person data object containing required and optional fields
@@ -329,6 +354,110 @@ export function generateServiceStructuredData(data: ServiceStructuredData) {
 	} catch (error) {
 		console.error('Error generating service structured data:', error);
 		throw new Error(`Failed to generate service structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+	}
+}
+
+/**
+ * Generates structured data for a LocalBusiness entity following schema.org standards
+ * @param data - LocalBusiness data object containing required and optional fields
+ * @returns Structured data object for JSON-LD implementation
+ * @throws Error if required fields are missing or invalid
+ */
+export function generateLocalBusinessStructuredData(data: LocalBusinessStructuredData) {
+	// Input validation for required fields
+	if (!data || typeof data !== 'object') {
+		throw new Error('LocalBusiness data is required and must be an object');
+	}
+	
+	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
+		throw new Error('LocalBusiness name is required and must be a non-empty string');
+	}
+	
+	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
+		throw new Error('LocalBusiness description is required and must be a non-empty string');
+	}
+	
+	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
+		throw new Error('LocalBusiness URL is required and must be a non-empty string');
+	}
+
+	try {
+		// Build the structured data object with proper validation
+		const structuredData: Record<string, any> = {
+			'@context': 'https://schema.org',
+			'@type': 'LocalBusiness',
+			name: data.name.trim(),
+			description: data.description.trim(),
+			url: data.url.trim(),
+		};
+
+		// Add optional fields only if they exist and are valid
+		if (data.image && typeof data.image === 'string' && data.image.trim() !== '') {
+			structuredData.image = data.image.trim();
+		}
+
+		if (data.logo && typeof data.logo === 'string' && data.logo.trim() !== '') {
+			structuredData.logo = data.logo.trim();
+		}
+
+		if (data.telephone && typeof data.telephone === 'string' && data.telephone.trim() !== '') {
+			structuredData.telephone = data.telephone.trim();
+		}
+
+		if (data.email && typeof data.email === 'string' && data.email.trim() !== '') {
+			structuredData.email = data.email.trim();
+		}
+
+		if (data.address && 
+			data.address.streetAddress && 
+			data.address.addressLocality && 
+			data.address.addressRegion && 
+			data.address.postalCode && 
+			data.address.addressCountry) {
+			structuredData.address = {
+				'@type': 'PostalAddress',
+				streetAddress: data.address.streetAddress.trim(),
+				addressLocality: data.address.addressLocality.trim(),
+				addressRegion: data.address.addressRegion.trim(),
+				postalCode: data.address.postalCode.trim(),
+				addressCountry: data.address.addressCountry.trim(),
+			};
+		}
+
+		if (data.geo && data.geo.latitude && data.geo.longitude) {
+			structuredData.geo = {
+				'@type': 'GeoCoordinates',
+				latitude: data.geo.latitude.trim(),
+				longitude: data.geo.longitude.trim(),
+			};
+		}
+
+		if (data.openingHours && Array.isArray(data.openingHours) && data.openingHours.length > 0) {
+			structuredData.openingHours = data.openingHours.filter(hours => 
+				typeof hours === 'string' && hours.trim() !== ''
+			).map(hours => hours.trim());
+		}
+
+		if (data.priceRange && typeof data.priceRange === 'string' && data.priceRange.trim() !== '') {
+			structuredData.priceRange = data.priceRange.trim();
+		}
+
+		if (data.servedArea && Array.isArray(data.servedArea) && data.servedArea.length > 0) {
+			structuredData.areaServed = data.servedArea.filter(area => 
+				typeof area === 'string' && area.trim() !== ''
+			).map(area => area.trim());
+		}
+
+		if (data.sameAs && Array.isArray(data.sameAs) && data.sameAs.length > 0) {
+			structuredData.sameAs = data.sameAs.filter(url => 
+				typeof url === 'string' && url.trim() !== ''
+			).map(url => url.trim());
+		}
+
+		return structuredData;
+	} catch (error) {
+		console.error('Error generating local business structured data:', error);
+		throw new Error(`Failed to generate local business structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
 	}
 }
 
