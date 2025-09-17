@@ -89,7 +89,13 @@ export const PersonalLogo = ({
   if (!mounted && showLoadingState) {
     return (
       <div className={`${config.className} ${className} flex items-center justify-center`}>
-        <div className="w-full h-full bg-stone-200 dark:bg-stone-700 rounded animate-pulse" />
+        <img
+          src="/assets/personal-logo.png"
+          alt={alt}
+          width={config.width}
+          height={config.height}
+          className="object-contain transition-opacity duration-200"
+        />
       </div>
     );
   }
