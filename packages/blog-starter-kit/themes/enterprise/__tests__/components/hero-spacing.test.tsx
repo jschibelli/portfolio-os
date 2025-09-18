@@ -12,7 +12,13 @@ import {
   getHeroSpacingClasses,
   useHeroSpacing
 } from '../../components/ui/spacing';
-import { getHeroSpacing } from '../../lib/design-tokens';
+import { 
+  getHeroSpacing, 
+  HERO_VARIANTS, 
+  SPACING_VALUES, 
+  createThemedHeroSpacing,
+  type HeroTheme 
+} from '../../lib/design-tokens';
 
 // Mock the cn utility function
 jest.mock('../../lib/utils', () => ({
@@ -250,6 +256,65 @@ describe('Hero Spacing System', () => {
       
       expect(consoleSpy).toHaveBeenCalledTimes(4);
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe('Constants and Configuration', () => {
+    it('HERO_VARIANTS contains correct values', () => {
+      expect(HERO_VARIANTS.SECTION).toEqual(['default', 'compact', 'large']);
+      expect(HERO_VARIANTS.CONTENT).toEqual(['default', 'compact', 'large']);
+      expect(HERO_VARIANTS.CONTAINER).toEqual(['default', 'narrow', 'wide']);
+      expect(HERO_VARIANTS.GAP).toEqual(['small', 'medium', 'large']);
+    });
+
+    it('SPACING_VALUES contains correct values', () => {
+      expect(SPACING_VALUES.SECTION.DEFAULT).toBe('py-16 md:py-20');
+      expect(SPACING_VALUES.SECTION.COMPACT).toBe('py-12 md:py-16');
+      expect(SPACING_VALUES.SECTION.LARGE).toBe('py-16 md:py-20 lg:py-24');
+    });
+  });
+
+  describe('Themed Hero Spacing', () => {
+    it('creates themed spacing with custom values', () => {
+      const customTheme: HeroTheme = {
+        section: {
+          default: 'py-20 md:py-24',
+          compact: 'py-16 md:py-20'
+        },
+        content: {
+          default: 'space-y-8 md:space-y-10'
+        }
+      };
+
+      const themedSpacing = createThemedHeroSpacing(customTheme);
+      
+      expect(themedSpacing.section('default')).toBe('py-20 md:py-24');
+      expect(themedSpacing.section('compact')).toBe('py-16 md:py-20');
+      expect(themedSpacing.content('default')).toBe('space-y-8 md:space-y-10');
+    });
+
+    it('falls back to default values for undefined theme properties', () => {
+      const partialTheme: HeroTheme = {
+        section: {
+          default: 'py-20 md:py-24'
+        }
+      };
+
+      const themedSpacing = createThemedHeroSpacing(partialTheme);
+      
+      expect(themedSpacing.section('default')).toBe('py-20 md:py-24');
+      expect(themedSpacing.section('compact')).toBe(SPACING_VALUES.SECTION.COMPACT);
+      expect(themedSpacing.content('default')).toBe(SPACING_VALUES.CONTENT.DEFAULT);
+    });
+
+    it('handles empty theme configuration', () => {
+      const emptyTheme: HeroTheme = {};
+      const themedSpacing = createThemedHeroSpacing(emptyTheme);
+      
+      expect(themedSpacing.section('default')).toBe(SPACING_VALUES.SECTION.DEFAULT);
+      expect(themedSpacing.content('default')).toBe(SPACING_VALUES.CONTENT.DEFAULT);
+      expect(themedSpacing.container('default')).toBe(SPACING_VALUES.CONTAINER.DEFAULT);
+      expect(themedSpacing.gap('medium')).toBe(SPACING_VALUES.GAP.MEDIUM);
     });
   });
 });
