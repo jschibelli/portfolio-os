@@ -2,6 +2,7 @@ import { ArrowRightIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+import { heroSpacingClasses } from '../../ui/spacing';
 
 import Github from '../../logos/github';
 import { Badge } from '../../ui/badge';
@@ -68,8 +69,8 @@ export default function Hero({
 		<Section className={cn('fade-bottom relative overflow-hidden pb-0 sm:pb-0 md:pb-0', className)}>
 			{/* Subtle background gradient for visual interest */}
 			<div className="absolute inset-0 bg-gradient-to-br from-stone-50 via-white to-stone-100 opacity-60 dark:from-stone-950 dark:via-stone-900 dark:to-stone-800" />
-			<div className="max-w-container relative mx-auto flex flex-col gap-12 pt-16 sm:gap-24">
-				<div className="flex flex-col items-center gap-6 text-center sm:gap-12">
+			<div className={cn(heroSpacingClasses.container.default, 'relative flex flex-col', heroSpacingClasses.gap.large)}>
+				<div className={cn('flex flex-col items-center text-center', heroSpacingClasses.gap.medium)}>
 					{badge !== false && badge}
 					<h1 className="animate-appear from-foreground to-foreground dark:to-muted-foreground bg-linear-to-r relative z-10 inline-block text-balance bg-clip-text text-4xl font-semibold leading-tight text-transparent drop-shadow-2xl sm:text-6xl sm:leading-tight md:text-8xl md:leading-tight">
 						{title}

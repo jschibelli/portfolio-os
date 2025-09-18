@@ -59,6 +59,14 @@ module.exports = {
 			},
 			spacing: {
 				28: '7rem',
+				// Hero spacing system
+				'hero-section': '4rem',
+				'hero-section-md': '5rem',
+				'hero-content': '1.5rem',
+				'hero-content-md': '2rem',
+				'hero-gap-sm': '1rem',
+				'hero-gap-md': '1.5rem',
+				'hero-gap-lg': '2rem',
 			},
 			letterSpacing: {
 				tighter: '-.04em',

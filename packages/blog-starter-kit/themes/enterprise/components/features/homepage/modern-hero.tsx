@@ -2,6 +2,8 @@ import { Button } from '../../ui';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { heroSpacingClasses } from '../../ui/spacing';
+import { cn } from '@/lib/utils';
 
 interface ModernHeroProps {
 	title: string;
@@ -45,7 +47,7 @@ export default function ModernHero({
 	}, []);
 
 	return (
-		<div className="hero-container relative min-h-[400px] overflow-hidden py-12 md:py-16">
+		<div className={cn("hero-container relative min-h-[400px] overflow-hidden", heroSpacingClasses.section.default)}>
 			{/* Background image */}
 			<div
 				className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -56,13 +58,14 @@ export default function ModernHero({
 			{/* Dark overlay for better text readability */}
 			<div className="absolute inset-0 bg-black/40" />
 
-			<div className="container relative mx-auto px-4">
-				<div className="mx-auto flex max-w-4xl flex-col items-center justify-center text-center">
+			<div className={cn(heroSpacingClasses.container.default, "relative")}>
+				<div className={cn("mx-auto flex flex-col items-center justify-center text-center", heroSpacingClasses.container.narrow)}>
 					{/* Content Section */}
 					<div
-						className={`space-y-6 transition-all duration-1000 ease-out ${
-							isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-						}`}
+						className={cn(heroSpacingClasses.content.default, "transition-all duration-1000 ease-out", {
+							'translate-y-0 opacity-100': isVisible,
+							'translate-y-8 opacity-0': !isVisible
+						})}
 					>
 						<div className="space-y-3">
 							<h2
