@@ -43,12 +43,15 @@ async function runTest(testName, config) {
 	console.log(`\n📋 Running ${config.description}...`);
 	console.log(`⏱️  Timeout: ${config.timeout / 1000}s`);
 	
+	const startTime = Date.now();
+	
 	try {
-		const startTime = Date.now();
 		const output = execSync(config.command, { 
 			encoding: 'utf8', 
 			timeout: config.timeout,
-			stdio: 'pipe'
+			stdio: 'pipe',
+			cwd: process.cwd(),
+			env: { ...process.env, NODE_ENV: 'test' }
 		});
 		const endTime = Date.now();
 		const duration = ((endTime - startTime) / 1000).toFixed(2);
@@ -63,17 +66,39 @@ async function runTest(testName, config) {
 		console.log(`✅ ${config.description} - PASSED (${duration}s)`);
 		return true;
 	} catch (error) {
-		const duration = ((Date.now() - Date.now()) / 1000).toFixed(2);
+		const endTime = Date.now();
+		const duration = ((endTime - startTime) / 1000).toFixed(2);
+		
+		// Enhanced error handling with detailed error information
+		const errorDetails = {
+			message: error.message || 'Unknown error occurred',
+			stdout: error.stdout || '',
+			stderr: error.stderr || '',
+			signal: error.signal || null,
+			code: error.status || error.code || null,
+			command: config.command
+		};
 		
 		results[testName] = {
 			status: 'failed',
-			output: error.stdout || '',
-			error: error.stderr || error.message,
-			duration: `${duration}s`
+			output: errorDetails.stdout,
+			error: errorDetails.stderr || errorDetails.message,
+			duration: `${duration}s`,
+			details: errorDetails
 		};
 		
 		console.log(`❌ ${config.description} - FAILED (${duration}s)`);
-		console.log(`Error: ${error.message}`);
+		console.log(`Error: ${errorDetails.message}`);
+		if (errorDetails.stderr) {
+			console.log(`Stderr: ${errorDetails.stderr}`);
+		}
+		if (errorDetails.signal) {
+			console.log(`Signal: ${errorDetails.signal}`);
+		}
+		if (errorDetails.code) {
+			console.log(`Exit code: ${errorDetails.code}`);
+		}
+		
 		return false;
 	}
 }
@@ -183,53 +208,94 @@ async function main() {
 	console.log('🎯 Hero Components Testing and Validation');
 	console.log('==========================================\n');
 	
-	// Check if test files exist
-	const testFiles = [
-		'__tests__/components/hero/typography.test.tsx',
-		'__tests__/components/hero/spacing.test.tsx',
-		'__tests__/components/hero/accessibility.test.tsx',
-		'__tests__/components/hero/performance.test.tsx',
-		'tests/hero-visual-regression.spec.ts',
-		'tests/hero-accessibility.spec.ts',
-		'tests/hero-performance.spec.ts'
-	];
-	
-	const missingFiles = testFiles.filter(file => !fs.existsSync(path.join(__dirname, '..', file)));
-	if (missingFiles.length > 0) {
-		console.log('❌ Missing test files:');
-		missingFiles.forEach(file => console.log(`   - ${file}`));
-		process.exit(1);
-	}
-	
-	// Run tests sequentially
-	const testSuites = Object.keys(tests);
-	let passedTests = 0;
-	let totalTests = testSuites.length;
-	
-	for (const testName of testSuites) {
-		const success = await runTest(testName, tests[testName]);
-		if (success) passedTests++;
-	}
-	
-	// Generate report
-	generateReport();
-	
-	// Final summary
-	console.log('\n🎯 Hero Components Testing Summary');
-	console.log('==================================');
-	console.log(`✅ Passed: ${passedTests}/${totalTests}`);
-	console.log(`❌ Failed: ${totalTests - passedTests}/${totalTests}`);
-	
-	if (passedTests === totalTests) {
-		console.log('\n🎉 All hero component tests passed!');
-		console.log('✅ Typography tests - PASSED');
-		console.log('✅ Spacing tests - PASSED');
-		console.log('✅ Accessibility tests - PASSED');
-		console.log('✅ Performance tests - PASSED');
-		console.log('✅ Visual regression tests - PASSED');
-		process.exit(0);
-	} else {
-		console.log('\n⚠️  Some tests failed. Please review the report and fix issues.');
+	try {
+		// Check if test files exist
+		const testFiles = [
+			'__tests__/components/hero/typography.test.tsx',
+			'__tests__/components/hero/spacing.test.tsx',
+			'__tests__/components/hero/accessibility.test.tsx',
+			'__tests__/components/hero/performance.test.tsx',
+			'tests/hero-visual-regression.spec.ts',
+			'tests/hero-accessibility.spec.ts',
+			'tests/hero-performance.spec.ts'
+		];
+		
+		const missingFiles = testFiles.filter(file => !fs.existsSync(path.join(__dirname, '..', file)));
+		if (missingFiles.length > 0) {
+			console.log('❌ Missing test files:');
+			missingFiles.forEach(file => console.log(`   - ${file}`));
+			console.log('\n💡 Please ensure all test files are created before running the test suite.');
+			console.log('📚 Check the documentation for test setup instructions.');
+			process.exit(1);
+		}
+		
+		// Check if required dependencies are installed
+		const requiredDeps = ['jest', '@playwright/test', '@testing-library/react'];
+		const packageJsonPath = path.join(__dirname, '..', 'package.json');
+		
+		if (fs.existsSync(packageJsonPath)) {
+			const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+			const allDeps = { ...packageJson.dependencies, ...packageJson.devDependencies };
+			const missingDeps = requiredDeps.filter(dep => !allDeps[dep]);
+			
+			if (missingDeps.length > 0) {
+				console.log('❌ Missing required dependencies:');
+				missingDeps.forEach(dep => console.log(`   - ${dep}`));
+				console.log('\n💡 Please install missing dependencies:');
+				console.log(`   npm install ${missingDeps.join(' ')}`);
+				process.exit(1);
+			}
+		}
+		
+		// Run tests sequentially
+		const testSuites = Object.keys(tests);
+		let passedTests = 0;
+		let totalTests = testSuites.length;
+		
+		for (const testName of testSuites) {
+			try {
+				const success = await runTest(testName, tests[testName]);
+				if (success) passedTests++;
+			} catch (testError) {
+				console.log(`❌ Unexpected error in ${testName}: ${testError.message}`);
+				results[testName] = {
+					status: 'failed',
+					output: '',
+					error: testError.message,
+					duration: '0s'
+				};
+			}
+		}
+		
+		// Generate report
+		try {
+			generateReport();
+		} catch (reportError) {
+			console.log(`⚠️  Warning: Could not generate test report: ${reportError.message}`);
+		}
+		
+		// Final summary
+		console.log('\n🎯 Hero Components Testing Summary');
+		console.log('==================================');
+		console.log(`✅ Passed: ${passedTests}/${totalTests}`);
+		console.log(`❌ Failed: ${totalTests - passedTests}/${totalTests}`);
+		
+		if (passedTests === totalTests) {
+			console.log('\n🎉 All hero component tests passed!');
+			console.log('✅ Typography tests - PASSED');
+			console.log('✅ Spacing tests - PASSED');
+			console.log('✅ Accessibility tests - PASSED');
+			console.log('✅ Performance tests - PASSED');
+			console.log('✅ Visual regression tests - PASSED');
+			process.exit(0);
+		} else {
+			console.log('\n⚠️  Some tests failed. Please review the report and fix issues.');
+			console.log('📊 Check the generated test report for detailed information.');
+			process.exit(1);
+		}
+	} catch (error) {
+		console.error('❌ Fatal error in test runner:', error.message);
+		console.error('Stack trace:', error.stack);
 		process.exit(1);
 	}
 }

@@ -1,5 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Shared configuration for hero testing projects
+const heroTestConfig = {
+	use: { 
+		...devices['Desktop Chrome'],
+		contextOptions: {
+			reducedMotion: 'reduce',
+		},
+	},
+};
+
 export default defineConfig({
 	// Test directory containing all test files
 	testDir: './tests',
@@ -85,23 +95,13 @@ export default defineConfig({
 		},
 		{
 			name: 'hero-visual-regression',
-			use: { 
-				...devices['Desktop Chrome'],
-				// Hero visual regression testing
-				contextOptions: {
-					reducedMotion: 'reduce',
-				},
-			},
+			...heroTestConfig,
+			// Hero visual regression testing - optimized for consistent screenshots
 		},
 		{
 			name: 'hero-performance',
-			use: { 
-				...devices['Desktop Chrome'],
-				// Hero performance testing
-				contextOptions: {
-					reducedMotion: 'reduce',
-				},
-			},
+			...heroTestConfig,
+			// Hero performance testing - optimized for Core Web Vitals measurement
 		},
 	],
 	webServer: {
