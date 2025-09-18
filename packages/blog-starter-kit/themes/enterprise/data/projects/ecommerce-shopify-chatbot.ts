@@ -7,7 +7,7 @@ export const ecommerceShopifyChatbot: ProjectMeta = {
   description: 'A custom AI-powered chatbot solution for Shopify e-commerce stores. Features product recommendations, order tracking, customer support, and seamless integration with Shopify APIs for enhanced customer experience.',
   image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
   tags: ['Shopify', 'AI', 'Chatbot', 'E-commerce', 'API Integration', 'Customer Support'],
-  liveUrl: 'https://demo-shopify-chatbot.vercel.app',
+  liveUrl: 'https://shop.schibelli.com',
   caseStudyUrl: '/case-studies/ecommerce-shopify-chatbot',
   githubUrl: 'https://github.com/jschibelli/shopify-chatbot',
   featured: false,
