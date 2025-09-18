@@ -1,6 +1,9 @@
 /**
  * Design Tokens for Hero Spacing System
  * Provides consistent spacing values for all hero components
+ * 
+ * This module centralizes all hero spacing values to ensure consistency
+ * across the application and make future updates easier to manage.
  */
 
 export const heroSpacing = {
@@ -49,7 +52,11 @@ export const heroSpacing = {
 } as const;
 
 /**
- * Hero spacing utility functions
+ * Hero spacing utility functions with validation
+ * 
+ * @param variant - The spacing variant to use
+ * @returns The corresponding spacing classes
+ * @throws Error if invalid variant is provided
  */
 export const getHeroSpacing = {
   section: (variant: 'default' | 'compact' | 'large' = 'default') => {
@@ -58,6 +65,12 @@ export const getHeroSpacing = {
       compact: 'py-12 md:py-16',
       large: 'py-16 md:py-20 lg:py-24',
     };
+    
+    if (!(variant in variants)) {
+      console.warn(`Invalid section variant: ${variant}. Using default.`);
+      return variants.default;
+    }
+    
     return variants[variant];
   },
   
@@ -67,6 +80,12 @@ export const getHeroSpacing = {
       compact: 'space-y-4 md:space-y-6',
       large: 'space-y-8 md:space-y-10',
     };
+    
+    if (!(variant in variants)) {
+      console.warn(`Invalid content variant: ${variant}. Using default.`);
+      return variants.default;
+    }
+    
     return variants[variant];
   },
   
@@ -76,10 +95,21 @@ export const getHeroSpacing = {
       narrow: 'max-w-3xl mx-auto px-4',
       wide: 'max-w-6xl mx-auto px-4',
     };
+    
+    if (!(variant in variants)) {
+      console.warn(`Invalid container variant: ${variant}. Using default.`);
+      return variants.default;
+    }
+    
     return variants[variant];
   },
   
   gap: (size: 'small' | 'medium' | 'large' = 'medium') => {
+    if (!(size in heroSpacing.hero.gap)) {
+      console.warn(`Invalid gap size: ${size}. Using medium.`);
+      return heroSpacing.hero.gap.medium;
+    }
+    
     return heroSpacing.hero.gap[size];
   },
 };
