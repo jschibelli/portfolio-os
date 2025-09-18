@@ -1,18 +1,37 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Constants for better maintainability
+const TEST_DIR = './tests';
+const REDUCED_MOTION = 'reduce';
+const DEV_SERVER_URL = 'http://localhost:3000';
+const DEV_SERVER_TIMEOUT = 120 * 1000; // 2 minutes
+
 // Shared configuration for hero testing projects
 const heroTestConfig = {
 	use: { 
 		...devices['Desktop Chrome'],
 		contextOptions: {
-			reducedMotion: 'reduce',
+			reducedMotion: REDUCED_MOTION,
 		},
 	},
 };
 
+// Shared function for creating accessibility test configurations
+const createAccessibilityConfig = (device: any, description: string) => ({
+	use: { 
+		...device,
+		// Enable accessibility testing with reduced motion for consistent results
+		contextOptions: {
+			reducedMotion: REDUCED_MOTION,
+		},
+	},
+	// Add description for better documentation
+	description,
+});
+
 export default defineConfig({
 	// Test directory containing all test files
-	testDir: './tests',
+	testDir: TEST_DIR,
 	// Run tests in parallel for faster execution
 	fullyParallel: true,
 	// Prevent .only() tests in CI environment
@@ -27,7 +46,7 @@ export default defineConfig({
 	globalSetup: require.resolve('./tests/global-setup.ts'),
 	use: {
 		// Base URL for all tests
-		baseURL: 'http://localhost:3000',
+		baseURL: DEV_SERVER_URL,
 		// Enable tracing on first retry for debugging
 		trace: 'on-first-retry',
 		// Visual regression testing configuration
@@ -75,23 +94,11 @@ export default defineConfig({
 		},
 		{
 			name: 'accessibility',
-			use: { 
-				...devices['Desktop Chrome'],
-				// Enable accessibility testing
-				contextOptions: {
-					reducedMotion: 'reduce',
-				},
-			},
+			...createAccessibilityConfig(devices['Desktop Chrome'], 'Desktop accessibility testing with reduced motion for consistent results'),
 		},
 		{
 			name: 'accessibility-mobile',
-			use: { 
-				...devices['Pixel 5'],
-				// Enable accessibility testing on mobile
-				contextOptions: {
-					reducedMotion: 'reduce',
-				},
-			},
+			...createAccessibilityConfig(devices['Pixel 5'], 'Mobile accessibility testing with reduced motion for consistency'),
 		},
 		{
 			name: 'hero-visual-regression',
@@ -106,9 +113,9 @@ export default defineConfig({
 	],
 	webServer: {
 		command: 'npm run dev',
-		url: 'http://localhost:3000',
+		url: DEV_SERVER_URL,
 		reuseExistingServer: !process.env.CI,
-		timeout: 120 * 1000, // 2 minutes timeout for server startup
+		timeout: DEV_SERVER_TIMEOUT, // 2 minutes timeout for server startup
 		stdout: 'pipe',
 		stderr: 'pipe',
 	},
