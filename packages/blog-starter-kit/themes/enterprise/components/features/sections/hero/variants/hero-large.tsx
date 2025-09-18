@@ -10,6 +10,7 @@ interface HeroLargeProps extends Omit<BaseHeroProps, 'variant'> {
   mockup?: ReactNode;
   showStats?: boolean;
   stats?: Array<{
+    id?: string;
     label: string;
     value: string;
   }>;
@@ -53,9 +54,10 @@ export default function HeroLarge({
           <a 
             href={badgeLink || '#'}
             className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white/10 px-4 py-2 text-sm font-medium text-stone-200 backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-105"
+            aria-label={badgeText}
           >
             {badgeText}
-            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </a>
@@ -63,10 +65,10 @@ export default function HeroLarge({
       )}
       
       {showStats && stats.length > 0 && (
-        <div className="animate-appear opacity-0 delay-300 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="animate-appear opacity-0 delay-300 grid grid-cols-2 gap-4 sm:grid-cols-4" role="region" aria-label="Statistics">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-2xl font-bold text-white sm:text-3xl">
+            <div key={stat.id || `stat-${index}`} className="text-center">
+              <div className="text-2xl font-bold text-white sm:text-3xl" aria-label={`${stat.value} ${stat.label}`}>
                 {stat.value}
               </div>
               <div className="text-sm text-stone-300">

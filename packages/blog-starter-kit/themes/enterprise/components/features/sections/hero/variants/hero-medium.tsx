@@ -27,6 +27,10 @@ export default function HeroMedium({
   centered = true,
   ...props
 }: HeroMediumProps) {
+  // Validate that icon is provided when showIcon is true
+  if (showIcon && !icon) {
+    console.warn('HeroMedium: showIcon is true but no icon provided');
+  }
   const containerClasses = centered 
     ? 'text-center' 
     : 'text-left max-w-none';
@@ -46,7 +50,7 @@ export default function HeroMedium({
       {...props}
     >
       {showIcon && icon && (
-        <div className="animate-appear opacity-0 delay-100 flex justify-center">
+        <div className="animate-appear opacity-0 delay-100 flex justify-center" role="img" aria-label="Hero icon">
           <div className="rounded-full bg-white/10 p-4 backdrop-blur-sm">
             {icon}
           </div>

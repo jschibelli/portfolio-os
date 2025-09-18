@@ -7,11 +7,13 @@ interface HeroSmallProps extends Omit<BaseHeroProps, 'variant'> {
   compact?: boolean;
   showBreadcrumb?: boolean;
   breadcrumbItems?: Array<{
+    id?: string;
     label: string;
     href?: string;
   }>;
   showMeta?: boolean;
   metaItems?: Array<{
+    id?: string;
     label: string;
     value: string;
   }>;
@@ -57,9 +59,9 @@ export default function HeroSmall({
         <nav className="animate-appear opacity-0 delay-100" aria-label="Breadcrumb">
           <ol className="flex items-center justify-center space-x-2 text-sm text-stone-300">
             {breadcrumbItems.map((item, index) => (
-              <li key={index} className="flex items-center">
+              <li key={item.id || `breadcrumb-${index}`} className="flex items-center">
                 {index > 0 && (
-                  <svg className="h-4 w-4 mx-2" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="h-4 w-4 mx-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -67,11 +69,12 @@ export default function HeroSmall({
                   <a 
                     href={item.href}
                     className="hover:text-white transition-colors"
+                    aria-label={`Navigate to ${item.label}`}
                   >
                     {item.label}
                   </a>
                 ) : (
-                  <span className="text-stone-400">{item.label}</span>
+                  <span className="text-stone-400" aria-current="page">{item.label}</span>
                 )}
               </li>
             ))}
@@ -80,11 +83,11 @@ export default function HeroSmall({
       )}
       
       {showMeta && metaItems.length > 0 && (
-        <div className="animate-appear opacity-0 delay-200 flex flex-wrap justify-center gap-4 text-sm text-stone-300">
+        <div className="animate-appear opacity-0 delay-200 flex flex-wrap justify-center gap-4 text-sm text-stone-300" role="region" aria-label="Meta information">
           {metaItems.map((item, index) => (
-            <div key={index} className="flex items-center gap-1">
+            <div key={item.id || `meta-${index}`} className="flex items-center gap-1">
               <span className="font-medium">{item.label}:</span>
-              <span className="text-stone-400">{item.value}</span>
+              <span className="text-stone-400" aria-label={`${item.label} is ${item.value}`}>{item.value}</span>
             </div>
           ))}
         </div>
