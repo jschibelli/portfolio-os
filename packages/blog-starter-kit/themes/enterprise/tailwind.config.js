@@ -142,30 +142,40 @@ module.exports = {
 	plugins: [
 		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
-		// Custom typography utilities
+		// Custom typography utilities for hero typography system
+		// These utilities provide consistent typography across all hero components
+		// and implement the design token system for scalable typography
 		function({ addUtilities }) {
 			const typographyUtilities = {
+				// Hero typography utilities - main hero titles with responsive scaling
 				'.hero-title': {
 					'@apply text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl': {},
 				},
+				// Hero subtitle utilities - secondary hero text with consistent styling
 				'.hero-subtitle': {
 					'@apply text-lg font-semibold leading-relaxed tracking-normal sm:text-xl md:text-2xl lg:text-3xl': {},
 				},
+				// Hero description utilities - body text for hero sections
 				'.hero-description': {
 					'@apply text-base font-medium leading-relaxed tracking-normal sm:text-lg md:text-xl lg:text-2xl': {},
 				},
+				// Section heading utilities - main section titles
 				'.section-heading': {
 					'@apply text-2xl font-bold leading-tight tracking-tight sm:text-3xl md:text-4xl lg:text-5xl': {},
 				},
+				// Section subheading utilities - secondary section text
 				'.section-subheading': {
 					'@apply text-lg font-semibold leading-snug tracking-normal sm:text-xl md:text-2xl': {},
 				},
+				// Card title utilities - titles for card components
 				'.card-title': {
 					'@apply text-lg font-semibold leading-snug tracking-normal sm:text-xl md:text-2xl': {},
 				},
+				// Card subtitle utilities - secondary card text
 				'.card-subtitle': {
 					'@apply text-sm font-medium leading-normal tracking-normal sm:text-base md:text-lg': {},
 				},
+				// Card description utilities - body text for cards
 				'.card-description': {
 					'@apply text-sm font-normal leading-relaxed tracking-normal sm:text-base md:text-lg': {},
 				},

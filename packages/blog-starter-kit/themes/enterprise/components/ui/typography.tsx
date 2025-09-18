@@ -252,16 +252,6 @@ export function getTypographyClasses(preset: TypographyPreset): string {
   return typographyPresets[preset];
 }
 
-// Export all typography components
-export {
-  HeroTitle,
-  HeroSubtitle,
-  HeroDescription,
-  SectionHeading,
-  SectionSubheading,
-  CardTitle,
-  CardSubtitle,
-  CardDescription,
-  Typography,
-  getTypographyClasses,
-};
+// All typography components are already exported individually above
+// This file exports: HeroTitle, HeroSubtitle, HeroDescription, SectionHeading, 
+// SectionSubheading, CardTitle, CardSubtitle, CardDescription, Typography, getTypographyClasses

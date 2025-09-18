@@ -1,3 +1,6 @@
+# GraphQL query to fetch project fields and their configurations
+# This query is used to retrieve project field definitions and single-select options
+# for GitHub Project V2 integration and project management features
 query($id: ID!) {
   node(id: $id) {
     ... on ProjectV2 {
