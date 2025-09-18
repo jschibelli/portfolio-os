@@ -693,6 +693,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									)}
 								</>
 							)}
+							</div>
 						</Container>
 					</section>
 
@@ -771,6 +772,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</motion.div>
 								))}
 							</div>
+							</div>
 						</Container>
 					</section>
 
@@ -815,6 +817,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</Button>
 								</div>
 							</motion.div>
+							</div>
 						</Container>
 					</section>
 				</main>
