@@ -83,6 +83,26 @@ export default defineConfig({
 				},
 			},
 		},
+		{
+			name: 'hero-visual-regression',
+			use: { 
+				...devices['Desktop Chrome'],
+				// Hero visual regression testing
+				contextOptions: {
+					reducedMotion: 'reduce',
+				},
+			},
+		},
+		{
+			name: 'hero-performance',
+			use: { 
+				...devices['Desktop Chrome'],
+				// Hero performance testing
+				contextOptions: {
+					reducedMotion: 'reduce',
+				},
+			},
+		},
 	],
 	webServer: {
 		command: 'npm run dev',
