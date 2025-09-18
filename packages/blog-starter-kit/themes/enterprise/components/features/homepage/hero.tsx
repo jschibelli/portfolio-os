@@ -49,7 +49,7 @@ export default function Hero() {
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
+						className="hero-title text-white"
 					>
 						Building Smarter, Faster<br />
 						Web Applications
@@ -61,13 +61,13 @@ export default function Hero() {
 						className="space-y-3"
 						aria-labelledby="hero-name"
 					>
-						<p id="hero-name" className="text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">
+						<p id="hero-name" className="hero-subtitle text-stone-200">
 							John Schibelli
 						</p>
-						<p className="text-lg font-semibold text-stone-300 md:text-xl lg:text-2xl">
+						<p className="hero-subtitle text-stone-300">
 							Senior Front-End Developer
 						</p>
-						<p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-stone-300 md:text-lg lg:text-xl">
+						<p className="hero-description mx-auto max-w-3xl text-stone-300">
 							Transforming ideas into high-performance digital experiences that drive business growth. 
 							Expert in React, Next.js, and TypeScript with 15+ years of proven results.
 						</p>

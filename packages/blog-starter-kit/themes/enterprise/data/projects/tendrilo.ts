@@ -7,7 +7,7 @@ export const tendrilo: ProjectMeta = {
   description: 'A comprehensive strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. Features detailed market research, competitive analysis, and technical architecture for scalable AI-powered customer engagement solutions.',
   image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop',
   tags: ['SaaS', 'AI', 'Multi-tenant', 'Chatbot', 'Strategic Analysis', 'Market Research'],
-  liveUrl: 'https://tendrilo.ai',
+  liveUrl: 'https://tendril.intrawebtech.com',
   caseStudyUrl: '/case-studies/tendrilo-case-study',
   githubUrl: 'https://github.com/jschibelli/tendrilo',
   documentationUrl: 'https://docs.tendrilo.ai',

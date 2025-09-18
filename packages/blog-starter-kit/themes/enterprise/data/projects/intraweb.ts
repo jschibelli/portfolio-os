@@ -7,7 +7,7 @@ export const intraweb: ProjectMeta = {
   description: 'A comprehensive web development and technology solutions company website. Features modern design, service showcases, and interactive elements highlighting expertise in React, Next.js, and full-stack development with focus on client acquisition.',
   image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
   tags: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Full-Stack', 'Company Website'],
-  liveUrl: 'https://intrawebtechnologies.com',
+  liveUrl: 'https://intrawebtech.com',
   caseStudyUrl: '/case-studies/intraweb',
   githubUrl: 'https://github.com/jschibelli/intraweb-technologies',
   featured: false,
