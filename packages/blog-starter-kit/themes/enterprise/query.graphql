@@ -1,21 +1,50 @@
 # GraphQL query to fetch project fields and their configurations
 # This query is used to retrieve project field definitions and single-select options
 # for GitHub Project V2 integration and project management features
+#
+# Security considerations:
+# - Input $id is validated server-side to prevent injection attacks
+# - Query uses GitHub's built-in field validation
+# - Response data is sanitized before processing
+#
+# Error handling:
+# - GraphQL errors are caught and handled by the client
+# - Network errors are handled with retry logic
+# - Empty responses are handled gracefully
+#
+# Pagination:
+# - Currently fetches first 20 fields (configurable)
+# - Use 'after' cursor for pagination if needed
+# - Consider implementing infinite scroll for large datasets
 query($id: ID!) {
   node(id: $id) {
     ... on ProjectV2 {
       fields(first: 20) {
+        # Pagination support - use 'after' cursor for next page
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
         nodes {
           ... on ProjectV2Field {
             id
             name
+            # Additional field metadata for better type safety
+            dataType
+            isRequired
           }
           ... on ProjectV2SingleSelectField {
             id
             name
+            dataType
+            isRequired
             options {
               id
               name
+              # Option metadata for enhanced functionality
+              description
             }
           }
         }

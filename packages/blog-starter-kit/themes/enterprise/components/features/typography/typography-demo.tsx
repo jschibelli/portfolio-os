@@ -95,16 +95,16 @@ export default function TypographyDemo() {
           
           <div className="bg-white dark:bg-stone-800 rounded-lg p-8 shadow-lg">
             <div className="space-y-6">
-              <h1 className="hero-title text-stone-900 dark:text-stone-100">
-                Hero Title with Utility Class
+              <h1 className="tw-hero-title text-stone-900 dark:text-stone-100">
+                Hero Title with Namespaced Utility Class
               </h1>
               
-              <p className="hero-subtitle text-stone-700 dark:text-stone-300">
-                Hero Subtitle with Utility Class
+              <p className="tw-hero-subtitle text-stone-700 dark:text-stone-300">
+                Hero Subtitle with Namespaced Utility Class
               </p>
               
-              <p className="hero-description text-stone-600 dark:text-stone-400">
-                Hero description using utility classes for consistent typography across all breakpoints.
+              <p className="tw-hero-description text-stone-600 dark:text-stone-400">
+                Hero description using namespaced utility classes for consistent typography across all breakpoints.
               </p>
             </div>
           </div>
