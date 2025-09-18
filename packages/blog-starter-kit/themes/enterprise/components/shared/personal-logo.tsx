@@ -117,15 +117,8 @@ export const PersonalLogo = ({
   // Show loading state while theme is being determined
   if (!mounted && showLoadingState) {
     return (
-      <div className={`${config.className} ${className} flex items-center justify-center`}>
-        <Image
-          src={logoSrc}
-          alt={alt}
-          width={config.width}
-          height={config.height}
-          className="object-contain transition-opacity duration-200"
-          priority
-        />
+      <div className={`${config.className} ${className} flex items-center justify-center bg-stone-200 dark:bg-stone-700 rounded animate-pulse`}>
+        <div className="w-8 h-8 bg-stone-300 dark:bg-stone-600 rounded"></div>
       </div>
     );
   }
@@ -148,6 +141,13 @@ export const PersonalLogo = ({
       className={`${config.className} ${className} object-contain transition-opacity duration-200`}
       priority
       onError={handleImageError}
+      onLoad={() => console.log('PersonalLogo: Logo loaded successfully')}
+      style={{ 
+        width: 'auto', 
+        height: 'auto',
+        maxWidth: '100%',
+        maxHeight: '100%'
+      }}
     />
   );
 
@@ -158,12 +158,18 @@ export const PersonalLogo = ({
         aria-label={`${alt} - Home page`}
         className="inline-block hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900 rounded"
       >
-        {logoElement}
+        <div className={`${config.className} ${className} flex items-center justify-center`}>
+          {logoElement}
+        </div>
       </Link>
     );
   }
 
-  return logoElement;
+  return (
+    <div className={`${config.className} ${className} flex items-center justify-center`}>
+      {logoElement}
+    </div>
+  );
 };
 
 // Convenience components for common use cases
