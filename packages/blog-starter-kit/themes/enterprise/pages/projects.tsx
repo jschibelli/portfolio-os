@@ -75,7 +75,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 	// Enhanced search function with better matching
 	const enhancedSearch = useCallback((query: string, projects: Project[]) => {
 		if (!query) return projects;
-
+		
 		const searchLower = query.toLowerCase();
 		const searchTerms = searchLower.split(' ').filter(term => term.length > 0);
 		return projects.filter(project => {
@@ -422,6 +422,7 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										/>
 										<div id="search-help" className="sr-only">
 											Search through project titles, descriptions, and technologies
+										</div>
 										</div>
 										
 										{/* Search Suggestions Dropdown */}
