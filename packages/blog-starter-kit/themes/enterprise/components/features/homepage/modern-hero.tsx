@@ -73,7 +73,7 @@ export default function ModernHero({
 								{subtitle}
 							</h2>
 							<h1
-								className={`duration-800 text-3xl font-bold tracking-tight text-white transition-all delay-300 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl ${
+								className={`hero-title duration-800 text-white transition-all delay-300 ${
 									isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
 								}`}
 							>
@@ -82,7 +82,7 @@ export default function ModernHero({
 						</div>
 
 						<p
-							className={`delay-400 mx-auto max-w-[600px] px-4 text-base leading-relaxed text-stone-300 transition-all duration-700 sm:text-lg ${
+							className={`hero-description delay-400 mx-auto max-w-[600px] px-4 text-stone-300 transition-all duration-700 ${
 								isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
 							}`}
 						>

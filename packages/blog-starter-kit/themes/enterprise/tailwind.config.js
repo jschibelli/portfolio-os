@@ -62,6 +62,10 @@ module.exports = {
 			},
 			letterSpacing: {
 				tighter: '-.04em',
+				// Hero typography letter spacing
+				'hero-tight': '-0.025em',
+				'hero-normal': '0em',
+				'hero-wide': '0.025em',
 			},
 			inset: {
 				100: '100%',
@@ -69,12 +73,30 @@ module.exports = {
 			},
 			lineHeight: {
 				tight: 1.2,
+				// Hero typography line heights
+				'hero-tight': 1.1,
+				'hero-snug': 1.25,
+				'hero-relaxed': 1.5,
 			},
 			fontSize: {
 				'5xl': '2.5rem',
 				'6xl': '2.75rem',
 				'7xl': '4.5rem',
 				'8xl': '6.25rem',
+				// Hero typography scale
+				'hero-xs': '0.875rem',    // 14px
+				'hero-sm': '1rem',       // 16px
+				'hero-base': '1.125rem', // 18px
+				'hero-lg': '1.25rem',    // 20px
+				'hero-xl': '1.5rem',     // 24px
+				'hero-2xl': '1.875rem',  // 30px
+				'hero-3xl': '2.25rem',   // 36px
+				'hero-4xl': '2.5rem',    // 40px
+				'hero-5xl': '3rem',      // 48px
+				'hero-6xl': '3.75rem',   // 60px
+				'hero-7xl': '4.5rem',    // 72px
+				'hero-8xl': '6rem',      // 96px
+				'hero-9xl': '8rem',      // 128px
 			},
 			boxShadow: {
 				sm: '0 5px 10px rgba(0, 0, 0, 0.12)',
@@ -120,5 +142,35 @@ module.exports = {
 	plugins: [
 		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
+		// Custom typography utilities
+		function({ addUtilities }) {
+			const typographyUtilities = {
+				'.hero-title': {
+					'@apply text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl': {},
+				},
+				'.hero-subtitle': {
+					'@apply text-lg font-semibold leading-relaxed tracking-normal sm:text-xl md:text-2xl lg:text-3xl': {},
+				},
+				'.hero-description': {
+					'@apply text-base font-medium leading-relaxed tracking-normal sm:text-lg md:text-xl lg:text-2xl': {},
+				},
+				'.section-heading': {
+					'@apply text-2xl font-bold leading-tight tracking-tight sm:text-3xl md:text-4xl lg:text-5xl': {},
+				},
+				'.section-subheading': {
+					'@apply text-lg font-semibold leading-snug tracking-normal sm:text-xl md:text-2xl': {},
+				},
+				'.card-title': {
+					'@apply text-lg font-semibold leading-snug tracking-normal sm:text-xl md:text-2xl': {},
+				},
+				'.card-subtitle': {
+					'@apply text-sm font-medium leading-normal tracking-normal sm:text-base md:text-lg': {},
+				},
+				'.card-description': {
+					'@apply text-sm font-normal leading-relaxed tracking-normal sm:text-base md:text-lg': {},
+				},
+			};
+			addUtilities(typographyUtilities);
+		},
 	],
 };
