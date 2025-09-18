@@ -2,23 +2,74 @@ import { Button } from '../../ui';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { ModernHeroProps, HeroContent, HeroCTA, HeroImage, HeroAnimation } from './types';
 
-interface ModernHeroProps {
-	title: string;
-	subtitle: string;
-	description: string;
-	ctaText?: string;
-	ctaLink?: string;
-	imageUrl?: string;
-}
+// Helper function to map hero CTA size to Button size
+const mapCTASizeToButtonSize = (size?: string): 'default' | 'sm' | 'lg' | 'icon' => {
+	switch (size) {
+		case 'sm':
+			return 'sm';
+		case 'md':
+			return 'default';
+		case 'lg':
+			return 'lg';
+		case 'icon':
+			return 'icon';
+		default:
+			return 'lg';
+	}
+};
+
+// Default content for modern hero
+const defaultContent: HeroContent = {
+	title: "Building Smarter, Faster Web Applications",
+	subtitle: "Welcome to the Future",
+	description: "Transforming ideas into high-performance digital experiences that drive business growth."
+};
+
+// Default primary CTA
+const defaultPrimaryCTA: HeroCTA = {
+	text: "Get Started",
+	href: "/contact",
+	variant: "primary",
+	size: "lg",
+	'aria-label': "Start your project journey"
+};
+
+// Default secondary CTA
+const defaultSecondaryCTA: HeroCTA = {
+	text: "Read the Blog",
+	href: "/blog",
+	variant: "outline",
+	size: "lg",
+	'aria-label': "Read our latest insights and tutorials"
+};
+
+// Default background image
+const defaultBackgroundImage: HeroImage = {
+	src: '/assets/hero/hero-bg1.png',
+	alt: 'Modern hero background',
+	quality: 85,
+	priority: true
+};
+
+// Default animation configuration
+const defaultAnimation: HeroAnimation = {
+	duration: 1.0,
+	delay: 0.1,
+	ease: 'easeOut',
+	enabled: true
+};
 
 export default function ModernHero({
-	title,
-	subtitle,
-	description,
-	ctaText,
-	ctaLink,
-	imageUrl = '/assets/hero/hero-image.webp',
+	content = defaultContent,
+	primaryCTA = defaultPrimaryCTA,
+	secondaryCTA = defaultSecondaryCTA,
+	backgroundImage = defaultBackgroundImage,
+	animation = defaultAnimation,
+	enableIntersectionObserver = true,
+	className = "",
+	...props
 }: ModernHeroProps) {
 	const [isVisible, setIsVisible] = useState(false);
 
@@ -45,12 +96,15 @@ export default function ModernHero({
 	}, []);
 
 	return (
-		<div className="hero-container relative min-h-[400px] overflow-hidden py-12 md:py-16">
+		<div 
+			className={`hero-container relative min-h-[400px] overflow-hidden py-12 md:py-16 ${className}`}
+			{...props}
+		>
 			{/* Background image */}
 			<div
 				className="absolute inset-0 bg-cover bg-center bg-no-repeat"
 				style={{
-					backgroundImage: 'url(/assets/hero/hero-bg1.png)',
+					backgroundImage: `url(${backgroundImage.src})`,
 				}}
 			/>
 			{/* Dark overlay for better text readability */}
@@ -65,54 +119,66 @@ export default function ModernHero({
 						}`}
 					>
 						<div className="space-y-3">
-							<h2
-								className={`text-xs font-medium uppercase tracking-wider text-stone-200 transition-all delay-200 duration-700 sm:text-sm ${
-									isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-								}`}
-							>
-								{subtitle}
-							</h2>
+							{content.subtitle && (
+								<h2
+									className={`text-xs font-medium uppercase tracking-wider text-stone-200 transition-all delay-200 duration-700 sm:text-sm ${
+										isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+									}`}
+								>
+									{content.subtitle}
+								</h2>
+							)}
 							<h1
 								className={`duration-800 text-3xl font-bold tracking-tight text-white transition-all delay-300 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl ${
 									isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
 								}`}
 							>
-								{title}
+								{content.title}
 							</h1>
 						</div>
 
-						<p
-							className={`delay-400 mx-auto max-w-[600px] px-4 text-base leading-relaxed text-stone-300 transition-all duration-700 sm:text-lg ${
-								isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-							}`}
-						>
-							{description}
-						</p>
+						{content.description && (
+							<p
+								className={`delay-400 mx-auto max-w-[600px] px-4 text-base leading-relaxed text-stone-300 transition-all duration-700 sm:text-lg ${
+									isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+								}`}
+							>
+								{content.description}
+							</p>
+						)}
 
-						{ctaText && ctaLink && (
+						{(primaryCTA || secondaryCTA) && (
 							<div
 								className={`flex flex-col items-center justify-center gap-4 transition-all delay-500 duration-700 sm:flex-row ${
 									isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
 								}`}
 							>
-								<Button
-									size="lg"
-									className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
-									asChild
-								>
-									<a href={ctaLink}>{ctaText}</a>
-								</Button>
-								<Button
-									size="lg"
-									variant="outline"
-									className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
-									asChild
-								>
-									<Link href="/blog">
-										Read the Blog
-										<ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-									</Link>
-								</Button>
+								{primaryCTA && (
+									<Button
+										size={mapCTASizeToButtonSize(primaryCTA.size)}
+										variant={primaryCTA.variant === "primary" ? "default" : primaryCTA.variant}
+										className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
+										asChild
+									>
+										<Link href={primaryCTA.href} aria-label={primaryCTA['aria-label']}>
+											{primaryCTA.text}
+											{primaryCTA.icon}
+										</Link>
+									</Button>
+								)}
+								{secondaryCTA && (
+									<Button
+										size={mapCTASizeToButtonSize(secondaryCTA.size)}
+										variant={secondaryCTA.variant === "primary" ? "default" : secondaryCTA.variant}
+										className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
+										asChild
+									>
+										<Link href={secondaryCTA.href} aria-label={secondaryCTA['aria-label']}>
+											{secondaryCTA.text}
+											{secondaryCTA.icon || <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
+										</Link>
+									</Button>
+								)}
 							</div>
 						)}
 					</div>
