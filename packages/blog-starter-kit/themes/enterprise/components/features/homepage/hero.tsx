@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
 import { PRIMARY_BUTTON_STYLES, SECONDARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
+import { heroSpacingClasses } from '../../ui/spacing';
+import { cn } from '@/lib/utils';
 
 // Animation variants for consistent motion
 const fadeInUp = {
@@ -20,7 +22,7 @@ const fadeInUpDelayed = (delay: number) => ({
 
 export default function Hero() {
 	return (
-		<header className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16">
+		<header className={cn("relative flex min-h-[400px] items-center justify-center overflow-hidden", heroSpacingClasses.section.default)}>
 			{/* Background Image with optimized loading */}
 			<div className="absolute inset-0 z-0">
 				<Image
@@ -39,10 +41,10 @@ export default function Hero() {
 			</div>
 
 			{/* Content */}
-			<div className="container relative z-10 mx-auto px-4 text-center">
+			<div className={cn(heroSpacingClasses.container.default, "relative z-10 text-center")}>
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl space-y-6"
+					className={cn("mx-auto", heroSpacingClasses.content.default)}
 				>
 					{/* Hero Tagline */}
 					<motion.h1
