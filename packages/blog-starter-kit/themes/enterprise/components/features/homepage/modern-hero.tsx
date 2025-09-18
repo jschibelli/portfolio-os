@@ -97,7 +97,7 @@ export default function ModernHero({
 
 	return (
 		<div 
-			className={`hero-container relative min-h-[400px] overflow-hidden py-12 md:py-16 ${className}`}
+			className={`hero-container relative min-h-screen overflow-hidden py-12 md:py-16 ${className}`}
 			{...props}
 		>
 			{/* Background image */}

@@ -93,7 +93,7 @@ function Hero({
 }: ClassicHeroProps) {
 	return (
 		<header 
-			className={`relative flex min-h-[400px] items-center justify-center overflow-hidden py-12 md:py-16 ${className}`}
+			className={`relative flex min-h-screen items-center justify-center overflow-hidden py-12 md:py-16 ${className}`}
 			{...props}
 		>
 			{/* Background Image with optimized loading */}
