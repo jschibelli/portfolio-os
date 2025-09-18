@@ -626,7 +626,6 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 										<span>Showing all {allProjects.length} projects</span>
 									)}
 								</div>
-							</div>
 						</Container>
 					</section>
 
@@ -693,7 +692,6 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									)}
 								</>
 							)}
-							</div>
 						</Container>
 					</section>
 
@@ -772,7 +770,6 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</motion.div>
 								))}
 							</div>
-							</div>
 						</Container>
 					</section>
 
@@ -817,7 +814,6 @@ export default function ProjectsPage({ publication, projects }: Props & { projec
 									</Button>
 								</div>
 							</motion.div>
-							</div>
 						</Container>
 					</section>
 				</main>
