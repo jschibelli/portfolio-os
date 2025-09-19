@@ -69,7 +69,7 @@
 		"@radix-ui/react-slot": "^1.2.3",
 		"@radix-ui/react-switch": "^1.2.6",
 		"@radix-ui/react-tabs": "^1.1.13",
-		"@starter-kit/utils": "workspace:*",
+		"@starter-kit/utils": "file:../../utils",
 		"@tailwindcss/typography": "^0.5.10",
 		"@tanstack/react-table": "^8.21.3",
 		"@tiptap/extension-code-block-lowlight": "^3.3.0",
@@ -126,8 +126,8 @@
 		"@graphql-codegen/typescript-operations": "^4.0.1",
 		"@parcel/watcher": "^2.3.0",
 		"@playwright/test": "^1.48.0",
-		"@starter-kit/eslint-config-custom": "workspace:*",
-		"@starter-kit/tsconfig": "workspace:*",
+		"@starter-kit/eslint-config-custom": "file:../../eslint-config-custom",
+		"@starter-kit/tsconfig": "file:../../tsconfig",
 		"@tailwindcss/line-clamp": "^0.4.4",
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/react": "^16.3.0",
@@ -153,6 +153,7 @@
 		"tailwindcss-animate": "^1.0.7",
 		"ts-jest": "^29.1.1",
 		"ts-node": "^10.9.2",
+		"turbo": "^2.3.0",
 		"typescript": "^5.3.3"
 	}
 }
