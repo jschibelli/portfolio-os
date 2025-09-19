@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export interface BaseHeroProps {
@@ -57,8 +58,35 @@ export default function BaseHero({
     right: 'items-end',
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  const MotionSection = animate ? motion.section : 'section';
+  const MotionDiv = animate ? motion.div : 'div';
+
   return (
-    <section
+    <MotionSection
       id={id}
       className={cn(
         'relative flex min-h-[400px] w-full flex-col justify-center',
@@ -66,52 +94,60 @@ export default function BaseHero({
         className
       )}
       aria-label={ariaLabel}
+      variants={animate ? containerVariants : undefined}
+      initial={animate ? 'hidden' : undefined}
+      animate={animate ? 'visible' : undefined}
     >
-      <div
+      <MotionDiv
         className={cn(
           'flex w-full flex-col gap-6',
           alignmentClasses[contentAlignment],
           contentClassName
         )}
+        variants={animate ? itemVariants : undefined}
       >
         {/* Custom Content */}
         {customContent && (
-          <div className="w-full">
+          <MotionDiv className="w-full" variants={animate ? itemVariants : undefined}>
             {customContent}
-          </div>
+          </MotionDiv>
         )}
 
         {/* Title */}
         {title && (
-          <h1
-            className={cn(
-              'text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 md:text-4xl lg:text-5xl',
-              titleClassName
-            )}
-          >
-            {title}
-          </h1>
+          <MotionDiv variants={animate ? itemVariants : undefined}>
+            <h1
+              className={cn(
+                'text-3xl font-bold leading-tight tracking-tight text-stone-900 dark:text-stone-100 md:text-4xl lg:text-5xl',
+                titleClassName
+              )}
+            >
+              {title}
+            </h1>
+          </MotionDiv>
         )}
 
         {/* Description */}
         {description && (
-          <p
-            className={cn(
-              'text-lg leading-relaxed text-stone-600 dark:text-stone-400 md:text-xl',
-              descriptionClassName
-            )}
-          >
-            {description}
-          </p>
+          <MotionDiv variants={animate ? itemVariants : undefined}>
+            <p
+              className={cn(
+                'text-lg leading-relaxed text-stone-600 dark:text-stone-400 md:text-xl',
+                descriptionClassName
+              )}
+            >
+              {description}
+            </p>
+          </MotionDiv>
         )}
 
         {/* Children Content */}
         {children && (
-          <div className="w-full">
+          <MotionDiv className="w-full" variants={animate ? itemVariants : undefined}>
             {children}
-          </div>
+          </MotionDiv>
         )}
-      </div>
-    </section>
+      </MotionDiv>
+    </MotionSection>
   );
 }
