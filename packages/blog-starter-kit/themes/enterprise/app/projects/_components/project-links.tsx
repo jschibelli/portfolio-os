@@ -36,6 +36,13 @@ function isValidUrl(url: string): boolean {
  * Works both on server and client side
  */
 function isExternalUrl(url: string): boolean {
+  if (!url) return false;
+  
+  // Check if it's a relative URL first
+  if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
+    return false; // Relative URLs are not external
+  }
+  
   try {
     const urlObj = new URL(url);
     // Check if it's an absolute URL (starts with http/https)
