@@ -5,16 +5,26 @@ import { CoverImage } from '../../shared/cover-image';
 import { DateFormatter } from '../../shared/date-formatter';
 import BaseHero from '../sections/hero/base-hero';
 
-type Props = {
+interface HeroPostProps {
 	title: string;
 	coverImage: string;
 	date: string;
 	excerpt: string;
 	slug: string;
-};
+}
 
-export const HeroPost = ({ title, coverImage, date, excerpt, slug }: Props) => {
+export const HeroPost = ({ title, coverImage, date, excerpt, slug }: HeroPostProps) => {
 	const postURL = `/${slug}`;
+
+	// Error handling for image processing
+	const processedImage = (() => {
+		try {
+			return resizeImage(coverImage, { w: 1600, h: 840, c: 'thumb' }) || DEFAULT_COVER;
+		} catch (error) {
+			console.warn('Error processing cover image:', error);
+			return DEFAULT_COVER;
+		}
+	})();
 
 	return (
 		<BaseHero
@@ -30,9 +40,10 @@ export const HeroPost = ({ title, coverImage, date, excerpt, slug }: Props) => {
 				<div className="col-span-1">
 					<CoverImage
 						title={title}
-						src={resizeImage(coverImage, { w: 1600, h: 840, c: 'thumb' }) || DEFAULT_COVER}
+						src={processedImage}
 						slug={slug}
 						priority={true}
+						alt={`Cover image for ${title}`}
 					/>
 				</div>
 			}
@@ -42,15 +53,16 @@ export const HeroPost = ({ title, coverImage, date, excerpt, slug }: Props) => {
 						<Link
 							href={postURL}
 							className="hover:text-primary-600 dark:hover:text-primary-500 leading-tight tracking-tight hover:underline"
+							aria-label={`Read more about ${title}`}
 						>
 							{title}
 						</Link>
 					</h1>
-					<Link href={postURL}>
+					<Link href={postURL} aria-label={`Read excerpt of ${title}`}>
 						<p className="text-md leading-snug text-slate-500 dark:text-neutral-400">{excerpt}</p>
 					</Link>
 					<div className="text-sm font-semibold text-slate-500 dark:text-neutral-300">
-						<Link href={postURL}>
+						<Link href={postURL} aria-label={`View post published on ${date}`}>
 							<DateFormatter dateString={date} />
 						</Link>
 					</div>
