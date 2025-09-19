@@ -4,6 +4,26 @@ This is the existing [blog-starter](https://github.com/vercel/next.js/tree/canar
 
 We've used [Hashnode APIs](https://apidocs.hashnode.com) and integrated them with this blog starter kit.
 
+## Monorepo Structure
+
+This project is organized as a Turborepo monorepo with the following structure:
+
+```
+├── apps/
+│   ├── site/           # Main blog site (placeholder)
+│   └── dashboard/      # Admin dashboard (placeholder)
+├── packages/
+│   ├── ui/             # Shared UI components
+│   ├── lib/            # Shared utilities and libraries
+│   ├── hashnode/       # Hashnode API integration
+│   ├── db/             # Database utilities and Prisma
+│   ├── emails/         # Email templates and utilities
+│   └── chatbot/        # AI chatbot functionality
+└── turbo.json          # Turborepo configuration
+```
+
+The monorepo uses **Turborepo** for efficient build orchestration and **pnpm workspaces** for dependency management.
+
 ## Requirements
 
 - **Node.js**: 20.11.0 or higher (required for Next.js 15)
@@ -45,8 +65,12 @@ npm run db:seed
 ### 4. Development
 
 ```bash
-# Start the development server
+# Start the development server (using Turborepo)
 npm run dev
+
+# Or run specific apps
+turbo dev --filter=site
+turbo dev --filter=dashboard
 ```
 
 ### 5. GitHub Projects Setup (Optional)
@@ -294,8 +318,12 @@ NODE_ENV=production npm run test:seo
 ### 6. Production Build
 
 ```bash
-# Build for production
+# Build for production (using Turborepo)
 npm run build
+
+# Build specific apps
+turbo build --filter=site
+turbo build --filter=dashboard
 
 # Start production server
 npm start
@@ -304,7 +332,7 @@ npm start
 ### 7. Code Quality
 
 ```bash
-# Lint code
+# Lint code (using Turborepo)
 npm run lint
 
 # Type check
@@ -312,6 +340,9 @@ npm run typecheck
 
 # Format code
 npm run format
+
+# Run all quality checks
+turbo lint test typecheck
 ```
 
 ## Hashnode Integration
