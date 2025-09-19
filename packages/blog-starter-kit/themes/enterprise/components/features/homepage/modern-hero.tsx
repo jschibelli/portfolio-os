@@ -3,6 +3,8 @@ import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ModernHeroProps, HeroContent, HeroCTA, HeroImage, HeroAnimation } from './types';
+import { heroSpacingClasses } from '../../ui/spacing';
+import { cn } from '@/lib/utils';
 
 // Helper function to map hero CTA size to Button size
 const mapCTASizeToButtonSize = (size?: string): 'default' | 'sm' | 'lg' | 'icon' => {
@@ -97,7 +99,11 @@ export default function ModernHero({
 
 	return (
 		<div 
-			className={`hero-container relative min-h-screen overflow-hidden py-12 md:py-16 ${className}`}
+			className={cn(
+				"hero-container relative min-h-screen overflow-hidden",
+				heroSpacingClasses.section.default,
+				className
+			)}
 			{...props}
 		>
 			{/* Background image */}
@@ -110,13 +116,14 @@ export default function ModernHero({
 			{/* Dark overlay for better text readability */}
 			<div className="absolute inset-0 bg-black/40" />
 
-			<div className="container relative mx-auto px-4">
-				<div className="mx-auto flex max-w-4xl flex-col items-center justify-center text-center">
+			<div className={cn(heroSpacingClasses.container.default, "relative")}>
+				<div className={cn("mx-auto flex flex-col items-center justify-center text-center", heroSpacingClasses.container.narrow)}>
 					{/* Content Section */}
 					<div
-						className={`space-y-6 transition-all duration-1000 ease-out ${
-							isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-						}`}
+						className={cn(heroSpacingClasses.content.default, "transition-all duration-1000 ease-out", {
+							'translate-y-0 opacity-100': isVisible,
+							'translate-y-8 opacity-0': !isVisible
+						})}
 					>
 						<div className="space-y-3">
 							{content.subtitle && (

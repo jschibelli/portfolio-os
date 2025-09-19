@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Button } from '../../ui/button';
 import { PRIMARY_BUTTON_STYLES, SECONDARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 import { ClassicHeroProps, HeroContent, HeroCTA, HeroImage, HeroAnimation } from './types';
+import { heroSpacingClasses } from '../../ui/spacing';
+import { cn } from '@/lib/utils';
 
 // Helper function to map hero CTA size to Button size
 const mapCTASizeToButtonSize = (size?: string): 'default' | 'sm' | 'lg' | 'icon' => {
@@ -93,7 +95,11 @@ function Hero({
 }: ClassicHeroProps) {
 	return (
 		<header 
-			className={`relative flex min-h-screen items-center justify-center overflow-hidden py-12 md:py-16 ${className}`}
+			className={cn(
+				"relative flex min-h-screen items-center justify-center overflow-hidden",
+				heroSpacingClasses.section.default,
+				className
+			)}
 			{...props}
 		>
 			{/* Background Image with optimized loading */}
@@ -116,10 +122,10 @@ function Hero({
 			</div>
 
 			{/* Content */}
-			<div className="container relative z-10 mx-auto px-4 text-center">
+			<div className={cn(heroSpacingClasses.container.default, "relative z-10 text-center")}>
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl space-y-6"
+					className={cn("mx-auto", heroSpacingClasses.content.default)}
 				>
 					{/* Hero Tagline */}
 					<motion.h1
