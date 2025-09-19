@@ -9,14 +9,14 @@
 		"test": "turbo run test",
 		"typecheck": "turbo run typecheck",
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\" --ignore-path ../../../../.prettierignore",
-		"db:generate": "cd packages/db && prisma generate",
-		"db:push": "cd packages/db && prisma db push",
-		"db:migrate": "cd packages/db && prisma migrate dev",
-		"db:studio": "cd packages/db && prisma studio",
-		"db:seed": "cd packages/db && npx tsx prisma/seed.ts"
+		"db:generate": "cd apps/dashboard && prisma generate",
+		"db:push": "cd apps/dashboard && prisma db push",
+		"db:migrate": "cd apps/dashboard && prisma migrate dev",
+		"db:studio": "cd apps/dashboard && prisma studio",
+		"db:seed": "cd apps/dashboard && npx tsx prisma/seed.ts"
 	},
 	"prisma": {
-		"seed": "node prisma/seed.js"
+		"seed": "node apps/dashboard/prisma/seed.js"
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "^1.6.0",
