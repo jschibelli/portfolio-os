@@ -1,0 +1,40 @@
+{
+  "name": "@mindware-blog/dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@mindware-blog/ui": "workspace:*",
+    "@mindware-blog/lib": "workspace:*",
+    "@mindware-blog/db": "workspace:*",
+    "@mindware-blog/hashnode": "workspace:*",
+    "@mindware-blog/emails": "workspace:*",
+    "@mindware-blog/chatbot": "workspace:*",
+    "@prisma/client": "^5.0.0",
+    "next": "^15.5.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.120",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "autoprefixer": "^10.4.7",
+    "eslint": "^8.51.0",
+    "eslint-config-next": "^15.5.2",
+    "postcss": "^8.4.14",
+    "prisma": "^5.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.3.3"
+  }
+}

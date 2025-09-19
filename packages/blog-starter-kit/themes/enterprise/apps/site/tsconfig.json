@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"],
+      "@/components/*": ["../../components/*"],
+      "@/lib/*": ["../../packages/lib/*"],
+      "@/ui/*": ["../../packages/ui/*"],
+      "@/db/*": ["../../packages/db/*"],
+      "@/hashnode/*": ["../../packages/hashnode/*"],
+      "@/emails/*": ["../../packages/emails/*"],
+      "@/chatbot/*": ["../../packages/chatbot/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

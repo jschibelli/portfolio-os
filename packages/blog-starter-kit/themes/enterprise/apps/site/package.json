@@ -1,0 +1,31 @@
+{
+  "name": "@mindware-blog/site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@mindware-blog/ui": "workspace:*",
+    "@mindware-blog/lib": "workspace:*",
+    "@mindware-blog/db": "workspace:*",
+    "@mindware-blog/hashnode": "workspace:*",
+    "@mindware-blog/emails": "workspace:*",
+    "@mindware-blog/chatbot": "workspace:*",
+    "next": "^15.5.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.120",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "eslint": "^8.51.0",
+    "eslint-config-next": "^15.5.2",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,46 @@
+
+> @mindware-blog/dashboard@0.1.0 build E:\2025 Portfolio\mindware-blog\packages\blog-starter-kit\themes\enterprise\apps\dashboard
+> next build
+
+   ▲ Next.js 15.5.3
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./app/admin/articles/_components/AIAssistant.tsx
+Module not found: Can't resolve '@/components/ui/button'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/admin/articles/_components/ArticleEditor.tsx
+
+./app/admin/articles/_components/AIAssistant.tsx
+Module not found: Can't resolve '@/components/ui/input'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/admin/articles/_components/ArticleEditor.tsx
+
+./app/admin/articles/_components/AIAssistant.tsx
+Module not found: Can't resolve '@/components/ui/card'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/admin/articles/_components/ArticleEditor.tsx
+
+./app/admin/articles/_components/ArticleEditor.tsx
+Module not found: Can't resolve '@/components/ui/button'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./app/admin/articles/_components/ArticleEditor.tsx
+Module not found: Can't resolve '@/components/ui/input'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.
