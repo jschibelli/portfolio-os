@@ -61,7 +61,7 @@ export default function CTABanner() {
 							className={OUTLINE_BUTTON_STYLES}
 							asChild
 						>
-							<a href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" aria-label="Send email directly to discuss your project">
+							<a href="mailto:john@schibelli.dev?subject=Project%20Discussion%20-%20Let's%20Talk" aria-label="Send email directly to discuss your project">
 								<Mail className={ICON_SPACING.left} />
 								Email Directly
 							</a>

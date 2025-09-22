@@ -1,3 +1,5 @@
+"use client";
+
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';

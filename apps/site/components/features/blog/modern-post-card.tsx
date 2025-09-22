@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge, Card, CardContent, CardHeader } from '../../ui';
 import { format } from 'date-fns';
 import Link from 'next/link';

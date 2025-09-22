@@ -1,5 +1,7 @@
+"use client";
+
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, TrendingUpIcon, ClockIcon, UsersIcon, TargetIcon, CheckCircleIcon, BarChart3Icon } from 'lucide-react';
+import { ArrowRight, TrendingUp, Clock, Users, Target, CheckCircle, BarChart3 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '../../ui/badge';
@@ -129,7 +131,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					{hasCaseStudy && (
 						<div className="absolute left-2 sm:left-3 top-2 sm:top-3">
 							<Badge className="bg-primary/90 text-primary-foreground border-0 shadow-lg text-xs px-2 py-1">
-								<BarChart3Icon className="w-3 h-3 mr-1" />
+								<BarChart3 className="w-3 h-3 mr-1" />
 								Case Study
 							</Badge>
 						</div>
@@ -156,7 +158,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						<div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-stone-50 dark:bg-stone-900/50 rounded-lg border border-stone-200 dark:border-stone-800">
 							<div className="space-y-2 sm:space-y-3">
 								<div className="flex items-start gap-2">
-									<TargetIcon className="w-3 h-3 sm:w-4 sm:h-4 text-primary mt-0.5 flex-shrink-0" />
+									<Target className="w-3 h-3 sm:w-4 sm:h-4 text-primary mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Problem
@@ -168,7 +170,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 								</div>
 								
 								<div className="flex items-start gap-2">
-									<CheckCircleIcon className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+									<CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Solution
@@ -180,7 +182,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 								</div>
 								
 								<div className="flex items-start gap-2">
-									<TrendingUpIcon className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+									<TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Results
@@ -239,7 +241,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										href={projectLink}
 										aria-label={`View case study for ${project.title}`}
 									>
-										<BarChart3Icon className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+										<BarChart3 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
 										Case Study
 									</Link>
 								</Button>
@@ -256,7 +258,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 											rel="noopener noreferrer"
 											aria-label={`View live ${project.title} project`}
 										>
-											<ArrowRightIcon className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+											<ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
 											Live Site
 										</Link>
 									</Button>
@@ -274,7 +276,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 									aria-label={`View details for ${project.title} project`}
 								>
 									View Project
-									<ArrowRightIcon className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1" />
+									<ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1" />
 								</Link>
 							</Button>
 						)}

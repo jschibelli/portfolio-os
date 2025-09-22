@@ -1,3 +1,5 @@
+"use client";
+
 import request from 'graphql-request';
 import { ReactNode, useState } from 'react';
 import { siteConfig } from '../../../config/site';

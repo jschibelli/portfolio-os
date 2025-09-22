@@ -19,7 +19,14 @@ export function Integrations() {
 		koalaPublicKey,
 		msClarityID,
 	} = publication.integrations ?? {};
-	const domainURL = new URL(publication.url).hostname;
+	let domainURL: string | undefined = undefined;
+	try {
+		if (publication?.url && /^https?:\/\//i.test(publication.url)) {
+			domainURL = new URL(publication.url).hostname;
+		}
+	} catch {
+		domainURL = undefined;
+	}
 
 	let fbPixel = `
     !function(f,b,e,v,n,t,s)
@@ -150,7 +157,7 @@ export function Integrations() {
 					dangerouslySetInnerHTML={{ __html: msClarityForUsers }}
 				></script>
 			)}
-			{plausibleAnalyticsEnabled && (
+			{plausibleAnalyticsEnabled && domainURL && (
 				<script
 					async
 					defer

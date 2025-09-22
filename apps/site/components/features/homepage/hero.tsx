@@ -120,7 +120,7 @@ export default function Hero() {
 						<p className="text-sm text-stone-300">
 							Prefer email? 
 							<a 
-								href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" 
+								href="mailto:john@schibelli.dev?subject=Project%20Discussion%20-%20Let's%20Talk" 
 								className="ml-1 font-semibold text-white underline hover:text-stone-200 transition-colors"
 								aria-label="Send email directly to discuss your project"
 							>

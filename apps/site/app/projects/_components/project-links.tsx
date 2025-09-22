@@ -1,7 +1,7 @@
 'use client';
 
 import { ProjectMeta } from '../../../data/projects/types';
-import { ExternalLinkIcon, GithubIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
+import { ExternalLink, Github, FileText, BookOpen } from 'lucide-react';
 
 interface ProjectLinksProps {
   project: ProjectMeta;
@@ -12,6 +12,8 @@ interface ProjectLinksProps {
  */
 function isValidUrl(url: string): boolean {
   if (!url) return false;
+  // Allow relative URLs without constructing URL
+  if (url.startsWith('/') || url.startsWith('#')) return true;
   try {
     const urlObj = new URL(url);
     // Only allow http and https protocols
@@ -22,10 +24,6 @@ function isValidUrl(url: string): boolean {
                           !urlObj.hostname.includes('vbscript:');
     return isValidProtocol && isNotMalicious;
   } catch (error) {
-    // Check if it's a relative URL
-    if (url.startsWith('/') || url.startsWith('#')) {
-      return true;
-    }
     console.warn('URL validation failed:', error);
     return false;
   }
@@ -36,17 +34,14 @@ function isValidUrl(url: string): boolean {
  * Works both on server and client side
  */
 function isExternalUrl(url: string): boolean {
+  // Relative URLs are never external
+  if (url.startsWith('/') || url.startsWith('#')) return false;
   try {
     const urlObj = new URL(url);
-    // Check if it's an absolute URL (starts with http/https)
     const isAbsolute = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    
-    // On server side, assume external if it's absolute and not localhost
     if (typeof window === 'undefined') {
       return isAbsolute && !urlObj.hostname.includes('localhost') && !urlObj.hostname.includes('127.0.0.1');
     }
-    
-    // On client side, compare with current origin
     return urlObj.origin !== window.location.origin;
   } catch (error) {
     console.warn('External URL check failed:', error);
@@ -58,14 +53,15 @@ function isExternalUrl(url: string): boolean {
  * Sanitizes URL to prevent XSS attacks
  */
 function sanitizeUrl(url: string): string {
+  // Leave relative URLs as-is
+  if (url.startsWith('/') || url.startsWith('#')) return url;
   try {
     const urlObj = new URL(url);
-    // Remove potentially dangerous parts
     urlObj.search = '';
     urlObj.hash = '';
     return urlObj.toString();
   } catch {
-    return url; // Return original URL if it's relative
+    return url; // Return original URL if it's relative or malformed
   }
 }
 
@@ -93,7 +89,6 @@ const getLinkStyles = (variant: string, label: string): string => {
  * Includes URL validation, security attributes, and accessibility improvements.
  */
 export function ProjectLinks({ project }: ProjectLinksProps) {
-  // Validate project data
   if (!project) {
     console.error('ProjectLinks: No project data provided');
     return null;
@@ -103,25 +98,25 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
     {
       label: 'Live Site',
       url: project.liveUrl,
-      icon: ExternalLinkIcon,
+      icon: ExternalLink,
       variant: 'default' as const,
     },
     {
       label: 'GitHub Repository',
       url: project.githubUrl,
-      icon: GithubIcon,
+      icon: Github,
       variant: 'outline' as const,
     },
     {
       label: 'Case Study',
       url: project.caseStudyUrl,
-      icon: FileTextIcon,
+      icon: FileText,
       variant: 'secondary' as const,
     },
     {
       label: 'Documentation',
       url: project.documentationUrl,
-      icon: BookOpenIcon,
+      icon: BookOpen,
       variant: 'secondary' as const,
     },
   ]
@@ -163,17 +158,11 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
               className={getLinkStyles(link.variant, link.label)}
               role="listitem"
               aria-label={`${link.label}${isExternal ? ' (opens in new tab)' : ''}`}
-              onMouseEnter={() => {
-                // Pre-validate link on hover for better UX
-                if (isExternal) {
-                  console.log(`External link: ${link.label} - ${link.url}`);
-                }
-              }}
             >
               <Icon className="w-4 h-4" aria-hidden="true" />
               <span className="font-medium">{link.label}</span>
               {isExternal && (
-                <ExternalLinkIcon className="w-3 h-3 ml-auto" aria-hidden="true" />
+                <ExternalLink className="w-3 h-3 ml-auto" aria-hidden="true" />
               )}
             </a>
           );

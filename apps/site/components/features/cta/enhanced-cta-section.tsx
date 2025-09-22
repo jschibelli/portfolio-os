@@ -264,29 +264,7 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 						</motion.div>
 					</motion.div>
 
-					{/* Value Propositions */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-						viewport={{ once: true }}
-						className="mb-16"
-					>
-						<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-							{config.valueProps.map((prop, index) => (
-								<motion.div
-									key={index}
-									initial={{ opacity: 0, y: 20 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.6, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
-									viewport={{ once: true }}
-									className="rounded-lg bg-stone-800/50 p-4 text-center backdrop-blur-sm"
-								>
-									<p className="text-sm text-stone-300">{prop}</p>
-								</motion.div>
-							))}
-						</div>
-					</motion.div>
+					{/* Value Propositions removed per design request */}
 
 					{/* Testimonials */}
 					<motion.div
@@ -342,19 +320,19 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 								Ready to Connect?
 							</h4>
 							<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-								<a
-									href="mailto:john@johnschibelli.com"
+							<a
+								href="mailto:john@schibelli.dev"
 									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
 								>
 									<MailIcon className="h-4 w-4" />
-									john@johnschibelli.com
+								john@schibelli.dev
 								</a>
-								<a
-									href="tel:+1234567890"
+							<a
+								href="tel:+18627810519"
 									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
 								>
 									<PhoneIcon className="h-4 w-4" />
-									(123) 456-7890
+								(862) 781-0519
 								</a>
 							</div>
 						</div>
