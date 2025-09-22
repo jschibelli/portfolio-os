@@ -11,7 +11,6 @@ import { ProjectTimeline } from '../_components/project-timeline';
 import { Container } from '../../../components/shared/container';
 import { Badge } from '../../../components/ui/badge';
 import { Layout } from '../../../components/shared/layout';
-import ModernHeader from '../../../components/features/navigation/modern-header';
 import { Footer } from '../../../components/shared/footer';
 import Chatbot from '../../../components/features/chatbot/Chatbot';
 import { AppProvider } from '../../../components/contexts/appContext';
@@ -191,8 +190,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             __html: JSON.stringify(structuredData),
           }}
         />
-        
-        <ModernHeader publication={publication} />
         
         <main className="min-h-screen bg-background">
           <Container className="py-8">
