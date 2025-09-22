@@ -1,5 +1,4 @@
-// import { resizeImage } from '@starter-kit/utils/image';
-const resizeImage = (url: string, width: number, height: number) => url;
+import { resizeImage } from '../../../lib/image-utils';
 import { useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { PostFullFragment, User } from '../../../generated/graphql';
@@ -49,14 +48,7 @@ export const PostHeader = ({ title, coverImage, date, author, readTimeInMinutes 
 									: 'h-8 w-8 border-2 border-slate-100 md:h-9 md:w-9 dark:border-slate-800 [&:not(:first-of-type)]:-ml-3 md:[&:not(:first-of-type)]:-ml-6 ',
 							)}
 						>
-                                                  <ProfileImage 
-                                                    user={coAuthor} 
-                                                    blogURL="/" 
-                                                    postUrlForAnonymous="/" 
-                                                    className="" 
-                                                    width="200" 
-                                                    height="200" 
-                                                  />
+							<ProfileImage user={coAuthor} width="200" height="200" hoverDisabled={true} />
 						</div>
 					))}
 					{post.coAuthors && post.coAuthors.length > 0 && (
@@ -103,7 +95,7 @@ export const PostHeader = ({ title, coverImage, date, author, readTimeInMinutes 
 				<div className="w-full px-5 sm:mx-0">
 					<CoverImage
 						title={title}
-						src={resizeImage(coverImage, 1600, 840)}
+						src={resizeImage(coverImage, { w: 1600, h: 840, c: 'thumb' })}
 						priority={true}
 					/>
 				</div>

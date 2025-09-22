@@ -1,11 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui';
-import { Card, CardContent, CardHeader } from '../../ui/card';
+import { Badge, Button, Card, CardContent, CardHeader } from '@/components/ui';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import React from 'react';
-import { PortfolioItem } from '../../../lib/types/portfolio';
+import { PortfolioItem } from '../../types/portfolio';
 
 interface CaseStudyCardProps {
 	item: PortfolioItem;
@@ -119,7 +117,7 @@ export default function CaseStudyCard({ item, index }: CaseStudyCardProps) {
 						{/* Floating badge like blog card */}
 						{item.tags && item.tags.length > 0 && (
 							<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
-								<Badge className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+								<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
 									{item.tags[0]}
 								</Badge>
 							</div>
@@ -148,16 +146,16 @@ export default function CaseStudyCard({ item, index }: CaseStudyCardProps) {
 				<CardContent className="p-6 pt-0">
 					<div className="flex flex-1 flex-col space-y-4">
 						<div className="flex flex-wrap gap-2">
-								{item.tags?.map((tag, tagIndex) => (
-									<Badge key={tag} className="text-xs bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-										{tag}
-									</Badge>
-								))}
+							{item.tags.map((tag, tagIndex) => (
+								<Badge key={tag} variant="secondary" className="text-xs">
+									{tag}
+								</Badge>
+							))}
 						</div>
 
 						<div className="relative mt-auto flex w-full flex-col gap-3 pt-2 lg:flex-row 2xl:flex-col">
 							{item.liveUrl && (
-								<Button asChild className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700">
+								<Button asChild size="sm" variant="outline" className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs">
 									<Link href={item.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
 										<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -167,7 +165,7 @@ export default function CaseStudyCard({ item, index }: CaseStudyCardProps) {
 								</Button>
 							)}
 
-							<Button asChild className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700">
+							<Button asChild size="sm" className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs">
 								<Link href={item.caseStudyUrl || `/case-studies/${item.slug}`} className="flex items-center gap-2">
 									<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

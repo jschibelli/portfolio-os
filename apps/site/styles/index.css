@@ -137,12 +137,36 @@
 }
 
 .hashnode-content-style{
-    @apply prose break-words text-slate-950 dark:text-neutral-50;
+    @apply prose break-words text-slate-950 lg:prose-xl dark:prose-invert dark:text-neutral-50 dark:prose-pre:bg-neutral-900;
+}
+
+/* Ensure first child headings/paragraphs have no extra top margin */
+.hashnode-content-style :where(p, h1, h2, h3, h4, h5):first-child {
+    margin-top: 0 !important;
 }
 
 /* Override to remove the backtick */
 .hashnode-content-style :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before, .hashnode-content-style :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::after  {
     content: none;
+}
+
+/* Ensure images don't overflow within prose */
+.hashnode-content-style :where(img) {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Comfortable line-height for common elements */
+.hashnode-content-style :where(p, blockquote, figure, figcaption, pre, li, ul, ol, th, td) {
+    line-height: 1.45;
+}
+
+/* Link styling within prose */
+.hashnode-content-style :where(a) {
+    text-decoration: underline;
+}
+.hashnode-content-style :where(a:hover) {
+    background-color: hsl(var(--accent) / 0.15);
 }
 
 .prose code {

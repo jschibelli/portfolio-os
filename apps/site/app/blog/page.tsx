@@ -1,11 +1,44 @@
-export const dynamic = 'force-dynamic';
-// Avoid build-time DB requirement; lazy import at runtime
-let prisma: any;
+import { AppProvider } from '../../components/contexts/appContext';
+import Chatbot from '../../components/features/chatbot/Chatbot';
+import ModernHero from '../../components/features/homepage/modern-hero';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Footer } from '../../components/shared/footer';
+import { Container } from '../../components/shared/container';
+import { DEFAULT_COVER } from '../../utils/const';
+import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../components/icons';
 import Link from "next/link";
-import { format } from "date-fns";
-import { Calendar, User, Clock, Eye, Tag, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArticleSVG } from '../../components/icons';
+import FeaturedPost from '../../components/features/blog/featured-post';
+import ModernPostCard from '../../components/features/blog/modern-post-card';
+import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 
 export const revalidate = 60;
+
+// Default publication object for fallback
+const defaultPublication = {
+  id: 'fallback-blog',
+  title: 'John Schibelli',
+  displayTitle: 'John Schibelli',
+  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications. Expert in React, Next.js, TypeScript, and modern development practices. Available for freelance projects and consulting.',
+  url: 'https://schibelli.dev',
+  posts: {
+    totalDocuments: 0,
+  },
+  preferences: {
+    logo: null,
+  },
+  author: {
+    name: 'John Schibelli',
+    profilePicture: null,
+  },
+  followersCount: 0,
+  isTeam: false,
+  favicon: null,
+  ogMetaData: {
+    image: null,
+  },
+};
 
 export default async function BlogPage() {
   const GQL_ENDPOINT = 'https://gql.hashnode.com/';
@@ -23,7 +56,6 @@ export default async function BlogPage() {
               brief
               slug
               publishedAt
-              readTimeInMinutes
               coverImage { url }
               author { name }
               tags { name slug }
@@ -44,154 +76,170 @@ export default async function BlogPage() {
     });
     const data = await res.json();
     const edges = data?.data?.publication?.posts?.edges || [];
-    posts = edges.map((e: any) => {
-      const n = e.node;
-      return {
-        id: n.id,
-        title: n.title,
-        subtitle: undefined,
-        excerpt: n.brief,
-        slug: n.slug,
-        publishedAt: n.publishedAt ? new Date(n.publishedAt) : undefined,
-        readingMinutes: n.readTimeInMinutes,
-        views: 0,
-        author: { name: n.author?.name },
-        cover: n.coverImage ? { url: n.coverImage.url, alt: n.title } : null,
-        tags: n.tags?.map((t: any) => ({ tag: { id: t.slug, name: t.name } })) || [],
-      };
-    });
+    posts = edges.map((e: any) => e.node);
   } catch (error) {
     console.error('Error fetching Hashnode posts:', error);
     posts = [];
   }
 
+  const featuredPost = posts[0];
+  const morePosts = posts.slice(1, 4);
+
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+    <AppProvider publication={defaultPublication as any}>
       {/* Navigation */}
-      <nav className="bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700">
-        <div className="container mx-auto px-4 py-4">
-          <Link 
-            href="/" 
-            className="inline-flex items-center text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
-          >
-            ← Back to Home
-          </Link>
+      <ModernHeader publication={defaultPublication} />
+
+      {/* Modern Hero Section */}
+      {posts.length > 0 && (
+        <div id="hero-section" data-animate-section className="transition-all duration-1000 ease-out">
+          <ModernHero
+            title="The Developer's Lens"
+            subtitle="Technology & Development"
+            description="Unfiltered perspectives on code, creativity, and the constant evolution of technology."
+            imageUrl="/assets/hero/hero-image.webp"
+          />
         </div>
-      </nav>
+      )}
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <header className="mb-12 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-4">
-              Blog
-            </h1>
-            <p className="text-xl text-stone-600 dark:text-stone-400">
-              Thoughts, insights, and stories from our team
-            </p>
-          </header>
+      {/* Social Media Icons - Right under the hero */}
+      <div className="bg-white py-8 dark:bg-stone-950">
+        <Container className="px-5">
+          <div className="flex justify-center">
+            <div className="flex items-center gap-4">
+              {/* Facebook */}
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Find us on Facebook, external website, opens in new tab"
+                className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+              >
+                <FacebookSVG className="h-5 w-5" />
+              </a>
 
-          {/* Blog Posts */}
-          {posts.length > 0 ? (
-            <div className="space-y-8">
-              {posts.map((post) => (
-                <article
-                  key={post.id}
-                  className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  {post.cover && (
-                    <div className="aspect-video">
-                      <img
-                        src={post.cover.url}
-                        alt={post.cover.alt || post.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="p-6">
-                    <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
-                      <Link 
-                        href={`/blog/${post.slug}`}
-                        className="hover:text-stone-600 dark:hover:text-stone-400 transition-colors"
-                      >
-                        {post.title}
-                      </Link>
-                    </h2>
+              {/* GitHub */}
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Find us on Github, external website, opens in new tab"
+                className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+              >
+                <GithubSVG className="h-5 w-5 stroke-current" />
+              </a>
 
-                    {post.subtitle && (
-                      <p className="text-lg text-stone-700 dark:text-stone-300 mb-4">
-                        {post.subtitle}
-                      </p>
-                    )}
+              {/* LinkedIn */}
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Find us on Linkedin, external website, opens in new tab"
+                className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+              >
+                <LinkedinSVG className="h-5 w-5 stroke-current" />
+              </a>
 
-                    {post.excerpt && (
-                      <p className="text-stone-600 dark:text-stone-400 mb-4 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                    )}
+              {/* Bluesky */}
+              <a
+                href="https://bsky.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Find us on Bluesky, external website, opens in new tab"
+                className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+              >
+                <BlueskySVG className="h-5 w-5 stroke-current" />
+              </a>
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-stone-600 dark:text-stone-400 mb-4">
-                      {post.author?.name && (
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 mr-2" />
-                          <span>{post.author.name}</span>
-                        </div>
-                      )}
-                      {post.publishedAt && (
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          <time dateTime={post.publishedAt.toISOString()}>
-                            {format(post.publishedAt, "MMM d, yyyy")}
-                          </time>
-                        </div>
-                      )}
-                      {post.readingMinutes && (
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2" />
-                          <span>{post.readingMinutes} min read</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {post.tags.map(({ tag }: any) => (
-                          <span
-                            key={tag.id}
-                            className="inline-flex items-center px-2 py-1 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full text-xs"
-                          >
-                            <Tag className="h-3 w-3 mr-1" />
-                            {tag.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="inline-flex items-center text-stone-900 dark:text-stone-100 hover:text-stone-600 dark:hover:text-stone-400 font-medium transition-colors"
-                    >
-                      Read more
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </Link>
-                  </div>
-                </article>
-              ))}
+              {/* RSS Feed */}
+              <Link
+                prefetch={false}
+                href="/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open blog XML Feed, opens in new tab"
+                className="flex items-center justify-center rounded-full border border-stone-200 p-3 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+              >
+                <RssSVG className="h-5 w-5 stroke-current" />
+              </Link>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-4">
-                No posts yet
-              </h2>
-              <p className="text-stone-600 dark:text-stone-400">
-                Check back soon for new articles and insights!
+          </div>
+        </Container>
+      </div>
+
+      <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
+        {/* Empty State */}
+        {posts.length === 0 && (
+          <div id="empty-state-section" data-animate-section className="duration-800 grid grid-cols-1 py-20 transition-all ease-out lg:grid-cols-3">
+            <div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 lg:col-start-2 dark:text-stone-400">
+              <div className="animate-fade-in-up w-20">
+                <ArticleSVG className="stroke-current" />
+              </div>
+              <p className="animate-fade-in-up animation-delay-200 text-xl font-semibold">
+                Hang tight! We're drafting the first article.
               </p>
             </div>
-          )}
-        </div>
-      </main>
-    </div>
+          </div>
+        )}
+
+        {/* Featured Post Section */}
+        {posts.length > 0 && (
+          <div id="featured-section" data-animate-section className="duration-900 space-y-12 transition-all ease-out">
+            <FeaturedPost
+              post={featuredPost}
+              coverImage={featuredPost.coverImage?.url || DEFAULT_COVER}
+              readTime="5 min read"
+              tags={['Featured', 'Technology', 'Insights']}
+            />
+
+            {/* Latest Posts Grid */}
+            {posts.length > 1 && (
+              <div id="latest-posts-section" data-animate-section className="space-y-6 transition-all duration-1000 ease-out">
+                <h2 className="animate-fade-in-up text-2xl font-bold text-stone-900 dark:text-stone-100">
+                  Latest Posts
+                </h2>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {morePosts.map((post, index) => (
+                    <div
+                      key={post.id}
+                      className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
+                        index === 0
+                          ? 'animation-delay-200'
+                          : index === 1
+                            ? 'animation-delay-300'
+                            : 'animation-delay-400'
+                      }`}
+                    >
+                      <ModernPostCard
+                        title={post.title}
+                        excerpt={post.brief}
+                        coverImage={post.coverImage?.url || DEFAULT_COVER}
+                        date={post.publishedAt}
+                        slug={post.slug}
+                        readTime="3 min read"
+                        tags={['Technology', 'Development']}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Newsletter CTA Section */}
+        {posts.length > 0 && (
+          <div id="newsletter-section" data-animate-section className="duration-1100 py-8 transition-all ease-out">
+            <NewsletterCTA
+              title="Stay updated with our newsletter"
+              showNewsletterForm={true}
+              className="py-16"
+            />
+          </div>
+        )}
+      </Container>
+      <Chatbot />
+      <Footer publication={defaultPublication} />
+    </AppProvider>
   );
 }

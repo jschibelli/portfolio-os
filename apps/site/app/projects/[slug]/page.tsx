@@ -17,9 +17,9 @@ import Chatbot from '../../../components/features/chatbot/Chatbot';
 import { AppProvider } from '../../../components/contexts/appContext';
 
 interface ProjectPageProps {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
@@ -53,6 +53,18 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
         follow: true,
         noimageindex: false,
         'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+      facebookBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+      twitterBot: {
+        index: true,
+        follow: true,
         'max-image-preview': 'large',
         'max-snippet': -1,
       },
@@ -157,25 +169,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   // Default publication object for consistency
   const publication = {
-    id: 'john-schibelli',
     title: 'John Schibelli',
-    description: 'Senior Front-End Developer with 15+ years of experience',
+    displayTitle: 'John Schibelli',
+    descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
     url: 'https://schibelli.dev',
-    favicon: '/favicon.ico',
-    logo: '/logo.png',
-    isTeam: false,
+    author: {
+      name: 'John Schibelli',
+    },
     preferences: {
-      logo: '/logo.png',
-      darkMode: {
-        logo: '/logo-dark.png',
-      },
-      navbarItems: [],
-      layout: {
-        navbarStyle: 'modern',
-        footerStyle: 'simple',
-        showBranding: true,
-      },
-      members: [],
+      logo: null,
     },
   };
 
@@ -190,11 +192,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           }}
         />
         
-        <ModernHeader publication={{
-          title: 'John Schibelli',
-          displayTitle: 'John Schibelli',
-          logo: { url: '/logo.png' }
-        }} />
+        <ModernHeader publication={publication} />
         
         <main className="min-h-screen bg-background">
           <Container className="py-8">
@@ -222,7 +220,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {project.tags.map((tag) => (
-                        <Badge key={tag} className="text-sm">
+                        <Badge key={tag} variant="secondary" className="text-sm">
                           {tag}
                         </Badge>
                       ))}

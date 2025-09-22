@@ -76,8 +76,9 @@ export function ProjectTechnologies({ project }: ProjectTechnologiesProps) {
         aria-label="Technologies used in this project"
       >
         {validTechnologies.map((tech, index) => (
-          <Badge
-            key={`${tech}-${index}`}
+          <Badge 
+            key={`${tech}-${index}`} 
+            variant="outline" 
             className="text-sm font-medium border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
             role="listitem"
             aria-label={`Technology: ${tech}`}

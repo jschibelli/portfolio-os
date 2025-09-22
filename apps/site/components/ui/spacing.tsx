@@ -1,5 +1,5 @@
-import { cn } from '../../lib/utils';
-import { heroSpacing, getHeroSpacing, type HeroSpacingVariantType, type HeroSpacingSize } from '../../lib/design-tokens';
+import { cn } from '@/lib/utils';
+import { heroSpacing, getHeroSpacing, type HeroSpacingVariantType, type HeroSpacingSize } from '@/lib/design-tokens';
 
 /**
  * Hero Section Component with standardized spacing

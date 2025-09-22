@@ -1,5 +1,4 @@
-// import { resizeImage } from '@starter-kit/utils/image';
-const resizeImage = (url: string, width: number, height: number) => url;
+import { resizeImage } from '../../../lib/image-utils';
 import request from 'graphql-request';
 import Link from 'next/link';
 import { KeyboardEventHandler, useCallback, useEffect, useRef, useState } from 'react';
@@ -7,10 +6,10 @@ import {
 	SearchPostsOfPublicationDocument,
 	SearchPostsOfPublicationQuery,
 	SearchPostsOfPublicationQueryVariables,
-} from '../../../generated/graphql';
-import { DEFAULT_COVER } from '../../../utils/const';
-import { useAppContext } from '../../contexts/appContext';
-import { CoverImage } from '../../shared/cover-image';
+} from '../generated/graphql';
+import { DEFAULT_COVER } from '../utils/const';
+import { useAppContext } from './contexts/appContext';
+import { CoverImage } from './cover-image';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 const NO_OF_SEARCH_RESULTS = 5;
@@ -56,11 +55,6 @@ export const Search = () => {
 			timerRef.current = setTimeout(async () => {
 				setIsSearching(true);
 
-				if (!GQL_ENDPOINT) {
-					setIsSearching(false);
-					return;
-				}
-				
 				const data = await request<
 					SearchPostsOfPublicationQuery,
 					SearchPostsOfPublicationQueryVariables
@@ -101,9 +95,13 @@ export const Search = () => {
 						<CoverImage
 							title={post.title}
 							src={resizeImage(
-								post.coverImage?.url || DEFAULT_COVER,
-								96,
-								64
+								post.coverImage?.url,
+								{
+									w: 96,
+									h: 64,
+									c: 'thumb',
+								},
+								DEFAULT_COVER,
 							)}
 						/>
 					</div>

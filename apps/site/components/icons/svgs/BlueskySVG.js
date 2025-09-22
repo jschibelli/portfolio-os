@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const BlueskySVG = ({ className }) => {
+export default function BlueskySVG({ className }) {
 	return (
 		<svg className={className} viewBox="0 0 20 20" fill="none">
 			<path

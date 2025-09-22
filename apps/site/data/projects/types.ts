@@ -19,19 +19,4 @@ export interface ProjectMeta {
   industry?: string;
   teamSize?: string;
   duration?: string;
-  metrics?: {
-    performance: {
-      loadTimeImprovement: string;
-      responseTime: string;
-      uptime: string;
-    };
-    business: {
-      [key: string]: string;
-    };
-  };
-  caseStudyPreview?: {
-    problem: string;
-    solution: string;
-    results: string;
-  };
 }

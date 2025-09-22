@@ -1,4 +1,4 @@
-import { BookOpenSVG } from '../../icons/svgs/BookOpenSVG';
+import BookOpenSVG from '../../icons/svgs/BookOpenSVG';
 
 type Props = { readTimeInMinutes: number };
 

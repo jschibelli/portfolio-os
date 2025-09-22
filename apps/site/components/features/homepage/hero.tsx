@@ -1,9 +1,12 @@
 "use client";
 import { motion } from 'framer-motion';
-import { ArrowRight, MessageSquare } from 'lucide-react';
+import { ArrowRight, Mail, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
+import { PRIMARY_BUTTON_STYLES, SECONDARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
+import { heroSpacingClasses } from '../../ui/spacing';
+import { cn } from '@/lib/utils';
 
 // Animation variants for consistent motion
 const fadeInUp = {
@@ -20,7 +23,7 @@ const fadeInUpDelayed = (delay: number) => ({
 
 export default function Hero() {
 	return (
-		<header className="relative flex min-h-[400px] items-center justify-center overflow-hidden py-16">
+		<header className={cn("relative flex min-h-[400px] items-center justify-center overflow-hidden", heroSpacingClasses.section.default)}>
 			{/* Background Image with optimized loading */}
 			<div className="absolute inset-0 z-0">
 				<Image
@@ -39,10 +42,10 @@ export default function Hero() {
 			</div>
 
 			{/* Content */}
-			<div className="container relative z-10 mx-auto px-4 text-center">
+			<div className={cn(heroSpacingClasses.container.default, "relative z-10 text-center")}>
 				<motion.div
 					{...fadeInUp}
-					className="mx-auto max-w-4xl"
+					className={cn("mx-auto", heroSpacingClasses.content.default)}
 				>
 					{/* Hero Tagline */}
 					<motion.h1
@@ -82,14 +85,14 @@ export default function Hero() {
 						{/* Primary CTA: Start conversation about project goals */}
 						<Button
 							size="lg"
-							className="bg-blue-600 hover:bg-blue-700 text-white min-w-[180px] justify-center"
+							className={`${PRIMARY_BUTTON_STYLES} min-w-[180px] justify-center`}
 							asChild
 						>
 							<Link href="/contact" aria-label="Start a conversation about your project goals and business objectives">
 								<span className="flex items-center">
-                                    <MessageSquare className="mr-2 h-5 w-5" />
+									<MessageSquare className={ICON_SPACING.left} />
 									Discuss Your Goals
-                                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+									<ArrowRight className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} aria-hidden="true" />
 								</span>
 							</Link>
 						</Button>
@@ -97,13 +100,13 @@ export default function Hero() {
 						{/* Secondary CTA: View proven results and case studies */}
 						<Button
 							size="lg"
-							className="border-2 border-white text-white hover:bg-white hover:text-stone-900 min-w-[160px] justify-center"
+							className={`${SECONDARY_BUTTON_STYLES} min-w-[160px] justify-center`}
 							asChild
 						>
 							<Link href="/projects" aria-label="View proven results and case studies of successful web applications">
 								<span className="flex items-center">
 									See My Results
-                                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+									<ArrowRight className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} aria-hidden="true" />
 								</span>
 							</Link>
 						</Button>

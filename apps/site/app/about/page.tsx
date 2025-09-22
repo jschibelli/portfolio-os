@@ -1,6 +1,9 @@
+import { Layout } from '../../components/shared/layout';
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
+    <Layout>
+      <main id="main-content" role="main" className="min-h-screen bg-stone-50 dark:bg-stone-900">
       {/* Header Section */}
       <section className="py-16 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
         <div className="container mx-auto px-4 text-center">
@@ -57,7 +60,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-    </div>
+      </main>
+    </Layout>
   );
 }
 

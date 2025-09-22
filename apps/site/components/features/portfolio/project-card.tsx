@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, Clock, Users, Target, CheckCircle, BarChart3 } from 'lucide-react';
+import { ArrowRightIcon, TrendingUpIcon, ClockIcon, UsersIcon, TargetIcon, CheckCircleIcon, BarChart3Icon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '../../ui/badge';
@@ -109,6 +109,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 							{project.tags.slice(0, 3).map((tag, tagIndex) => (
 								<Badge 
 									key={tagIndex} 
+									variant="secondary" 
 									className="bg-white/95 border border-white/60 shadow-lg backdrop-blur-sm text-xs text-stone-900 px-1.5 sm:px-2 md:px-2.5 py-0.5 sm:py-1 font-medium touch-manipulation"
 								>
 									{tag}
@@ -128,7 +129,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 					{hasCaseStudy && (
 						<div className="absolute left-2 sm:left-3 top-2 sm:top-3">
 							<Badge className="bg-primary/90 text-primary-foreground border-0 shadow-lg text-xs px-2 py-1">
-                            <BarChart3 className="w-3 h-3 mr-1" />
+								<BarChart3Icon className="w-3 h-3 mr-1" />
 								Case Study
 							</Badge>
 						</div>
@@ -155,7 +156,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						<div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-stone-50 dark:bg-stone-900/50 rounded-lg border border-stone-200 dark:border-stone-800">
 							<div className="space-y-2 sm:space-y-3">
 								<div className="flex items-start gap-2">
-                                    <Target className="w-3 h-3 sm:w-4 sm:h-4 text-primary mt-0.5 flex-shrink-0" />
+									<TargetIcon className="w-3 h-3 sm:w-4 sm:h-4 text-primary mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Problem
@@ -167,7 +168,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 								</div>
 								
 								<div className="flex items-start gap-2">
-                                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
+									<CheckCircleIcon className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Solution
@@ -179,7 +180,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 								</div>
 								
 								<div className="flex items-start gap-2">
-                                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+									<TrendingUpIcon className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
 									<div>
 										<div className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-1">
 											Results
@@ -229,20 +230,24 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						{hasCaseStudy ? (
 							<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 								<Button
-									className="group/btn transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation bg-primary text-primary-foreground hover:bg-primary/90"
+									variant="default"
+									size="sm"
+									className="group/btn transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation"
 									asChild
 								>
 									<Link 
 										href={projectLink}
 										aria-label={`View case study for ${project.title}`}
 									>
-                                    <BarChart3 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+										<BarChart3Icon className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
 										Case Study
 									</Link>
 								</Button>
 								{project.liveUrl && (
 									<Button
-										className="group/btn transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+										variant="outline"
+										size="sm"
+										className="group/btn transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation"
 										asChild
 									>
 										<Link 
@@ -251,7 +256,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 											rel="noopener noreferrer"
 											aria-label={`View live ${project.title} project`}
 										>
-                                            <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+											<ArrowRightIcon className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
 											Live Site
 										</Link>
 									</Button>
@@ -259,7 +264,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 							</div>
 						) : (
 							<Button
-								className="group/btn w-full transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+								variant="outline"
+								size="sm"
+								className="group/btn w-full transition-all duration-300 h-10 sm:h-9 text-xs sm:text-sm touch-manipulation"
 								asChild
 							>
 								<Link 
@@ -267,7 +274,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 									aria-label={`View details for ${project.title} project`}
 								>
 									View Project
-                                    <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1" />
+									<ArrowRightIcon className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1" />
 								</Link>
 							</Button>
 						)}

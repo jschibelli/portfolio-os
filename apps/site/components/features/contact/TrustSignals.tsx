@@ -3,14 +3,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  ShieldCheck, 
-  Clock, 
-  Star, 
-  Users, 
-  CheckCircle,
-  Award,
-  Globe,
-  Lock
+  ShieldCheckIcon, 
+  ClockIcon, 
+  StarIcon, 
+  UsersIcon, 
+  CheckCircleIcon,
+  AwardIcon,
+  GlobeIcon,
+  LockIcon
 } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Container } from '../../shared/container';
@@ -25,42 +25,42 @@ interface TrustSignal {
 
 const trustSignals: TrustSignal[] = [
   {
-    icon: Star,
+    icon: StarIcon,
     title: "100% Client Satisfaction",
     description: "Every project delivered with excellence",
     highlight: "100%",
     variant: "default"
   },
   {
-    icon: Award,
+    icon: AwardIcon,
     title: "15+ Years Experience",
     description: "Senior-level expertise in modern web development",
     highlight: "15+",
     variant: "secondary"
   },
   {
-    icon: Clock,
+    icon: ClockIcon,
     title: "24h Response Time",
     description: "Quick turnaround on all inquiries",
     highlight: "24h",
     variant: "outline"
   },
   {
-    icon: Users,
+    icon: UsersIcon,
     title: "50+ Projects Delivered",
     description: "Successful projects across various industries",
     highlight: "50+",
     variant: "default"
   },
   {
-    icon: Globe,
+    icon: GlobeIcon,
     title: "Global Reach",
     description: "Northern NJ based, serving clients worldwide",
     highlight: "Global",
     variant: "secondary"
   },
   {
-    icon: ShieldCheck,
+    icon: ShieldCheckIcon,
     title: "Security Assured",
     description: "Your data is protected with enterprise-grade security",
     highlight: "Secure",
@@ -144,7 +144,7 @@ export function TrustSignals() {
                         {signal.title}
                       </h3>
                       {signal.highlight && (
-                        <Badge className="text-xs">
+                        <Badge variant={signal.variant} className="text-xs">
                           {signal.highlight}
                         </Badge>
                       )}
@@ -165,7 +165,7 @@ export function TrustSignals() {
           >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-800">
-                <Lock className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <LockIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
                 <h3 className="mb-2 text-lg font-semibold text-green-800 dark:text-green-200">

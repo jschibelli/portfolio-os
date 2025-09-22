@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PlusCircleSVG = ({ className }) => {
+export default function PlusCircleSVG({ className }) {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

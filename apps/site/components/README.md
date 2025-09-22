@@ -24,7 +24,6 @@ Contains feature-specific components organized by domain. These are complex comp
 - **`/newsletter`**: Newsletter subscription components
 - **`/portfolio`**: Portfolio and case study components
 - **`/screenshot`**: Screenshot and image capture components
-- **`/sections/hero`**: Hero section components with comprehensive documentation
 
 ### `/shared`
 Contains shared components used across multiple pages and features.
@@ -44,49 +43,6 @@ Contains shared components used across multiple pages and features.
 - **Components**: PascalCase (e.g., `ModernHero.tsx`)
 - **Files**: PascalCase for components, camelCase for utilities
 - **Directories**: kebab-case for feature folders
-
-## Hero Components
-
-The hero component system provides three main variants for creating impactful landing sections:
-
-### Available Hero Components
-
-- **`/features/sections/hero/default.tsx`**: Generic hero with mockup support
-- **`/features/homepage/hero.tsx`**: Portfolio-specific hero with background image
-- **`/features/homepage/modern-hero.tsx`**: Intersection observer-based hero
-
-### Documentation
-
-Comprehensive documentation is available in the `/docs/components/hero/` directory:
-
-- **Main Documentation**: `docs/components/hero/README.md`
-- **Design System**: `docs/design-system/hero-typography.md`
-- **Implementation Examples**: `docs/implementation/hero-examples.md`
-- **Migration Guide**: `docs/implementation/hero-migration-guide.md`
-- **Best Practices**: `docs/components/hero/best-practices.md`
-- **Troubleshooting**: `docs/components/hero/troubleshooting.md`
-
-### Quick Start
-
-```tsx
-import Hero from '@/components/features/sections/hero/default';
-
-export default function LandingPage() {
-  return (
-    <Hero
-      title="Welcome to Our Platform"
-      description="Discover amazing features"
-      buttons={[
-        {
-          href: "/get-started",
-          text: "Get Started",
-          variant: "default"
-        }
-      ]}
-    />
-  );
-}
-```
 
 ## Component Organization Principles
 

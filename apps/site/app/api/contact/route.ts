@@ -49,7 +49,7 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting implementation
-    const clientIP = (request as any).ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
+    const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
     const clientData = rateLimitMap.get(clientIP);
     

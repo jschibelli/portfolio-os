@@ -148,7 +148,9 @@ export function Gallery({ images, className, columns = 3 }: GalleryProps) {
             <div className="relative flex items-center justify-center h-full">
               {/* Close Button */}
               <Button
-                className="absolute top-4 right-4 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white h-10 w-10 p-0"
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white"
                 onClick={closeLightbox}
                 aria-label="Close lightbox"
               >
@@ -159,14 +161,18 @@ export function Gallery({ images, className, columns = 3 }: GalleryProps) {
               {validatedImages.length > 1 && (
                 <>
                   <Button
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white h-10 w-10 p-0"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white"
                     onClick={() => navigateImage('prev')}
                     aria-label="Previous image"
                   >
                     <ChevronLeft className="h-8 w-8" />
                   </Button>
                   <Button
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white h-10 w-10 p-0"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-stone-800/80 hover:bg-stone-700/80 text-white"
                     onClick={() => navigateImage('next')}
                     aria-label="Next image"
                   >

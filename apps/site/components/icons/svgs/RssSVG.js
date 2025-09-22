@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const RssSVG = ({ className }) => {
+export default function RssSVG({ className }) {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

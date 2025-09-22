@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, Users, Clock } from 'lucide-react';
+import { ArrowRightIcon, TrendingUpIcon, UsersIcon, ClockIcon } from 'lucide-react';
 import { Badge } from '../../ui/badge';
 import { Container } from '../../shared/container';
 import Link from 'next/link';
@@ -130,7 +130,7 @@ export function CaseStudyHighlights() {
                   {/* Tags */}
                   <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                     {caseStudy.tags.slice(0, 2).map((tag) => (
-                      <Badge key={tag} className="text-xs">
+                      <Badge key={tag} variant="secondary" className="text-xs">
                         {tag}
                       </Badge>
                     ))}
@@ -149,13 +149,13 @@ export function CaseStudyHighlights() {
                   {/* Metrics */}
                   <div className="mb-4 space-y-2">
                     <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <TrendingUpIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
                       <span className="text-sm font-medium text-green-700 dark:text-green-300">
                         {caseStudy.metrics.primary}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <UsersIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
                         {caseStudy.metrics.secondary}
                       </span>
@@ -168,7 +168,7 @@ export function CaseStudyHighlights() {
                     className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition-colors hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
                   >
                     Read Case Study
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </div>
               </motion.div>
@@ -189,11 +189,11 @@ export function CaseStudyHighlights() {
               </p>
               <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                  <Clock className="h-4 w-4" />
+                  <ClockIcon className="h-4 w-4" />
                   <span>Free consultation • 30 minutes</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-                  <Users className="h-4 w-4" />
+                  <UsersIcon className="h-4 w-4" />
                   <span>No commitment required</span>
                 </div>
               </div>

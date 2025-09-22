@@ -28,17 +28,17 @@ export async function GET() {
 		});
 		freebusyOk = !!res.data.calendars;
 	} catch (e: any) {
-        hint = e?.message || String(e);
-        sslError = !!(hint && (hint.includes('ERR_OSSL_UNSUPPORTED') ||
+		hint = e?.message || String(e);
+		sslError = hint.includes('ERR_OSSL_UNSUPPORTED') || 
 				   hint.includes('DECODER routines') ||
 				   hint.includes('SSL') ||
-				   hint.includes('TLS')));
+				   hint.includes('TLS');
 		
 		// Enhanced SSL error logging for troubleshooting (without exposing sensitive data)
 		if (sslError) {
 			console.error('[schedule-health] SSL/TLS error detected:', {
 				errorType: 'SSL_TLS_ERROR',
-                          errorCode: hint?.includes('ERR_OSSL_UNSUPPORTED') ? 'ERR_OSSL_UNSUPPORTED' : 'SSL_DECODER_ERROR',
+				errorCode: hint.includes('ERR_OSSL_UNSUPPORTED') ? 'ERR_OSSL_UNSUPPORTED' : 'SSL_DECODER_ERROR',
 				authMethod,
 				sslFixEnabled: sslConfig.fixEnabled,
 				environment: env.NODE_ENV,

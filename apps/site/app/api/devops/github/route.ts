@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         data = await listAssignedPRs({ owner, repo, state });
         break;
       case 'commits':
-        data = await listRecentCommits({ owner, repo, branch: branch || undefined, limit });
+        data = await listRecentCommits({ owner, repo, branch, limit });
         break;
     }
 

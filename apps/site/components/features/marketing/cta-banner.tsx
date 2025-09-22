@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Clock, Mail, MessageSquare, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui/button';
+import { SECONDARY_BUTTON_STYLES, OUTLINE_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 export default function CTABanner() {
 	return (
@@ -44,11 +45,11 @@ export default function CTABanner() {
 						{/* Primary CTA: Contact Form */}
 						<Button
 							size="lg"
-							className="bg-white text-stone-900 hover:bg-stone-100"
+							className={SECONDARY_BUTTON_STYLES}
 							asChild
 						>
 							<Link href="/contact" aria-label="Start a conversation about your project goals">
-                            <MessageSquare className="mr-2 h-5 w-5" />
+								<MessageSquare className={ICON_SPACING.left} />
 								Start Conversation
 							</Link>
 						</Button>
@@ -57,11 +58,11 @@ export default function CTABanner() {
 						<Button
 							size="lg"
 							variant="outline"
-							className="border-stone-600 text-white hover:bg-stone-800"
+							className={OUTLINE_BUTTON_STYLES}
 							asChild
 						>
 							<a href="mailto:john@johnschibelli.com?subject=Project%20Discussion%20-%20Let's%20Talk" aria-label="Send email directly to discuss your project">
-                            <Mail className="mr-2 h-5 w-5" />
+								<Mail className={ICON_SPACING.left} />
 								Email Directly
 							</a>
 						</Button>
@@ -76,13 +77,13 @@ export default function CTABanner() {
 						className="space-y-3"
 					>
 						<div className="flex items-center justify-center gap-2 text-stone-300">
-                            <Clock className="h-4 w-4" />
+							<Clock className="h-4 w-4" />
 							<span className="text-sm">
 								Quick response time and code samples available on request
 							</span>
 						</div>
 						<div className="flex items-center justify-center gap-2 text-stone-300">
-                            <Phone className="h-4 w-4" />
+							<Phone className="h-4 w-4" />
 							<span className="text-sm">
 								Available for remote work and local projects in Northern NJ
 							</span>

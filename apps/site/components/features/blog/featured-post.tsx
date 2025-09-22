@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Badge } from '../../ui';
-import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { PostFragment } from '../../../generated/graphql';
 import { useState, useEffect } from 'react';
 
@@ -43,6 +43,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Featured Post</h2>
             <Badge
+              variant="secondary"
               className="bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
             >
               Featured
@@ -88,6 +89,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               <Badge
+                variant="secondary"
                 className="absolute left-4 top-4 bg-white/90 text-stone-700 dark:bg-stone-800/90 dark:text-stone-300"
               >
                 Featured
@@ -100,11 +102,11 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             {/* Metadata */}
             <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
               <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
                 <span>{formatDate(post.publishedAt)}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
+                <ClockIcon className="h-4 w-4" />
                 <span>{readTime}</span>
               </div>
             </div>
@@ -124,6 +126,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
               {tags.map((tag, index) => (
                 <Badge
                   key={index}
+                  variant="outline"
                   className="border-stone-300 text-stone-700 dark:border-stone-600 dark:text-stone-300"
                 >
                   {tag}
@@ -137,7 +140,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
               className="group inline-flex items-center gap-2 text-lg font-semibold text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
             >
               Read full article
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </motion.div>

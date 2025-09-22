@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { useRef, useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { resizeImage } from '@starter-kit/utils/image';
+import { resizeImage } from '../lib/image-utils';
 import { DEFAULT_AVATAR } from '../../utils/const';
 
 function ProfileImage({ user, blogURL, postUrlForAnonymous, className, width, height }) {

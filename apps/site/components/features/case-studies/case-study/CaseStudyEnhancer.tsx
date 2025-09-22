@@ -127,7 +127,7 @@ export const InlineTimeline: React.FC<{
 						<CardContent className="p-4">
 							<div className="mb-2 flex items-start justify-between">
 								<div>
-                                                                        <Badge className="mb-1">
+									<Badge variant="secondary" className="mb-1">
 										{item.phase}
 									</Badge>
 									<h4 className="font-semibold">{item.title}</h4>

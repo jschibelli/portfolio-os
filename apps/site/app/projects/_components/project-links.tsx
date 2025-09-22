@@ -9,115 +9,48 @@ interface ProjectLinksProps {
 
 /**
  * Validates if a URL is safe and properly formatted
- * 
- * @param url - The URL string to validate
- * @returns true if the URL is valid and safe, false otherwise
- * 
- * @example
- * ```typescript
- * isValidUrl('https://example.com') // true
- * isValidUrl('/internal-page') // true (relative URL)
- * isValidUrl('javascript:alert(1)') // false (malicious)
- * isValidUrl('invalid-url') // false (invalid format)
- * ```
  */
 function isValidUrl(url: string): boolean {
-  if (!url || typeof url !== 'string') {
-    return false;
-  }
-  
-  // Check if it's a relative URL (always safe)
-  if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
-    return true;
-  }
-  
+  if (!url) return false;
   try {
     const urlObj = new URL(url);
-    
     // Only allow http and https protocols
     const isValidProtocol = ['http:', 'https:'].includes(urlObj.protocol);
-    if (!isValidProtocol) {
-      return false;
-    }
-    
     // Check for potentially malicious patterns
     const isNotMalicious = !urlObj.hostname.includes('javascript:') && 
                           !urlObj.hostname.includes('data:') &&
-                          !urlObj.hostname.includes('vbscript:') &&
-                          !urlObj.hostname.includes('file:') &&
-                          !urlObj.href.includes('javascript:') &&
-                          !urlObj.href.includes('data:');
-    
-    // Additional security checks
-    const hasValidHostname = urlObj.hostname.length > 0 && 
-                            !urlObj.hostname.includes('..') &&
-                            !urlObj.hostname.includes('//');
-    
-    return isValidProtocol && isNotMalicious && hasValidHostname;
+                          !urlObj.hostname.includes('vbscript:');
+    return isValidProtocol && isNotMalicious;
   } catch (error) {
-    console.warn('URL validation failed for URL:', url, 'Error:', error);
+    // Check if it's a relative URL
+    if (url.startsWith('/') || url.startsWith('#')) {
+      return true;
+    }
+    console.warn('URL validation failed:', error);
     return false;
   }
 }
 
 /**
  * Checks if a URL is external (not same origin)
- * Works both on server and client side with comprehensive error handling
- * 
- * @param url - The URL string to check
- * @returns true if the URL is external, false if internal or invalid
- * 
- * @example
- * ```typescript
- * isExternalUrl('https://example.com') // true
- * isExternalUrl('/internal-page') // false
- * isExternalUrl('mailto:test@example.com') // false (non-http protocol)
- * isExternalUrl('invalid-url') // false (invalid URL)
- * ```
+ * Works both on server and client side
  */
 function isExternalUrl(url: string): boolean {
-  if (!url || typeof url !== 'string') {
-    return false;
-  }
-  
-  // Check if it's a relative URL first
-  if (url.startsWith('/') || url.startsWith('#') || url.startsWith('?')) {
-    return false; // Relative URLs are not external
-  }
-  
-  // Handle protocol-relative URLs (e.g., //example.com)
-  if (url.startsWith('//')) {
-    try {
-      const urlObj = new URL(`https:${url}`);
-      return urlObj.protocol === 'https:' && urlObj.hostname !== 'localhost';
-    } catch (error) {
-      console.warn('Invalid protocol-relative URL:', url, error);
-      return false;
-    }
-  }
-  
   try {
     const urlObj = new URL(url);
-    
-    // Only consider http/https protocols as external
-    const isHttpProtocol = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    if (!isHttpProtocol) {
-      return false; // Non-http protocols are not considered external
-    }
+    // Check if it's an absolute URL (starts with http/https)
+    const isAbsolute = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
     
     // On server side, assume external if it's absolute and not localhost
     if (typeof window === 'undefined') {
-      return isHttpProtocol && 
-             !urlObj.hostname.includes('localhost') && 
-             !urlObj.hostname.includes('127.0.0.1') &&
-             !urlObj.hostname.includes('::1');
+      return isAbsolute && !urlObj.hostname.includes('localhost') && !urlObj.hostname.includes('127.0.0.1');
     }
     
     // On client side, compare with current origin
     return urlObj.origin !== window.location.origin;
   } catch (error) {
-    console.warn('External URL check failed for URL:', url, 'Error:', error);
-    return false; // Treat invalid URLs as non-external
+    console.warn('External URL check failed:', error);
+    return false;
   }
 }
 

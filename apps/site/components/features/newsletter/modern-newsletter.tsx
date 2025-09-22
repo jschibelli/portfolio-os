@@ -1,6 +1,4 @@
-import { Button } from '../../ui';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
-import Glow from '../../ui/glow';
+import { Button, Card, CardContent, CardHeader, CardTitle, Glow } from '@/components/ui';
 import request from 'graphql-request';
 import React, { useEffect, useState } from 'react';
 import {
@@ -8,8 +6,8 @@ import {
 	SubscribeToNewsletterMutation,
 	SubscribeToNewsletterMutationVariables,
 	SubscribeToNewsletterPayload,
-} from '../../../generated/graphql';
-import { useAppContext } from '../../contexts/appContext';
+} from '../generated/graphql';
+import { useAppContext } from './contexts/appContext';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
@@ -80,11 +78,6 @@ export default function ModernNewsletter({
 		setError('');
 
 		try {
-			if (!GQL_ENDPOINT) {
-				setError('Newsletter service is not configured');
-				return;
-			}
-			
 			const data = await request<
 				SubscribeToNewsletterMutation,
 				SubscribeToNewsletterMutationVariables

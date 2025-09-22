@@ -20,11 +20,10 @@ export const Meta = () => {
 
 	return (
 		<Head>
-			{favicon?.url ? <link rel="icon" type="image/png" href={favicon.url} /> : defaultFavicons}
+			{favicon ? <link rel="icon" type="image/png" href={favicon} /> : defaultFavicons}
 			<meta name="msapplication-config" content="/favicon/browserconfig.xml" />
 			<link rel="alternate" type="application/rss+xml" href="/feed.xml" />
-			{metaTags?.title && <title>{metaTags.title}</title>}
-			{metaTags?.description && <meta name="description" content={metaTags.description} />}
+			{metaTags && parse(metaTags)}
 		</Head>
 	);
 };

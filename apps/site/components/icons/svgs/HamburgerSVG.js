@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const HamburgerSVG = ({ className }) => {
+export default function HamburgerSVG({ className }) {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

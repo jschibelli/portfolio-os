@@ -11,6 +11,20 @@ const nextConfig = {
   outputFileTracingRoot: __dirname,
   images: {
     qualities: [25, 50, 75, 85, 100],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.hashnode.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'unsplash.com',
+      },
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

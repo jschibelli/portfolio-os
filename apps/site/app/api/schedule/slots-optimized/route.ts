@@ -99,7 +99,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SlotsResponse
 		const totalTime = Date.now() - startTime;
 		
 		const response: SlotsResponse = { 
-			slots: slots as unknown as TimeSlot[],
+			slots,
 			performance: {
 				totalTime: `${totalTime}ms`,
 				slotCount: slots.length
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SlotsResponse
 
 		// Include cache stats if requested
 		if (input.includeStats) {
-			response.cacheStats = getCacheStats() as unknown as CacheStats;
+			response.cacheStats = getCacheStats();
 		}
 
 		console.log(`✅ [OPTIMIZED] Request ${requestId} completed in ${totalTime}ms`);

@@ -11,7 +11,6 @@ interface TimeSlot {
 	start: string;
 	end: string;
 	available: boolean;
-	duration: number;
 }
 
 interface CalendarModalProps {
@@ -26,13 +25,13 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 
 	// Mock time slots - in a real app, these would come from an API
 	const timeSlots: TimeSlot[] = [
-		{ id: '1', start: '09:00', end: '10:00', available: true, duration: 60 },
-		{ id: '2', start: '10:00', end: '11:00', available: true, duration: 60 },
-		{ id: '3', start: '11:00', end: '12:00', available: false, duration: 60 },
-		{ id: '4', start: '13:00', end: '14:00', available: true, duration: 60 },
-		{ id: '5', start: '14:00', end: '15:00', available: true, duration: 60 },
-		{ id: '6', start: '15:00', end: '16:00', available: false, duration: 60 },
-		{ id: '7', start: '16:00', end: '17:00', available: true, duration: 60 },
+		{ id: '1', start: '09:00', end: '10:00', available: true },
+		{ id: '2', start: '10:00', end: '11:00', available: true },
+		{ id: '3', start: '11:00', end: '12:00', available: false },
+		{ id: '4', start: '13:00', end: '14:00', available: true },
+		{ id: '5', start: '14:00', end: '15:00', available: true },
+		{ id: '6', start: '15:00', end: '16:00', available: false },
+		{ id: '7', start: '16:00', end: '17:00', available: true },
 	];
 
 	const handleTimeSlotClick = (slot: TimeSlot) => {
@@ -60,7 +59,7 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 				<CardHeader className="pb-4">
 					<div className="flex items-center justify-between">
 						<CardTitle className="text-xl font-semibold">Select Time</CardTitle>
-                                          <Button onClick={onClose}>
+						<Button variant="ghost" size="sm" onClick={onClose}>
 							<X className="h-4 w-4" />
 						</Button>
 					</div>
@@ -76,6 +75,7 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 							{timeSlots.map((slot) => (
 								<Button
 									key={slot.id}
+									variant={selectedTimeSlot?.id === slot.id ? 'default' : 'outline'}
 									className={`h-auto justify-start p-3 ${
 										!slot.available ? 'opacity-50 cursor-not-allowed' : ''
 									}`}
@@ -93,7 +93,7 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 											</div>
 										</div>
 										{!slot.available && (
-                                                                                  <Badge className="text-xs">
+											<Badge variant="secondary" className="text-xs">
 												Booked
 											</Badge>
 										)}
@@ -103,7 +103,7 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 						</div>
 
 						<div className="flex space-x-3 pt-4">
-                                                        <Button onClick={onClose} className="flex-1">
+							<Button variant="outline" onClick={onClose} className="flex-1">
 								Cancel
 							</Button>
 							<Button

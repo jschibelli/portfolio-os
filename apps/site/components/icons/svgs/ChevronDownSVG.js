@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ChevronDownSVG = ({ className }) => {
+export default function ChevronDownSVG({ className }) {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

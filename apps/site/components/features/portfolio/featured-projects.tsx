@@ -2,8 +2,10 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { allProjects } from '../../../data/projects';
+import portfolioData from '../../../data/portfolio.json';
+import { ICON_SPACING } from '../../../lib/button-styles';
 import { Button } from '../../ui/button';
+import ProjectCard, { Project } from './project-card';
 
 /**
  * FeaturedProjects component displays a selection of featured portfolio projects
@@ -11,10 +13,10 @@ import { Button } from '../../ui/button';
  */
 export default function FeaturedProjects() {
 	// Comprehensive error handling for missing or invalid portfolio data
-	if (!allProjects || !Array.isArray(allProjects)) {
+	if (!portfolioData || !Array.isArray(portfolioData)) {
 		console.error('FeaturedProjects: Invalid or missing portfolio data', {
-			allProjects,
-			isArray: Array.isArray(allProjects),
+			portfolioData,
+			isArray: Array.isArray(portfolioData),
 			timestamp: new Date().toISOString()
 		});
 		return (
@@ -33,7 +35,33 @@ export default function FeaturedProjects() {
 	}
 
 	// Convert portfolio data to Project interface with error handling
-	const featuredProjects = allProjects.filter(project => project.featured !== false).slice(0, 3);
+	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => {
+		// Validate required fields
+		if (!item.id || !item.title || !item.description) {
+			console.warn('FeaturedProjects: Invalid project data for item:', {
+				item,
+				missingFields: {
+					id: !item.id,
+					title: !item.title,
+					description: !item.description
+				},
+				timestamp: new Date().toISOString()
+			});
+			return null;
+		}
+
+		return {
+			id: item.id,
+			title: item.title,
+			description: item.description,
+			image: item.image || '/placeholder-image.jpg', // Fallback image
+			tags: item.tags || [],
+			caseStudyUrl: item.caseStudyUrl,
+			slug: item.slug,
+			metrics: item.metrics,
+			caseStudyPreview: item.caseStudyPreview,
+		};
+	}).filter(Boolean); // Remove null entries
 
 	return (
 		<section 
@@ -61,40 +89,7 @@ export default function FeaturedProjects() {
 				{/* Projects Grid */}
 				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch">
 					{featuredProjects.map((project, index) => (
-						<motion.div
-							key={project.id}
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }}
-							viewport={{ once: true }}
-							className="bg-stone-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-						>
-							<div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-								<span className="text-4xl">🚀</span>
-							</div>
-							<div className="p-6">
-								<h3 className="text-xl font-bold text-white mb-2">
-									{project.title}
-								</h3>
-								<p className="text-stone-300 mb-4 line-clamp-3">
-									{project.description}
-								</p>
-								<div className="flex flex-wrap gap-2 mb-4">
-									{project.tags.slice(0, 3).map((tag) => (
-										<span key={tag} className="px-2 py-1 bg-stone-600 text-stone-300 rounded-full text-xs">
-											{tag}
-										</span>
-									))}
-								</div>
-								<Link 
-									href={`/projects/${project.slug}`}
-									className="inline-flex items-center text-blue-400 hover:text-blue-300 font-medium"
-								>
-									View Project
-                                    <ArrowRight className="ml-1 h-4 w-4" />
-								</Link>
-							</div>
-						</motion.div>
+						<ProjectCard key={project.id} project={project} index={index} />
 					))}
 				</div>
 
@@ -118,8 +113,8 @@ export default function FeaturedProjects() {
 							aria-label="View all portfolio projects"
 						>
 							View All Projects
-                            <ArrowRight 
-								className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" 
+							<ArrowRight 
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} 
 								aria-hidden="true"
 							/>
 						</Link>

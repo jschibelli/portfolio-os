@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const XSVG = ({ className }) => {
+export default function XSVG({ className }) {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

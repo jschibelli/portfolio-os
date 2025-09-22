@@ -1,9 +1,7 @@
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui';
-import { Card, CardContent } from '../../ui/card';
+import { Badge, Button, Card, CardContent } from '@/components/ui';
 import { ChevronLeft, Loader2, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { PageInfo } from '../../../generated/graphql';
+import { PageInfo } from '../generated/graphql';
 
 interface EnhancedPaginationProps {
 	pageInfo: PageInfo;
@@ -82,20 +80,23 @@ export default function EnhancedPagination({
 			<div className="animate-fade-in-up flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
 				<div className="flex items-center gap-4">
 					<Badge
-						className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+						variant="outline"
+						className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md"
 					>
 						{currentPostsCount} posts loaded
 					</Badge>
 					{totalPosts > 0 && (
 						<Badge
-							className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+							variant="secondary"
+							className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md"
 						>
 							{totalPosts} total posts
 						</Badge>
 					)}
 					{estimatedTotalPages > 0 && (
 						<Badge
-							className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+							variant="outline"
+							className="text-sm transition-all duration-300 hover:scale-105 hover:shadow-md"
 						>
 							Page {currentPage} of ~{estimatedTotalPages}
 						</Badge>
@@ -122,9 +123,11 @@ export default function EnhancedPagination({
 
 					{onReturnToFirst && currentPostsCount > postsPerPage && (
 						<Button
+							variant="ghost"
+							size="sm"
 							onClick={onReturnToFirst}
 							disabled={isLoading}
-							className="animate-fade-in-up animation-delay-300 h-8 px-3 text-xs transition-all duration-300 hover:scale-105 hover:shadow-md bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+							className="animate-fade-in-up animation-delay-300 h-8 px-3 text-xs transition-all duration-300 hover:scale-105 hover:shadow-md"
 						>
 							<ChevronLeft className="mr-1 h-3 w-3 transition-transform group-hover:-translate-x-1" />
 							First Page
@@ -133,6 +136,8 @@ export default function EnhancedPagination({
 
 					{onRefresh && (
 						<Button
+							variant="ghost"
+							size="sm"
 							onClick={handleRefresh}
 							disabled={isRefreshing}
 							className="animate-fade-in-up animation-delay-400 h-8 w-8 p-0 transition-all duration-300 hover:scale-105 hover:shadow-md"
@@ -170,7 +175,9 @@ export default function EnhancedPagination({
 							<Button
 								onClick={onLoadMore}
 								disabled={isLoading}
-								className="animate-fade-in-up animation-delay-700 group relative overflow-hidden px-8 py-3 font-semibold transition-all duration-500 hover:scale-105 hover:shadow-xl border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+								variant="outline"
+								size="lg"
+								className="animate-fade-in-up animation-delay-700 group relative overflow-hidden px-8 py-3 font-semibold transition-all duration-500 hover:scale-105 hover:shadow-xl"
 							>
 								<div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 								{isLoading ? (
@@ -215,9 +222,11 @@ export default function EnhancedPagination({
 					</p>
 					{onRefresh && (
 						<Button
+							variant="outline"
+							size="sm"
 							onClick={handleRefresh}
 							disabled={isRefreshing}
-							className="mt-4 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+							className="mt-4 transition-all duration-300 hover:scale-105 hover:shadow-md"
 						>
 							<RefreshCw
 								className={`mr-2 h-4 w-4 transition-all duration-300 ${isRefreshing ? 'animate-spin' : 'hover:rotate-180'}`}
@@ -239,9 +248,11 @@ export default function EnhancedPagination({
 					</p>
 					{onRefresh && (
 						<Button
+							variant="outline"
+							size="sm"
 							onClick={handleRefresh}
 							disabled={isRefreshing}
-							className="mt-4 transition-all duration-300 hover:scale-105 hover:shadow-md border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
+							className="mt-4 transition-all duration-300 hover:scale-105 hover:shadow-md"
 						>
 							<RefreshCw
 								className={`mr-2 h-4 w-4 transition-all duration-300 ${isRefreshing ? 'animate-spin' : 'hover:rotate-180'}`}

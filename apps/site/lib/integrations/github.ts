@@ -3,7 +3,7 @@
 // Server-only - uses OAuth user token via Auth.js session
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth-config';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export interface GitHubIssue {
   id: number;

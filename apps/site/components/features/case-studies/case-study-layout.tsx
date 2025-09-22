@@ -111,9 +111,11 @@ export const CaseStudyLayout: React.FC<CaseStudyLayoutProps> = ({
 		<div className="bg-background min-h-screen">
 			{/* Mobile TOC Toggle */}
 			<div className="fixed right-4 top-20 z-50 lg:hidden">
-                                <Button
-                                        onClick={() => setIsTocVisible(!isTocVisible)}
-                                        className="bg-background/80 border-border/50 backdrop-blur-sm"
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => setIsTocVisible(!isTocVisible)}
+					className="bg-background/80 border-border/50 backdrop-blur-sm"
 				>
 					<svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -146,7 +148,7 @@ export const CaseStudyLayout: React.FC<CaseStudyLayoutProps> = ({
 						>
 							<div className="mb-4 flex items-center justify-between">
 								<h3 className="text-lg font-semibold">Table of Contents</h3>
-                                                                <Button onClick={() => setIsTocVisible(false)}>
+								<Button variant="ghost" size="sm" onClick={() => setIsTocVisible(false)}>
 									<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path
 											strokeLinecap="round"
@@ -227,10 +229,10 @@ export const CaseStudyLayout: React.FC<CaseStudyLayoutProps> = ({
 										tailored to your needs.
 									</p>
 									<div className="flex flex-col justify-center gap-4 sm:flex-row">
-                                                                                <Button asChild>
-                                                                                        <Link href="/contact">Start a Project</Link>
-                                                                                </Button>
-                                                                                <Button asChild>
+										<Button asChild size="lg">
+											<Link href="/contact">Start a Project</Link>
+										</Button>
+										<Button asChild variant="outline" size="lg">
 											<Link href="/case-studies">View More Case Studies</Link>
 										</Button>
 									</div>

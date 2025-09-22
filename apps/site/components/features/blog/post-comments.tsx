@@ -1,5 +1,4 @@
-// import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
-const markdownToHtml = (content: string) => content;
+import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
 import { Comment } from '../../../generated/graphql';
 import { useAppContext } from '../../contexts/appContext';
 import { ExternalArrowSVG, HashnodeSVG } from '../../icons';
@@ -43,16 +42,15 @@ export const PostComments = () => {
 			<h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-neutral-100">
 				Comments ({post.comments.totalDocuments})
 			</h3>
-			<a 
-				href={discussionUrl} 
-				target="_blank" 
-				rel="noopener noreferrer" 
-				className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-			>
-				<HashnodeSVG className="h-5 w-5 stroke-current" />
-				Discuss on Hashnode
-				<ExternalArrowSVG className="h-5 w-5 stroke-current" />
-			</a>
+			<Button
+				as="a"
+				href={discussionUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				icon={<HashnodeSVG className="h-5 w-5 stroke-current" />}
+				label="Discuss on Hashnode"
+				secondaryIcon={<ExternalArrowSVG className="h-5 w-5 stroke-current" />}
+			/>
 			<div className="flex flex-col gap-5 rounded-lg border border-slate-200 bg-slate-50 p-5 dark:border-neutral-800 dark:bg-neutral-900">
 				{commentsList}
 			</div>

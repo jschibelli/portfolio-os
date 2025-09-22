@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       style: "natural",
     });
 
-    const imageUrl = response.data?.[0]?.url;
+    const imageUrl = response.data[0]?.url;
 
     if (!imageUrl) {
       return NextResponse.json({ error: 'Failed to generate image' }, { status: 500 });

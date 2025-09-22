@@ -1,5 +1,5 @@
-"use client";
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import { motion } from 'framer-motion';
 
 export default function Intro() {

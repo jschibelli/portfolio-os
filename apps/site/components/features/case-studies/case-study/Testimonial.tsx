@@ -49,7 +49,7 @@ export const Testimonial: React.FC<TestimonialProps> = ({
 					{/* Category badge */}
 					{category && (
 						<div className="mb-4">
-							<Badge className="text-xs">
+							<Badge variant="secondary" className="text-xs">
 								{category}
 							</Badge>
 						</div>

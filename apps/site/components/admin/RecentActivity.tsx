@@ -7,7 +7,7 @@ import { adminDataService, AdminActivity } from "../../lib/admin-data-service";
 
 interface ActivityItem {
   id: string;
-  type: 'article_published' | 'article_updated' | 'comment_received' | 'user_registered' | 'analytics_milestone' | 'case_study_published' | 'portfolio_updated';
+  type: 'article_published' | 'article_updated' | 'comment_received' | 'user_registered' | 'analytics_milestone' | 'case_study_published';
   title: string;
   description: string;
   timestamp: string;
@@ -30,8 +30,6 @@ function ActivityItem({ item }: { item: ActivityItem }) {
         return <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />;
       case 'case_study_published':
         return <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />;
-      case 'portfolio_updated':
-        return <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
       default:
         return <Clock className="h-4 w-4 text-slate-600 dark:text-slate-400" />;
     }
@@ -51,8 +49,6 @@ function ActivityItem({ item }: { item: ActivityItem }) {
         return 'bg-orange-100 dark:bg-orange-900/20';
       case 'case_study_published':
         return 'bg-green-100 dark:bg-green-900/20';
-      case 'portfolio_updated':
-        return 'bg-emerald-100 dark:bg-emerald-900/20';
       default:
         return 'bg-slate-100 dark:bg-slate-700/50';
     }

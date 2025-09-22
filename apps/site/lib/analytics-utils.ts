@@ -257,7 +257,7 @@ export function createAnalyticsUtils(config: AnalyticsConfig): AnalyticsUtils {
 /**
  * Default analytics utils instance
  */
-export const defaultAnalyticsUtils = createAnalyticsUtils({
+export const AnalyticsUtils = createAnalyticsUtils({
   googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID,
   enableCustomEvents: true,
   enableErrorTracking: true,

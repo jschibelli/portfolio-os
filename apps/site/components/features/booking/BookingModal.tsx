@@ -328,15 +328,19 @@ export function BookingModal({
 											{currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
 										</h4>
 										<div className="flex space-x-1 sm:space-x-2">
-                                                                                        <Button
-                                                                                                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
-                                                                                                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+											<Button
+												variant="outline"
+												size="sm"
+												className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+												onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
 											>
 												<ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
 											</Button>
-                                                                                        <Button
-                                                                                                className="h-7 w-7 sm:h-8 sm:w-8 p-0"
-                                                                                                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+											<Button
+												variant="outline"
+												size="sm"
+												className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+												onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
 											>
 												<ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
 											</Button>

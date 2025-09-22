@@ -1,12 +1,12 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { PublicationNavbarItem } from '../../../generated/graphql';
-import { Button } from '../../ui';
-import { useAppContext } from '../../contexts/appContext';
-import { CloseSVG } from '../../icons/svgs/CloseSVG';
+import { PublicationNavbarItem } from '../generated/graphql';
+import { Button } from './button';
+import { useAppContext } from './contexts/appContext';
+import CloseSVG from './icons/svgs/CloseSVG';
 import { PersonalLogo } from '../../shared/personal-logo';
-import { SocialLinks } from '../../shared/social-links';
+import { SocialLinks } from './social-links';
 
 type Props = {
 	toggleSidebar: () => void;
@@ -51,13 +51,14 @@ function PublicationSidebar(props: Props) {
 
 							<DialogPrimitive.Close asChild>
 								<Button
-									className="rounded-xl !border-transparent !px-3 !py-2 hover:bg-neutral-800 dark:text-white bg-transparent"
+									type="outline"
+									label=""
+									icon={<CloseSVG className="h-5 w-5 fill-current" />}
+									className="rounded-xl !border-transparent !px-3 !py-2 hover:bg-neutral-800 dark:text-white"
 									onClick={() => {
 										toggleSidebar();
 									}}
-								>
-									<CloseSVG className="h-5 w-5 fill-current" />
-								</Button>
+								/>
 							</DialogPrimitive.Close>
 						</div>
 					</div>

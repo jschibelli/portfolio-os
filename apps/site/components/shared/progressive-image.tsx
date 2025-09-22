@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-// import { resizeImage } from '@starter-kit/utils/image';
-const resizeImage = (url: string, width: number, height: number) => url;
+import { resizeImage } from '../../lib/image-utils';
 import React, { useRef, useEffect } from 'react';
 
 import { twMerge } from 'tailwind-merge';
@@ -41,7 +40,7 @@ function ProgressiveImage({ resize, src, alt, className, ...restOfProps }: Progr
 
 	if (!src || src.trim().length === 0) return null;
 
-	const resizedImage = resizeImage(src, resize, resize);
+	const resizedImage = resizeImage(src, resize);
 
 	return (
 		<img

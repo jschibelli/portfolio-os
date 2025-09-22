@@ -5,13 +5,12 @@
  * and proper formatting. It includes security considerations for sensitive data.
  */
 
-export const LogLevel = {
-  ERROR: 'error',
-  WARN: 'warn',
-  INFO: 'info',
-  DEBUG: 'debug',
-} as const;
-export type LogLevel = typeof LogLevel[keyof typeof LogLevel];
+export enum LogLevel {
+  ERROR = 'error',
+  WARN = 'warn',
+  INFO = 'info',
+  DEBUG = 'debug',
+}
 
 export interface LogEntry {
   level: LogLevel;
@@ -107,7 +106,7 @@ export class LoggingService {
    * Check if log level should be output
    */
   private shouldLog(level: LogLevel): boolean {
-    const levels: LogLevel[] = [LogLevel.ERROR, LogLevel.WARN, LogLevel.INFO, LogLevel.DEBUG];
+    const levels = [LogLevel.ERROR, LogLevel.WARN, LogLevel.INFO, LogLevel.DEBUG];
     const currentLevelIndex = levels.indexOf(this.config.level);
     const messageLevelIndex = levels.indexOf(level);
     
