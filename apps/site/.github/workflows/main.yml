@@ -1,0 +1,531 @@
+# CI/CD Pipeline for Mindware Blog
+# ===================================
+# This comprehensive workflow handles the complete development lifecycle:
+# - Code quality checks (linting, type checking)
+# - Testing (unit, integration, visual regression)
+# - Security scanning (vulnerability detection)
+# - Building (production-ready artifacts)
+# - Deployment (production and preview environments)
+#
+# Key Features:
+# - Optimized parallel execution for faster CI/CD
+# - Enhanced pnpm caching with build verification
+# - Comprehensive error handling and notifications
+# - Security-first approach with vulnerability scanning
+# - Automated deployment to Vercel with environment separation
+#
+# Performance Optimizations:
+# - Parallel job execution where possible
+# - Intelligent caching strategies
+# - Build verification to catch issues early
+# - Conditional job execution based on file changes
+
+name: CI/CD Pipeline
+
+# Trigger workflow on pushes to main/develop branches and PRs to main/development
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, development ]
+
+# Explicit permissions for GitHub API access and security scanning
+# Following principle of least privilege for enhanced security
+permissions:
+  contents: read          # Read repository contents
+  issues: write           # Create/update issues
+  pull-requests: write    # Create/update PR comments
+  checks: write           # Create/update check runs
+  security-events: write  # Upload security scan results
+  actions: read           # Read workflow information
+  packages: read          # Read package information
+  id-token: write         # Generate OIDC tokens for deployment
+
+# Global environment variables for consistency across all jobs
+env:
+  NODE_VERSION: '18'  # Using Node.js 18 LTS for better compatibility and security
+  PNPM_VERSION: '8'   # Latest stable pnpm version with improved performance
+  PNPM_CACHE_PATH: ~/.pnpm-store  # Cross-platform cache path for dependency caching
+  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise  # Project root directory
+
+jobs:
+  # Workflow Validation - Ensures all environment variables are properly configured
+  validate-workflow:
+    name: Validate Workflow Configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      # Checkout repository code for validation
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate environment variables
+        run: |
+          echo "Validating workflow environment variables..."
+          echo "NODE_VERSION: ${{ env.NODE_VERSION }}"
+          echo "PNPM_VERSION: ${{ env.PNPM_VERSION }}"
+          echo "PNPM_CACHE_PATH: ${{ env.PNPM_CACHE_PATH }}"
+          echo "WORKING_DIRECTORY: ${{ env.WORKING_DIRECTORY }}"
+          
+          # Validate required environment variables
+          if [ -z "${{ env.NODE_VERSION }}" ]; then
+            echo "❌ NODE_VERSION is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.PNPM_VERSION }}" ]; then
+            echo "❌ PNPM_VERSION is not set"
+            exit 1
+          fi
+          
+          if [ -z "${{ env.WORKING_DIRECTORY }}" ]; then
+            echo "❌ WORKING_DIRECTORY is not set"
+            exit 1
+          fi
+          
+          echo "✅ All environment variables are valid"
+
+  # Lint and Type Check - Ensures code quality and type safety
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    needs: validate-workflow
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      # Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # Setup Node.js, pnpm, and caching for optimal performance with build verification
+      - name: Setup pnpm with caching and build verification
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'false'  # Skip build verification in lint job for speed
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+        
+      # Run ESLint to check code style and potential issues
+      - name: Run ESLint
+        run: pnpm lint
+        continue-on-error: false
+        
+      # Run TypeScript compiler to check for type errors
+      - name: Run TypeScript type check
+        run: pnpm typecheck
+        continue-on-error: false
+        
+      # Notify on linting/type check failure
+      - name: Notify on linting failure
+        if: failure()
+        run: |
+          echo "❌ Linting or type checking failed. Please fix the issues and try again."
+          echo "Run 'pnpm lint' and 'pnpm typecheck' locally to see the errors."
+
+  # Test - Runs unit and integration tests (can run in parallel with visual regression)
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      # Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # Setup Node.js, pnpm, and caching with build verification
+      - name: Setup pnpm with caching and build verification
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'true'  # Enable build verification for test job
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+        
+      # Run test suite with CI environment variables
+      - name: Run tests
+        run: pnpm test
+        env:
+          CI: true
+        continue-on-error: false
+        
+      # Notify on test failure
+      - name: Notify on test failure
+        if: failure()
+        run: |
+          echo "❌ Tests failed. Please check the test output and fix any issues."
+          echo "Run 'pnpm test' locally to reproduce the failures."
+
+  # Visual Regression Testing - Ensures UI consistency across changes (runs in parallel with test)
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    # Only run on PRs or when blog-related files are modified
+    if: github.event_name == 'pull_request' || contains(github.event.head_commit.modified, 'app/blog/') || contains(github.event.head_commit.modified, 'components/blog/') || contains(github.event.head_commit.modified, 'pages/blog') || contains(github.event.head_commit.modified, 'tests/visual/')
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      actions: read
+      checks: write
+    
+    steps:
+      # Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # Setup Node.js, pnpm, and caching with build verification
+      - name: Setup pnpm with caching and build verification
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'true'  # Enable build verification for visual regression
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+        
+      # Install Playwright browsers and system dependencies
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        continue-on-error: false
+        
+      # Build application for visual testing
+      - name: Build application
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          pnpm build
+        env:
+          NEXT_PUBLIC_MODE: production
+          NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
+          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: ${{ secrets.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev' }}
+          NEXT_PUBLIC_FEATURE_SCHEDULING: 'true'
+          NEXT_PUBLIC_FEATURE_CASE_STUDY: 'true'
+          NEXT_PUBLIC_FEATURE_CLIENT_INTAKE: 'true'
+          FEATURE_SCHEDULING: 'true'
+          FEATURE_CASE_STUDY: 'true'
+          FEATURE_CLIENT_INTAKE: 'true'
+        continue-on-error: false
+        
+      - name: Run visual regression tests
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          pnpm test:visual
+        env:
+          CI: true
+          
+      - name: Upload visual test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-test-results
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
+          retention-days: 7
+          
+      - name: Upload visual test screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-test-screenshots
+          path: ${{ env.WORKING_DIRECTORY }}/test-results/
+          retention-days: 7
+          
+      - name: Comment PR with visual test results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Check if visual tests failed
+            const testResultsPath = '${{ env.WORKING_DIRECTORY }}/test-results/';
+            let hasFailures = false;
+            let comment = '## 🎨 Visual Regression Test Results\n\n';
+            
+            try {
+              if (fs.existsSync(testResultsPath)) {
+                const files = fs.readdirSync(testResultsPath, { recursive: true });
+                const diffFiles = files.filter(file => file.includes('diff') || file.includes('actual'));
+                
+                if (diffFiles.length > 0) {
+                  hasFailures = true;
+                  comment += '❌ **Visual differences detected!**\n\n';
+                  comment += 'The following visual differences were found:\n\n';
+                  
+                  diffFiles.forEach(file => {
+                    comment += `- \`${file}\`\n`;
+                  });
+                  
+                  comment += '\n📸 **Screenshots and diffs are available in the artifacts above.**\n\n';
+                  comment += '### Next Steps:\n';
+                  comment += '1. Review the visual differences in the uploaded artifacts\n';
+                  comment += '2. If the changes are intentional, update the baseline images\n';
+                  comment += '3. If the changes are unintentional, fix the issues and push again\n\n';
+                  comment += 'To update baseline images locally, run:\n';
+                  comment += '```bash\n';
+                  comment += 'pnpm test:visual:update\n';
+                  comment += '```\n';
+                } else {
+                  comment += '✅ **All visual tests passed!** No visual differences detected.\n';
+                }
+              } else {
+                comment += '⚠️ **Visual test results not found.** Please check the test logs.\n';
+              }
+            } catch (error) {
+              comment += '❌ **Error processing visual test results:** ' + error.message + '\n';
+            }
+            
+            // Post comment to PR with proper error handling
+            try {
+              if (context.payload.pull_request) {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: comment
+                });
+                console.log('✅ Successfully posted visual test results comment');
+              } else {
+                console.log('ℹ️ Not a pull request, skipping comment posting');
+              }
+            } catch (apiError) {
+              console.error('❌ Failed to post comment:', apiError.message);
+              console.error('Error details:', JSON.stringify(apiError, null, 2));
+              // Don't fail the job if comment posting fails
+            }
+            
+            // Fail the job if there are visual differences
+            if (hasFailures) {
+              core.setFailed('Visual regression tests failed - differences detected');
+            }
+
+  # Build - Creates production-ready build artifacts (optimized for parallel execution)
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, test, visual-regression]
+    # Only build if linting, tests, and visual regression pass
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success' && (needs.visual-regression.result == 'success' || needs.visual-regression.result == 'skipped'))
+    permissions:
+      contents: read
+      actions: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup pnpm with caching and build verification
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          pnpm-version: ${{ env.PNPM_VERSION }}
+          cache-path: ${{ env.PNPM_CACHE_PATH }}
+          verify-build: 'false'  # Skip build verification since we'll do a full build
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+        
+      - name: Build application
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          pnpm build
+        env:
+          # Production build environment
+          NEXT_PUBLIC_MODE: production
+          # Hashnode GraphQL (optional - will use fallback if not set)
+          NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
+          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: ${{ secrets.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev' }}
+          # Feature flags
+          NEXT_PUBLIC_FEATURE_SCHEDULING: 'true'
+          NEXT_PUBLIC_FEATURE_CASE_STUDY: 'true'
+          NEXT_PUBLIC_FEATURE_CLIENT_INTAKE: 'true'
+          FEATURE_SCHEDULING: 'true'
+          FEATURE_CASE_STUDY: 'true'
+          FEATURE_CLIENT_INTAKE: 'true'
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: ${{ env.WORKING_DIRECTORY }}/.next
+          retention-days: 7
+
+  # Security Scan - Scans for vulnerabilities using Trivy (runs in parallel with build)
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, test]
+    # Only scan if linting and tests pass (can run in parallel with build)
+    if: always() && (needs.lint-and-typecheck.result == 'success' && needs.test.result == 'success')
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Deploy to Vercel (Production) - Deploys to production environment on main branch
+  deploy-production:
+    name: Deploy to Production Environment
+    runs-on: ubuntu-latest
+    needs: [build, security]
+    # Only deploy to production from main branch if build and security pass
+    if: github.ref == 'refs/heads/main' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
+    environment: production
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+      id-token: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./${{ env.WORKING_DIRECTORY }}
+          vercel-args: '--prod'
+
+  # Deploy to Vercel (Preview) - Creates preview deployments for pull requests
+  deploy-preview:
+    name: Deploy to Preview Environment
+    runs-on: ubuntu-latest
+    needs: [build, security]
+    # Only deploy preview for PRs if build and security pass
+    if: github.event_name == 'pull_request' && always() && (needs.build.result == 'success' && needs.security.result == 'success')
+    environment: preview
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+      id-token: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Deploy to Vercel (Preview)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./${{ env.WORKING_DIRECTORY }}
+          vercel-args: '--target=preview'
+
+  # Workflow Status Summary - Provides comprehensive status report and notifications
+  workflow-status:
+    name: Workflow Status Summary
+    runs-on: ubuntu-latest
+    needs: [validate-workflow, lint-and-typecheck, test, visual-regression, build, security, deploy-production, deploy-preview]
+    # Always run to provide status summary regardless of other job results
+    if: always()
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+      pull-requests: write
+      checks: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Generate workflow status report
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const jobs = [
+              { name: 'validate-workflow', result: '${{ needs.validate-workflow.result }}' },
+              { name: 'lint-and-typecheck', result: '${{ needs.lint-and-typecheck.result }}' },
+              { name: 'test', result: '${{ needs.test.result }}' },
+              { name: 'visual-regression', result: '${{ needs.visual-regression.result }}' },
+              { name: 'build', result: '${{ needs.build.result }}' },
+              { name: 'security', result: '${{ needs.security.result }}' },
+              { name: 'deploy-production', result: '${{ needs.deploy-production.result }}' },
+              { name: 'deploy-preview', result: '${{ needs.deploy-preview.result }}' }
+            ];
+            
+            let statusReport = '## 🔄 Workflow Status Report\n\n';
+            let hasFailures = false;
+            let hasSkipped = false;
+            
+            jobs.forEach(job => {
+              if (job.result === 'success') {
+                statusReport += `✅ **${job.name}**: Success\n`;
+              } else if (job.result === 'failure') {
+                statusReport += `❌ **${job.name}**: Failed\n`;
+                hasFailures = true;
+              } else if (job.result === 'skipped') {
+                statusReport += `⏭️ **${job.name}**: Skipped\n`;
+                hasSkipped = true;
+              } else if (job.result === 'cancelled') {
+                statusReport += `🚫 **${job.name}**: Cancelled\n`;
+                hasFailures = true;
+              } else {
+                statusReport += `⏳ **${job.name}**: ${job.result}\n`;
+              }
+            });
+            
+            statusReport += '\n---\n';
+            
+            if (hasFailures) {
+              statusReport += '❌ **Workflow completed with failures.** Please review the logs above.\n';
+            } else if (hasSkipped) {
+              statusReport += '⚠️ **Workflow completed with some jobs skipped.** This may be expected behavior.\n';
+            } else {
+              statusReport += '✅ **All workflow jobs completed successfully!**\n';
+            }
+            
+            // Post status report as PR comment if this is a pull request
+            if (context.payload.pull_request) {
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.payload.pull_request.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: statusReport
+                });
+                console.log('✅ Posted workflow status report');
+              } catch (error) {
+                console.error('❌ Failed to post status report:', error.message);
+              }
+            }
+            
+            // Set job status based on results
+            if (hasFailures) {
+              core.setFailed('Workflow completed with failures');
+            }
