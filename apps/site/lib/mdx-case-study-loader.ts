@@ -132,6 +132,7 @@ export const getCaseStudyBySlug = withPerformanceTracking(
     // Ensure slug matches the filename
     const meta: ProjectMeta = {
       ...data,
+      title: data.title || slug, // Ensure title is provided
       slug,
     };
     
@@ -413,6 +414,7 @@ export async function validateAllCaseStudies(): Promise<{
       
       const meta: ProjectMeta = {
         ...data,
+        title: data.title || slug, // Ensure title is provided
         slug,
       };
       

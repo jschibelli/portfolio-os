@@ -1,10 +1,10 @@
 import { Button } from '../../ui';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ModernHeroProps, HeroContent, HeroCTA, HeroImage, HeroAnimation } from './types';
 import { heroSpacingClasses } from '../../ui/spacing';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 
 // Helper function to map hero CTA size to Button size
 const mapCTASizeToButtonSize = (size?: string): 'default' | 'sm' | 'lg' | 'icon' => {
@@ -161,11 +161,9 @@ export default function ModernHero({
 								}`}
 							>
 								{primaryCTA && (
-									<Button
-										size={mapCTASizeToButtonSize(primaryCTA.size)}
-										variant={primaryCTA.variant === "primary" ? "default" : primaryCTA.variant}
-										className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
-										asChild
+                                                                        <Button
+                                                                                className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
+                                                                                asChild
 									>
 										<Link href={primaryCTA.href} aria-label={primaryCTA['aria-label']}>
 											{primaryCTA.text}
@@ -175,14 +173,12 @@ export default function ModernHero({
 								)}
 								{secondaryCTA && (
 									<Button
-										size={mapCTASizeToButtonSize(secondaryCTA.size)}
-										variant={secondaryCTA.variant === "primary" ? "default" : secondaryCTA.variant}
 										className="group w-full px-6 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-fit sm:px-8 sm:text-base"
 										asChild
 									>
 										<Link href={secondaryCTA.href} aria-label={secondaryCTA['aria-label']}>
 											{secondaryCTA.text}
-											{secondaryCTA.icon || <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
+                                            {secondaryCTA.icon || <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />}
 										</Link>
 									</Button>
 								)}

@@ -2,7 +2,7 @@
 export { synaplyai } from './synaplyai';
 export { schibelliSite } from './schibelli-site';
 export { ecommerceShopifyChatbot } from './ecommerce-shopify-chatbot';
-export { chatbotDemo } from './chatbot-demo';
+// export { chatbotDemo } from './chatbot-demo';
 export { intraweb } from './intraweb';
 
 // Type exports
@@ -12,7 +12,7 @@ export type { ProjectMeta } from './types';
 import { synaplyai } from './synaplyai';
 import { schibelliSite } from './schibelli-site';
 import { ecommerceShopifyChatbot } from './ecommerce-shopify-chatbot';
-import { chatbotDemo } from './chatbot-demo';
+// import { chatbotDemo } from './chatbot-demo';
 import { intraweb } from './intraweb';
 import { ProjectMeta } from './types';
 
@@ -20,7 +20,7 @@ export const allProjects: ProjectMeta[] = [
   synaplyai,
   schibelliSite,
   ecommerceShopifyChatbot,
-  chatbotDemo,
+  // chatbotDemo,
   intraweb
 ];
 

@@ -1,5 +1,7 @@
-import { useEmbeds } from '@starter-kit/utils/renderer/hooks/useEmbeds';
-import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
+// import { useEmbeds } from '@starter-kit/utils/renderer/hooks/useEmbeds';
+// import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
+const useEmbeds = (options?: any) => ({ embeds: [] });
+const markdownToHtml = (content: string) => content;
 import { memo } from 'react';
 
 type Props = {

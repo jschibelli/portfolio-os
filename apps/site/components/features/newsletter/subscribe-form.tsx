@@ -24,6 +24,11 @@ export const SubscribeForm = () => {
 		setRequestInProgress(true);
 
 		try {
+			if (!GQL_ENDPOINT) {
+				window.alert('Newsletter service is not configured');
+				return;
+			}
+			
 			const data = await request<
 				SubscribeToNewsletterMutation,
 				SubscribeToNewsletterMutationVariables
@@ -50,14 +55,13 @@ export const SubscribeForm = () => {
 						placeholder="john@doe.com"
 						className="focus:outline-primary-600 dark:focus:outline-primary-500 left-3 top-3 w-full rounded-full p-3 text-base text-black outline-none dark:bg-neutral-950 dark:text-neutral-50"
 					/>
-					<Button
-						disabled={requestInProgress}
-						onClick={subscribe}
-						size="sm"
-						className="absolute right-3 top-3 rounded-full"
-					>
-						Subscribe
-					</Button>
+								<Button
+									disabled={requestInProgress}
+									onClick={subscribe}
+									className="absolute right-3 top-3 rounded-full px-3 py-1 text-sm"
+								>
+									Subscribe
+								</Button>
 				</div>
 			)}
 			{status === 'PENDING' && (

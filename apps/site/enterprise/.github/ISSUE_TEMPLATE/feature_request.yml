@@ -1,0 +1,40 @@
+name: "Feature request"
+description: Propose a new capability for the portfolio/blog
+labels: ["feature","P2"]
+body:
+- type: input
+  id: summary
+  attributes:
+    label: Summary
+    placeholder: One sentence user-facing value proposition
+    description: Brief description of the feature request
+  validations: { required: true }
+- type: textarea
+  id: details
+  attributes:
+    label: Details
+    description: What/why, acceptance criteria, edge cases, and user stories
+    placeholder: |
+      As a [user type], I want [functionality] so that [benefit].
+      
+      ## Acceptance Criteria
+      - [ ] Criterion 1
+      - [ ] Criterion 2
+      
+      ## Additional Context
+      Any additional information, mockups, or references
+  validations: { required: true }
+- type: dropdown
+  id: area
+  attributes:
+    label: Area
+    description: Select the primary area this feature affects
+    options: ["Core","Blog","SEO","Accessibility","UI/Design","Infra","Analytics","Performance"]
+  validations: { required: true }
+- type: dropdown
+  id: size
+  attributes:
+    label: Size
+    description: Estimated effort/complexity level
+    options: ["XS","S","M","L","XL"]
+  validations: { required: true }

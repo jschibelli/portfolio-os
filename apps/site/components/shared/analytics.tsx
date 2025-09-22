@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { useAppContext } from './contexts/appContext';
+import { useAppContext } from '../contexts/appContext';
 
 // Declare gtag for TypeScript
 declare global {
@@ -68,7 +68,7 @@ export const Analytics = () => {
 	const _sendViewsToAdvancedAnalyticsDashboard = useCallback(() => {
 		const publicationId = publication.id;
 		const postId = post && post.id;
-		const seriesId = series?.id || post?.series?.id;
+		const seriesId = series?.[0]?.id;
 		const staticPageId = page && page.id;
 
 		const data = {

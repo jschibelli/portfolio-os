@@ -22,7 +22,15 @@ export function renderComponent(
     return <div className="text-red-500">Unknown component: {name}</div>
   }
   
-  return <Component {...props} />
+  // Provide default props for components that require them
+  const defaultProps = {
+    title: 'Untitled',
+    label: 'Label',
+    value: 'Value',
+    ...props
+  }
+  
+  return <Component {...defaultProps} />
 }
 
 export function getComponentNames(): ComponentName[] {

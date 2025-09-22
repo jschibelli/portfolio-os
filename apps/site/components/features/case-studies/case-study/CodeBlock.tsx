@@ -64,10 +64,10 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 								</div>
 							</div>
 							<div className="flex items-center gap-2">
-								<Badge variant="secondary" className="text-xs">
+								<Badge className="text-xs">
 									{language}
 								</Badge>
-								<Button variant="ghost" size="sm" onClick={copyToClipboard} className="h-11 w-11 p-0">
+								<Button onClick={copyToClipboard} className="h-11 w-11 p-0">
 									{copied ? (
 										<Check className="h-4 w-4 text-green-600" />
 									) : (

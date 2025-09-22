@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
@@ -177,7 +177,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate engagement rates
-    const topArticles = articles.map(article => ({
+    const topArticles = articles.map((article: any) => ({
       title: article.title,
       views: article.views,
       engagement: Math.floor(Math.random() * 30) + 60, // This would need real analytics data

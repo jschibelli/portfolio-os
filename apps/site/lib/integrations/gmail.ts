@@ -148,7 +148,7 @@ export async function listStarred(limit: number = 20, pageToken?: string): Promi
 
     return {
       messages: detailedMessages,
-      nextPageToken: nextPageToken
+      nextPageToken: nextPageToken || undefined
     };
   } catch (error: any) {
     handleGmailError(error, 'listing starred emails');
@@ -213,7 +213,7 @@ export async function listUnread(limit: number = 20, pageToken?: string): Promis
 
     return {
       messages: detailedMessages,
-      nextPageToken: nextPageToken
+      nextPageToken: nextPageToken || undefined
     };
   } catch (error: any) {
     handleGmailError(error, 'listing unread emails');
@@ -309,7 +309,7 @@ export async function listEmailsByFolder(folder: string, limit: number = 20, pag
 
     return {
       messages: detailedMessages,
-      nextPageToken: nextPageToken
+      nextPageToken: nextPageToken || undefined
     };
   } catch (error: any) {
     handleGmailError(error, `listing emails from folder ${folder}`);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Palette, Save, RotateCcw, Eye, EyeOff, Sun, Moon, Monitor, CheckCircle, AlertCircle, Type, Image, Layout } from "lucide-react";
+import { Palette, Save, RotateCcw, Eye, EyeOff, Sun, Moon, Monitor, CheckCircle, AlertCircle, Type, Image, Layout, Palette as Colors } from "lucide-react";
 
 interface AppearanceSettings {
   theme: {

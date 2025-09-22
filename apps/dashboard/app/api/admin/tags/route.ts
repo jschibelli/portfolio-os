@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -57,7 +57,6 @@ export async function GET(request: NextRequest) {
           }
         },
         orderBy: [
-          { _count: { articles: 'desc' } },
           { name: 'asc' }
         ],
         skip,
@@ -71,9 +70,9 @@ export async function GET(request: NextRequest) {
       id: tag.id,
       name: tag.name,
       slug: tag.slug,
-      description: tag.description || '',
+      description: '',
       articleCount: tag._count.articles,
-      color: tag.color || 'bg-blue-500',
+      color: 'bg-blue-500',
       createdAt: tag.createdAt.toISOString(),
       updatedAt: tag.updatedAt.toISOString()
     }));
@@ -122,9 +121,7 @@ export async function POST(request: NextRequest) {
     const tag = await prisma.tag.create({
       data: {
         name,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        description,
-        color: color || 'bg-blue-500'
+        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
       }
     });
 

@@ -1,7 +1,7 @@
-import { recentPosts, featuredPost, Post } from '../data/posts';
-import portfolioData from '../data/portfolio.json';
-import { skills } from '../data/skills';
-import caseStudiesData from '../data/case-studies.json';
+import { recentPosts, featuredPost, Post } from '../../apps/site/data/posts';
+import portfolioData from '../../apps/site/data/portfolio.json';
+import { skills } from '../../apps/site/data/skills';
+import caseStudiesData from '../../apps/site/data/case-studies.json';
 
 export interface AdminStats {
   totalViews: number;

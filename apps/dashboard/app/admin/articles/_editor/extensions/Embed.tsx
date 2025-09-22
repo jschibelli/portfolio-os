@@ -108,9 +108,9 @@ import { NodeViewWrapper } from '@tiptap/react'
 interface EmbedNodeViewProps {
   node: {
     attrs: {
-      provider: EmbedProvider
-      url: string
-      id: string
+      provider?: EmbedProvider
+      url?: string
+      id?: string
     }
   }
   updateAttributes: (attrs: any) => void
@@ -119,7 +119,7 @@ interface EmbedNodeViewProps {
 
 function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [url, setUrl] = useState(node.attrs.url)
+  const [url, setUrl] = useState(node.attrs.url || '')
 
   const handleUrlChange = (newUrl: string) => {
     setUrl(newUrl)
@@ -146,7 +146,8 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
   }
 
   const renderEmbed = () => {
-    switch (node.attrs.provider) {
+    const provider = node.attrs.provider || 'youtube'
+    switch (provider) {
       case 'youtube':
         return (
           <div className="relative w-full h-0 pb-[56.25%] my-6">
@@ -173,7 +174,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
       default:
         return (
           <div className="bg-stone-100 border border-stone-200 rounded-lg p-4 my-6">
-            <p className="text-stone-600">Unknown embed type: {node.attrs.provider}</p>
+            <p className="text-stone-600">Unknown embed type: {provider}</p>
           </div>
         )
     }
@@ -189,7 +190,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
                 Provider
               </label>
               <select
-                value={node.attrs.provider}
+                value={node.attrs.provider || 'youtube'}
                 onChange={(e) => handleProviderChange(e.target.value as EmbedProvider)}
                 className="w-full px-3 py-2 border border-stone-300 rounded-md text-sm"
               >
@@ -216,7 +217,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
                   }
                 }}
                 className="w-full px-3 py-2 border border-stone-300 rounded-md text-sm"
-                placeholder={`Enter ${node.attrs.provider} URL...`}
+                placeholder={`Enter ${node.attrs.provider || 'youtube'} URL...`}
                 // autoFocus
               />
             </div>
@@ -243,7 +244,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-stone-700">
-                  {node.attrs.provider === 'youtube' ? '📺' : '🐦'} {node.attrs.provider.toUpperCase()}
+                  {(node.attrs.provider || 'youtube') === 'youtube' ? '📺' : '🐦'} {(node.attrs.provider || 'youtube').toUpperCase()}
                 </span>
                 <span className="text-xs text-stone-500">
                   {node.attrs.id}
@@ -267,7 +268,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
             {node.attrs.id ? renderEmbed() : (
               <div className="bg-stone-100 border border-stone-200 rounded-lg p-4">
                 <p className="text-stone-600 text-sm">
-                  Invalid {node.attrs.provider} URL. Click Edit to fix.
+                  Invalid {node.attrs.provider || 'youtube'} URL. Click Edit to fix.
                 </p>
               </div>
             )}

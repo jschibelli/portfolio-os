@@ -1,11 +1,7 @@
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
-import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';
-import { PersonalLogo } from '../../shared/personal-logo';
 import { Button } from '../../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
-import { ThemeToggle } from '../../ui/theme-toggle';
-import { GlobalSearch } from '../search/global-search';
 
 interface ModernHeaderProps {
 	publication: {
@@ -26,7 +22,9 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<div className="flex-shrink-0">
-						<PersonalLogo size="small" />
+						<Link href="/" className="text-xl font-bold text-stone-900 dark:text-stone-100">
+							{siteTitle}
+						</Link>
 					</div>
 
 					{/* Desktop Navigation */}
@@ -63,14 +61,8 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 						</Link>
 					</nav>
 
-					{/* Global Search */}
-					<div className="hidden lg:block">
-						<GlobalSearch placeholder="Search..." />
-					</div>
-
 					{/* Actions */}
 					<div className="flex items-center space-x-4">
-						<ThemeToggle />
 						<Button
 							size="sm"
 							className="hidden sm:inline-flex"
@@ -97,16 +89,13 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 							<SheetContent side="right" className="w-[300px] sm:w-[400px]" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
 								<SheetHeader>
 									<SheetTitle className="text-left">
-										<PersonalLogo size="small" />
+										<Link href="/" className="text-xl font-bold text-stone-900 dark:text-stone-100">
+											{siteTitle}
+										</Link>
 									</SheetTitle>
 								</SheetHeader>
 
 								<div className="mt-8">
-									{/* Mobile Search */}
-									<div className="mb-6 px-4">
-										<GlobalSearch placeholder="Search..." />
-									</div>
-
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
@@ -139,72 +128,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 											Contact
 										</Link>
 									</nav>
-
-									<div className="mt-8 border-t border-border pt-6">
-										<h3 className="sr-only">Social media links</h3>
-										<div className="flex items-center justify-center gap-4" role="list" aria-label="Social media links">
-											{/* Facebook */}
-											<a
-												href="https://facebook.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Facebook, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<FacebookSVG className="h-5 w-5" />
-											</a>
-
-											{/* GitHub */}
-											<a
-												href="https://github.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Github, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<GithubSVG className="h-5 w-5 stroke-current" />
-											</a>
-
-											{/* LinkedIn */}
-											<a
-												href="https://linkedin.com"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Linkedin, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<LinkedinSVG className="h-5 w-5 stroke-current" />
-											</a>
-
-											{/* Bluesky */}
-											<a
-												href="https://bsky.app"
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Find us on Bluesky, external website, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<BlueskySVG className="h-5 w-5 stroke-current" />
-											</a>
-
-											{/* RSS Feed */}
-											<Link
-												prefetch={false}
-												href={`/rss.xml`}
-												target="_blank"
-												rel="noopener noreferrer"
-												aria-label="Open blog XML Feed, opens in new tab"
-												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-												role="listitem"
-											>
-												<RssSVG className="h-5 w-5 stroke-current" />
-											</Link>
-										</div>
-									</div>
 								</div>
 							</SheetContent>
 						</Sheet>

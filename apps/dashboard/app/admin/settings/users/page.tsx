@@ -413,7 +413,9 @@ export default function UsersPage() {
                 name: formData.get('name') as string,
                 email: formData.get('email') as string,
                 role: formData.get('role') as 'ADMIN' | 'EDITOR' | 'AUTHOR',
-                password: formData.get('password') as string
+                password: formData.get('password') as string,
+                status: 'active' as const,
+                permissions: [] as string[]
               };
               
               if (editingUser) {

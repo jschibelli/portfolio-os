@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const projectId = searchParams.get('projectId');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    const deployments = await listDeployments({ projectId, limit });
+    const deployments = await listDeployments({ projectId: projectId || undefined, limit });
 
     return NextResponse.json({ deployments });
   } catch (error: any) {

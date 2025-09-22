@@ -85,10 +85,9 @@ export default function ModernPostCard({
 						{/* Enhanced floating badge */}
 						{tags.length > 0 && (
 							<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
-								<Badge
-									variant="secondary"
-									className="bg-background/90 border-border/50 border shadow-lg backdrop-blur-sm"
-								>
+                                                          <Badge
+                                                                  className="bg-background/90 border-border/50 border shadow-lg backdrop-blur-sm"
+                                                          >
 									{tags[0]}
 								</Badge>
 							</div>
@@ -124,11 +123,10 @@ export default function ModernPostCard({
 						<div className="mt-4 flex items-center justify-between">
 							<div className="flex gap-2">
 								{tags.slice(1, 3).map((tag, index) => (
-									<Badge
-										key={index}
-										variant="outline"
-										className="text-xs"
-									>
+                                                                         <Badge
+                                                                                 key={index}
+                                                                                 className="text-xs"
+                                                                         >
 										{tag}
 									</Badge>
 								))}

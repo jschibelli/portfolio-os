@@ -241,7 +241,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
         return (
         <div
           key={block.id}
-          ref={(el) => (blockRefs.current[block.id] = el)}
+          ref={(el) => { blockRefs.current[block.id] = el }}
           className={`group relative p-2 rounded-lg transition-colors ${
             isFocused ? 'bg-gray-50' : 'hover:bg-gray-50'
           }`}

@@ -13,8 +13,7 @@ import {
   Reply, Forward, Eye, EyeOff, FolderOpen, Inbox, Send as SendIcon,
   AlertTriangle, FileText, ChevronDown
 } from 'lucide-react';
-// import { toast } from 'sonner';
-const toast = (message: string) => console.log('Toast:', message);
+import { toast } from 'sonner';
 
 interface Email {
   id: string;

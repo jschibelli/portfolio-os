@@ -8,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar, Clock, Send, ImageIcon, Link, Activity, Loader2, RefreshCw } from 'lucide-react';
-// import { toast } from 'sonner';
-const toast = (message: string) => console.log('Toast:', message);
+import { toast } from 'sonner';
 
 interface ScheduledPost {
   id: string;

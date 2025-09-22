@@ -2,7 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { PostFullFragment } from '../../../generated/graphql';
 import { DEFAULT_AVATAR } from '../../../utils/const';
 import { useAppContext } from '../../contexts/appContext';
-import CloseSVG from '../../icons/svgs/CloseSVG';
+import { CloseSVG } from '../../icons/svgs/CloseSVG';
 import { Button } from '../../shared/button';
 import { ResizableImage } from '../../shared/resizable-image';
 import CustomScrollArea from '../../shared/scroll-area';

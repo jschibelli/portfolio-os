@@ -9,14 +9,15 @@ import {
 } from '../../../generated/graphql';
 import { cn } from '../../../lib/utils';
 import { useAppContext } from '../../contexts/appContext';
-import { Button, type ButtonProps, Section } from '../../ui';
+import { Button } from '../../ui';
+import { Section } from '../../ui/section';
 
 const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
 interface CTAButtonProps {
 	href: string;
 	text: string;
-	variant?: ButtonProps['variant'];
+	variant?: 'default' | 'secondary' | 'outline';
 	icon?: ReactNode;
 	iconRight?: ReactNode;
 }
@@ -72,6 +73,11 @@ export default function CTA({
 		setError('');
 
 		try {
+			if (!GQL_ENDPOINT) {
+				setError('Newsletter service is not configured');
+				return;
+			}
+			
 			const data = await request<
 				SubscribeToNewsletterMutation,
 				SubscribeToNewsletterMutationVariables
@@ -125,7 +131,6 @@ export default function CTA({
 							<Button
 								onClick={subscribe}
 								disabled={requestInProgress || !email.trim()}
-								size="lg"
 								className="group w-full px-6 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg sm:w-fit sm:px-8 sm:py-3 sm:text-base"
 							>
 								{requestInProgress ? (
@@ -184,8 +189,6 @@ export default function CTA({
 						{buttons.map((button, index) => (
 							<Button
 								key={index}
-								variant={button.variant || 'default'}
-								size="lg"
 								className="w-full sm:w-auto"
 								asChild
 							>

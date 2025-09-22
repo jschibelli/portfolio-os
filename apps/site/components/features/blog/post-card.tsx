@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
+import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { Post } from '../../../data/posts';
 import { Card, CardContent, CardHeader } from '../../ui/card';
@@ -31,11 +31,11 @@ export default function PostCard({ post, index }: PostCardProps) {
 				<CardHeader className="pb-4">
 					<div className="mb-2 flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
 						<div className="flex items-center gap-1">
-							<CalendarIcon className="h-4 w-4" />
+                            <Calendar className="h-4 w-4" />
 							<span>{formatDate(post.date)}</span>
 						</div>
 						<div className="flex items-center gap-1">
-							<ClockIcon className="h-4 w-4" />
+                            <Clock className="h-4 w-4" />
 							<span>{post.readTime}</span>
 						</div>
 					</div>
@@ -56,7 +56,7 @@ export default function PostCard({ post, index }: PostCardProps) {
 						className="group/link inline-flex items-center gap-2 font-medium text-foreground transition-colors hover:text-foreground"
 					>
 						Read More
-						<ArrowRightIcon className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
 					</Link>
 				</CardContent>
 			</Card>

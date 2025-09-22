@@ -3,15 +3,40 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@/components/*": ["../../components/*"],
-      "@/lib/*": ["../../packages/lib/*"],
-      "@/ui/*": ["../../packages/ui/*"],
-      "@/db/*": ["../../packages/db/*"],
-      "@/hashnode/*": ["../../packages/hashnode/*"],
-      "@/emails/*": ["../../packages/emails/*"],
-      "@/chatbot/*": ["../../packages/chatbot/*"]
-    }
+      "@/*": [
+        "./app/*"
+      ],
+      "@/components/*": [
+        "../../components/*"
+      ],
+      "@/components/ui/*": [
+        "../../packages/ui/*"
+      ],
+      "@/lib/*": [
+        "../../packages/lib/*"
+      ],
+      "@/ui/*": [
+        "../../packages/ui/*"
+      ],
+      "@/db/*": [
+        "../../packages/db/*"
+      ],
+      "@/hashnode/*": [
+        "../../packages/hashnode/*"
+      ],
+      "@/emails/*": [
+        "../../packages/emails/*"
+      ],
+      "@/chatbot/*": [
+        "../../packages/chatbot/*"
+      ]
+    },
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",

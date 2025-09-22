@@ -55,9 +55,7 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 							<Button
 								onClick={handleScreenshot}
 								disabled={isLoading}
-								variant="secondary"
-								size="sm"
-								className="opacity-0 hover:opacity-100 transition-opacity duration-200"
+								className="opacity-0 hover:opacity-100 transition-opacity duration-200 bg-secondary text-secondary-foreground hover:bg-secondary/80"
 							>
 								<Camera className="h-4 w-4 mr-2" />
 								{isLoading ? 'Capturing...' : 'Take Screenshot'}
@@ -74,8 +72,7 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 						<CardHeader className="flex items-center justify-between">
 							<CardTitle>Screenshot Preview</CardTitle>
 							<Button
-								variant="ghost"
-								size="sm"
+								className="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
 								onClick={() => setIsModalOpen(false)}
 							>
 								<X className="h-4 w-4" />
@@ -89,7 +86,7 @@ export default function Screenshot({ url, alt, className = '' }: ScreenshotProps
 									className="w-full h-auto max-h-[70vh] object-contain"
 								/>
 								<div className="absolute bottom-4 right-4">
-									<Button onClick={handleDownload} size="sm">
+									<Button onClick={handleDownload} className="h-8 px-3 text-sm">
 										<Download className="h-4 w-4 mr-2" />
 										Download
 									</Button>

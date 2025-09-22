@@ -1,4 +1,5 @@
-import { resizeImage } from '@starter-kit/utils/image';
+// import { resizeImage } from '@starter-kit/utils/image';
+const resizeImage = (url: string, width: number, height: number) => url;
 import Link from 'next/link';
 import { User } from '../../../generated/graphql';
 import { DEFAULT_COVER } from '../../../utils/const';
@@ -25,7 +26,7 @@ export const PostPreview = ({ title, coverImage, date, excerpt, slug }: Props) =
 				<CoverImage
 					slug={slug}
 					title={title}
-					src={resizeImage(coverImage, { w: 400, h: 210, c: 'thumb' }, DEFAULT_COVER)}
+					src={resizeImage(coverImage || DEFAULT_COVER, 400, 210)}
 				/>
 			</div>
 			<div className="col-span-1 flex flex-col gap-2">

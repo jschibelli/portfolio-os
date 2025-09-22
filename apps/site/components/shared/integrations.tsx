@@ -6,15 +6,15 @@ import { useAppContext } from '../contexts/appContext';
 export function Integrations() {
 	const { publication } = useAppContext();
 	const {
-		gaTrackingID,
-		fbPixelID,
-		hotjarSiteID,
+		googleAnalyticsID: gaTrackingID,
+		facebookPageID: fbPixelID,
+		hotjarID: hotjarSiteID,
 		matomoURL,
 		matomoSiteID,
-		fathomSiteID,
+		fathomAnalyticsID: fathomSiteID,
 		fathomCustomDomain,
 		fathomCustomDomainEnabled,
-		plausibleAnalyticsEnabled,
+		plausibleAnalyticsDomain: plausibleAnalyticsEnabled,
 		gTagManagerID,
 		koalaPublicKey,
 		msClarityID,

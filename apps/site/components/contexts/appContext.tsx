@@ -12,7 +12,7 @@ type AppContext = {
 	publication: PublicationFragment;
 	post: PostFullFragment | null;
 	page: StaticPageFragment | null;
-	series: NonNullable<SeriesPostsByPublicationQuery['publication']>['series'];
+  series: NonNullable<SeriesPostsByPublicationQuery['publication']>['seriesList'] | null;
 };
 
 const AppContext = createContext<AppContext | null>(null);
@@ -28,7 +28,7 @@ const AppProvider = ({
 	publication: PublicationFragment;
 	post?: PostFullFragment | null;
 	page?: StaticPageFragment | null;
-	series?: NonNullable<SeriesPostsByPublicationQuery['publication']>['series'];
+  series?: NonNullable<SeriesPostsByPublicationQuery['publication']>['seriesList'];
 }) => {
 	return (
 		<AppContext.Provider

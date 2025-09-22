@@ -7,12 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../ui/dialo
 import { Badge } from '../../ui/badge';
 
 // Centralized error types for better maintainability
-enum BookingErrorType {
-  NETWORK = 'NETWORK',
-  SERVICE = 'SERVICE',
-  VALIDATION = 'VALIDATION',
-  UNKNOWN = 'UNKNOWN'
-}
+type BookingErrorType = 'NETWORK' | 'SERVICE' | 'VALIDATION' | 'UNKNOWN';
 
 interface BookingError {
   type: BookingErrorType;
@@ -22,11 +17,11 @@ interface BookingError {
 
 // Centralized error handling utility
 const createBookingError = (type: BookingErrorType, message: string): BookingError => {
-  const errorMessages = {
-    [BookingErrorType.NETWORK]: 'Connection Error: Please check your internet connection and try again.',
-    [BookingErrorType.SERVICE]: 'Service Error: Our booking service is temporarily unavailable. Please try again in a few minutes.',
-    [BookingErrorType.VALIDATION]: 'Validation Error: Invalid booking details. Please refresh the page and try again.',
-    [BookingErrorType.UNKNOWN]: 'An unexpected error occurred. Please try again or contact support.'
+  const errorMessages: Record<BookingErrorType, string> = {
+    NETWORK: 'Connection Error: Please check your internet connection and try again.',
+    SERVICE: 'Service Error: Our booking service is temporarily unavailable. Please try again in a few minutes.',
+    VALIDATION: 'Validation Error: Invalid booking details. Please refresh the page and try again.',
+    UNKNOWN: 'An unexpected error occurred. Please try again or contact support.'
   };
 
   return {
@@ -67,12 +62,12 @@ export function BookingConfirmationModal({
 				setTimeout(() => {
 					const random = Math.random();
 					// Simulate different types of API failures for realistic error handling
-					if (random < 0.05) { // 5% chance of network error
-						reject(createBookingError(BookingErrorType.NETWORK, 'Network connection failed'));
-					} else if (random < 0.08) { // 3% chance of server error
-						reject(createBookingError(BookingErrorType.SERVICE, 'Booking service temporarily unavailable'));
-					} else if (random < 0.1) { // 2% chance of validation error
-						reject(createBookingError(BookingErrorType.VALIDATION, 'Invalid booking details'));
+          if (random < 0.05) { // 5% chance of network error
+            reject(createBookingError('NETWORK', 'Network connection failed'));
+          } else if (random < 0.08) { // 3% chance of server error
+            reject(createBookingError('SERVICE', 'Booking service temporarily unavailable'));
+          } else if (random < 0.1) { // 2% chance of validation error
+            reject(createBookingError('VALIDATION', 'Invalid booking details'));
 					} else {
 						resolve(true);
 					}
@@ -87,7 +82,7 @@ export function BookingConfirmationModal({
 			if (err && typeof err === 'object' && 'type' in err && 'userMessage' in err) {
 				setError(err as BookingError);
 			} else {
-				setError(createBookingError(BookingErrorType.UNKNOWN, 'Unexpected error occurred'));
+                setError(createBookingError('UNKNOWN', 'Unexpected error occurred'));
 			}
 		}
 	};
@@ -169,11 +164,10 @@ export function BookingConfirmationModal({
 						>
 							{isLoading ? 'Confirming...' : error ? 'Retry Booking' : 'Confirm Booking'}
 						</Button>
-						<Button
-							variant="outline"
-							onClick={onClose}
-							disabled={isLoading}
-						>
+                                                <Button
+                                                        onClick={onClose}
+                                                        disabled={isLoading}
+                                                >
 							<X className="h-4 w-4" />
 						</Button>
 					</div>

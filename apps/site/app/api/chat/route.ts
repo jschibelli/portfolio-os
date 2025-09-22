@@ -280,14 +280,16 @@ export async function POST(request: NextRequest) {
     if (completionMessage?.tool_calls && completionMessage.tool_calls.length > 0) {
       for (const toolCall of completionMessage.tool_calls) {
         try {
-          const toolResult = await executeTool(
-            toolCall.function.name,
-            JSON.parse(toolCall.function.arguments)
-          );
-          
-          // If it's a UI action, add it to the response
-          if (toolResult.type === 'ui_action') {
-            uiActions.push(toolResult);
+          if (toolCall.type === 'function' && toolCall.function) {
+            const toolResult = await executeTool(
+              toolCall.function.name,
+              JSON.parse(toolCall.function.arguments)
+            );
+            
+            // If it's a UI action, add it to the response
+            if (toolResult && typeof toolResult === 'object' && 'type' in toolResult && toolResult.type === 'ui_action') {
+              uiActions.push(toolResult);
+            }
           }
         } catch (error) {
           console.error('🤖 Tool execution error:', error);

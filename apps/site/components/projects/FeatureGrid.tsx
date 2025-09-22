@@ -139,7 +139,7 @@ export default function FeatureGrid({
 											/>
 										</div>
 									)}
-									<CardTitle asChild>
+									<CardTitle>
 										<h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
 											{feature.title}
 										</h3>

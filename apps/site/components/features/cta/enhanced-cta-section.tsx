@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MailIcon, PhoneIcon, StarIcon } from 'lucide-react';
+import { Mail, Phone, Star } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
@@ -171,14 +171,14 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 		return <EnhancedCTASection audience="general" className={className} />;
 	}
 	
-	const renderStars = (rating: number) => {
-		return Array.from({ length: 5 }, (_, i) => (
-			<StarIcon 
-				key={i} 
-				className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-stone-300'}`} 
-			/>
-		));
-	};
+    const renderStars = (rating: number) => {
+        return Array.from({ length: 5 }, (_, i) => (
+            <Star 
+                key={i} 
+                className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-stone-300'}`} 
+            />
+        ));
+    };
 
 	return (
 		<section className={`relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 py-20 dark:from-stone-800 dark:via-stone-900 dark:to-stone-950 ${className}`}>
@@ -205,8 +205,7 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 							viewport={{ once: true }}
 							className="mb-6"
 						>
-							<Badge 
-								variant="secondary" 
+							<Badge
 								className={`px-4 py-2 text-sm font-medium ${
 									config.availabilityStatus === 'available' 
 										? sharedStyles.availability.available
@@ -241,7 +240,6 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 							className="flex flex-col justify-center gap-4 sm:flex-row"
 						>
 							<Button
-								size="lg"
 								className={sharedStyles.button.enhanced}
 								asChild
 							>
@@ -251,8 +249,6 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 								</Link>
 							</Button>
 							<Button
-								size="lg"
-								variant="outline"
 								className={sharedStyles.button.enhancedOutline}
 								asChild
 							>
@@ -346,14 +342,14 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 									href="mailto:john@johnschibelli.com"
 									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
 								>
-									<MailIcon className="h-4 w-4" />
+                                    <Mail className="h-4 w-4" />
 									john@johnschibelli.com
 								</a>
 								<a
 									href="tel:+1234567890"
 									className="flex items-center gap-2 text-stone-300 transition-colors hover:text-white"
 								>
-									<PhoneIcon className="h-4 w-4" />
+                                    <Phone className="h-4 w-4" />
 									(123) 456-7890
 								</a>
 							</div>

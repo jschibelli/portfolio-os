@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -40,18 +40,14 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
               url: true
             }
           },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              color: true
-            }
-          },
           tags: {
             select: {
-              id: true,
-              name: true,
-              color: true
+              tag: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             }
           }
         }
@@ -79,14 +75,14 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
       },
       views: article.views || 0,
       readTime: article.readingMinutes || 5,
-      tags: article.tags.map(tag => tag.name),
+      tags: article.tags.map(tag => tag.tag.name),
       featured: article.featured || false,
       slug: article.slug,
       excerpt: article.excerpt,
       image: article.cover?.url || undefined,
       contentMdx: article.contentMdx,
       contentJson: article.contentJson,
-      categories: article.categories,
+      categories: [],
       allowComments: article.allowComments,
       paywalled: article.paywalled,
       noindex: article.noindex,
@@ -218,18 +214,14 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
               url: true
             }
           },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              color: true
-            }
-          },
           tags: {
             select: {
-              id: true,
-              name: true,
-              color: true
+              tag: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             }
           }
         }

@@ -89,10 +89,8 @@ export function ContactForm({
 						<User className="h-5 w-5 text-blue-600" aria-hidden="true" />
 						<CardTitle id="contact-form-title">Contact Information</CardTitle>
 					</div>
-					<Button 
-						variant="ghost" 
-						size="icon" 
-						onClick={onClose} 
+					<Button
+						onClick={onClose}
 						className="h-8 w-8 p-0"
 						aria-label="Close contact form"
 					>
@@ -186,7 +184,7 @@ export function ContactForm({
 						)}
 
 						<div className="flex space-x-3 pt-4">
-							<Button variant="outline" onClick={onClose} className={`${SECONDARY_BUTTON_STYLES} flex-1 justify-center`}>
+							<Button onClick={onClose} className={`${SECONDARY_BUTTON_STYLES} flex-1 justify-center`}>
 								Cancel
 							</Button>
 							<Button type="submit" className={`${PRIMARY_BUTTON_STYLES} flex-1 justify-center`}>

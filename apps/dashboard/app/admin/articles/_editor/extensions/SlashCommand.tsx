@@ -66,29 +66,33 @@ const SlashCommandList = forwardRef<HTMLDivElement, SlashCommandListProps>(
 
     useEffect(() => setSelectedIndex(0), [items])
 
-    useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-        if (event.key === 'ArrowUp') {
-          upHandler()
-          return true
-        }
+    // Handle keyboard navigation
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'ArrowUp') {
+        upHandler()
+        return true
+      }
 
-        if (event.key === 'ArrowDown') {
-          downHandler()
-          return true
-        }
+      if (event.key === 'ArrowDown') {
+        downHandler()
+        return true
+      }
 
-        if (event.key === 'Enter') {
-          enterHandler()
-          return true
-        }
+      if (event.key === 'Enter') {
+        enterHandler()
+        return true
+      }
 
-        return false
-      },
-    }))
+      return false
+    }
 
     return (
-      <div className="bg-white border border-stone-200 rounded-lg shadow-lg p-2 max-h-80 overflow-y-auto">
+      <div 
+        ref={ref}
+        className="bg-white border border-stone-200 rounded-lg shadow-lg p-2 max-h-80 overflow-y-auto"
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+      >
         {items.length ? (
           items.map((item, index) => (
             <CommandItem

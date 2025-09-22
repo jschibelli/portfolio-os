@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -77,18 +77,14 @@ export async function GET(request: NextRequest) {
               url: true
             }
           },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              color: true
-            }
-          },
           tags: {
             select: {
-              id: true,
-              name: true,
-              color: true
+              tag: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             }
           }
         },
@@ -117,7 +113,7 @@ export async function GET(request: NextRequest) {
       },
       views: article.views || 0,
       readTime: article.readingMinutes || 5,
-      tags: article.tags.map(tag => tag.name),
+      tags: article.tags.map(tag => tag.tag.name),
       featured: article.featured || false,
       slug: article.slug,
       excerpt: article.excerpt,
@@ -218,12 +214,8 @@ export async function POST(request: NextRequest) {
         noindex,
         visibility,
         readingMinutes: readingMinutes || 5,
-        wordCount: wordCount || 0,
         authorId: (session.user as any)?.id,
         publishedAt: status === 'PUBLISHED' ? new Date() : null,
-        categories: categories ? {
-          connect: categories.map((id: string) => ({ id }))
-        } : undefined,
         tags: tags ? {
           connect: tags.map((id: string) => ({ id }))
         } : undefined
@@ -236,18 +228,14 @@ export async function POST(request: NextRequest) {
             role: true
           }
         },
-        categories: {
-          select: {
-            id: true,
-            name: true,
-            color: true
-          }
-        },
         tags: {
           select: {
-            id: true,
-            name: true,
-            color: true
+            tag: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         }
       }

@@ -58,7 +58,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { EditorToolbar } from './EditorToolbar'
+// import { EditorToolbar } from './EditorToolbar' // Not used - using BlockEditor instead
 import { AIAssistant } from './AIAssistant'
 import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'

@@ -1,4 +1,5 @@
-import { resizeImage } from '@starter-kit/utils/image';
+// import { resizeImage } from '@starter-kit/utils/image';
+const resizeImage = (url: string, width: number, height: number) => url;
 import Link from 'next/link';
 import { DEFAULT_COVER } from '../../../utils/const';
 import { CoverImage } from '../../shared/cover-image';
@@ -20,7 +21,7 @@ export const SecondaryPost = ({ title, coverImage, date, excerpt, slug }: Props)
 			<div className="col-span-1">
 				<CoverImage
 					title={title}
-					src={resizeImage(coverImage, { w: 1600, h: 840, c: 'thumb' }, DEFAULT_COVER)}
+					src={resizeImage(coverImage || DEFAULT_COVER, 1600, 840)}
 					slug={slug}
 				/>
 			</div>

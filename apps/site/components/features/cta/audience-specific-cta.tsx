@@ -133,7 +133,7 @@ const audienceData = {
 export default function AudienceSpecificCTA({ audience, className = '' }: AudienceSpecificCTAProps) {
 	// Validate audience and provide fallback
 	const validAudience = validateAudience(audience, 'clients');
-	const data = audienceData[validAudience];
+        const data = audienceData[validAudience as keyof typeof audienceData];
 	
 	// Error handling for invalid audience values
 	if (!data) {
@@ -167,18 +167,17 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 									</div>
 								</motion.div>
 
-								<Badge 
-									variant="secondary" 
-												className={`mb-4 px-4 py-2 text-sm font-medium ${
-													data.availabilityColor === 'green' 
-														? sharedStyles.availability.available
-														: sharedStyles.availability.busy
-												}`}
+								<Badge
+									className={`mb-4 px-4 py-2 text-sm font-medium ${
+										data.availabilityColor === 'green' 
+											? sharedStyles.availability.available
+											: sharedStyles.availability.busy
+									}`}
 								>
 									<div className="flex items-center gap-2">
-														<div className={`h-2 w-2 rounded-full ${
-															data.availabilityColor === 'green' ? sharedStyles.statusIndicator.available : sharedStyles.statusIndicator.busy
-														}`}></div>
+										<div className={`h-2 w-2 rounded-full ${
+											data.availabilityColor === 'green' ? sharedStyles.statusIndicator.available : sharedStyles.statusIndicator.busy
+										}`}></div>
 										{data.availability}
 									</div>
 								</Badge>
@@ -261,22 +260,19 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								viewport={{ once: true }}
 								className="flex flex-col justify-center gap-4 sm:flex-row"
 							>
-												<Button
-													size="lg"
-													className={sharedStyles.button.primary}
-													asChild
-												>
+								<Button
+									className={sharedStyles.button.primary}
+									asChild
+								>
 									<Link href={data.primaryCTA.url}>
 										{data.primaryCTA.icon}
 										{data.primaryCTA.text}
 									</Link>
 								</Button>
-												<Button
-													size="lg"
-													variant="outline"
-													className={sharedStyles.button.secondary}
-													asChild
-												>
+								<Button
+									className={sharedStyles.button.secondary}
+									asChild
+								>
 									<Link href={data.secondaryCTA.url}>
 										{data.secondaryCTA.icon}
 										{data.secondaryCTA.text}

@@ -20,7 +20,8 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
         include: {
           tag: true
         }
-      }
+      },
+      cover: true
     }
   })
 

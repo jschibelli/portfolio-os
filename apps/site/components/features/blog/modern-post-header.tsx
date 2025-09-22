@@ -1,4 +1,5 @@
-import { resizeImage } from '@starter-kit/utils/image';
+// import { resizeImage } from '@starter-kit/utils/image';
+const resizeImage = (url: string, width: number, height: number) => url;
 import { useState } from 'react';
 import { twJoin } from 'tailwind-merge';
 import { PostFullFragment, User } from '../../../generated/graphql';
@@ -60,14 +61,19 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 										: 'h-10 w-10 border-2 border-slate-100 md:h-11 md:w-11 dark:border-slate-800 [&:not(:first-of-type)]:-ml-3 md:[&:not(:first-of-type)]:-ml-6',
 								)}
 							>
-								<ProfileImage user={coAuthor} width="200" height="200" hoverDisabled={true} />
+                                                          <ProfileImage 
+                                                            user={coAuthor} 
+                                                            blogURL="/" 
+                                                            postUrlForAnonymous="/" 
+                                                            className="" 
+                                                            width="200" 
+                                                            height="200" 
+                                                          />
 							</div>
 						))}
 
 						{post.coAuthors && post.coAuthors.length > 0 && (
 							<Button
-								variant="ghost"
-								size="icon"
 								onClick={openCoAuthorModal}
 								style={{ zIndex: post.coAuthors?.length }}
 								className="relative -ml-3 h-10 w-10 rounded-full border-2 border-slate-100 bg-slate-100 group-hover:border-slate-200 md:hidden dark:border-slate-800 dark:bg-slate-600 dark:text-white group-hover:dark:border-slate-700"
@@ -87,7 +93,6 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 							)}
 							{post.coAuthors && post.coAuthors.length > 0 && (
 								<Button
-									variant="ghost"
 									onClick={openCoAuthorModal}
 									className="hover:text-primary h-auto p-0 text-left font-semibold text-slate-600 transition-colors dark:text-white"
 								>
@@ -124,7 +129,7 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 						<CardContent className="p-0">
 							<CoverImage
 								title={title}
-								src={resizeImage(coverImage, { w: 1600, h: 840, c: 'thumb' })}
+								src={resizeImage(coverImage, 1600, 840)}
 								priority={true}
 							/>
 						</CardContent>
@@ -136,7 +141,7 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 			{post.tags && post.tags.length > 0 && (
 				<div className="flex flex-wrap justify-center gap-2">
 					{post.tags.map((tag) => (
-						<Badge key={tag.id} variant="outline" className="text-sm">
+						<Badge key={tag.id} className="text-sm">
 							#{tag.slug}
 						</Badge>
 					))}

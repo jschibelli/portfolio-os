@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ExternalLinkIcon, MailIcon } from 'lucide-react';
+import { ExternalLink, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 
@@ -71,8 +71,6 @@ export default function CallToAction({
 					>
 						{showLiveDemo && (
 							<Button
-								size="lg"
-								variant="default"
 								className="group bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 hover:shadow-xl dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200"
 								asChild
 							>
@@ -80,7 +78,7 @@ export default function CallToAction({
 									href={liveDemoUrl}
 									aria-label={`${liveDemoText} - Opens project showcase page`}
 								>
-									<ExternalLinkIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    <ExternalLink className="mr-2 h-5 w-5" aria-hidden="true" />
 									{liveDemoText}
 								</Link>
 							</Button>
@@ -88,8 +86,6 @@ export default function CallToAction({
 
 						{showContact && (
 							<Button
-								size="lg"
-								variant="outline"
 								className="group border-2 border-stone-900 px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-900 hover:text-white hover:shadow-xl dark:border-stone-100 dark:text-stone-100 dark:hover:bg-stone-100 dark:hover:text-stone-900"
 								asChild
 							>
@@ -97,7 +93,7 @@ export default function CallToAction({
 									href={contactUrl}
 									aria-label={`${contactText} - Opens contact form page`}
 								>
-									<MailIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    <Mail className="mr-2 h-5 w-5" aria-hidden="true" />
 									{contactText}
 								</Link>
 							</Button>

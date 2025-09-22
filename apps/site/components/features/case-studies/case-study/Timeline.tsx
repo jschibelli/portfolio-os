@@ -53,7 +53,7 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
 						<div className="flex items-center gap-3">
 							{icon && <div className="text-muted-foreground">{icon}</div>}
 							<div>
-								<Badge variant="secondary" className="mb-1">
+								<Badge className="mb-1">
 									{phase}
 								</Badge>
 								<h3 className="text-lg font-semibold">{title}</h3>

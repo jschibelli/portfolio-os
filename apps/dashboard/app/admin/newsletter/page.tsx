@@ -379,8 +379,8 @@ export default function NewsletterPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getEngagementColor(subscriber.engagement)}`}>
-                      {subscriber.engagement}
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getEngagementColor(subscriber.engagement || 'low')}`}>
+                      {subscriber.engagement || 'low'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
@@ -484,7 +484,7 @@ export default function NewsletterPage() {
                   <span>Recipients:</span>
                   <span className="font-medium">{campaign.recipientCount}</span>
                 </div>
-                {campaign.status === 'sent' && (
+                {campaign.status === 'SENT' && (
                   <>
                     <div className="flex justify-between">
                       <span>Open Rate:</span>
@@ -496,7 +496,7 @@ export default function NewsletterPage() {
                     </div>
                   </>
                 )}
-                {campaign.status === 'scheduled' && campaign.scheduledAt && (
+                {campaign.status === 'SCHEDULED' && campaign.scheduledAt && (
                   <div className="flex justify-between">
                     <span>Scheduled:</span>
                     <span className="font-medium">{campaign.scheduledAt}</span>

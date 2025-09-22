@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
-import { importArticlesWithoutDisconnect } from "../../../../../scripts/import-hashnode-articles";
+import { importHashnodeArticles } from "@/scripts/import-hashnode-articles";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     try {
       console.log("Import API: Starting Hashnode import...");
       // Run the import
-      await importArticlesWithoutDisconnect();
+      await importHashnodeArticles();
 
       // Get the count of imported articles
       const articleCount = await prisma.article.count();
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     } catch (importError) {
       console.error("Import error:", importError);
       return NextResponse.json(
-        { error: `Import failed: ${importError.message}` },
+        { error: `Import failed: ${importError instanceof Error ? importError.message : 'Unknown error'}` },
         { status: 500 }
       );
     }

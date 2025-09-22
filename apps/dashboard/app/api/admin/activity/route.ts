@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -81,40 +81,31 @@ export async function GET(request: NextRequest) {
     }
 
     const [activities, total] = await Promise.all([
-      prisma.activityLog.findMany({
+      prisma.activity.findMany({
         where,
-        include: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-              role: true
-            }
-          }
-        },
         orderBy: [
           { createdAt: 'desc' }
         ],
         skip,
         take: limit
       }),
-      prisma.activityLog.count({ where })
+      prisma.activity.count({ where })
     ]);
 
     // Transform the data to match the expected format
     const transformedActivities = activities.map(activity => ({
       id: activity.id,
-      action: activity.action,
-      description: activity.description,
-      user: activity.user?.name || 'System',
-      userRole: activity.user?.role || 'SYSTEM',
+      action: activity.kind,
+      description: `Activity: ${activity.kind}`,
+      user: 'System',
+      userRole: 'SYSTEM',
       timestamp: activity.createdAt.toISOString(),
-      category: activity.category,
-      severity: activity.severity,
-      ipAddress: activity.ipAddress || '',
-      userAgent: activity.userAgent || '',
-      affectedResource: activity.affectedResource || '',
-      changes: activity.changes || []
+      category: activity.channel || 'general',
+      severity: 'info',
+      ipAddress: '',
+      userAgent: '',
+      affectedResource: activity.externalId || '',
+      changes: []
     }));
 
     return NextResponse.json({
@@ -158,17 +149,19 @@ export async function POST(request: NextRequest) {
     const { action, description, category, severity, affectedResource, changes, ipAddress, userAgent } = body;
 
     // Create the activity log
-    const activity = await prisma.activityLog.create({
+    const activity = await prisma.activity.create({
       data: {
-        action,
-        description,
-        category,
-        severity,
-        affectedResource,
-        changes,
-        ipAddress,
-        userAgent,
-        userId: (session.user as any)?.id
+        kind: action || 'ACTIVITY',
+        channel: category || null,
+        externalId: affectedResource || null,
+        meta: {
+          description,
+          severity,
+          changes,
+          ipAddress,
+          userAgent,
+          userId: (session.user as any)?.id
+        }
       }
     });
 

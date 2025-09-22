@@ -92,14 +92,13 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
     <header className="space-y-6">
       {/* Status Badge */}
       <div className="flex items-center gap-3">
-        <Badge 
-          variant={project.status === 'completed' ? 'default' : 'secondary'}
+        <Badge
           className="text-sm font-medium"
         >
           {project.status.replace('-', ' ').toUpperCase()}
         </Badge>
         {project.featured && (
-          <Badge variant="outline" className="text-sm font-medium border-amber-200 text-amber-800 dark:border-amber-800 dark:text-amber-200">
+          <Badge className="text-sm font-medium border-amber-200 text-amber-800 dark:border-amber-800 dark:text-amber-200">
             Featured
           </Badge>
         )}

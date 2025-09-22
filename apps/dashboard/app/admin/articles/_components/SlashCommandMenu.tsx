@@ -61,18 +61,18 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
   ]
 
   const aiCommands = [
-    { icon: FileText, label: 'Generate article outline', description: 'Create a general article outline with Hashnode AI', command: 'aiOutline' },
-    { icon: List, label: 'Summarize article', description: 'Summarize this article with Hashnode AI', command: 'aiSummarize' },
-    { icon: Code, label: 'Generate Code', description: 'Generate a code block with Hashnode AI', command: 'aiCode' },
+    { icon: FileText, label: 'Generate article outline', description: 'Create a general article outline with Hashnode AI', command: 'aiOutline', blockType: 'text' },
+    { icon: List, label: 'Summarize article', description: 'Summarize this article with Hashnode AI', command: 'aiSummarize', blockType: 'text' },
+    { icon: Code, label: 'Generate Code', description: 'Generate a code block with Hashnode AI', command: 'aiCode', blockType: 'code' },
   ]
 
   const embedCommands = [
-    { icon: Youtube, label: 'Embed a link', description: 'Embed a media of iFrame link', command: 'embedLink' },
-    { icon: Youtube, label: 'YouTube', description: 'Embed YouTube video', command: 'youtube' },
-    { icon: Twitter, label: 'Twitter / X', description: 'Embed post', command: 'twitter' },
-    { icon: Github, label: 'GitHub Gist', description: 'Embed GitHub gist', command: 'githubGist' },
-    { icon: Code, label: 'CodePen', description: 'Embed CodePen', command: 'codepen' },
-    { icon: Code, label: 'CodeSandbox', description: 'Embed CodeSandbox', command: 'codesandbox' },
+    { icon: Youtube, label: 'Embed a link', description: 'Embed a media of iFrame link', command: 'embedLink', blockType: 'text' },
+    { icon: Youtube, label: 'YouTube', description: 'Embed YouTube video', command: 'youtube', blockType: 'text' },
+    { icon: Twitter, label: 'Twitter / X', description: 'Embed post', command: 'twitter', blockType: 'text' },
+    { icon: Github, label: 'GitHub Gist', description: 'Embed GitHub gist', command: 'githubGist', blockType: 'text' },
+    { icon: Code, label: 'CodePen', description: 'Embed CodePen', command: 'codepen', blockType: 'text' },
+    { icon: Code, label: 'CodeSandbox', description: 'Embed CodeSandbox', command: 'codesandbox', blockType: 'text' },
   ]
 
   const getCommands = () => {

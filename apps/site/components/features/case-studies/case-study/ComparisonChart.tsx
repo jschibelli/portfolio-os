@@ -39,7 +39,7 @@ const ComparisonBar: React.FC<{
 						{typeof value === 'number' ? value.toLocaleString() : value}
 					</span>
 					{isBetter && (
-						<Badge variant="secondary" className="text-xs">
+                                          <Badge className="text-xs">
 							Better
 						</Badge>
 					)}
@@ -117,12 +117,12 @@ export const ComparisonChart: React.FC<ComparisonChartProps> = ({
 								<div className="flex items-center justify-between">
 									<h3 className="text-lg font-semibold">{item.category}</h3>
 									{item.unit && (
-										<Badge variant="outline" className="text-xs">
+										<Badge className="text-xs">
 											{item.unit}
 										</Badge>
 									)}
 									{item.direction && (
-										<Badge variant="secondary" className="ml-2 text-xs">
+										<Badge className="ml-2 text-xs">
 											{item.direction === 'lower' ? 'Lower is better' : 'Higher is better'}
 										</Badge>
 									)}
@@ -217,9 +217,9 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
 												<Badge className="bg-green-100 text-green-800">Tendril</Badge>
 											)}
 											{item.better === 'competitor' && (
-												<Badge variant="destructive">Competitor</Badge>
+												<Badge>Competitor</Badge>
 											)}
-											{item.better === 'equal' && <Badge variant="secondary">Equal</Badge>}
+											{item.better === 'equal' && <Badge>Equal</Badge>}
 										</td>
 									</tr>
 								))}

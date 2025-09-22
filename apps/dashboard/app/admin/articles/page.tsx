@@ -5,10 +5,12 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Search, Filter, MoreVertical, Eye, Edit, Trash2, Calendar, User, BarChart3, Download } from "lucide-react";
-import { adminDataService, AdminArticle } from "../../../lib/admin-data-service";
+import { adminDataService, AdminArticle } from "@/lib/admin-data-service";
 
 export default function AdminArticles() {
-  const { data: session, status } = useSession();
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
+  const status = sessionResult?.status;
   const router = useRouter();
   const [articles, setArticles] = useState<AdminArticle[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<AdminArticle[]>([]);

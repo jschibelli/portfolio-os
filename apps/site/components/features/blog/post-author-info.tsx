@@ -1,6 +1,8 @@
 import { twJoin } from 'tailwind-merge';
 
-import { getBlurHash, resizeImage } from '@starter-kit/utils/image';
+// import { getBlurHash, resizeImage } from '@starter-kit/utils/image';
+const getBlurHash = () => '';
+const resizeImage = (url: string, width: number, height: number) => url;
 import CustomImage from '../../shared/custom-image';
 
 function PostAuthorInfo(props: any) {
@@ -18,18 +20,8 @@ function PostAuthorInfo(props: any) {
 							className="block"
 							placeholder="blur"
 							originalSrc={author.profilePicture}
-							src={resizeImage(author.profilePicture, {
-								w: 256,
-								h: 256,
-								c: 'thumb',
-							})}
-							blurDataURL={getBlurHash(
-								resizeImage(author.profilePicture, {
-									w: 256,
-									h: 256,
-									c: 'thumb',
-								}),
-							)}
+							src={resizeImage(author.profilePicture, 256, 256)}
+							blurDataURL={getBlurHash()}
 							width={256}
 							height={256}
 							alt={author.name}

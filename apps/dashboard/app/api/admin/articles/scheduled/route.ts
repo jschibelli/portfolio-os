@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -113,18 +113,14 @@ export async function GET(request: NextRequest) {
               role: true
             }
           },
-          categories: {
-            select: {
-              id: true,
-              name: true,
-              color: true
-            }
-          },
           tags: {
             select: {
-              id: true,
-              name: true,
-              color: true
+              tag: {
+                select: {
+                  id: true,
+                  name: true
+                }
+              }
             }
           }
         },
@@ -147,10 +143,9 @@ export async function GET(request: NextRequest) {
       author: article.author?.name || 'Unknown',
       authorEmail: article.author?.email || '',
       authorRole: article.author?.role || 'AUTHOR',
-      categories: article.categories,
-      tags: article.tags,
-      estimatedReadTime: article.estimatedReadTime || 5,
-      wordCount: article.wordCount || 0,
+      categories: [],
+      tags: article.tags.map(tag => tag.tag.name),
+      estimatedReadTime: article.readingMinutes || 5,
       lastModified: article.updatedAt.toISOString(),
       slug: article.slug
     }));
@@ -210,19 +205,11 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         excerpt,
-        content,
         scheduledAt: new Date(scheduledAt),
         status: 'DRAFT',
-        estimatedReadTime,
-        wordCount,
+        readingMinutes: estimatedReadTime,
         slug,
-        authorId: (session.user as any)?.id,
-        categories: categories ? {
-          connect: categories.map((id: string) => ({ id }))
-        } : undefined,
-        tags: tags ? {
-          connect: tags.map((id: string) => ({ id }))
-        } : undefined
+        authorId: (session.user as any)?.id
       },
       include: {
         author: {
@@ -232,18 +219,14 @@ export async function POST(request: NextRequest) {
             role: true
           }
         },
-        categories: {
-          select: {
-            id: true,
-            name: true,
-            color: true
-          }
-        },
         tags: {
           select: {
-            id: true,
-            name: true,
-            color: true
+            tag: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         }
       }

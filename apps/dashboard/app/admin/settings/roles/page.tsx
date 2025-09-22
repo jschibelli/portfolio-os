@@ -127,7 +127,7 @@ export default function RolesPage() {
       return;
     }
     
-    if (role?.userCount > 0) {
+    if (role?.userCount && role.userCount > 0) {
       alert("Cannot delete role with assigned users. Please reassign users first.");
       return;
     }

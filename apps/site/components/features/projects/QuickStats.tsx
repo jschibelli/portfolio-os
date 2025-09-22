@@ -52,12 +52,12 @@ export default function QuickStats({
       {items.map((item, index) => (
         <li key={`${item.type}-${item.label}-${index}`} className="list-none">
           <Badge
-            variant={item.variant || getDefaultVariant(item.type)}
             className={cn(
               "transition-all duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               "hover:scale-105 hover:shadow-md",
               "cursor-default",
+              getBadgeClassName(item.variant || getDefaultVariant(item.type)),
               item.className
             )}
             tabIndex={0}
@@ -90,6 +90,24 @@ function getDefaultVariant(type: ProjectMeta['type']): ProjectMeta['variant'] {
       return 'secondary';
     default:
       return 'default';
+  }
+}
+
+/**
+ * Get badge className based on variant
+ */
+function getBadgeClassName(variant: ProjectMeta['variant']): string {
+  switch (variant) {
+    case 'default':
+      return 'bg-primary text-primary-foreground';
+    case 'secondary':
+      return 'bg-secondary text-secondary-foreground';
+    case 'outline':
+      return 'border border-gray-300 bg-white text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300';
+    case 'destructive':
+      return 'bg-destructive text-destructive-foreground';
+    default:
+      return 'bg-primary text-primary-foreground';
   }
 }
 

@@ -4,10 +4,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { RecentActivity } from "../../components/admin/RecentActivity";
-import { QuickActions } from "../../components/admin/QuickActions";
-import { PerformanceChart } from "../../components/admin/PerformanceChart";
-import { adminDataService } from "../../lib/admin-data-service";
+import { RecentActivity } from "@/components/admin/RecentActivity";
+import { QuickActions } from "@/components/admin/QuickActions";
+import { PerformanceChart } from "@/components/admin/PerformanceChart";
+import { adminDataService } from "@/lib/admin-data-service";
 import { 
   TrendingDown, 
   Users, 
@@ -42,7 +42,9 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
+  const status = sessionResult?.status;
   const router = useRouter();
   const [contentStats, setContentStats] = useState({
     publishedArticles: 0,

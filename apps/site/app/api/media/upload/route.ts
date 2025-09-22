@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // import { put } from '@vercel/blob';
 const put = async (name: string, body: any, options?: any) => ({ url: 'mock-url' });
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth-config';
 
 export async function POST(request: NextRequest) {
   try {

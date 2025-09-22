@@ -93,7 +93,7 @@ import { NodeViewWrapper } from '@tiptap/react'
 interface CalloutNodeViewProps {
   node: {
     attrs: {
-      variant: CalloutVariant
+      variant?: CalloutVariant
       title?: string
     }
   }
@@ -128,7 +128,7 @@ function CalloutNodeView({ node, updateAttributes, deleteNode }: CalloutNodeView
     }
   }
 
-  const config = variants[node.attrs.variant]
+  const config = variants[node.attrs.variant || 'info']
 
   const handleTitleSave = () => {
     updateAttributes({ title })

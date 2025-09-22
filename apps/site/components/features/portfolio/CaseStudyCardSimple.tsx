@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { Badge, Button, Card, CardContent, CardHeader } from '@/components/ui';
+import { Badge } from '../../ui/badge';
+import { Button } from '../../ui';
+import { Card, CardContent, CardHeader } from '../../ui/card';
 import Link from 'next/link';
-import { PortfolioItem } from '../../types/portfolio';
+import { PortfolioItem } from '../../../lib/types/portfolio';
 
 interface CaseStudyCardProps {
 	item: PortfolioItem;
@@ -52,7 +54,7 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 						<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 						{item.tags && item.tags.length > 0 && (
 							<div className="absolute left-4 top-4 transition-all duration-300 group-hover:scale-110">
-								<Badge variant="secondary" className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm">
+								<Badge className="bg-background/90 border border-border/50 shadow-lg backdrop-blur-sm bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
 									{item.tags[0]}
 								</Badge>
 							</div>
@@ -81,7 +83,7 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 						{/* Tags */}
 						<div className="flex flex-wrap gap-2">
 							{item.tags?.slice(1, 3).map((tag, tagIndex) => (
-								<Badge key={tag} variant="outline" className="text-xs">
+								<Badge key={tag} className="text-xs border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
 									{tag}
 								</Badge>
 							))}
@@ -93,9 +95,7 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 							{item.liveUrl && (
 								<Button
 									asChild
-									size="sm"
-									variant="outline"
-									className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs"
+									className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
 								>
 									<Link
 										href={item.liveUrl}
@@ -119,8 +119,7 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 							{/* Case Study Button - Always show */}
 							<Button
 								asChild
-								size="sm"
-								className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs"
+								className="group/btn flex-1 transition-all duration-300 hover:scale-105 hover:shadow-md lg:min-h-[44px] 2xl:min-h-[48px] 2xl:text-xs border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
 							>
 								<Link
 									href={item.caseStudyUrl || `/case-studies/${item.slug}`}

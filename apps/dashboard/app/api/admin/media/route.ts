@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -47,12 +47,13 @@ export async function GET(request: NextRequest) {
     }
 
     const [mediaItems, total] = await Promise.all([
-      prisma.media.findMany({
+      prisma.imageAsset.findMany({
         where,
         include: {
-          uploadedBy: {
+          usedBy: {
             select: {
-              name: true
+              title: true,
+              slug: true
             }
           }
         },
@@ -62,21 +63,21 @@ export async function GET(request: NextRequest) {
         skip,
         take: limit
       }),
-      prisma.media.count({ where })
+      prisma.imageAsset.count({ where })
     ]);
 
     // Transform the data to match the expected format
     const transformedMedia = mediaItems.map(item => ({
       id: item.id,
-      name: item.name,
-      type: item.type,
+      name: item.url.split('/').pop() || 'Unknown',
+      type: 'image',
       url: item.url,
-      thumbnail: item.thumbnail || item.url,
-      size: item.size,
+      thumbnail: item.url,
+      size: 0,
       uploadedAt: item.createdAt.toISOString(),
-      uploadedBy: item.uploadedBy?.name || 'Unknown User',
+      uploadedBy: 'System',
       dimensions: item.width && item.height ? { width: item.width, height: item.height } : undefined,
-      tags: item.tags || [],
+      tags: [],
       alt: item.alt || ''
     }));
 
@@ -121,18 +122,12 @@ export async function POST(request: NextRequest) {
     const { name, type, url, thumbnail, size, width, height, tags, alt } = body;
 
     // Create the media item
-    const media = await prisma.media.create({
+    const media = await prisma.imageAsset.create({
       data: {
-        name,
-        type,
         url,
-        thumbnail,
-        size,
         width,
         height,
-        tags,
-        alt,
-        uploadedById: (session.user as any)?.id
+        alt
       }
     });
 

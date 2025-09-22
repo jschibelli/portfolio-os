@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui';
+import { Button } from '../../ui';
 import { useEffect, useState } from 'react';
-import { PageInfo } from '../generated/graphql';
+import { PageInfo } from '../../../generated/graphql';
 
 interface ModernPaginationProps {
 	pageInfo: PageInfo;
@@ -54,9 +54,7 @@ export default function ModernPagination({
 			<Button
 				onClick={onLoadMore}
 				disabled={isLoading}
-				variant="outline"
-				size="lg"
-				className="animate-fade-in-up group relative overflow-hidden px-8 py-3 font-semibold transition-all duration-500 hover:scale-105 hover:shadow-xl"
+				className="animate-fade-in-up group relative overflow-hidden px-8 py-3 font-semibold transition-all duration-500 hover:scale-105 hover:shadow-xl border border-gray-300 bg-white hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700"
 			>
 				<div className="from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 				{isLoading ? (

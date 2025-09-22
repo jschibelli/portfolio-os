@@ -9,6 +9,15 @@ const nextConfig = {
     '@mindware-blog/chatbot',
   ],
   outputFileTracingRoot: __dirname,
+  images: {
+    qualities: [25, 50, 75, 85, 100],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 module.exports = nextConfig

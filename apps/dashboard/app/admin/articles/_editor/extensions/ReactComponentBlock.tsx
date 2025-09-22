@@ -106,8 +106,8 @@ import { COMPONENT_REGISTRY, ComponentName, getComponentNames, getComponentProps
 interface ReactComponentNodeViewProps {
   node: {
     attrs: {
-      name: string
-      props: ComponentProps
+      name?: string
+      props?: ComponentProps
     }
   }
   updateAttributes: (attrs: any) => void
@@ -116,8 +116,8 @@ interface ReactComponentNodeViewProps {
 
 function ReactComponentNodeView({ node, updateAttributes, deleteNode }: ReactComponentNodeViewProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [componentName, setComponentName] = useState(node.attrs.name)
-  const [props, setProps] = useState<ComponentProps>(node.attrs.props)
+  const [componentName, setComponentName] = useState(node.attrs.name || 'InfoCard')
+  const [props, setProps] = useState<ComponentProps>(node.attrs.props || {})
 
   const handleSave = () => {
     updateAttributes({ name: componentName, props })
@@ -141,7 +141,13 @@ function ReactComponentNodeView({ node, updateAttributes, deleteNode }: ReactCom
 
     try {
       const Component = COMPONENT_REGISTRY[componentName as ComponentName]
-      return <Component {...props} />
+      const defaultProps = {
+        title: 'Untitled',
+        label: 'Label',
+        value: 'Value',
+        ...props
+      }
+      return <Component {...defaultProps} />
     } catch (error) {
       return (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -223,7 +229,7 @@ function ReactComponentNodeView({ node, updateAttributes, deleteNode }: ReactCom
                 <span className="text-sm font-medium text-stone-700">
                   ⚛️ {node.attrs.name}
                 </span>
-                {Object.keys(node.attrs.props).length > 0 && (
+                {node.attrs.props && Object.keys(node.attrs.props).length > 0 && (
                   <span className="text-xs text-stone-500">
                     {Object.entries(node.attrs.props).map(([key, value]) => `${key}: ${value}`).join(', ')}
                   </span>

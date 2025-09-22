@@ -1,4 +1,5 @@
-import { resizeImage } from '@starter-kit/utils/image';
+// import { resizeImage } from '@starter-kit/utils/image';
+const resizeImage = (url: string, width: number, height: number) => url;
 import Image from 'next/image';
 import { DEFAULT_AVATAR } from '../../utils/const';
 
@@ -24,7 +25,7 @@ export const Avatar = ({ username, name, picture, size }: Props) => {
 			>
 				<Image
 					className="block h-full w-full"
-					src={resizeImage(picture, { w: 160, h: 160, c: 'face' }, DEFAULT_AVATAR)}
+					src={resizeImage(picture || DEFAULT_AVATAR, 160, 160)}
 					alt={name}
 					width={160}
 					height={160}

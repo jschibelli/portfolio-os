@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function HashnodeSVG({ className }) {
+export const HashnodeSVG = ({ className }) => {
 	return (
 		<svg className={className} fill="none" viewBox="0 0 24 24">
 			<path

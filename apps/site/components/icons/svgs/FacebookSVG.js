@@ -1,4 +1,4 @@
-const FacebookSVG = ({ className = '', ...props }) => {
+export const FacebookSVG = ({ className = '', ...props }) => {
 	return (
 		<svg
 			className={className}
@@ -11,5 +11,3 @@ const FacebookSVG = ({ className = '', ...props }) => {
 		</svg>
 	);
 };
-
-export default FacebookSVG;
