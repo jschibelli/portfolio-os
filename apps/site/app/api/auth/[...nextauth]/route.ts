@@ -36,6 +36,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
+        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
       },
     },
     callbackUrl: {
@@ -48,6 +49,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
+        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
       },
     },
     csrfToken: {
@@ -60,6 +62,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
+        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
       },
     },
   },
