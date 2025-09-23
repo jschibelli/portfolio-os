@@ -5,7 +5,230 @@
    ▲ Next.js 15.5.2
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 25.4s
+ ⚠ Compiled with warnings in 13.0s
+
+./app/api/admin/activity/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/activity/route.ts
+
+./app/api/admin/activity/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/activity/route.ts
+
+./app/api/admin/analytics/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/analytics/route.ts
+
+./app/api/admin/articles/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/[id]/route.ts
+
+./app/api/admin/articles/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/[id]/route.ts
+
+./app/api/admin/articles/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/[id]/route.ts
+
+./app/api/admin/articles/import-hashnode/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/import-hashnode/route.ts
+
+./app/api/admin/articles/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/route.ts
+
+./app/api/admin/articles/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/route.ts
+
+./app/api/admin/articles/scheduled/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/scheduled/route.ts
+
+./app/api/admin/articles/scheduled/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/articles/scheduled/route.ts
+
+./app/api/admin/case-studies/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/case-studies/[id]/route.ts
+
+./app/api/admin/case-studies/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/case-studies/route.ts
+
+./app/api/admin/media/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/media/route.ts
+
+./app/api/admin/media/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/media/route.ts
+
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/campaigns/[id]/route.ts
+
+./app/api/admin/newsletter/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/route.ts
+
+./app/api/admin/newsletter/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/route.ts
+
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/newsletter/subscribers/[id]/route.ts
+
+./app/api/admin/settings/database/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/settings/database/route.ts
+
+./app/api/admin/settings/database/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/settings/database/route.ts
+
+./app/api/admin/settings/database/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/settings/database/route.ts
+
+./app/api/admin/stats/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/stats/route.ts
+
+./app/api/admin/tags/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/tags/[id]/route.ts
+
+./app/api/admin/tags/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/tags/[id]/route.ts
+
+./app/api/admin/tags/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/tags/route.ts
+
+./app/api/admin/tags/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/tags/route.ts
+
+./app/api/admin/users/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/users/[id]/route.ts
+
+./app/api/admin/users/[id]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/users/[id]/route.ts
+
+./app/api/admin/users/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/users/route.ts
+
+./app/api/admin/users/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/admin/users/route.ts
+
+./app/api/auth/[...nextauth]/route.ts
+Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
+
+Import trace for requested module:
+./app/api/auth/[...nextauth]/route.ts
+
+
+[1m[33mwarn[39m[22m - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
+[1m[33mwarn[39m[22m - Pattern: `..\..\packages\ui\**\*.ts`
+[1m[33mwarn[39m[22m - See our documentation for recommendations:
+[1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
+ ✓ Compiled successfully in 60s
    Skipping validation of types
    Skipping linting
    Collecting page data ...

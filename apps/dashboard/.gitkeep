@@ -1,1 +1,22 @@
-# Placeholder for dashboard app
+# Dashboard App Placeholder
+# 
+# This file ensures the apps/dashboard directory is tracked by Git.
+# The dashboard app will contain:
+# - Admin interface for content management
+# - User authentication and authorization
+# - Article creation, editing, and publishing workflows
+# - Analytics and reporting features
+# - Integration with the main site's content API
+#
+# Dependencies:
+# - Next.js 14+ with App Router
+# - Prisma for database operations
+# - Authentication via NextAuth.js or similar
+# - Tailwind CSS for styling
+# - TypeScript for type safety
+#
+# Security considerations:
+# - Role-based access control (RBAC)
+# - Input validation and sanitization
+# - CSRF protection
+# - Rate limiting for API endpoints

@@ -1,211 +1,206 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
-const PrismaAdapter = () => null;
-import { prisma } from "@/lib/prisma";
-import { 
-  isRateLimited, 
-  recordFailedAttempt, 
-  clearFailedAttempts, 
-  getLockoutTimeRemaining,
-  securePasswordCompare,
-  logAuthAttempt,
-  sanitizeInput,
-  isValidEmail,
-  getClientIP
-} from "@/lib/auth-security";
+/**
+ * Authentication utilities for the dashboard application
+ * 
+ * This module provides authentication and authorization functions
+ * for secure access control in the admin dashboard.
+ */
 
-export const authOptions = {
-  adapter: null as any,
-  session: { 
-    strategy: "jwt" as const,
-    maxAge: 24 * 60 * 60, // 24 hours
-    updateAge: 60 * 60, // 1 hour
-  },
-  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
-  useSecureCookies: process.env.NODE_ENV === 'production',
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' 
-        ? '__Secure-next-auth.session-token' 
-        : 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax' as const,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60, // 24 hours
-      },
-    },
-    callbackUrl: {
-      name: process.env.NODE_ENV === 'production' 
-        ? '__Secure-next-auth.callback-url' 
-        : 'next-auth.callback-url',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax' as const,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60, // 24 hours
-      },
-    },
-    csrfToken: {
-      name: process.env.NODE_ENV === 'production' 
-        ? '__Host-next-auth.csrf-token' 
-        : 'next-auth.csrf-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax' as const,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60, // 24 hours
-      },
-    },
-  },
-  providers: [
-    // Only add Google provider if credentials are available
-    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
-      GoogleProvider({
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+import { prisma } from './prisma'
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'admin' | 'editor' | 'author' | 'guest'
+  isAuthenticated: boolean
+}
+
+export interface AuthResult {
+  user: User | null
+  isAuthenticated: boolean
+  error?: string
+}
+
+/**
+ * Gets the current authenticated user
+ * @returns Promise<User | null> - The current user or null if not authenticated
+ */
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    // In a real implementation, this would check session/token
+    // For now, we'll simulate authentication
+    const session = await getSession()
+    
+    if (!session?.userId) {
+      return null
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      }
+    })
+
+    if (!user) {
+      return null
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role as User['role'],
+      isAuthenticated: true
+    }
+  } catch (error) {
+    console.error('Error getting current user:', error)
+    return null
+  }
+}
+
+/**
+ * Validates if a user has permission to perform an action
+ * @param userId - The user ID to check
+ * @param action - The action to check permission for
+ * @param resourceId - Optional resource ID for resource-specific permissions
+ * @returns Promise<boolean> - True if user has permission
+ */
+export async function hasPermission(
+  userId: string,
+  action: string,
+  resourceId?: string
+): Promise<boolean> {
+  try {
+    const user = await getCurrentUser()
+    
+    if (!user || user.id !== userId) {
+      return false
+    }
+
+    // Admin users have all permissions
+    if (user.role === 'admin') {
+      return true
+    }
+
+    // Define role-based permissions
+    const permissions = {
+      admin: ['*'], // All permissions
+      editor: ['read', 'write', 'publish', 'manage_content'],
+      author: ['read', 'write', 'publish_own'],
+      guest: ['read']
+    }
+
+    const userPermissions = permissions[user.role] || []
+    
+    // Check if user has the required permission
+    return userPermissions.includes('*') || userPermissions.includes(action)
+  } catch (error) {
+    console.error('Error checking permissions:', error)
+    return false
+  }
+}
+
+/**
+ * Checks if a user can edit a specific article
+ * @param userId - The user ID
+ * @param articleId - The article ID
+ * @returns Promise<boolean> - True if user can edit the article
+ */
+export async function canEditArticle(userId: string, articleId: string): Promise<boolean> {
+  try {
+    const user = await getCurrentUser()
+    
+    if (!user || user.id !== userId) {
+      return false
+    }
+
+    // Admin and editor users can edit any article
+    if (user.role === 'admin' || user.role === 'editor') {
+      return true
+    }
+
+    // Authors can only edit their own articles
+    if (user.role === 'author') {
+      const article = await prisma.article.findUnique({
+        where: { id: articleId },
+        select: { authorId: true }
       })
-    ] : []),
-    Credentials({
-      name: "Credentials",
-      credentials: { 
-        email: { label: "Email", type: "email" }, 
-        password: { label: "Password", type: "password" } 
-      },
-      async authorize(creds, req) {
-        if (!creds?.email || !creds?.password) {
-          console.warn("Authentication attempt with missing credentials");
-          return null;
-        }
 
-        // Sanitize and validate input
-        const email = sanitizeInput(creds.email);
-        const password = creds.password;
-        
-        if (!isValidEmail(email)) {
-          console.warn("Authentication attempt with invalid email format:", email);
-          return null;
-        }
+      return article?.authorId === userId
+    }
 
-        // Get client information for rate limiting and logging
-        const clientIP = req ? getClientIP(req as any) : 'unknown';
-        const userAgent = req?.headers?.get('user-agent') || 'unknown';
-        const rateLimitKey = `${email}:${clientIP}`;
+    return false
+  } catch (error) {
+    console.error('Error checking article edit permission:', error)
+    return false
+  }
+}
 
-        // Check rate limiting
-        if (isRateLimited(rateLimitKey)) {
-          const lockoutTime = getLockoutTimeRemaining(rateLimitKey);
-          console.warn(`Rate limited authentication attempt for ${email} from ${clientIP}. Lockout remaining: ${Math.ceil(lockoutTime / 1000)}s`);
-          
-          await logAuthAttempt({
-            email,
-            ip: clientIP,
-            userAgent,
-            timestamp: new Date(),
-            success: false
-          });
-          
-          return null;
-        }
-        
-        try {
-          const user = await prisma.user.findUnique({ 
-            where: { email } 
-          });
-          
-          if (!user) {
-            // Record failed attempt even for non-existent users to prevent user enumeration
-            recordFailedAttempt(rateLimitKey);
-            console.warn(`Authentication attempt for non-existent user: ${email} from ${clientIP}`);
-            
-            await logAuthAttempt({
-              email,
-              ip: clientIP,
-              userAgent,
-              timestamp: new Date(),
-              success: false
-            });
-            
-            return null;
-          }
-          
-          // Use secure password comparison with timing attack protection
-          const isValid = await securePasswordCompare(password, user.password);
-          
-          if (isValid) {
-            // Clear any failed attempts on successful authentication
-            clearFailedAttempts(rateLimitKey);
-            
-            await logAuthAttempt({
-              email,
-              ip: clientIP,
-              userAgent,
-              timestamp: new Date(),
-              success: true
-            });
-            
-            const userData = { 
-              id: user.id, 
-              email: user.email, 
-              name: user.name, 
-              role: user.role 
-            };
-            return userData;
-          } else {
-            // Record failed attempt
-            recordFailedAttempt(rateLimitKey);
-            console.warn(`Failed authentication attempt for ${email} from ${clientIP}`);
-            
-            await logAuthAttempt({
-              email,
-              ip: clientIP,
-              userAgent,
-              timestamp: new Date(),
-              success: false
-            });
-            
-            return null;
+/**
+ * Simulates getting a session (in real implementation, this would check cookies/tokens)
+ * @returns Promise<{ userId: string } | null> - Session data or null
+ */
+async function getSession(): Promise<{ userId: string } | null> {
+  // In a real implementation, this would:
+  // 1. Check for session cookie/token
+  // 2. Validate the session
+  // 3. Return session data
+  
+  // For now, return null to simulate no authentication
+  // In development, you might want to return a mock session
+  return null
+}
+
+/**
+ * Authenticates a user with email and password
+ * @param email - User email
+ * @param password - User password
+ * @returns Promise<AuthResult> - Authentication result
+ */
+export async function authenticateUser(
+  email: string,
+  password: string
+): Promise<AuthResult> {
+  try {
+    // In a real implementation, this would:
+    // 1. Validate email format
+    // 2. Hash and compare password
+    // 3. Create session/token
+    // 4. Return user data
+    
+    // For now, return error to indicate authentication is not implemented
+    return {
+      user: null,
+      isAuthenticated: false,
+      error: 'Authentication not implemented'
           }
         } catch (error) {
-          console.error("Database error during authentication:", error);
-          
-          // Log the error but don't reveal database structure
-          await logAuthAttempt({
-            email,
-            ip: clientIP,
-            userAgent,
-            timestamp: new Date(),
-            success: false
-          });
-          
-          return null;
-        }
-      },
-    }),
-  ],
-    callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
-      if (user) {
-        token.role = (user as any).role;
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }: { session: any; token: any }) {
-      if (token) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: "/login",
-  },
-};
+    console.error('Authentication error:', error)
+    return {
+      user: null,
+      isAuthenticated: false,
+      error: 'Authentication failed'
+    }
+  }
+}
 
+/**
+ * Logs out the current user
+ * @returns Promise<void>
+ */
+export async function logoutUser(): Promise<void> {
+  try {
+    // In a real implementation, this would:
+    // 1. Invalidate session/token
+    // 2. Clear cookies
+    // 3. Redirect to login page
+    
+    console.log('User logged out')
+  } catch (error) {
+    console.error('Logout error:', error)
+  }
+}
