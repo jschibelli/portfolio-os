@@ -11,6 +11,16 @@ jest.mock('framer-motion', () => ({
   AnimatePresence: ({ children }: any) => <>{children}</>,
 }));
 
+// Mock lucide-react icons
+jest.mock('lucide-react', () => ({
+  ChevronDown: ({ className, ...props }: any) => <div className={className} data-testid="chevron-down" {...props}>▼</div>,
+  ChevronUp: ({ className, ...props }: any) => <div className={className} data-testid="chevron-up" {...props}>▲</div>,
+  Target: ({ className, ...props }: any) => <div className={className} data-testid="target" {...props}>🎯</div>,
+  Lightbulb: ({ className, ...props }: any) => <div className={className} data-testid="lightbulb" {...props}>💡</div>,
+  AlertTriangle: ({ className, ...props }: any) => <div className={className} data-testid="alert-triangle" {...props}>⚠️</div>,
+  TrendingUp: ({ className, ...props }: any) => <div className={className} data-testid="trending-up" {...props}>📈</div>,
+}));
+
 describe('InlineCaseStudy', () => {
   const mockCaseStudyData = createInlineCaseStudy(
     'Test Case Study',
@@ -40,7 +50,8 @@ describe('InlineCaseStudy', () => {
     render(<InlineCaseStudy data={mockCaseStudyData} />);
     
     expect(screen.getByText('Test Case Study')).toBeInTheDocument();
-    expect(screen.getByText('A test case study for unit testing')).toBeInTheDocument();
+    // Check for the visible description (not the screen reader one)
+    expect(screen.getByText('A test case study for unit testing', { selector: 'p' })).toBeInTheDocument();
   });
 
   it('renders all section titles', () => {

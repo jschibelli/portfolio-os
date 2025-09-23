@@ -18,7 +18,8 @@ function Get-CRGPTComments {
     $repoOwner = gh repo view --json owner -q .owner.login
     $repoName = gh repo view --json name -q .name
     
-    $allComments = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments
+    $allCommentsJson = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments
+    $allComments = $allCommentsJson | ConvertFrom-Json
     $crgptComments = $allComments | Where-Object { $_.user.login -eq "cr-gpt[bot]" }
     return $crgptComments
 }

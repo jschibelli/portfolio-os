@@ -18,7 +18,8 @@ function Get-PRInfo {
     $repoOwner = gh repo view --json owner -q .owner.login
     $repoName = gh repo view --json name -q .name
     
-    $prInfo = gh api repos/$repoOwner/$repoName/pulls/$PRNumber
+    $prInfoJson = gh api repos/$repoOwner/$repoName/pulls/$PRNumber
+    $prInfo = $prInfoJson | ConvertFrom-Json
     return $prInfo
 }
 
@@ -28,7 +29,8 @@ function Get-PRComments {
     $repoOwner = gh repo view --json owner -q .owner.login
     $repoName = gh repo view --json name -q .name
     
-    $comments = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments
+    $commentsJson = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments
+    $comments = $commentsJson | ConvertFrom-Json
     return $comments
 }
 

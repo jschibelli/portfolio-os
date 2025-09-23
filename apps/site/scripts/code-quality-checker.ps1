@@ -21,7 +21,8 @@ function Get-PRFiles {
     $repoOwner = gh repo view --json owner -q .owner.login
     $repoName = gh repo view --json name -q .name
     
-    $files = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/files
+    $filesJson = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/files
+    $files = $filesJson | ConvertFrom-Json
     return $files
 }
 
@@ -158,68 +159,57 @@ function Apply-Fixes {
 function Generate-QualityReport {
     param([array]$LintResults, [array]$FormatResults, [array]$TypeResults, [array]$TestResults, [string]$PRNumber)
     
-    $report = @"
-# Code Quality Report for PR #$PRNumber
-
-Generated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
-
-## Summary
-- Linting Issues: $($LintResults.Count)
-- Formatting Issues: $($FormatResults.Count)
-- Type Checking Issues: $($TypeResults.Count)
-- Test Issues: $($TestResults.Count)
-
-## Detailed Results
-"@
+    $report = "# Code Quality Report for PR #$PRNumber`n`n"
+    $report += "Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')`n`n"
+    $report += "## Summary`n"
+    $report += "- Linting Issues: $($LintResults.Count)`n"
+    $report += "- Formatting Issues: $($FormatResults.Count)`n"
+    $report += "- Type Checking Issues: $($TypeResults.Count)`n"
+    $report += "- Test Issues: $($TestResults.Count)`n`n"
+    $report += "## Detailed Results`n"
     
     if ($LintResults.Count -gt 0) {
-        $report += "`n`n### Linting Issues`n"
+        $report += [System.Environment]::NewLine + "### Linting Issues" + [System.Environment]::NewLine
         foreach ($result in $LintResults) {
-            $report += "`n**File**: $($result.File)`n"
+            $report += [System.Environment]::NewLine + "**File**: $($result.File)" + [System.Environment]::NewLine
             $report += "```$($result.Issues)```"
         }
     }
     
     if ($FormatResults.Count -gt 0) {
-        $report += "`n`n### Formatting Issues`n"
+        $report += [System.Environment]::NewLine + [System.Environment]::NewLine + "### Formatting Issues" + [System.Environment]::NewLine + [System.Environment]::NewLine
         foreach ($result in $FormatResults) {
-            $report += "`n**File**: $($result.File)`n"
+            $report += [System.Environment]::NewLine + "**File**: $($result.File)" + [System.Environment]::NewLine + [System.Environment]::NewLine
             $report += "```$($result.Issues)```"
         }
     }
     
     if ($TypeResults.Count -gt 0) {
-        $report += "`n`n### Type Checking Issues`n"
+        $report += [System.Environment]::NewLine + [System.Environment]::NewLine + "### Type Checking Issues" + [System.Environment]::NewLine + [System.Environment]::NewLine
         foreach ($result in $TypeResults) {
-            $report += "`n**File**: $($result.File)`n"
+            $report += [System.Environment]::NewLine + "**File**: $($result.File)" + [System.Environment]::NewLine + [System.Environment]::NewLine
             $report += "```$($result.Issues)```"
         }
     }
     
     if ($TestResults.Count -gt 0) {
-        $report += "`n`n### Test Issues`n"
+        $report += [System.Environment]::NewLine + [System.Environment]::NewLine + "### Test Issues" + [System.Environment]::NewLine + [System.Environment]::NewLine
         foreach ($result in $TestResults) {
-            $report += "`n**File**: $($result.File)`n"
+            $report += [System.Environment]::NewLine + "**File**: $($result.File)" + [System.Environment]::NewLine + [System.Environment]::NewLine
             $report += "```$($result.Issues)```"
         }
     }
     
-    $report += @"
-
-## Recommendations
-
-1. **Fix Linting Issues**: Address all ESLint warnings and errors
-2. **Apply Formatting**: Use Prettier to ensure consistent code formatting
-3. **Resolve Type Issues**: Fix TypeScript type errors and warnings
-4. **Improve Test Coverage**: Add or fix failing tests
-
-## Next Steps
-
-1. Review and fix identified issues
-2. Run tests to ensure functionality
-3. Commit fixes to the PR
-4. Request re-review if needed
-"@
+    $report += [System.Environment]::NewLine + [System.Environment]::NewLine + "## Recommendations" + [System.Environment]::NewLine + [System.Environment]::NewLine
+    $report += "1. Fix Linting Issues: Address all ESLint warnings and errors" + [System.Environment]::NewLine
+    $report += "2. Apply Formatting: Use Prettier to ensure consistent code formatting" + [System.Environment]::NewLine
+    $report += "3. Resolve Type Issues: Fix TypeScript type errors and warnings" + [System.Environment]::NewLine
+    $report += "4. Improve Test Coverage: Add or fix failing tests" + [System.Environment]::NewLine + [System.Environment]::NewLine
+    $report += "## Next Steps" + [System.Environment]::NewLine + [System.Environment]::NewLine
+    $report += "1. Review and fix identified issues" + [System.Environment]::NewLine
+    $report += "2. Run tests to ensure functionality" + [System.Environment]::NewLine
+    $report += "3. Commit fixes to the PR" + [System.Environment]::NewLine
+    $report += "4. Request re-review if needed" + [System.Environment]::NewLine
     
     return $report
 }
