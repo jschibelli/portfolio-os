@@ -104,11 +104,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 								</SheetHeader>
 
 								<div className="mt-8">
-									{/* Mobile Search */}
-									<div className="mb-6 px-4">
-										<GlobalSearch placeholder="Search..." />
-									</div>
-
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
@@ -206,6 +201,11 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												<RssSVG className="h-5 w-5 stroke-current" />
 											</Link>
 										</div>
+									</div>
+
+									{/* Mobile Search - moved to bottom to prevent keyboard from covering navigation */}
+									<div className="mt-6 border-t border-border pt-6 px-4">
+										<GlobalSearch placeholder="Search..." />
 									</div>
 								</div>
 							</SheetContent>
