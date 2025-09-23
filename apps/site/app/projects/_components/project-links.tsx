@@ -75,7 +75,6 @@ function isValidUrl(url: string): boolean {
  * ```
  */
 function isExternalUrl(url: string): boolean {
-<<<<<<< HEAD:packages/blog-starter-kit/themes/enterprise/app/projects/_components/project-links.tsx
   if (!url || typeof url !== 'string') {
     return false;
   }
