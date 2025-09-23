@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm turbo build --filter=@mindware-blog/site",
   "installCommand": "pnpm install",
-  "outputDirectory": "apps/site/.next",
+  "rootDirectory": "apps/site",
   "framework": "nextjs"
 }
