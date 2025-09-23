@@ -13,12 +13,6 @@ const TTSRequestSchema = z.object({
   voice: z.enum(['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer']).default('alloy')
 });
 
-// Initialize OpenAI client with enhanced configuration
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 30000, // 30 second timeout
-});
-
 /**
  * POST /api/tts
  * 
@@ -69,6 +63,12 @@ export async function POST(request: NextRequest) {
         { status: 503 }
       );
     }
+
+    // Initialize OpenAI client with enhanced configuration inside the function
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      timeout: 30000, // 30 second timeout
+    });
 
     // Validate and parse request with enhanced error handling
     const body = await request.json();

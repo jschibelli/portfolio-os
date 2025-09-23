@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // Calendar availability function
 async function getAvailability({ timezone = 'America/New_York', days = 7 }: { timezone?: string; days?: number }) {
   try {
@@ -90,6 +85,11 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Initialize OpenAI client inside the function
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     const { message, conversationHistory, pageContext }: ChatRequest = await request.json();
 
