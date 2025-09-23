@@ -1,10 +1,6 @@
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
-<<<<<<< HEAD:packages/blog-starter-kit/themes/enterprise/components/features/sections/hero/base-hero.tsx
 import { cn } from '@/lib/utils';
-=======
-import { cn } from '../../../../lib/utils';
->>>>>>> epic/151-scaffold-turborepo:apps/site/components/features/sections/hero/base-hero.tsx
 
 export interface BaseHeroProps {
   /** Main title text */

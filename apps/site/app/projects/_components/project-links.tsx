@@ -54,11 +54,7 @@ function isValidUrl(url: string): boolean {
     
     return isValidProtocol && isNotMalicious && hasValidHostname;
   } catch (error) {
-<<<<<<< HEAD:packages/blog-starter-kit/themes/enterprise/app/projects/_components/project-links.tsx
     console.warn('URL validation failed for URL:', url, 'Error:', error);
-=======
-    console.warn('URL validation failed:', error);
->>>>>>> epic/151-scaffold-turborepo:apps/site/app/projects/_components/project-links.tsx
     return false;
   }
 }
@@ -110,13 +106,6 @@ function isExternalUrl(url: string): boolean {
     }
     
     // On server side, assume external if it's absolute and not localhost
-=======
-  // Relative URLs are never external
-  if (url.startsWith('/') || url.startsWith('#')) return false;
-  try {
-    const urlObj = new URL(url);
-    const isAbsolute = urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
->>>>>>> epic/151-scaffold-turborepo:apps/site/app/projects/_components/project-links.tsx
     if (typeof window === 'undefined') {
       return isHttpProtocol && 
              !urlObj.hostname.includes('localhost') && 
