@@ -3,7 +3,7 @@
 // Server-only - uses OAuth user token via Auth.js session
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@mindware-blog/lib/auth-config';
 
 export interface CalendarEvent {
   id: string;

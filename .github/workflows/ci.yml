@@ -4,11 +4,15 @@ on:
   pull_request:
     paths:
       - 'apps/site/**'
+      - 'apps/dashboard/**'
+      - 'packages/**'
       - '.github/workflows/**'
   push:
     branches: [ main ]
     paths:
       - 'apps/site/**'
+      - 'apps/dashboard/**'
+      - 'packages/**'
       - '.github/workflows/**'
 
 jobs:
@@ -32,24 +36,32 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm --filter @mindware-blog/site lint
+      - name: Lint both apps
+        run: |
+          pnpm --filter @mindware-blog/site lint
+          pnpm --filter @mindware-blog/dashboard lint
 
-      - name: Typecheck
-        run: pnpm --filter @mindware-blog/site typecheck
+      - name: Typecheck both apps
+        run: |
+          pnpm --filter @mindware-blog/site typecheck
+          pnpm --filter @mindware-blog/dashboard typecheck
 
       - name: Run unit tests (Jest)
-        run: pnpm --filter @mindware-blog/site test -- --ci
+        run: |
+          pnpm --filter @mindware-blog/site test -- --ci
+          pnpm --filter @mindware-blog/dashboard test -- --ci
 
-      - name: Build application
-        run: pnpm --filter @mindware-blog/site build
+      - name: Build both applications
+        run: |
+          pnpm --filter @mindware-blog/site build
+          pnpm --filter @mindware-blog/dashboard build
 
       - name: Check for build artifacts
         run: |
-          if [ -d "apps/site/.next" ]; then
-            echo "Build successful - .next directory created"
+          if [ -d "apps/site/.next" ] && [ -d "apps/dashboard/.next" ]; then
+            echo "Build successful - both .next directories created"
           else
-            echo "Build failed - .next directory not found"
+            echo "Build failed - .next directories not found"
             exit 1
           fi
 

@@ -1,0 +1,142 @@
+[
+	{
+		"id": "tendrilo",
+		"title": "Tendril Multi-Tenant Chatbot SaaS",
+		"slug": "tendril-multi-tenant-chatbot-saas",
+		"description": "A strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. Features comprehensive market research, competitive analysis, and detailed technical architecture.",
+		"image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "AI/ML", "Multi-tenant", "SaaS"],
+		"liveUrl": "https://tendrilo.ai",
+		"caseStudyUrl": "/case-studies/tendrilo-case-study",
+		"metrics": {
+			"performance": {
+				"loadTimeImprovement": "40%",
+				"responseTime": "2.3s",
+				"uptime": "99.9%"
+			},
+			"business": {
+				"revenueIncrease": "150%",
+				"userRetention": "91%",
+				"setupTime": "18 minutes",
+				"conversionRate": "23%"
+			}
+		},
+		"caseStudyPreview": {
+			"problem": "SMBs needed affordable, scalable chatbot solutions",
+			"solution": "Multi-tenant SaaS platform with AI-powered automation",
+			"results": "150% revenue increase and 91% user retention"
+		}
+	},
+	{
+		"id": "zeus-ecom",
+		"title": "Zeus E-Commerce Platform",
+		"slug": "zeus-ecommerce-platform",
+		"description": "A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration.",
+		"image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "Tailwind CSS", "Stripe", "Headless CMS"],
+		"liveUrl": "https://zeus.shop",
+		"caseStudyUrl": "/case-studies/zeus-ecommerce-platform",
+		"metrics": {
+			"performance": {
+				"loadTimeImprovement": "65%",
+				"responseTime": "1.8s",
+				"uptime": "99.8%"
+			},
+			"business": {
+				"salesIncrease": "85%",
+				"cartAbandonment": "Reduced by 32%",
+				"mobileConversion": "45%",
+				"pageSpeedScore": "98/100"
+			}
+		},
+		"caseStudyPreview": {
+			"problem": "Slow e-commerce site with poor mobile experience",
+			"solution": "Next.js optimization with mobile-first design",
+			"results": "85% sales increase and 32% reduction in cart abandonment"
+		}
+	},
+	{
+		"id": "portfolio-site",
+		"title": "Schibelli.dev",
+		"slug": "portfolio-site",
+		"description": "A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.",
+		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "Tailwind CSS", "React"],
+		"liveUrl": "https://mindware.hashnode.dev",
+		"caseStudyUrl": "/case-studies/portfolio-site",
+		"metrics": {
+			"performance": {
+				"loadTimeImprovement": "55%",
+				"responseTime": "1.2s",
+				"uptime": "99.9%"
+			},
+			"business": {
+				"engagementIncrease": "120%",
+				"bounceRate": "Reduced by 28%",
+				"seoScore": "95/100",
+				"accessibilityScore": "100/100"
+			}
+		},
+		"caseStudyPreview": {
+			"problem": "Outdated portfolio lacking modern design and performance",
+			"solution": "Complete redesign with Next.js and performance optimization",
+			"results": "120% engagement increase and 28% reduction in bounce rate"
+		}
+	},
+	{
+		"id": "synaplyai",
+		"title": "SynaplyAI – Real-Time AI Collaboration Platform",
+		"slug": "synaplyai",
+		"description": "A multi-tenant AI content platform featuring token-level conflict resolution and real-time collaboration. Built with Next.js, Prisma, and Framer Motion.",
+		"image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
+		"tags": ["Next.js", "TypeScript", "Prisma", "Framer Motion", "AI"],
+		"liveUrl": "https://synaply.ai",
+		"caseStudyUrl": "/case-studies/synaplyai",
+		"metrics": {
+			"performance": {
+				"loadTimeImprovement": "50%",
+				"responseTime": "2.1s",
+				"uptime": "99.7%"
+			},
+			"business": {
+				"userGrowth": "200%",
+				"collaborationEfficiency": "75%",
+				"contentQuality": "Improved by 60%",
+				"userSatisfaction": "4.8/5"
+			}
+		},
+		"caseStudyPreview": {
+			"problem": "Teams struggling with AI content collaboration conflicts",
+			"solution": "Real-time collaboration platform with conflict resolution",
+			"results": "200% user growth and 75% improvement in collaboration efficiency"
+		}
+	},
+	{
+		"id": "intraweb-technologies",
+		"title": "Intraweb Technologies",
+		"slug": "intraweb-technologies",
+		"description": "A comprehensive web development and technology solutions company website. Features modern design, service showcases, and interactive elements highlighting expertise in React, Next.js, and full-stack development.",
+		"image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
+		"tags": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Full-Stack"],
+		"liveUrl": "https://intrawebtechnologies.com",
+		"caseStudyUrl": "/case-studies/intraweb-technologies",
+		"metrics": {
+			"performance": {
+				"loadTimeImprovement": "45%",
+				"responseTime": "1.5s",
+				"uptime": "99.9%"
+			},
+			"business": {
+				"leadGeneration": "180%",
+				"inquiryIncrease": "95%",
+				"brandRecognition": "Increased by 70%",
+				"clientAcquisition": "150%"
+			}
+		},
+		"caseStudyPreview": {
+			"problem": "Outdated company website failing to generate leads",
+			"solution": "Modern, conversion-optimized website with clear value proposition",
+			"results": "180% increase in lead generation and 95% more inquiries"
+		}
+	}
+]
