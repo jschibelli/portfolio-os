@@ -1,20 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MailIcon, PhoneIcon, StarIcon } from 'lucide-react';
+import { MailIcon, PhoneIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent } from '../../ui/card';
 import { commonIcons, handleInvalidAudience, sharedStyles, validateAudience, type AudienceType } from './shared-cta-config';
 
-interface TestimonialProps {
-	quote: string;
-	author: string;
-	role: string;
-	company: string;
-	rating: number;
-}
 
 interface EnhancedCTASectionProps {
 	audience: AudienceType;
@@ -41,29 +34,6 @@ interface AudienceConfig {
 	availabilityStatus: 'available' | 'busy';
 }
 
-const testimonials: TestimonialProps[] = [
-	{
-		quote: "John delivered exceptional results that exceeded our expectations. His technical expertise and attention to detail transformed our project from concept to reality.",
-		author: "Sarah Chen",
-		role: "CTO",
-		company: "TechStart Inc.",
-		rating: 5
-	},
-	{
-		quote: "Working with John was a game-changer for our startup. He understood our vision and delivered a solution that scaled perfectly with our growth.",
-		author: "Michael Rodriguez",
-		role: "Founder",
-		company: "InnovateLab",
-		rating: 5
-	},
-	{
-		quote: "John's ability to translate complex requirements into elegant solutions is unmatched. He's become our go-to developer for critical projects.",
-		author: "Emily Watson",
-		role: "Product Manager",
-		company: "Digital Solutions Co.",
-		rating: 5
-	}
-];
 
 const audienceConfig = {
 	recruiters: {
@@ -171,14 +141,6 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 		return <EnhancedCTASection audience="general" className={className} />;
 	}
 	
-	const renderStars = (rating: number) => {
-		return Array.from({ length: 5 }, (_, i) => (
-			<StarIcon 
-				key={i} 
-				className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-stone-300'}`} 
-			/>
-		));
-	};
 
 	return (
 		<section className={`relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 py-20 dark:from-stone-800 dark:via-stone-900 dark:to-stone-950 ${className}`}>
@@ -264,57 +226,15 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 						</motion.div>
 					</motion.div>
 
-					{/* Value Propositions removed per design request */}
 
-					{/* Testimonials */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
-						viewport={{ once: true }}
-						className="mb-16"
-					>
-						<h3 className="mb-8 text-center text-2xl font-bold text-white">
-							What Clients Say
-						</h3>
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-							{testimonials.map((testimonial, index) => (
-								<motion.div
-									key={index}
-									initial={{ opacity: 0, y: 20 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.6, delay: 0.7 + index * 0.1, ease: 'easeOut' }}
-									viewport={{ once: true }}
-								>
-									<Card className="h-full bg-stone-800/50 backdrop-blur-sm border-stone-700">
-										<CardContent className="p-6">
-											<div className="mb-4 flex items-center gap-1">
-												{renderStars(testimonial.rating)}
-											</div>
-											<blockquote className="mb-4 text-stone-300 italic">
-												"{testimonial.quote}"
-											</blockquote>
-											<div className="text-sm">
-												<div className="font-semibold text-white">{testimonial.author}</div>
-												<div className="text-stone-400">
-													{testimonial.role} at {testimonial.company}
-												</div>
-											</div>
-										</CardContent>
-									</Card>
-								</motion.div>
-							))}
-						</div>
-					</motion.div>
-
-					{/* Contact Information */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
-						viewport={{ once: true }}
-						className="text-center"
-					>
+				{/* Contact Information */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+					viewport={{ once: true }}
+					className="text-center"
+				>
 						<div className="mx-auto max-w-2xl rounded-lg bg-stone-800/50 p-6 backdrop-blur-sm">
 							<h4 className="mb-4 text-lg font-semibold text-white">
 								Ready to Connect?
