@@ -29,7 +29,6 @@ interface AudienceConfig {
 		icon: React.ReactNode;
 	};
 	highlights: string[];
-	stats: Array<{ label: string; value: string }>;
 	availability: string;
 	availabilityColor: 'green' | 'yellow';
 }
@@ -57,12 +56,6 @@ const audienceData = {
 			"Strong collaboration and leadership skills",
 			"Available for immediate start"
 		],
-		stats: [
-			{ label: "Years Experience", value: "15+" },
-			{ label: "Projects Delivered", value: "50+" },
-			{ label: "Client Satisfaction", value: "100%" },
-			{ label: "On-Time Delivery", value: "98%" }
-		],
 		availability: "Available for new opportunities",
 		availabilityColor: "green"
 	},
@@ -88,12 +81,6 @@ const audienceData = {
 			"Ongoing support and maintenance",
 			"Startup-friendly pricing and terms"
 		],
-		stats: [
-			{ label: "MVPs Delivered", value: "25+" },
-			{ label: "Time to Market", value: "4-8 weeks" },
-			{ label: "Client Success Rate", value: "95%" },
-			{ label: "Post-Launch Support", value: "6+ months" }
-		],
 		availability: "Taking on new startup projects",
 		availabilityColor: "green"
 	},
@@ -118,12 +105,6 @@ const audienceData = {
 			"Performance optimization and SEO",
 			"Ongoing maintenance and support",
 			"Proven ROI and business results"
-		],
-		stats: [
-			{ label: "Businesses Helped", value: "30+" },
-			{ label: "Average ROI", value: "150%" },
-			{ label: "Performance Improvement", value: "60%" },
-			{ label: "Client Retention", value: "90%" }
 		],
 		availability: "Available for new projects",
 		availabilityColor: "green"
@@ -192,42 +173,13 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								<p className="mx-auto max-w-2xl text-stone-700 dark:text-stone-300">
 									{data.description}
 								</p>
-							</div>
+			</div>
 
-							{/* Stats */}
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-								viewport={{ once: true }}
-								className="mb-8"
-							>
-								<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-									{data.stats.map((stat, index) => (
-										<motion.div
-											key={index}
-											initial={{ opacity: 0, scale: 0.9 }}
-											whileInView={{ opacity: 1, scale: 1 }}
-											transition={{ duration: 0.4, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
-											viewport={{ once: true }}
-											className="rounded-lg bg-white p-4 text-center shadow-sm dark:bg-stone-800"
-										>
-											<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-												{stat.value}
-											</div>
-											<div className="text-sm text-stone-600 dark:text-stone-400">
-												{stat.label}
-											</div>
-										</motion.div>
-									))}
-								</div>
-							</motion.div>
-
-							{/* Highlights */}
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+						{/* Highlights */}
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
 								viewport={{ once: true }}
 								className="mb-8"
 							>
@@ -236,11 +188,11 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								</h3>
 								<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 									{data.highlights.map((highlight, index) => (
-										<motion.div
-											key={index}
-											initial={{ opacity: 0, x: -20 }}
-											whileInView={{ opacity: 1, x: 0 }}
-											transition={{ duration: 0.4, delay: 0.5 + index * 0.1, ease: 'easeOut' }}
+									<motion.div
+										key={index}
+										initial={{ opacity: 0, x: -20 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.4, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
 											viewport={{ once: true }}
 											className="flex items-start gap-3"
 										>
@@ -254,10 +206,10 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 							</motion.div>
 
 							{/* CTA Buttons */}
-							<motion.div
-								initial={{ opacity: 0, scale: 0.9 }}
-								whileInView={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
 								viewport={{ once: true }}
 								className="flex flex-col justify-center gap-4 sm:flex-row"
 							>
