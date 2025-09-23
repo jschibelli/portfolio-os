@@ -129,7 +129,7 @@ export const createMockError = (message: string, code?: string) => {
 }
 
 // Performance testing utilities
-export const measurePerformance = async <T>(
+export const measurePerformance = async <T extends unknown>(
   fn: () => Promise<T>,
   label: string
 ): Promise<{ result: T; duration: number }> => {

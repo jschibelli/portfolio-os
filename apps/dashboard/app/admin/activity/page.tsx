@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, Filter, Search, Clock, User, FileText, Image, Settings, Eye, Trash2, Plus, Edit, Mail, Shield, BarChart3 } from "lucide-react";
+import { Activity, Search, Clock, User, FileText, Image, Settings, BarChart3 } from "lucide-react";
 
 interface ActivityLog {
   id: string;
@@ -132,7 +132,7 @@ const mockActivityLogs: ActivityLog[] = [
 ];
 
 export default function ActivityPage() {
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>(mockActivityLogs);
+  const [activityLogs] = useState<ActivityLog[]>(mockActivityLogs);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [severityFilter, setSeverityFilter] = useState("all");

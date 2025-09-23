@@ -30,10 +30,8 @@ import {
   Globe,
   Smartphone,
   Monitor,
-  Calendar,
   Download,
-  FileText,
-  Activity
+  FileText
 } from "lucide-react";
 
 // Interfaces for Google Analytics data
@@ -104,6 +102,7 @@ const pageViewsData = [
   { date: "Jan 14", views: 2600, visitors: 1800, bounceRate: 25 },
 ];
 
+// Mock data for future analytics features
 const topArticlesData = [
   { title: "Getting Started with Blog Management", views: 1250, engagement: 78, readTime: 8 },
   { title: "Case Study: Hybrid Development Approach", views: 890, engagement: 82, readTime: 15 },
@@ -112,6 +111,7 @@ const topArticlesData = [
   { title: "Building Scalable Web Applications", views: 480, engagement: 71, readTime: 10 },
 ];
 
+// Mock data for future analytics features
 const trafficSourcesData = [
   { name: "Direct", value: 45, color: "#3b82f6" },
   { name: "Organic Search", value: 30, color: "#10b981" },
@@ -119,6 +119,7 @@ const trafficSourcesData = [
   { name: "Referral", value: 10, color: "#8b5cf6" },
 ];
 
+// Mock data for future analytics features
 const deviceData = [
   { device: "Desktop", users: 65, color: "#3b82f6" },
   { device: "Mobile", users: 30, color: "#10b981" },
@@ -155,7 +156,7 @@ export default function AdminAnalytics() {
   const [error, setError] = useState<string | null>(null);
   const [isMockData, setIsMockData] = useState(false);
 
-  // Fetch dashboard stats
+  // Fetch dashboard stats (for future implementation)
   const fetchDashboardStats = async () => {
     try {
       const response = await fetch('/api/admin/stats');
@@ -164,7 +165,7 @@ export default function AdminAnalytics() {
         setDashboardStats(stats);
       }
     } catch (err) {
-      console.error('Failed to fetch dashboard stats:', err);
+      setError('Failed to fetch dashboard stats');
     }
   };
 
@@ -198,7 +199,6 @@ export default function AdminAnalytics() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load analytics data');
-      console.error('Analytics fetch error:', err);
     } finally {
       setLoading(false);
     }
