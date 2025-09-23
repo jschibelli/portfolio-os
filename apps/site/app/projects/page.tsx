@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -43,7 +43,7 @@ function toProjectCard(projectMeta: any): Project {
   };
 }
 
-export default function ProjectsPage() {
+function ProjectsPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -398,6 +398,14 @@ export default function ProjectsPage() {
       </main>
       <Chatbot />
     </Layout>
+  );
+}
+
+export default function ProjectsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white dark:bg-stone-950" />}> 
+      <ProjectsPageClient />
+    </Suspense>
   );
 }
 

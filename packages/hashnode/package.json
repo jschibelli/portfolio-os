@@ -4,6 +4,10 @@
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
+  "scripts": {
+    "build": "echo 'No build step required for hashnode package'",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "graphql": "^16.11.0",
     "graphql-request": "^6.1.0"

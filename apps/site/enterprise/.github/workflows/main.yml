@@ -336,10 +336,11 @@ jobs:
           verify-build: 'false'  # Skip build verification since we'll do a full build
           working-directory: ${{ env.WORKING_DIRECTORY }}
         
-      - name: Build application
+      - name: Build application with enhanced caching
         run: |
           cd ${{ env.WORKING_DIRECTORY }}
-          pnpm build
+          # Use Turbo for better caching and parallel builds (local cache only)
+          pnpm turbo build --filter=@mindware-blog/site
         env:
           # Production build environment
           NEXT_PUBLIC_MODE: production
@@ -353,6 +354,15 @@ jobs:
           FEATURE_SCHEDULING: 'true'
           FEATURE_CASE_STUDY: 'true'
           FEATURE_CLIENT_INTAKE: 'true'
+          
+      - name: Verify cache usage
+        run: |
+          echo "📊 Cache statistics:"
+          echo "Turbo cache size: $(du -sh .turbo 2>/dev/null || echo 'N/A')"
+          echo "pnpm cache size: $(du -sh ~/.pnpm-store 2>/dev/null || echo 'N/A')"
+          echo "Node modules size: $(du -sh node_modules 2>/dev/null || echo 'N/A')"
+          echo "Build outputs:"
+          find . -name ".next" -type d -exec du -sh {} \; 2>/dev/null || echo "No .next directories found"
           
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

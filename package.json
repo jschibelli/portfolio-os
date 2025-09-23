@@ -8,7 +8,12 @@
 	"scripts": {
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
 		"preinstall": "npx only-allow pnpm",
-		"postinstall": "cd apps/dashboard && prisma generate"
+		"postinstall": "cd apps/dashboard && prisma generate",
+		"dev": "turbo run dev --parallel",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"test": "turbo run test --continue",
+		"typecheck": "turbo run typecheck"
 	},
 	"dependencies": {
 		"@radix-ui/react-icons": "^1.3.2",

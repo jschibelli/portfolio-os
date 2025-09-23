@@ -4,6 +4,10 @@
   "private": true,
   "main": "./index.ts",
   "types": "./index.ts",
+  "scripts": {
+    "build": "echo 'No build step required for lib package'",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "@tiptap/core": "^3.4.4",
