@@ -43,3 +43,17 @@ next-env.d.ts
 !.vscode/extensions.json
 
 
+
+# Turborepo
+.turbo/
+**/.turbo/
+
+# Build logs and temporary files
+*.log
+**/*.log
+*.tmp
+*.temp
+
+# Turbo cache and daemon logs
+.turbo/cache/
+.turbo/daemon/

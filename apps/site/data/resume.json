@@ -1,0 +1,157 @@
+{
+	"$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+	"basics": {
+		"name": "John Schibelli",
+		"label": "Senior Front-End Developer",
+		"email": "jschibelli@gmail.com",
+		"phone": "862.207.9004",
+		"url": "https://schibelli.dev",
+		"location": {
+			"address": "",
+			"postalCode": "07082",
+			"city": "Towaco",
+			"region": "NJ",
+			"countryCode": "US"
+		},
+		"summary": "Senior Front-End Developer with 15+ years of experience building scalable, high-performance web apps and company websites. Skilled in React, Next.js, TypeScript, and Tailwind CSS with a strong focus on accessibility, SEO, and client success. Technical lead behind IntraWeb Technologies' digital presence and AI-driven content collaboration tooling (SynaplyAI).",
+		"profiles": [
+			{
+				"network": "LinkedIn",
+				"username": "johnschibelli",
+				"url": "https://linkedin.com/in/johnschibelli"
+			},
+			{
+				"network": "GitHub",
+				"username": "jschibelli",
+				"url": "https://github.com/jschibelli"
+			}
+		]
+	},
+	"work": [
+		{
+			"name": "IntraWeb Technology",
+			"location": "Montville, NJ",
+			"position": "Senior Front-End Developer",
+			"url": "https://intrawebtech.com",
+			"startDate": "2020-11",
+			"summary": "Lead front-end for company site and client projects; incubated SynaplyAI.",
+			"highlights": [
+				"Built the IntraWeb Technologies website with Next.js, React, TypeScript, and Tailwind CSS; shipped an accessible, SEO-optimized presence.",
+				"Delivered custom WordPress and Shopify builds emphasizing mobile performance and SEO for clients including KAL Design.",
+				"Scoped requirements, owned timelines, and served as primary client liaison to ensure quality delivery and satisfaction.",
+				"Incubated SynaplyAI (multi-tenant AI content collaboration) with front-end architecture, OpenAI integrations, real-time collab editing, and adaptive AI content generation."
+			]
+		},
+		{
+			"name": "ColorStreet",
+			"location": "Totowa, NJ",
+			"position": "Full-Stack Developer",
+			"url": "https://colorstreet.com",
+			"startDate": "2024-04",
+			"endDate": "2024-11",
+			"summary": "Contributed to e-commerce platform quality and integrations.",
+			"highlights": [
+				"Implemented automated UI testing with Playwright, improving reliability across releases.",
+				"Integrated and validated Nest.js APIs; ensured stable data flow and interface alignment.",
+				"Partnered with QA, design, and product to support sprint delivery and UI improvements."
+			]
+		},
+		{
+			"name": "Executive Five Star",
+			"location": "Montville, NJ",
+			"position": "Senior Front-End Developer",
+			"startDate": "2016-04",
+			"endDate": "2020-10",
+			"summary": "Owned front-end for the company's car service site and online booking.",
+			"highlights": [
+				"Developed and maintained the primary WordPress site with improved usability and mobile responsiveness.",
+				"Integrated Limo Anywhere API for real-time reservations and back-office sync.",
+				"Streamlined dispatch workflows by connecting booking front-end to internal systems."
+			]
+		},
+		{
+			"name": "Robert Half Technology",
+			"location": "Parsippany, NJ",
+			"position": "Front-End Developer",
+			"startDate": "2013-03",
+			"endDate": "2016-04",
+			"summary": "Built enterprise UIs and internal tooling in JavaScript ecosystems.",
+			"highlights": [
+				"Developed UIs for internal financial platforms using JavaScript, jQuery, and Bootstrap to improve reporting workflows.",
+				"Built interactive presentation tools for pharmaceutical clients using Veeva CRM and HTML5.",
+				"Delivered front-end features aligned with enterprise UX guidelines in Agile cycles.",
+				"Led multiple internal WordPress projects and mentored junior developers on front-end best practices."
+			]
+		},
+		{
+			"name": "Level-Nine Creative",
+			"location": "Merritt Island, FL",
+			"position": "Web Developer (Contract)",
+			"startDate": "2009-07",
+			"endDate": "2013-02",
+			"summary": "Delivered custom WordPress sites for small businesses and agencies.",
+			"highlights": [
+				"Designed and developed custom websites using WordPress, PHP, JavaScript, and CSS.",
+				"Built reusable UI components for responsive, cross-browser performance.",
+				"Customized themes/plugins to support marketing workflows and SEO."
+			]
+		},
+		{
+			"name": "Anthem Institute",
+			"location": "Parsippany, NJ",
+			"position": "Web Development Program Director",
+			"startDate": "2005-01",
+			"endDate": "2009-06",
+			"summary": "Led curriculum and instruction across multiple campuses.",
+			"highlights": [
+				"Taught HTML, CSS, JavaScript, PHP, and MySQL; built industry-ready skills.",
+				"Managed a team of 8 instructors across 4 campuses; ensured curriculum alignment.",
+				"Oversaw accreditation compliance; partnered with Pearson VUE for certification programs."
+			]
+		}
+	],
+	"education": [
+		{
+			"institution": "The Chubb Institute",
+			"area": "Web & Graphic Design",
+			"studyType": "Diploma",
+			"endDate": "2004"
+		}
+	],
+	"skills": [
+		{
+			"name": "Languages & Scripting",
+			"level": "",
+			"keywords": ["JavaScript (ES6+)", "TypeScript", "PHP", "HTML5", "CSS3", "Sass/SCSS"]
+		},
+		{
+			"name": "Front-End",
+			"level": "",
+			"keywords": ["React", "Next.js", "AngularJS", "Tailwind CSS"]
+		},
+		{
+			"name": "Back-End & APIs",
+			"level": "",
+			"keywords": ["Node.js", "Express", "Nest.js", "GraphQL", "REST", "JSON"]
+		},
+		{
+			"name": "Testing",
+			"level": "",
+			"keywords": ["Playwright", "Jest"]
+		},
+		{
+			"name": "CI/CD & DevOps",
+			"level": "",
+			"keywords": ["GitHub Actions", "Docker", "Kubernetes", "Vercel"]
+		},
+		{
+			"name": "Databases & CMS",
+			"level": "",
+			"keywords": ["SQL Server", "MySQL", "WordPress (Custom Themes & Plugins)", "Contentful"]
+		}
+	],
+	"meta": {
+		"lastModified": "2025-08-15",
+		"originalSource": "Uploaded PDF/DOCX"
+	}
+}

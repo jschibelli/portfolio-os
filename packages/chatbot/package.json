@@ -1,0 +1,19 @@
+{
+  "name": "@mindware-blog/chatbot",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "build": "echo 'No build step required for chatbot package'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openai": "^5.12.2",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.15",
+    "typescript": "^5.3.3"
+  }
+}

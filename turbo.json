@@ -1,0 +1,143 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "**/.env*",
+    "**/package.json",
+    "**/pnpm-lock.yaml",
+    "**/tsconfig.json",
+    "**/next.config.js",
+    "**/tailwind.config.js"
+  ],
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^dev"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**", "build/**"],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.json",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.md",
+        "**/*.mdx",
+        "**/public/**",
+        "**/assets/**"
+      ]
+    },
+    "@mindware-blog/site#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.json",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.md",
+        "**/*.mdx",
+        "**/public/**",
+        "**/assets/**"
+      ]
+    },
+    "@mindware-blog/dashboard#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.json",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.md",
+        "**/*.mdx",
+        "**/public/**",
+        "**/assets/**"
+      ]
+    },
+    "@mindware-blog/chatbot#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@mindware-blog/db#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@mindware-blog/emails#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@mindware-blog/hashnode#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@mindware-blog/lib#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@mindware-blog/ui#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@starter-kit/eslint-config-custom#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@starter-kit/tsconfig#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "@starter-kit/utils#build": {
+      "outputs": [],
+      "cache": true
+    },
+    "lint": {
+      "outputs": [],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/.eslintrc*",
+        "**/eslint.config.*"
+      ]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "inputs": [
+        "**/*.test.*",
+        "**/*.spec.*",
+        "**/__tests__/**",
+        "**/tests/**",
+        "**/jest.config.*",
+        "**/playwright.config.*"
+      ]
+    },
+    "typecheck": {
+      "outputs": ["tsconfig.tsbuildinfo"],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/tsconfig*.json"
+      ]
+    }
+  }
+}
+
