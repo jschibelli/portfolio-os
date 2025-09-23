@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const useProdServer = process.env.PW_USE_BUILD === '1'
+
 export default defineConfig({
 	// Test directory containing all test files
 	testDir: './tests',
@@ -85,10 +87,10 @@ export default defineConfig({
 		},
 	],
 	webServer: {
-		command: 'npm run dev',
+		command: useProdServer ? 'pnpm --filter @mindware-blog/site start' : 'npm run dev',
 		url: 'http://localhost:3000',
 		reuseExistingServer: !process.env.CI,
-		timeout: 120 * 1000, // 2 minutes timeout for server startup
+		timeout: 120 * 1000,
 		stdout: 'pipe',
 		stderr: 'pipe',
 	},
