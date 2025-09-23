@@ -173,14 +173,13 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								<p className="mx-auto max-w-2xl text-stone-700 dark:text-stone-300">
 									{data.description}
 								</p>
-							</div>
+			</div>
 
-
-							{/* Highlights */}
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+						{/* Highlights */}
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
 								viewport={{ once: true }}
 								className="mb-8"
 							>
@@ -189,11 +188,11 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 								</h3>
 								<div className="grid grid-cols-1 gap-3 md:grid-cols-2">
 									{data.highlights.map((highlight, index) => (
-										<motion.div
-											key={index}
-											initial={{ opacity: 0, x: -20 }}
-											whileInView={{ opacity: 1, x: 0 }}
-											transition={{ duration: 0.4, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
+									<motion.div
+										key={index}
+										initial={{ opacity: 0, x: -20 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ duration: 0.4, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
 											viewport={{ once: true }}
 											className="flex items-start gap-3"
 										>
@@ -207,10 +206,10 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 							</motion.div>
 
 							{/* CTA Buttons */}
-							<motion.div
-								initial={{ opacity: 0, scale: 0.9 }}
-								whileInView={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
 								viewport={{ once: true }}
 								className="flex flex-col justify-center gap-4 sm:flex-row"
 							>
