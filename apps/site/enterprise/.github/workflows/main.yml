@@ -46,7 +46,7 @@ env:
   NODE_VERSION: '18'  # Using Node.js 18 LTS for better compatibility and security
   PNPM_VERSION: '8'   # Latest stable pnpm version with improved performance
   PNPM_CACHE_PATH: ~/.pnpm-store  # Cross-platform cache path for dependency caching
-  WORKING_DIRECTORY: packages/blog-starter-kit/themes/enterprise  # Project root directory
+  WORKING_DIRECTORY: .  # Project root directory
 
 jobs:
   # Workflow Validation - Ensures all environment variables are properly configured
@@ -204,8 +204,7 @@ jobs:
       # Build application for visual testing
       - name: Build application
         run: |
-          cd ${{ env.WORKING_DIRECTORY }}
-          pnpm build
+          pnpm turbo build --filter=@mindware-blog/site
         env:
           NEXT_PUBLIC_MODE: production
           NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT: ${{ secrets.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/' }}
@@ -220,7 +219,6 @@ jobs:
         
       - name: Run visual regression tests
         run: |
-          cd ${{ env.WORKING_DIRECTORY }}
           pnpm test:visual
         env:
           CI: true
@@ -230,7 +228,7 @@ jobs:
         if: always()
         with:
           name: visual-test-results
-          path: ${{ env.WORKING_DIRECTORY }}/test-results/
+          path: test-results/
           retention-days: 7
           
       - name: Upload visual test screenshots
@@ -238,7 +236,7 @@ jobs:
         if: always()
         with:
           name: visual-test-screenshots
-          path: ${{ env.WORKING_DIRECTORY }}/test-results/
+          path: test-results/
           retention-days: 7
           
       - name: Comment PR with visual test results
@@ -251,7 +249,7 @@ jobs:
             const path = require('path');
             
             // Check if visual tests failed
-            const testResultsPath = '${{ env.WORKING_DIRECTORY }}/test-results/';
+            const testResultsPath = 'test-results/';
             let hasFailures = false;
             let comment = '## 🎨 Visual Regression Test Results\n\n';
             
@@ -338,7 +336,6 @@ jobs:
         
       - name: Build application with enhanced caching
         run: |
-          cd ${{ env.WORKING_DIRECTORY }}
           # Use Turbo for better caching and parallel builds (local cache only)
           pnpm turbo build --filter=@mindware-blog/site
         env:
@@ -368,7 +365,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-files
-          path: ${{ env.WORKING_DIRECTORY }}/.next
+          path: apps/site/.next
           retention-days: 7
 
   # Security Scan - Scans for vulnerabilities using Trivy (runs in parallel with build)
@@ -425,7 +422,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./${{ env.WORKING_DIRECTORY }}
+          working-directory: ./apps/site
           vercel-args: '--prod'
 
   # Deploy to Vercel (Preview) - Creates preview deployments for pull requests
@@ -452,7 +449,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./${{ env.WORKING_DIRECTORY }}
+          working-directory: ./apps/site
           vercel-args: '--target=preview'
 
   # Workflow Status Summary - Provides comprehensive status report and notifications
