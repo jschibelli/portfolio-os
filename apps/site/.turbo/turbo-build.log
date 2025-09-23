@@ -6,41 +6,29 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 22.0s
+ ✓ Compiled successfully in 21.4s
    Skipping validation of types
    Skipping linting
    Collecting page data ...
 ⚠️  Environment validation warnings (development mode):
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:07.908Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:49:56.521Z', service: 'google-calendar' }
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:07.916Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:49:56.530Z', service: 'google-calendar' }
 
 💡 Some features may be disabled until environment variables are configured.
    See README.md for complete setup instructions.
 ⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:07.933Z', service: 'google-calendar' }
 💡 Some features may be disabled until environment variables are configured.
    See README.md for complete setup instructions.
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:49:56.535Z', service: 'google-calendar' }
  ⚠ Using edge runtime on a page currently disables static generation for that page
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:07.962Z', service: 'google-calendar' }
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:07.997Z', service: 'google-calendar' }
-⚠️  Environment validation warnings (development mode):
-  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
-
-💡 Some features may be disabled until environment variables are configured.
-   See README.md for complete setup instructions.
-⚠️  Environment validation warnings (development mode):
-  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
-
-💡 Some features may be disabled until environment variables are configured.
-   See README.md for complete setup instructions.
    Generating static pages (0/102) ...
    Generating static pages (25/102) 
    Generating static pages (50/102) 
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:50:08.492Z', service: 'google-calendar' }
 ⚠️  Environment validation warnings (development mode):
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-23T03:41:19.095Z', service: 'google-calendar' }
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
 💡 Some features may be disabled until environment variables are configured.
