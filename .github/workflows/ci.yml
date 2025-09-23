@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - 'apps/site/**'
+      - '.github/workflows/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/site/**'
+      - '.github/workflows/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm --filter @mindware-blog/site lint
+
+      - name: Typecheck
+        run: pnpm --filter @mindware-blog/site typecheck
+
+      - name: Run unit tests (Jest)
+        run: pnpm --filter @mindware-blog/site test -- --ci
+
+      - name: Build application
+        run: pnpm --filter @mindware-blog/site build
+
+      - name: Check for build artifacts
+        run: |
+          if [ -d "apps/site/.next" ]; then
+            echo "Build successful - .next directory created"
+          else
+            echo "Build failed - .next directory not found"
+            exit 1
+          fi
+
+

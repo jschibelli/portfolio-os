@@ -8,7 +8,12 @@
 	"scripts": {
 		"format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
 		"preinstall": "npx only-allow pnpm",
-		"postinstall": "cd packages/blog-starter-kit/themes/enterprise && prisma generate"
+		"postinstall": "cd apps/dashboard && prisma generate",
+		"dev": "turbo run dev --parallel",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"test": "turbo run test --continue",
+		"typecheck": "turbo run typecheck"
 	},
 	"dependencies": {
 		"@radix-ui/react-icons": "^1.3.2",
@@ -22,17 +27,29 @@
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.10.2",
+		"@playwright/test": "^1.55.0",
+		"@testing-library/jest-dom": "^6.8.0",
+		"@testing-library/react": "^16.3.0",
+		"@testing-library/user-event": "^14.6.1",
 		"@types/luxon": "^3.7.1",
 		"@types/node": "^18.0.3",
 		"@types/react": "^18.0.15",
 		"@types/react-dom": "^18.0.6",
+		"axe-core": "^4.10.3",
+		"babel-jest": "^30.1.2",
+		"identity-obj-proxy": "^3.0.0",
+		"jest": "^30.1.3",
+		"jest-environment-jsdom": "^30.1.2",
 		"prettier": "^3.0.3",
 		"prettier-plugin-organize-imports": "^3.2.3",
 		"prettier-plugin-packagejson": "^2.4.6",
 		"prettier-plugin-tailwindcss": "^0.5.5",
 		"tailwindcss": "^3.3.3",
+		"turbo": "^2.5.6",
 		"typescript": "^5.2.2"
 	},
+	"packageManager": "pnpm@10.14.0",
 	"engines": {
 		"node": ">=18.0.0",
 		"pnpm": ">=8.0.0"
