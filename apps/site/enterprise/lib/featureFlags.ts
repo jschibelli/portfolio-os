@@ -1,9 +1,0 @@
-export const FEATURE_GMAIL = process.env.FEATURE_GMAIL === 'true';
-export const FEATURE_CALENDAR = process.env.FEATURE_CALENDAR === 'true';
-export const FEATURE_LINKEDIN = process.env.FEATURE_LINKEDIN === 'true';
-export const FEATURE_FACEBOOK = process.env.FEATURE_FACEBOOK === 'true';
-export const FEATURE_THREADS = process.env.FEATURE_THREADS === 'true';
-export const FEATURE_ANALYTICS = process.env.FEATURE_ANALYTICS === 'true';
-export const FEATURE_DEVOPS = process.env.FEATURE_DEVOPS === 'true';
-export const FEATURE_STRIPE = process.env.FEATURE_STRIPE === 'true';
-export const FEATURE_NOTES = process.env.FEATURE_NOTES === 'true';
