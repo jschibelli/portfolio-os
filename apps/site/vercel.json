@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm turbo build --filter=@mindware-blog/site",
+  "installCommand": "pnpm install",
+  "framework": "nextjs"
+}

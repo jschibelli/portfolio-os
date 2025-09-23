@@ -1,0 +1,490 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 346.8 77.2% 49.8%;
+    --radius: 0.5rem;
+    --chart-1: 346.8 77.2% 49.8%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 346.8 77.2% 49.8%;
+    --chart-1: 346.8 77.2% 49.8%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+  /* Accessibility improvements */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Ensure focus is always visible */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Skip to main content link */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: 240 5.9% 20%;
+      --input: 240 5.9% 20%;
+    }
+  }
+
+  /* Ensure sufficient color contrast */
+  .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Improve focus states for interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+.hashnode-content-style{
+    @apply prose break-words text-slate-950 lg:prose-xl dark:prose-invert dark:text-neutral-50 dark:prose-pre:bg-neutral-900;
+}
+
+/* Ensure first child headings/paragraphs have no extra top margin */
+.hashnode-content-style :where(p, h1, h2, h3, h4, h5):first-child {
+    margin-top: 0 !important;
+}
+
+/* Override to remove the backtick */
+.hashnode-content-style :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before, .hashnode-content-style :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::after  {
+    content: none;
+}
+
+/* Ensure images don't overflow within prose */
+.hashnode-content-style :where(img) {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Comfortable line-height for common elements */
+.hashnode-content-style :where(p, blockquote, figure, figcaption, pre, li, ul, ol, th, td) {
+    line-height: 1.45;
+}
+
+/* Link styling within prose */
+.hashnode-content-style :where(a) {
+    text-decoration: underline;
+}
+.hashnode-content-style :where(a:hover) {
+    background-color: hsl(var(--accent) / 0.15);
+}
+
+.prose code {
+    border-radius: 0.25rem;
+    font-weight: 400 !important;
+    padding: 0.25rem;
+    --tw-text-opacity: 1;
+    color: rgba(0, 0, 0, var(--tw-text-opacity));
+    font-size: 80%;
+    background: #f0efed;
+}
+  
+.dark .prose code {
+    --tw-bg-opacity: 1;
+    background-color: rgba(36, 41, 46, var(--tw-bg-opacity));
+    --tw-text-opacity: 1;
+    color: rgba(238, 238, 238, var(--tw-text-opacity));
+}
+  
+.prose pre {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
+  
+.prose pre code {
+    background-color: transparent;
+    border-radius: 0px;
+    font-weight: 500 !important;
+    padding: 0px;
+    font-size: 100%;
+    color: #fafafa;
+}
+
+/* Animation classes for Launch UI components */
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appear-zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-appear {
+  animation: appear 0.6s ease-out forwards;
+}
+
+.animate-appear-zoom {
+  animation: appear-zoom 0.8s ease-out forwards;
+}
+
+.fade-bottom {
+  animation: fade-bottom 0.8s ease-out forwards;
+}
+
+/* Glow effect utilities */
+.bg-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+/* Container utilities */
+.max-w-container {
+  max-width: 1200px;
+}
+
+/* Brand color utilities */
+.bg-brand {
+  background-color: hsl(var(--primary));
+}
+
+.text-brand {
+  color: hsl(var(--primary));
+}
+
+.bg-brand-foreground {
+  background-color: hsl(var(--primary-foreground));
+}
+
+.text-brand-foreground {
+  color: hsl(var(--primary-foreground));
+}
+
+/* Linear gradient utilities */
+.bg-linear-to-r {
+  background: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+/* Text balance utility */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Pagination Animation Classes */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-600 {
+  animation-delay: 600ms;
+}
+
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animation-delay-800 {
+  animation-delay: 800ms;
+}
+
+.animation-delay-900 {
+  animation-delay: 900ms;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS - COMPREHENSIVE MOBILE-FIRST APPROACH
+   ========================================================================== */
+/* 
+ * Consolidated mobile styles with consistent breakpoints and improved organization
+ * Tested across: iOS Safari, Chrome Mobile, Firefox Mobile, Samsung Internet
+ * Breakpoints: 640px (small mobile), 768px (mobile/tablet)
+ */
+
+/* Small mobile devices (up to 640px) */
+@media (max-width: 640px) {
+  /* Container spacing for small screens */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Text size adjustment for small screens */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* Mobile devices (up to 768px) - Primary mobile breakpoint */
+@media (max-width: 768px) {
+  /* Touch targets - Ensure accessibility compliance (WCAG 2.1 AA) */
+  button, 
+  a, 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"],
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Touch feedback for better user interaction */
+  button:active,
+  a:active,
+  .touch-feedback:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Enhanced scrolling performance */
+  .scroll-container,
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Improved tap highlighting for mobile */
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Touch-friendly interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   iOS SAFARI COMPATIBILITY - PREVENT ZOOM ON INPUT FOCUS
+   ========================================================================== */
+/* 
+ * Targets iOS Safari specifically to prevent unwanted zoom when focusing form inputs
+ * Critical for mobile UX: iOS Safari zooms when font-size < 16px
+ * Tested on: iOS 14+, iOS Safari 14+
+ */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select, 
+  textarea, 
+  input[type="text"], 
+  input[type="password"], 
+  input[type="datetime"], 
+  input[type="datetime-local"], 
+  input[type="date"], 
+  input[type="month"], 
+  input[type="time"], 
+  input[type="week"], 
+  input[type="number"], 
+  input[type="email"], 
+  input[type="url"], 
+  input[type="search"], 
+  input[type="tel"], 
+  input[type="color"] {
+    font-size: 16px;
+  }
+}
+
+/* ==========================================================================
+   MOBILE TYPOGRAPHY AND SPACING - OPTIMIZED FOR MOBILE READABILITY
+   ========================================================================== */
+/* 
+ * Responsive typography system optimized for mobile devices
+ * Based on: Material Design Typography, Apple Human Interface Guidelines
+ * Tested on: Various mobile devices and screen sizes
+ */
+@media (max-width: 768px) {
+  /* Base typography improvements for mobile */
+  body {
+    line-height: 1.6;
+    font-size: 16px; /* Ensure readable base font size */
+  }
+  
+  /* Responsive heading hierarchy for mobile */
+  h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+    line-height: 1.3;
+    margin-bottom: 0.875rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+  }
+  
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-bottom: 0.625rem;
+  }
+  
+  /* Improved paragraph spacing and readability */
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Better list spacing on mobile */
+  ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Call to Action component styles */
+.bg-dot-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
