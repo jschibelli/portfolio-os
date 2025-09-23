@@ -45,4 +45,14 @@ next-env.d.ts
 
 
 # Turborepo
-.turbo
+.turbo/
+**/.turbo/
+
+# Build logs and temporary files
+*.log
+**/*.log
+*.tmp
+*.temp
+
+# Turbo cache
+.turbo/cache/

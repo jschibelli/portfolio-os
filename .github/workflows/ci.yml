@@ -41,4 +41,16 @@ jobs:
       - name: Run unit tests (Jest)
         run: pnpm --filter @mindware-blog/site test -- --ci
 
+      - name: Build application
+        run: pnpm --filter @mindware-blog/site build
+
+      - name: Check for build artifacts
+        run: |
+          if [ -d "apps/site/.next" ]; then
+            echo "Build successful - .next directory created"
+          else
+            echo "Build failed - .next directory not found"
+            exit 1
+          fi
+
 
