@@ -36,7 +36,7 @@ export const mockTag = {
 }
 
 // API response mocks
-export const mockApiResponse = <T>(data: T, status: number = 200) => ({
+export const mockApiResponse = <T extends unknown>(data: T, status: number = 200) => ({
   data,
   status,
   statusText: status === 200 ? 'OK' : 'Error',

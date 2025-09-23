@@ -1,8 +1,8 @@
 // Polyfills for Jest environment
-import 'whatwg-fetch'
+const { fetch, Request, Response, Headers } = require('whatwg-fetch')
 
-// Mock fetch for tests
-global.fetch = require('whatwg-fetch').fetch
-global.Request = require('whatwg-fetch').Request
-global.Response = require('whatwg-fetch').Response
-global.Headers = require('whatwg-fetch').Headers
+// Set up global fetch polyfill
+global.fetch = fetch
+global.Request = Request
+global.Response = Response
+global.Headers = Headers

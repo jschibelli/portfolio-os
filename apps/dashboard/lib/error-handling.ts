@@ -241,7 +241,7 @@ export function createErrorBoundary() {
     render() {
       if (this.state.hasError && this.state.error) {
         const FallbackComponent = this.props.fallback || DefaultErrorFallback
-        return <FallbackComponent error={this.state.error} />
+        return React.createElement(FallbackComponent, { error: this.state.error })
       }
       
       return this.props.children
@@ -253,13 +253,9 @@ export function createErrorBoundary() {
  * Default error fallback component
  */
 function DefaultErrorFallback({ error }: { error: Error }) {
-  return (
-    <div className="error-boundary">
-      <h2>Something went wrong</h2>
-      <p>{createUserFriendlyError(error)}</p>
-      <button onClick={() => window.location.reload()}>
-        Reload Page
-      </button>
-    </div>
+  return React.createElement('div', { className: 'error-boundary' },
+    React.createElement('h2', null, 'Something went wrong'),
+    React.createElement('p', null, createUserFriendlyError(error)),
+    React.createElement('button', { onClick: () => window.location.reload() }, 'Reload Page')
   )
 }
