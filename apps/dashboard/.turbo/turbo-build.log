@@ -1,0 +1,89 @@
+
+> @mindware-blog/dashboard@0.1.0 build E:\2025 Portfolio\mindware-blog\apps\dashboard
+> next build
+
+   ▲ Next.js 15.5.2
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 25.4s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/50) ...
+   Generating static pages (12/50) 
+   Generating static pages (24/50) 
+   Generating static pages (37/50) 
+ ✓ Generating static pages (50/50)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                    Size  First Load JS
+┌ ○ /                                         217 B         102 kB
+├ ○ /_not-found                                1 kB         103 kB
+├ ○ /admin                                  7.61 kB         232 kB
+├ ○ /admin/activity                         5.01 kB         107 kB
+├ ○ /admin/analytics                        12.1 kB         232 kB
+├ ○ /admin/articles                         4.43 kB         124 kB
+├ ƒ /admin/articles/[id]/edit                 136 B         137 kB
+├ ○ /admin/articles/new                       136 B         137 kB
+├ ○ /admin/articles/scheduled               4.91 kB         107 kB
+├ ○ /admin/case-studies                     3.32 kB         117 kB
+├ ○ /admin/case-studies/new                 5.64 kB         119 kB
+├ ○ /admin/comments                         4.66 kB         107 kB
+├ ○ /admin/control-center                   3.98 kB         119 kB
+├ ○ /admin/control-center/analytics           217 B         102 kB
+├ ○ /admin/control-center/calendar            217 B         102 kB
+├ ○ /admin/control-center/composer          5.79 kB         123 kB
+├ ○ /admin/control-center/devops              217 B         102 kB
+├ ○ /admin/control-center/email             18.6 kB         133 kB
+├ ○ /admin/control-center/finance             217 B         102 kB
+├ ○ /admin/control-center/notes               217 B         102 kB
+├ ○ /admin/control-center/social              217 B         102 kB
+├ ○ /admin/media                            5.27 kB         116 kB
+├ ○ /admin/media/upload                     5.17 kB         107 kB
+├ ○ /admin/newsletter                       5.47 kB         108 kB
+├ ○ /admin/settings                         4.64 kB         116 kB
+├ ○ /admin/settings/appearance              6.36 kB         108 kB
+├ ○ /admin/settings/database                5.68 kB         108 kB
+├ ○ /admin/settings/email                   5.17 kB         107 kB
+├ ○ /admin/settings/integrations            5.84 kB         108 kB
+├ ○ /admin/settings/roles                   4.23 kB         106 kB
+├ ○ /admin/settings/seo                        5 kB         107 kB
+├ ○ /admin/settings/users                   4.94 kB         107 kB
+├ ○ /admin/tags                             3.82 kB         106 kB
+├ ƒ /api/admin/activity                       217 B         102 kB
+├ ƒ /api/admin/analytics                      217 B         102 kB
+├ ƒ /api/admin/articles                       217 B         102 kB
+├ ƒ /api/admin/articles/[id]                  217 B         102 kB
+├ ƒ /api/admin/articles/import-hashnode       217 B         102 kB
+├ ƒ /api/admin/articles/scheduled             217 B         102 kB
+├ ƒ /api/admin/case-studies                   217 B         102 kB
+├ ƒ /api/admin/case-studies/[id]              217 B         102 kB
+├ ƒ /api/admin/comments                       217 B         102 kB
+├ ƒ /api/admin/comments/[id]                  217 B         102 kB
+├ ƒ /api/admin/media                          217 B         102 kB
+├ ƒ /api/admin/newsletter                     217 B         102 kB
+├ ƒ /api/admin/newsletter/campaigns/[id]      217 B         102 kB
+├ ƒ /api/admin/newsletter/subscribers/[id]    217 B         102 kB
+├ ƒ /api/admin/roles                          217 B         102 kB
+├ ƒ /api/admin/settings/appearance            217 B         102 kB
+├ ƒ /api/admin/settings/database              217 B         102 kB
+├ ƒ /api/admin/settings/email                 217 B         102 kB
+├ ƒ /api/admin/settings/integrations          217 B         102 kB
+├ ƒ /api/admin/settings/seo                   217 B         102 kB
+├ ƒ /api/admin/stats                          217 B         102 kB
+├ ƒ /api/admin/tags                           217 B         102 kB
+├ ƒ /api/admin/tags/[id]                      217 B         102 kB
+├ ƒ /api/admin/users                          217 B         102 kB
+├ ƒ /api/admin/users/[id]                     217 B         102 kB
+├ ƒ /api/auth/[...nextauth]                   217 B         102 kB
+└ ○ /login                                  1.83 kB         113 kB
++ First Load JS shared by all                102 kB
+  ├ chunks/9863-914e0dc62e60f827.js         45.7 kB
+  ├ chunks/f3c972f3-0e0de4aa1fcd26e9.js     54.2 kB
+  └ other shared chunks (total)             2.06 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
