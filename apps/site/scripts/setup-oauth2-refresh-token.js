@@ -9,6 +9,31 @@
 
 const https = require('https');
 const readline = require('readline');
+const fs = require('fs');
+const path = require('path');
+
+// Try to load environment variables from .env.local
+(() => {
+  try {
+    // Optional dependency: use if available
+    const dotenv = require('dotenv');
+    const rootEnv = path.resolve(process.cwd(), '.env.local');
+    const appEnv = path.resolve(process.cwd(), 'apps/site/.env.local');
+
+    if (fs.existsSync(rootEnv)) {
+      dotenv.config({ path: rootEnv });
+      console.log('📄 Loaded environment from .env.local');
+    } else if (fs.existsSync(appEnv)) {
+      dotenv.config({ path: appEnv });
+      console.log('📄 Loaded environment from apps/site/.env.local');
+    } else {
+      // Fall back to default .env if present
+      dotenv.config();
+    }
+  } catch (_) {
+    // dotenv not installed; rely on process environment
+  }
+})();
 
 // Configuration
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -75,7 +100,11 @@ function makeRequest(url, data = null) {
 function generateAuthUrl() {
   const scopes = [
     'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/calendar.events'
+    'https://www.googleapis.com/auth/calendar.events',
+    // Gmail scopes for reading, modifying, and sending mail
+    'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/gmail.modify',
+    'https://www.googleapis.com/auth/gmail.send'
   ].join(' ');
   
   const params = new URLSearchParams({
