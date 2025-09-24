@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/assets/hero/hero-bg.png',
+        url: '/assets/og.png',
         width: 1200,
         height: 630,
         alt: 'John Schibelli - Senior Front-End Developer',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: 'John Schibelli - Senior Front-End Developer',
     description: 'Building smarter, faster web applications. Expert in React, Next.js, and TypeScript with 15+ years of proven results.',
     creator: '@johnschibelli',
-    images: ['/assets/hero/hero-bg.png'],
+    images: ['/assets/og.png'],
   },
   robots: {
     index: true,

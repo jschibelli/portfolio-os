@@ -38,7 +38,7 @@ export function SEOHead({
 }: SEOHeadProps) {
 	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.com';
 	const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
-	const fullOgImage = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og-image.jpg`;
+	const fullOgImage = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og.png`;
 
 	// Default keywords for the site
 	const defaultKeywords = [
