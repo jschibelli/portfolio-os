@@ -203,10 +203,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 										</div>
 									</div>
 
-									{/* Mobile Search - moved to bottom to prevent keyboard from covering navigation */}
-									<div className="mt-6 border-t border-border pt-6 px-4">
-										<GlobalSearch placeholder="Search..." />
-									</div>
 								</div>
 							</SheetContent>
 						</Sheet>
