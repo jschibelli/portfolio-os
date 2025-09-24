@@ -42,32 +42,8 @@ const logger = {
 	}
 };
 
-// Check if OAuth2 credentials are available
+// Check if OAuth2 credentials are available (evaluated at runtime where used)
 const hasOAuth2Credentials = features.googleCalendar;
-
-/**
- * Credential monitoring and notification system
- * 
- * This structured approach provides better visibility into credential status
- * and can be easily extended to integrate with monitoring systems like:
- * - Sentry for error tracking
- * - DataDog for infrastructure monitoring
- * - Custom webhook notifications
- */
-if (!hasOAuth2Credentials) {
-	const credentialStatus = {
-		status: 'MISSING_CREDENTIALS',
-		service: 'google-calendar',
-		required: ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REDIRECT_URI', 'GOOGLE_OAUTH_REFRESH_TOKEN'],
-		impact: 'Calendar integration will fall back to mock data',
-		timestamp: new Date().toISOString()
-	};
-	
-	logger.warn('OAuth2 credentials not found', credentialStatus);
-	
-	// TODO: Integrate with centralized monitoring system
-	// Example: sendToMonitoring(credentialStatus);
-}
 
 /**
  * SSL/TLS compatibility fix for Node.js 20+ with Google APIs

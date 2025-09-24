@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   transpilePackages: [
     '@mindware-blog/ui',
@@ -8,7 +10,9 @@ const nextConfig = {
     '@mindware-blog/emails',
     '@mindware-blog/chatbot',
   ],
-  outputFileTracingRoot: __dirname,
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, '../../'),
+  },
   images: {
     qualities: [25, 50, 75, 85, 100],
     remotePatterns: [
