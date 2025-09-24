@@ -1,15 +1,15 @@
 <p align="center">
-  <a href="https://schibelli.dev">
+  <a href="https://johnschibelli.dev">
     <img src="apps/site/public/assets/og.png" alt="John Schibelli — Portfolio OS" width="100%" />
   </a>
 </p>
 
 <h1 align="center">Portfolio OS</h1>
-<p align="center">A modern, production-grade monorepo powering <a href="https://schibelli.dev">schibelli.dev</a> — portfolio, blog, admin dashboard, and AI tools.</p>
+<p align="center">A modern, production-grade monorepo powering <a href="https://johnschibelli.dev">johnschibelli.dev</a> — portfolio, blog, admin dashboard, and AI tools.</p>
 
 <p align="center">
   <a href="https://github.com/johnschibelli/portfolio-os/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-black.svg"></a>
-  <a href="https://schibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-schibelli.dev-black"></a>
+  <a href="https://johnschibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-johnschibelli.dev-black"></a>
   <a href="https://vercel.com"><img alt="Deploys on Vercel" src="https://img.shields.io/badge/Deploy-Vercel-black"></a>
 </p>
 
