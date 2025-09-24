@@ -104,11 +104,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 								</SheetHeader>
 
 								<div className="mt-8">
-									{/* Mobile Search */}
-									<div className="mb-6 px-4">
-										<GlobalSearch placeholder="Search..." />
-									</div>
-
 									<nav className="flex flex-col space-y-4" role="navigation" aria-label="Mobile navigation">
 										<Link
 											href="/"
@@ -207,6 +202,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 											</Link>
 										</div>
 									</div>
+
 								</div>
 							</SheetContent>
 						</Sheet>
