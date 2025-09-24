@@ -1,37 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getFreeSlots } from '@/lib/google/calendar';
 
-// Calendar availability function
+// Calendar availability function (no internal HTTP calls; uses library directly)
 async function getAvailability({ timezone = 'America/New_York', days = 7 }: { timezone?: string; days?: number }) {
   try {
     const now = new Date();
     const end = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
-    
-    const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/schedule/slots`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        durationMinutes: 30,
-        startISO: now.toISOString(),
-        endISO: end.toISOString(),
-        timeZone: timezone,
-        dayStartHour: 9,
-        dayEndHour: 18,
-        maxCandidates: 24,
-      }),
+
+    const slots = await getFreeSlots({
+      timeMinISO: now.toISOString(),
+      timeMaxISO: end.toISOString(),
+      timeZone: timezone,
+      durationMinutes: 30,
+      dayStartHour: 9,
+      dayEndHour: 18,
+      maxCandidates: 24,
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return {
-        availableSlots: data.slots || [],
-        timezone,
-        businessHours: { start: 9, end: 18, timezone },
-        meetingDurations: [30, 60],
-      };
-    } else {
-      throw new Error('Failed to fetch availability');
-    }
+    return {
+      availableSlots: slots || [],
+      timezone,
+      businessHours: { start: 9, end: 18, timezone },
+      meetingDurations: [30, 60],
+    };
   } catch (error) {
     console.error('Error fetching availability:', error);
     throw error;
