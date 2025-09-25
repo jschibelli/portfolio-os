@@ -15,8 +15,8 @@ export const SECONDARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-card text-foreg
 // Outline button styles - token-driven, accessible on light/dark backgrounds
 export const OUTLINE_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-transparent border-2 border-border text-foreground hover:bg-accent hover:text-accent-foreground`;
 
-// Ghost button styles - minimal styling
-export const GHOST_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-transparent text-stone-700 hover:bg-stone-100 hover:text-stone-900`;
+// Ghost button styles - minimal, token-driven for theme consistency
+export const GHOST_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-transparent text-foreground hover:bg-muted hover:text-foreground`;
 
 // Button size variants
 export const BUTTON_SIZES = {
