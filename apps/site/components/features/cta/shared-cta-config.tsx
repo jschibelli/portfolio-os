@@ -16,10 +16,10 @@ export const sharedStyles = {
     busy: 'bg-yellow-500'
   },
   button: {
-    primary: 'bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200',
+    primary: 'px-8 py-4 text-lg font-semibold bg-primary text-primary-foreground transition-all duration-300 hover:scale-105 hover:bg-primary/90',
     secondary: 'px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105',
-    enhanced: 'group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl',
-    enhancedOutline: 'px-8 py-4 text-lg font-semibold bg-transparent border border-white text-white transition-all duration-300 hover:bg-white hover:text-stone-900 hover:border-white'
+    enhanced: 'group px-8 py-4 text-lg font-semibold bg-card text-foreground transition-all duration-300 hover:scale-105 hover:bg-muted hover:shadow-xl',
+    enhancedOutline: 'px-8 py-4 text-lg font-semibold bg-transparent border border-border text-foreground transition-all duration-300 hover:bg-accent hover:text-accent-foreground'
   }
 };
 

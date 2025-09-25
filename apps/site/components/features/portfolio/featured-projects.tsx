@@ -20,8 +20,8 @@ export default function FeaturedProjects() {
 			timestamp: new Date().toISOString()
 		});
 		return (
-			<section 
-				className="bg-white py-20 dark:bg-stone-950"
+		<section 
+			className="bg-background py-20"
 				aria-label="Featured projects section"
 				role="region"
 			>
@@ -65,7 +65,7 @@ export default function FeaturedProjects() {
 
 	return (
 		<section 
-			className="bg-white py-16 dark:bg-stone-950"
+			className="bg-background py-16"
 			aria-label="Featured portfolio projects"
 			role="region"
 		>
