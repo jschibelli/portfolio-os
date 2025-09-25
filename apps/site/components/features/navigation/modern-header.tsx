@@ -23,7 +23,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 	const siteTitle = publication.displayTitle || publication.title;
 
 	return (
-		<header className="sticky top-0 z-50 w-full border-b border-border bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-stone-900/80 dark:supports-[backdrop-filter]:bg-stone-900/60" role="banner">
+		<header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
 			<div className="container mx-auto px-4">
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}

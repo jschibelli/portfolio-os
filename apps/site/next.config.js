@@ -10,9 +10,7 @@ const nextConfig = {
     '@mindware-blog/emails',
     '@mindware-blog/chatbot',
   ],
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../../'),
-  },
+  outputFileTracingRoot: path.join(__dirname, '../../'),
   images: {
     qualities: [25, 50, 75, 85, 100],
     remotePatterns: [

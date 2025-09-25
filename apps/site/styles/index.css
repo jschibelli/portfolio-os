@@ -58,6 +58,17 @@
     --chart-5: 340 75% 55%;
   }
 
+  /* Apply token-driven colors globally to prevent unstyled flashes */
+  body {
+    background-color: hsl(var(--background, 0 0% 100%));
+    color: hsl(var(--foreground, 240 10% 3.9%));
+  }
+
+  /* Ensure borders default to token color */
+  * {
+    border-color: hsl(var(--border, 240 5.9% 90%));
+  }
+
   /* Accessibility improvements */
   * {
     box-sizing: border-box;
@@ -65,7 +76,7 @@
 
   /* Ensure focus is always visible */
   :focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
     outline-offset: 2px;
   }
 
@@ -74,8 +85,8 @@
     position: absolute;
     top: -40px;
     left: 6px;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
+    background: hsl(var(--primary, 346.8 77.2% 49.8%));
+    color: hsl(var(--primary-foreground, 355.7 100% 97.3%));
     padding: 8px;
     text-decoration: none;
     border-radius: 4px;
@@ -109,7 +120,7 @@
 
   /* Ensure sufficient color contrast */
   .text-muted-foreground {
-    color: hsl(var(--muted-foreground));
+    color: hsl(var(--muted-foreground, 240 3.8% 46.1%));
   }
 
   /* Improve focus states for interactive elements */
@@ -118,7 +129,7 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid hsl(var(--ring));
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
     outline-offset: 2px;
   }
 

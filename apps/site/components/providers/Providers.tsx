@@ -46,24 +46,24 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 // Default error fallback component for provider errors
 function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-red-50 dark:bg-red-900/20">
-      <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-stone-900">
-        <h2 className="mb-2 text-lg font-semibold text-red-800 dark:text-red-200">
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="rounded-lg bg-card p-6 shadow-lg">
+        <h2 className="mb-2 text-lg font-semibold text-foreground">
           Something went wrong
         </h2>
-        <p className="text-red-600 dark:text-red-300">
+        <p className="text-muted-foreground">
           {error.message || "An unexpected error occurred"}
         </p>
         <div className="mt-4 flex gap-2">
           <button
             onClick={resetError}
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
           >
             Try Again
           </button>
           <button
             onClick={() => window.location.reload()}
-            className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+            className="rounded bg-destructive px-4 py-2 text-destructive-foreground hover:bg-destructive/90"
           >
             Reload Page
           </button>
@@ -89,9 +89,10 @@ export function Providers({ children }: ProvidersProps) {
       <SessionProvider>
         <ThemeProvider 
           attribute="class" 
-          defaultTheme="dark" 
+          defaultTheme="system"
           enableSystem
-          disableTransitionOnChange={false}
+          disableTransitionOnChange
+          enableColorScheme
         >
           {children}
         </ThemeProvider>
