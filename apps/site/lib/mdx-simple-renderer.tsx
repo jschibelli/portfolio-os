@@ -29,12 +29,12 @@ export const SimpleMDXRenderer = memo(function SimpleMDXRenderer({
   } catch (error) {
     console.error('Error rendering MDX content:', error);
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 my-6">
+      <div className="bg-card border border-border rounded-lg p-4 my-6">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-red-600 dark:text-red-400">⚠️</span>
-          <h4 className="font-semibold text-red-900 dark:text-red-100">Content Rendering Error</h4>
+          <span className="text-foreground">⚠️</span>
+          <h4 className="font-semibold text-foreground">Content Rendering Error</h4>
         </div>
-        <div className="text-red-800 dark:text-red-200">
+        <div className="text-muted-foreground">
           There was an error rendering this content. Please try refreshing the page.
         </div>
       </div>
