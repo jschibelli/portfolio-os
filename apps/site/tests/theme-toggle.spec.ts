@@ -7,7 +7,7 @@ test.describe('Theme toggling', () => {
         localStorage.setItem('theme', 'light');
       } catch {}
     });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).not.toHaveClass(/dark/);
     await expect(page.locator('body')).toBeVisible();
   });
@@ -18,7 +18,7 @@ test.describe('Theme toggling', () => {
         localStorage.setItem('theme', 'dark');
       } catch {}
     });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveClass(/dark/);
   });
 });
