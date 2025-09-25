@@ -58,6 +58,17 @@
     --chart-5: 340 75% 55%;
   }
 
+  /* Apply token-driven colors globally to prevent unstyled flashes */
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* Ensure borders default to token color */
+  * {
+    border-color: hsl(var(--border));
+  }
+
   /* Accessibility improvements */
   * {
     box-sizing: border-box;

@@ -19,7 +19,7 @@ export const sharedStyles = {
     primary: 'bg-stone-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200',
     secondary: 'px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105',
     enhanced: 'group bg-white px-8 py-4 text-lg font-semibold text-stone-900 transition-all duration-300 hover:scale-105 hover:bg-stone-100 hover:shadow-xl',
-    enhancedOutline: 'px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:bg-white hover:text-stone-900 border-white hover:border-white'
+    enhancedOutline: 'px-8 py-4 text-lg font-semibold bg-transparent border border-white text-white transition-all duration-300 hover:bg-white hover:text-stone-900 hover:border-white'
   }
 };
 

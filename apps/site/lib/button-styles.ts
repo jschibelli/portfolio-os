@@ -13,7 +13,7 @@ export const PRIMARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-gradient-to-r fro
 export const SECONDARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-white text-stone-900 hover:bg-stone-100`;
 
 // Outline button styles - for dark backgrounds
-export const OUTLINE_BUTTON_STYLES = `${BASE_BUTTON_STYLES} border-2 border-white text-white hover:bg-white hover:text-stone-900`;
+export const OUTLINE_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-transparent border-2 border-white text-white hover:bg-white hover:text-stone-900`;
 
 // Ghost button styles - minimal styling
 export const GHOST_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-transparent text-stone-700 hover:bg-stone-100 hover:text-stone-900`;
