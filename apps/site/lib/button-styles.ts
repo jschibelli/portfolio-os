@@ -6,8 +6,8 @@
 // Base button styles shared across all buttons
 export const BASE_BUTTON_STYLES = "group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl";
 
-// Primary button styles - gradient from hero
-export const PRIMARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-gradient-to-r from-stone-900 to-stone-700 text-white hover:from-stone-800 hover:to-stone-600`;
+// Primary button styles - token-driven for theme consistency
+export const PRIMARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-primary text-primary-foreground hover:bg-primary/90`;
 
 // Secondary button styles - token-driven to adapt to light/dark themes
 export const SECONDARY_BUTTON_STYLES = `${BASE_BUTTON_STYLES} bg-card text-foreground hover:bg-muted`;
