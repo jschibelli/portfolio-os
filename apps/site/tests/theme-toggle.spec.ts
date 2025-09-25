@@ -21,6 +21,16 @@ test.describe('Theme toggling', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('html')).toHaveClass(/dark/);
   });
+
+  test('toggles via UI button', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const html = page.locator('html');
+    const toggle = page.getByRole('button', { name: /toggle theme|switch to/i });
+    await expect(toggle).toBeVisible();
+    const initiallyDark = await html.evaluate((el) => el.classList.contains('dark'));
+    await toggle.click();
+    await expect(html).toHaveClass(initiallyDark ? /^(?!.*dark).*$/ : /dark/);
+  });
 });
 
 
