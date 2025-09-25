@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import portfolioData from '../../../data/portfolio.json';
-import { ICON_SPACING } from '../../../lib/button-styles';
+import { ICON_SPACING, OUTLINE_BUTTON_STYLES } from '../../../lib/button-styles';
 import { Button } from '../../ui/button';
 import ProjectCard, { Project } from './project-card';
 
@@ -101,13 +101,13 @@ export default function FeaturedProjects() {
 					viewport={{ once: true }}
 					className="text-center"
 				>
-					<Button
-						size="lg"
-						variant="outline"
-						className="group px-8 py-4 text-lg font-semibold transition-all duration-300 hover:scale-105"
-						asChild
-						aria-describedby="view-all-projects-description"
-					>
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className={OUTLINE_BUTTON_STYLES}
+                        asChild
+                        aria-describedby="view-all-projects-description"
+                    >
 						<Link 
 							href="/projects"
 							aria-label="View all portfolio projects"
