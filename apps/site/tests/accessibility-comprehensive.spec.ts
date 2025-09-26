@@ -26,18 +26,11 @@ test.describe('Comprehensive Accessibility Tests', () => {
 		await page.goto('/');
 		
 		// Test skip link functionality - find the skip link and ensure it's focusable
-		const skipLink = page.locator('.skip-link');
-		await expect(skipLink).toBeVisible();
-		
-		// Focus the skip link directly to test its functionality
-		await skipLink.focus();
-		await expect(skipLink).toBeFocused();
-		
-		// Test main content navigation - click the skip link to navigate
-		await skipLink.click();
-		
-		// Wait for navigation to complete
-		await page.waitForTimeout(100);
+		// Skip link removed per design request; ensure page still loads and focus works
+		await expect(page.locator('.skip-link')).toHaveCount(0);
+		// Move focus via Tab to ensure keyboard navigation still works
+		await page.keyboard.press('Tab');
+		await page.keyboard.press('Tab');
 		
 		// Test tab navigation through interactive elements
 		await page.keyboard.press('Tab');
@@ -176,9 +169,8 @@ test.describe('Comprehensive Accessibility Tests', () => {
 });
 
 async function testAccessibilityFeatures(page: any) {
-	// Test for skip link
-	const skipLink = page.locator('.skip-link');
-	await expect(skipLink).toBeVisible();
+	// Skip link intentionally removed; assert it's not present
+	await expect(page.locator('.skip-link')).toHaveCount(0);
 	
 	// Test for main landmark
 	const mainLandmark = page.locator('main[role="main"]');

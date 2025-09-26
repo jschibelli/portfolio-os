@@ -36,11 +36,6 @@ const defaultPublication = {
 export default function HomePage() {
   return (
     <AppProvider publication={defaultPublication as any}>
-      {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-
       {/* Navigation */}
       <ModernHeader publication={defaultPublication} />
 
