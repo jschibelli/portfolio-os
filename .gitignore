@@ -57,3 +57,6 @@ next-env.d.ts
 # Turbo cache and daemon logs
 .turbo/cache/
 .turbo/daemon/
+
+# Turborepo
+.turbo

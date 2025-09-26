@@ -8,6 +8,9 @@
     "**/next.config.js",
     "**/tailwind.config.js"
   ],
+  "remoteCache": {
+    "enabled": true
+  },
   "tasks": {
     "dev": {
       "cache": false,
