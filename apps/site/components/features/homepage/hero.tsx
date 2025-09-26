@@ -71,8 +71,7 @@ export default function Hero() {
 							Senior Front-End Developer
 						</p>
 						<p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-stone-300 md:text-lg lg:text-xl">
-							Transforming ideas into high-performance digital experiences that drive business growth. 
-							Expert in React, Next.js, and TypeScript with 15+ years of proven results.
+							I specialize in React, Next.js, and TypeScript — helping teams ship apps that are maintainable, scalable, and a pleasure to use.
 						</p>
 					</motion.section>
 

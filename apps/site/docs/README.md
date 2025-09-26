@@ -13,6 +13,7 @@ This directory contains comprehensive documentation for the John Schibelli portf
 ### 🛠️ [Implementation](./implementation/)
 - **Setup Guides**: Step-by-step implementation guides
 - **Feature Implementation**: Detailed guides for specific features
+- **Maintenance Page**: Professional maintenance mode implementation
 - **Troubleshooting**: Common issues and solutions
 - **Deployment**: Production deployment guides
 
@@ -27,6 +28,7 @@ This directory contains comprehensive documentation for the John Schibelli portf
 - **Blog Management**: Blog post creation and management
 - **SEO Guidelines**: Search engine optimization best practices
 - **Content Templates**: Templates for various content types
+- **Projects System**: Portfolio and case study system documentation
 
 ### 🤖 [AI & Chatbot](./ai-chatbot/)
 - **Chatbot Setup**: Complete chatbot implementation guide
@@ -52,26 +54,52 @@ This directory contains comprehensive documentation for the John Schibelli portf
 - **Performance**: Performance optimization guides
 - **Monitoring**: Site monitoring and metrics
 
+### 🔐 [Security](./security/)
+- **Authentication Security**: Authentication and authorization security
+- **Jest Security Improvements**: Testing security enhancements
+- **Security Responses**: Security issue responses and fixes
+
+### 🛡️ [Admin](./admin/)
+- **Admin Dashboard**: Real data integration and dashboard features
+- **Admin Navigation**: Navigation status and implementation
+- **Admin Setup**: Complete admin setup and configuration
+
+### 📋 [Code Reviews](./code-reviews/)
+- **Review Responses**: Code review feedback and responses
+- **PR Reviews**: Pull request review documentation
+- **Review Templates**: Reusable review response templates
+
+### 📄 [Meeting Notes](./meeting-notes/)
+- **Feasibility Analyses**: Project feasibility studies and analyses
+- **Project Documentation**: Meeting notes and project specifications
+
 ## 🗂️ File Organization
 
 ### Main Documentation Files
 - `README.md` - This file (documentation overview)
 - `CHANGELOG.md` - Project changelog and version history
-- `CONTRIBUTING.md` - Guidelines for contributors
-- `ARCHITECTURE.md` - High-level system architecture
 
-### Specialized Guides
-- `case-studies/` - Case study documentation and templates
-- `prompts/` - AI prompts for development tasks
+### Specialized Documentation
+- `getting-started/` - Onboarding and quick start guides
 - `implementation/` - Detailed implementation guides
 - `design/` - Design system and theming documentation
+- `content/` - Content management and case study guides
+- `ai-chatbot/` - AI chatbot implementation and features
+- `accessibility/` - Accessibility compliance and testing
+- `development/` - Development tools and processes
+- `analytics-seo/` - SEO and analytics implementation
+- `security/` - Security documentation and best practices
+- `admin/` - Admin dashboard and management features
+- `code-reviews/` - Code review responses and templates
+- `meeting-notes/` - Meeting notes and project documentation
+- `deployment/` - Deployment guides and configuration
 
 ## 📖 How to Use This Documentation
 
 ### For New Developers
 1. Start with [Getting Started](./getting-started/)
-2. Review [Architecture](./implementation/ARCHITECTURE_ORGANIZATION.md)
-3. Follow [Environment Setup](./implementation/ENVIRONMENT_SETUP.md)
+2. Review [Architecture](./implementation/architecture-organization.md)
+3. Follow [Environment Setup](./implementation/environment-setup.md)
 4. Explore [Quick Start](./getting-started/quick-start.md)
 
 ### For Content Creators
@@ -82,15 +110,21 @@ This directory contains comprehensive documentation for the John Schibelli portf
 
 ### For Designers
 1. Study [Design System](./design/)
-2. Review [Styling Guidelines](./design/styling-guidelines.md)
-3. Understand [Theme Migration](./design/theme-migration.md)
+2. Review [Styling Guidelines](./design/amber-styling-guide.md)
+3. Understand [Theme Migration](./design/rose-theme-migration.md)
 4. Explore [Component Library](./design/components.md)
 
 ### For DevOps
-1. Review [Deployment Guides](./implementation/deployment/)
+1. Review [Deployment Guides](./deployment/)
 2. Check [CI/CD Setup](./development/ci-cd/)
 3. Monitor [Performance](./analytics-seo/performance.md)
 4. Troubleshoot [Common Issues](./implementation/troubleshooting/)
+
+### For Administrators
+1. Review [Admin Setup](./admin/admin-setup.md)
+2. Understand [Admin Dashboard](./admin/admin-dashboard-real-data.md)
+3. Check [Admin Navigation](./admin/admin-navigation-status.md)
+4. Follow [Security Guidelines](./security/)
 
 ## 🔄 Documentation Maintenance
 
@@ -114,6 +148,9 @@ If you need help with:
 - **Content Creation**: Review [Content Management](./content/)
 - **Design Questions**: See [Design System](./design/)
 - **Accessibility**: Consult [Accessibility Guide](./accessibility/)
+- **Admin Features**: Check [Admin Documentation](./admin/)
+- **Security**: Review [Security Guidelines](./security/)
+- **Code Reviews**: See [Code Review Templates](./code-reviews/)
 
 For additional support, contact the development team or create an issue in the project repository.
 
