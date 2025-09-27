@@ -25,12 +25,27 @@ export function middleware(req: NextRequest) {
   if (UC && IS_PROD && LIVE.has(hostname)) {
     const url = req.nextUrl.clone();
     url.pathname = '/maintenance';
-    return NextResponse.rewrite(url);
+    const response = NextResponse.rewrite(url);
+    
+    // Add cache control headers for maintenance page
+    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
+    response.headers.set('X-Maintenance-Mode', 'true');
+    
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - api routes (handled separately)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|api).*)',
+  ],
 };
