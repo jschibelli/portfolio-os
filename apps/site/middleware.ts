@@ -27,9 +27,11 @@ export function middleware(req: NextRequest) {
     url.pathname = '/maintenance';
     const response = NextResponse.rewrite(url);
     
-    // Add cache control headers for maintenance page
-    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
+    // Add comprehensive cache control headers for maintenance page
+    response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=300, stale-while-revalidate=600');
     response.headers.set('X-Maintenance-Mode', 'true');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
     
     return response;
   }
