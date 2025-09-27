@@ -26,8 +26,8 @@ const caseStudyHighlights: CaseStudyHighlight[] = [
     title: "Tendril Multi-Tenant Chatbot SaaS",
     description: "Strategic analysis and implementation plan for AI-powered customer engagement platform",
     metrics: {
-      primary: "150% Revenue Increase",
-      secondary: "91% User Retention"
+      primary: "Positive Revenue Growth",
+      secondary: "Strong User Engagement"
     },
     tags: ["SaaS", "AI", "Multi-tenant"],
     caseStudyUrl: "/case-studies/tendrilo-case-study",
@@ -38,8 +38,8 @@ const caseStudyHighlights: CaseStudyHighlight[] = [
     title: "Zeus E-Commerce Platform",
     description: "Scalable, mobile-first e-commerce experience with blazing-fast performance",
     metrics: {
-      primary: "85% Sales Increase",
-      secondary: "32% Less Cart Abandonment"
+      primary: "Strong Sales Growth",
+      secondary: "Reduced Cart Abandonment"
     },
     tags: ["E-commerce", "Next.js", "Performance"],
     caseStudyUrl: "/case-studies/zeus-ecommerce-platform",
@@ -50,8 +50,8 @@ const caseStudyHighlights: CaseStudyHighlight[] = [
     title: "SynaplyAI Collaboration Platform",
     description: "Real-time AI content collaboration with token-level conflict resolution",
     metrics: {
-      primary: "200% User Growth",
-      secondary: "75% Efficiency Gain"
+      primary: "Strong User Growth",
+      secondary: "Enhanced Efficiency"
     },
     tags: ["AI", "Collaboration", "Real-time"],
     caseStudyUrl: "/case-studies/synaplyai",

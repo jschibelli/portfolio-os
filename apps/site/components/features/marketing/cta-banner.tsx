@@ -103,8 +103,8 @@ export default function CTABanner() {
 							<div className="text-sm text-stone-300">Response Time</div>
 						</div>
 						<div className="text-center">
-							<div className="mb-2 text-2xl font-bold text-white">100%</div>
-							<div className="text-sm text-stone-300">Client Satisfaction</div>
+							<div className="mb-2 text-2xl font-bold text-white">Quality</div>
+							<div className="text-sm text-stone-300">Focused Development</div>
 						</div>
 						<div className="text-center">
 							<div className="mb-2 text-2xl font-bold text-white">15+</div>
