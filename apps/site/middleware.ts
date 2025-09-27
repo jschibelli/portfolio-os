@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 const UC = process.env.NEXT_PUBLIC_UNDER_CONSTRUCTION === 'true';
 const IS_PROD = process.env.VERCEL_ENV === 'production';
 const LIVE = new Set([
-  'yourdomain.com',
-  'www.yourdomain.com',
+  'johnschibelli.dev',
+  'www.johnschibelli.dev',
 ]); // TODO: replace with real domains
 
 export function middleware(req: NextRequest) {
