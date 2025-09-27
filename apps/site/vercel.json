@@ -3,7 +3,7 @@
   "installCommand": "pnpm install",
   "framework": "nextjs",
   "functions": {
-    "apps/site/app/api/**/*.ts": {
+    "app/api/**/*.ts": {
       "maxDuration": 30
     }
   },
