@@ -6,7 +6,6 @@ export const metadata = {
     follow: false,
   },
 };
-
 export default function MaintenancePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 flex items-center justify-center p-4">
