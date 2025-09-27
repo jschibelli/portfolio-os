@@ -1,17 +1,22 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// Environment variables for maintenance mode control
 const UC = process.env.NEXT_PUBLIC_UNDER_CONSTRUCTION === 'true';
 const IS_PROD = process.env.VERCEL_ENV === 'production';
+
+// Live production domains where maintenance mode should be enforced
+// Only these domains will trigger maintenance mode in production
 const LIVE = new Set([
   'johnschibelli.dev',
   'www.johnschibelli.dev',
-]); // TODO: replace with real domains
+]);
 
 export function middleware(req: NextRequest) {
   const { pathname, hostname } = req.nextUrl;
 
   // Allow static assets, Next internals, API, maintenance page, and common file types
+  // These paths should always be accessible even during maintenance
   const pass =
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
@@ -21,7 +26,8 @@ export function middleware(req: NextRequest) {
 
   if (pass) return NextResponse.next();
 
-  // Enforce only on production + live domains
+  // Enforce maintenance mode only on production + live domains
+  // This ensures maintenance mode only affects real users, not development/preview environments
   if (UC && IS_PROD && LIVE.has(hostname)) {
     const url = req.nextUrl.clone();
     url.pathname = '/maintenance';

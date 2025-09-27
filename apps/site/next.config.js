@@ -11,6 +11,8 @@ const nextConfig = {
     '@mindware-blog/chatbot',
   ],
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  // Turbopack configuration for SVG handling
+  // This enables SVG files to be imported as React components using SVGR
   turbopack: {
     rules: {
       '*.svg': {
