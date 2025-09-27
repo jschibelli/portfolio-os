@@ -9,8 +9,7 @@
     "**/tailwind.config.js"
   ],
   "remoteCache": {
-    "enabled": true,
-    "signature": true
+    "enabled": true
   },
   "tasks": {
     "dev": {

@@ -1,11 +1,11 @@
 
-> @mindware-blog/dashboard@0.1.0 build E:\2025 Portfolio\mindware-blog\apps\dashboard
+> @mindware-blog/dashboard@0.1.0 build C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard
 > next build
 
    ▲ Next.js 15.5.2
 
    Creating an optimized production build ...
- ⚠ Compiled with warnings in 13.0s
+ ⚠ Compiled with warnings in 22.8s
 
 ./app/api/admin/activity/route.ts
 Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
@@ -223,83 +223,122 @@ Attempted import error: 'authOptions' is not exported from '@/lib/auth' (importe
 Import trace for requested module:
 ./app/api/auth/[...nextauth]/route.ts
 
+./app/api/media/upload/route.ts
+Attempted import error: 'authOptions' is not exported from '../../auth/[...nextauth]/route' (imported as 'authOptions').
 
-[1m[33mwarn[39m[22m - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
-[1m[33mwarn[39m[22m - Pattern: `..\..\packages\ui\**\*.ts`
-[1m[33mwarn[39m[22m - See our documentation for recommendations:
-[1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
- ✓ Compiled successfully in 60s
+Import trace for requested module:
+./app/api/media/upload/route.ts
+
+ ✓ Compiled successfully in 34.3s
    Skipping validation of types
    Skipping linting
    Collecting page data ...
-   Generating static pages (0/50) ...
-   Generating static pages (12/50) 
-   Generating static pages (24/50) 
-   Generating static pages (37/50) 
- ✓ Generating static pages (50/50)
+⚠️  Environment validation warnings (development mode):
+  - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: Required
+
+💡 Some features may be disabled until environment variables are configured.
+   See README.md for complete setup instructions.
+[google-auth] OAuth2 credentials not found {
+  status: 'MISSING_CREDENTIALS',
+  service: 'google-calendar',
+  required: [
+    'GOOGLE_CLIENT_ID',
+    'GOOGLE_CLIENT_SECRET',
+    'GOOGLE_REDIRECT_URI',
+    'GOOGLE_OAUTH_REFRESH_TOKEN'
+  ],
+  impact: 'Calendar integration will fall back to mock data',
+  timestamp: '2025-09-27T17:30:45.898Z'
+}
+   Generating static pages (0/54) ...
+   Generating static pages (13/54) 
+   Generating static pages (26/54) 
+   Generating static pages (40/54) 
+⚠️  Environment validation warnings (development mode):
+ ✓ Generating static pages (54/54)
+  - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: Required
+
+💡 Some features may be disabled until environment variables are configured.
+   See README.md for complete setup instructions.
+[google-auth] OAuth2 credentials not found {
+  status: 'MISSING_CREDENTIALS',
+  service: 'google-calendar',
+  required: [
+    'GOOGLE_CLIENT_ID',
+    'GOOGLE_CLIENT_SECRET',
+    'GOOGLE_REDIRECT_URI',
+    'GOOGLE_OAUTH_REFRESH_TOKEN'
+  ],
+  impact: 'Calendar integration will fall back to mock data',
+  timestamp: '2025-09-27T17:30:56.280Z'
+}
    Finalizing page optimization ...
    Collecting build traces ...
 
 Route (app)                                    Size  First Load JS
-┌ ○ /                                         217 B         102 kB
-├ ○ /_not-found                                1 kB         103 kB
+┌ ○ /                                         227 B         102 kB
+├ ○ /_not-found                               999 B         103 kB
 ├ ○ /admin                                  7.61 kB         232 kB
 ├ ○ /admin/activity                         5.01 kB         107 kB
 ├ ○ /admin/analytics                        12.1 kB         232 kB
-├ ○ /admin/articles                         4.43 kB         124 kB
-├ ƒ /admin/articles/[id]/edit                 136 B         137 kB
-├ ○ /admin/articles/new                       136 B         137 kB
+├ ○ /admin/articles                         4.42 kB         124 kB
+├ ƒ /admin/articles/[id]/edit                 135 B         137 kB
+├ ○ /admin/articles/new                       135 B         137 kB
 ├ ○ /admin/articles/scheduled               4.91 kB         107 kB
 ├ ○ /admin/case-studies                     3.32 kB         117 kB
 ├ ○ /admin/case-studies/new                 5.64 kB         119 kB
 ├ ○ /admin/comments                         4.66 kB         107 kB
 ├ ○ /admin/control-center                   3.98 kB         119 kB
-├ ○ /admin/control-center/analytics           217 B         102 kB
-├ ○ /admin/control-center/calendar            217 B         102 kB
+├ ○ /admin/control-center/analytics           227 B         102 kB
+├ ○ /admin/control-center/calendar            227 B         102 kB
 ├ ○ /admin/control-center/composer          5.79 kB         123 kB
-├ ○ /admin/control-center/devops              217 B         102 kB
+├ ○ /admin/control-center/devops              227 B         102 kB
 ├ ○ /admin/control-center/email             18.6 kB         133 kB
-├ ○ /admin/control-center/finance             217 B         102 kB
-├ ○ /admin/control-center/notes               217 B         102 kB
-├ ○ /admin/control-center/social              217 B         102 kB
+├ ○ /admin/control-center/finance             227 B         102 kB
+├ ○ /admin/control-center/notes               227 B         102 kB
+├ ○ /admin/control-center/social              227 B         102 kB
 ├ ○ /admin/media                            5.27 kB         116 kB
 ├ ○ /admin/media/upload                     5.17 kB         107 kB
-├ ○ /admin/newsletter                       5.47 kB         108 kB
+├ ○ /admin/newsletter                       5.48 kB         108 kB
 ├ ○ /admin/settings                         4.64 kB         116 kB
 ├ ○ /admin/settings/appearance              6.36 kB         108 kB
 ├ ○ /admin/settings/database                5.68 kB         108 kB
 ├ ○ /admin/settings/email                   5.17 kB         107 kB
 ├ ○ /admin/settings/integrations            5.84 kB         108 kB
 ├ ○ /admin/settings/roles                   4.23 kB         106 kB
-├ ○ /admin/settings/seo                        5 kB         107 kB
+├ ○ /admin/settings/seo                     5.01 kB         107 kB
 ├ ○ /admin/settings/users                   4.94 kB         107 kB
 ├ ○ /admin/tags                             3.82 kB         106 kB
-├ ƒ /api/admin/activity                       217 B         102 kB
-├ ƒ /api/admin/analytics                      217 B         102 kB
-├ ƒ /api/admin/articles                       217 B         102 kB
-├ ƒ /api/admin/articles/[id]                  217 B         102 kB
-├ ƒ /api/admin/articles/import-hashnode       217 B         102 kB
-├ ƒ /api/admin/articles/scheduled             217 B         102 kB
-├ ƒ /api/admin/case-studies                   217 B         102 kB
-├ ƒ /api/admin/case-studies/[id]              217 B         102 kB
-├ ƒ /api/admin/comments                       217 B         102 kB
-├ ƒ /api/admin/comments/[id]                  217 B         102 kB
-├ ƒ /api/admin/media                          217 B         102 kB
-├ ƒ /api/admin/newsletter                     217 B         102 kB
-├ ƒ /api/admin/newsletter/campaigns/[id]      217 B         102 kB
-├ ƒ /api/admin/newsletter/subscribers/[id]    217 B         102 kB
-├ ƒ /api/admin/roles                          217 B         102 kB
-├ ƒ /api/admin/settings/appearance            217 B         102 kB
-├ ƒ /api/admin/settings/database              217 B         102 kB
-├ ƒ /api/admin/settings/email                 217 B         102 kB
-├ ƒ /api/admin/settings/integrations          217 B         102 kB
-├ ƒ /api/admin/settings/seo                   217 B         102 kB
-├ ƒ /api/admin/stats                          217 B         102 kB
-├ ƒ /api/admin/tags                           217 B         102 kB
-├ ƒ /api/admin/tags/[id]                      217 B         102 kB
-├ ƒ /api/admin/users                          217 B         102 kB
-├ ƒ /api/admin/users/[id]                     217 B         102 kB
-├ ƒ /api/auth/[...nextauth]                   217 B         102 kB
+├ ƒ /api/admin/activity                       227 B         102 kB
+├ ƒ /api/admin/analytics                      227 B         102 kB
+├ ƒ /api/admin/articles                       227 B         102 kB
+├ ƒ /api/admin/articles/[id]                  227 B         102 kB
+├ ƒ /api/admin/articles/import-hashnode       227 B         102 kB
+├ ƒ /api/admin/articles/scheduled             227 B         102 kB
+├ ƒ /api/admin/case-studies                   227 B         102 kB
+├ ƒ /api/admin/case-studies/[id]              227 B         102 kB
+├ ƒ /api/admin/comments                       227 B         102 kB
+├ ƒ /api/admin/comments/[id]                  227 B         102 kB
+├ ƒ /api/admin/media                          227 B         102 kB
+├ ƒ /api/admin/newsletter                     227 B         102 kB
+├ ƒ /api/admin/newsletter/campaigns/[id]      227 B         102 kB
+├ ƒ /api/admin/newsletter/subscribers/[id]    227 B         102 kB
+├ ƒ /api/admin/roles                          227 B         102 kB
+├ ƒ /api/admin/settings/appearance            227 B         102 kB
+├ ƒ /api/admin/settings/database              227 B         102 kB
+├ ƒ /api/admin/settings/email                 227 B         102 kB
+├ ƒ /api/admin/settings/integrations          227 B         102 kB
+├ ƒ /api/admin/settings/seo                   227 B         102 kB
+├ ƒ /api/admin/stats                          227 B         102 kB
+├ ƒ /api/admin/tags                           227 B         102 kB
+├ ƒ /api/admin/tags/[id]                      227 B         102 kB
+├ ƒ /api/admin/users                          227 B         102 kB
+├ ƒ /api/admin/users/[id]                     227 B         102 kB
+├ ƒ /api/auth/[...nextauth]                   227 B         102 kB
+├ ƒ /api/health                               227 B         102 kB
+├ ƒ /api/media/upload                         227 B         102 kB
+├ ƒ /api/schedule/book                        227 B         102 kB
+├ ƒ /api/webhooks/stripe                      227 B         102 kB
 └ ○ /login                                  1.83 kB         113 kB
 + First Load JS shared by all                102 kB
   ├ chunks/9863-914e0dc62e60f827.js         45.7 kB

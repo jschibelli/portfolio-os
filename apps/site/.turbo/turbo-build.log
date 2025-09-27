@@ -10,7 +10,20 @@
    Skipping validation of types
    Skipping linting
    Collecting page data ...
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-26T16:29:47.746Z', service: 'google-calendar' }
+⚠️  Environment validation warnings (development mode):
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:31:03.437Z', service: 'google-calendar' }
+  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
+
+💡 Some features may be disabled until environment variables are configured.
+   See README.md for complete setup instructions.
+⚠️  Environment validation warnings (development mode):
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:31:03.513Z', service: 'google-calendar' }
+  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:31:03.518Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:31:03.557Z', service: 'google-calendar' }
+
+💡 Some features may be disabled until environment variables are configured.
+   See README.md for complete setup instructions.
 ⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
@@ -18,160 +31,154 @@
    See README.md for complete setup instructions.
 ⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-26T16:29:48.958Z', service: 'google-calendar' }
 
 💡 Some features may be disabled until environment variables are configured.
    See README.md for complete setup instructions.
  ⚠ Using edge runtime on a page currently disables static generation for that page
-   Generating static pages (0/106) ...
-   Generating static pages (26/106) 
-   Generating static pages (52/106) 
-   Generating static pages (79/106) 
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-26T16:30:07.673Z', service: 'google-calendar' }
-⚠️  Environment validation warnings (development mode):
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-26T16:30:08.261Z', service: 'google-calendar' }
-  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
- ✓ Generating static pages (106/106)
-
-💡 Some features may be disabled until environment variables are configured.
-   See README.md for complete setup instructions.
+   Generating static pages (0/107) ...
+   Generating static pages (26/107) 
 ⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
+   Generating static pages (53/107) 
+   Generating static pages (80/107) 
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:31:15.915Z', service: 'google-calendar' }
 💡 Some features may be disabled until environment variables are configured.
    See README.md for complete setup instructions.
+ ✓ Generating static pages (107/107)
    Finalizing page optimization ...
    Collecting build traces ...
 
-Route (app)                                    Size  First Load JS  Revalidate  Expire
-┌ ○ /                                       8.01 kB         204 kB
-├ ○ /_not-found                               999 B         103 kB
-├ ○ /about                                  8.27 kB         216 kB
-├ ○ /admin                                  5.78 kB         231 kB
-├ ○ /admin/activity                         5.01 kB         107 kB
-├ ○ /admin/analytics                        12.1 kB         232 kB
-├ ○ /admin/articles                          4.5 kB         124 kB
-├ ƒ /admin/articles/[id]/edit                 138 B         144 kB
-├ ○ /admin/articles/new                       138 B         144 kB
-├ ○ /admin/articles/scheduled               4.91 kB         107 kB
-├ ○ /admin/case-studies                     3.32 kB         117 kB
-├ ○ /admin/case-studies/new                 5.64 kB         119 kB
-├ ○ /admin/comments                         4.66 kB         107 kB
-├ ○ /admin/control-center                    4.1 kB         115 kB
-├ ○ /admin/control-center/analytics           328 B         102 kB
-├ ○ /admin/control-center/calendar            328 B         102 kB
-├ ○ /admin/control-center/composer          8.43 kB         126 kB
-├ ○ /admin/control-center/devops              328 B         102 kB
-├ ○ /admin/control-center/email             12.8 kB         136 kB
-├ ○ /admin/control-center/finance             328 B         102 kB
-├ ○ /admin/control-center/notes               328 B         102 kB
-├ ○ /admin/control-center/social              328 B         102 kB
-├ ○ /admin/media                            5.34 kB         116 kB
-├ ○ /admin/media/upload                     5.17 kB         107 kB
-├ ○ /admin/newsletter                       5.48 kB         108 kB
-├ ○ /admin/settings                         4.71 kB         116 kB
-├ ○ /admin/settings/appearance              6.37 kB         108 kB
-├ ○ /admin/settings/database                5.68 kB         108 kB
-├ ○ /admin/settings/email                   5.17 kB         107 kB
-├ ○ /admin/settings/integrations            5.86 kB         108 kB
-├ ○ /admin/settings/roles                   4.23 kB         106 kB
-├ ○ /admin/settings/seo                     5.01 kB         107 kB
-├ ○ /admin/settings/users                   4.93 kB         107 kB
-├ ○ /admin/tags                             3.82 kB         106 kB
-├ ƒ /api/admin/activity                       328 B         102 kB
-├ ƒ /api/admin/analytics                      328 B         102 kB
-├ ƒ /api/admin/articles                       328 B         102 kB
-├ ƒ /api/admin/articles/[id]                  328 B         102 kB
-├ ƒ /api/admin/articles/import-hashnode       328 B         102 kB
-├ ƒ /api/admin/articles/scheduled             328 B         102 kB
-├ ƒ /api/admin/case-studies                   328 B         102 kB
-├ ƒ /api/admin/case-studies/[id]              328 B         102 kB
-├ ƒ /api/admin/comments                       328 B         102 kB
-├ ƒ /api/admin/comments/[id]                  328 B         102 kB
-├ ƒ /api/admin/media                          328 B         102 kB
-├ ƒ /api/admin/newsletter                     328 B         102 kB
-├ ƒ /api/admin/newsletter/campaigns/[id]      328 B         102 kB
-├ ƒ /api/admin/newsletter/subscribers/[id]    328 B         102 kB
-├ ƒ /api/admin/roles                          328 B         102 kB
-├ ƒ /api/admin/settings/appearance            328 B         102 kB
-├ ƒ /api/admin/settings/database              328 B         102 kB
-├ ƒ /api/admin/settings/email                 328 B         102 kB
-├ ƒ /api/admin/settings/integrations          328 B         102 kB
-├ ƒ /api/admin/settings/seo                   328 B         102 kB
-├ ƒ /api/admin/stats                          328 B         102 kB
-├ ƒ /api/admin/tags                           328 B         102 kB
-├ ƒ /api/admin/tags/[id]                      328 B         102 kB
-├ ƒ /api/admin/users                          328 B         102 kB
-├ ƒ /api/admin/users/[id]                     328 B         102 kB
-├ ƒ /api/ai/og-image                          328 B         102 kB
-├ ƒ /api/ai/writing                           328 B         102 kB
-├ ƒ /api/analytics                            328 B         102 kB
-├ ƒ /api/analytics/overview                   328 B         102 kB
-├ ƒ /api/articles/publish                     328 B         102 kB
-├ ƒ /api/articles/save-draft                  328 B         102 kB
-├ ƒ /api/auth/[...nextauth]                   328 B         102 kB
-├ ƒ /api/calendar                             328 B         102 kB
-├ ƒ /api/calendar/event                       328 B         102 kB
-├ ƒ /api/calendar/upcoming                    328 B         102 kB
-├ ƒ /api/case-studies                         328 B         102 kB
-├ ƒ /api/case-studies/[slug]                  328 B         102 kB
-├ ƒ /api/chat                                 328 B         102 kB
-├ ƒ /api/contact                              328 B         102 kB
-├ ƒ /api/cron/run-jobs                        328 B         102 kB
-├ ƒ /api/devops                               328 B         102 kB
-├ ƒ /api/devops/github                        328 B         102 kB
-├ ƒ /api/devops/sentry                        328 B         102 kB
-├ ƒ /api/devops/vercel                        328 B         102 kB
-├ ƒ /api/finance                              328 B         102 kB
-├ ƒ /api/finance/stripe/summary               328 B         102 kB
-├ ƒ /api/gmail                                328 B         102 kB
-├ ƒ /api/gmail/delete                         328 B         102 kB
-├ ƒ /api/gmail/list                           328 B         102 kB
-├ ƒ /api/gmail/mark-read                      328 B         102 kB
-├ ƒ /api/gmail/permanently-delete             328 B         102 kB
-├ ƒ /api/gmail/restore                        328 B         102 kB
-├ ƒ /api/gmail/send                           328 B         102 kB
-├ ƒ /api/gmail/test                           328 B         102 kB
-├ ƒ /api/gmail/toggle-star                    328 B         102 kB
-├ ƒ /api/google/oauth/callback                328 B         102 kB
-├ ƒ /api/google/oauth/health                  328 B         102 kB
-├ ƒ /api/google/oauth/start                   328 B         102 kB
-├ ƒ /api/media/upload                         328 B         102 kB
-├ ƒ /api/notes                                328 B         102 kB
-├ ƒ /api/schedule/book                        328 B         102 kB
-├ ƒ /api/schedule/health                      328 B         102 kB
-├ ƒ /api/schedule/slots                       328 B         102 kB
-├ ƒ /api/schedule/slots-optimized             328 B         102 kB
-├ ƒ /api/search                               328 B         102 kB
-├ ƒ /api/social                               328 B         102 kB
-├ ƒ /api/social/publish                       328 B         102 kB
-├ ƒ /api/tts                                  328 B         102 kB
-├ ƒ /api/upload                               328 B         102 kB
-├ ƒ /api/webhooks/stripe                      328 B         102 kB
-├ ○ /blog                                   27.3 kB         253 kB          1m      1y
-├ ƒ /blog/[slug]                              212 B         158 kB
-├ ƒ /blog/rss.xml                             328 B         102 kB
-├ ○ /case-studies                           2.32 kB         170 kB
-├ ● /case-studies/[slug]                     154 kB         389 kB
+Route (app)                                             Size  First Load JS  Revalidate  Expire
+┌ ○ /                                                8.01 kB         204 kB
+├ ○ /_not-found                                        999 B         103 kB
+├ ○ /about                                           8.27 kB         216 kB
+├ ○ /admin                                           5.78 kB         231 kB
+├ ○ /admin/activity                                  5.01 kB         107 kB
+├ ○ /admin/analytics                                 12.1 kB         232 kB
+├ ○ /admin/articles                                   4.5 kB         124 kB
+├ ƒ /admin/articles/[id]/edit                          138 B         144 kB
+├ ○ /admin/articles/new                                138 B         144 kB
+├ ○ /admin/articles/scheduled                        4.91 kB         107 kB
+├ ○ /admin/case-studies                              3.32 kB         117 kB
+├ ○ /admin/case-studies/new                          5.64 kB         119 kB
+├ ○ /admin/comments                                  4.66 kB         107 kB
+├ ○ /admin/control-center                             4.1 kB         115 kB
+├ ○ /admin/control-center/analytics                    328 B         102 kB
+├ ○ /admin/control-center/calendar                     328 B         102 kB
+├ ○ /admin/control-center/composer                   8.43 kB         126 kB
+├ ○ /admin/control-center/devops                       328 B         102 kB
+├ ○ /admin/control-center/email                      12.8 kB         136 kB
+├ ○ /admin/control-center/finance                      328 B         102 kB
+├ ○ /admin/control-center/notes                        328 B         102 kB
+├ ○ /admin/control-center/social                       328 B         102 kB
+├ ○ /admin/media                                     5.34 kB         116 kB
+├ ○ /admin/media/upload                              5.17 kB         107 kB
+├ ○ /admin/newsletter                                5.48 kB         108 kB
+├ ○ /admin/settings                                  4.71 kB         116 kB
+├ ○ /admin/settings/appearance                       6.37 kB         108 kB
+├ ○ /admin/settings/database                         5.68 kB         108 kB
+├ ○ /admin/settings/email                            5.17 kB         107 kB
+├ ○ /admin/settings/integrations                     5.85 kB         108 kB
+├ ○ /admin/settings/roles                            4.23 kB         106 kB
+├ ○ /admin/settings/seo                              5.01 kB         107 kB
+├ ○ /admin/settings/users                            4.93 kB         107 kB
+├ ○ /admin/tags                                      3.82 kB         106 kB
+├ ƒ /api/admin/activity                                328 B         102 kB
+├ ƒ /api/admin/analytics                               328 B         102 kB
+├ ƒ /api/admin/articles                                328 B         102 kB
+├ ƒ /api/admin/articles/[id]                           328 B         102 kB
+├ ƒ /api/admin/articles/import-hashnode                328 B         102 kB
+├ ƒ /api/admin/articles/scheduled                      328 B         102 kB
+├ ƒ /api/admin/case-studies                            328 B         102 kB
+├ ƒ /api/admin/case-studies/[id]                       328 B         102 kB
+├ ƒ /api/admin/comments                                328 B         102 kB
+├ ƒ /api/admin/comments/[id]                           328 B         102 kB
+├ ƒ /api/admin/media                                   328 B         102 kB
+├ ƒ /api/admin/newsletter                              328 B         102 kB
+├ ƒ /api/admin/newsletter/campaigns/[id]               328 B         102 kB
+├ ƒ /api/admin/newsletter/subscribers/[id]             328 B         102 kB
+├ ƒ /api/admin/roles                                   328 B         102 kB
+├ ƒ /api/admin/settings/appearance                     328 B         102 kB
+├ ƒ /api/admin/settings/database                       328 B         102 kB
+├ ƒ /api/admin/settings/email                          328 B         102 kB
+├ ƒ /api/admin/settings/integrations                   328 B         102 kB
+├ ƒ /api/admin/settings/seo                            328 B         102 kB
+├ ƒ /api/admin/stats                                   328 B         102 kB
+├ ƒ /api/admin/tags                                    328 B         102 kB
+├ ƒ /api/admin/tags/[id]                               328 B         102 kB
+├ ƒ /api/admin/users                                   328 B         102 kB
+├ ƒ /api/admin/users/[id]                              328 B         102 kB
+├ ƒ /api/ai/og-image                                   328 B         102 kB
+├ ƒ /api/ai/writing                                    328 B         102 kB
+├ ƒ /api/analytics                                     328 B         102 kB
+├ ƒ /api/analytics/overview                            328 B         102 kB
+├ ƒ /api/articles/publish                              328 B         102 kB
+├ ƒ /api/articles/save-draft                           328 B         102 kB
+├ ƒ /api/auth/[...nextauth]                            328 B         102 kB
+├ ƒ /api/calendar                                      328 B         102 kB
+├ ƒ /api/calendar/event                                328 B         102 kB
+├ ƒ /api/calendar/upcoming                             328 B         102 kB
+├ ƒ /api/case-studies                                  328 B         102 kB
+├ ƒ /api/case-studies/[slug]                           328 B         102 kB
+├ ƒ /api/chat                                          328 B         102 kB
+├ ƒ /api/contact                                       328 B         102 kB
+├ ƒ /api/cron/run-jobs                                 328 B         102 kB
+├ ƒ /api/devops                                        328 B         102 kB
+├ ƒ /api/devops/github                                 328 B         102 kB
+├ ƒ /api/devops/sentry                                 328 B         102 kB
+├ ƒ /api/devops/vercel                                 328 B         102 kB
+├ ƒ /api/finance                                       328 B         102 kB
+├ ƒ /api/finance/stripe/summary                        328 B         102 kB
+├ ƒ /api/gmail                                         328 B         102 kB
+├ ƒ /api/gmail/delete                                  328 B         102 kB
+├ ƒ /api/gmail/list                                    328 B         102 kB
+├ ƒ /api/gmail/mark-read                               328 B         102 kB
+├ ƒ /api/gmail/permanently-delete                      328 B         102 kB
+├ ƒ /api/gmail/restore                                 328 B         102 kB
+├ ƒ /api/gmail/send                                    328 B         102 kB
+├ ƒ /api/gmail/test                                    328 B         102 kB
+├ ƒ /api/gmail/toggle-star                             328 B         102 kB
+├ ƒ /api/google/oauth/callback                         328 B         102 kB
+├ ƒ /api/google/oauth/health                           328 B         102 kB
+├ ƒ /api/google/oauth/start                            328 B         102 kB
+├ ƒ /api/media/upload                                  328 B         102 kB
+├ ƒ /api/notes                                         328 B         102 kB
+├ ƒ /api/schedule/book                                 328 B         102 kB
+├ ƒ /api/schedule/health                               328 B         102 kB
+├ ƒ /api/schedule/slots                                328 B         102 kB
+├ ƒ /api/schedule/slots-optimized                      328 B         102 kB
+├ ƒ /api/search                                        328 B         102 kB
+├ ƒ /api/social                                        328 B         102 kB
+├ ƒ /api/social/publish                                328 B         102 kB
+├ ƒ /api/tts                                           328 B         102 kB
+├ ƒ /api/upload                                        328 B         102 kB
+├ ƒ /api/webhooks/stripe                               328 B         102 kB
+├ ○ /blog                                            27.3 kB         253 kB          1m      1y
+├ ƒ /blog/[slug]                                       212 B         158 kB
+├ ƒ /blog/rss.xml                                      328 B         102 kB
+├ ○ /case-studies                                    2.32 kB         170 kB
+├ ● /case-studies/[slug]                              154 kB         389 kB
 ├   └ /case-studies/tendrilo-case-study
-├ ○ /contact                                4.86 kB         198 kB
-├ ○ /login                                  1.91 kB         113 kB
-├ ○ /maintenance                              328 B         102 kB
-├ ○ /projects                               8.93 kB         251 kB
-├ ● /projects/[slug]                        4.96 kB         173 kB
+├ ○ /case-studies/tendril-multi-tenant-chatbot-saas  10.1 kB         213 kB
+├ ○ /contact                                         4.86 kB         198 kB
+├ ○ /login                                           1.91 kB         113 kB
+├ ○ /maintenance                                       328 B         102 kB
+├ ○ /projects                                        8.93 kB         251 kB
+├ ● /projects/[slug]                                 4.96 kB         173 kB
 ├   ├ /projects/tendrilo
 ├   ├ /projects/schibelli-site
 ├   ├ /projects/synaplyai
 ├   └ [+2 more paths]
-├ ƒ /projects/[slug]/opengraph-image          328 B         102 kB
-└ ○ /under-construction                       328 B         102 kB
-+ First Load JS shared by all                102 kB
-  ├ chunks/9863-914e0dc62e60f827.js         45.7 kB
-  ├ chunks/f3c972f3-0e0de4aa1fcd26e9.js     54.2 kB
-  └ other shared chunks (total)             2.06 kB
+├ ƒ /projects/[slug]/opengraph-image                   328 B         102 kB
+└ ○ /under-construction                                328 B         102 kB
++ First Load JS shared by all                         102 kB
+  ├ chunks/9863-914e0dc62e60f827.js                  45.7 kB
+  ├ chunks/f3c972f3-0e0de4aa1fcd26e9.js              54.2 kB
+  └ other shared chunks (total)                      2.06 kB
 
 
-ƒ Middleware                                34.6 kB
+ƒ Middleware                                         34.7 kB
 
 ○  (Static)   prerendered as static content
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
