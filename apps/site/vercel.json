@@ -2,6 +2,12 @@
   "buildCommand": "pnpm turbo build --filter=@mindware-blog/site",
   "installCommand": "pnpm install",
   "framework": "nextjs",
+  "functions": {
+    "apps/site/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "crons": [],
   "headers": [
     {
       "source": "/maintenance",

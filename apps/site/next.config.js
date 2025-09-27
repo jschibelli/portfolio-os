@@ -11,6 +11,16 @@ const nextConfig = {
     '@mindware-blog/chatbot',
   ],
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
   images: {
     qualities: [25, 50, 75, 85, 100],
     remotePatterns: [

@@ -9,7 +9,8 @@
     "**/tailwind.config.js"
   ],
   "remoteCache": {
-    "enabled": true
+    "enabled": true,
+    "signature": true
   },
   "tasks": {
     "dev": {
@@ -33,6 +34,11 @@
         "**/*.mdx",
         "**/public/**",
         "**/assets/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "VERCEL_ENV"
       ]
     },
     "@mindware-blog/site#build": {
@@ -51,6 +57,11 @@
         "**/*.mdx",
         "**/public/**",
         "**/assets/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "VERCEL_ENV"
       ]
     },
     "@mindware-blog/dashboard#build": {
