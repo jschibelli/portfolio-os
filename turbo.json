@@ -8,9 +8,16 @@
     "**/next.config.js",
     "**/tailwind.config.js"
   ],
+  // Remote cache configuration for improved build performance
+  // Signature ensures cache integrity and prevents cache poisoning
+  "remoteCache": {
+    "enabled": true,
+    "signature": true
+  },
   "tasks": {
+    // Development task with caching enabled for faster subsequent builds
     "dev": {
-      "cache": false,
+      "cache": true,
       "persistent": true,
       "dependsOn": ["^dev"]
     },
@@ -30,6 +37,13 @@
         "**/*.mdx",
         "**/public/**",
         "**/assets/**"
+      ],
+      // Environment variables required for build tasks
+      // Restricted to essential variables for security
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "VERCEL_ENV"
       ]
     },
     "@mindware-blog/site#build": {
@@ -48,6 +62,11 @@
         "**/*.mdx",
         "**/public/**",
         "**/assets/**"
+      ],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*",
+        "VERCEL_ENV"
       ]
     },
     "@mindware-blog/dashboard#build": {
