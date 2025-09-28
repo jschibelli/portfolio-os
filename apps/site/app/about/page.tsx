@@ -265,7 +265,7 @@ export default function AboutPage() {
                           </div>
                         </div>
                         <p className="text-stone-600 dark:text-stone-400">
-                          Life threw unexpected challenges my way, including a stroke that tested my resilience. Through recovery, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. This experience deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
+                          Life presented unexpected challenges that tested my resilience. Through these experiences, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. This deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
                         </p>
                       </div>
                     </div>
