@@ -3,22 +3,27 @@
 ## Development Setup
 
 ### Port Configuration
-The dashboard application runs on port 3001 by default to avoid conflicts with other applications in the monorepo.
+The dashboard application runs on port 3003 by default to avoid conflicts with other applications in the monorepo.
 
 ```bash
-npm run dev  # Runs on http://localhost:3001
+npm run dev  # Runs on http://localhost:3003
 ```
 
 ### Available Scripts
 
-- `npm run dev` - Start development server on port 3001
+#### Standard Scripts
+- `npm run dev` - Start development server on port 3003
 - `npm run build` - Build for production
-- `npm run start` - Start production server
+- `npm run start` - Start production server on default port (3000)
 - `npm run lint` - Run ESLint
 - `npm run typecheck` - Run TypeScript type checking
 - `npm run test` - Run tests
 - `npm run test:ci` - Run tests in CI mode
 - `npm run test:coverage` - Run tests with coverage
+
+#### Environment-Based Scripts
+- `npm run dev:env` - Start development server with custom port (via `DASHBOARD_PORT` env var)
+- `npm run start:env` - Start production server with custom port (via `PORT` env var)
 
 ### Database Commands
 
@@ -36,9 +41,18 @@ npm run dev  # Runs on http://localhost:3001
 
 ## Port Configuration Notes
 
-The dashboard uses port 3001 to avoid conflicts with:
-- Main site application (typically port 3000)
+The dashboard uses port 3003 to avoid conflicts with:
+- Main site application (port 3000)
+- Documentation application (port 3001)
 - Other services in the monorepo
-- Common development ports
 
-If you need to change the port, update the `dev` script in `package.json` and ensure no other services are using the same port.
+### Port Assignment Strategy
+- **Development**: Fixed port 3003 for consistency (`npm run dev`)
+- **Production**: Default Next.js port 3000 (`npm run start`)
+- **Flexible**: Environment-based ports (`npm run dev:env`, `npm run start:env`)
+
+### Environment Variables
+- `DASHBOARD_PORT` - Custom development port (defaults to 3003)
+- `PORT` - Custom production port (defaults to 3003 when using `start:env`)
+
+For detailed port configuration information, see [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) and [DEVELOPMENT_SCRIPTS.md](./DEVELOPMENT_SCRIPTS.md).

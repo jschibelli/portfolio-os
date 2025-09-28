@@ -20,23 +20,39 @@ The dashboard application uses the following npm scripts for development and dep
 #### `npm run start`
 - **Purpose**: Start the production server
 - **Command**: `next start`
-- **Port**: Uses `PORT` environment variable or defaults to 3000
-- **Note**: In production, this should use environment variable for port flexibility
+- **Port**: Uses Next.js default port (3000)
+- **Note**: For custom ports, use `npm run start:env` with PORT environment variable
 
 #### `npm run lint`
 - **Purpose**: Run ESLint for code quality checks
 - **Command**: `next lint`
 - **Usage**: Automated code quality validation
 
+### Environment-Based Scripts
+
+#### `npm run dev:env`
+- **Purpose**: Start development server with environment-based port
+- **Command**: `next dev -p ${DASHBOARD_PORT:-3003}`
+- **Port**: Uses `DASHBOARD_PORT` environment variable or defaults to 3003
+- **Usage**: Flexible development with custom port configuration
+
+#### `npm run start:env`
+- **Purpose**: Start production server with environment-based port
+- **Command**: `next start -p ${PORT:-3003}`
+- **Port**: Uses `PORT` environment variable or defaults to 3003
+- **Usage**: Production deployment with custom port configuration
+
 ## Port Configuration Strategy
 
 ### Development Environment
-- **Fixed Port**: 3003 for development consistency
+- **Default Port**: 3003 for development consistency (`npm run dev`)
+- **Flexible Port**: Environment-based with `npm run dev:env`
 - **Rationale**: Avoids conflicts with other monorepo applications
-- **Benefits**: Predictable development environment
+- **Benefits**: Predictable development environment with flexibility option
 
 ### Production Environment
-- **Flexible Port**: Uses `PORT` environment variable
+- **Default Port**: Next.js default (3000) for standard deployments (`npm run start`)
+- **Flexible Port**: Environment-based with `npm run start:env`
 - **Rationale**: Allows deployment flexibility across different platforms
 - **Benefits**: Works with containerized deployments, serverless platforms
 
@@ -141,8 +157,10 @@ If build fails:
 
 ## Best Practices
 
-1. **Always use `npm run dev` for development**
-2. **Use environment variables for production deployments**
-3. **Test builds locally before deployment**
-4. **Run linting before commits**
-5. **Document any custom port configurations**
+1. **Development**: Use `npm run dev` for standard development (port 3003)
+2. **Development (Custom Port)**: Use `npm run dev:env` with `DASHBOARD_PORT` environment variable
+3. **Production (Standard)**: Use `npm run start` for standard deployments (port 3000)
+4. **Production (Custom Port)**: Use `npm run start:env` with `PORT` environment variable
+5. **Test builds locally before deployment**
+6. **Run linting before commits**
+7. **Document any custom port configurations**
