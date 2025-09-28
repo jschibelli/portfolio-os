@@ -33,9 +33,9 @@ const trustSignals: TrustSignal[] = [
   },
   {
     icon: AwardIcon,
-    title: "15+ Years Experience",
-    description: "Senior-level expertise in modern web development",
-    highlight: "15+",
+    title: "Senior-Level Expertise",
+    description: "Advanced skills in modern web development technologies",
+    highlight: "Expert",
     variant: "secondary"
   },
   {

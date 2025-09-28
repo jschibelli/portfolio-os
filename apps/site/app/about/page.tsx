@@ -32,7 +32,7 @@ import {
 
 const stats = [
   { icon: MapPin, label: 'Towaco, NJ' },
-  { icon: Briefcase, label: '15+ Years' },
+  { icon: Briefcase, label: 'Senior Level' },
   { icon: Calendar, label: 'Available' },
 ];
 
@@ -157,7 +157,7 @@ export default function AboutPage() {
                     </div>
                     <h1 className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl">John Schibelli</h1>
                     <p className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">Senior Front-End Developer</p>
-                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with 15+ years of experience creating scalable digital experiences that help clients achieve their goals.</p>
+                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with extensive experience creating scalable digital experiences that help clients achieve their goals.</p>
 
                     <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start">
                       {stats.map(({ icon: Icon, label }) => (
@@ -383,7 +383,7 @@ export default function AboutPage() {
                   {
                     icon: Users,
                     title: 'Client Success',
-                    metric: '100% Retention',
+                    metric: 'Strong Relationships',
                     copy:
                       'Maintained strong client relationships through reliable service delivery, clear communication, and meeting project goals consistently.',
                   },
@@ -411,7 +411,7 @@ export default function AboutPage() {
                   {
                     icon: Star,
                     title: 'Process Excellence',
-                    metric: '15+ Years',
+                    metric: 'Extensive Experience',
                     copy:
                       'Refined development processes through years of experience, ensuring consistent quality, on-time delivery, and seamless project execution.',
                   },
@@ -443,12 +443,12 @@ export default function AboutPage() {
             <div className="mx-auto max-w-6xl">
               <div className="mb-16 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Career Journey</h2>
-                <p className="mb-8 text-lg text-stone-600 dark:text-stone-400">My professional experience and key achievements over 15+ years</p>
+                <p className="mb-8 text-lg text-stone-600 dark:text-stone-400">My professional experience and key achievements in web development</p>
                 <div className="mx-auto max-w-4xl rounded-lg border border-stone-200 bg-gradient-to-r from-stone-50 to-stone-100 p-6 dark:border-stone-700 dark:from-stone-800 dark:to-stone-900">
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div className="text-center">
-                      <div className="mb-2 text-3xl font-bold text-primary">15+</div>
-                      <div className="text-sm text-stone-600 dark:text-stone-400">Years Experience</div>
+                      <div className="mb-2 text-3xl font-bold text-primary">Senior</div>
+                      <div className="text-sm text-stone-600 dark:text-stone-400">Level Expertise</div>
                     </div>
                     <div className="text-center">
                       <div className="mb-2 text-3xl font-bold text-primary">6</div>
