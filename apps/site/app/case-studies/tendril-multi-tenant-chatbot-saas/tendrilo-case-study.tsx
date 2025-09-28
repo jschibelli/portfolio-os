@@ -933,7 +933,7 @@ const SimpleBarChart: React.FC<{
 			<CardContent>
 				{caption && <p className="mb-4 text-xs text-stone-600 dark:text-stone-400">{caption}</p>}
 				<div className="space-y-4">
-					{data.map((item, index) => (
+					{data.map((item) => (
 						<div key={item.label} className="space-y-2">
 							<div className="flex justify-between text-sm">
 								<span className="font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
@@ -1154,51 +1154,6 @@ const SystemArchitecture: React.FC = () => (
 		</CardContent>
 	</Card>
 );
-
-// Interactive Bar Chart Component
-const InteractiveBarChart: React.FC<{
-	data: Array<{ label: string; value: number; target?: number }>;
-	title: string;
-	caption?: string;
-}> = ({ data, title, caption }) => {
-	const maxValue = Math.max(...data.map((d) => Math.max(d.value, d.target || 0)));
-
-	return (
-		<Card className="my-8">
-			<CardHeader>
-				<CardTitle className="flex items-center gap-2">
-					<BarChart3 className="h-5 w-5 text-stone-600" />
-					{title}
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
-				{caption && <p className="mb-4 text-xs text-stone-600 dark:text-stone-400">{caption}</p>}
-				<div className="space-y-4">
-					{data.map((item, index) => (
-						<div key={item.label} className="space-y-2">
-							<div className="flex justify-between text-sm">
-								<span className="font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
-								<span className="text-stone-600 dark:text-stone-400">{item.value}%</span>
-							</div>
-							<div className="h-3 w-full rounded-full bg-stone-200 dark:bg-stone-700">
-								<div
-									className="h-3 rounded-full bg-primary transition-all duration-500 ease-out"
-									style={{ width: `${(item.value / maxValue) * 100}%` }}
-								></div>
-							</div>
-							{item.target && (
-								<div className="flex justify-between text-xs text-stone-500 dark:text-stone-500">
-									<span>Current: {item.value}%</span>
-									<span>Target: {item.target}%</span>
-								</div>
-							)}
-						</div>
-					))}
-				</div>
-			</CardContent>
-		</Card>
-	);
-};
 
 // Development Roadmap Component
 const DevelopmentRoadmap: React.FC = () => (
@@ -1544,43 +1499,6 @@ const TableOfContents: React.FC<{ items: Array<{ id: string; title: string }> }>
 		</div>
 	);
 };
-
-// Projected Metrics Component
-const ProjectedMetrics: React.FC<{
-	data: Array<{ metric: string; target: string; benchmark: string; improvement: string }>;
-}> = ({ data }) => (
-	<Card className="my-8">
-		<CardHeader>
-			<CardTitle className="flex items-center gap-2">
-				<Target className="h-5 w-5 text-stone-600" />
-				Strategic Performance Targets
-			</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-				{data.map((item, index) => (
-					<div key={index} className="rounded-lg border border-stone-200 p-4 dark:border-stone-700">
-						<div className="mb-2 text-sm font-medium text-stone-600 dark:text-stone-400">
-							{item.metric}
-						</div>
-						<div className="mb-1 text-2xl font-bold text-stone-900 dark:text-stone-100">
-							{item.target}
-						</div>
-						<div className="mb-2 text-xs text-stone-500 dark:text-stone-500">
-							vs {item.benchmark}
-						</div>
-						<Badge
-							variant="secondary"
-							className="text-xs"
-						>
-							{item.improvement}
-						</Badge>
-					</div>
-				))}
-			</div>
-		</CardContent>
-	</Card>
-);
 
 export default function TendriloCaseStudy() {
 	const publication = {
