@@ -1,0 +1,108 @@
+# GitHub Copilot Configuration for Portfolio OS
+
+# Language-specific configurations
+languages:
+  typescript:
+    patterns:
+      - "**/*.ts"
+      - "**/*.tsx"
+    preferences:
+      - Use strict TypeScript with explicit types
+      - Prefer interfaces over types for object shapes
+      - Use proper error handling with Result types when applicable
+      - Follow React hooks best practices
+      
+  javascript:
+    patterns:
+      - "**/*.js"
+      - "**/*.jsx"  
+    preferences:
+      - Migrate to TypeScript when possible
+      - Use modern ES6+ syntax
+      - Implement proper JSDoc for non-TypeScript files
+
+  css:
+    patterns:
+      - "**/*.css"
+    preferences:
+      - Use Tailwind CSS utility classes
+      - Avoid custom CSS when Tailwind alternatives exist
+      - Use CSS Grid and Flexbox for layouts
+      
+# Framework-specific guidelines
+frameworks:
+  nextjs:
+    version: "14.x"
+    router: "app"
+    preferences:
+      - Use App Router over Pages Router
+      - Implement Server Components by default
+      - Use Client Components only when necessary (interactivity, browser APIs)
+      - Follow Next.js metadata API for SEO
+      - Use Next.js Image component for optimization
+      
+  react:
+    version: "18.x"
+    preferences:
+      - Use functional components with hooks
+      - Implement proper useEffect cleanup
+      - Use React.memo for performance optimization
+      - Follow React 18 best practices (Suspense, Concurrent features)
+      
+  tailwindcss:
+    preferences:
+      - Use utility-first approach
+      - Create custom components in packages/ui for reusability
+      - Use Tailwind's design tokens (colors, spacing, typography)
+      - Implement responsive design with mobile-first approach
+
+# Testing preferences
+testing:
+  unit:
+    framework: "jest"
+    library: "@testing-library/react"
+    patterns:
+      - "**/*.test.ts"
+      - "**/*.test.tsx"
+      - "**/*.spec.ts"
+      - "**/*.spec.tsx"
+    
+  e2e:
+    framework: "playwright"
+    patterns:
+      - "**/*.e2e.ts"
+      - "**/tests/**/*.ts"
+
+# Package management
+package_manager: "pnpm"
+monorepo_tool: "turborepo"
+
+# Code quality
+linting:
+  - eslint
+  - prettier
+  - typescript
+
+# Deployment
+deployment:
+  platform: "vercel"
+  environment: "production"
+
+# AI/ML integrations  
+ai_services:
+  - openai
+  - function_calling
+  - embeddings
+  - text_to_speech
+
+# Database
+database:
+  orm: "prisma"
+  type: "postgresql"
+  
+# External services
+services:
+  - hashnode
+  - resend
+  - upstash_redis
+  - vercel_blob
