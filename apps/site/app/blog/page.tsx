@@ -44,14 +44,6 @@ export default async function BlogPage() {
   const GQL_ENDPOINT = 'https://gql.hashnode.com/';
   const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 
-  // Debug logging for environment configuration
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔧 Hashnode Configuration:');
-    console.log('  - Endpoint:', GQL_ENDPOINT);
-    console.log('  - Publication Host:', host);
-    console.log('  - Environment Variables Available:', !!process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST);
-  }
-
   // Fetch latest posts from Hashnode
   const query = `
     query PostsByPublication($host: String!, $first: Int!, $after: String) {
