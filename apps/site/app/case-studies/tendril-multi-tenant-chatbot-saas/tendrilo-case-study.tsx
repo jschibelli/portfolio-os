@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
 import { motion } from 'framer-motion';
-import request from 'graphql-request';
 import {
 	AlertTriangle,
 	ArrowRight,
@@ -21,20 +20,15 @@ import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
-import { AppProvider } from '../../components/contexts/appContext';
-import Chatbot from '../../components/features/chatbot/Chatbot';
-import ModernHeader from '../../components/features/navigation/modern-header';
-import { Container } from '../../components/shared/container';
-import { Layout } from '../../components/shared/layout';
-import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../components/ui';
+import { AppProvider } from '../../../components/contexts/appContext';
+import Chatbot from '../../../components/features/chatbot/Chatbot';
+import ModernHeader from '../../../components/features/navigation/modern-header';
+import { Container } from '../../../components/shared/container';
+import { Layout } from '../../../components/shared/layout';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../../components/ui';
 import {
-	PostsByPublicationDocument,
-	PostsByPublicationQuery,
-	PostsByPublicationQueryVariables,
 	PublicationFragment,
-} from '../../generated/graphql';
-
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
+} from '../../../generated/graphql';
 
 type CaseStudyProps = {
 	publication: PublicationFragment;
@@ -1622,7 +1616,13 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 					/>
 				</Head>
 
-				<ModernHeader publication={publication} />
+				<ModernHeader 
+					publication={{
+						title: publication.title,
+						displayTitle: publication.title,
+						logo: publication.logo ? { url: publication.logo } : null,
+					}} 
+				/>
 
 				<main className="min-h-screen bg-background">
 					<Container>
@@ -1665,34 +1665,74 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 }
 
 export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
-	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-
-	try {
-		const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
-			GQL_ENDPOINT,
-			PostsByPublicationDocument,
-			{
-				first: 0,
-				host: host,
+	// Mock publication data for case study page
+	const mockPublication: PublicationFragment = {
+		id: 'tendril-case-study',
+		title: 'John Schibelli Portfolio',
+		description: 'Senior Front-End Developer & Technical Consultant',
+		url: 'https://schibelli.dev',
+		favicon: '/favicon.ico',
+		logo: '/assets/logo.svg',
+		isTeam: false,
+		metaTags: 'portfolio,case-study,tendril,chatbot,saas',
+		integrations: {
+			googleAnalyticsID: '',
+			hotjarID: '',
+			mixpanelID: '',
+			fathomAnalyticsID: '',
+			plausibleAnalyticsDomain: '',
+			posthogAnalyticsID: '',
+			umamiWebsiteID: '',
+			facebookPageID: '',
+			facebookPageAccessToken: '',
+			twitterHandle: '',
+			instagramHandle: '',
+			linkedinCompanyID: '',
+			youtubeChannelID: '',
+			githubHandle: '',
+			discordInviteCode: '',
+			slackCommunityID: '',
+			telegramChannelHandle: '',
+			mastodonHandle: '',
+			bskyHandle: '',
+			pinterestHandle: '',
+			tiktokHandle: '',
+			snapchatHandle: '',
+			redditHandle: '',
+			mediumHandle: '',
+			substackHandle: '',
+			ghostPublicationID: '',
+			buttondownAPIKey: '',
+			convertkitAPIKey: '',
+			emailOctopusAPIKey: '',
+			klaviyoAPIKey: '',
+			mailchimpAPIKey: '',
+			revueAPIKey: '',
+			beehiivAPIKey: '',
+			mailerliteAPIKey: '',
+			sendfoxAPIKey: '',
+			koalaPublicKey: '',
+			gTagManagerID: '',
+		},
+		preferences: {
+			logo: '/assets/logo.svg',
+			darkMode: {
+				logo: '/assets/logo-dark.svg',
 			},
-		);
-
-		const publication = data.publication;
-		if (!publication) {
-			return {
-				notFound: true,
-			};
-		}
-
-		return {
-			props: {
-				publication,
+			navbarItems: [],
+			layout: {
+				navbarStyle: 'modern',
+				footerStyle: 'minimal',
+				showBranding: true,
 			},
-			revalidate: 1,
-		};
-	} catch (error) {
-		return {
-			notFound: true,
-		};
-	}
+			members: [],
+		},
+	};
+
+	return {
+		props: {
+			publication: mockPublication,
+		},
+		revalidate: 3600, // Revalidate once per hour
+	};
 };
