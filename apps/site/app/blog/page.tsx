@@ -44,6 +44,14 @@ export default async function BlogPage() {
   const GQL_ENDPOINT = 'https://gql.hashnode.com/';
   const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 
+  // Debug logging for environment configuration
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔧 Hashnode Configuration:');
+    console.log('  - Endpoint:', GQL_ENDPOINT);
+    console.log('  - Publication Host:', host);
+    console.log('  - Environment Variables Available:', !!process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST);
+  }
+
   // Fetch latest posts from Hashnode
   const query = `
     query PostsByPublication($host: String!, $first: Int!, $after: String) {
@@ -67,6 +75,8 @@ export default async function BlogPage() {
   `;
 
   let posts: any[] = [];
+  let apiError: string | null = null;
+  
   try {
     const res = await fetch(GQL_ENDPOINT, {
       method: 'POST',
@@ -74,11 +84,28 @@ export default async function BlogPage() {
       body: JSON.stringify({ query, variables: { host, first: 10 } }),
       next: { revalidate: 60 },
     });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
-    const edges = data?.data?.publication?.posts?.edges || [];
-    posts = edges.map((e: any) => e.node);
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      apiError = data.errors.map((e: any) => e.message).join(', ');
+    } else if (data?.data?.publication?.posts?.edges) {
+      posts = data.data.publication.posts.edges.map((e: any) => e.node);
+    } else if (data?.data?.publication === null) {
+      apiError = `Publication not found: ${host}`;
+    } else {
+      console.warn('Unexpected API response structure:', data);
+      apiError = 'Unexpected API response format';
+    }
   } catch (error) {
     console.error('Error fetching Hashnode posts:', error);
+    apiError = error instanceof Error ? error.message : 'Unknown API error';
     posts = [];
   }
 
@@ -168,8 +195,28 @@ export default async function BlogPage() {
       </div>
 
       <Container className="flex flex-col items-stretch gap-10 px-5 pb-10">
+        {/* Error State */}
+        {apiError && (
+          <div id="error-state-section" data-animate-section className="duration-800 grid grid-cols-1 py-20 transition-all ease-out lg:grid-cols-3">
+            <div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 lg:col-start-2 dark:text-stone-400">
+              <div className="animate-fade-in-up w-20">
+                <ArticleSVG className="stroke-current" />
+              </div>
+              <p className="animate-fade-in-up animation-delay-200 text-xl font-semibold text-red-600 dark:text-red-400">
+                Blog Connection Error
+              </p>
+              <p className="animate-fade-in-up animation-delay-300 text-sm max-w-md">
+                Unable to fetch blog posts from Hashnode: {apiError}
+              </p>
+              <p className="animate-fade-in-up animation-delay-400 text-xs text-stone-500 dark:text-stone-600">
+                Please check your NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST configuration or try refreshing the page.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Empty State */}
-        {posts.length === 0 && (
+        {!apiError && posts.length === 0 && (
           <div id="empty-state-section" data-animate-section className="duration-800 grid grid-cols-1 py-20 transition-all ease-out lg:grid-cols-3">
             <div className="col-span-1 flex flex-col items-center gap-5 text-center text-stone-700 lg:col-start-2 dark:text-stone-400">
               <div className="animate-fade-in-up w-20">
