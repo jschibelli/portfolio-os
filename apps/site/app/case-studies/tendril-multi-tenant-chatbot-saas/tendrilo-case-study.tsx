@@ -1300,7 +1300,7 @@ const DevelopmentRoadmap: React.FC = () => (
 						Success Validation Milestones
 					</h3>
 					<p className="text-base leading-relaxed text-stone-700 dark:text-stone-300">
-						Month 3: Functional MVP with beta user validation. Month 6: 50+ active users
+						Month 3: Functional MVP with beta user validation. Month 6: Multiple active users
 						demonstrating product-market fit. Month 9: $10K+ MRR indicating sustainable business
 						model. Month 12: Clear path to profitability with validated unit economics.
 					</p>

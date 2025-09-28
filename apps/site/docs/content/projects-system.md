@@ -209,7 +209,7 @@ Use this template for new case studies:
 [Share outcomes, performance metrics, and measurable results]
 
 :::metrics
-Metric, Value, Trend
+Metric, Value, Achievement
 Architecture, Multi-tenant, Advanced
 AI Integration, Advanced, +25%
 Setup Time, 18 minutes, -60%

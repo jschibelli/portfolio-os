@@ -225,9 +225,9 @@ Transform Tendril from a chatbot platform into a comprehensive customer communic
 :::kpis
 Target Metric, Goal
 MRR (12 months), $25K
-Active Deployments, 150+
+Active Deployments, Multiple
 Monthly Churn Rate, <5%
-Agency Partners, 25+
+Agency Partners, Multiple
 :::
 
 **Risk Mitigation and Contingency Planning**:
