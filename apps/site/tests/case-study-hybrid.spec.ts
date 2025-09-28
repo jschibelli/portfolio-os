@@ -212,7 +212,7 @@ test.describe('Case Study Hybrid Implementation', () => {
 		// Check that key metrics are displayed
 		await expect(page.locator('#results-metrics').getByText('47')).toBeVisible(); // First Month Sign-ups
 		await expect(page.locator('#results-metrics').getByText('23 (49%)')).toBeVisible(); // Paid Conversions
-		await expect(page.locator('#results-metrics').getByText('91%')).toBeVisible(); // User Retention Rate
+		await expect(page.locator('#results-metrics').getByText('Advanced')).toBeVisible(); // AI Integration
 		await expect(page.locator('#results-metrics').getByText('18 minutes')).toBeVisible(); // Avg Setup Time
 
 		// Check business impact metrics

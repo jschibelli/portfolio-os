@@ -210,8 +210,8 @@ Use this template for new case studies:
 
 :::metrics
 Metric, Value, Trend
-Revenue Increase, 150%, +25%
-User Retention, 91%, +12%
+Architecture, Multi-tenant, Advanced
+AI Integration, Advanced, +25%
 Setup Time, 18 minutes, -60%
 :::
 

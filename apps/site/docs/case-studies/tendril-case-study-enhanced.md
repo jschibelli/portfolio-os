@@ -68,7 +68,7 @@ The Tendril MVP demonstrated strong market validation and user adoption within t
 :::metrics
 First Month Sign-ups, 47, up
 Paid Conversions (60 days), 23 (49%), up
-User Retention Rate, 91%, up
+AI Integration, Advanced, up
 Avg Setup Time, 18 minutes, up
 :::
 

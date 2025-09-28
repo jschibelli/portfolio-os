@@ -376,7 +376,7 @@ export default function AboutPage() {
                   {
                     icon: CheckCircle,
                     title: 'Project Delivery',
-                    metric: '25+ Projects',
+                    metric: 'Multiple Projects',
                     copy:
                       'Delivered web applications and digital solutions across various industries, working with teams to build e-commerce platforms and AI-driven collaboration tools.',
                   },
