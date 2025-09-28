@@ -80,7 +80,7 @@ export default function ContactPage() {
           <div className="relative z-10">
             <Container className="px-4">
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="mx-auto max-w-5xl text-center">
-                <h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">Let's Build Something
+                <h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">Let's Work
                   <br />
                   <span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">Together</span>
                 </h1>

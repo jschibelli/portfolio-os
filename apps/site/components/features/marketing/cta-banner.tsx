@@ -30,7 +30,7 @@ export default function CTABanner() {
 							Let&apos;s Discuss Your Project Goals
 						</h2>
 						<p className="mx-auto max-w-2xl text-xl text-stone-200">
-							Ready to transform your ideas into high-performance digital experiences? Let&apos;s explore how we can achieve your business objectives together.
+							Ready to discuss your ideas for digital experiences? Let&apos;s explore how we can work together to achieve your business objectives.
 						</p>
 					</div>
 
@@ -103,8 +103,8 @@ export default function CTABanner() {
 							<div className="text-sm text-stone-300">Response Time</div>
 						</div>
 						<div className="text-center">
-							<div className="mb-2 text-2xl font-bold text-white">100%</div>
-							<div className="text-sm text-stone-300">Client Satisfaction</div>
+							<div className="mb-2 text-2xl font-bold text-white">✓</div>
+							<div className="text-sm text-stone-300">Client Success Focus</div>
 						</div>
 						<div className="text-center">
 							<div className="mb-2 text-2xl font-bold text-white">15+</div>

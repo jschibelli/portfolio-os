@@ -23,46 +23,51 @@ interface TrustSignal {
   variant?: 'default' | 'secondary' | 'outline' | 'destructive';
 }
 
+/**
+ * Trust signals configuration for the contact page
+ * Each signal represents a key value proposition or capability
+ * that builds trust with potential clients
+ */
 const trustSignals: TrustSignal[] = [
   {
     icon: StarIcon,
-    title: "100% Client Satisfaction",
-    description: "Every project delivered with excellence",
-    highlight: "100%",
+    title: "Client Success Focus",
+    description: "Committed to delivering exceptional results for every project",
+    highlight: "Focused",
     variant: "default"
   },
   {
     icon: AwardIcon,
-    title: "15+ Years Experience",
-    description: "Senior-level expertise in modern web development",
-    highlight: "15+",
+    title: "Senior-Level Expertise",
+    description: "Advanced skills in modern web development technologies",
+    highlight: "Expert",
     variant: "secondary"
   },
   {
     icon: ClockIcon,
     title: "24h Response Time",
-    description: "Quick turnaround on all inquiries",
+    description: "Quick turnaround on all inquiries and project communications",
     highlight: "24h",
     variant: "outline"
   },
   {
     icon: UsersIcon,
-    title: "50+ Projects Delivered",
-    description: "Successful projects across various industries",
-    highlight: "50+",
+    title: "Multiple Projects Delivered",
+    description: "Successful projects across various industries and use cases",
+    highlight: "Diverse",
     variant: "default"
   },
   {
     icon: GlobeIcon,
     title: "Global Reach",
-    description: "Northern NJ based, serving clients worldwide",
+    description: "Northern NJ based, serving clients worldwide with remote capabilities",
     highlight: "Global",
     variant: "secondary"
   },
   {
     icon: ShieldCheckIcon,
     title: "Security Assured",
-    description: "Your data is protected with enterprise-grade security",
+    description: "Your data is protected with enterprise-grade security measures",
     highlight: "Secure",
     variant: "outline"
   }
@@ -93,6 +98,20 @@ const itemVariants = {
 /**
  * TrustSignals component displays key trust indicators and social proof
  * to build confidence with potential clients
+ * 
+ * Features:
+ * - Displays 6 key trust signals with consistent formatting
+ * - Each signal includes icon, title, description, and highlight badge
+ * - Responsive grid layout (1 col mobile, 2 col tablet, 3 col desktop)
+ * - Animated entrance with staggered children
+ * - Security assurance section at the bottom
+ * 
+ * Trust signals focus on:
+ * - Client success and project delivery
+ * - Technical expertise and experience
+ * - Communication and response times
+ * - Global reach and remote capabilities
+ * - Security and data protection
  */
 export function TrustSignals() {
   return (

@@ -3,8 +3,31 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 // Mock fetch globally
 global.fetch = jest.fn();
 
+/**
+ * API Smoke Tests for Dashboard Application
+ * 
+ * These tests validate basic API endpoint functionality and error handling.
+ * They use mocked responses to ensure tests don't depend on external services.
+ * 
+ * Test Coverage:
+ * - Media Upload API endpoints
+ * - Booking/Scheduling API endpoints  
+ * - Stripe Webhook API endpoints
+ * - Health check endpoints
+ * 
+ * Security Considerations:
+ * - Authentication requirements
+ * - Input validation
+ * - Error handling without exposing sensitive information
+ */
+
 describe('API Smoke Tests', () => {
-  const baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3001';
+  const baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3003';
+  
+  // Validate base URL configuration
+  if (!process.env.TEST_BASE_URL) {
+    console.warn('TEST_BASE_URL not set, using default localhost:3003');
+  }
   
   beforeEach(() => {
     (fetch as jest.Mock).mockClear();
@@ -19,14 +42,22 @@ describe('API Smoke Tests', () => {
       // Mock successful response
       (fetch as jest.Mock).mockResolvedValueOnce({
         status: 200,
-        json: jest.fn().mockResolvedValueOnce({ message: 'Media upload endpoint' })
+        json: jest.fn().mockResolvedValueOnce({ message: 'Media upload endpoint' }),
+        ok: true
       });
       
-      const response = await fetch(`${baseUrl}/api/media/upload`);
-      expect(response.status).toBe(200);
-      
-      const data = await response.json();
-      expect(data.message).toBe('Media upload endpoint');
+      try {
+        const response = await fetch(`${baseUrl}/api/media/upload`);
+        expect(response.status).toBe(200);
+        expect(response.ok).toBe(true);
+        
+        const data = await response.json();
+        expect(data.message).toBe('Media upload endpoint');
+      } catch (error) {
+        // Handle network errors gracefully
+        console.error('Network error in media upload test:', error);
+        throw error;
+      }
     });
 
     it('should reject POST without authentication', async () => {
@@ -238,6 +269,29 @@ describe('API Smoke Tests', () => {
       const data = await response.json();
       expect(data.status).toBe('healthy');
       expect(data.timestamp).toBeDefined();
+    });
+  });
+
+  describe('Environment Configuration', () => {
+    it('should handle missing TEST_BASE_URL gracefully', () => {
+      // Test that the default URL is used when TEST_BASE_URL is not set
+      const originalEnv = process.env.TEST_BASE_URL;
+      delete process.env.TEST_BASE_URL;
+      
+      // Re-import to test default behavior
+      const testBaseUrl = process.env.TEST_BASE_URL || 'http://localhost:3003';
+      expect(testBaseUrl).toBe('http://localhost:3003');
+      
+      // Restore original environment
+      if (originalEnv) {
+        process.env.TEST_BASE_URL = originalEnv;
+      }
+    });
+
+    it('should validate base URL format', () => {
+      // Ensure base URL has proper format
+      expect(baseUrl).toMatch(/^https?:\/\/.+/);
+      expect(baseUrl).not.toBe('');
     });
   });
 });

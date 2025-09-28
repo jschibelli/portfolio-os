@@ -1,9 +1,12 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
-const PrismaAdapter = () => null;
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "../../../../lib/prisma";
+
+// PrismaAdapter configuration for NextAuth
+// This adapter provides database session and user management
+// Error handling is implemented below to ensure graceful fallbacks
 import { 
   isRateLimited, 
   recordFailedAttempt, 
@@ -16,8 +19,18 @@ import {
   getClientIP
 } from "../../../../lib/auth-security";
 
+// Initialize PrismaAdapter with error handling
+let adapter: any = null;
+try {
+  adapter = PrismaAdapter(prisma);
+} catch (error) {
+  console.error("Failed to initialize PrismaAdapter:", error);
+  // Fallback to JWT-only strategy if database adapter fails
+  console.warn("Falling back to JWT-only authentication strategy");
+}
+
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter,
   session: { 
     strategy: "jwt" as const,
     maxAge: 24 * 60 * 60, // 24 hours
@@ -176,6 +189,18 @@ export const authOptions = {
           }
         } catch (error) {
           console.error("Database error during authentication:", error);
+          
+          // Enhanced error handling - check for specific error types
+          if (error instanceof Error) {
+            // Log specific error types for debugging without exposing details
+            if (error.message.includes('connection')) {
+              console.error("Database connection error during authentication");
+            } else if (error.message.includes('timeout')) {
+              console.error("Database timeout during authentication");
+            } else {
+              console.error("General database error during authentication");
+            }
+          }
           
           // Log the error but don't reveal database structure
           await logAuthAttempt({

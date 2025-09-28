@@ -10,21 +10,21 @@
 		"caseStudyUrl": "/case-studies/tendrilo-case-study",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "40%",
-				"responseTime": "2.3s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Improved",
+				"responseTime": "Optimized",
+				"uptime": "Reliable"
 			},
-			"business": {
-				"revenueIncrease": "150%",
-				"userRetention": "91%",
-				"setupTime": "18 minutes",
-				"conversionRate": "23%"
+			"technical": {
+				"architecture": "Scalable multi-tenant design",
+				"features": "AI-powered automation",
+				"deployment": "Cloud-native infrastructure",
+				"security": "Enterprise-grade compliance"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "SMBs needed affordable, scalable chatbot solutions",
 			"solution": "Multi-tenant SaaS platform with AI-powered automation",
-			"results": "150% revenue increase and 91% user retention"
+			"results": "Scalable architecture and improved customer engagement"
 		}
 	},
 	{
@@ -38,21 +38,21 @@
 		"caseStudyUrl": "/case-studies/zeus-ecommerce-platform",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "65%",
-				"responseTime": "1.8s",
-				"uptime": "99.8%"
+				"loadTimeImprovement": "Significantly Improved",
+				"responseTime": "Fast Loading",
+				"uptime": "Highly Reliable"
 			},
-			"business": {
-				"salesIncrease": "85%",
-				"cartAbandonment": "Reduced by 32%",
-				"mobileConversion": "45%",
-				"pageSpeedScore": "98/100"
+			"technical": {
+				"optimization": "Next.js performance optimization",
+				"mobileFirst": "Responsive design implementation",
+				"integration": "Stripe payment processing",
+				"cms": "Headless CMS integration"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Slow e-commerce site with poor mobile experience",
 			"solution": "Next.js optimization with mobile-first design",
-			"results": "85% sales increase and 32% reduction in cart abandonment"
+			"results": "Improved performance and enhanced mobile experience"
 		}
 	},
 	{
@@ -66,21 +66,21 @@
 		"caseStudyUrl": "/case-studies/portfolio-site",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "55%",
-				"responseTime": "1.2s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Optimized Performance",
+				"responseTime": "Fast Response",
+				"uptime": "Highly Reliable"
 			},
-			"business": {
-				"engagementIncrease": "120%",
-				"bounceRate": "Reduced by 28%",
-				"seoScore": "95/100",
-				"accessibilityScore": "100/100"
+			"technical": {
+				"modernization": "Complete redesign with Next.js",
+				"seo": "Optimized for search engines",
+				"accessibility": "WCAG compliant design",
+				"performance": "Optimized loading and rendering"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Outdated portfolio lacking modern design and performance",
 			"solution": "Complete redesign with Next.js and performance optimization",
-			"results": "120% engagement increase and 28% reduction in bounce rate"
+			"results": "Modern design with improved performance and accessibility"
 		}
 	},
 	{
@@ -94,21 +94,21 @@
 		"caseStudyUrl": "/case-studies/synaplyai",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "50%",
-				"responseTime": "2.1s",
-				"uptime": "99.7%"
+				"loadTimeImprovement": "Improved Performance",
+				"responseTime": "Responsive System",
+				"uptime": "Reliable Operation"
 			},
-			"business": {
-				"userGrowth": "200%",
-				"collaborationEfficiency": "75%",
-				"contentQuality": "Improved by 60%",
-				"userSatisfaction": "4.8/5"
+			"technical": {
+				"collaboration": "Real-time conflict resolution",
+				"aiIntegration": "Token-level AI processing",
+				"architecture": "Multi-tenant scalable design",
+				"userExperience": "Intuitive collaboration interface"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Teams struggling with AI content collaboration conflicts",
 			"solution": "Real-time collaboration platform with conflict resolution",
-			"results": "200% user growth and 75% improvement in collaboration efficiency"
+			"results": "Streamlined collaboration workflow and conflict-free editing"
 		}
 	},
 	{
@@ -122,21 +122,21 @@
 		"caseStudyUrl": "/case-studies/intraweb-technologies",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "45%",
-				"responseTime": "1.5s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Enhanced Performance",
+				"responseTime": "Fast Loading",
+				"uptime": "Reliable Service"
 			},
-			"business": {
-				"leadGeneration": "180%",
-				"inquiryIncrease": "95%",
-				"brandRecognition": "Increased by 70%",
-				"clientAcquisition": "150%"
+			"technical": {
+				"modernization": "Complete website redesign",
+				"optimization": "Performance and SEO improvements",
+				"integration": "Contact forms and lead capture",
+				"branding": "Professional brand presentation"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Outdated company website failing to generate leads",
 			"solution": "Modern, conversion-optimized website with clear value proposition",
-			"results": "180% increase in lead generation and 95% more inquiries"
+			"results": "Improved lead capture and professional brand presence"
 		}
 	}
 ]

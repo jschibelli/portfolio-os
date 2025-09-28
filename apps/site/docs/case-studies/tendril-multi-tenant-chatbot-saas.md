@@ -100,7 +100,7 @@ The Tendril MVP demonstrated strong market validation and user adoption within t
 Metric, Value
 First Month Sign-ups, 47
 Paid Conversions (60 days), 23 (49%)
-User Retention Rate, 91%
+AI Integration, Advanced
 Avg Setup Time, 18 minutes
 :::
 
@@ -225,9 +225,9 @@ Transform Tendril from a chatbot platform into a comprehensive customer communic
 :::kpis
 Target Metric, Goal
 MRR (12 months), $25K
-Active Deployments, 150+
+Active Deployments, Multiple
 Monthly Churn Rate, <5%
-Agency Partners, 25+
+Agency Partners, Multiple
 :::
 
 **Risk Mitigation and Contingency Planning**:

@@ -124,6 +124,9 @@ model Article {
   tags            ArticleTag[]
   versions        ArticleVersion[]
   reactions       Reaction[]
+  comments        Comment[]
+  category        Category?     @relation(fields: [categoryId], references: [id])
+  categoryId      String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
@@ -336,6 +339,101 @@ model NewsletterCampaign {
   tags            String[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+// Admin Settings Models
+model AppearanceSettings {
+  id        String   @id @default(cuid())
+  theme     String   @default("light")
+  primaryColor String @default("#3b82f6")
+  fontFamily String   @default("Inter")
+  logo      String?
+  favicon   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailSettings {
+  id              String   @id @default(cuid())
+  smtpHost        String?
+  smtpPort        Int?
+  smtpUser        String?
+  smtpPassword    String?
+  fromEmail       String?
+  fromName        String?
+  replyToEmail    String?
+  replyToName     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SeoSettings {
+  id              String   @id @default(cuid())
+  siteName        String?
+  siteDescription String?
+  siteUrl         String?
+  ogImage         String?
+  twitterHandle   String?
+  facebookAppId   String?
+  googleAnalyticsId String?
+  googleTagManagerId String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model DatabaseSettings {
+  id              String   @id @default(cuid())
+  backupEnabled   Boolean  @default(false)
+  backupFrequency String   @default("daily")
+  retentionDays   Int      @default(30)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // 'email' | 'calendar' | 'social' | 'analytics'
+  config      Json?
+  isActive    Boolean  @default(false)
+  lastSync    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  author    String?
+  email     String?
+  website   String?
+  isApproved Boolean @default(false)
+  articleId String?
+  article   Article? @relation(fields: [articleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  mimeType  String
+  size      Int
+  alt       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  articles    Article[]
 }
 
 

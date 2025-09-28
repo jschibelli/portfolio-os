@@ -120,7 +120,7 @@ Based on market research, position Tendril as "the anti-Intercom" - transparent 
 
 **Risk Mitigation Plan**: Technical Risk: Prototype core AI integration early to validate response quality assumptions. Market Risk: Maintain close contact with potential customers throughout development to ensure continued demand. Competitive Risk: Monitor incumbent responses and maintain agility to adjust positioning if needed.
 
-**Success Validation Milestones**: Month 3: Functional MVP with beta user validation. Month 6: 50+ active users demonstrating product-market fit. Month 9: $10K+ MRR indicating sustainable business model. Month 12: Clear path to profitability with validated unit economics.
+**Success Validation Milestones**: Month 3: Functional MVP with beta user validation. Month 6: Multiple active users demonstrating product-market fit. Month 9: $10K+ MRR indicating sustainable business model. Month 12: Clear path to profitability with validated unit economics.
 
 **Long-term Strategic Vision**: Transform from chatbot platform into comprehensive customer communication solution for SMBs and agencies. Maintain core advantages of simplicity and transparency while expanding capabilities based on user needs and market evolution.
 

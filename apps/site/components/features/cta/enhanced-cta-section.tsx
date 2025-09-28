@@ -39,7 +39,7 @@ const audienceConfig = {
 	recruiters: {
 		title: "Looking for a Senior Front-End Developer?",
 		subtitle: "I'm actively seeking new opportunities",
-		description: "With 15+ years of experience building scalable web applications, I bring proven expertise in React, Next.js, TypeScript, and modern development practices. Available for full-time positions and ready to make an immediate impact.",
+		description: "With 15+ years of experience building scalable web applications, I have experience working with React, Next.js, TypeScript, and modern development practices. Available for full-time positions and ready to contribute.",
 		primaryCTA: {
 			text: "View Resume",
 			url: "/resume",
@@ -62,7 +62,7 @@ const audienceConfig = {
 	'startup-founders': {
 		title: "Ready to Build Your MVP?",
 		subtitle: "Let's turn your startup vision into reality",
-		description: "I specialize in helping startups build scalable, high-performance web applications from the ground up. From MVP development to full-scale platforms, I'll help you launch faster and scale smarter.",
+		description: "I enjoy working with startups to build scalable web applications from the ground up. From MVP development to full-scale platforms, I'd be happy to help you launch and scale your product.",
 		primaryCTA: {
 			text: "Start Your Project",
 			url: "/contact",
@@ -85,7 +85,7 @@ const audienceConfig = {
 	clients: {
 		title: "Transform Your Digital Presence",
 		subtitle: "Professional web development services",
-		description: "Whether you need a complete website redesign, e-commerce platform, or custom web application, I deliver exceptional results that drive business growth and user engagement.",
+		description: "Whether you need a complete website redesign, e-commerce platform, or custom web application, I work to deliver quality solutions that support business objectives and user engagement.",
 		primaryCTA: {
 			text: "Get Quote",
 			url: "/contact",
@@ -108,7 +108,7 @@ const audienceConfig = {
 	general: {
 		title: "Ready to Start Your Project?",
 		subtitle: "Let's discuss how I can help",
-		description: "I'm passionate about creating exceptional digital experiences that drive results. Whether you're a recruiter, startup founder, or business owner, let's explore how we can work together.",
+		description: "I'm passionate about creating digital experiences that support your goals. Whether you're a recruiter, startup founder, or business owner, let's explore how we can work together.",
 		primaryCTA: {
 			text: "Get In Touch",
 			url: "/contact",

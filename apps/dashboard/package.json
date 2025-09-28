@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "dev:env": "next dev -p ${DASHBOARD_PORT:-3003}",
+    "start:env": "next start -p ${PORT:-3003}",
     "typecheck": "tsc",
     "test": "jest",
     "test:ci": "jest --ci --coverage --watchAll=false",
