@@ -392,14 +392,14 @@ export default function AboutPage() {
                     title: 'Response Time',
                     metric: '24h Response',
                     copy:
-                      'Committed to rapid communication and quick turnaround times. Your project needs are my priority with guaranteed response within 24 hours.',
+                      'Focused on clear communication and timely responses. I prioritize your project needs and aim to respond within 24 hours to keep projects moving forward.',
                   },
                   {
                     icon: Zap,
                     title: 'AI-Enhanced Development',
                     metric: 'Future-Ready',
                     copy:
-                      'Leveraging cutting-edge AI tools and modern development practices to build intelligent, scalable solutions that adapt to your business needs.',
+                      'Working with modern AI tools and development practices to build intelligent, scalable solutions that grow with your business needs.',
                   },
                   {
                     icon: TrendingUp,
