@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    // Using port 3003 to avoid conflicts with other apps in the monorepo
+    // - Site app runs on port 3000 (default)
+    // - Docs app runs on port 3001
+    // - Dashboard app runs on port 3003
     "dev": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
