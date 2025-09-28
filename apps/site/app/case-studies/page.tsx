@@ -23,9 +23,9 @@ const caseStudies = [
     author: 'John Schibelli',
     featured: true,
     metrics: {
-      architecture: 'Multi-tenant scalable design',
-      features: 'AI-powered automation',
-      deployment: 'Cloud-native infrastructure'
+      revenueIncrease: '150%',
+      userRetention: '91%',
+      setupTime: '18 minutes'
     },
     liveUrl: 'https://tendril.intrawebtech.com',
     caseStudyUrl: '/case-studies/tendrilo-case-study'
@@ -51,14 +51,8 @@ export default function CaseStudiesPage() {
       descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
       url: 'https://schibelli.dev',
       author: { name: 'John Schibelli' },
-      preferences: { 
-        logo: null as any,
-        darkMode: { logo: null as any },
-        navbarItems: [],
-        layout: { navbarStyle: 'default', footerStyle: 'default', showBranding: true },
-        members: []
-      },
-    } as any}>
+      preferences: { logo: null as any },
+    }}>
       <Layout>
         <main className="min-h-screen bg-background">
           {/* Hero Section */}

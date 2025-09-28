@@ -3,15 +3,15 @@
 ## Development Setup
 
 ### Port Configuration
-The dashboard application runs on port 3003 by default to avoid conflicts with other applications in the monorepo.
+The dashboard application runs on port 3001 by default to avoid conflicts with other applications in the monorepo.
 
 ```bash
-npm run dev  # Runs on http://localhost:3003
+npm run dev  # Runs on http://localhost:3001
 ```
 
 ### Available Scripts
 
-- `npm run dev` - Start development server on port 3003
+- `npm run dev` - Start development server on port 3001
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
@@ -36,7 +36,7 @@ npm run dev  # Runs on http://localhost:3003
 
 ## Port Configuration Notes
 
-The dashboard uses port 3003 to avoid conflicts with:
+The dashboard uses port 3001 to avoid conflicts with:
 - Main site application (typically port 3000)
 - Other services in the monorepo
 - Common development ports

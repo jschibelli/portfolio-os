@@ -157,7 +157,7 @@ export default function AboutPage() {
                     </div>
                     <h1 className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl">John Schibelli</h1>
                     <p className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">Senior Front-End Developer</p>
-                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Working to build web applications that support business objectives. I work with React, Next.js, and TypeScript with experience creating scalable digital experiences that help clients achieve their goals.</p>
+                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with 15+ years of experience creating scalable digital experiences that help clients achieve their goals.</p>
 
                     <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start">
                       {stats.map(({ icon: Icon, label }) => (

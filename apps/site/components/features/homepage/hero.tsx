@@ -54,7 +54,7 @@ export default function Hero() {
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
 						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
 					>
-						Collaborating on Reliable, Scalable<br />
+						Building Reliable, Scalable<br />
 						Web Applications
 					</motion.h1>
 
@@ -71,7 +71,7 @@ export default function Hero() {
 							Senior Front-End Developer
 						</p>
 						<p className="mx-auto max-w-3xl text-base font-medium leading-relaxed text-stone-300 md:text-lg lg:text-xl">
-							I work with React, Next.js, and TypeScript to help teams build applications that are maintainable, scalable, and user-friendly.
+							I work with React, Next.js, and TypeScript — helping teams build apps that are maintainable, scalable, and user-friendly.
 						</p>
 					</motion.section>
 

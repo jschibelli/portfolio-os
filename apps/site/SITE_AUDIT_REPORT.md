@@ -59,7 +59,7 @@ This report documents the comprehensive audit of the portfolio website to ensure
 ### Case Studies
 - **Tendril Multi-Tenant Chatbot SaaS** (`/case-studies/tendrilo-case-study`)
   - Full strategic analysis and implementation plan
-  - Metrics: Multi-tenant architecture, AI-powered automation
+  - Metrics: 150% revenue increase, 91% user retention
   - Links to live site, GitHub, and documentation
   - Comprehensive content with problem statement, solution, and results
 
