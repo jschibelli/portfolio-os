@@ -1,7 +1,38 @@
 
-> @mindware-blog/dashboard@0.1.0 build C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard
+
+> @mindware-blog/dashboard@0.1.0 build /home/runner/work/portfolio-os/portfolio-os/apps/dashboard
 > next build
+
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
 
    ▲ Next.js 15.5.2
 
    Creating an optimized production build ...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 1/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 2/3...
+getaddrinfo ENOTFOUND fonts.googleapis.com
+
+Retrying 3/3...
+[Error: getaddrinfo ENOTFOUND fonts.googleapis.com] {
+  errno: -3007,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'fonts.googleapis.com'
+}
+Failed to compile.
+
+app/layout.tsx
+`next/font` error:
+Failed to fetch `Inter` from Google Fonts.
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.
