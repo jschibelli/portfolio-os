@@ -1,80 +1,44 @@
-# Dashboard App
+# Dashboard Application
 
-## Overview
-This dashboard app provides an admin interface for content management and site administration.
+## Development Setup
 
-## Features
-- Admin interface for content management
-- User authentication and authorization
-- Article creation, editing, and publishing workflows
-- Analytics and reporting features
-- Integration with the main site's content API
+### Port Configuration
+The dashboard application runs on port 3001 by default to avoid conflicts with other applications in the monorepo.
 
-## Tech Stack
-- **Framework**: Next.js 14+ with App Router
-- **Database**: Prisma for database operations
-- **Authentication**: NextAuth.js or similar
-- **Styling**: Tailwind CSS
-- **Language**: TypeScript for type safety
-
-## Security Considerations
-- Role-based access control (RBAC)
-- Input validation and sanitization
-- CSRF protection
-- Rate limiting for API endpoints
-
-## Error Handling & Fault Tolerance
-- Comprehensive error boundaries for React components
-- Graceful fallback handling for API failures
-- Retry mechanisms for transient errors
-- User-friendly error messages and recovery options
-- Logging and monitoring for production debugging
-
-## Testing Strategy
-- Unit tests for individual components and utilities
-- Integration tests for API endpoints and database operations
-- End-to-end tests for critical user workflows
-- Security testing for authentication and authorization
-- Performance testing for database queries and API responses
-- Accessibility testing for admin interface usability
-
-## Development Workflow
-- Feature branch development with proper naming
-- Pull request templates with required information
-- Automated testing in CI/CD pipeline
-- Code coverage reporting and thresholds
-- Security scanning and vulnerability assessment
-- Performance benchmarking and monitoring
-
-## Getting Started
-
-1. Install dependencies:
 ```bash
-pnpm install
+npm run dev  # Runs on http://localhost:3001
 ```
 
-2. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
+### Available Scripts
 
-3. Run the development server:
-```bash
-pnpm dev
-```
+- `npm run dev` - Start development server on port 3001
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run typecheck` - Run TypeScript type checking
+- `npm run test` - Run tests
+- `npm run test:ci` - Run tests in CI mode
+- `npm run test:coverage` - Run tests with coverage
 
-## Code Quality Standards
-- Consistent TypeScript types and interfaces
-- ESLint configuration for code style enforcement
-- Prettier configuration for code formatting
-- Husky pre-commit hooks for quality gates
-- Code review guidelines and checklist
-- Performance monitoring and optimization
+### Database Commands
 
-## Documentation Standards
-- Comprehensive README with setup and deployment instructions
-- API documentation with examples and error codes
-- Component documentation with props and usage examples
-- Database schema documentation with relationships
-- Security guidelines and best practices
-- Troubleshooting guides for common issues
+- `npm run db:generate` - Generate Prisma client
+- `npm run db:push` - Push schema changes to database
+- `npm run db:migrate` - Run database migrations
+- `npm run db:studio` - Open Prisma Studio
+
+### Quality Assurance
+
+- `npm run quality:check` - Run code quality checks
+- `npm run quality:maintenance` - Run dependency maintenance checks
+- `npm run quality:verify` - Verify implementation
+- `npm run quality:all` - Run all quality checks
+
+## Port Configuration Notes
+
+The dashboard uses port 3001 to avoid conflicts with:
+- Main site application (typically port 3000)
+- Other services in the monorepo
+- Common development ports
+
+If you need to change the port, update the `dev` script in `package.json` and ensure no other services are using the same port.
