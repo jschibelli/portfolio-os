@@ -112,3 +112,10 @@ next-env.d.ts
 *.tmp
 *.temp
 
+# =============================================================================
+# Turborepo Specific Cache Directories
+# =============================================================================
+# Specific Turborepo cache and daemon directories that contain build artifacts
+# and temporary files generated during the build process
+.turbo/cache/
+.turbo/daemon/
