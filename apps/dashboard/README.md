@@ -89,6 +89,45 @@ npm run dev -- -p [PORT_NUMBER]
 2. Kill the process using the port if necessary
 3. Restart the development server
 
+## Testing Strategy
+- **Unit Tests**: Run `npm test` to execute component and utility tests
+- **Integration Tests**: Test API endpoints and database operations
+- **E2E Tests**: Use Playwright for critical user workflows
+- **Port Configuration Tests**: Verify port changes don't introduce unexpected behavior
+- **Security Tests**: Test authentication and authorization flows
+
+## API Documentation
+### Key Endpoints
+- `/api/admin/*` - Admin API routes for content management
+- `/api/auth/*` - Authentication and authorization endpoints
+- `/api/analytics/*` - Analytics and reporting endpoints
+
+### Error Handling
+- Comprehensive error boundaries for React components
+- Graceful fallback handling for API failures
+- Detailed error logging for troubleshooting
+- User-friendly error messages with recovery options
+
+## Security Best Practices
+- Input validation and sanitization on all user inputs
+- CSRF protection for state-changing operations
+- Rate limiting on API endpoints to prevent abuse
+- Secure session management and token handling
+- Regular security audits and dependency updates
+
+## Performance Monitoring
+- Core Web Vitals tracking for dashboard performance
+- Database query optimization and monitoring
+- API response time monitoring
+- Memory usage and resource optimization
+- Regular performance audits and improvements
+
+## Dependency Management
+- Regular updates to maintain security and compatibility
+- Automated dependency scanning for vulnerabilities
+- Version pinning for critical dependencies
+- Documentation of breaking changes and migration paths
+
 ## Code Quality Standards
 - Consistent TypeScript types and interfaces
 - ESLint configuration for code style enforcement
