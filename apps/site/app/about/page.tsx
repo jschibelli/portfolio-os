@@ -153,11 +153,11 @@ export default function AboutPage() {
                   {/* Copy */}
                   <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1.0, delay: 0.4, ease: 'easeOut' }} className="text-center lg:text-left">
                     <div className="mb-6">
-                      <p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl tracking-wide">Transforming Ideas Into Digital Success</p>
+                      <p className="text-lg font-medium text-stone-300 md:text-xl lg:text-2xl tracking-wide">Helping Transform Ideas Into Digital Solutions</p>
                     </div>
                     <h1 className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl">John Schibelli</h1>
                     <p className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">Senior Front-End Developer</p>
-                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with extensive experience creating scalable digital experiences that help clients achieve their goals.</p>
+                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Working to build web applications that support business objectives. I work with React, Next.js, and TypeScript with experience creating scalable digital experiences that help clients achieve their goals.</p>
 
                     <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start">
                       {stats.map(({ icon: Icon, label }) => (
@@ -265,7 +265,7 @@ export default function AboutPage() {
                           </div>
                         </div>
                         <p className="text-stone-600 dark:text-stone-400">
-                          Life threw unexpected challenges my way, including a stroke that tested my resilience. Through recovery, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. This experience deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
+                          Life presented unexpected challenges that tested my resilience. Through these experiences, I learned that <strong className="text-stone-900 dark:text-stone-100">perseverance and adaptability are as crucial in life as they are in code</strong>. This deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
                         </p>
                       </div>
                     </div>
@@ -335,7 +335,7 @@ export default function AboutPage() {
                           </div>
                         </div>
                         <p className="text-stone-600 dark:text-stone-400">
-                          As Founder and Lead Developer at IntraWeb Technologies, I'm building the future of web development with AI-driven solutions like SynaplyAI. My mission: <strong className="text-stone-900 dark:text-stone-100">creating technology that empowers people</strong> – whether that's through accessible interfaces, intelligent automation, or mentoring the next generation of developers.
+                          As Founder and Lead Developer at IntraWeb Technologies, I'm exploring AI-driven solutions like SynaplyAI and their potential in web development. My mission: <strong className="text-stone-900 dark:text-stone-100">contributing to technology that helps people</strong> – whether that's through accessible interfaces, intelligent automation, or mentoring the next generation of developers.
                         </p>
                       </div>
                     </div>

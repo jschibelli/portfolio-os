@@ -82,7 +82,7 @@ export default function FeaturedProjects() {
 						Featured Projects
 					</h2>
 					<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
-						A selection of recent projects showcasing modern web development solutions with concrete results and case study insights
+						A selection of recent projects demonstrating various web development approaches
 					</p>
 				</motion.div>
 

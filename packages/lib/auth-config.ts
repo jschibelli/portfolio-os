@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
-const PrismaAdapter = () => null;
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prisma";
 import { 
   isRateLimited, 
@@ -17,7 +16,7 @@ import {
 } from "./auth-security";
 
 export const authOptions = {
-  adapter: null as any,
+  adapter: PrismaAdapter(prisma),
   session: { 
     strategy: "jwt" as const,
     maxAge: 24 * 60 * 60, // 24 hours
