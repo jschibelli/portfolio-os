@@ -23,9 +23,9 @@ const caseStudies = [
     author: 'John Schibelli',
     featured: true,
     metrics: {
-      revenueIncrease: '150%',
-      userRetention: '91%',
-      setupTime: '18 minutes'
+      architecture: 'Multi-tenant scalable design',
+      features: 'AI-powered automation',
+      deployment: 'Cloud-native infrastructure'
     },
     liveUrl: 'https://tendril.intrawebtech.com',
     caseStudyUrl: '/case-studies/tendrilo-case-study'

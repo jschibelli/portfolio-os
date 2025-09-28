@@ -26,9 +26,9 @@ interface TrustSignal {
 const trustSignals: TrustSignal[] = [
   {
     icon: StarIcon,
-    title: "100% Client Satisfaction",
-    description: "Every project delivered with excellence",
-    highlight: "100%",
+    title: "Client Success Focus",
+    description: "Committed to delivering exceptional results",
+    highlight: "Focused",
     variant: "default"
   },
   {
@@ -47,9 +47,9 @@ const trustSignals: TrustSignal[] = [
   },
   {
     icon: UsersIcon,
-    title: "50+ Projects Delivered",
+    title: "Multiple Projects Delivered",
     description: "Successful projects across various industries",
-    highlight: "50+",
+    highlight: "Diverse",
     variant: "default"
   },
   {
