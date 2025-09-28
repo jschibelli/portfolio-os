@@ -54,7 +54,7 @@ export default function Hero() {
 						transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
 						className="text-4xl font-bold tracking-tight text-white leading-tight md:text-6xl lg:text-7xl md:leading-tight lg:leading-tight"
 					>
-						Building Smarter, Faster<br />
+						Building Reliable, Scalable<br />
 						Web Applications
 					</motion.h1>
 

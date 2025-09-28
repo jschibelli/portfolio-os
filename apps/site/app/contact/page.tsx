@@ -82,9 +82,9 @@ export default function ContactPage() {
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="mx-auto max-w-5xl text-center">
                 <h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">Let's Build Something
                   <br />
-                  <span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">Extraordinary</span>
+                  <span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">Together</span>
                 </h1>
-                <p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">I craft digital experiences that turn visitors into customers and ideas into reality.</p>
+                <p className="mb-8 text-xl leading-relaxed text-stone-600 md:text-2xl dark:text-stone-400">I work with teams to build digital experiences that help achieve business goals and bring ideas to life.</p>
                 <div className="flex flex-wrap justify-center gap-4 text-sm text-stone-500 dark:text-stone-400">
                   <span className="inline-flex items-center gap-2"><MapPinIcon className="h-4 w-4" /> Northern New Jersey, USA</span>
                   <span className="inline-flex items-center gap-2"><MailIcon className="h-4 w-4" /> Remote & Local Development</span>
@@ -102,7 +102,7 @@ export default function ContactPage() {
               <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="space-y-8">
                 <div>
                   <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Ready to Transform Your Vision?</h2>
-                  <p className="mb-6 text-lg text-stone-600 dark:text-stone-400">Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – let's discuss how we can build something that not only meets your goals but exceeds your expectations.</p>
+                  <p className="mb-6 text-lg text-stone-600 dark:text-stone-400">Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – let's discuss how we can work together to build something that meets your goals and supports your business growth.</p>
                   <div className="flex flex-wrap gap-3 text-sm">
                     <Badge variant="outline" className="flex items-center gap-1"><SendIcon className="h-3 w-3" /> Free Consultation</Badge>
                     <Badge variant="outline" className="flex items-center gap-1"><MailIcon className="h-3 w-3" /> No Commitment</Badge>
@@ -173,7 +173,7 @@ export default function ContactPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="space-y-8">
                 <div>
                   <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Why Choose John Schibelli?</h2>
-                  <p className="text-lg text-stone-600 dark:text-stone-400">I'm not just another developer – I'm your strategic partner in digital transformation. Based in Northern New Jersey, I combine technical excellence with business acumen to deliver solutions that drive real results.</p>
+                  <p className="text-lg text-stone-600 dark:text-stone-400">I'm a developer who works collaboratively with clients to support their digital transformation goals. Based in Northern New Jersey, I combine technical skills with business understanding to help deliver solutions that support your objectives.</p>
                 </div>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -230,11 +230,11 @@ export default function ContactPage() {
         <section className="bg-stone-50 py-16 dark:bg-stone-900">
           <Container className="px-4">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} viewport={{ once: true }} className="mx-auto max-w-4xl text-center">
-              <h2 className="mb-6 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Why Choose John Schibelli for Your Next.js & React Development?</h2>
+              <h2 className="mb-6 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Working Together on Next.js & React Development</h2>
               <div className="grid gap-8 md:grid-cols-2 text-left">
                 <div>
                   <h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">15+ Years of Front-End Development Experience</h3>
-                  <p className="text-stone-600 dark:text-stone-400">With over 15 years of experience in web development, I specialize in creating high-performance React and Next.js applications. My expertise includes TypeScript, modern CSS frameworks, and AI integration for enhanced user experiences.</p>
+                  <p className="text-stone-600 dark:text-stone-400">With over 15 years of experience in web development, I work with React and Next.js to build high-performance applications. My experience includes TypeScript, modern CSS frameworks, and AI integration to support user experiences.</p>
                 </div>
                 <div>
                   <h3 className="mb-3 text-xl font-semibold text-stone-900 dark:text-stone-100">Northern New Jersey Based, Globally Available</h3>

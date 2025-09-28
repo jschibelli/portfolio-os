@@ -47,6 +47,7 @@ export default function CaseStudiesPage() {
   return (
     <AppProvider publication={{
       title: 'John Schibelli',
+      displayTitle: 'John Schibelli',
       descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
       url: 'https://schibelli.dev',
       author: { name: 'John Schibelli' },
