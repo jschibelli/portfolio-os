@@ -26,16 +26,16 @@ interface TrustSignal {
 const trustSignals: TrustSignal[] = [
   {
     icon: StarIcon,
-    title: "100% Client Satisfaction",
+    title: "Committed to Client Success",
     description: "Every project delivered with excellence",
-    highlight: "100%",
+    highlight: "Quality",
     variant: "default"
   },
   {
     icon: AwardIcon,
-    title: "15+ Years Experience",
-    description: "Senior-level expertise in modern web development",
-    highlight: "15+",
+    title: "Senior-Level Expertise",
+    description: "Advanced skills in modern web development technologies",
+    highlight: "Expert",
     variant: "secondary"
   },
   {
@@ -47,9 +47,9 @@ const trustSignals: TrustSignal[] = [
   },
   {
     icon: UsersIcon,
-    title: "50+ Projects Delivered",
+    title: "Multiple Successful Projects",
     description: "Successful projects across various industries",
-    highlight: "50+",
+    highlight: "Proven",
     variant: "default"
   },
   {

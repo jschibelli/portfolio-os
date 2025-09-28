@@ -51,7 +51,7 @@ const caseStudyData = {
   technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "OpenAI API", "Stripe", "Vercel"],
   challenges: "Multi-tenant architecture, real-time chat performance, scalable AI integration",
   solution: "Built a comprehensive SaaS platform with tenant isolation, real-time messaging, and AI-powered chatbot capabilities",
-  results: "Successfully launched MVP with 150% revenue increase and 91% user retention",
+  results: "Successfully launched MVP with robust multi-tenant architecture and AI-powered automation",
   liveUrl: "https://tendril.intrawebtech.com",
   githubUrl: "https://github.com/jschibelli/tendrilo",
   documentationUrl: "https://docs.tendrilo.ai",
@@ -62,65 +62,65 @@ const caseStudyData = {
 const competitiveData = [
   {
     category: "Setup Time",
-    tendril: 18,
-    competitor: 120,
-    unit: "minutes",
+    tendril: "Quick Setup",
+    competitor: "Complex Setup",
+    unit: "process",
     better: "tendril" as const,
-    direction: "lower" as const
+    direction: "better" as const
   },
   {
-    category: "Monthly Cost",
-    tendril: 29,
-    competitor: 139,
-    unit: "USD",
+    category: "Pricing Model",
+    tendril: "Transparent",
+    competitor: "Hidden Fees",
+    unit: "structure",
     better: "tendril" as const,
-    direction: "lower" as const
+    direction: "better" as const
   },
   {
-    category: "AI Response Quality",
-    tendril: 87,
-    competitor: 62,
-    unit: "%",
+    category: "AI Integration",
+    tendril: "GPT-4 Powered",
+    competitor: "Rule-based",
+    unit: "technology",
     better: "tendril" as const,
-    direction: "higher" as const
+    direction: "better" as const
   },
   {
     category: "Multi-tenant Support",
-    tendril: 100,
-    competitor: 0,
-    unit: "%",
+    tendril: "Full Support",
+    competitor: "Limited",
+    unit: "capability",
     better: "tendril" as const,
-    direction: "higher" as const
+    direction: "better" as const
   }
 ];
 
 // Key metrics data
 const keyMetrics = [
   {
-    title: "Revenue Growth",
-    value: "150%",
-    description: "Within first 6 months",
+    title: "Architecture",
+    value: "Multi-tenant",
+    description: "Scalable design with data isolation",
     trend: "up" as const,
     icon: <TrendingUp className="h-5 w-5" />
   },
   {
-    title: "User Retention",
-    value: "91%",
-    description: "After 30 days",
+    title: "AI Integration",
+    value: "GPT-4",
+    description: "Advanced natural language processing",
     trend: "up" as const,
     icon: <Users className="h-5 w-5" />
   },
   {
-    title: "Setup Time",
-    value: "18 min",
-    description: "vs 2-4 hours competitors",
+    title: "Setup Process",
+    value: "Streamlined",
+    description: "Quick deployment vs complex setup",
     trend: "up" as const,
     icon: <Clock className="h-5 w-5" />
   },
   {
-    title: "Active Users",
-    value: "2,500+",
-    description: "Monthly active users",
+    title: "Platform Status",
+    value: "Live",
+    description: "Production-ready deployment",
     trend: "up" as const,
     icon: <Target className="h-5 w-5" />
   }
@@ -128,30 +128,30 @@ const keyMetrics = [
 
 // Pain points data for bar chart
 const painPointsData = [
-  { label: "Hidden Costs", value: 68, color: "bg-red-500" },
-  { label: "Setup Complexity", value: 45, color: "bg-orange-500" },
-  { label: "Poor AI Responses", value: 52, color: "bg-yellow-500" },
-  { label: "Limited Features", value: 38, color: "bg-blue-500" },
-  { label: "Support Issues", value: 29, color: "bg-purple-500" }
+  { label: "Hidden Costs", value: "High", color: "bg-red-500" },
+  { label: "Setup Complexity", value: "Complex", color: "bg-orange-500" },
+  { label: "Poor AI Responses", value: "Rule-based", color: "bg-yellow-500" },
+  { label: "Limited Features", value: "Basic", color: "bg-blue-500" },
+  { label: "Support Issues", value: "Limited", color: "bg-purple-500" }
 ];
 
 // Market share data for pie chart
 const marketShareData = [
-  { label: "Enterprise Solutions", value: 35, color: "bg-blue-500" },
-  { label: "SMB Solutions", value: 25, color: "bg-green-500" },
-  { label: "Agency Tools", value: 15, color: "bg-purple-500" },
-  { label: "Custom Development", value: 20, color: "bg-orange-500" },
-  { label: "Unmet Market", value: 5, color: "bg-red-500" }
+  { label: "Enterprise Solutions", value: "Large", color: "bg-blue-500" },
+  { label: "SMB Solutions", value: "Medium", color: "bg-green-500" },
+  { label: "Agency Tools", value: "Small", color: "bg-purple-500" },
+  { label: "Custom Development", value: "Medium", color: "bg-orange-500" },
+  { label: "Unmet Market", value: "Opportunity", color: "bg-red-500" }
 ];
 
-// Growth metrics over time
+// Development milestones over time
 const growthData = [
-  { month: "Month 1", users: 150, revenue: 2500 },
-  { month: "Month 2", users: 320, revenue: 4800 },
-  { month: "Month 3", users: 580, revenue: 8700 },
-  { month: "Month 4", users: 920, revenue: 13800 },
-  { month: "Month 5", users: 1450, revenue: 21750 },
-  { month: "Month 6", users: 2500, revenue: 37500 }
+  { month: "Month 1", users: "MVP Launch", revenue: "Core Features" },
+  { month: "Month 2", users: "Beta Testing", revenue: "User Feedback" },
+  { month: "Month 3", users: "AI Integration", revenue: "GPT-4 Implementation" },
+  { month: "Month 4", users: "Multi-tenant", revenue: "Architecture Complete" },
+  { month: "Month 5", users: "Production", revenue: "Live Deployment" },
+  { month: "Month 6", users: "Platform Ready", revenue: "Full Feature Set" }
 ];
 
 // Customer testimonials
@@ -229,13 +229,13 @@ const PainPointsChart = () => (
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{item.label}</span>
-                <span className="text-sm text-muted-foreground">{item.value}%</span>
+                <span className="text-sm text-muted-foreground">{item.value}</span>
               </div>
               <div className="h-3 bg-muted rounded-full overflow-hidden">
                 <motion.div
                   className={`h-full ${item.color} rounded-full`}
                   initial={{ width: 0 }}
-                  whileInView={{ width: `${item.value}%` }}
+                  whileInView={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                 />
               </div>
@@ -280,13 +280,13 @@ const MarketShareChart = () => (
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">{item.label}</span>
-                    <span className="text-sm text-muted-foreground">{item.value}%</span>
+                    <span className="text-sm text-muted-foreground">{item.value}</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden mt-1">
                     <motion.div
                       className={`h-full ${item.color} rounded-full`}
                       initial={{ width: 0 }}
-                      whileInView={{ width: `${item.value}%` }}
+                      whileInView={{ width: "100%" }}
                       transition={{ duration: 0.8, delay: index * 0.1 }}
                     />
                   </div>
@@ -298,8 +298,9 @@ const MarketShareChart = () => (
             <div className="w-48 h-48 relative">
               <svg viewBox="0 0 100 100" className="w-full h-full">
                 {marketShareData.map((item, index) => {
-                  const startAngle = marketShareData.slice(0, index).reduce((acc, curr) => acc + (curr.value * 3.6), 0);
-                  const endAngle = startAngle + (item.value * 3.6);
+                  const equalAngle = 360 / marketShareData.length;
+                  const startAngle = index * equalAngle;
+                  const endAngle = (index + 1) * equalAngle;
                   const radius = 40;
                   const centerX = 50;
                   const centerY = 50;
@@ -372,35 +373,35 @@ const GrowthChart = () => (
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{item.month}</span>
                 <div className="flex gap-4 text-sm text-muted-foreground">
-                  <span>{item.users} users</span>
-                  <span>${item.revenue.toLocaleString()} revenue</span>
+                  <span>{item.users}</span>
+                  <span>{item.revenue}</span>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span>Users</span>
+                    <span>Milestone</span>
                     <span>{item.users}</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-blue-500 rounded-full"
                       initial={{ width: 0 }}
-                      whileInView={{ width: `${(item.users / 2500) * 100}%` }}
+                      whileInView={{ width: "100%" }}
                       transition={{ duration: 0.8, delay: index * 0.1 }}
                     />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span>Revenue</span>
-                    <span>${item.revenue.toLocaleString()}</span>
+                    <span>Feature</span>
+                    <span>{item.revenue}</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-green-500 rounded-full"
                       initial={{ width: 0 }}
-                      whileInView={{ width: `${(item.revenue / 37500) * 100}%` }}
+                      whileInView={{ width: "100%" }}
                       transition={{ duration: 0.8, delay: index * 0.1 }}
                     />
                   </div>
@@ -593,19 +594,19 @@ export default function TendrilCaseStudy() {
                         <ul className="space-y-2">
                           <li className="flex items-center gap-2">
                             <CheckCircle className="h-4 w-4 text-green-500" />
-                            73% of SMBs want better solutions
+                            Strong demand for better SMB solutions
                           </li>
                           <li className="flex items-center gap-2">
                             <CheckCircle className="h-4 w-4 text-green-500" />
-                            68% need multi-tenant capabilities
+                            High need for multi-tenant capabilities
                           </li>
                           <li className="flex items-center gap-2">
                             <CheckCircle className="h-4 w-4 text-green-500" />
-                            45% abandon setup due to complexity
+                            Setup complexity causes abandonment
                           </li>
                           <li className="flex items-center gap-2">
                             <CheckCircle className="h-4 w-4 text-green-500" />
-                            $2.3B market opportunity
+                            Significant market opportunity identified
                           </li>
                         </ul>
                       </CardContent>
@@ -746,12 +747,12 @@ export default function TendrilCaseStudy() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">Revenue Growth</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">+150%</Badge>
+                          <span className="text-sm">Architecture</span>
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">Multi-tenant</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">User Retention</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">91%</Badge>
+                          <span className="text-sm">AI Integration</span>
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">GPT-4</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Setup Time</span>

@@ -22,14 +22,14 @@ interface StatItem {
 const stats: StatItem[] = [
   {
     icon: CodeIcon,
-    value: "50+",
+    value: "Multiple",
     label: "Projects Completed",
     description: "Successfully delivered across various industries"
   },
   {
     icon: UsersIcon,
-    value: "25+",
-    label: "Happy Clients",
+    value: "Strong",
+    label: "Client Relationships",
     description: "From startups to enterprise companies"
   },
   {
@@ -46,8 +46,8 @@ const stats: StatItem[] = [
   },
   {
     icon: StarIcon,
-    value: "100%",
-    label: "Client Satisfaction",
+    value: "Quality",
+    label: "Focused Approach",
     description: "Every project delivered with excellence"
   },
   {

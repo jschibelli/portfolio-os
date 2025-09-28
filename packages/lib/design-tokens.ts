@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD:packages/lib/design-tokens.ts
  * Design Tokens for Hero Typography and Spacing System
  * 
  * This file defines consistent typography scales, breakpoints, spacing values,
@@ -508,7 +507,6 @@ export function createThemedHeroSpacing(theme: HeroTheme) {
   };
 }
 
-<<<<<<< HEAD:packages/lib/design-tokens.ts
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
@@ -522,7 +520,6 @@ export type LetterSpacing = keyof typeof letterSpacing;
 export type TypographyPreset = keyof typeof typographyPresets;
 
 // Spacing types
-// Hero spacing types (merged from main branch)
 export type HeroSpacingVariant = keyof typeof heroSpacing;
 export type HeroSpacingSize = 'small' | 'medium' | 'large';
 export type HeroSpacingVariantType = 'default' | 'compact' | 'large';

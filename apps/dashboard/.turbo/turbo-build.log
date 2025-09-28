@@ -5,7 +5,7 @@
    ▲ Next.js 15.5.2
 
    Creating an optimized production build ...
- ⚠ Compiled with warnings in 22.8s
+ ⚠ Compiled with warnings in 15.9s
 
 ./app/api/admin/activity/route.ts
 Attempted import error: 'authOptions' is not exported from '@/lib/auth' (imported as 'authOptions').
@@ -229,7 +229,12 @@ Attempted import error: 'authOptions' is not exported from '../../auth/[...nexta
 Import trace for requested module:
 ./app/api/media/upload/route.ts
 
- ✓ Compiled successfully in 34.3s
+
+[1m[33mwarn[39m[22m - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
+[1m[33mwarn[39m[22m - Pattern: `..\..\packages\ui\**\*.ts`
+[1m[33mwarn[39m[22m - See our documentation for recommendations:
+[1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
+ ✓ Compiled successfully in 79s
    Skipping validation of types
    Skipping linting
    Collecting page data ...
@@ -248,14 +253,14 @@ Import trace for requested module:
     'GOOGLE_OAUTH_REFRESH_TOKEN'
   ],
   impact: 'Calendar integration will fall back to mock data',
-  timestamp: '2025-09-27T17:30:45.898Z'
+  timestamp: '2025-09-28T03:36:32.842Z'
 }
    Generating static pages (0/54) ...
    Generating static pages (13/54) 
    Generating static pages (26/54) 
    Generating static pages (40/54) 
-⚠️  Environment validation warnings (development mode):
  ✓ Generating static pages (54/54)
+⚠️  Environment validation warnings (development mode):
   - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: Required
 
 💡 Some features may be disabled until environment variables are configured.
@@ -270,7 +275,7 @@ Import trace for requested module:
     'GOOGLE_OAUTH_REFRESH_TOKEN'
   ],
   impact: 'Calendar integration will fall back to mock data',
-  timestamp: '2025-09-27T17:30:56.280Z'
+  timestamp: '2025-09-28T03:36:40.382Z'
 }
    Finalizing page optimization ...
    Collecting build traces ...
