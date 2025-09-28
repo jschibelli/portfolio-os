@@ -112,15 +112,3 @@ next-env.d.ts
 *.tmp
 *.temp
 
-# =============================================================================
-# Turborepo Build System
-# =============================================================================
-# Turborepo cache and build artifacts that are generated during monorepo builds
-# These directories contain build artifacts and cache that should not be tracked
-# as they are environment-specific and can be regenerated from source
-#
-# IMPORTANT: This pattern covers all .turbo directories and subdirectories
-# including .turbo/cache/ and .turbo/daemon/ to ensure comprehensive coverage
-# while avoiding redundancy. This consolidation improves maintainability.
-.turbo/
-**/.turbo/
