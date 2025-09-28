@@ -51,8 +51,14 @@ export default function CaseStudiesPage() {
       descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
       url: 'https://schibelli.dev',
       author: { name: 'John Schibelli' },
-      preferences: { logo: null as any },
-    }}>
+      preferences: { 
+        logo: null as any,
+        darkMode: { logo: null as any },
+        navbarItems: [],
+        layout: { navbarStyle: 'default', footerStyle: 'default', showBranding: true },
+        members: []
+      },
+    } as any}>
       <Layout>
         <main className="min-h-screen bg-background">
           {/* Hero Section */}

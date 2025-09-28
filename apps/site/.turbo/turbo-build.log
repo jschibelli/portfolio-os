@@ -6,41 +6,53 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 31.3s
+ ✓ Compiled successfully in 27.7s
    Skipping validation of types
    Skipping linting
    Collecting page data ...
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-28T03:35:42.656Z', service: 'google-calendar' }
 ⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
 💡 Some features may be disabled until environment variables are configured.
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:40:17.754Z', service: 'google-calendar' }
    See README.md for complete setup instructions.
  ⚠ Using edge runtime on a page currently disables static generation for that page
 ⚠️  Environment validation warnings (development mode):
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:40:17.871Z', service: 'google-calendar' }
+  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
+
+💡 Some features may be disabled until environment variables are configured.
+   See README.md for complete setup instructions.
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-28T03:35:42.870Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-28T03:35:42.961Z', service: 'google-calendar' }
+⚠️  Environment validation warnings (development mode):
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
 
 💡 Some features may be disabled until environment variables are configured.
    See README.md for complete setup instructions.
    Generating static pages (0/107) ...
    Generating static pages (26/107) 
-   Generating static pages (53/107) 
-   Generating static pages (80/107) 
 ⚠️  Environment validation warnings (development mode):
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-27T17:40:30.072Z', service: 'google-calendar' }
   - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
- ✓ Generating static pages (107/107)
+   Generating static pages (53/107) 
 
 💡 Some features may be disabled until environment variables are configured.
+   Generating static pages (80/107) 
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-28T03:35:52.393Z', service: 'google-calendar' }
    See README.md for complete setup instructions.
+⚠️  Environment validation warnings (development mode):
+  - AUTH_ADMIN_PASSWORD: Admin password must be at least 12 characters
+
+💡 Some features may be disabled until environment variables are configured.
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-09-28T03:35:52.813Z', service: 'google-calendar' }
+   See README.md for complete setup instructions.
+ ✓ Generating static pages (107/107)
    Finalizing page optimization ...
    Collecting build traces ...
 
 Route (app)                                             Size  First Load JS  Revalidate  Expire
-┌ ○ /                                                8.01 kB         204 kB
+┌ ○ /                                                8.07 kB         204 kB
 ├ ○ /_not-found                                        999 B         103 kB
-├ ○ /about                                           8.27 kB         216 kB
+├ ○ /about                                           8.26 kB         216 kB
 ├ ○ /admin                                           5.78 kB         231 kB
 ├ ○ /admin/activity                                  5.01 kB         107 kB
 ├ ○ /admin/analytics                                 12.1 kB         232 kB
@@ -148,8 +160,8 @@ Route (app)                                             Size  First Load JS  Rev
 ├ ○ /case-studies                                    2.32 kB         170 kB
 ├ ● /case-studies/[slug]                              154 kB         389 kB
 ├   └ /case-studies/tendrilo-case-study
-├ ○ /case-studies/tendril-multi-tenant-chatbot-saas  10.1 kB         213 kB
-├ ○ /contact                                         4.86 kB         198 kB
+├ ○ /case-studies/tendril-multi-tenant-chatbot-saas  10.2 kB         213 kB
+├ ○ /contact                                         4.84 kB         198 kB
 ├ ○ /login                                           1.91 kB         113 kB
 ├ ○ /maintenance                                       328 B         102 kB
 ├ ○ /projects                                        8.93 kB         251 kB

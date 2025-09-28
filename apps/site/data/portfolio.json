@@ -10,9 +10,9 @@
 		"caseStudyUrl": "/case-studies/tendrilo-case-study",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "40%",
-				"responseTime": "2.3s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Improved",
+				"responseTime": "Optimized",
+				"uptime": "Reliable"
 			},
 			"technical": {
 				"architecture": "Scalable multi-tenant design",
@@ -38,9 +38,9 @@
 		"caseStudyUrl": "/case-studies/zeus-ecommerce-platform",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "65%",
-				"responseTime": "1.8s",
-				"uptime": "99.8%"
+				"loadTimeImprovement": "Significantly Improved",
+				"responseTime": "Fast Loading",
+				"uptime": "Highly Reliable"
 			},
 			"technical": {
 				"optimization": "Next.js performance optimization",
@@ -66,9 +66,9 @@
 		"caseStudyUrl": "/case-studies/portfolio-site",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "55%",
-				"responseTime": "1.2s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Optimized Performance",
+				"responseTime": "Fast Response",
+				"uptime": "Highly Reliable"
 			},
 			"technical": {
 				"modernization": "Complete redesign with Next.js",
@@ -94,9 +94,9 @@
 		"caseStudyUrl": "/case-studies/synaplyai",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "50%",
-				"responseTime": "2.1s",
-				"uptime": "99.7%"
+				"loadTimeImprovement": "Improved Performance",
+				"responseTime": "Responsive System",
+				"uptime": "Reliable Operation"
 			},
 			"technical": {
 				"collaboration": "Real-time conflict resolution",
@@ -122,9 +122,9 @@
 		"caseStudyUrl": "/case-studies/intraweb-technologies",
 		"metrics": {
 			"performance": {
-				"loadTimeImprovement": "45%",
-				"responseTime": "1.5s",
-				"uptime": "99.9%"
+				"loadTimeImprovement": "Enhanced Performance",
+				"responseTime": "Fast Loading",
+				"uptime": "Reliable Service"
 			},
 			"technical": {
 				"modernization": "Complete website redesign",
