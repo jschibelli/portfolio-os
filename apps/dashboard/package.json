@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev -p 3003",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3003}",
     "lint": "next lint",
+    "dev:flexible": "next dev -p ${DASHBOARD_PORT:-3003}",
+    "start:flexible": "next start -p ${PORT:-3003}",
     "typecheck": "tsc",
     "test": "jest",
     "test:ci": "jest --ci --coverage --watchAll=false",
