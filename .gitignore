@@ -54,9 +54,7 @@ next-env.d.ts
 *.tmp
 *.temp
 
-# Turbo cache and daemon logs
-.turbo/cache/
-.turbo/daemon/
-
-# Turborepo
-.turbo
+# Turborepo - Build system cache and temporary files
+# These directories contain build artifacts and cache that should not be tracked
+.turbo/
+**/.turbo/

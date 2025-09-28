@@ -63,6 +63,8 @@ cp .env.example .env.local
 pnpm dev
 ```
 
+**Note**: The dashboard runs on port 3001 by default to avoid conflicts with other services in the monorepo. This port configuration is set in the `dev` script in `package.json`.
+
 ## Code Quality Standards
 - Consistent TypeScript types and interfaces
 - ESLint configuration for code style enforcement
