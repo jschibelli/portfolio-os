@@ -100,7 +100,9 @@ export default async function BlogPage() {
     } else if (data?.data?.publication === null) {
       apiError = `Publication not found: ${host}`;
     } else {
-      console.warn('Unexpected API response structure:', data);
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Unexpected API response structure. Top-level keys:', Object.keys(data));
+      }
       apiError = 'Unexpected API response format';
     }
   } catch (error) {
