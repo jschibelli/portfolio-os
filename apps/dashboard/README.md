@@ -63,7 +63,31 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-**Note**: The dashboard runs on port 3001 by default to avoid conflicts with other services in the monorepo. This port configuration is set in the `dev` script in `package.json`.
+### Port Configuration
+The dashboard runs on port 3001 by default to avoid conflicts with other services in the monorepo. This configuration is set in the `dev` script in `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "next dev -p 3001"
+  }
+}
+```
+
+**Port Selection Rationale**: Port 3001 was chosen to avoid conflicts with:
+- Main site (typically port 3000)
+- Other development services in the monorepo
+- Common development ports used by other tools
+
+**Error Handling**: If port 3001 is unavailable, the development server will automatically find the next available port. You can also specify a different port by running:
+```bash
+npm run dev -- -p [PORT_NUMBER]
+```
+
+**Troubleshooting**: If you encounter port conflicts:
+1. Check if another service is using port 3001: `netstat -ano | findstr :3001`
+2. Kill the process using the port if necessary
+3. Restart the development server
 
 ## Code Quality Standards
 - Consistent TypeScript types and interfaces

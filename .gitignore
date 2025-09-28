@@ -57,4 +57,3 @@ next-env.d.ts
 # Turborepo - Build system cache and temporary files
 # These directories contain build artifacts and cache that should not be tracked
 .turbo/
-**/.turbo/
