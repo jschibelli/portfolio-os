@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 global.fetch = jest.fn();
 
 describe('API Smoke Tests', () => {
-  const baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3001';
+  const baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3003';
   
   beforeEach(() => {
     (fetch as jest.Mock).mockClear();
