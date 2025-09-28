@@ -36,20 +36,20 @@ export default function Intro() {
 							<div className="prose prose-stone dark:prose-invert max-w-none">
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
 									My journey into development started in an unexpected place—teaching web development 
-									at Anthem Institute, where I discovered my passion for turning complex problems into 
-									elegant solutions. That experience shaped my philosophy: great code isn&apos;t just 
-									functional, it&apos;s teachable, maintainable, and built with the end user in mind.
+									at Anthem Institute, where I discovered my passion for helping solve complex problems 
+									through thoughtful solutions. That experience shaped my approach: I believe good code 
+									should be teachable, maintainable, and built with the end user in mind.
 								</p>
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-									Today, I&apos;m a senior front-end developer with over 15 years of experience, 
+									Today, I work as a senior front-end developer with over 15 years of experience, 
 									but I still approach every project with that educator&apos;s mindset. Whether I&apos;m 
-									building React applications, incubating AI-powered tools like SynaplyAI, or crafting 
-									enterprise UIs for financial platforms, I believe in creating solutions that not only 
-									work beautifully but can be understood and maintained by the next developer.
+									working on React applications, exploring AI-powered tools like SynaplyAI, or contributing 
+									to enterprise UIs for financial platforms, I believe in creating solutions that 
+									work well and can be understood and maintained by other developers.
 								</p>
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-									Based in Towaco, NJ, I work with React, Next.js, TypeScript, and Tailwind CSS, 
-									with a focus on accessibility and SEO. I strive to combine technical quality with 
+									Based in Northern New Jersey, I work with React, Next.js, TypeScript, and Tailwind CSS, 
+									with a focus on accessibility and SEO. I work to combine technical quality with 
 									clear communication—believing that good code should be understandable and well-documented.
 								</p>
 							</div>
