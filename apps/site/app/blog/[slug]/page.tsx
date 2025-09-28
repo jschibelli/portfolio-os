@@ -70,10 +70,23 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
       body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
       next: { revalidate: 60 },
     });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
-    post = data?.data?.publication?.post;
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors in metadata generation:', data.errors);
+    } else if (data?.data?.publication?.post) {
+      post = data.data.publication.post;
+    } else if (data?.data?.publication === null) {
+      console.error(`Publication not found for metadata: ${host}`);
+    }
   } catch (error) {
-    console.error('Error fetching Hashnode post:', error);
+    console.error('Error fetching Hashnode post for metadata:', error);
   }
 
   if (!post) {
@@ -136,8 +149,23 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
       next: { revalidate: 60 },
     });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
     const data = await res.json();
-    post = data?.data?.publication?.post;
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+    } else if (data?.data?.publication?.post) {
+      post = data.data.publication.post;
+    } else if (data?.data?.publication === null) {
+      console.error(`Publication not found: ${host}`);
+    } else {
+      console.warn('Post not found or unexpected response:', data);
+    }
   } catch (error) {
     console.error('Error fetching Hashnode post:', error);
   }
