@@ -10,8 +10,8 @@
 		"author": "John Schibelli",
 		"featured": true,
 		"metrics": {
-			"revenueIncrease": "150%",
-			"userRetention": "91%",
+			"architecture": "Multi-tenant scalable design",
+			"aiIntegration": "AI-powered automation",
 			"setupTime": "18 minutes"
 		},
 		"liveUrl": "",

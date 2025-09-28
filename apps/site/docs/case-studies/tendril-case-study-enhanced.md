@@ -68,7 +68,7 @@ The Tendril MVP demonstrated strong market validation and user adoption within t
 :::metrics
 First Month Sign-ups, 47, up
 Paid Conversions (60 days), 23 (49%), up
-User Retention Rate, 91%, up
+AI Integration, Advanced, up
 Avg Setup Time, 18 minutes, up
 :::
 
@@ -138,9 +138,9 @@ The success of the Tendril MVP validates the market opportunity and provides a f
 
 :::metrics
 MRR (12 months), $25K, neutral
-Active Deployments, 150+, neutral
+Active Deployments, Multiple, neutral
 Monthly Churn Rate, <5%, down
-Agency Partners, 25+, neutral
+Agency Partners, Multiple, neutral
 :::
 
 The roadmap positions Tendril to capture growing market share while maintaining the core advantages that drove initial success: simplicity, transparency, and focus on underserved user segments.

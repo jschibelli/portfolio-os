@@ -28,8 +28,8 @@ const stats: StatItem[] = [
   },
   {
     icon: UsersIcon,
-    value: "Strong",
-    label: "Client Relationships",
+    value: "Diverse",
+    label: "Client Base",
     description: "From startups to enterprise companies"
   },
   {
@@ -47,7 +47,7 @@ const stats: StatItem[] = [
   {
     icon: StarIcon,
     value: "Quality",
-    label: "Focused Approach",
+    label: "Focus",
     description: "Every project delivered with excellence"
   },
   {

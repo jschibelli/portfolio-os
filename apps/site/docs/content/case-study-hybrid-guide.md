@@ -40,7 +40,7 @@ Display key performance indicators in beautiful animated cards.
 :::metrics
 First Month Sign-ups, 47, up
 Paid Conversions, 23 (49%), up
-User Retention Rate, 91%, up
+AI Integration, Advanced, up
 Avg Setup Time, 18 minutes, up
 :::
 ```

@@ -200,14 +200,14 @@ author:
 
 ```jsx
 <InfoCard title="Key Metric">
-  Our revenue increased by **150%** within the first 6 months.
+  We implemented a **multi-tenant scalable architecture** with advanced AI integration.
 </InfoCard>
 
 <Callout variant="success" title="Success">
   The project exceeded all initial expectations.
 </Callout>
 
-<StatBadge label="User Retention" value="91%" />
+<StatBadge label="AI Integration" value="Advanced" />
 ```
 
 ## Testing

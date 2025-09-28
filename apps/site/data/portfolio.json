@@ -14,17 +14,17 @@
 				"responseTime": "Optimized",
 				"uptime": "Reliable"
 			},
-			"business": {
-				"revenueIncrease": "Positive Growth",
-				"userRetention": "Strong Engagement",
-				"setupTime": "Quick Setup",
-				"conversionRate": "Improved Results"
+			"technical": {
+				"architecture": "Scalable multi-tenant design",
+				"features": "AI-powered automation",
+				"deployment": "Cloud-native infrastructure",
+				"security": "Enterprise-grade compliance"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "SMBs needed affordable, scalable chatbot solutions",
 			"solution": "Multi-tenant SaaS platform with AI-powered automation",
-			"results": "Positive growth and strong user engagement"
+			"results": "Scalable architecture and improved customer engagement"
 		}
 	},
 	{
@@ -42,17 +42,17 @@
 				"responseTime": "Fast Loading",
 				"uptime": "Highly Reliable"
 			},
-			"business": {
-				"salesIncrease": "Strong Growth",
-				"cartAbandonment": "Reduced Significantly",
-				"mobileConversion": "Optimized Mobile Experience",
-				"pageSpeedScore": "Excellent Performance"
+			"technical": {
+				"optimization": "Next.js performance optimization",
+				"mobileFirst": "Responsive design implementation",
+				"integration": "Stripe payment processing",
+				"cms": "Headless CMS integration"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Slow e-commerce site with poor mobile experience",
 			"solution": "Next.js optimization with mobile-first design",
-			"results": "Strong sales growth and reduced cart abandonment"
+			"results": "Improved performance and enhanced mobile experience"
 		}
 	},
 	{
@@ -70,17 +70,17 @@
 				"responseTime": "Fast Response",
 				"uptime": "Highly Reliable"
 			},
-			"business": {
-				"engagementIncrease": "Strong Engagement",
-				"bounceRate": "Improved User Experience",
-				"seoScore": "Excellent SEO",
-				"accessibilityScore": "Fully Accessible"
+			"technical": {
+				"modernization": "Complete redesign with Next.js",
+				"seo": "Optimized for search engines",
+				"accessibility": "WCAG compliant design",
+				"performance": "Optimized loading and rendering"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Outdated portfolio lacking modern design and performance",
 			"solution": "Complete redesign with Next.js and performance optimization",
-			"results": "Strong engagement increase and improved user experience"
+			"results": "Modern design with improved performance and accessibility"
 		}
 	},
 	{
@@ -98,17 +98,17 @@
 				"responseTime": "Responsive System",
 				"uptime": "Reliable Operation"
 			},
-			"business": {
-				"userGrowth": "Strong Growth",
-				"collaborationEfficiency": "Enhanced Collaboration",
-				"contentQuality": "Improved Quality",
-				"userSatisfaction": "High Satisfaction"
+			"technical": {
+				"collaboration": "Real-time conflict resolution",
+				"aiIntegration": "Token-level AI processing",
+				"architecture": "Multi-tenant scalable design",
+				"userExperience": "Intuitive collaboration interface"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Teams struggling with AI content collaboration conflicts",
 			"solution": "Real-time collaboration platform with conflict resolution",
-			"results": "Strong user growth and improved collaboration efficiency"
+			"results": "Streamlined collaboration workflow and conflict-free editing"
 		}
 	},
 	{
@@ -126,17 +126,17 @@
 				"responseTime": "Fast Loading",
 				"uptime": "Reliable Service"
 			},
-			"business": {
-				"leadGeneration": "Increased Lead Generation",
-				"inquiryIncrease": "More Inquiries",
-				"brandRecognition": "Enhanced Brand Recognition",
-				"clientAcquisition": "Improved Client Acquisition"
+			"technical": {
+				"modernization": "Complete website redesign",
+				"optimization": "Performance and SEO improvements",
+				"integration": "Contact forms and lead capture",
+				"branding": "Professional brand presentation"
 			}
 		},
 		"caseStudyPreview": {
 			"problem": "Outdated company website failing to generate leads",
 			"solution": "Modern, conversion-optimized website with clear value proposition",
-			"results": "Increased lead generation and more inquiries"
+			"results": "Improved lead capture and professional brand presence"
 		}
 	}
 ]
