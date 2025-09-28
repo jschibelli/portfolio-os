@@ -30,7 +30,7 @@ export default function Intro() {
 						<article className="flex-1 space-y-4">
 							<header>
 								<h2 className="text-2xl font-bold text-stone-900 md:text-3xl dark:text-stone-100">
-									About Me
+									Introduction
 								</h2>
 							</header>
 							<div className="prose prose-stone dark:prose-invert max-w-none">
