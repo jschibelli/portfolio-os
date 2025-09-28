@@ -48,10 +48,9 @@ export default function Intro() {
 									work beautifully but can be understood and maintained by the next developer.
 								</p>
 								<p className="text-lg leading-relaxed text-stone-700 dark:text-stone-300">
-									Based in Towaco, NJ, I specialize in React, Next.js, TypeScript, and Tailwind CSS, 
-									with a particular focus on accessibility and SEO. My unique approach combines technical 
-									excellence with clear communication—because the best code is the kind that tells a story 
-									anyone can follow.
+									Based in Towaco, NJ, I work with React, Next.js, TypeScript, and Tailwind CSS, 
+									with a focus on accessibility and SEO. I strive to combine technical quality with 
+									clear communication—believing that good code should be understandable and well-documented.
 								</p>
 							</div>
 						</article>

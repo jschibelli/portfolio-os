@@ -30,7 +30,7 @@ export default function CTABanner() {
 							Let&apos;s Discuss Your Project Goals
 						</h2>
 						<p className="mx-auto max-w-2xl text-xl text-stone-200">
-							Ready to transform your ideas into high-performance digital experiences? Let&apos;s explore how we can achieve your business objectives together.
+							Ready to discuss your ideas for digital experiences? Let&apos;s explore how we can work together to achieve your business objectives.
 						</p>
 					</div>
 

@@ -80,7 +80,7 @@ export default function ContactPage() {
           <div className="relative z-10">
             <Container className="px-4">
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="mx-auto max-w-5xl text-center">
-                <h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">Let's Build Something
+                <h1 className="mb-6 text-5xl font-bold text-stone-900 md:text-6xl dark:text-stone-100">Let's Work
                   <br />
                   <span className="bg-gradient-to-r from-stone-600 to-stone-800 bg-clip-text text-transparent dark:from-stone-300 dark:to-stone-100">Together</span>
                 </h1>
@@ -101,8 +101,8 @@ export default function ContactPage() {
               {/* Form */}
               <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="space-y-8">
                 <div>
-                  <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Ready to Transform Your Vision?</h2>
-                  <p className="mb-6 text-lg text-stone-600 dark:text-stone-400">Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – let's discuss how we can work together to build something that meets your goals and supports your business growth.</p>
+                  <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Ready to Discuss Your Vision?</h2>
+                  <p className="mb-6 text-lg text-stone-600 dark:text-stone-400">Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – I'd be happy to discuss how I might help support your goals.</p>
                   <div className="flex flex-wrap gap-3 text-sm">
                     <Badge variant="outline" className="flex items-center gap-1"><SendIcon className="h-3 w-3" /> Free Consultation</Badge>
                     <Badge variant="outline" className="flex items-center gap-1"><MailIcon className="h-3 w-3" /> No Commitment</Badge>
@@ -172,7 +172,7 @@ export default function ContactPage() {
               {/* Info & Social */}
               <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="space-y-8">
                 <div>
-                  <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Why Choose John Schibelli?</h2>
+                  <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">About My Approach</h2>
                   <p className="text-lg text-stone-600 dark:text-stone-400">I'm a developer who works collaboratively with clients to support their digital transformation goals. Based in Northern New Jersey, I combine technical skills with business understanding to help deliver solutions that support your objectives.</p>
                 </div>
                 <div className="space-y-6">
