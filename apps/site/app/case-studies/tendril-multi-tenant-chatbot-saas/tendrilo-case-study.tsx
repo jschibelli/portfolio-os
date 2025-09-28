@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
+'use client';
+
 import { motion } from 'framer-motion';
-import request from 'graphql-request';
 import {
 	AlertTriangle,
 	ArrowRight,
@@ -17,28 +18,15 @@ import {
 	Users,
 	Zap,
 } from 'lucide-react';
-import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
-import { AppProvider } from '../../components/contexts/appContext';
-import Chatbot from '../../components/features/chatbot/Chatbot';
-import ModernHeader from '../../components/features/navigation/modern-header';
-import { Container } from '../../components/shared/container';
-import { Layout } from '../../components/shared/layout';
-import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../components/ui';
-import {
-	PostsByPublicationDocument,
-	PostsByPublicationQuery,
-	PostsByPublicationQueryVariables,
-	PublicationFragment,
-} from '../../generated/graphql';
-
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT || 'https://gql.hashnode.com/';
-
-type CaseStudyProps = {
-	publication: PublicationFragment;
-};
+import { AppProvider } from '../../../components/contexts/appContext';
+import Chatbot from '../../../components/features/chatbot/Chatbot';
+import ModernHeader from '../../../components/features/navigation/modern-header';
+import { Container } from '../../../components/shared/container';
+import { Layout } from '../../../components/shared/layout';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '../../../components/ui';
 
 // Research Analysis Component
 const ResearchAnalysis: React.FC = () => (
@@ -1594,7 +1582,31 @@ const ProjectedMetrics: React.FC<{
 	</Card>
 );
 
-export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
+export default function TendriloCaseStudy() {
+	const publication = {
+		id: 'tendril-case-study',
+		title: 'John Schibelli',
+		displayTitle: 'John Schibelli',
+		description: 'Senior Front-End Developer with 15+ years of experience',
+		url: 'https://schibelli.dev',
+		favicon: '/favicon.ico',
+		logo: '/images/logo.png',
+		isTeam: false,
+		preferences: {
+			logo: '/images/logo.png',
+			darkMode: {
+				logo: '/images/logo-dark.png',
+			},
+			navbarItems: [],
+			layout: {
+				navbarStyle: 'default',
+				footerStyle: 'default',
+				showBranding: true,
+			},
+			members: [],
+		},
+	};
+
 	const toc = [
 		{ id: 'problem-statement', title: 'Problem Statement' },
 		{ id: 'research-analysis', title: 'Research & Analysis' },
@@ -1622,7 +1634,13 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 					/>
 				</Head>
 
-				<ModernHeader publication={publication} />
+				<ModernHeader 
+					publication={{
+						title: publication.title,
+						displayTitle: publication.displayTitle,
+						logo: { url: publication.logo },
+					}} 
+				/>
 
 				<main className="min-h-screen bg-background">
 					<Container>
@@ -1663,36 +1681,3 @@ export default function TendriloCaseStudy({ publication }: CaseStudyProps) {
 		</AppProvider>
 	);
 }
-
-export const getStaticProps: GetStaticProps<CaseStudyProps> = async () => {
-	const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-
-	try {
-		const data = await request<PostsByPublicationQuery, PostsByPublicationQueryVariables>(
-			GQL_ENDPOINT,
-			PostsByPublicationDocument,
-			{
-				first: 0,
-				host: host,
-			},
-		);
-
-		const publication = data.publication;
-		if (!publication) {
-			return {
-				notFound: true,
-			};
-		}
-
-		return {
-			props: {
-				publication,
-			},
-			revalidate: 1,
-		};
-	} catch (error) {
-		return {
-			notFound: true,
-		};
-	}
-};

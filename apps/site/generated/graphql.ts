@@ -279,3 +279,12 @@ export interface SubscribeToNewsletterPayload {
 }
 
 export const SubscribeToNewsletterDocument = '';
+
+// Additional exports needed for case study
+export interface PostsByPublicationQueryVariables {
+	first: number;
+	host: string;
+	[key: string]: any;
+}
+
+export const PostsByPublicationDocument = '';
