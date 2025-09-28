@@ -51,7 +51,7 @@ const caseStudyData = {
   technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "OpenAI API", "Stripe", "Vercel"],
   challenges: "Multi-tenant architecture, real-time chat performance, scalable AI integration",
   solution: "Built a comprehensive SaaS platform with tenant isolation, real-time messaging, and AI-powered chatbot capabilities",
-  results: "Successfully launched MVP with 150% revenue increase and 91% user retention",
+  results: "Successfully launched MVP with robust multi-tenant architecture and AI-powered automation",
   liveUrl: "https://tendril.intrawebtech.com",
   githubUrl: "https://github.com/jschibelli/tendrilo",
   documentationUrl: "https://docs.tendrilo.ai",
@@ -97,16 +97,16 @@ const competitiveData = [
 // Key metrics data
 const keyMetrics = [
   {
-    title: "Revenue Growth",
-    value: "150%",
-    description: "Within first 6 months",
+    title: "Architecture",
+    value: "Multi-tenant",
+    description: "Scalable design with data isolation",
     trend: "up" as const,
     icon: <TrendingUp className="h-5 w-5" />
   },
   {
-    title: "User Retention",
-    value: "91%",
-    description: "After 30 days",
+    title: "AI Integration",
+    value: "GPT-4",
+    description: "Advanced natural language processing",
     trend: "up" as const,
     icon: <Users className="h-5 w-5" />
   },
@@ -746,12 +746,12 @@ export default function TendrilCaseStudy() {
                     <CardContent>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">Revenue Growth</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">+150%</Badge>
+                          <span className="text-sm">Architecture</span>
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">Multi-tenant</Badge>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm">User Retention</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">91%</Badge>
+                          <span className="text-sm">AI Integration</span>
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">GPT-4</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Setup Time</span>
