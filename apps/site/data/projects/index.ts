@@ -1,4 +1,5 @@
 // Project data exports
+export { tendrilo } from './tendrilo';
 export { synaplyai } from './synaplyai';
 export { schibelliSite } from './schibelli-site';
 export { ecommerceShopifyChatbot } from './ecommerce-shopify-chatbot';
@@ -9,6 +10,7 @@ export { intraweb } from './intraweb';
 export type { ProjectMeta } from './types';
 
 // All projects array for easy iteration
+import { tendrilo } from './tendrilo';
 import { synaplyai } from './synaplyai';
 import { schibelliSite } from './schibelli-site';
 import { ecommerceShopifyChatbot } from './ecommerce-shopify-chatbot';
@@ -17,6 +19,7 @@ import { intraweb } from './intraweb';
 import { ProjectMeta } from './types';
 
 export const allProjects: ProjectMeta[] = [
+  tendrilo,
   synaplyai,
   schibelliSite,
   ecommerceShopifyChatbot,

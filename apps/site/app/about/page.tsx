@@ -157,7 +157,7 @@ export default function AboutPage() {
                     </div>
                     <h1 className="mb-6 text-4xl font-bold tracking-tight text-white leading-tight md:text-5xl lg:text-6xl">John Schibelli</h1>
                     <p className="mb-6 text-xl font-semibold text-stone-200 md:text-2xl lg:text-3xl">Senior Front-End Developer</p>
-                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Delivering high-performance web applications that drive business growth. Expert in React, Next.js, and TypeScript with 15+ years of proven results in building scalable digital experiences that exceed client expectations.</p>
+                    <p className="mb-8 text-base leading-relaxed text-stone-300 md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0">Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with 15+ years of experience creating scalable digital experiences that help clients achieve their goals.</p>
 
                     <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3 lg:justify-start">
                       {stats.map(({ icon: Icon, label }) => (
@@ -368,7 +368,7 @@ export default function AboutPage() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} viewport={{ once: true }} className="mx-auto max-w-7xl">
               <div className="mb-16 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">Why Choose Me</h2>
-                <p className="text-lg text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">Proven results that drive business growth through exceptional web development and client success</p>
+                <p className="text-lg text-stone-600 dark:text-stone-400 max-w-3xl mx-auto">Results-focused development that supports business growth through collaborative web development and client partnerships</p>
               </div>
 
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -378,28 +378,28 @@ export default function AboutPage() {
                     title: 'Project Delivery',
                     metric: '25+ Projects',
                     copy:
-                      'Successfully delivered complex web applications and digital solutions across various industries, from e-commerce platforms to AI-driven collaboration tools.',
+                      'Delivered web applications and digital solutions across various industries, working with teams to build e-commerce platforms and AI-driven collaboration tools.',
                   },
                   {
                     icon: Users,
                     title: 'Client Success',
                     metric: '100% Retention',
                     copy:
-                      'Maintained perfect client retention through exceptional service delivery, clear communication, and exceeding project expectations every time.',
+                      'Maintained strong client relationships through reliable service delivery, clear communication, and meeting project goals consistently.',
                   },
                   {
                     icon: Clock,
                     title: 'Response Time',
                     metric: '24h Response',
                     copy:
-                      'Committed to rapid communication and quick turnaround times. Your project needs are my priority with guaranteed response within 24 hours.',
+                      'Focused on clear communication and timely responses. I prioritize your project needs and aim to respond within 24 hours to keep projects moving forward.',
                   },
                   {
                     icon: Zap,
                     title: 'AI-Enhanced Development',
                     metric: 'Future-Ready',
                     copy:
-                      'Leveraging cutting-edge AI tools and modern development practices to build intelligent, scalable solutions that adapt to your business needs.',
+                      'Working with modern AI tools and development practices to build intelligent, scalable solutions that grow with your business needs.',
                   },
                   {
                     icon: TrendingUp,

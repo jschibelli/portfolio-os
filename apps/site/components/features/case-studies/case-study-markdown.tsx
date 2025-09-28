@@ -1,3 +1,5 @@
+'use client';
+
 import { useEmbeds } from '@starter-kit/utils/renderer/hooks/useEmbeds';
 import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
 import React, { useEffect, useRef } from 'react';
