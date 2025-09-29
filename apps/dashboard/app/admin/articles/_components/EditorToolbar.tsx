@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
 import { 
   Tooltip,
   TooltipContent,
@@ -26,12 +25,6 @@ import {
   Italic,
   Underline,
   Strikethrough,
-  Heading1,
-  Heading2,
-  Heading3,
-  Heading4,
-  Heading5,
-  Heading6,
   List,
   ListOrdered,
   CheckSquare,
@@ -45,7 +38,6 @@ import {
   Image as ImageIcon,
   Table,
   Type,
-  Palette,
   MoreHorizontal
 } from 'lucide-react'
 
@@ -56,22 +48,47 @@ interface EditorToolbarProps {
 
 export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
   const [linkUrl, setLinkUrl] = useState('')
-  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false)
 
   if (!editor) {
     return null
   }
 
   const setLink = () => {
-    if (linkUrl) {
-      editor.chain().focus().setLink({ href: linkUrl }).run()
-      setLinkUrl('')
-      setIsLinkDialogOpen(false)
+    try {
+      if (linkUrl && linkUrl.trim()) {
+        // Validate URL format
+        const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+        if (!urlPattern.test(linkUrl)) {
+          console.warn('Invalid URL format:', linkUrl)
+          return
+        }
+        editor.chain().focus().setLink({ href: linkUrl }).run()
+        setLinkUrl('')
+      }
+    } catch (error) {
+      console.error('Error setting link:', error)
     }
   }
 
   const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+    try {
+      editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+    } catch (error) {
+      console.error('Error inserting table:', error)
+    }
+  }
+
+  // Helper function to safely execute editor commands
+  const safeEditorCommand = (command: () => void, actionName: string) => {
+    try {
+      command()
+    } catch (error) {
+      console.error(`Error in ${actionName}:`, error)
+      // Additional error handling for better detection
+      if (error instanceof Error) {
+        console.error('Error details:', error.message, error.stack)
+      }
+    }
   }
 
   const ToolbarButton = ({ 
@@ -116,7 +133,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         {/* Text Formatting */}
         <div className="flex items-center gap-1">
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleBold().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBold().run(), 'toggle bold')}
             isActive={editor.isActive('bold')}
             tooltip="Bold"
             shortcut="Ctrl+B"
@@ -125,7 +142,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleItalic().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleItalic().run(), 'toggle italic')}
             isActive={editor.isActive('italic')}
             tooltip="Italic"
             shortcut="Ctrl+I"
@@ -134,7 +151,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleUnderline().run(), 'toggle underline')}
             isActive={editor.isActive('underline')}
             tooltip="Underline"
             shortcut="Ctrl+U"
@@ -143,7 +160,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleStrike().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleStrike().run(), 'toggle strikethrough')}
             isActive={editor.isActive('strike')}
             tooltip="Strikethrough"
             shortcut="Ctrl+Shift+S"
@@ -192,7 +209,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         {/* Lists */}
         <div className="flex items-center gap-1">
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBulletList().run(), 'toggle bullet list')}
             isActive={editor.isActive('bulletList')}
             tooltip="Bullet List"
             shortcut="Ctrl+Shift+8"
@@ -201,7 +218,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleOrderedList().run(), 'toggle ordered list')}
             isActive={editor.isActive('orderedList')}
             tooltip="Numbered List"
             shortcut="Ctrl+Shift+7"
@@ -210,7 +227,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleTaskList().run(), 'toggle task list')}
             isActive={editor.isActive('taskList')}
             tooltip="Task List"
             shortcut="Ctrl+Shift+9"
@@ -225,9 +242,20 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         <div className="flex items-center gap-1">
           <ToolbarButton
             onClick={() => {
-              const url = window.prompt('Enter URL:')
-              if (url) {
-                editor.chain().focus().setLink({ href: url }).run()
+              try {
+                const url = window.prompt('Enter URL:')
+                if (url && url.trim()) {
+                  // Validate URL format
+                  const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+                  if (!urlPattern.test(url)) {
+                    alert('Please enter a valid URL')
+                    return
+                  }
+                  editor.chain().focus().setLink({ href: url }).run()
+                }
+              } catch (error) {
+                console.error('Error adding link:', error)
+                alert('Error adding link. Please try again.')
               }
             }}
             isActive={editor.isActive('link')}
@@ -238,7 +266,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleCode().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleCode().run(), 'toggle inline code')}
             isActive={editor.isActive('code')}
             tooltip="Inline Code"
             shortcut="Ctrl+E"
@@ -247,7 +275,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleCodeBlock().run(), 'toggle code block')}
             isActive={editor.isActive('codeBlock')}
             tooltip="Code Block"
             shortcut="Ctrl+Alt+C"
@@ -261,7 +289,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         {/* Block Elements */}
         <div className="flex items-center gap-1">
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBlockquote().run(), 'toggle blockquote')}
             isActive={editor.isActive('blockquote')}
             tooltip="Quote"
             shortcut="Ctrl+Shift+Q"
@@ -270,7 +298,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().setHorizontalRule().run(), 'insert horizontal rule')}
             tooltip="Horizontal Rule"
             shortcut="Ctrl+Shift+H"
           >
@@ -298,7 +326,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().undo().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().undo().run(), 'undo')}
             disabled={!editor.can().undo()}
             tooltip="Undo"
             shortcut="Ctrl+Z"
@@ -307,7 +335,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().redo().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().redo().run(), 'redo')}
             disabled={!editor.can().redo()}
             tooltip="Redo"
             shortcut="Ctrl+Y"
@@ -321,7 +349,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         {/* Clear Formatting */}
         <div className="flex items-center gap-1">
           <ToolbarButton
-            onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
+            onClick={() => safeEditorCommand(() => editor.chain().focus().clearNodes().unsetAllMarks().run(), 'clear formatting')}
             tooltip="Clear Formatting"
             shortcut="Ctrl+\\"
           >
@@ -333,7 +361,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       {/* Mobile/Tablet Responsive Design */}
       <div className="mt-2 flex flex-wrap items-center gap-1 md:hidden">
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBold().run(), 'toggle bold (mobile)')}
           isActive={editor.isActive('bold')}
           tooltip="Bold"
         >
@@ -341,7 +369,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         </ToolbarButton>
         
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleItalic().run(), 'toggle italic (mobile)')}
           isActive={editor.isActive('italic')}
           tooltip="Italic"
         >
@@ -349,7 +377,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         </ToolbarButton>
         
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBulletList().run(), 'toggle bullet list (mobile)')}
           isActive={editor.isActive('bulletList')}
           tooltip="List"
         >
