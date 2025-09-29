@@ -3,7 +3,7 @@
 
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Editor } from '@tiptap/react'
 import { Button } from '@mindware-blog/ui/button'
 import { Separator } from '@mindware-blog/ui/separator'
@@ -12,7 +12,6 @@ import {
   Bold, 
   Italic, 
   Strikethrough, 
-
   Code, 
   Link as LinkIcon,
   Image as ImageIcon,
@@ -25,10 +24,10 @@ import {
   Heading4,
   Heading5,
   Heading6,
+  ChevronDown,
   Table,
   Minus,
   Type,
-  ChevronDown,
   Undo,
   Redo,
   X,
@@ -41,6 +40,26 @@ interface EditorToolbarProps {
 }
 
 export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
+  const [isHeadingDropdownOpen, setIsHeadingDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsHeadingDropdownOpen(false)
+      }
+    }
+
+    if (isHeadingDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isHeadingDropdownOpen])
+  
   if (!editor) return null
 
   const setLink = () => {
@@ -57,6 +76,26 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
   const clearFormatting = () => {
     editor.chain().focus().clearNodes().unsetAllMarks().run()
   }
+
+  const getActiveHeading = () => {
+    if (editor.isActive('heading', { level: 1 })) return 'H1'
+    if (editor.isActive('heading', { level: 2 })) return 'H2'
+    if (editor.isActive('heading', { level: 3 })) return 'H3'
+    if (editor.isActive('heading', { level: 4 })) return 'H4'
+    if (editor.isActive('heading', { level: 5 })) return 'H5'
+    if (editor.isActive('heading', { level: 6 })) return 'H6'
+    return 'Normal'
+  }
+
+  const headingOptions = [
+    { label: 'Normal', command: () => editor.chain().focus().setParagraph().run(), icon: Type },
+    { label: 'H1', command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), icon: Heading1 },
+    { label: 'H2', command: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), icon: Heading2 },
+    { label: 'H3', command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), icon: Heading3 },
+    { label: 'H4', command: () => editor.chain().focus().toggleHeading({ level: 4 }).run(), icon: Heading4 },
+    { label: 'H5', command: () => editor.chain().focus().toggleHeading({ level: 5 }).run(), icon: Heading5 },
+    { label: 'H6', command: () => editor.chain().focus().toggleHeading({ level: 6 }).run(), icon: Heading6 },
+  ]
 
   return (
     <div className="flex flex-wrap items-center gap-1 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
@@ -149,84 +188,44 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
 
       <Separator orientation="vertical" className="h-6" />
 
-      {/* Headings */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 1 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          >
-            <Heading1 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 1</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 2 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          >
-            <Heading2 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 2</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 3 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          >
-            <Heading3 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 3</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 4 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-          >
-            <Heading4 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 4</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 5 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-          >
-            <Heading5 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 5</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('heading', { level: 6 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-          >
-            <Heading6 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Heading 6</TooltipContent>
-      </Tooltip>
+      {/* Heading Dropdown */}
+      <div className="relative" ref={dropdownRef}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsHeadingDropdownOpen(!isHeadingDropdownOpen)}
+              className="flex items-center gap-1"
+            >
+              <span className="text-xs font-medium">{getActiveHeading()}</span>
+              <ChevronDown className="w-3 h-3" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Heading Options</TooltipContent>
+        </Tooltip>
+        
+        {isHeadingDropdownOpen && (
+          <div className="absolute top-full left-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50 min-w-[120px]">
+            {headingOptions.map((option) => {
+              const IconComponent = option.icon
+              return (
+                <button
+                  key={option.label}
+                  onClick={() => {
+                    option.command()
+                    setIsHeadingDropdownOpen(false)
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white first:rounded-t-lg last:rounded-b-lg"
+                >
+                  <IconComponent className="w-4 h-4" />
+                  {option.label}
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
 
       <Separator orientation="vertical" className="h-6" />
 
