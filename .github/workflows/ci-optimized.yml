@@ -8,7 +8,7 @@ on:
       - "packages/**"
       - ".github/workflows/**"
   push:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - "apps/**"
       - "packages/**"

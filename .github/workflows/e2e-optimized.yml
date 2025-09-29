@@ -7,7 +7,7 @@ on:
       - "apps/site/**"
       - ".github/workflows/**"
   push:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - "apps/site/**"
       - ".github/workflows/**"

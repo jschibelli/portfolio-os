@@ -7,6 +7,8 @@ on:
     types: [submitted]
   issue_comment:
     types: [created]
+  push:
+    branches: [ develop ]
 
 permissions:
   contents: read
