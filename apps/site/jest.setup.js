@@ -4,6 +4,8 @@
 // Used for __tests__/testing-library.js
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+import React from 'react'
+import { installBrowserMocks, silenceConsoleNoise, NextImageMock } from './__tests__/test-mocks/browserMocks'
 
 // Mock Next.js router
 jest.mock('next/router', () => ({
@@ -80,10 +82,7 @@ jest.mock('lucide-react', () => ({
 // Mock Next.js Image component
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img {...props} />
-  },
+  default: NextImageMock,
 }))
 
 // Mock Next.js Link component
@@ -98,70 +97,6 @@ jest.mock('next/link', () => ({
   },
 }))
 
-// Global test utilities
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}))
-
-// Mock IntersectionObserver
-global.IntersectionObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}))
-
-// Mock matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(), // deprecated
-    removeListener: jest.fn(), // deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-})
-
-// Mock window.getComputedStyle
-Object.defineProperty(window, 'getComputedStyle', {
-  value: () => ({
-    getPropertyValue: () => '',
-  }),
-})
-
-// Suppress console warnings in tests
-const originalWarn = console.warn
-const originalError = console.error
-
-beforeAll(() => {
-  console.warn = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
-    ) {
-      return
-    }
-    originalWarn.call(console, ...args)
-  }
-
-  console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      (args[0].includes('Warning: ReactDOM.render is no longer supported') ||
-       args[0].includes('act()'))
-    ) {
-      return
-    }
-    originalError.call(console, ...args)
-  }
-})
-
-afterAll(() => {
-  console.warn = originalWarn
-  console.error = originalError
-})
+// Install shared browser API mocks and silence noisy logs
+installBrowserMocks()
+silenceConsoleNoise()
