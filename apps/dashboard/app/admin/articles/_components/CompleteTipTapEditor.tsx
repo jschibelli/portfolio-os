@@ -19,7 +19,7 @@ import { TableCell } from '@tiptap/extension-table-cell'
 import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
 // import { createLowlight } from 'lowlight'
 // import { common } from 'lowlight'
-import { AdvancedEditorToolbar } from './AdvancedEditorToolbar'
+import { EditorToolbar } from './EditorToolbar'
 
 // Create lowlight instance for syntax highlighting
 // const lowlight = createLowlight(common)
@@ -330,7 +330,7 @@ export function CompleteTipTapEditor({
 
   return (
     <div className="complete-tiptap-editor border border-gray-300 rounded-lg overflow-hidden">
-      <AdvancedEditorToolbar 
+      <EditorToolbar 
         editor={editor} 
         onImageUpload={handleImageUpload}
       />
