@@ -63,6 +63,7 @@ import { AIAssistant } from './AIAssistant'
 import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
 import { BlockEditor } from './BlockEditor'
+import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { 
   Save,
   Eye,
@@ -97,9 +98,11 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
   const [newTag, setNewTag] = useState('')
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
+  const [isTipTapMode, setIsTipTapMode] = useState(false)
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
+  const [tiptapContent, setTiptapContent] = useState('')
   const [blocks, setBlocks] = useState<Array<{
     id: string
     type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
@@ -376,20 +379,37 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               )}
             </div>
             <div className="flex items-center gap-2">
-              {/* Markdown Mode Toggle */}
+              {/* Editor Mode Toggle */}
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                 <Button
-                  variant={!isMarkdownMode ? "default" : "ghost"}
+                  variant={!isMarkdownMode && !isTipTapMode ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setIsMarkdownMode(false)}
-                  className={!isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  onClick={() => {
+                    setIsMarkdownMode(false)
+                    setIsTipTapMode(false)
+                  }}
+                  className={!isMarkdownMode && !isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
-                  Rich Text
+                  Block Editor
+                </Button>
+                <Button
+                  variant={isTipTapMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setIsTipTapMode(true)
+                    setIsMarkdownMode(false)
+                  }}
+                  className={isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                >
+                  TipTap Editor
                 </Button>
                 <Button
                   variant={isMarkdownMode ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setIsMarkdownMode(true)}
+                  onClick={() => {
+                    setIsMarkdownMode(true)
+                    setIsTipTapMode(false)
+                  }}
                   className={isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
                   Markdown
@@ -547,6 +567,18 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   onChange={setMarkdownContent}
                   placeholder="Start writing markdown..."
                 />
+              ) : isTipTapMode ? (
+                <div className="space-y-4">
+                  <div className="text-sm text-gray-600 mb-4">
+                    ✨ TipTap Editor Active - Full rich text editing with all extensions
+                  </div>
+                  <CompleteTipTapEditor
+                    content={tiptapContent}
+                    onChange={setTiptapContent}
+                    placeholder="Start writing with rich text..."
+                    onImageUpload={uploadImage}
+                  />
+                </div>
               ) : (
                 <div className="space-y-4">
                   <div className="text-sm text-gray-600 mb-4">
