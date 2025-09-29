@@ -1,0 +1,1 @@
+Automate end-to-end: <ISSUE_URL>. Trigger analysis, set fields, assign me, create and track the PR you create, monitor CR‑GPT, post threaded replies, keep Status updated, and guide to merge.
