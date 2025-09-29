@@ -20,7 +20,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  # PR number is available on PR-triggered events; fall back handled later
   PR_NUMBER: ${{ github.event.pull_request.number }}
+  # When true, responders won't post comments; CI prints intent instead
   DRY_RUN_RESPONSES: "true" # set to "false" to allow auto-posting responses
 
 jobs:
@@ -35,8 +37,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if (-not $env:GITHUB_TOKEN) { throw "GITHUB_TOKEN is required" }
+          if (-not $env:PR_NUMBER) { throw "PR_NUMBER is required for configure-pr" }
           ./scripts/auto-configure-pr.ps1 `
-            -PRNumber ${{ github.event.pull_request.number }} `
+            -PRNumber $env:PR_NUMBER `
             -Status "In progress" `
             -Priority "P1" `
             -Size "M" `
@@ -62,13 +66,36 @@ jobs:
         if: ${{ hashFiles('**/package.json') != '' }}
         run: corepack enable && corepack prepare pnpm@latest --activate
 
+      - name: Resolve PR number for non-PR events
+        id: resolve-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request
+              || context.payload.review?.pull_request
+              || null;
+            if (pr) {
+              core.setOutput('pr', String(pr.number));
+            } else {
+              core.notice('No PR in payload; skipping PR-specific steps unless PR_NUMBER is provided.');
+            }
+      - name: Set PR_NUMBER env
+        run: echo "PR_NUMBER=${{ steps.resolve-pr.outputs.pr || env.PR_NUMBER }}" >> $GITHUB_ENV
+
+      - name: Validate env
+        run: |
+          if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER is empty; skipping analyzers" && exit 0; fi
+
       - name: CR-GPT Analyzer (report)
+        if: env.PR_NUMBER != ''
         run: pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber $env:PR_NUMBER -GenerateReport -ExportTo analysis.md"
 
       - name: Code Quality Checker
+        if: env.PR_NUMBER != ''
         run: pwsh -c "./scripts/code-quality-checker.ps1 -PRNumber $env:PR_NUMBER -FixIssues -RunTests -GenerateReport"
 
       - name: Docs Updater
+        if: env.PR_NUMBER != ''
         run: pwsh -c "./scripts/docs-updater.ps1 -PRNumber $env:PR_NUMBER -UpdateChangelog -UpdateReadme -GenerateDocs"
 
       - name: Upload Reports
@@ -87,20 +114,22 @@ jobs:
           script: |
             const pr = context.payload.pull_request || context.payload.review?.pull_request;
             const prNumber = pr ? pr.number : process.env.PR_NUMBER;
-            const body = [
-              "### PR Automation Summary",
-              "- Analyzer, Quality Checker, Docs Updater executed.",
-              "- Artifacts: `analysis.md`, quality/docs reports (if present).",
-              `- DRY_RUN_RESPONSES = ${process.env.DRY_RUN_RESPONSES}`
-            ].join("\n");
-            if (prNumber) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body
-              });
+            if (!prNumber) {
+              core.notice('No PR number found; skipping comment.');
+              return;
             }
+            const body = [
+              '### PR Automation Summary',
+              '- Analyzer, Quality Checker, Docs Updater executed.',
+              '- Artifacts: `analysis.md`, quality/docs reports (if present).',
+              `- DRY_RUN_RESPONSES = ${process.env.DRY_RUN_RESPONSES}`
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body
+            });
 
   respond-to-cr-gpt:
     name: Respond to CR-GPT comments (optional)
@@ -113,6 +142,7 @@ jobs:
         if: ${{ github.actor == 'cr-gpt' }}
         run: |
           echo "Detected cr-gpt comment."
+          if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER missing; skipping auto response." && exit 0; fi
           if [ "${DRY_RUN_RESPONSES}" = "false" ]; then
             pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -AutoFix"
           else

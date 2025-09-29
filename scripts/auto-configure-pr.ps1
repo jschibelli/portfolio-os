@@ -15,6 +15,23 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Ensure GitHub CLI availability and non-interactive token
+if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+    throw "GitHub CLI 'gh' is required but not found on PATH."
+}
+
+if (-not $env:GH_TOKEN -and $env:GITHUB_TOKEN) {
+    $env:GH_TOKEN = $env:GITHUB_TOKEN
+}
+
+if (-not $env:GH_TOKEN) {
+    Write-Warning "GH_TOKEN/GITHUB_TOKEN not set. In CI, provide 'GITHUB_TOKEN'."
+}
+
+if (-not ($PRNumber -as [int])) {
+    throw "PRNumber must be numeric. Provided: '$PRNumber'"
+}
+
 # Project configuration (Portfolio Site — johnschibelli.dev)
 $PROJECT_ID = "PVT_kwHOAEnMVc4BCu-c"
 
@@ -36,9 +53,9 @@ query($projectId: ID!) {
     ... on ProjectV2 {
       fields(first: 100) {
         nodes {
+          __typename
           id
           name
-          dataType
           ... on ProjectV2SingleSelectField { options { id name } }
         }
       }
@@ -63,17 +80,27 @@ function Get-OptionId($fieldName, $optionName) {
     return ($node.options | Where-Object { $_.name -eq $optionName }).id
 }
 
-$StatusOptionId   = Get-OptionId -fieldName "Status"   -optionName $Status
-$PriorityOptionId = Get-OptionId -fieldName "Priority" -optionName $Priority
-$SizeOptionId     = Get-OptionId -fieldName "Size"     -optionName $Size
-$AppOptionId      = Get-OptionId -fieldName "App"      -optionName $App
-$AreaOptionId     = Get-OptionId -fieldName "Area"     -optionName $Area
+# Stable option ID fallbacks (from prompts/github-issue-auto-configuration.md)
+$OPTION_IDS = @{
+    Status = @{ "Ready" = "e18bf179"; "In progress" = "47fc9ee4"; "In review" = "aba860b9"; "Done" = "98236657" }
+    Priority = @{ "P0" = "79628723"; "P1" = "0a877460"; "P2" = "da944a9c" }
+    Size = @{ "XS" = "911790be"; "S" = "b277fb01"; "M" = "86db8eb3"; "L" = "853c8207"; "XL" = "2d0801e2" }
+    App = @{ "Docs" = "e504fedd"; "Portfolio Site" = "de5faa4a"; "Dashboard" = "d134f386"; "Chatbot" = "c95306ff" }
+    Area = @{ "Frontend" = "5618641d"; "Content" = "663d7084"; "Infra" = "5a298e61"; "DX/Tooling" = "a67a98e5" }
+}
+
+$StatusOptionId   = (Get-OptionId -fieldName "Status"   -optionName $Status)   ; if (-not $StatusOptionId)   { $StatusOptionId   = $OPTION_IDS.Status[$Status] }
+$PriorityOptionId = (Get-OptionId -fieldName "Priority" -optionName $Priority) ; if (-not $PriorityOptionId) { $PriorityOptionId = $OPTION_IDS.Priority[$Priority] }
+$SizeOptionId     = (Get-OptionId -fieldName "Size"     -optionName $Size)     ; if (-not $SizeOptionId)     { $SizeOptionId     = $OPTION_IDS.Size[$Size] }
+$AppOptionId      = (Get-OptionId -fieldName "App"      -optionName $App)      ; if (-not $AppOptionId)      { $AppOptionId      = $OPTION_IDS.App[$App] }
+$AreaOptionId     = (Get-OptionId -fieldName "Area"     -optionName $Area)     ; if (-not $AreaOptionId)     { $AreaOptionId     = $OPTION_IDS.Area[$Area] }
 
 if (-not $StatusOptionId -or -not $PriorityOptionId -or -not $SizeOptionId -or -not $AppOptionId -or -not $AreaOptionId) {
     throw "Missing one or more project option IDs. Verify project fields/options."
 }
 
-$pr = gh pr view $PRNumber --json id,url,number -q .
+$pr = gh pr view $PRNumber --json id,url,number | ConvertFrom-Json
+if (-not $pr) { throw "Failed to fetch PR $PRNumber. Ensure it exists and token has access." }
 $prId = $pr.id
 $prUrl = $pr.url
 
@@ -84,7 +111,25 @@ mutation($projectId: ID!, $contentId: ID!) {
   }
 }
 '@
-$itemId = gh api graphql -f query=$addQ -f projectId=$PROJECT_ID -f contentId=$prId -q .data.addProjectV2ItemById.item.id
+$itemId = gh api graphql -f query=$addQ -f projectId=$PROJECT_ID -f contentId=$prId -q .data.addProjectV2ItemById.item.id 2>$null
+if (-not $itemId) {
+    # Fallback: locate existing item if already added
+    $listQ = @'
+query($projectId: ID!) {
+  node(id: $projectId) {
+    ... on ProjectV2 {
+      items(first: 100) {
+        nodes { id content { __typename ... on PullRequest { id number } } }
+      }
+    }
+  }
+}
+'@
+    $items = (gh api graphql -f query=$listQ -f projectId=$PROJECT_ID | ConvertFrom-Json).data.node.items.nodes
+    $existing = $items | Where-Object { $_.content.__typename -eq 'PullRequest' -and $_.content.id -eq $prId }
+    if ($existing) { $itemId = $existing.id }
+}
+if (-not $itemId) { throw "Failed to add or locate project item for PR. Verify project ID and token scopes." }
 
 function Set-SingleSelect([string]$fieldId, [string]$optionId) {
     $q = "mutation(`$projectId: ID!, `$itemId: ID!, `$fieldId: ID!, `$value: String!) { updateProjectV2ItemFieldValue(input: {projectId: `$projectId, itemId: `$itemId, fieldId: `$fieldId, value: {singleSelectOptionId: `$value}}) { projectV2Item { id } } }"
