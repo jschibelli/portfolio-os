@@ -17,7 +17,7 @@ import { TableRow } from '@tiptap/extension-table-row'
 import { TableHeader } from '@tiptap/extension-table-header'
 import { TableCell } from '@tiptap/extension-table-cell'
 import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
-import { createLowlight } from 'lowlight'
+import { createLowlight, common } from 'lowlight'
 
 // Simple Slash Command Extension - temporarily disabled
 // const SlashCommandExtension = Extension.create({
@@ -90,8 +90,8 @@ interface ArticleEditorProps {
   }
 }
 
-// Create lowlight instance for code highlighting
-const lowlight = createLowlight()
+// Create lowlight instance for code highlighting with common languages
+const lowlight = createLowlight(common)
 
 export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [title, setTitle] = useState(initialData?.title || '')
