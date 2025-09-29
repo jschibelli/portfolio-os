@@ -1,37 +1,44 @@
-// /app/(admin)/admin/articles/_components/EditorToolbar.tsx  
-// Enhanced toolbar component with keyboard shortcuts and better UX
+// /app/(admin)/admin/articles/_components/EditorToolbar.tsx
+// Enhanced toolbar component with all formatting options matching Hashnode's editor toolbar
 
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { Editor } from '@tiptap/react'
-import { Button } from '@mindware-blog/ui/button'
-import { Separator } from '@mindware-blog/ui/separator'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@mindware-blog/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { 
-  Bold, 
-  Italic, 
-  Strikethrough, 
-  Code, 
-  Link as LinkIcon,
-  Image as ImageIcon,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
   List,
   ListOrdered,
+  CheckSquare,
+  Link,
+  Code,
+  Code2,
   Quote,
-  Heading1,
-  Heading2,
-  Heading3,
-  Heading4,
-  Heading5,
-  Heading6,
-  ChevronDown,
-  Table,
   Minus,
-  Type,
   Undo,
   Redo,
-  X,
-  Square
+  Image as ImageIcon,
+  Table,
+  Type,
+  MoreHorizontal
 } from 'lucide-react'
 
 interface EditorToolbarProps {
@@ -40,347 +47,358 @@ interface EditorToolbarProps {
 }
 
 export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
-  const [isHeadingDropdownOpen, setIsHeadingDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsHeadingDropdownOpen(false)
-      }
-    }
+  const [linkUrl, setLinkUrl] = useState('')
 
-    if (isHeadingDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isHeadingDropdownOpen])
-  
-  if (!editor) return null
+  if (!editor) {
+    return null
+  }
 
   const setLink = () => {
-    const url = window.prompt('Enter URL:')
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run()
+    try {
+      if (linkUrl && linkUrl.trim()) {
+        // Validate URL format
+        const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+        if (!urlPattern.test(linkUrl)) {
+          console.warn('Invalid URL format:', linkUrl)
+          return
+        }
+        editor.chain().focus().setLink({ href: linkUrl }).run()
+        setLinkUrl('')
+      }
+    } catch (error) {
+      console.error('Error setting link:', error)
     }
   }
 
   const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+    try {
+      editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+    } catch (error) {
+      console.error('Error inserting table:', error)
+    }
   }
 
-  const clearFormatting = () => {
-    editor.chain().focus().clearNodes().unsetAllMarks().run()
+  // Helper function to safely execute editor commands
+  const safeEditorCommand = (command: () => void, actionName: string) => {
+    try {
+      command()
+    } catch (error) {
+      console.error(`Error in ${actionName}:`, error)
+      // Additional error handling for better detection
+      if (error instanceof Error) {
+        console.error('Error details:', error.message, error.stack)
+      }
+    }
   }
 
-  const getActiveHeading = () => {
-    if (editor.isActive('heading', { level: 1 })) return 'H1'
-    if (editor.isActive('heading', { level: 2 })) return 'H2'
-    if (editor.isActive('heading', { level: 3 })) return 'H3'
-    if (editor.isActive('heading', { level: 4 })) return 'H4'
-    if (editor.isActive('heading', { level: 5 })) return 'H5'
-    if (editor.isActive('heading', { level: 6 })) return 'H6'
-    return 'Normal'
-  }
-
-  const headingOptions = [
-    { label: 'Normal', command: () => editor.chain().focus().setParagraph().run(), icon: Type },
-    { label: 'H1', command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), icon: Heading1 },
-    { label: 'H2', command: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), icon: Heading2 },
-    { label: 'H3', command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), icon: Heading3 },
-    { label: 'H4', command: () => editor.chain().focus().toggleHeading({ level: 4 }).run(), icon: Heading4 },
-    { label: 'H5', command: () => editor.chain().focus().toggleHeading({ level: 5 }).run(), icon: Heading5 },
-    { label: 'H6', command: () => editor.chain().focus().toggleHeading({ level: 6 }).run(), icon: Heading6 },
-  ]
+  const ToolbarButton = ({ 
+    onClick, 
+    isActive = false, 
+    disabled = false, 
+    children, 
+    tooltip,
+    shortcut 
+  }: {
+    onClick: () => void
+    isActive?: boolean
+    disabled?: boolean
+    children: React.ReactNode
+    tooltip: string
+    shortcut?: string
+  }) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={isActive ? "default" : "ghost"}
+            size="sm"
+            onClick={onClick}
+            disabled={disabled}
+            className="h-8 w-8 p-0"
+          >
+            {children}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{tooltip}</p>
+          {shortcut && <p className="text-xs text-muted-foreground">{shortcut}</p>}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
-      <div className="text-xs text-gray-300 font-medium mr-3 px-2 py-1 bg-gray-700 rounded">✍️ Rich Text Editor</div>
-      
-      {/* Undo/Redo */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().undo().run()}
+    <div className="border-b border-stone-200 bg-white p-2">
+      <div className="flex flex-wrap items-center gap-1">
+        {/* Text Formatting */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBold().run(), 'toggle bold')}
+            isActive={editor.isActive('bold')}
+            tooltip="Bold"
+            shortcut="Ctrl+B"
+          >
+            <Bold className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleItalic().run(), 'toggle italic')}
+            isActive={editor.isActive('italic')}
+            tooltip="Italic"
+            shortcut="Ctrl+I"
+          >
+            <Italic className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleUnderline().run(), 'toggle underline')}
+            isActive={editor.isActive('underline')}
+            tooltip="Underline"
+            shortcut="Ctrl+U"
+          >
+            <Underline className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleStrike().run(), 'toggle strikethrough')}
+            isActive={editor.isActive('strike')}
+            tooltip="Strikethrough"
+            shortcut="Ctrl+Shift+S"
+          >
+            <Strikethrough className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Headings */}
+        <div className="flex items-center gap-1">
+          <Select
+            value={editor.isActive('heading', { level: 1 }) ? 'h1' : 
+                   editor.isActive('heading', { level: 2 }) ? 'h2' : 
+                   editor.isActive('heading', { level: 3 }) ? 'h3' : 
+                   editor.isActive('heading', { level: 4 }) ? 'h4' : 
+                   editor.isActive('heading', { level: 5 }) ? 'h5' : 
+                   editor.isActive('heading', { level: 6 }) ? 'h6' : 'paragraph'}
+            onValueChange={(value) => {
+              if (value === 'paragraph') {
+                editor.chain().focus().setParagraph().run()
+              } else {
+                const level = parseInt(value.replace('h', '')) as 1 | 2 | 3 | 4 | 5 | 6
+                editor.chain().focus().toggleHeading({ level }).run()
+              }
+            }}
+          >
+            <SelectTrigger className="w-20 h-8">
+              <SelectValue placeholder="H1" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="paragraph">P</SelectItem>
+              <SelectItem value="h1">H1</SelectItem>
+              <SelectItem value="h2">H2</SelectItem>
+              <SelectItem value="h3">H3</SelectItem>
+              <SelectItem value="h4">H4</SelectItem>
+              <SelectItem value="h5">H5</SelectItem>
+              <SelectItem value="h6">H6</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Lists */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBulletList().run(), 'toggle bullet list')}
+            isActive={editor.isActive('bulletList')}
+            tooltip="Bullet List"
+            shortcut="Ctrl+Shift+8"
+          >
+            <List className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleOrderedList().run(), 'toggle ordered list')}
+            isActive={editor.isActive('orderedList')}
+            tooltip="Numbered List"
+            shortcut="Ctrl+Shift+7"
+          >
+            <ListOrdered className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleTaskList().run(), 'toggle task list')}
+            isActive={editor.isActive('taskList')}
+            tooltip="Task List"
+            shortcut="Ctrl+Shift+9"
+          >
+            <CheckSquare className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Links and Code */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={() => {
+              try {
+                const url = window.prompt('Enter URL:')
+                if (url && url.trim()) {
+                  // Validate URL format
+                  const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+                  if (!urlPattern.test(url)) {
+                    alert('Please enter a valid URL')
+                    return
+                  }
+                  editor.chain().focus().setLink({ href: url }).run()
+                }
+              } catch (error) {
+                console.error('Error adding link:', error)
+                alert('Error adding link. Please try again.')
+              }
+            }}
+            isActive={editor.isActive('link')}
+            tooltip="Add Link"
+            shortcut="Ctrl+K"
+          >
+            <Link className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleCode().run(), 'toggle inline code')}
+            isActive={editor.isActive('code')}
+            tooltip="Inline Code"
+            shortcut="Ctrl+E"
+          >
+            <Code className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleCodeBlock().run(), 'toggle code block')}
+            isActive={editor.isActive('codeBlock')}
+            tooltip="Code Block"
+            shortcut="Ctrl+Alt+C"
+          >
+            <Code2 className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Block Elements */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBlockquote().run(), 'toggle blockquote')}
+            isActive={editor.isActive('blockquote')}
+            tooltip="Quote"
+            shortcut="Ctrl+Shift+Q"
+          >
+            <Quote className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().setHorizontalRule().run(), 'insert horizontal rule')}
+            tooltip="Horizontal Rule"
+            shortcut="Ctrl+Shift+H"
+          >
+            <Minus className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={insertTable}
+            tooltip="Insert Table"
+          >
+            <Table className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* Media and Actions */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={onImageUpload}
+            tooltip="Insert Image"
+            shortcut="Ctrl+Shift+I"
+          >
+            <ImageIcon className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().undo().run(), 'undo')}
             disabled={!editor.can().undo()}
+            tooltip="Undo"
+            shortcut="Ctrl+Z"
           >
-            <Undo className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Undo (Ctrl+Z)</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().redo().run()}
+            <Undo className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().redo().run(), 'redo')}
             disabled={!editor.can().redo()}
+            tooltip="Redo"
+            shortcut="Ctrl+Y"
           >
-            <Redo className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Redo (Ctrl+Y)</TooltipContent>
-      </Tooltip>
+            <Redo className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
 
-      <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="h-6" />
 
-      {/* Text Formatting */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('bold') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
+        {/* Clear Formatting */}
+        <div className="flex items-center gap-1">
+          <ToolbarButton
+            onClick={() => safeEditorCommand(() => editor.chain().focus().clearNodes().unsetAllMarks().run(), 'clear formatting')}
+            tooltip="Clear Formatting"
+            shortcut="Ctrl+\\"
           >
-            <Bold className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Bold (Ctrl+B)</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('italic') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-          >
-            <Italic className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Italic (Ctrl+I)</TooltipContent>
-      </Tooltip>
-
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('strike') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-          >
-            <Strikethrough className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Strikethrough</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('code') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleCode().run()}
-          >
-            <Code className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Inline Code</TooltipContent>
-      </Tooltip>
-
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Heading Dropdown */}
-      <div className="relative" ref={dropdownRef}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsHeadingDropdownOpen(!isHeadingDropdownOpen)}
-              className="flex items-center gap-1"
-            >
-              <span className="text-xs font-medium">{getActiveHeading()}</span>
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Heading Options</TooltipContent>
-        </Tooltip>
-        
-        {isHeadingDropdownOpen && (
-          <div className="absolute top-full left-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50 min-w-[120px]">
-            {headingOptions.map((option) => {
-              const IconComponent = option.icon
-              return (
-                <button
-                  key={option.label}
-                  onClick={() => {
-                    option.command()
-                    setIsHeadingDropdownOpen(false)
-                  }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white first:rounded-t-lg last:rounded-b-lg"
-                >
-                  <IconComponent className="w-4 h-4" />
-                  {option.label}
-                </button>
-              )
-            })}
-          </div>
-        )}
+            <Type className="h-4 w-4" />
+          </ToolbarButton>
+        </div>
       </div>
 
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Lists */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('bulletList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-          >
-            <List className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Bullet List</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('orderedList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          >
-            <ListOrdered className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Numbered List</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('taskList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
-          >
-            <Square className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Task List</TooltipContent>
-      </Tooltip>
-
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Block Elements */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('blockquote') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          >
-            <Quote className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Quote</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('codeBlock') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          >
-            {'</>'}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Code Block</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          >
-            <Minus className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Horizontal Rule</TooltipContent>
-      </Tooltip>
-
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Media and Links */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('link') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={setLink}
-          >
-            <LinkIcon className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Add Link (Ctrl+K)</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onImageUpload}
-          >
-            <ImageIcon className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Upload Image</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertTable}
-          >
-            <Table className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Insert Table</TooltipContent>
-      </Tooltip>
-
-      <Separator orientation="vertical" className="h-6" />
-
-      {/* Additional Formatting */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={editor.isActive('paragraph') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setParagraph().run()}
-          >
-            <Type className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Normal Text</TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearFormatting}
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Clear Formatting</TooltipContent>
-      </Tooltip>
+      {/* Mobile/Tablet Responsive Design */}
+      <div className="mt-2 flex flex-wrap items-center gap-1 md:hidden">
+        <ToolbarButton
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBold().run(), 'toggle bold (mobile)')}
+          isActive={editor.isActive('bold')}
+          tooltip="Bold"
+        >
+          <Bold className="h-4 w-4" />
+        </ToolbarButton>
+        
+        <ToolbarButton
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleItalic().run(), 'toggle italic (mobile)')}
+          isActive={editor.isActive('italic')}
+          tooltip="Italic"
+        >
+          <Italic className="h-4 w-4" />
+        </ToolbarButton>
+        
+        <ToolbarButton
+          onClick={() => safeEditorCommand(() => editor.chain().focus().toggleBulletList().run(), 'toggle bullet list (mobile)')}
+          isActive={editor.isActive('bulletList')}
+          tooltip="List"
+        >
+          <List className="h-4 w-4" />
+        </ToolbarButton>
+        
+        <ToolbarButton
+          onClick={onImageUpload}
+          tooltip="Image"
+        >
+          <ImageIcon className="h-4 w-4" />
+        </ToolbarButton>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }
