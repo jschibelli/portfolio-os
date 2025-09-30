@@ -1,12 +1,14 @@
 Automate end-to-end: <URL>. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
 **For Issues:**
+- Use `.\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> -Preset blog -AddToProject`
 - Auto-configure project fields (Status=In progress, Priority=P1, Size=M, App=Portfolio Site, Area=Frontend, Assignee=jschibelli)
 - Analyze requirements and generate implementation plan
 - Create branch with issue number prefix
 - Track progress and update status
 
 **For PRs:**
+- Use `.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action all`
 - Monitor CR-GPT bot comments and reviews
 - Analyze feedback with priority categorization (bugs > tests > typing > logic > docs > style)
 - Generate threaded replies to CR-GPT comments

@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./scripts/auto-configure-issue-simple.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Priority P1 -Size M
+          ./scripts/issue-config-unified.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Preset blog -AddToProject
 
       - name: Assign default owner and comment analysis start
         run: |
@@ -113,7 +113,7 @@ jobs:
       - name: Analyze created PR (CR-GPT) and upload report
         if: steps.create-pr.outputs.pr_number != ''
         run: |
-          pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -GenerateReport -ExportTo analysis.md" || true
+          pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -Action analyze -ExportTo analysis.md" || true
         continue-on-error: true
 
       - name: Upload analysis artifacts (issue path)
@@ -185,7 +185,7 @@ jobs:
       - name: Universal PR Automation (CR-GPT monitoring, merge guidance)
         if: success()
         run: |
-          pwsh -c "./scripts/universal-pr-automation-simple.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"
+          pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action all"
         continue-on-error: true
 
       - name: Upload artifacts
@@ -199,7 +199,7 @@ jobs:
       - name: Optional auto-respond to CR-GPT thread (dry-run controlled)
         if: success()
         run: |
-          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"; else echo "Dry run: skipping responses"; fi
+          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action respond"; else echo "Dry run: skipping responses"; fi
 
       - name: Update project Status to In review if reviews submitted
         if: github.event_name == 'pull_request_review' && success() && needs.detect-and-route.outputs.review_state != ''

@@ -89,13 +89,13 @@ jobs:
         if: env.PR_NUMBER != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ env.PR_NUMBER }} -GenerateReport -ExportTo analysis.md"
+        run: pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action analyze -ExportTo analysis.md"
 
       - name: Universal PR Automation (monitoring, responses, merge guidance)
         if: env.PR_NUMBER != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/universal-pr-automation-simple.ps1 -PRNumber ${{ env.PR_NUMBER }}"
+        run: pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action all"
 
       - name: Code Quality Checker
         if: env.PR_NUMBER != '' && hashFiles('scripts/code-quality-checker.ps1') != ''
@@ -157,7 +157,7 @@ jobs:
           echo "Detected cr-gpt comment."
           if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER missing; skipping auto response." && exit 0; fi
           if [ "${DRY_RUN_RESPONSES}" = "false" ]; then
-            pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -AutoFix"
+            pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond"
           else
             echo "DRY_RUN_RESPONSES=true; skipping auto post."
           fi
