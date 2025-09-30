@@ -53,6 +53,7 @@ import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
 import { BlockEditor } from './BlockEditor'
 import { SEOPanel, SEOData } from './SEOPanel'
+import { PublishingPanel } from './PublishingPanel'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { DualModeEditor } from './DualModeEditor'
 import { 
@@ -147,6 +148,25 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     twitterImage: initialData?.twitterImage,
     focusKeyword: initialData?.focusKeyword,
     seoScore: initialData?.seoScore,
+  })
+
+  // Publishing options state
+  const [publishingExpanded, setPublishingExpanded] = useState(false)
+  const [publishingOptions, setPublishingOptions] = useState({
+    status: 'DRAFT' as const,
+    visibility: 'PUBLIC' as const,
+    featured: false,
+    allowComments: true,
+    allowReactions: true,
+    paywalled: false,
+    readingMinutes: 0,
+    seriesId: undefined as string | undefined,
+    seriesPosition: undefined as number | undefined,
+    crossPlatformPublishing: {
+      hashnode: false,
+      dev: false,
+      medium: false
+    }
   })
   
   // Article data state for the new structure
@@ -737,6 +757,46 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                       articleTitle={title}
                       articleSlug={slug}
                       onChange={setSeoData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Publishing Options Panel */}
+              <div className="border border-gray-200 rounded-lg">
+                <button
+                  onClick={() => setPublishingExpanded(!publishingExpanded)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Send className="w-5 h-5 text-green-600" />
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        Publishing Options
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Configure how your article will be published and distributed
+                      </p>
+                    </div>
+                  </div>
+                  {publishingExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+                
+                {publishingExpanded && (
+                  <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+                    <PublishingPanel
+                      articleId={initialData?.id}
+                      initialData={publishingOptions}
+                      onSave={async (options) => {
+                        setPublishingOptions(options)
+                        // Here you would typically save to your backend
+                        console.log('Saving publishing options:', options)
+                      }}
+                      onPreview={() => setIsPreview(!isPreview)}
                     />
                   </div>
                 )}

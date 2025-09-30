@@ -175,8 +175,10 @@ model Article {
   scheduledAt     DateTime?
   featured        Boolean       @default(false)
   allowComments   Boolean       @default(true)
+  allowReactions  Boolean       @default(true)
   paywalled       Boolean       @default(false)
   readingMinutes  Int?
+  seriesPosition  Int?
   views           Int           @default(0)
   tags            ArticleTag[]
   versions        ArticleVersion[]
