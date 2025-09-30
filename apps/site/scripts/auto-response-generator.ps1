@@ -21,7 +21,7 @@ function Get-CRGPTComments {
     $repoOwner = gh repo view --json owner -q .owner.login
     $repoName = gh repo view --json name -q .name
     
-    $allComments = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments
+    $allComments = gh api repos/$repoOwner/$repoName/pulls/$PRNumber/comments | ConvertFrom-Json
     $crgptComments = $allComments | Where-Object { $_.user.login -eq "cr-gpt[bot]" }
     return $crgptComments
 }
@@ -140,6 +140,22 @@ function Post-Response {
     Write-Host "Response posted successfully!" -ForegroundColor Green
 }
 
+function Post-ThreadedReply {
+    param([string]$PRNumber, [string]$CommentId, [string]$Response)
+    
+    if ($DryRun) {
+        Write-Host "=== DRY RUN - Threaded reply would be posted to comment $CommentId ===" -ForegroundColor Yellow
+        Write-Host $Response
+        return
+    }
+    
+    $repoOwner = gh repo view --json owner -q .owner.login
+    $repoName = gh repo view --json name -q .name
+    Write-Host "Posting threaded reply to comment $CommentId on PR #$PRNumber..." -ForegroundColor Green
+    gh api repos/$repoOwner/$repoName/pulls/comments/$CommentId/replies -f body="$Response" | Out-Null
+    Write-Host "Threaded reply posted successfully!" -ForegroundColor Green
+}
+
 # Main execution
 try {
     if ($CommentId) {
@@ -158,7 +174,8 @@ try {
             Apply-AutoFixes -Comment $comment
         }
         
-        Post-Response -PRNumber $PRNumber -Response $response
+        # Prefer threaded reply to the specific CR-GPT comment
+        Post-ThreadedReply -PRNumber $PRNumber -CommentId $CommentId -Response $response
         
     } else {
         # Process all CR-GPT comments
@@ -178,7 +195,8 @@ try {
                 Apply-AutoFixes -Comment $comment
             }
             
-            Post-Response -PRNumber $PRNumber -Response $response
+            # Post a threaded reply to the original review comment
+            Post-ThreadedReply -PRNumber $PRNumber -CommentId $comment.id -Response $response
         }
     }
     

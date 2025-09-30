@@ -4,16 +4,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-// Tiptap imports removed - using block editor instead
-// import { useEditor, EditorContent } from '@tiptap/react'
-// import StarterKit from '@tiptap/starter-kit'
-// import Placeholder from '@tiptap/extension-placeholder'
-// import Link from '@tiptap/extension-link'
-// import Image from '@tiptap/extension-image'
-// import TaskList from '@tiptap/extension-task-list'
-// import TaskItem from '@tiptap/extension-task-item'
-// import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-// import { createLowlight } from 'lowlight'
 
 // Simple Slash Command Extension - temporarily disabled
 // const SlashCommandExtension = Extension.create({
@@ -58,12 +48,13 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { TooltipProvider } from '@/components/ui/tooltip'
-// import { EditorToolbar } from './EditorToolbar' // Not used - using BlockEditor instead
 import { AIAssistant } from './AIAssistant'
 import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
 import { BlockEditor } from './BlockEditor'
 import { SEOPanel, SEOData } from './SEOPanel'
+import { CompleteTipTapEditor } from './CompleteTipTapEditor'
+import { DualModeEditor } from './DualModeEditor'
 import { 
   Save,
   Eye,
@@ -104,6 +95,8 @@ interface ArticleEditorProps {
   }
 }
 
+// TipTap is handled by CompleteTipTapEditor when TipTap mode is enabled
+
 export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [title, setTitle] = useState(initialData?.title || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
@@ -112,18 +105,24 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [isPreview, setIsPreview] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
+  // TipTap editor is managed by CompleteTipTapEditor in TipTap mode
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
   const [newTag, setNewTag] = useState('')
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
+  const [isTipTapMode, setIsTipTapMode] = useState(false)
+  const [isDualMode, setIsDualMode] = useState(false)
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
   const [seoExpanded, setSeoExpanded] = useState(false)
+  const [tiptapContent, setTiptapContent] = useState('')
   const [blocks, setBlocks] = useState<Array<{
     id: string
-    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
+    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'bulletList' | 'orderedList' | 'taskList' | 'quote' | 'code' | 'image' | 'callout' | 'calloutInfo' | 'calloutWarning' | 'calloutSuccess' | 'calloutError' | 'horizontalRule' | 'details' | 'table' | 'mention' | 'widget' | 'reactComponent' | 'infoCard' | 'statBadge' | 'youtube' | 'twitter' | 'githubGist' | 'codepen' | 'codesandbox' | 'embed'
     content: string
     placeholder?: string
+    calloutType?: 'info' | 'warning' | 'success' | 'error'
   }>>([
     {
       id: '1',
@@ -160,8 +159,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     coverUrl: initialData?.coverUrl || ''
   })
 
-  // Block editor doesn't need Tiptap editor
-  // const editor = useEditor({...})
+  // Block editor doesn't need TipTap editor instance in this component
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -401,12 +399,34 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
       case 'heading1': return 'Heading 1'
       case 'heading2': return 'Heading 2'
       case 'heading3': return 'Heading 3'
+      case 'heading4': return 'Heading 4'
+      case 'heading5': return 'Heading 5'
+      case 'heading6': return 'Heading 6'
       case 'bulletList': return 'List item'
       case 'orderedList': return 'List item'
+      case 'taskList': return 'Task item'
       case 'quote': return 'Quote'
       case 'code': return 'Enter code...'
       case 'image': return 'Image URL'
       case 'callout': return 'Callout text'
+      case 'calloutInfo': return 'Info callout text'
+      case 'calloutWarning': return 'Warning callout text'
+      case 'calloutSuccess': return 'Success callout text'
+      case 'calloutError': return 'Error callout text'
+      case 'horizontalRule': return '---'
+      case 'details': return 'Details summary'
+      case 'table': return 'Table content'
+      case 'mention': return '@username'
+      case 'widget': return 'Widget content'
+      case 'reactComponent': return 'React component'
+      case 'infoCard': return 'Info card content'
+      case 'statBadge': return 'Statistics badge'
+      case 'youtube': return 'YouTube URL'
+      case 'twitter': return 'Twitter/X URL'
+      case 'githubGist': return 'GitHub Gist URL'
+      case 'codepen': return 'CodePen URL'
+      case 'codesandbox': return 'CodeSandbox URL'
+      case 'embed': return 'Embed URL'
       default: return 'Type something...'
     }
   }
@@ -440,20 +460,52 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               )}
             </div>
             <div className="flex items-center gap-2">
-              {/* Markdown Mode Toggle */}
+              {/* Editor Mode Toggle */}
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                 <Button
-                  variant={!isMarkdownMode ? "default" : "ghost"}
+                  variant={!isMarkdownMode && !isTipTapMode && !isDualMode ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setIsMarkdownMode(false)}
-                  className={!isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  onClick={() => {
+                    setIsMarkdownMode(false)
+                    setIsTipTapMode(false)
+                    setIsDualMode(false)
+                  }}
+                  className={!isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
-                  Rich Text
+                  Block Editor
+                </Button>
+                <Button
+                  variant={isDualMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setIsDualMode(true)
+                    setIsTipTapMode(false)
+                    setIsMarkdownMode(false)
+                  }}
+                  className={isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                >
+                  Dual Mode
+                </Button>
+                <Button
+                  variant={isTipTapMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setIsTipTapMode(true)
+                    setIsMarkdownMode(false)
+                    setIsDualMode(false)
+                  }}
+                  className={isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                >
+                  TipTap Editor
                 </Button>
                 <Button
                   variant={isMarkdownMode ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setIsMarkdownMode(true)}
+                  onClick={() => {
+                    setIsMarkdownMode(true)
+                    setIsTipTapMode(false)
+                    setIsDualMode(false)
+                  }}
                   className={isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
                   Markdown
@@ -605,16 +657,36 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               <Separator />
 
               {/* Editor Content */}
-              {isMarkdownMode ? (
+              {isDualMode ? (
+                <DualModeEditor
+                  content={tiptapContent}
+                  onChange={(content) => {
+                    setTiptapContent(content)
+                    setArticleData({ ...articleData, content })
+                  }}
+                  placeholder="Start writing..."
+                  onImageUpload={uploadImage}
+                  initialMode="wysiwyg"
+                />
+              ) : isMarkdownMode ? (
                 <MarkdownEditor
                   content={markdownContent}
                   onChange={setMarkdownContent}
                   placeholder="Start writing markdown..."
                 />
+              ) : isTipTapMode ? (
+                <div className="space-y-4">
+                  <CompleteTipTapEditor
+                    content={tiptapContent}
+                    onChange={setTiptapContent}
+                    placeholder="Start writing with rich text..."
+                    onImageUpload={uploadImage}
+                  />
+                </div>
               ) : (
                 <div className="space-y-4">
                   <div className="text-sm text-gray-600 mb-4">
-                    🎯 Block Editor Active - Type &quot;/&quot; for commands or press Enter to add blocks
+                    🎯 Alternative Block Editor - Type &quot;/&quot; for commands or press Enter to add blocks
                   </div>
                   <BlockEditor
                     blocks={blocks}

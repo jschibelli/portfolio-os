@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff } from 'lucide-react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface MarkdownEditorProps {
   content: string
@@ -86,20 +88,39 @@ export function MarkdownEditor({ content, onChange, placeholder = "Start writing
 
       {/* Editor/Preview */}
       {isPreview ? (
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 min-h-[500px]">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 min-h-[500px] overflow-auto">
           <div className="prose prose-invert max-w-none">
-            <pre className="whitespace-pre-wrap text-gray-100 font-mono text-sm">
+            <SyntaxHighlighter
+              language="markdown"
+              style={vscDarkPlus}
+              customStyle={{
+                margin: 0,
+                padding: 0,
+                background: 'transparent',
+                fontSize: '0.875rem',
+                lineHeight: '1.5'
+              }}
+              wrapLines={true}
+              wrapLongLines={true}
+            >
               {localContent || placeholder}
-            </pre>
+            </SyntaxHighlighter>
           </div>
         </div>
       ) : (
-        <Textarea
-          value={localContent}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder={placeholder}
-          className="bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-500 min-h-[500px] font-mono text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400"
-        />
+        <div className="relative">
+          <Textarea
+            value={localContent}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder={placeholder}
+            className="bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-500 min-h-[500px] font-mono text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400"
+            spellCheck={false}
+          />
+          {/* Character count */}
+          <div className="absolute bottom-2 right-2 text-xs text-gray-500">
+            {localContent.length} characters
+          </div>
+        </div>
       )}
     </div>
   )

@@ -1,0 +1,104 @@
+name: Issue Comment Router
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+  projects: write
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh jq
+
+      - name: Handle commands
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+
+          BODY='${{ github.event.comment.body }}'
+          ISSUE_NUMBER='${{ github.event.issue.number }}'
+          ACTOR='${{ github.actor }}'
+
+          echo "Comment on #$ISSUE_NUMBER by $ACTOR: $BODY"
+
+          # Normalize
+          LOWER=$(printf "%s" "$BODY" | tr '[:upper:]' '[:lower:]')
+
+          # /help
+          if echo "$LOWER" | grep -q "^/help"; then
+            gh issue comment "$ISSUE_NUMBER" --body "Available commands:\n- /assign me\n- /status <ready|in progress|in review|done>\n- /priority <p0|p1|p2>\n- /labels add <comma,separated>\n- /unassign me"; exit 0; fi
+
+          # /assign me
+          if echo "$LOWER" | grep -q "^/assign me$"; then
+            gh issue edit "$ISSUE_NUMBER" --add-assignee "$ACTOR"; exit 0; fi
+
+          # /unassign me
+          if echo "$LOWER" | grep -q "^/unassign me$"; then
+            gh issue edit "$ISSUE_NUMBER" --remove-assignee "$ACTOR"; exit 0; fi
+
+          # /labels add x,y
+          if echo "$LOWER" | grep -q "^/labels add "; then
+            LABELS=$(printf "%s" "$BODY" | sed -E 's#^/labels add ##i')
+            IFS=',' read -ra LA <<< "$LABELS"
+            for l in "${LA[@]}"; do gh issue edit "$ISSUE_NUMBER" --add-label "$(echo "$l" | xargs)"; done
+            exit 0; fi
+
+          # Project V2: update Status or Priority via GraphQL
+          update_field() {
+            ITEM_ID=$(gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id } } } } } }' -f issueId=$(gh issue view "$ISSUE_NUMBER" --json id -q .id) | jq -r '.data.node.projectItems.nodes[0].id')
+            [ -z "$ITEM_ID" ] && echo "No project item found" && exit 0
+            gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' \
+              -f projectId=PVT_kwHOAEnMVc4BCu-c -f itemId="$ITEM_ID" -f fieldId="$1" -f value="$2" >/dev/null
+          }
+
+          # Map helpers (IDs from existing scripts)
+          STATUS_FIELD=PVTSSF_lAHOAEnMVc4BCu-czg028oM
+          STATUS_READY=e18bf179
+          STATUS_INPROGRESS=47fc9ee4
+          STATUS_INREVIEW=aba860b9
+          STATUS_DONE=98236657
+
+          PRIORITY_FIELD=PVTSSF_lAHOAEnMVc4BCu-czg028qQ
+          PRIORITY_P0=79628723
+          PRIORITY_P1=0a877460
+          PRIORITY_P2=da944a9c
+
+          # /status <value>
+          if echo "$LOWER" | grep -q "^/status "; then
+            VAL=$(printf "%s" "$LOWER" | sed -E 's#^/status ##')
+            case "$VAL" in
+              ready)        update_field "$STATUS_FIELD" "$STATUS_READY" ;;
+              "in progress") update_field "$STATUS_FIELD" "$STATUS_INPROGRESS" ;;
+              "in review")   update_field "$STATUS_FIELD" "$STATUS_INREVIEW" ;;
+              done)         update_field "$STATUS_FIELD" "$STATUS_DONE" ;;
+              *) echo "Unknown status: $VAL" ;;
+            esac
+            exit 0; fi
+
+          # /priority <p0|p1|p2>
+          if echo "$LOWER" | grep -q "^/priority "; then
+            VAL=$(printf "%s" "$LOWER" | sed -E 's#^/priority ##')
+            case "$VAL" in
+              p0) update_field "$PRIORITY_FIELD" "$PRIORITY_P0" ;;
+              p1) update_field "$PRIORITY_FIELD" "$PRIORITY_P1" ;;
+              p2) update_field "$PRIORITY_FIELD" "$PRIORITY_P2" ;;
+              *) echo "Unknown priority: $VAL" ;;
+            esac
+            exit 0; fi
+
+          echo "No matching command"
+
