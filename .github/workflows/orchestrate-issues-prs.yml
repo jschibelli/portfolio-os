@@ -28,16 +28,18 @@ jobs:
   detect-and-route:
     name: Detect event type and set variables
     runs-on: ubuntu-latest
+    # Note: Linter warnings about step outputs are expected and benign
+    # All outputs are set by the detect step with fallback values
     outputs:
-      is_issue: ${{ steps.detect.outputs.is_issue }}
-      is_pr: ${{ steps.detect.outputs.is_pr }}
-      is_review_comment: ${{ steps.detect.outputs.is_review_comment }}
-      is_pr_closed: ${{ steps.detect.outputs.is_pr_closed }}
-      is_pr_merged: ${{ steps.detect.outputs.is_pr_merged }}
-      issue_number: ${{ steps.detect.outputs.issue_number }}
-      pr_number: ${{ steps.detect.outputs.pr_number }}
-      review_state: ${{ steps.detect.outputs.review_state }}
-      review_comment_id: ${{ steps.detect.outputs.review_comment_id }}
+      is_issue: ${{ steps.detect.outputs.is_issue || 'false' }}
+      is_pr: ${{ steps.detect.outputs.is_pr || 'false' }}
+      is_review_comment: ${{ steps.detect.outputs.is_review_comment || 'false' }}
+      is_pr_closed: ${{ steps.detect.outputs.is_pr_closed || 'false' }}
+      is_pr_merged: ${{ steps.detect.outputs.is_pr_merged || 'false' }}
+      issue_number: ${{ steps.detect.outputs.issue_number || '' }}
+      pr_number: ${{ steps.detect.outputs.pr_number || '' }}
+      review_state: ${{ steps.detect.outputs.review_state || '' }}
+      review_comment_id: ${{ steps.detect.outputs.review_comment_id || '' }}
     steps:
       - id: detect
         uses: actions/github-script@v7
@@ -257,22 +259,29 @@ jobs:
           script: |
             const prNumber = Number(process.env.PR_NUMBER_IN || '0')
             const commentId = Number(process.env.REVIEW_COMMENT_ID_IN || '0')
+            const author = context.payload.comment?.user?.login || ''
+            // Always set all outputs to ensure they exist
             core.setOutput('pr', String(prNumber))
             core.setOutput('comment_id', String(commentId))
-            const author = context.payload.comment?.user?.login || ''
             core.setOutput('author', author)
 
+      # Note: Linter warnings about steps.meta.outputs are expected
+      # The meta step always runs and sets all outputs with defaults
       - name: Post threaded reply (CR-GPT only, dry-run)
-        if: ${{ steps.meta.outputs.author == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES == 'true' }}
+        if: ${{ (steps.meta.outputs.author || '') == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ steps.meta.outputs.pr }} -CommentId ${{ steps.meta.outputs.comment_id }} -DryRun"
+          PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
+          COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID -DryRun"
 
       - name: Post threaded reply (CR-GPT only)
-        if: ${{ steps.meta.outputs.author == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES != 'true' }}
+        if: ${{ (steps.meta.outputs.author || '') == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES != 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ steps.meta.outputs.pr }} -CommentId ${{ steps.meta.outputs.comment_id }}"
+          PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
+          COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID"
 
   pr-merged-status:
     name: Update Status on merge (Done)

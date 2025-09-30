@@ -20,17 +20,18 @@ on:
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
-    # Only run if the required secrets are available
-    if: ${{ secrets.PORTFOLIO_PROJECT_URL != '' && secrets.PORTFOLIO_PROJECT_TOKEN != '' }}
+    env:
+      PROJECT_URL: ${{ secrets.PORTFOLIO_PROJECT_URL }}
+      PROJECT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Validate environment
         run: |
           echo "Validating required environment variables..."
-          if [ -z "${{ secrets.PORTFOLIO_PROJECT_URL }}" ]; then
+          if [ -z "$PROJECT_URL" ]; then
             echo "Error: PORTFOLIO_PROJECT_URL secret is not set"
             exit 1
           fi
-          if [ -z "${{ secrets.PORTFOLIO_PROJECT_TOKEN }}" ]; then
+          if [ -z "$PROJECT_TOKEN" ]; then
             echo "Error: PORTFOLIO_PROJECT_TOKEN secret is not set"
             exit 1
           fi
@@ -40,8 +41,8 @@ jobs:
         id: add-to-project
         uses: actions/add-to-project@v0.6.0
         with:
-          project-url: ${{ secrets.PORTFOLIO_PROJECT_URL }}
-          github-token: ${{ secrets.PORTFOLIO_PROJECT_TOKEN }}
+          project-url: ${{ env.PROJECT_URL }}
+          github-token: ${{ env.PROJECT_TOKEN }}
         continue-on-error: true
 
       - name: Check result
@@ -49,7 +50,7 @@ jobs:
         run: |
           echo "Warning: Failed to add item to project. This is non-critical and will not fail the workflow."
           echo "Item: ${{ github.event.issue.html_url || github.event.pull_request.html_url }}"
-          echo "Project URL: ${{ secrets.PORTFOLIO_PROJECT_URL }}"
+          echo "Project URL: $PROJECT_URL"
         continue-on-error: true
 
       - name: Success notification

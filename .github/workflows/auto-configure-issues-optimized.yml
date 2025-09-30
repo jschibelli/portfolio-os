@@ -49,11 +49,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup GH CLI
-        uses: cli/gh-actions@v2
-        with:
-          version: latest
-
       - name: Determine inputs
         id: vars
         run: |
@@ -74,6 +69,8 @@ jobs:
           fi
 
       - name: Ensure labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh label create "priority:${{ steps.vars.outputs.priority }}" --color BFD4F2 --force || true
           gh label create "size:${{ steps.vars.outputs.size }}" --color C2E0C6 --force || true
@@ -81,6 +78,8 @@ jobs:
           gh label create "area:${{ steps.vars.outputs.area }}" --color F9D0C4 --force || true
 
       - name: Apply labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue edit ${{ steps.vars.outputs.issue }} \
             --add-label "priority:${{ steps.vars.outputs.priority }}" \
@@ -90,11 +89,28 @@ jobs:
 
       - name: Set milestone (optional)
         if: ${{ steps.vars.outputs.milestone != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ms_id=$(gh api repos/${{ github.repository }}/milestones --paginate -q '.[] | select(.title=="${{ steps.vars.outputs.milestone }}").number')
+          set -e
+          echo "Setting milestone: ${{ steps.vars.outputs.milestone }}"
+          
+          # Get existing milestone ID
+          ms_id=$(gh api repos/${{ github.repository }}/milestones --paginate -q '.[] | select(.title=="${{ steps.vars.outputs.milestone }}").number' || echo "")
+          
+          # Create milestone if it doesn't exist
           if [ -z "$ms_id" ]; then
+            echo "Creating new milestone: ${{ steps.vars.outputs.milestone }}"
             ms_id=$(gh api repos/${{ github.repository }}/milestones -f title='${{ steps.vars.outputs.milestone }}' -f state=open -q .number)
           fi
-          gh issue edit ${{ steps.vars.outputs.issue }} --milestone "$ms_id"
+          
+          # Set milestone on issue
+          if [ -n "$ms_id" ]; then
+            gh issue edit ${{ steps.vars.outputs.issue }} --milestone "$ms_id"
+            echo "Successfully set milestone $ms_id on issue ${{ steps.vars.outputs.issue }}"
+          else
+            echo "Warning: Could not create or find milestone '${{ steps.vars.outputs.milestone }}'"
+            exit 1
+          fi
 
 

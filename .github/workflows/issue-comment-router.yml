@@ -8,7 +8,8 @@ permissions:
   issues: write
   pull-requests: write
   contents: read
-  projects: write
+  # Note: projects permission removed as it's not needed for this workflow
+  # If project management is required, add: projects: write
 
 jobs:
   route:

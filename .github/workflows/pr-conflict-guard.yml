@@ -85,17 +85,61 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
+          
+          # Validate required environment variables
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "Error: GITHUB_TOKEN is required but not set"
+            exit 1
+          fi
+          
+          # Authenticate with GitHub CLI
+          echo "Authenticating with GitHub CLI..."
           gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+          
           PR='${{ github.event.pull_request.number }}'
-          gh pr comment "$PR" --body "Merge conflicts detected and could not be auto-resolved. Please resolve locally:
-
-\n\n\`\`\`bash
-gh pr checkout $PR
-git fetch origin '${{ github.event.pull_request.base.ref }}' && git rebase origin/'${{ github.event.pull_request.base.ref }}'
-# resolve files shown by: git status
-git add -A && git rebase --continue
-git push --force-with-lease
-\`\`\`
-"
-          gh pr edit "$PR" --add-label "needs: conflict-resolution" || true
+          BASE_REF='${{ github.event.pull_request.base.ref }}'
+          
+          echo "Processing PR #$PR with base ref: $BASE_REF"
+          
+          # Generate conflict resolution comment
+          COMMENT_BODY=$(cat <<EOF
+          ## ⚠️ Merge Conflicts Detected
+          
+          Merge conflicts were detected and could not be auto-resolved. Please resolve locally:
+          
+          \`\`\`bash
+          # Checkout the PR branch
+          gh pr checkout $PR
+          
+          # Fetch latest changes and rebase
+          git fetch origin $BASE_REF && git rebase origin/$BASE_REF
+          
+          # Resolve conflicts in files shown by:
+          git status
+          
+          # After resolving conflicts:
+          git add -A && git rebase --continue
+          
+          # Push the resolved changes
+          git push --force-with-lease
+          \`\`\`
+          
+          **Note**: This will require force push after resolving conflicts.
+          EOF
+          )
+          
+          # Post comment and add label with error handling
+          echo "Posting conflict resolution comment..."
+          if gh pr comment "$PR" --body "$COMMENT_BODY"; then
+            echo "Successfully posted conflict resolution comment"
+          else
+            echo "Warning: Failed to post comment to PR #$PR"
+          fi
+          
+          echo "Adding conflict resolution label..."
+          if gh pr edit "$PR" --add-label "needs: conflict-resolution"; then
+            echo "Successfully added conflict resolution label"
+          else
+            echo "Warning: Failed to add label to PR #$PR"
+          fi
 

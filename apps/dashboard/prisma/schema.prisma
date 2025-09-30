@@ -110,9 +110,66 @@ model Article {
   contentMdx      String?
   coverId         String?
   cover           ImageAsset?   @relation("CoverImage", fields: [coverId], references: [id])
+  
+  // SEO Optimization Fields
+  // These fields control how the article appears in search engines and social media
+  
+  /// SEO meta title - Displayed in search results (recommended: 50-60 chars)
+  /// Defaults to article title if not specified
+  metaTitle       String?
+  
+  /// SEO meta description - Summary shown in search results (recommended: 150-160 chars)
+  /// Should include focus keyword and compelling call-to-action
+  metaDescription String?
+  
+  /// Open Graph title override - Used for Facebook, LinkedIn sharing (max: 60 chars)
+  /// Defaults to metaTitle if not specified
+  ogTitle         String?
+  
+  /// Open Graph description override - Social media post preview (max: 200 chars)
+  /// Defaults to metaDescription if not specified
+  ogDescription   String?
+  
+  /// Open Graph image URL - Thumbnail for social sharing (recommended: 1200x630px)
+  /// Defaults to cover image if not specified
   ogImageUrl      String?
+  
+  /// Twitter Card type - Controls Twitter preview layout
+  /// Options: "summary" (small image) or "summary_large_image" (large image)
+  twitterCard     String?       @default("summary_large_image")
+  
+  /// Twitter title override - Title shown in Twitter cards (max: 70 chars)
+  /// Defaults to ogTitle if not specified
+  twitterTitle    String?
+  
+  /// Twitter description override - Description in Twitter cards (max: 200 chars)
+  /// Defaults to ogDescription if not specified
+  twitterDescription String?
+  
+  /// Twitter image URL - Image for Twitter cards (recommended: 1200x675px)
+  /// Defaults to ogImage if not specified
+  twitterImage    String?
+  
+  /// Primary SEO keyword or phrase - Used for content optimization analysis
+  /// Should be naturally integrated into title and description
+  focusKeyword    String?
+  
+  /// SEO optimization score - Calculated metric (0-100 scale)
+  /// Based on title length, description quality, keyword usage, etc.
+  /// Scores: 80+ excellent, 60-79 good, 40-59 fair, <40 needs improvement
+  seoScore        Int?
+  
+  /// Canonical URL - Original source URL to prevent duplicate content penalties
+  /// Set this if content was originally published elsewhere
   canonicalUrl    String?
+  
+  /// Canonical source attribution - Name of original publisher
+  /// Used for display/attribution purposes
   canonicalSource String?
+  
+  /// Search engine indexing control - Set to true to prevent indexing
+  /// Useful for private content, drafts, or test articles
+  /// robots meta tag will be set to "noindex, nofollow"
   noindex         Boolean       @default(false)
   publishedAt     DateTime?
   scheduledAt     DateTime?

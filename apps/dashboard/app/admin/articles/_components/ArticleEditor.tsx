@@ -52,6 +52,7 @@ import { AIAssistant } from './AIAssistant'
 import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
 import { BlockEditor } from './BlockEditor'
+import { SEOPanel, SEOData } from './SEOPanel'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { DualModeEditor } from './DualModeEditor'
 import { 
@@ -62,7 +63,10 @@ import {
   Clock,
   Type,
   ImageIcon,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+  Search as SearchIcon
 } from 'lucide-react'
 
 interface ArticleEditorProps {
@@ -74,6 +78,20 @@ interface ArticleEditorProps {
     tags?: string[]
     coverUrl?: string
     content?: any
+    // SEO fields
+    metaTitle?: string
+    metaDescription?: string
+    canonicalUrl?: string
+    noindex?: boolean
+    ogTitle?: string
+    ogDescription?: string
+    ogImage?: string
+    twitterCard?: 'summary' | 'summary_large_image'
+    twitterTitle?: string
+    twitterDescription?: string
+    twitterImage?: string
+    focusKeyword?: string
+    seoScore?: number
   }
 }
 
@@ -97,6 +115,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
+  const [seoExpanded, setSeoExpanded] = useState(false)
   const [tiptapContent, setTiptapContent] = useState('')
   const [blocks, setBlocks] = useState<Array<{
     id: string
@@ -112,6 +131,23 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
       placeholder: 'Type "/" for commands...'
     }
   ])
+  
+  // SEO data state
+  const [seoData, setSeoData] = useState<SEOData>({
+    metaTitle: initialData?.metaTitle,
+    metaDescription: initialData?.metaDescription,
+    canonicalUrl: initialData?.canonicalUrl,
+    noindex: initialData?.noindex,
+    ogTitle: initialData?.ogTitle,
+    ogDescription: initialData?.ogDescription,
+    ogImage: initialData?.ogImage,
+    twitterCard: initialData?.twitterCard,
+    twitterTitle: initialData?.twitterTitle,
+    twitterDescription: initialData?.twitterDescription,
+    twitterImage: initialData?.twitterImage,
+    focusKeyword: initialData?.focusKeyword,
+    seoScore: initialData?.seoScore,
+  })
   
   // Article data state for the new structure
   const [articleData, setArticleData] = useState({
@@ -176,6 +212,20 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         coverUrl: articleData.coverUrl.trim() || undefined,
         content_json: contentJson,
         content_mdx: contentMdx,
+        // SEO fields
+        metaTitle: seoData.metaTitle,
+        metaDescription: seoData.metaDescription,
+        canonicalUrl: seoData.canonicalUrl,
+        noindex: seoData.noindex,
+        ogTitle: seoData.ogTitle,
+        ogDescription: seoData.ogDescription,
+        ogImage: seoData.ogImage,
+        twitterCard: seoData.twitterCard,
+        twitterTitle: seoData.twitterTitle,
+        twitterDescription: seoData.twitterDescription,
+        twitterImage: seoData.twitterImage,
+        focusKeyword: seoData.focusKeyword,
+        seoScore: seoData.seoScore,
       }
 
       const response = await fetch('/api/articles/save-draft', {
@@ -229,6 +279,20 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         coverUrl: articleData.coverUrl.trim() || undefined,
         content_json: contentJson,
         content_mdx: contentMdx,
+        // SEO fields
+        metaTitle: seoData.metaTitle,
+        metaDescription: seoData.metaDescription,
+        canonicalUrl: seoData.canonicalUrl,
+        noindex: seoData.noindex,
+        ogTitle: seoData.ogTitle,
+        ogDescription: seoData.ogDescription,
+        ogImage: seoData.ogImage,
+        twitterCard: seoData.twitterCard,
+        twitterTitle: seoData.twitterTitle,
+        twitterDescription: seoData.twitterDescription,
+        twitterImage: seoData.twitterImage,
+        focusKeyword: seoData.focusKeyword,
+        seoScore: seoData.seoScore,
       }
 
       const saveResponse = await fetch('/api/articles/save-draft', {
@@ -634,6 +698,49 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   />
                 </div>
               )}
+
+              <Separator className="my-8" />
+
+              {/* SEO Panel */}
+              <div className="border border-gray-200 rounded-lg">
+                <button
+                  onClick={() => setSeoExpanded(!seoExpanded)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <SearchIcon className="w-5 h-5 text-blue-600" />
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        SEO Settings
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Optimize your article for search engines and social media
+                        {seoData.seoScore !== undefined && (
+                          <span className="ml-2 text-blue-600 font-medium">
+                            • Score: {seoData.seoScore}/100
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  {seoExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+                
+                {seoExpanded && (
+                  <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+                    <SEOPanel
+                      data={seoData}
+                      articleTitle={title}
+                      articleSlug={slug}
+                      onChange={setSeoData}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Preview */}
