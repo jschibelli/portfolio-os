@@ -4,60 +4,80 @@ This directory contains essential automation scripts for the Portfolio OS projec
 
 ## 📁 **Current Scripts**
 
+### **🆕 Unified Management Scripts (Recommended)**
+- **`project-manager.ps1`** - Comprehensive project management (combines 14+ scripts)
+- **`branch-manager.ps1`** - Branch operations and naming (combines 2+ scripts)
+- **`issue-creator.ps1`** - Issue creation with templates (enhanced version)
+
 ### **Issue & PR Configuration**
 - **`auto-configure-issue-simple.ps1`** - Simple issue configuration with presets
 - **`auto-configure-issue.ps1`** - Full issue configuration with custom options
 - **`auto-configure-pr.ps1`** - PR configuration and project field updates
 
-### **Project Management**
-- **`add-all-issues-to-project.ps1`** - Add all issues to project
-- **`add-and-configure-blog-issues.ps1`** - Configure blog issues
-- **`add-and-set-status-ready.ps1`** - Set status to ready
-- **`add-blog-issues-to-project.ps1`** - Add blog issues to project
-- **`add-issues-to-project.ps1`** - Add issues to project
-- **`add-labels-milestone-to-all-issues.ps1`** - Add labels and milestones
-
-### **Issue Configuration**
-- **`configure-all-blog-issues.ps1`** - Configure all blog issues
-- **`configure-blog-issues.ps1`** - Configure blog issues
-- **`configure-blog-issues-complete.ps1`** - Complete blog configuration
+### **Legacy Scripts (Still Available)**
 - **`configure-project-fields-manual.ps1`** - Manual project field configuration
 - **`create-remaining-issues.ps1`** - Create remaining issues
-
-### **Status Management**
-- **`set-all-issues-status-ready.ps1`** - Set all issues to ready status
-- **`set-project-status-direct.ps1`** - Set project status directly
-- **`set-status-ready-cli.ps1`** - Set status ready via CLI
-
-### **Branch Management**
 - **`rename-branches-with-issue-numbers.ps1`** - Rename branches
-- **`update-issue-branch-names.ps1`** - Update issue branch names
-- **`update-issue-branch-names-simple.ps1`** - Simple branch name updates
 
 ### **Project Setup**
 - **`configure_project_20.sh`** - GitHub Project #20 configuration script
 
 ## 🚀 **Quick Start**
 
-### **Issue Configuration (Recommended)**
+### **🆕 Unified Project Management (Recommended)**
 ```powershell
-# Using presets
+# Add blog issues to project and configure them
+.\scripts\project-manager.ps1 -Operation "all" -Preset "blog" -Priority "P1" -Status "Ready"
+
+# Set status for specific issues
+.\scripts\project-manager.ps1 -Operation "status" -Issues @(196, 197, 198) -Status "In progress"
+
+# Add labels and milestone to issues
+.\scripts\project-manager.ps1 -Operation "labels" -Preset "dashboard" -Labels @("frontend", "priority: high")
+
+# Dry run to see what would happen
+.\scripts\project-manager.ps1 -Operation "all" -Preset "blog" -DryRun
+```
+
+### **🆕 Branch Management**
+```powershell
+# Update current branch name with issue number
+.\scripts\branch-manager.ps1 -Operation "update" -Issues @(196) -Type "feature"
+
+# Rename branch for specific issue
+.\scripts\branch-manager.ps1 -Operation "rename" -Issues @(197) -Type "bugfix"
+
+# List and validate all branches
+.\scripts\branch-manager.ps1 -Operation "list"
+
+# Validate current branch name
+.\scripts\branch-manager.ps1 -Operation "validate"
+```
+
+### **🆕 Issue Creation**
+```powershell
+# Create a blog issue with template
+.\scripts\issue-creator.ps1 -Template "blog" -Title "Advanced SEO Techniques" -AddToProject
+
+# Create multiple dashboard issues
+.\scripts\issue-creator.ps1 -Template "dashboard" -Count 3 -AddToProject
+
+# Create a bug report
+.\scripts\issue-creator.ps1 -Template "bug" -Title "Login form validation error"
+
+# Create documentation task
+.\scripts\issue-creator.ps1 -Template "docs" -Title "API documentation update"
+```
+
+### **Legacy Scripts (Still Available)**
+```powershell
+# Simple issue configuration
 .\scripts\auto-configure-issue-simple.ps1 190 blog
-.\scripts\auto-configure-issue-simple.ps1 191 dashboard
-.\scripts\auto-configure-issue-simple.ps1 192 docs
-.\scripts\auto-configure-issue-simple.ps1 193 infra
 
-# Custom configuration
-.\scripts\auto-configure-issue-simple.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues"
-```
+# Full issue configuration
+.\scripts\auto-configure-issue.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend"
 
-### **Full Issue Configuration**
-```powershell
-.\scripts\auto-configure-issue.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues" -Labels "ready-to-implement,priority: high,area: functionality"
-```
-
-### **PR Configuration**
-```powershell
+# PR configuration
 .\scripts\auto-configure-pr.ps1 -PRNumber 200
 ```
 
