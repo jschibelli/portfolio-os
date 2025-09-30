@@ -48,7 +48,6 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { EditorToolbar } from './EditorToolbar'
 import { AIAssistant } from './AIAssistant'
 import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
@@ -76,6 +75,8 @@ interface ArticleEditorProps {
     content?: any
   }
 }
+
+// TipTap is handled by CompleteTipTapEditor when TipTap mode is enabled
 
 export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [title, setTitle] = useState(initialData?.title || '')
@@ -119,8 +120,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     coverUrl: initialData?.coverUrl || ''
   })
 
-  // Block editor doesn't need Tiptap editor
-  // const editor = useEditor({...})
+  // Block editor doesn't need TipTap editor instance in this component
 
   // Auto-generate slug from title
   useEffect(() => {
