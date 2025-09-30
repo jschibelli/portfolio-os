@@ -1,0 +1,235 @@
+name: Auto-Configure Issues
+
+on:
+  issues:
+    types: [opened, edited]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to configure'
+        required: true
+        type: string
+      priority:
+        description: 'Priority (P0, P1, P2)'
+        required: false
+        default: 'P1'
+        type: choice
+        options:
+        - P0
+        - P1
+        - P2
+      size:
+        description: 'Size (XS, S, M, L, XL)'
+        required: false
+        default: 'M'
+        type: choice
+        options:
+        - XS
+        - S
+        - M
+        - L
+        - XL
+      app:
+        description: 'App (Portfolio Site, Dashboard, Docs, Chatbot)'
+        required: false
+        default: 'Portfolio Site'
+        type: choice
+        options:
+        - Portfolio Site
+        - Dashboard
+        - Docs
+        - Chatbot
+      area:
+        description: 'Area (Frontend, Content, Infra, DX/Tooling)'
+        required: false
+        default: 'Frontend'
+        type: choice
+        options:
+        - Frontend
+        - Content
+        - Infra
+        - DX/Tooling
+      milestone:
+        description: 'Milestone name (optional)'
+        required: false
+        type: string
+      labels:
+        description: 'Labels (comma-separated)'
+        required: false
+        default: 'ready-to-implement'
+        type: string
+
+jobs:
+  configure-issue:
+    runs-on: ubuntu-latest
+    if: github.event.issue.state == 'open'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup GitHub CLI
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+          
+      - name: Configure issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Set variables
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            ISSUE_NUMBER="${{ github.event.inputs.issue_number }}"
+            PRIORITY="${{ github.event.inputs.priority }}"
+            SIZE="${{ github.event.inputs.size }}"
+            APP="${{ github.event.inputs.app }}"
+            AREA="${{ github.event.inputs.area }}"
+            MILESTONE="${{ github.event.inputs.milestone }}"
+            LABELS="${{ github.event.inputs.labels }}"
+          else
+            ISSUE_NUMBER="${{ github.event.issue.number }}"
+            # Auto-detect configuration based on issue title/content
+            if echo "${{ github.event.issue.title }}" | grep -qi "blog\|article\|post"; then
+              PRIORITY="P1"
+              SIZE="M"
+              APP="Portfolio Site"
+              AREA="Frontend"
+              LABELS="ready-to-implement,priority: high,area: functionality"
+            elif echo "${{ github.event.issue.title }}" | grep -qi "dashboard\|admin"; then
+              PRIORITY="P1"
+              SIZE="M"
+              APP="Dashboard"
+              AREA="Frontend"
+              LABELS="ready-to-implement,priority: high,area: functionality"
+            elif echo "${{ github.event.issue.title }}" | grep -qi "doc\|readme\|guide"; then
+              PRIORITY="P2"
+              SIZE="S"
+              APP="Docs"
+              AREA="Content"
+              LABELS="ready-to-implement,priority: medium,area: content"
+            elif echo "${{ github.event.issue.title }}" | grep -qi "infra\|deploy\|ci\|cd"; then
+              PRIORITY="P1"
+              SIZE="L"
+              APP="Portfolio Site"
+              AREA="Infra"
+              LABELS="ready-to-implement,priority: high,area: infra"
+            else
+              PRIORITY="P1"
+              SIZE="M"
+              APP="Portfolio Site"
+              AREA="Frontend"
+              LABELS="ready-to-implement,priority: high,area: functionality"
+            fi
+            MILESTONE=""
+          fi
+          
+          echo "🔧 Configuring issue #$ISSUE_NUMBER"
+          echo "📊 Priority: $PRIORITY | Size: $SIZE | App: $APP | Area: $AREA"
+          
+          # Get issue ID
+          ISSUE_ID=$(gh issue view $ISSUE_NUMBER --json id -q .id)
+          echo "📋 Issue ID: $ISSUE_ID"
+          
+          # Get project item ID
+          PROJECT_ITEM_ID=$(gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id title } } } } } }' -f issueId=$ISSUE_ID | jq -r '.data.node.projectItems.nodes[0].id')
+          echo "📊 Project Item ID: $PROJECT_ITEM_ID"
+          
+          # Project field mappings
+          STATUS_READY="e18bf179"
+          PRIORITY_P0="79628723"
+          PRIORITY_P1="0a877460"
+          PRIORITY_P2="da944a9c"
+          SIZE_XS="911790be"
+          SIZE_S="b277fb01"
+          SIZE_M="86db8eb3"
+          SIZE_L="853c8207"
+          SIZE_XL="2d0801e2"
+          APP_DOCS="e504fedd"
+          APP_PORTFOLIO="de5faa4a"
+          APP_DASHBOARD="d134f386"
+          APP_CHATBOT="c95306ff"
+          AREA_FRONTEND="5618641d"
+          AREA_CONTENT="663d7084"
+          AREA_INFRA="5a298e61"
+          AREA_DX="a67a98e5"
+          
+          # Field IDs
+          STATUS_FIELD="PVTSSF_lAHOAEnMVc4BCu-czg028oM"
+          PRIORITY_FIELD="PVTSSF_lAHOAEnMVc4BCu-czg028qQ"
+          SIZE_FIELD="PVTSSF_lAHOAEnMVc4BCu-czg028qU"
+          APP_FIELD="PVTSSF_lAHOAEnMVc4BCu-czg156-s"
+          AREA_FIELD="PVTSSF_lAHOAEnMVc4BCu-czg156_Y"
+          PROJECT_ID="PVT_kwHOAEnMVc4BCu-c"
+          
+          # Update Status to Ready
+          gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId=$PROJECT_ID -f itemId=$PROJECT_ITEM_ID -f fieldId=$STATUS_FIELD -f value=$STATUS_READY
+          echo "✅ Status: Ready"
+          
+          # Update Priority
+          case $PRIORITY in
+            "P0") PRIORITY_VALUE=$PRIORITY_P0 ;;
+            "P1") PRIORITY_VALUE=$PRIORITY_P1 ;;
+            "P2") PRIORITY_VALUE=$PRIORITY_P2 ;;
+            *) PRIORITY_VALUE=$PRIORITY_P1 ;;
+          esac
+          gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId=$PROJECT_ID -f itemId=$PROJECT_ITEM_ID -f fieldId=$PRIORITY_FIELD -f value=$PRIORITY_VALUE
+          echo "✅ Priority: $PRIORITY"
+          
+          # Update Size
+          case $SIZE in
+            "XS") SIZE_VALUE=$SIZE_XS ;;
+            "S") SIZE_VALUE=$SIZE_S ;;
+            "M") SIZE_VALUE=$SIZE_M ;;
+            "L") SIZE_VALUE=$SIZE_L ;;
+            "XL") SIZE_VALUE=$SIZE_XL ;;
+            *) SIZE_VALUE=$SIZE_M ;;
+          esac
+          gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId=$PROJECT_ID -f itemId=$PROJECT_ITEM_ID -f fieldId=$SIZE_FIELD -f value=$SIZE_VALUE
+          echo "✅ Size: $SIZE"
+          
+          # Update App
+          case $APP in
+            "Docs") APP_VALUE=$APP_DOCS ;;
+            "Portfolio Site") APP_VALUE=$APP_PORTFOLIO ;;
+            "Dashboard") APP_VALUE=$APP_DASHBOARD ;;
+            "Chatbot") APP_VALUE=$APP_CHATBOT ;;
+            *) APP_VALUE=$APP_PORTFOLIO ;;
+          esac
+          gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId=$PROJECT_ID -f itemId=$PROJECT_ITEM_ID -f fieldId=$APP_FIELD -f value=$APP_VALUE
+          echo "✅ App: $APP"
+          
+          # Update Area
+          case $AREA in
+            "Frontend") AREA_VALUE=$AREA_FRONTEND ;;
+            "Content") AREA_VALUE=$AREA_CONTENT ;;
+            "Infra") AREA_VALUE=$AREA_INFRA ;;
+            "DX/Tooling") AREA_VALUE=$AREA_DX ;;
+            *) AREA_VALUE=$AREA_FRONTEND ;;
+          esac
+          gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId=$PROJECT_ID -f itemId=$PROJECT_ITEM_ID -f fieldId=$AREA_FIELD -f value=$AREA_VALUE
+          echo "✅ Area: $AREA"
+          
+          # Set milestone if provided
+          if [ -n "$MILESTONE" ]; then
+            gh issue edit $ISSUE_NUMBER --milestone "$MILESTONE"
+            echo "✅ Milestone: $MILESTONE"
+          fi
+          
+          # Set labels if provided
+          if [ -n "$LABELS" ]; then
+            IFS=',' read -ra LABEL_ARRAY <<< "$LABELS"
+            for label in "${LABEL_ARRAY[@]}"; do
+              gh issue edit $ISSUE_NUMBER --add-label "${label// /}"
+            done
+            echo "✅ Labels: $LABELS"
+          fi
+          
+          echo "🎉 Issue #$ISSUE_NUMBER configured successfully!"
+          echo "🔗 View: https://github.com/jschibelli/portfolio-os/issues/$ISSUE_NUMBER"
