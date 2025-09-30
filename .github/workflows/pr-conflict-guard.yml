@@ -87,15 +87,15 @@ jobs:
           set -e
           gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
           PR='${{ github.event.pull_request.number }}'
-          gh pr comment "$PR" --body "Merge conflicts detected and could not be auto-resolved. Please resolve locally:
+          COMMENT_BODY="Merge conflicts detected and could not be auto-resolved. Please resolve locally:
 
-\n\n\`\`\`bash
-gh pr checkout $PR
-git fetch origin '${{ github.event.pull_request.base.ref }}' && git rebase origin/'${{ github.event.pull_request.base.ref }}'
-# resolve files shown by: git status
-git add -A && git rebase --continue
-git push --force-with-lease
-\`\`\`
-"
+          \`\`\`bash
+          gh pr checkout $PR
+          git fetch origin ${{ github.event.pull_request.base.ref }} && git rebase origin/${{ github.event.pull_request.base.ref }}
+          # resolve files shown by: git status
+          git add -A && git rebase --continue
+          git push --force-with-lease
+          \`\`\`"
+          gh pr comment "$PR" --body "$COMMENT_BODY"
           gh pr edit "$PR" --add-label "needs: conflict-resolution" || true
 
