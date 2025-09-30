@@ -4,6 +4,11 @@ This directory contains essential automation scripts for the Portfolio OS projec
 
 ## 📁 **Current Scripts**
 
+### **🆕 Unified Scripts (Recommended - New!)**
+- **`pr-automation-unified.ps1`** - Master PR automation (combines 5+ scripts)
+- **`issue-config-unified.ps1`** - Unified issue configuration (combines 3+ scripts)
+- **`shared/github-utils.ps1`** - Shared utilities (eliminates 50+ duplicate functions)
+
 ### **🆕 Unified Management Scripts (Recommended)**
 - **`project-manager.ps1`** - Comprehensive project management (combines 14+ scripts)
 - **`branch-manager.ps1`** - Branch operations and naming (combines 2+ scripts)
@@ -43,6 +48,18 @@ This directory contains essential automation scripts for the Portfolio OS projec
 - **`rename-branches-with-issue-numbers.ps1`** - Rename branches
 
 ## 🚀 **Quick Start**
+
+### **🆕 NEW: Unified Scripts (Recommended - Start Here!)**
+```powershell
+# Complete PR automation (replaces 5+ separate scripts)
+.\scripts\pr-automation-unified.ps1 -PRNumber 218 -Action all
+
+# Unified issue configuration (replaces 3+ separate scripts)  
+.\scripts\issue-config-unified.ps1 -IssueNumber 208 -Preset "blog" -AddToProject
+
+# Shared utilities (imported automatically by unified scripts)
+# No need to call directly - used by other scripts
+```
 
 ### **🆕 Unified Project Management (Recommended)**
 ```powershell
