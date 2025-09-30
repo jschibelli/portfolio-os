@@ -53,10 +53,10 @@ $presets = @{
 
 # Define field IDs
 $fieldIds = @{
-    "Priority" = "PVTSSF_lAHOAEnMVc4BCu-czg028oP"
-    "Size" = "PVTSSF_lAHOAEnMVc4BCu-czg028oQ"
-    "App" = "PVTSSF_lAHOAEnMVc4BCu-czg028oR"
-    "Area" = "PVTSSF_lAHOAEnMVc4BCu-czg028oS"
+    "Priority" = "PVTSSF_lAHOAEnMVc4BCu-czg028qQ"
+    "Size" = "PVTSSF_lAHOAEnMVc4BCu-czg028qU"
+    "App" = "PVTSSF_lAHOAEnMVc4BCu-czg156-s"
+    "Area" = "PVTSSF_lAHOAEnMVc4BCu-czg156_Y"
     "Status" = "PVTSSF_lAHOAEnMVc4BCu-czg028oM"
 }
 
@@ -127,10 +127,15 @@ function Get-ProjectItemId {
     
     try {
         $issueId = gh issue view $IssueNumber --json id -q .id
-        $projectItems = gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id title } } } } } }' -f issueId="$issueId" --jq '.data.node.projectItems.nodes[] | select(.project.id == "PVT_kwHOAEnMVc4BCu-c") | .id'
+        $graphqlResponse = gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id title } } } } } }' -f issueId="$issueId"
+        $jsonData = $graphqlResponse | ConvertFrom-Json
         
-        if ($projectItems) {
-            return $projectItems
+        if ($jsonData.data.node.projectItems.nodes) {
+            foreach ($node in $jsonData.data.node.projectItems.nodes) {
+                if ($node.project.id -eq "PVT_kwHOAEnMVc4BCu-c") {
+                    return $node.id
+                }
+            }
         }
         return $null
     } catch {

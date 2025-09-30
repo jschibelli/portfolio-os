@@ -14,13 +14,33 @@ This directory contains essential automation scripts for the Portfolio OS projec
 - **`auto-configure-issue.ps1`** - Full issue configuration with custom options
 - **`auto-configure-pr.ps1`** - PR configuration and project field updates
 
+### **PR & Issue Automation**
+- **`pr-automation.ps1`** - Master PR automation script
+- **`pr-monitor.ps1`** - Monitor PR activity and CR-GPT comments
+- **`cr-gpt-analyzer.ps1`** - Analyze CR-GPT bot comments
+- **`auto-response-generator.ps1`** - Generate automated responses
+- **`issue-analyzer.ps1`** - Analyze issue requirements
+- **`issue-implementation.ps1`** - Implement issue solutions
+- **`trigger-issue-implementation.ps1`** - Trigger issue implementation
+
+### **Code Quality & Documentation**
+- **`code-quality-checker.ps1`** - Run code quality checks
+- **`docs-updater.ps1`** - Update documentation
+- **`fast-pr-workflow.ps1`** - Fast PR workflow automation
+- **`pr-aliases.ps1`** - PR aliases and shortcuts
+
+### **Setup & Configuration**
+- **`setup-pr-workflow.ps1`** - Setup PR workflow
+- **`setup_portfolio_project.ps1`** - Setup portfolio project
+- **`reply-to-review-comment.ps1`** - Reply to review comments
+- **`configure_project_20.sh`** - GitHub Project #20 configuration script
+- **`build.sh`** - Build script
+- **`reply-to-review-comment.sh`** - Shell script for review replies
+
 ### **Legacy Scripts (Still Available)**
 - **`configure-project-fields-manual.ps1`** - Manual project field configuration
 - **`create-remaining-issues.ps1`** - Create remaining issues
 - **`rename-branches-with-issue-numbers.ps1`** - Rename branches
-
-### **Project Setup**
-- **`configure_project_20.sh`** - GitHub Project #20 configuration script
 
 ## 🚀 **Quick Start**
 
@@ -84,13 +104,12 @@ This directory contains essential automation scripts for the Portfolio OS projec
 ## 📂 **Other Script Directories**
 
 ### **`/apps/site/scripts/`** - Site-Specific Scripts
-Contains comprehensive toolset for site management:
-- **Build & Deployment**: `build.sh`, `vercel-build.js`
+Contains specialized scripts for site management (automation scripts moved to main `/scripts/`):
+- **Build & Deployment**: `vercel-build.js`
 - **Image Optimization**: `create-optimized-images.js`
 - **Content Management**: `import-hashnode-articles.ts`, `validate-case-studies.ts`
-- **Development Tools**: `code-quality-checker.ps1`, `performance-optimization.js`
+- **Development Tools**: `performance-optimization.js`
 - **Setup & Configuration**: Various setup scripts for auth, analytics, OAuth
-- **Automation**: PR automation, issue implementation, response generation
 
 ### **`/apps/dashboard/scripts/`** - Dashboard-Specific Scripts
 Contains specialized scripts for dashboard maintenance:
