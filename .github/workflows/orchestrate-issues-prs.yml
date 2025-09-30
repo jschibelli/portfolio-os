@@ -155,7 +155,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
 
       - name: Enable pnpm
         if: success()
@@ -179,6 +178,12 @@ jobs:
         run: |
           pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport -ExportTo analysis.md"
           echo "analysis.md" > artifact_list.txt
+        continue-on-error: true
+
+      - name: Universal PR Automation (CR-GPT monitoring, merge guidance)
+        if: success()
+        run: |
+          pwsh -c "./scripts/universal-pr-automation-simple.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"
         continue-on-error: true
 
       - name: Upload artifacts

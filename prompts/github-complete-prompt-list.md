@@ -31,3 +31,6 @@ Ops/maintenance
 
 Universal autopilot
 - Automate end-to-end: <URL>. Detect issue vs PR; for issues, analyze, set fields, create and track PR; for PRs, monitor reviews, analyze CR‑GPT, thread replies, update Status, run checks, drive to merge (rebase merge).
+
+Universal PR Automation
+- Universal PR automation: <PR_NUMBER>. Configure project fields, monitor CR‑GPT, generate responses, check merge readiness, provide guidance for any PR.
