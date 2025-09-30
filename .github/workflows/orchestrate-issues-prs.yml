@@ -4,9 +4,11 @@ on:
   issues:
     types: [opened, edited, labeled, reopened]
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, edited, review_requested]
+    types: [opened, synchronize, reopened, ready_for_review, edited, review_requested, closed]
   pull_request_review:
     types: [submitted]
+  pull_request_review_comment:
+    types: [created, edited]
   issue_comment:
     types: [created]
 
@@ -29,8 +31,13 @@ jobs:
     outputs:
       is_issue: ${{ steps.detect.outputs.is_issue }}
       is_pr: ${{ steps.detect.outputs.is_pr }}
+      is_review_comment: ${{ steps.detect.outputs.is_review_comment }}
+      is_pr_closed: ${{ steps.detect.outputs.is_pr_closed }}
+      is_pr_merged: ${{ steps.detect.outputs.is_pr_merged }}
       issue_number: ${{ steps.detect.outputs.issue_number }}
       pr_number: ${{ steps.detect.outputs.pr_number }}
+      review_state: ${{ steps.detect.outputs.review_state }}
+      review_comment_id: ${{ steps.detect.outputs.review_comment_id }}
     steps:
       - id: detect
         uses: actions/github-script@v7
@@ -39,10 +46,18 @@ jobs:
             const payload = context.payload
             const isIssue = !!payload.issue && !payload.pull_request
             const isPR = !!payload.pull_request
+            const isReviewComment = !!payload.comment && !!payload.pull_request && payload.comment.pull_request_review_id != null
+            const isPRClosed = context.eventName === 'pull_request' && payload.action === 'closed'
+            const isPRMerged = isPRClosed && payload.pull_request.merged === true
             core.setOutput('is_issue', String(isIssue))
             core.setOutput('is_pr', String(isPR))
+            core.setOutput('is_review_comment', String(isReviewComment))
+            core.setOutput('is_pr_closed', String(isPRClosed))
+            core.setOutput('is_pr_merged', String(isPRMerged))
             core.setOutput('issue_number', isIssue ? String(payload.issue.number) : '')
             core.setOutput('pr_number', isPR ? String(payload.pull_request.number) : '')
+            core.setOutput('review_state', payload.review ? String(payload.review.state || '') : '')
+            core.setOutput('review_comment_id', payload.comment ? String(payload.comment.id || '') : '')
 
   issue-orchestration:
     name: Issue orchestration
@@ -111,7 +126,7 @@ jobs:
   pr-orchestration:
     name: PR orchestration
     needs: detect-and-route
-    if: ${{ needs.detect-and-route.outputs.is_pr == 'true' }}
+    if: ${{ needs.detect-and-route.outputs.is_pr == 'true' && needs.detect-and-route.outputs.is_pr_closed != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -180,9 +195,19 @@ jobs:
           if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"; else echo "Dry run: skipping responses"; fi
 
       - name: Update project Status to In review if reviews submitted
-        if: github.event_name == 'pull_request_review' && success()
+        if: github.event_name == 'pull_request_review' && success() && needs.detect-and-route.outputs.review_state != ''
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
+          REVIEW_STATE: ${{ needs.detect-and-route.outputs.review_state }}
         run: |
-          echo "Review submitted; consider moving Status to 'In review' via project updates (handled in auto-configure script if re-run with Status)."
+          $state = $env:REVIEW_STATE.ToUpperInvariant()
+          if ($state -eq 'APPROVED' -or $state -eq 'CHANGES_REQUESTED' -or $state -eq 'COMMENTED' -or $state -eq 'SUBMITTED') {
+            ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In review" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+          } else {
+            Write-Host "Review state '$($env:REVIEW_STATE)' not triggering status update"
+          }
 
       - name: Gate auto-merge (approvals + checks + label)
         if: success()
@@ -208,5 +233,55 @@ jobs:
             } else {
               core.notice(`Gates not met. approved=${approved} ciOk=${ciOk} readyLabel=${ready}`)
             }
+
+  review-comment-crgpt:
+    name: Respond to CR-GPT review comments (threaded)
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_review_comment == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve comment author and PR
+        id: meta
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER_IN: ${{ needs.detect-and-route.outputs.pr_number }}
+          REVIEW_COMMENT_ID_IN: ${{ needs.detect-and-route.outputs.review_comment_id }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER_IN || '0')
+            const commentId = Number(process.env.REVIEW_COMMENT_ID_IN || '0')
+            core.setOutput('pr', String(prNumber))
+            core.setOutput('comment_id', String(commentId))
+            const author = context.payload.comment?.user?.login || ''
+            core.setOutput('author', author)
+
+      - name: Post threaded reply (CR-GPT only, dry-run)
+        if: ${{ steps.meta.outputs.author == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ steps.meta.outputs.pr }} -CommentId ${{ steps.meta.outputs.comment_id }} -DryRun"
+
+      - name: Post threaded reply (CR-GPT only)
+        if: ${{ steps.meta.outputs.author == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES != 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ steps.meta.outputs.pr }} -CommentId ${{ steps.meta.outputs.comment_id }}"
+
+  pr-merged-status:
+    name: Update Status on merge (Done)
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_pr_merged == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Status=Done in project
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
+        run: |
+          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "Done" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
 
