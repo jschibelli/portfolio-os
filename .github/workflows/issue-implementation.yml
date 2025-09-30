@@ -11,7 +11,7 @@ on:
         description: 'Issue number to implement'
         required: true
         type: string
-      
+  
   # Trigger when issue is labeled as ready for implementation or assigned
   issues:
     types: [labeled, assigned]
@@ -63,6 +63,8 @@ jobs:
           gh auth login --with-token <<< "$GITHUB_TOKEN"
           
       - name: Validate Issue Number
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           if [ -z "$ISSUE_NUMBER" ]; then
             echo "Error: Issue number is not available"
@@ -71,6 +73,8 @@ jobs:
           echo "Implementing Issue #$ISSUE_NUMBER"
           
       - name: Run Issue Analysis
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           # Validate issue number and run analysis
           if [ -z "$ISSUE_NUMBER" ]; then
@@ -82,6 +86,8 @@ jobs:
         continue-on-error: true
           
       - name: Comment Analysis Results
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           # Post analysis results to issue
           if [ -z "$ISSUE_NUMBER" ]; then
@@ -122,13 +128,15 @@ jobs:
       - name: Upload generated files
         uses: actions/upload-artifact@v4
         with:
-          name: issue-${{ env.ISSUE_NUMBER }}-analysis-files
+          name: issue-${{ steps.issue-number.outputs.number }}-analysis-files
           path: |
-            issue-${{ env.ISSUE_NUMBER }}-implementation-plan.md
-            issue-${{ env.ISSUE_NUMBER }}-analysis.json
+            issue-${{ steps.issue-number.outputs.number }}-implementation-plan.md
+            issue-${{ steps.issue-number.outputs.number }}-analysis.json
           retention-days: 30
             
       - name: Generate Implementation Summary
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           # Generate comprehensive implementation summary
           echo "## 🤖 Issue Implementation Analysis for Issue #$ISSUE_NUMBER" >> $GITHUB_STEP_SUMMARY
