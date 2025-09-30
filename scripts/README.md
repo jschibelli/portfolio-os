@@ -1,10 +1,17 @@
-# GitHub Issue Auto-Configuration Scripts
+# Portfolio OS Scripts
 
-This directory contains automation scripts for automatically configuring GitHub issues with proper project fields, labels, and milestone assignments.
+This directory contains essential automation scripts for the Portfolio OS project.
 
-## Quick Start
+## 📁 **Current Scripts**
 
-### 1. Simple Configuration (Recommended)
+### **Issue & PR Configuration**
+- **`auto-configure-issue-simple.ps1`** - Simple issue configuration with presets
+- **`auto-configure-issue.ps1`** - Full issue configuration with custom options
+- **`auto-configure-pr.ps1`** - PR configuration and project field updates
+
+## 🚀 **Quick Start**
+
+### **Issue Configuration (Recommended)**
 ```powershell
 # Using presets
 .\scripts\auto-configure-issue-simple.ps1 190 blog
@@ -16,10 +23,32 @@ This directory contains automation scripts for automatically configuring GitHub 
 .\scripts\auto-configure-issue-simple.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues"
 ```
 
-### 2. Full Configuration
+### **Full Issue Configuration**
 ```powershell
 .\scripts\auto-configure-issue.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues" -Labels "ready-to-implement,priority: high,area: functionality"
 ```
+
+### **PR Configuration**
+```powershell
+.\scripts\auto-configure-pr.ps1 -PRNumber 200
+```
+
+## 📂 **Other Script Directories**
+
+### **`/apps/site/scripts/`** - Site-Specific Scripts
+Contains comprehensive toolset for site management:
+- **Build & Deployment**: `build.sh`, `vercel-build.js`
+- **Image Optimization**: `create-optimized-images.js`
+- **Content Management**: `import-hashnode-articles.ts`, `validate-case-studies.ts`
+- **Development Tools**: `code-quality-checker.ps1`, `performance-optimization.js`
+- **Setup & Configuration**: Various setup scripts for auth, analytics, OAuth
+- **Automation**: PR automation, issue implementation, response generation
+
+### **`/apps/dashboard/scripts/`** - Dashboard-Specific Scripts
+Contains specialized scripts for dashboard maintenance:
+- **`dependency-maintenance.js`** - Dependency updates and maintenance
+- **`implementation-verifier.js`** - Implementation verification
+- **`code-quality-checker.js`** - Dashboard-specific code quality checks
 
 ## Available Presets
 
