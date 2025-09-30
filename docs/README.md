@@ -9,14 +9,14 @@ Contains automation system documentation and workflows:
 - `E2E_AUTOMATION_COMPLETE_PR216.md` - End-to-end automation completion for PR #216
 - `integrated-automation-system.md` - Integrated automation system documentation
 
-### **`issues/`** - Issue-Specific Documentation
-Contains documentation for specific GitHub issues:
-- `ISSUE_1_HASHNODE_API_CONNECTION.md` - Hashnode API connection issue
-- `ISSUE_2_BLOG_DATA_FETCHING.md` - Blog data fetching issue
-- `ISSUE_3_BLOG_ROUTING.md` - Blog routing issue
-- `ISSUE_4_RSS_SOCIAL_INTEGRATION.md` - RSS social integration issue
-- `ISSUE_5_BLOG_PERFORMANCE_SEO.md` - Blog performance and SEO issue
-- `ISSUE_6_BLOG_SEARCH_FILTERING.md` - Blog search and filtering issue
+### **`issue-specifications/`** - Technical Specifications
+Contains technical specifications for feature implementations:
+- `hashnode-api-connection-specification.md` - Hashnode API connection specification
+- `blog-data-fetching-specification.md` - Blog data fetching specification
+- `blog-routing-specification.md` - Blog routing specification
+- `rss-social-integration-specification.md` - RSS social integration specification
+- `blog-performance-seo-specification.md` - Blog performance and SEO specification
+- `blog-search-filtering-specification.md` - Blog search and filtering specification
 
 ### **`setup/`** - Setup and Configuration Documentation
 Contains setup guides, configuration documentation, and deployment information:
@@ -38,14 +38,14 @@ This organized structure provides:
 
 ### **Adding New Documentation**
 - **Automation documentation** → `docs/automation/`
-- **Issue documentation** → `docs/issues/`
+- **Technical specifications** → `docs/issue-specifications/`
 - **Setup guides** → `docs/setup/`
 
 ### **Naming Conventions**
 - Use descriptive, consistent naming
-- Include issue/PR numbers when relevant
-- Use UPPERCASE for important documents
-- Use lowercase with hyphens for detailed documents
+- Use lowercase with hyphens for file names
+- Include purpose in filename (e.g., `-specification.md`, `-setup.md`)
+- Use UPPERCASE only for important setup documents
 
 ### **Maintenance**
 - Keep documentation up to date
