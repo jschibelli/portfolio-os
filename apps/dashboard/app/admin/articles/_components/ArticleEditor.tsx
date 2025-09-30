@@ -4,20 +4,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Placeholder from '@tiptap/extension-placeholder'
-import Link from '@tiptap/extension-link'
-import Image from '@tiptap/extension-image'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { Table } from '@tiptap/extension-table'
-import { TableRow } from '@tiptap/extension-table-row'
-import { TableHeader } from '@tiptap/extension-table-header'
-import { TableCell } from '@tiptap/extension-table-cell'
-import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
-import { createLowlight, common } from 'lowlight'
 
 // Simple Slash Command Extension - temporarily disabled
 // const SlashCommandExtension = Extension.create({
@@ -91,9 +77,6 @@ interface ArticleEditorProps {
   }
 }
 
-// Create lowlight instance for code highlighting with common languages
-const lowlight = createLowlight(common)
-
 export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [title, setTitle] = useState(initialData?.title || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
@@ -103,60 +86,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
 
-  // TipTap editor configuration
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-        orderedList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
-      }),
-      Placeholder.configure({
-        placeholder: 'Start writing your article...',
-      }),
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-600 underline cursor-pointer',
-        },
-      }),
-      Image.configure({
-        HTMLAttributes: {
-          class: 'max-w-full h-auto rounded-lg',
-        },
-      }),
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
-      CodeBlockLowlight.configure({
-        lowlight,
-      }),
-      Table.configure({
-        resizable: true,
-      }),
-      TableRow,
-      TableHeader,
-      TableCell,
-      HorizontalRule,
-    ],
-    content: initialData?.content || '',
-    editorProps: {
-      attributes: {
-        class: 'prose prose-stone max-w-none min-h-[400px] focus:outline-none p-4',
-      },
-    },
-    onUpdate: ({ editor }) => {
-      // Handle content updates
-      const content = editor.getJSON()
-      // You can add auto-save logic here
-    },
-  })
+  // TipTap editor is managed by CompleteTipTapEditor in TipTap mode
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
   const [newTag, setNewTag] = useState('')
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
@@ -631,9 +561,6 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 />
               ) : isTipTapMode ? (
                 <div className="space-y-4">
-                  <div className="text-sm text-gray-600 mb-4">
-                    ✨ TipTap Editor Active - Full rich text editing with all extensions
-                  </div>
                   <CompleteTipTapEditor
                     content={tiptapContent}
                     onChange={setTiptapContent}
@@ -643,35 +570,6 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* TipTap Editor with Toolbar */}
-                  <div className="border border-stone-200 rounded-lg overflow-hidden bg-white">
-                    {editor && (
-                      <EditorToolbar 
-                        editor={editor} 
-                        onImageUpload={() => {
-                          // Handle image upload
-                          const input = document.createElement('input')
-                          input.type = 'file'
-                          input.accept = 'image/*'
-                          input.onchange = (e) => {
-                            const file = (e.target as HTMLInputElement).files?.[0]
-                            if (file) {
-                              const reader = new FileReader()
-                              reader.onload = (e) => {
-                                const result = e.target?.result as string
-                                editor.chain().focus().setImage({ src: result }).run()
-                              }
-                              reader.readAsDataURL(file)
-                            }
-                          }
-                          input.click()
-                        }} 
-                      />
-                    )}
-                    <EditorContent editor={editor} />
-                  </div>
-                  
-                  {/* Fallback Block Editor */}
                   <div className="text-sm text-gray-600 mb-4">
                     🎯 Alternative Block Editor - Type &quot;/&quot; for commands or press Enter to add blocks
                   </div>
