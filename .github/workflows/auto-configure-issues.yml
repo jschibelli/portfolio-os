@@ -83,6 +83,7 @@ jobs:
       - name: Configure issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           # Set variables
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -96,25 +97,26 @@ jobs:
           else
             ISSUE_NUMBER="${{ github.event.issue.number }}"
             # Auto-detect configuration based on issue title/content
-            if echo "${{ github.event.issue.title }}" | grep -qi "blog\|article\|post"; then
+            # Use environment variable to prevent shell injection
+            if echo "$ISSUE_TITLE" | grep -qi "blog\|article\|post"; then
               PRIORITY="P1"
               SIZE="M"
               APP="Portfolio Site"
               AREA="Frontend"
               LABELS="ready-to-implement,priority: high,area: functionality"
-            elif echo "${{ github.event.issue.title }}" | grep -qi "dashboard\|admin"; then
+            elif echo "$ISSUE_TITLE" | grep -qi "dashboard\|admin"; then
               PRIORITY="P1"
               SIZE="M"
               APP="Dashboard"
               AREA="Frontend"
               LABELS="ready-to-implement,priority: high,area: functionality"
-            elif echo "${{ github.event.issue.title }}" | grep -qi "doc\|readme\|guide"; then
+            elif echo "$ISSUE_TITLE" | grep -qi "doc\|readme\|guide"; then
               PRIORITY="P2"
               SIZE="S"
               APP="Docs"
               AREA="Content"
               LABELS="ready-to-implement,priority: medium,area: content"
-            elif echo "${{ github.event.issue.title }}" | grep -qi "infra\|deploy\|ci\|cd"; then
+            elif echo "$ISSUE_TITLE" | grep -qi "infra\|deploy\|ci\|cd"; then
               PRIORITY="P1"
               SIZE="L"
               APP="Portfolio Site"
