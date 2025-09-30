@@ -53,6 +53,7 @@ import { SlashCommandMenu } from './SlashCommandMenu'
 import { MarkdownEditor } from './MarkdownEditor'
 import { BlockEditor } from './BlockEditor'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
+import { DualModeEditor } from './DualModeEditor'
 import { 
   Save,
   Eye,
@@ -92,6 +93,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [newTag, setNewTag] = useState('')
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
   const [isTipTapMode, setIsTipTapMode] = useState(false)
+  const [isDualMode, setIsDualMode] = useState(false)
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
@@ -397,15 +399,28 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               {/* Editor Mode Toggle */}
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                 <Button
-                  variant={!isMarkdownMode && !isTipTapMode ? "default" : "ghost"}
+                  variant={!isMarkdownMode && !isTipTapMode && !isDualMode ? "default" : "ghost"}
                   size="sm"
                   onClick={() => {
                     setIsMarkdownMode(false)
                     setIsTipTapMode(false)
+                    setIsDualMode(false)
                   }}
-                  className={!isMarkdownMode && !isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={!isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
                   Block Editor
+                </Button>
+                <Button
+                  variant={isDualMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setIsDualMode(true)
+                    setIsTipTapMode(false)
+                    setIsMarkdownMode(false)
+                  }}
+                  className={isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                >
+                  Dual Mode
                 </Button>
                 <Button
                   variant={isTipTapMode ? "default" : "ghost"}
@@ -413,6 +428,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   onClick={() => {
                     setIsTipTapMode(true)
                     setIsMarkdownMode(false)
+                    setIsDualMode(false)
                   }}
                   className={isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
@@ -424,6 +440,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   onClick={() => {
                     setIsMarkdownMode(true)
                     setIsTipTapMode(false)
+                    setIsDualMode(false)
                   }}
                   className={isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
@@ -576,7 +593,18 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               <Separator />
 
               {/* Editor Content */}
-              {isMarkdownMode ? (
+              {isDualMode ? (
+                <DualModeEditor
+                  content={tiptapContent}
+                  onChange={(content) => {
+                    setTiptapContent(content)
+                    setArticleData({ ...articleData, content })
+                  }}
+                  placeholder="Start writing..."
+                  onImageUpload={uploadImage}
+                  initialMode="wysiwyg"
+                />
+              ) : isMarkdownMode ? (
                 <MarkdownEditor
                   content={markdownContent}
                   onChange={setMarkdownContent}
