@@ -120,7 +120,7 @@ jobs:
           
           To proceed with implementation, run:
           \`\`\`powershell
-          .\scripts\issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -Action all
+          ./scripts/issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -Action all
           \`\`\`"
           
           gh issue comment $ISSUE_NUMBER --body "$ANALYSIS_COMMENT"

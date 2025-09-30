@@ -29,7 +29,7 @@ try {
     
     # Configure project fields
     Write-Host "Configuring project fields..." -ForegroundColor Blue
-    & "scripts\auto-configure-pr.ps1" -PRNumber $PRNumber -Status $Status -Priority $Priority -Size $Size -Estimate $Estimate -App $App -Area $Area -Assign $Assign
+    & "./scripts/auto-configure-pr.ps1" -PRNumber $PRNumber -Status $Status -Priority $Priority -Size $Size -Estimate $Estimate -App $App -Area $Area -Assign $Assign
     
     # Get CR-GPT comments
     $crgptComments = $pr.comments | Where-Object { $_.author.login -eq "cr-gpt[bot]" }
@@ -53,7 +53,7 @@ try {
         
         # Update status to "In review"
         Write-Host "Updating status to 'In review'..." -ForegroundColor Yellow
-        & "scripts\auto-configure-pr.ps1" -PRNumber $PRNumber -Status "In review"
+        & "./scripts/auto-configure-pr.ps1" -PRNumber $PRNumber -Status "In review"
     }
     
     # Check merge readiness
