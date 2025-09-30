@@ -9,15 +9,6 @@ Contains automation system documentation and workflows:
 - `E2E_AUTOMATION_COMPLETE_PR216.md` - End-to-end automation completion for PR #216
 - `integrated-automation-system.md` - Integrated automation system documentation
 
-### **`issue-specifications/`** - Technical Specifications
-Contains technical specifications for feature implementations:
-- `hashnode-api-connection-specification.md` - Hashnode API connection specification
-- `blog-data-fetching-specification.md` - Blog data fetching specification
-- `blog-routing-specification.md` - Blog routing specification
-- `rss-social-integration-specification.md` - RSS social integration specification
-- `blog-performance-seo-specification.md` - Blog performance and SEO specification
-- `blog-search-filtering-specification.md` - Blog search and filtering specification
-
 ### **`setup/`** - Setup and Configuration Documentation
 Contains setup guides, configuration documentation, and deployment information:
 - `BLOG_MILESTONE_ROADMAP.md` - Blog milestone roadmap
@@ -38,7 +29,6 @@ This organized structure provides:
 
 ### **Adding New Documentation**
 - **Automation documentation** → `docs/automation/`
-- **Technical specifications** → `docs/issue-specifications/`
 - **Setup guides** → `docs/setup/`
 
 ### **Naming Conventions**
