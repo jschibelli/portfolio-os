@@ -1,1 +1,1 @@
-Automate end-to-end: <ISSUE_URL>. Trigger analysis, set fields, assign me, create and track the PR you create, monitor CR‑GPT, post threaded replies, keep Status updated, and guide to merge.
+Automate end-to-end: <URL>. Detect if it’s an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.

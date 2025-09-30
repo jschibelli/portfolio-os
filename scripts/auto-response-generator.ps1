@@ -126,18 +126,27 @@ function Apply-AutoFixes {
     }
 }
 
-function Post-Response {
-    param([string]$PRNumber, [string]$Response)
+function Post-ThreadedResponse {
+    param([string]$PRNumber, [object]$Comment, [string]$Response)
     
     if ($DryRun) {
-        Write-Host "=== DRY RUN - Response would be posted ===" -ForegroundColor Yellow
+        Write-Host "=== DRY RUN - Threaded response would be posted ===" -ForegroundColor Yellow
         Write-Host $Response
         return
     }
     
-    Write-Host "Posting response to PR #$PRNumber..." -ForegroundColor Green
-    gh pr comment $PRNumber --body $Response
-    Write-Host "Response posted successfully!" -ForegroundColor Green
+    # Prefer replying directly to the review comment thread when line-level comment exists
+    if ($Comment -and $Comment.id) {
+        Write-Host "Replying in-thread to comment ID: $($Comment.id) on PR #$PRNumber" -ForegroundColor Green
+        gh api \
+          repos/$(gh repo view --json owner,name -q '.owner.login+"/"+.name')/pulls/comments/$($Comment.id)/replies \
+          -f body="$Response" | Out-Null
+        Write-Host "Threaded reply posted successfully!" -ForegroundColor Green
+    } else {
+        Write-Host "Falling back to general PR comment for PR #$PRNumber" -ForegroundColor Yellow
+        gh pr comment $PRNumber --body $Response | Out-Null
+        Write-Host "General PR comment posted successfully!" -ForegroundColor Green
+    }
 }
 
 # Main execution
@@ -158,7 +167,7 @@ try {
             Apply-AutoFixes -Comment $comment
         }
         
-        Post-Response -PRNumber $PRNumber -Response $response
+        Post-ThreadedResponse -PRNumber $PRNumber -Comment ($comment | ConvertFrom-Json) -Response $response
         
     } else {
         # Process all CR-GPT comments
@@ -178,7 +187,7 @@ try {
                 Apply-AutoFixes -Comment $comment
             }
             
-            Post-Response -PRNumber $PRNumber -Response $response
+            Post-ThreadedResponse -PRNumber $PRNumber -Comment $comment -Response $response
         }
     }
     
