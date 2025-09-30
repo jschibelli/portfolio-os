@@ -1,0 +1,165 @@
+name: PR Automation (Optimized)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, review_requested, edited]
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+  push:
+    branches: [ develop ]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-auto-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  # PR number is available on PR-triggered events; fall back handled later
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+  # When true, responders won't post comments; CI prints intent instead
+  DRY_RUN_RESPONSES: "true" # set to "false" to allow auto-posting responses
+
+jobs:
+  configure-pr:
+    name: Configure PR in Portfolio Project
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && contains(fromJSON('["opened","reopened","ready_for_review"]'), github.event.action)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure fields and assign
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if (-not $env:GITHUB_TOKEN) { throw "GITHUB_TOKEN is required" }
+          if (-not $env:PR_NUMBER) { throw "PR_NUMBER is required for configure-pr" }
+          ./scripts/auto-configure-pr.ps1 `
+            -PRNumber $env:PR_NUMBER `
+            -Status "In progress" `
+            -Priority "P1" `
+            -Size "M" `
+            -Estimate 3 `
+            -App "Portfolio Site" `
+            -Area "Frontend" `
+            -Assign "jschibelli"
+  analyze-quality-docs:
+    name: Analyze comments, quality checks, docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node (if package.json exists)
+        if: ${{ hashFiles('**/package.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Resolve PR number for non-PR events
+        id: resolve-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request
+              || context.payload.review?.pull_request
+              || null;
+            if (pr) {
+              core.setOutput('pr', String(pr.number));
+            } else {
+              core.notice('No PR in payload; skipping PR-specific steps unless PR_NUMBER is provided.');
+            }
+      - name: Set PR_NUMBER env
+        run: echo "PR_NUMBER=${{ steps.resolve-pr.outputs.pr || env.PR_NUMBER }}" >> $GITHUB_ENV
+
+      - name: Validate env
+        run: |
+          if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER is empty; skipping analyzers" && exit 0; fi
+
+      - name: CR-GPT Analyzer (report)
+        if: env.PR_NUMBER != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ env.PR_NUMBER }} -GenerateReport -ExportTo analysis.md"
+
+      - name: Universal PR Automation (monitoring, responses, merge guidance)
+        if: env.PR_NUMBER != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/universal-pr-automation-simple.ps1 -PRNumber ${{ env.PR_NUMBER }}"
+
+      - name: Code Quality Checker
+        if: env.PR_NUMBER != '' && hashFiles('scripts/code-quality-checker.ps1') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/code-quality-checker.ps1 -PRNumber ${{ env.PR_NUMBER }} -FixIssues -RunTests -GenerateReport"
+        continue-on-error: true
+
+      - name: Docs Updater
+        if: env.PR_NUMBER != '' && hashFiles('scripts/docs-updater.ps1') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/docs-updater.ps1 -PRNumber ${{ env.PR_NUMBER }} -UpdateChangelog -UpdateReadme -GenerateDocs"
+        continue-on-error: true
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-automation-reports
+          path: |
+            analysis.md
+            **/quality-report*.md
+            **/docs-report*.md
+          if-no-files-found: ignore
+
+      - name: Post Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request || context.payload.review?.pull_request;
+            const prNumber = pr ? pr.number : process.env.PR_NUMBER;
+            if (!prNumber) {
+              core.notice('No PR number found; skipping comment.');
+              return;
+            }
+            const body = [
+              '### PR Automation Summary',
+              '- Analyzer, Quality Checker, Docs Updater executed.',
+              '- Artifacts: `analysis.md`, quality/docs reports (if present).',
+              `- DRY_RUN_RESPONSES = ${process.env.DRY_RUN_RESPONSES}`
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body
+            });
+
+  respond-to-cr-gpt:
+    name: Respond to CR-GPT comments (optional)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Auto-respond to latest comment if actor is cr-gpt
+        if: ${{ github.actor == 'cr-gpt' }}
+        run: |
+          echo "Detected cr-gpt comment."
+          if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER missing; skipping auto response." && exit 0; fi
+          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then
+            pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -AutoFix"
+          else
+            echo "DRY_RUN_RESPONSES=true; skipping auto post."
+          fi
+
+

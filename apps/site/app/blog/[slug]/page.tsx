@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
+import { fetchPostBySlug, fetchPublication } from '../../../lib/hashnode-api';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -41,40 +42,9 @@ const defaultPublication = {
 
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params;
-  const GQL_ENDPOINT = 'https://gql.hashnode.com/';
-  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-
+  
   // Fetch post from Hashnode
-  const query = `
-    query PostBySlug($host: String!, $slug: String!) {
-      publication(host: $host) {
-        post(slug: $slug) {
-          id
-          title
-          brief
-          slug
-          publishedAt
-          coverImage { url }
-          author { name }
-          tags { name slug }
-        }
-      }
-    }
-  `;
-
-  let post: any = null;
-  try {
-    const res = await fetch(GQL_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
-      next: { revalidate: 60 },
-    });
-    const data = await res.json();
-    post = data?.data?.publication?.post;
-  } catch (error) {
-    console.error('Error fetching Hashnode post:', error);
-  }
+  const post = await fetchPostBySlug(params.slug);
 
   if (!post) {
     return {
@@ -102,54 +72,24 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
-  const GQL_ENDPOINT = 'https://gql.hashnode.com/';
-  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-
-  // Fetch post from Hashnode
-  const query = `
-    query PostBySlug($host: String!, $slug: String!) {
-      publication(host: $host) {
-        post(slug: $slug) {
-          id
-          title
-          brief
-          slug
-          publishedAt
-          coverImage { url }
-          author { name }
-          tags { name slug }
-          content {
-            markdown
-            html
-          }
-          readTimeInMinutes
-        }
-      }
-    }
-  `;
-
-  let post: any = null;
-  try {
-    const res = await fetch(GQL_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
-      next: { revalidate: 60 },
-    });
-    const data = await res.json();
-    post = data?.data?.publication?.post;
-  } catch (error) {
-    console.error('Error fetching Hashnode post:', error);
-  }
+  
+  // Fetch post and publication data from Hashnode
+  const [post, publication] = await Promise.all([
+    fetchPostBySlug(params.slug),
+    fetchPublication()
+  ]);
 
   if (!post) {
     notFound();
   }
 
+  // Use fetched publication or fallback to default
+  const currentPublication = publication || defaultPublication;
+
   return (
-    <AppProvider publication={defaultPublication as any}>
+    <AppProvider publication={currentPublication as any}>
       {/* Navigation */}
-      <ModernHeader publication={defaultPublication} />
+      <ModernHeader publication={currentPublication} />
 
       <article className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -245,7 +185,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       </article>
 
       <Chatbot />
-      <Footer publication={defaultPublication} />
+      <Footer publication={currentPublication} />
     </AppProvider>
   );
 }

@@ -11,29 +11,14 @@ on:
         description: 'Issue number to implement'
         required: true
         type: string
-      
-  # Trigger when issue is labeled as ready for implementation
+  
+  # Trigger when issue is labeled as ready for implementation or assigned
   issues:
-    types: [labeled]
-
-  # Trigger when issue is assigned
-  issues:
-    types: [assigned]
+    types: [labeled, assigned]
 
 jobs:
   implement-issue:
     runs-on: ubuntu-latest
-    
-    # Determine issue number based on trigger
-    steps:
-      - name: Determine Issue Number
-        id: issue-number
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "number=${{ github.event.inputs.issue_number }}" >> $GITHUB_OUTPUT
-          else
-            echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
-          fi
     
     # Only run if issue is labeled as ready or manually triggered
     if: |
@@ -45,9 +30,17 @@ jobs:
     env:
       NODE_VERSION: '18'
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
     
     steps:
+      - name: Determine Issue Number
+        id: issue-number
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "number=${{ github.event.inputs.issue_number }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          fi
+    
       - name: Checkout code
         uses: actions/checkout@v4
         
@@ -70,6 +63,8 @@ jobs:
           gh auth login --with-token <<< "$GITHUB_TOKEN"
           
       - name: Validate Issue Number
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           if [ -z "$ISSUE_NUMBER" ]; then
             echo "Error: Issue number is not available"
@@ -78,6 +73,8 @@ jobs:
           echo "Implementing Issue #$ISSUE_NUMBER"
           
       - name: Run Issue Analysis
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           # Validate issue number and run analysis
           if [ -z "$ISSUE_NUMBER" ]; then
@@ -89,6 +86,8 @@ jobs:
         continue-on-error: true
           
       - name: Comment Analysis Results
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
         run: |
           # Post analysis results to issue
           if [ -z "$ISSUE_NUMBER" ]; then
@@ -120,7 +119,7 @@ jobs:
           
           To proceed with implementation, run:
           \`\`\`powershell
-          .\scripts\issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -Action all
+          ./scripts/issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -Action all
           \`\`\`"
           
           gh issue comment $ISSUE_NUMBER --body "$ANALYSIS_COMMENT"
@@ -129,13 +128,17 @@ jobs:
       - name: Upload generated files
         uses: actions/upload-artifact@v4
         with:
-          name: issue-${{ env.ISSUE_NUMBER }}-analysis-files
+          name: issue-${{ steps.issue-number.outputs.number }}-analysis-files
           path: |
-            issue-${{ env.ISSUE_NUMBER }}-implementation-plan.md
-            issue-${{ env.ISSUE_NUMBER }}-analysis.json
+            issue-${{ steps.issue-number.outputs.number }}-implementation-plan.md
+            issue-${{ steps.issue-number.outputs.number }}-analysis.json
           retention-days: 30
+        continue-on-error: true
             
       - name: Generate Implementation Summary
+        env:
+          ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
+        continue-on-error: true
         run: |
           # Generate comprehensive implementation summary
           echo "## 🤖 Issue Implementation Analysis for Issue #$ISSUE_NUMBER" >> $GITHUB_STEP_SUMMARY

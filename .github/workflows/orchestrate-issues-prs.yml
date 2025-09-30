@@ -1,0 +1,301 @@
+name: Orchestrate Issues & PRs (Unified)
+
+on:
+  issues:
+    types: [opened, edited, labeled, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited, review_requested, closed]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created, edited]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: orchestrate-${{ github.event.pull_request.number || github.event.issue.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  DRY_RUN_RESPONSES: "true" # set to "false" to enable posting
+
+jobs:
+  detect-and-route:
+    name: Detect event type and set variables
+    runs-on: ubuntu-latest
+    # Note: Linter warnings about step outputs are expected and benign
+    # All outputs are set by the detect step with fallback values
+    outputs:
+      is_issue: ${{ steps.detect.outputs.is_issue || 'false' }}
+      is_pr: ${{ steps.detect.outputs.is_pr || 'false' }}
+      is_review_comment: ${{ steps.detect.outputs.is_review_comment || 'false' }}
+      is_pr_closed: ${{ steps.detect.outputs.is_pr_closed || 'false' }}
+      is_pr_merged: ${{ steps.detect.outputs.is_pr_merged || 'false' }}
+      issue_number: ${{ steps.detect.outputs.issue_number || '' }}
+      pr_number: ${{ steps.detect.outputs.pr_number || '' }}
+      review_state: ${{ steps.detect.outputs.review_state || '' }}
+      review_comment_id: ${{ steps.detect.outputs.review_comment_id || '' }}
+    steps:
+      - id: detect
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const payload = context.payload
+            const isIssue = !!payload.issue && !payload.pull_request
+            const isPR = !!payload.pull_request
+            const isReviewComment = !!payload.comment && !!payload.pull_request && payload.comment.pull_request_review_id != null
+            const isPRClosed = context.eventName === 'pull_request' && payload.action === 'closed'
+            const isPRMerged = isPRClosed && payload.pull_request.merged === true
+            core.setOutput('is_issue', String(isIssue))
+            core.setOutput('is_pr', String(isPR))
+            core.setOutput('is_review_comment', String(isReviewComment))
+            core.setOutput('is_pr_closed', String(isPRClosed))
+            core.setOutput('is_pr_merged', String(isPRMerged))
+            core.setOutput('issue_number', isIssue ? String(payload.issue.number) : '')
+            core.setOutput('pr_number', isPR ? String(payload.pull_request.number) : '')
+            core.setOutput('review_state', payload.review ? String(payload.review.state || '') : '')
+            core.setOutput('review_comment_id', payload.comment ? String(payload.comment.id || '') : '')
+
+  issue-orchestration:
+    name: Issue orchestration
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_issue == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # GitHub CLI is preinstalled on ubuntu-latest
+
+      - name: Auto-configure issue fields and labels
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./scripts/auto-configure-issue-simple.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Priority P1 -Size M
+
+      - name: Assign default owner and comment analysis start
+        run: |
+          gh issue edit ${{ needs.detect-and-route.outputs.issue_number }} --add-assignee jschibelli
+          gh issue comment ${{ needs.detect-and-route.outputs.issue_number }} --body "Automated triage complete. Beginning analysis and drafting PR."
+
+      - name: Create branch and draft PR from issue
+        id: create-pr
+        shell: bash
+        env:
+          ISSUE: ${{ needs.detect-and-route.outputs.issue_number }}
+        run: |
+          set -euo pipefail
+          BRANCH="issue/${ISSUE}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin
+          git checkout -B "$BRANCH" origin/develop || git checkout -b "$BRANCH"
+          git push -u origin "$BRANCH"
+          TITLE=$(gh issue view "$ISSUE" --json title -q .title)
+          BODY="Automated PR for Issue #${ISSUE}. This PR is created as draft and will be updated as work progresses.\n\nResolves #${ISSUE}"
+          PR_NUM=$(gh pr create --title "$TITLE" --body "$BODY" --base develop --head "$BRANCH" --draft -q number)
+          echo "pr_number=$PR_NUM" >> $GITHUB_OUTPUT
+
+      - name: Configure PR in project and set Status
+        if: steps.create-pr.outputs.pr_number != ''
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
+        run: |
+          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+
+      - name: Analyze created PR (CR-GPT) and upload report
+        if: steps.create-pr.outputs.pr_number != ''
+        run: |
+          pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -GenerateReport -ExportTo analysis.md" || true
+        continue-on-error: true
+
+      - name: Upload analysis artifacts (issue path)
+        if: steps.create-pr.outputs.pr_number != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue-orchestrator-reports-${{ steps.create-pr.outputs.pr_number }}
+          path: |
+            analysis.md
+          if-no-files-found: ignore
+
+  pr-orchestration:
+    name: PR orchestration
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_pr == 'true' && needs.detect-and-route.outputs.is_pr_closed != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure base branch is develop (guard)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request
+            if (!pr) return
+            if (pr.base.ref !== 'develop') {
+              core.setFailed(`PR base must be 'develop'. Found '${pr.base.ref}'.`)
+            }
+
+      - name: Configure PR fields and assign
+        if: success()
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
+        run: |
+          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+
+      - name: Set up Node (for mono-repo checks)
+        if: success()
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable pnpm
+        if: success()
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Install deps (root)
+        if: success()
+        run: |
+          if [ -f package.json ]; then pnpm install --frozen-lockfile || pnpm install; fi
+
+      - name: Run checks (build, lint, typecheck, tests)
+        if: success()
+        run: |
+          pnpm run build || true
+          pnpm run lint || true
+          pnpm run typecheck || pnpm run type-check || true
+          pnpm run test || true
+
+      - name: CR-GPT analyze and upload report
+        if: success()
+        run: |
+          pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport -ExportTo analysis.md"
+          echo "analysis.md" > artifact_list.txt
+        continue-on-error: true
+
+      - name: Universal PR Automation (CR-GPT monitoring, merge guidance)
+        if: success()
+        run: |
+          pwsh -c "./scripts/universal-pr-automation-simple.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"
+        continue-on-error: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestrator-reports-${{ needs.detect-and-route.outputs.pr_number }}
+          path: |
+            analysis.md
+          if-no-files-found: ignore
+
+      - name: Optional auto-respond to CR-GPT thread (dry-run controlled)
+        if: success()
+        run: |
+          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }}"; else echo "Dry run: skipping responses"; fi
+
+      - name: Update project Status to In review if reviews submitted
+        if: github.event_name == 'pull_request_review' && success() && needs.detect-and-route.outputs.review_state != ''
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
+          REVIEW_STATE: ${{ needs.detect-and-route.outputs.review_state }}
+        run: |
+          $state = $env:REVIEW_STATE.ToUpperInvariant()
+          if ($state -eq 'APPROVED' -or $state -eq 'CHANGES_REQUESTED' -or $state -eq 'COMMENTED' -or $state -eq 'SUBMITTED') {
+            ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In review" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+          } else {
+            Write-Host "Review state '$($env:REVIEW_STATE)' not triggering status update"
+          }
+
+      - name: Gate auto-merge (approvals + checks + label)
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request
+            const prNumber = pr ? pr.number : Number(process.env.PR_NUMBER)
+            if (!prNumber) { core.notice('No PR number to gate merge'); return }
+            const { data: reviews } = await github.rest.pulls.listReviews({ owner: context.repo.owner, repo: context.repo.repo, pull_number: prNumber })
+            const approved = reviews.some(r => r.state === 'APPROVED')
+            const { data: prInfo } = await github.rest.pulls.get({ owner: context.repo.owner, repo: context.repo.repo, pull_number: prNumber })
+            const ciOk = prInfo.mergeable_state !== 'blocked'
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({ owner: context.repo.owner, repo: context.repo.repo, issue_number: prNumber })
+            const ready = labels.some(l => l.name === 'ready-to-merge')
+            if (approved && ciOk && ready) {
+              core.notice('All gates satisfied; enabling auto-merge (squash).')
+              try {
+                await github.graphql(`mutation($pr: ID!) { enablePullRequestAutoMerge(input: { pullRequestId: $pr, mergeMethod: SQUASH }) { pullRequest { number } } }`, { pr: context.payload.pull_request.node_id })
+              } catch (e) {
+                core.warning('Failed to enable auto-merge: ' + e.message)
+              }
+            } else {
+              core.notice(`Gates not met. approved=${approved} ciOk=${ciOk} readyLabel=${ready}`)
+            }
+
+  review-comment-crgpt:
+    name: Respond to CR-GPT review comments (threaded)
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_review_comment == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve comment author and PR
+        id: meta
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER_IN: ${{ needs.detect-and-route.outputs.pr_number }}
+          REVIEW_COMMENT_ID_IN: ${{ needs.detect-and-route.outputs.review_comment_id }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER_IN || '0')
+            const commentId = Number(process.env.REVIEW_COMMENT_ID_IN || '0')
+            const author = context.payload.comment?.user?.login || ''
+            // Always set all outputs to ensure they exist
+            core.setOutput('pr', String(prNumber))
+            core.setOutput('comment_id', String(commentId))
+            core.setOutput('author', author)
+
+      # Note: Linter warnings about steps.meta.outputs are expected
+      # The meta step always runs and sets all outputs with defaults
+      - name: Post threaded reply (CR-GPT only, dry-run)
+        if: ${{ (steps.meta.outputs.author || '') == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
+          COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID -DryRun"
+
+      - name: Post threaded reply (CR-GPT only)
+        if: ${{ (steps.meta.outputs.author || '') == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES != 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
+          COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
+        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID"
+
+  pr-merged-status:
+    name: Update Status on merge (Done)
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_pr_merged == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Status=Done in project
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
+        run: |
+          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "Done" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+
+
