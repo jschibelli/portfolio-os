@@ -98,9 +98,10 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [tiptapContent, setTiptapContent] = useState('')
   const [blocks, setBlocks] = useState<Array<{
     id: string
-    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
+    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'bulletList' | 'orderedList' | 'taskList' | 'quote' | 'code' | 'image' | 'callout' | 'calloutInfo' | 'calloutWarning' | 'calloutSuccess' | 'calloutError' | 'horizontalRule' | 'details' | 'table' | 'mention' | 'widget' | 'reactComponent' | 'infoCard' | 'statBadge' | 'youtube' | 'twitter' | 'githubGist' | 'codepen' | 'codesandbox' | 'embed'
     content: string
     placeholder?: string
+    calloutType?: 'info' | 'warning' | 'success' | 'error'
   }>>([
     {
       id: '1',
@@ -332,12 +333,34 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
       case 'heading1': return 'Heading 1'
       case 'heading2': return 'Heading 2'
       case 'heading3': return 'Heading 3'
+      case 'heading4': return 'Heading 4'
+      case 'heading5': return 'Heading 5'
+      case 'heading6': return 'Heading 6'
       case 'bulletList': return 'List item'
       case 'orderedList': return 'List item'
+      case 'taskList': return 'Task item'
       case 'quote': return 'Quote'
       case 'code': return 'Enter code...'
       case 'image': return 'Image URL'
       case 'callout': return 'Callout text'
+      case 'calloutInfo': return 'Info callout text'
+      case 'calloutWarning': return 'Warning callout text'
+      case 'calloutSuccess': return 'Success callout text'
+      case 'calloutError': return 'Error callout text'
+      case 'horizontalRule': return '---'
+      case 'details': return 'Details summary'
+      case 'table': return 'Table content'
+      case 'mention': return '@username'
+      case 'widget': return 'Widget content'
+      case 'reactComponent': return 'React component'
+      case 'infoCard': return 'Info card content'
+      case 'statBadge': return 'Statistics badge'
+      case 'youtube': return 'YouTube URL'
+      case 'twitter': return 'Twitter/X URL'
+      case 'githubGist': return 'GitHub Gist URL'
+      case 'codepen': return 'CodePen URL'
+      case 'codesandbox': return 'CodeSandbox URL'
+      case 'embed': return 'Embed URL'
       default: return 'Type something...'
     }
   }
