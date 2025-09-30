@@ -110,7 +110,20 @@ model Article {
   contentMdx      String?
   coverId         String?
   cover           ImageAsset?   @relation("CoverImage", fields: [coverId], references: [id])
+  
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  ogTitle         String?
+  ogDescription   String?
   ogImageUrl      String?
+  twitterCard     String?       @default("summary_large_image")
+  twitterTitle    String?
+  twitterDescription String?
+  twitterImage    String?
+  focusKeyword    String?
+  seoScore        Int?
+  
   canonicalUrl    String?
   canonicalSource String?
   noindex         Boolean       @default(false)
