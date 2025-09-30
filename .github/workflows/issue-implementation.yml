@@ -133,10 +133,12 @@ jobs:
             issue-${{ steps.issue-number.outputs.number }}-implementation-plan.md
             issue-${{ steps.issue-number.outputs.number }}-analysis.json
           retention-days: 30
+        continue-on-error: true
             
       - name: Generate Implementation Summary
         env:
           ISSUE_NUMBER: ${{ steps.issue-number.outputs.number }}
+        continue-on-error: true
         run: |
           # Generate comprehensive implementation summary
           echo "## 🤖 Issue Implementation Analysis for Issue #$ISSUE_NUMBER" >> $GITHUB_STEP_SUMMARY

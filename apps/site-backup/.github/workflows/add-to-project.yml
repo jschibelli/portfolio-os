@@ -20,7 +20,24 @@ on:
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
+    # Only run if the required secrets are available
+    if: ${{ secrets.PORTFOLIO_PROJECT_URL != '' && secrets.PORTFOLIO_PROJECT_TOKEN != '' }}
     steps:
+      - name: Validate environment
+        run: |
+          echo "Validating required environment variables..."
+          if [ -z "${{ secrets.PORTFOLIO_PROJECT_URL }}" ]; then
+            echo "Error: PORTFOLIO_PROJECT_URL secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.PORTFOLIO_PROJECT_TOKEN }}" ]; then
+            echo "Error: PORTFOLIO_PROJECT_TOKEN secret is not set"
+            exit 1
+          fi
+          echo "Environment validation passed"
+          echo "Project URL: ${{ secrets.PORTFOLIO_PROJECT_URL }}"
+          echo "Token available: ${{ secrets.PORTFOLIO_PROJECT_TOKEN != '' }}"
+
       - name: Add to project
         id: add-to-project
         uses: actions/add-to-project@v0.6.0

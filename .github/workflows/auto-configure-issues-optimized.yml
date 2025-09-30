@@ -92,10 +92,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ms_id=$(gh api repos/${{ github.repository }}/milestones --paginate -q '.[] | select(.title=="${{ steps.vars.outputs.milestone }}").number')
+          set -e
+          echo "Setting milestone: ${{ steps.vars.outputs.milestone }}"
+          
+          # Get existing milestone ID
+          ms_id=$(gh api repos/${{ github.repository }}/milestones --paginate -q '.[] | select(.title=="${{ steps.vars.outputs.milestone }}").number' || echo "")
+          
+          # Create milestone if it doesn't exist
           if [ -z "$ms_id" ]; then
+            echo "Creating new milestone: ${{ steps.vars.outputs.milestone }}"
             ms_id=$(gh api repos/${{ github.repository }}/milestones -f title='${{ steps.vars.outputs.milestone }}' -f state=open -q .number)
           fi
-          gh issue edit ${{ steps.vars.outputs.issue }} --milestone "$ms_id"
+          
+          # Set milestone on issue
+          if [ -n "$ms_id" ]; then
+            gh issue edit ${{ steps.vars.outputs.issue }} --milestone "$ms_id"
+            echo "Successfully set milestone $ms_id on issue ${{ steps.vars.outputs.issue }}"
+          else
+            echo "Warning: Could not create or find milestone '${{ steps.vars.outputs.milestone }}'"
+            exit 1
+          fi
 
 
