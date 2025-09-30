@@ -9,6 +9,34 @@ This directory contains essential automation scripts for the Portfolio OS projec
 - **`auto-configure-issue.ps1`** - Full issue configuration with custom options
 - **`auto-configure-pr.ps1`** - PR configuration and project field updates
 
+### **Project Management**
+- **`add-all-issues-to-project.ps1`** - Add all issues to project
+- **`add-and-configure-blog-issues.ps1`** - Configure blog issues
+- **`add-and-set-status-ready.ps1`** - Set status to ready
+- **`add-blog-issues-to-project.ps1`** - Add blog issues to project
+- **`add-issues-to-project.ps1`** - Add issues to project
+- **`add-labels-milestone-to-all-issues.ps1`** - Add labels and milestones
+
+### **Issue Configuration**
+- **`configure-all-blog-issues.ps1`** - Configure all blog issues
+- **`configure-blog-issues.ps1`** - Configure blog issues
+- **`configure-blog-issues-complete.ps1`** - Complete blog configuration
+- **`configure-project-fields-manual.ps1`** - Manual project field configuration
+- **`create-remaining-issues.ps1`** - Create remaining issues
+
+### **Status Management**
+- **`set-all-issues-status-ready.ps1`** - Set all issues to ready status
+- **`set-project-status-direct.ps1`** - Set project status directly
+- **`set-status-ready-cli.ps1`** - Set status ready via CLI
+
+### **Branch Management**
+- **`rename-branches-with-issue-numbers.ps1`** - Rename branches
+- **`update-issue-branch-names.ps1`** - Update issue branch names
+- **`update-issue-branch-names-simple.ps1`** - Simple branch name updates
+
+### **Project Setup**
+- **`configure_project_20.sh`** - GitHub Project #20 configuration script
+
 ## 🚀 **Quick Start**
 
 ### **Issue Configuration (Recommended)**
