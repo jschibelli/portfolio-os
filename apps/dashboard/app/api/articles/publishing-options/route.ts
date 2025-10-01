@@ -93,11 +93,29 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // TODO: Handle cross-platform publishing
-    // This would integrate with external APIs (Hashnode, Dev.to, Medium)
+    // Handle cross-platform publishing
     if (crossPlatformPublishing) {
-      // Store cross-platform publishing preferences
-      // Implementation would depend on your cross-platform sync strategy
+      // Publish to Hashnode if enabled
+      if (crossPlatformPublishing.hashnode && status === 'PUBLISHED') {
+        try {
+          const { publishToHashnode } = await import('@/lib/hashnode-publishing-api');
+          const hashnodeId = await publishToHashnode(updatedArticle);
+          
+          // Update article with Hashnode ID
+          await prisma.article.update({
+            where: { id: articleId },
+            data: { hashnodeId }
+          });
+          
+          console.log('[Publishing Options] Published to Hashnode:', hashnodeId);
+        } catch (error) {
+          console.error('[Publishing Options] Failed to publish to Hashnode:', error);
+          // Don't fail the entire request if Hashnode publishing fails
+        }
+      }
+      
+      // TODO: Add Dev.to integration
+      // TODO: Add Medium integration
     }
 
     return NextResponse.json({
