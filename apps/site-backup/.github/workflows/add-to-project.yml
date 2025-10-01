@@ -35,6 +35,8 @@ jobs:
             exit 1
           fi
           echo "Environment validation passed"
+          echo "Project URL: ${{ secrets.PORTFOLIO_PROJECT_URL }}"
+          echo "Token available: ${{ secrets.PORTFOLIO_PROJECT_TOKEN != '' }}"
 
       - name: Add to project
         id: add-to-project
