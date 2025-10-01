@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { format } from 'date-fns'
 import { 
   Calendar, 
@@ -60,6 +60,9 @@ interface PublishingPanelProps {
   onSave?: (options: PublishingOptions) => Promise<void>
   onPreview?: () => void
   series?: Series[]
+  articleTitle?: string
+  articleSlug?: string
+  articleContent?: string
   className?: string
 }
 
@@ -84,6 +87,9 @@ export function PublishingPanel({
   onSave,
   onPreview,
   series = [],
+  articleTitle = '',
+  articleSlug = '',
+  articleContent = '',
   className
 }: PublishingPanelProps) {
   const [options, setOptions] = useState<PublishingOptions>({
@@ -111,6 +117,25 @@ export function PublishingPanel({
     series.find(s => s.id === options.seriesId) || null
   )
   const [readingTime, setReadingTime] = useState(options.readingMinutes)
+
+  // Calculate reading time from content
+  useEffect(() => {
+    if (articleContent) {
+      // Average reading speed: 200-250 words per minute
+      // We'll use 225 as a middle ground
+      const words = articleContent.split(/\s+/).length
+      const minutes = Math.ceil(words / 225)
+      setReadingTime(minutes)
+      setOptions(prev => ({ ...prev, readingMinutes: minutes }))
+    }
+  }, [articleContent])
+
+  // Generate publication URL preview
+  const getPublicationUrl = () => {
+    if (!articleSlug) return 'https://example.com/blog/your-article-slug'
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://example.com'
+    return `${baseUrl}/blog/${articleSlug}`
+  }
 
   // Handle option changes
   const handleOptionChange = useCallback((key: keyof PublishingOptions, value: any) => {
@@ -376,7 +401,7 @@ export function PublishingPanel({
             Reading Time
           </CardTitle>
           <CardDescription>
-            Estimated reading time in minutes
+            Estimated reading time in minutes {articleContent && '(auto-calculated)'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -389,7 +414,37 @@ export function PublishingPanel({
               className="w-20"
             />
             <span className="text-sm text-gray-600 dark:text-gray-400">minutes</span>
+            {articleContent && (
+              <span className="text-xs text-blue-600">
+                (Based on {articleContent.split(/\s+/).length} words)
+              </span>
+            )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* URL Preview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Link className="w-5 h-5" />
+            Publication URL
+          </CardTitle>
+          <CardDescription>
+            Preview of your article's published URL
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+            <code className="text-sm text-blue-600 break-all">
+              {getPublicationUrl()}
+            </code>
+          </div>
+          {articleTitle && (
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              {articleTitle}
+            </p>
+          )}
         </CardContent>
       </Card>
 

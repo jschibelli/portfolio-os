@@ -55,6 +55,7 @@ import { BlockEditor } from './BlockEditor'
 import { SEOPanel, SEOData } from './SEOPanel'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { DualModeEditor } from './DualModeEditor'
+import { PublishingPanel } from './PublishingPanel'
 import { 
   Save,
   Eye,
@@ -66,7 +67,8 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronUp,
-  Search as SearchIcon
+  Search as SearchIcon,
+  Send as SendIcon
 } from 'lucide-react'
 
 interface ArticleEditorProps {
@@ -147,6 +149,26 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     twitterImage: initialData?.twitterImage,
     focusKeyword: initialData?.focusKeyword,
     seoScore: initialData?.seoScore,
+  })
+
+  // Publishing panel state
+  const [publishingExpanded, setPublishingExpanded] = useState(false)
+  const [publishingOptions, setPublishingOptions] = useState({
+    status: 'DRAFT' as 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'ARCHIVED',
+    visibility: 'PUBLIC' as 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'MEMBERS_ONLY',
+    scheduledAt: undefined as Date | undefined,
+    featured: false,
+    allowComments: true,
+    allowReactions: true,
+    paywalled: false,
+    readingMinutes: 0,
+    seriesId: undefined as string | undefined,
+    seriesPosition: undefined as number | undefined,
+    crossPlatformPublishing: {
+      hashnode: false,
+      dev: false,
+      medium: false
+    }
   })
   
   // Article data state for the new structure
@@ -737,6 +759,51 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                       articleTitle={title}
                       articleSlug={slug}
                       onChange={setSeoData}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Publishing Panel */}
+              <div className="border border-gray-200 rounded-lg mt-6">
+                <button
+                  onClick={() => setPublishingExpanded(!publishingExpanded)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <SendIcon className="w-5 h-5 text-green-600" />
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        Publishing Settings
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Control how and when your article is published
+                        <span className="ml-2 text-green-600 font-medium">
+                          • Status: {publishingOptions.status}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  {publishingExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+                
+                {publishingExpanded && (
+                  <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+                    <PublishingPanel
+                      articleId={initialData?.id}
+                      initialData={publishingOptions}
+                      articleTitle={title}
+                      articleSlug={slug}
+                      articleContent={markdownContent || tiptapContent || JSON.stringify(blocks)}
+                      onSave={async (options) => {
+                        setPublishingOptions(options)
+                        // Save will be handled by the publishing API endpoint
+                      }}
+                      series={[]} // TODO: Load actual series from API
                     />
                   </div>
                 )}
