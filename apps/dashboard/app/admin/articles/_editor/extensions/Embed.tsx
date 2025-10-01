@@ -1,5 +1,6 @@
 // /app/(admin)/admin/articles/_editor/extensions/Embed.tsx
-// Embed extension for YouTube and Twitter embeds
+// Comprehensive Embed extension for all major platforms (Phase 1: Developer Embeds)
+// Supports: YouTube, Twitter, GitHub Gist, CodePen, CodeSandbox, and generic oEmbed
 
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
@@ -8,6 +9,23 @@ import { EmbedProvider } from '@/lib/types/article'
 export interface EmbedOptions {
   HTMLAttributes: Record<string, any>
 }
+
+/**
+ * Supported embed providers for Phase 1
+ * - youtube: YouTube videos
+ * - twitter: Twitter/X posts
+ * - github-gist: GitHub Gists with syntax highlighting
+ * - codepen: CodePen demos
+ * - codesandbox: CodeSandbox projects
+ * - generic: Generic oEmbed protocol support
+ */
+export type ExtendedEmbedProvider = 
+  | 'youtube' 
+  | 'twitter' 
+  | 'github-gist' 
+  | 'codepen' 
+  | 'codesandbox' 
+  | 'generic'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -102,7 +120,7 @@ export const Embed = Node.create<EmbedOptions>({
 })
 
 // Embed Node View Component
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 
 interface EmbedNodeViewProps {
@@ -120,61 +138,279 @@ interface EmbedNodeViewProps {
 function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [url, setUrl] = useState(node.attrs.url || '')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [oembedData, setOembedData] = useState<any>(null)
 
   const handleUrlChange = (newUrl: string) => {
     setUrl(newUrl)
     
-    // Extract ID based on provider
+    // Extract ID based on provider with comprehensive platform support
     let newId = ''
-    if (node.attrs.provider === 'youtube') {
-      const videoId = extractYouTubeId(newUrl)
-      if (videoId) {
-        newId = videoId
+    let metadata: any = {}
+    
+    switch (node.attrs.provider) {
+      case 'youtube': {
+        const videoId = extractYouTubeId(newUrl)
+        if (videoId) newId = videoId
+        break
       }
-    } else if (node.attrs.provider === 'tweet') {
-      const tweetId = extractTweetId(newUrl)
-      if (tweetId) {
-        newId = tweetId
+      case 'tweet': {
+        const tweetId = extractTweetId(newUrl)
+        if (tweetId) newId = tweetId
+        break
+      }
+      case 'github-gist': {
+        const gistData = extractGitHubGistId(newUrl)
+        if (gistData) {
+          newId = gistData.id
+          if (gistData.file) metadata.file = gistData.file
+        }
+        break
+      }
+      case 'codepen': {
+        const codepenData = extractCodePenId(newUrl)
+        if (codepenData) {
+          newId = codepenData.id
+          if (codepenData.user) metadata.user = codepenData.user
+          if (codepenData.tab) metadata.tab = codepenData.tab
+        }
+        break
+      }
+      case 'codesandbox': {
+        const sandboxId = extractCodeSandboxId(newUrl)
+        if (sandboxId) newId = sandboxId
+        break
+      }
+      case 'generic': {
+        // For generic embeds, use the full URL as ID
+        newId = newUrl
+        break
       }
     }
     
-    updateAttributes({ url: newUrl, id: newId })
+    updateAttributes({ url: newUrl, id: newId, ...metadata })
   }
 
   const handleProviderChange = (provider: EmbedProvider) => {
     updateAttributes({ provider })
+    // Reset oEmbed data when provider changes
+    setOembedData(null)
+    setError(null)
   }
 
+  /**
+   * Fetch oEmbed data for generic embeds
+   * Automatically loads preview when URL is set and provider is generic
+   */
+  useEffect(() => {
+    if (node.attrs.provider === 'generic' && node.attrs.url && !isEditing) {
+      const fetchOEmbed = async () => {
+        setIsLoading(true)
+        setError(null)
+        
+        try {
+          const response = await fetch(`/api/embed/oembed?url=${encodeURIComponent(node.attrs.url)}`)
+          const data = await response.json()
+          
+          if (data.success) {
+            setOembedData(data.data)
+          } else {
+            setError(data.error || 'Failed to load embed')
+          }
+        } catch (err) {
+          setError('Network error while loading embed')
+          console.error('oEmbed fetch error:', err)
+        } finally {
+          setIsLoading(false)
+        }
+      }
+      
+      fetchOEmbed()
+    }
+  }, [node.attrs.provider, node.attrs.url, isEditing])
+
+  /**
+   * Render embed based on provider
+   * Comprehensive renderer for all supported platforms with responsive design
+   */
   const renderEmbed = () => {
     const provider = node.attrs.provider || 'youtube'
+    const attrs = node.attrs
+    
     switch (provider) {
       case 'youtube':
         return (
-          <div className="relative w-full h-0 pb-[56.25%] my-6">
+          <div className="relative w-full h-0 pb-[56.25%] my-6 bg-black rounded-lg overflow-hidden">
             <iframe
-              className="absolute top-0 left-0 w-full h-full rounded-lg"
-              src={`https://www.youtube.com/embed/${node.attrs.id}`}
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://www.youtube.com/embed/${attrs.id}?rel=0`}
               title="YouTube video player"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
+              loading="lazy"
             />
           </div>
         )
+        
       case 'tweet':
         return (
           <div className="my-6 flex justify-center">
-            <blockquote className="twitter-tweet">
-              <a href={`https://twitter.com/x/status/${node.attrs.id}`}>
+            <blockquote className="twitter-tweet" data-theme="light">
+              <a href={`https://twitter.com/x/status/${attrs.id}`}>
                 Loading tweet...
               </a>
             </blockquote>
+            <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
           </div>
         )
+        
+      case 'github-gist':
+        return (
+          <div className="my-6">
+            <div className="border border-gray-300 rounded-lg overflow-hidden">
+              <script src={`https://gist.github.com/${attrs.id}.js${attrs.file ? `?file=${attrs.file}` : ''}`}></script>
+              <noscript>
+                <div className="p-4 bg-gray-50">
+                  <a 
+                    href={`https://gist.github.com/${attrs.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View this gist on GitHub
+                  </a>
+                </div>
+              </noscript>
+            </div>
+          </div>
+        )
+        
+      case 'codepen':
+        return (
+          <div className="my-6">
+            <div className="relative w-full h-0 pb-[60%] bg-gray-100 rounded-lg overflow-hidden">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                scrolling="no"
+                title="CodePen Embed"
+                src={`https://codepen.io/${attrs.user || 'team'}/embed/${attrs.id}?default-tab=${attrs.tab || 'result'}&theme-id=dark`}
+                frameBorder="0"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
+            <div className="text-center mt-2">
+              <a 
+                href={`https://codepen.io/${attrs.user || 'team'}/pen/${attrs.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                See the Pen on CodePen
+              </a>
+            </div>
+          </div>
+        )
+        
+      case 'codesandbox':
+        return (
+          <div className="my-6">
+            <div className="relative w-full h-0 pb-[75%] bg-black rounded-lg overflow-hidden">
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src={`https://codesandbox.io/embed/${attrs.id}?fontsize=14&hidenavigation=1&theme=dark&view=preview`}
+                title="CodeSandbox Embed"
+                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+                loading="lazy"
+              />
+            </div>
+            <div className="text-center mt-2">
+              <a 
+                href={`https://codesandbox.io/s/${attrs.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Open in CodeSandbox
+              </a>
+            </div>
+          </div>
+        )
+        
+      case 'generic':
+        // Render oEmbed content if available
+        if (isLoading) {
+          return (
+            <div className="my-6 p-8 border border-gray-300 rounded-lg bg-white flex items-center justify-center">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                <span className="text-gray-600">Loading embed preview...</span>
+              </div>
+            </div>
+          )
+        }
+        
+        if (error) {
+          return (
+            <div className="my-6 p-4 border border-red-300 rounded-lg bg-red-50">
+              <p className="text-sm text-red-700 font-medium">Failed to load embed</p>
+              <p className="text-xs text-red-600 mt-1">{error}</p>
+              <a 
+                href={attrs.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline text-sm break-all mt-2 block"
+              >
+                {attrs.url}
+              </a>
+            </div>
+          )
+        }
+        
+        if (oembedData?.html) {
+          return (
+            <div className="my-6">
+              <div 
+                className="border border-gray-300 rounded-lg overflow-hidden"
+                dangerouslySetInnerHTML={{ __html: oembedData.html }}
+              />
+              {oembedData.title && (
+                <p className="text-sm text-gray-600 mt-2 text-center">
+                  {oembedData.title}
+                  {oembedData.author && ` by ${oembedData.author}`}
+                </p>
+              )}
+            </div>
+          )
+        }
+        
+        return (
+          <div className="my-6">
+            <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+              <p className="text-sm text-gray-700 mb-2 font-medium">🌐 Generic Embed</p>
+              <a 
+                href={attrs.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline text-sm break-all"
+              >
+                {attrs.url}
+              </a>
+              <p className="text-xs text-gray-500 mt-2">
+                oEmbed preview will load when published
+              </p>
+            </div>
+          </div>
+        )
+        
       default:
         return (
           <div className="bg-stone-100 border border-stone-200 rounded-lg p-4 my-6">
             <p className="text-stone-600">Unknown embed type: {provider}</p>
+            <p className="text-xs text-stone-500 mt-1">URL: {attrs.url}</p>
           </div>
         )
     }
@@ -194,8 +430,12 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
                 onChange={(e) => handleProviderChange(e.target.value as EmbedProvider)}
                 className="w-full px-3 py-2 border border-stone-300 rounded-md text-sm"
               >
-                <option value="youtube">YouTube</option>
-                <option value="tweet">Twitter</option>
+                <option value="youtube">📺 YouTube</option>
+                <option value="tweet">🐦 Twitter/X</option>
+                <option value="github-gist">💻 GitHub Gist</option>
+                <option value="codepen">🖊️ CodePen</option>
+                <option value="codesandbox">📦 CodeSandbox</option>
+                <option value="generic">🌐 Generic (oEmbed)</option>
               </select>
             </div>
             <div>
@@ -279,14 +519,110 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
   )
 }
 
+/**
+ * URL Extraction Utilities
+ * Robust extractors for each embed platform with comprehensive pattern matching
+ */
+
+/**
+ * Extract YouTube video ID from various URL formats
+ * Supports: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID, etc.
+ */
 function extractYouTubeId(url: string): string | null {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
-  const match = url.match(regex)
-  return match ? match[1] : null
+  const patterns = [
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/ // Direct ID
+  ]
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
 }
 
+/**
+ * Extract Twitter/X post ID from URL
+ * Supports: twitter.com and x.com URLs
+ */
 function extractTweetId(url: string): string | null {
-  const regex = /twitter\.com\/\w+\/status\/(\d+)/
-  const match = url.match(regex)
-  return match ? match[1] : null
+  const patterns = [
+    /(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/,
+    /^(\d+)$/ // Direct ID
+  ]
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
+}
+
+/**
+ * Extract GitHub Gist ID and optional file from URL
+ * Supports: gist.github.com/username/gist-id, gist-id only
+ * Returns: { id: string, file?: string }
+ */
+function extractGitHubGistId(url: string): { id: string; file?: string } | null {
+  // Full URL: https://gist.github.com/username/abc123def456#file-example-js
+  const fullPattern = /gist\.github\.com\/[\w-]+\/([a-f0-9]+)(?:#file-(.+))?/
+  const fullMatch = url.match(fullPattern)
+  if (fullMatch) {
+    return {
+      id: fullMatch[1],
+      file: fullMatch[2]
+    }
+  }
+  
+  // Just ID: abc123def456
+  const idPattern = /^([a-f0-9]{32}|[a-f0-9]{20})$/
+  const idMatch = url.match(idPattern)
+  if (idMatch) {
+    return { id: idMatch[1] }
+  }
+  
+  return null
+}
+
+/**
+ * Extract CodePen ID and optional tab from URL
+ * Supports: codepen.io/username/pen/ID, ID only
+ */
+function extractCodePenId(url: string): { id: string; user?: string; tab?: string } | null {
+  // Full URL: https://codepen.io/username/pen/abcDEF?default-tab=html,result
+  const fullPattern = /codepen\.io\/([\w-]+)\/(?:pen|embed)\/([a-zA-Z]{6,10})(?:\?default-tab=([^&]+))?/
+  const fullMatch = url.match(fullPattern)
+  if (fullMatch) {
+    return {
+      user: fullMatch[1],
+      id: fullMatch[2],
+      tab: fullMatch[3] || 'result'
+    }
+  }
+  
+  // Just ID
+  const idPattern = /^([a-zA-Z]{6,10})$/
+  const idMatch = url.match(idPattern)
+  if (idMatch) {
+    return { id: idMatch[1], tab: 'result' }
+  }
+  
+  return null
+}
+
+/**
+ * Extract CodeSandbox ID from URL
+ * Supports: codesandbox.io/s/ID, codesandbox.io/embed/ID
+ */
+function extractCodeSandboxId(url: string): string | null {
+  const patterns = [
+    /codesandbox\.io\/(?:s|embed)\/([a-z0-9-]+)/,
+    /^([a-z0-9-]+)$/ // Direct ID
+  ]
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
 }

@@ -131,16 +131,18 @@ export const simpleSlashCommands: SlashCommand[] = [
             type: 'embed',
             attrs: { provider: 'youtube', url, id: videoId }
           }).run()
+        } else {
+          alert('Invalid YouTube URL. Please try again.')
         }
       }
     },
   },
   {
     title: 'Tweet',
-    description: 'Embed a Twitter post',
+    description: 'Embed a Twitter/X post',
     icon: '🐦',
     command: (editor) => {
-      const url = window.prompt('Enter Tweet URL:')
+      const url = window.prompt('Enter Twitter/X post URL:')
       if (url) {
         const tweetId = extractTweetId(url)
         if (tweetId) {
@@ -148,6 +150,76 @@ export const simpleSlashCommands: SlashCommand[] = [
             type: 'embed',
             attrs: { provider: 'tweet', url, id: tweetId }
           }).run()
+        } else {
+          alert('Invalid Twitter URL. Please try again.')
+        }
+      }
+    },
+  },
+  {
+    title: 'GitHub Gist',
+    description: 'Embed a GitHub Gist',
+    icon: '💻',
+    command: (editor) => {
+      const url = window.prompt('Enter GitHub Gist URL:')
+      if (url) {
+        const gistData = extractGitHubGistId(url)
+        if (gistData) {
+          editor.chain().focus().insertContent({
+            type: 'embed',
+            attrs: { 
+              provider: 'github-gist', 
+              url, 
+              id: gistData.id,
+              file: gistData.file 
+            }
+          }).run()
+        } else {
+          alert('Invalid GitHub Gist URL. Please try again.')
+        }
+      }
+    },
+  },
+  {
+    title: 'CodePen',
+    description: 'Embed a CodePen demo',
+    icon: '🖊️',
+    command: (editor) => {
+      const url = window.prompt('Enter CodePen URL:')
+      if (url) {
+        const penData = extractCodePenId(url)
+        if (penData) {
+          editor.chain().focus().insertContent({
+            type: 'embed',
+            attrs: { 
+              provider: 'codepen', 
+              url, 
+              id: penData.id,
+              user: penData.user,
+              tab: penData.tab 
+            }
+          }).run()
+        } else {
+          alert('Invalid CodePen URL. Please try again.')
+        }
+      }
+    },
+  },
+  {
+    title: 'CodeSandbox',
+    description: 'Embed a CodeSandbox project',
+    icon: '📦',
+    command: (editor) => {
+      const url = window.prompt('Enter CodeSandbox URL:')
+      if (url) {
+        const sandboxId = extractCodeSandboxId(url)
+        if (sandboxId) {
+          editor.chain().focus().insertContent({
+            type: 'embed',
+            attrs: { provider: 'codesandbox', url, id: sandboxId }
+          }).run()
+        } else {
+          alert('Invalid CodeSandbox URL. Please try again.')
         }
       }
     },
@@ -164,14 +236,72 @@ export const simpleSlashCommands: SlashCommand[] = [
   },
 ]
 
+/**
+ * URL Extraction Utilities - Shared with Embed extension
+ */
+
 function extractYouTubeId(url: string): string | null {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
-  const match = url.match(regex)
-  return match ? match[1] : null
+  const patterns = [
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ]
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
 }
 
 function extractTweetId(url: string): string | null {
-  const regex = /twitter\.com\/\w+\/status\/(\d+)/
-  const match = url.match(regex)
-  return match ? match[1] : null
+  const patterns = [
+    /(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/,
+    /^(\d+)$/
+  ]
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
+}
+
+function extractGitHubGistId(url: string): { id: string; file?: string } | null {
+  const fullPattern = /gist\.github\.com\/[\w-]+\/([a-f0-9]+)(?:#file-(.+))?/
+  const fullMatch = url.match(fullPattern)
+  if (fullMatch) {
+    return { id: fullMatch[1], file: fullMatch[2] }
+  }
+  
+  const idPattern = /^([a-f0-9]{32}|[a-f0-9]{20})$/
+  const idMatch = url.match(idPattern)
+  if (idMatch) {
+    return { id: idMatch[1] }
+  }
+  return null
+}
+
+function extractCodePenId(url: string): { id: string; user?: string; tab?: string } | null {
+  const fullPattern = /codepen\.io\/([\w-]+)\/(?:pen|embed)\/([a-zA-Z]{6,10})(?:\?default-tab=([^&]+))?/
+  const fullMatch = url.match(fullPattern)
+  if (fullMatch) {
+    return { user: fullMatch[1], id: fullMatch[2], tab: fullMatch[3] || 'result' }
+  }
+  
+  const idPattern = /^([a-zA-Z]{6,10})$/
+  const idMatch = url.match(idPattern)
+  if (idMatch) {
+    return { id: idMatch[1], tab: 'result' }
+  }
+  return null
+}
+
+function extractCodeSandboxId(url: string): string | null {
+  const patterns = [
+    /codesandbox\.io\/(?:s|embed)\/([a-z0-9-]+)/,
+    /^([a-z0-9-]+)$/
+  ]
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
 }
