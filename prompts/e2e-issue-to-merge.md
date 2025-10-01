@@ -1,4 +1,4 @@
-Automate end-to-end: <URL>. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+Automate end-to-end: https://github.com/jschibelli/portfolio-os/pull/223#issue-3471917573. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
 **For Issues:**
 - Use `.\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> -Preset blog -AddToProject`
