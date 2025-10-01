@@ -77,7 +77,11 @@ function Get-ProjectFieldValue {
         if ($jsonData.data.node.fieldValues.nodes) {
             foreach ($fieldValue in $jsonData.data.node.fieldValues.nodes) {
                 if ($fieldValue.field.id -eq $FieldId) {
-                    return $fieldValue.name ?? $fieldValue.text
+                    if ($fieldValue.name) {
+                        return $fieldValue.name
+                    } else {
+                        return $fieldValue.text
+                    }
                 }
             }
         }

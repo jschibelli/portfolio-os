@@ -43,6 +43,9 @@ if (Test-Path $sharedPath) {
     exit 1
 }
 
+# Dot-source the functions to make them available
+. $sharedPath
+
 # Validate authentication
 if (-not (Test-GitHubAuth)) {
     exit 1
@@ -172,19 +175,19 @@ function Invoke-AutoResponse {
             
             # Generate responses based on comment content
             if ($body -match "error|bug") {
-                $response = "Thanks for catching this error! I'll fix it right away. 👍"
+                $response = "Thanks for catching this error! I will fix it right away."
             }
             elseif ($body -match "security") {
-                $response = "Good security catch! I'll address this security concern immediately. 🔒"
+                $response = "Good security catch! I will address this security concern immediately."
             }
             elseif ($body -match "performance") {
-                $response = "Great point about performance! I'll optimize this code. ⚡"
+                $response = "Great point about performance! I will optimize this code."
             }
             elseif ($body -match "style|format") {
-                $response = "I'll clean up the formatting. Thanks for the suggestion! ✨"
+                $response = "I will clean up the formatting. Thanks for the suggestion!"
             }
             else {
-                $response = "Thanks for the feedback! I'll review and address this. 📝"
+                $response = "Thanks for the feedback! I will review and address this."
             }
             
             if ($response -and -not $DryRun) {
@@ -214,9 +217,9 @@ function Invoke-QualityCheck {
         Write-ColorOutput "  Running ESLint..." "White"
         $lintResult = npm run lint 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-ColorOutput "  ✅ Linting passed" "Green"
+            Write-ColorOutput "  [PASS] Linting passed" "Green"
         } else {
-            Write-ColorOutput "  ❌ Linting failed" "Red"
+            Write-ColorOutput "  [FAIL] Linting failed" "Red"
             Write-ColorOutput $lintResult "Red"
         }
         
@@ -224,9 +227,9 @@ function Invoke-QualityCheck {
         Write-ColorOutput "  Running TypeScript check..." "White"
         $typeResult = npm run type-check 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-ColorOutput "  ✅ Type checking passed" "Green"
+            Write-ColorOutput "  [PASS] Type checking passed" "Green"
         } else {
-            Write-ColorOutput "  ❌ Type checking failed" "Red"
+            Write-ColorOutput "  [FAIL] Type checking failed" "Red"
             Write-ColorOutput $typeResult "Red"
         }
         
