@@ -3,13 +3,18 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { 
   Upload, 
+  X, 
   Search, 
   Grid3x3, 
   List, 
   Trash2, 
+  Download,
   Image as ImageIcon,
   Check,
-  Loader2
+  Loader2,
+  ZoomIn,
+  Tag,
+  Filter
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -99,7 +104,7 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
       if (response.ok) {
         const data = await response.json()
         // Transform API data to MediaItem format
-        const items: MediaItem[] = data.map((item: Record<string, unknown>) => ({
+        const items: MediaItem[] = data.map((item: any) => ({
           id: item.id,
           url: item.url,
           alt: item.alt,
@@ -114,8 +119,7 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
         setMedia(items)
       }
     } catch (error) {
-      // Silently fail - user can retry with upload button
-      void error
+      console.error('Failed to load media:', error)
     }
   }
 
@@ -211,10 +215,10 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
         setUploadProgress(Math.round((completed / totalFiles) * 100))
       }
 
-      // Upload complete
+      console.log(`[MediaManager] Uploaded ${completed} files successfully`)
     } catch (error) {
-      // Show user-friendly error
-      alert(error instanceof Error ? error.message : 'Failed to upload one or more files')
+      console.error('Upload error:', error)
+      alert('Failed to upload one or more files')
     } finally {
       setIsUploading(false)
       setUploadProgress(0)
@@ -253,8 +257,10 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
       // TODO: Implement actual delete API
       setMedia(prev => prev.filter(item => !selectedItems.has(item.id)))
       setSelectedItems(new Set())
+      console.log(`[MediaManager] Deleted ${selectedItems.size} items`)
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to delete items')
+      console.error('Delete error:', error)
+      alert('Failed to delete items')
     }
   }
 
