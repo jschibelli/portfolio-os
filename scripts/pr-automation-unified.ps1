@@ -1,5 +1,8 @@
 # Unified PR Automation Script - Combines all PR automation functionality
-# Usage: .\scripts\pr-automation-unified.ps1 -PRNumber <PR_NUMBER> [-Action <ACTION>] [-Watch] [-Analyze] [-Respond] [-Quality] [-Docs]
+# Usage: .\scripts\pr-automation-unified.ps1 -PRNumber <PR_NUMBER> [-Action <ACTION>] [-Watch] [-Analyze] [-Respond] [-Quality] [-Docs] [-AutoFix]
+# 
+# CRITICAL: Base branch MUST be 'develop' - automation will stop if base branch is 'main'
+# Use -AutoFix to automatically change base branch to 'develop' if incorrect
 
 param(
     [Parameter(Mandatory=$true)]
@@ -26,6 +29,9 @@ param(
     
     [Parameter(Mandatory=$false)]
     [switch]$DryRun,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$AutoFix,
     
     [Parameter(Mandatory=$false)]
     [int]$Interval = 30,
@@ -68,6 +74,7 @@ function Show-PRStatus {
         Write-ColorOutput "PR #$PRNumber Status:" "Green"
         Write-ColorOutput "  Title: $($prInfo.title)" "White"
         Write-ColorOutput "  State: $($prInfo.state)" "White"
+        Write-ColorOutput "  Base Branch: $($prInfo.base.ref)" "White"
         Write-ColorOutput "  Author: $($prInfo.user.login)" "White"
         Write-ColorOutput "  URL: $($prInfo.html_url)" "White"
         
@@ -80,6 +87,47 @@ function Show-PRStatus {
     }
     catch {
         Write-ColorOutput "Failed to get PR status" "Red"
+    }
+}
+
+function Test-BaseBranch {
+    param([string]$PRNumber, [switch]$AutoFix)
+    
+    try {
+        $prInfo = Get-PRInfo -PRNumber $PRNumber
+        $baseBranch = $prInfo.base.ref
+        
+        Write-ColorOutput "Checking base branch: $baseBranch" "Yellow"
+        
+        if ($baseBranch -ne "develop") {
+            Write-ColorOutput "❌ CRITICAL ERROR: Base branch is '$baseBranch' but must be 'develop'" "Red"
+            
+            if ($AutoFix) {
+                Write-ColorOutput "🔧 Attempting to auto-fix base branch to 'develop'..." "Yellow"
+                try {
+                    gh pr edit $PRNumber --base develop
+                    Write-ColorOutput "✅ Base branch automatically changed to 'develop'" "Green"
+                    return $true
+                }
+                catch {
+                    Write-ColorOutput "❌ Failed to auto-fix base branch: $($_.Exception.Message)" "Red"
+                    Write-ColorOutput "Please manually update the PR base branch and try again" "Red"
+                    return $false
+                }
+            } else {
+                Write-ColorOutput "Automation cannot proceed until base branch is changed to 'develop'" "Red"
+                Write-ColorOutput "Use -AutoFix parameter to automatically correct the base branch" "Yellow"
+                Write-ColorOutput "Or manually update the PR base branch and try again" "Red"
+                return $false
+            }
+        }
+        
+        Write-ColorOutput "✅ Base branch verification passed: $baseBranch" "Green"
+        return $true
+    }
+    catch {
+        Write-ColorOutput "Failed to verify base branch: $($_.Exception.Message)" "Red"
+        return $false
     }
 }
 
@@ -274,6 +322,19 @@ function Start-WatchMode {
 # Main execution
 Show-Banner
 
+# CRITICAL: Verify base branch is 'develop' before proceeding
+Write-ColorOutput "🔍 Verifying base branch requirement..." "Yellow"
+$baseBranchValid = Test-BaseBranch -PRNumber $PRNumber -AutoFix:$AutoFix
+
+if (-not $baseBranchValid) {
+    Write-ColorOutput "" "White"
+    Write-ColorOutput "❌ AUTOMATION STOPPED: Base branch must be 'develop'" "Red"
+    Write-ColorOutput "Please update the PR base branch and run the automation again" "Red"
+    exit 1
+}
+
+Write-ColorOutput "" "White"
+
 # Determine actions to run
 $actions = @()
 if ($Action -eq "all") {
@@ -308,4 +369,4 @@ foreach ($action in $actions) {
     }
 }
 
-Write-ColorOutput "Automation complete!" "Green"
+Write-ColorOutput "✅ Automation complete! (Base branch verified: develop)" "Green"
