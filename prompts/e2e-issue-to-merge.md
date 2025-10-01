@@ -4,7 +4,7 @@ Automate end-to-end: https://github.com/jschibelli/portfolio-os/pull/223#issue-3
 - Use `.\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> -Preset blog -AddToProject`
 - Auto-configure project fields (Status=In progress, Priority=P1, Size=M, App=Portfolio Site, Area=Frontend, Assignee=jschibelli)
 - Analyze requirements and generate implementation plan
-- Create branch with issue number prefix
+- **CRITICAL**: Create branch from `develop` base using `.\scripts\create-branch-from-develop.ps1 -IssueNumber <NUMBER>`
 - Track progress and update status
 
 **For PRs:**

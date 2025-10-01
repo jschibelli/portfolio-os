@@ -184,8 +184,9 @@ Resolves #$IssueNumber
     # Commit changes
     git commit -m $commitMessage
     
-    # Push to main branch
-    git push origin main
+    # Push to current branch (should be based on develop)
+    $currentBranch = git branch --show-current
+    git push origin $currentBranch
     
     Write-Host "✅ Changes committed and pushed successfully" -ForegroundColor Green
 }

@@ -53,13 +53,14 @@ When `TYPE` can be:
 
 For the initial start, fork the project and use git clone command to download the repository to your computer. A standard procedure for working on an issue would be to:
 
-1. `git pull`, before creating a new branch, pull the changes from upstream. Your main branch needs to be up to date.
+1. `git pull`, before creating a new branch, pull the changes from upstream. Your develop branch needs to be up to date.
 
 ```
-$ git pull
+$ git checkout develop
+$ git pull origin develop
 ```
 
-2. Create a new branch from `main` like: `feat-adds-profile-section`.<br/>
+2. Create a new branch from `develop` like: `feat-adds-profile-section`.<br/>
 
 ```
 $ git checkout -b [name_of_your_new_branch]

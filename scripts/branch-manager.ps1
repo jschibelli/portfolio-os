@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet("rename", "update", "validate", "list")]
+    [ValidateSet("create", "rename", "update", "validate", "list")]
     [string]$Operation,
     
     [Parameter(Mandatory=$false)]
@@ -72,6 +72,63 @@ function Get-CurrentBranch {
         return git branch --show-current
     } catch {
         return $null
+    }
+}
+
+function Ensure-DevelopBase {
+    try {
+        # Check if we're on develop branch
+        $currentBranch = Get-CurrentBranch
+        if ($currentBranch -eq "develop") {
+            Write-ColorOutput "✅ Already on develop branch" "Green"
+            return $true
+        }
+        
+        # Check if develop branch exists
+        $developExists = git branch --list develop
+        if (-not $developExists) {
+            Write-ColorOutput "❌ Develop branch does not exist. Please create it first." "Red"
+            return $false
+        }
+        
+        # Switch to develop branch
+        Write-ColorOutput "🔄 Switching to develop branch..." "Yellow"
+        git checkout develop
+        
+        # Pull latest changes
+        Write-ColorOutput "🔄 Pulling latest changes from develop..." "Yellow"
+        git pull origin develop
+        
+        Write-ColorOutput "✅ Now on develop branch with latest changes" "Green"
+        return $true
+    } catch {
+        Write-ColorOutput "❌ Failed to ensure develop base: $($_.Exception.Message)" "Red"
+        return $false
+    }
+}
+
+function Create-BranchFromDevelop {
+    param([string]$BranchName)
+    
+    if ($DryRun) {
+        Write-ColorOutput "  [DRY RUN] Would create branch '$BranchName' from develop" "Cyan"
+        return $true
+    }
+    
+    try {
+        # Ensure we're on develop
+        if (-not (Ensure-DevelopBase)) {
+            return $false
+        }
+        
+        # Create new branch from develop
+        git checkout -b $BranchName
+        
+        Write-ColorOutput "✅ Created branch '$BranchName' from develop" "Green"
+        return $true
+    } catch {
+        Write-ColorOutput "❌ Failed to create branch: $($_.Exception.Message)" "Red"
+        return $false
     }
 }
 
@@ -233,6 +290,11 @@ foreach ($issueNumber in $issueList) {
     $success = $false
     
     switch ($Operation) {
+        "create" {
+            $issueTitle = Get-IssueTitle $issueNumber
+            $branchName = Generate-BranchName $issueNumber $issueTitle
+            $success = Create-BranchFromDevelop $branchName
+        }
         "rename" {
             $success = Rename-Branch (Get-CurrentBranch) (Generate-BranchName $issueNumber (Get-IssueTitle $issueNumber))
         }
