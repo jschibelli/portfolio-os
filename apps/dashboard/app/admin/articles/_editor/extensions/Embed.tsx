@@ -27,6 +27,13 @@ export type ExtendedEmbedProvider =
   | 'codesandbox' 
   | 'generic'
 
+/**
+ * Constants for URL validation
+ */
+const GIST_ID_LENGTH_SHORT = 20 // Shortened Gist IDs
+const GIST_ID_LENGTH_LONG = 32 // Full-length Gist IDs
+const OEMBED_FETCH_TIMEOUT = 10000 // 10 seconds timeout for oEmbed requests
+
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     embed: {
@@ -120,8 +127,9 @@ export const Embed = Node.create<EmbedOptions>({
 })
 
 // Embed Node View Component
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
+import DOMPurify from 'dompurify'
 
 interface EmbedNodeViewProps {
   node: {
@@ -141,6 +149,8 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [oembedData, setOembedData] = useState<any>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const twitterScriptLoadedRef = useRef(false)
 
   const handleUrlChange = (newUrl: string) => {
     setUrl(newUrl)
@@ -202,15 +212,32 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
   /**
    * Fetch oEmbed data for generic embeds
    * Automatically loads preview when URL is set and provider is generic
+   * Includes timeout handling and proper cleanup
    */
   useEffect(() => {
     if (node.attrs.provider === 'generic' && node.attrs.url && !isEditing) {
+      // Abort any pending requests
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      
       const fetchOEmbed = async () => {
         setIsLoading(true)
         setError(null)
         
+        // Create AbortController for timeout
+        const controller = new AbortController()
+        abortControllerRef.current = controller
+        
+        const timeoutId = setTimeout(() => {
+          controller.abort()
+        }, OEMBED_FETCH_TIMEOUT)
+        
         try {
-          const response = await fetch(`/api/embed/oembed?url=${encodeURIComponent(node.attrs.url)}`)
+          const response = await fetch(
+            `/api/embed/oembed?url=${encodeURIComponent(node.attrs.url)}`,
+            { signal: controller.signal }
+          )
           const data = await response.json()
           
           if (data.success) {
@@ -219,14 +246,26 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
             setError(data.error || 'Failed to load embed')
           }
         } catch (err) {
-          setError('Network error while loading embed')
+          if (err instanceof Error && err.name === 'AbortError') {
+            setError('Request timed out. The embed service may be slow or unavailable.')
+          } else {
+            setError('Network error while loading embed')
+          }
           console.error('oEmbed fetch error:', err)
         } finally {
+          clearTimeout(timeoutId)
           setIsLoading(false)
         }
       }
       
       fetchOEmbed()
+      
+      // Cleanup on unmount
+      return () => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort()
+        }
+      }
     }
   }, [node.attrs.provider, node.attrs.url, isEditing])
 
@@ -255,6 +294,20 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         )
         
       case 'tweet':
+        // Load Twitter widget script only once
+        if (!twitterScriptLoadedRef.current && typeof window !== 'undefined') {
+          const script = document.createElement('script')
+          script.src = 'https://platform.twitter.com/widgets.js'
+          script.async = true
+          script.charset = 'utf-8'
+          
+          // Check if script already exists
+          if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
+            document.body.appendChild(script)
+            twitterScriptLoadedRef.current = true
+          }
+        }
+        
         return (
           <div className="my-6 flex justify-center">
             <blockquote className="twitter-tweet" data-theme="light">
@@ -262,7 +315,6 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
                 Loading tweet...
               </a>
             </blockquote>
-            <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
           </div>
         )
         
@@ -371,11 +423,18 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         }
         
         if (oembedData?.html) {
+          // Sanitize oEmbed HTML to prevent XSS attacks
+          const sanitizedHtml = DOMPurify.sanitize(oembedData.html, {
+            ALLOWED_TAGS: ['iframe', 'blockquote', 'a', 'p', 'div', 'span', 'img'],
+            ALLOWED_ATTR: ['src', 'href', 'title', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'class', 'id', 'data-*'],
+            ALLOW_DATA_ATTR: true
+          })
+          
           return (
             <div className="my-6">
               <div 
                 className="border border-gray-300 rounded-lg overflow-hidden"
-                dangerouslySetInnerHTML={{ __html: oembedData.html }}
+                dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
               />
               {oembedData.title && (
                 <p className="text-sm text-gray-600 mt-2 text-center">
@@ -575,7 +634,7 @@ function extractGitHubGistId(url: string): { id: string; file?: string } | null 
   }
   
   // Just ID: abc123def456
-  const idPattern = /^([a-f0-9]{32}|[a-f0-9]{20})$/
+  const idPattern = new RegExp(`^([a-f0-9]{${GIST_ID_LENGTH_LONG}}|[a-f0-9]{${GIST_ID_LENGTH_SHORT}})$`)
   const idMatch = url.match(idPattern)
   if (idMatch) {
     return { id: idMatch[1] }

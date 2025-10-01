@@ -5,6 +5,10 @@ import { describe, it, expect } from '@jest/globals'
  * Tests URL extraction for all supported platforms
  */
 
+// Constants matching Embed.tsx
+const GIST_ID_LENGTH_SHORT = 20
+const GIST_ID_LENGTH_LONG = 32
+
 describe('Embed URL Extraction', () => {
   describe('YouTube', () => {
     it('extracts ID from watch URL', () => {
@@ -159,7 +163,7 @@ function extractGitHubGistId(url: string): { id: string; file?: string } | null 
     return { id: fullMatch[1], file: fullMatch[2] }
   }
   
-  const idPattern = /^([a-f0-9]{32}|[a-f0-9]{20})$/
+  const idPattern = new RegExp(`^([a-f0-9]{${GIST_ID_LENGTH_LONG}}|[a-f0-9]{${GIST_ID_LENGTH_SHORT}})$`)
   const idMatch = url.match(idPattern)
   if (idMatch) {
     return { id: idMatch[1] }

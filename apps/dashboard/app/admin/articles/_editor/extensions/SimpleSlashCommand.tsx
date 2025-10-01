@@ -240,6 +240,10 @@ export const simpleSlashCommands: SlashCommand[] = [
  * URL Extraction Utilities - Shared with Embed extension
  */
 
+// Constants for URL validation
+const GIST_ID_LENGTH_SHORT = 20
+const GIST_ID_LENGTH_LONG = 32
+
 function extractYouTubeId(url: string): string | null {
   const patterns = [
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
@@ -271,7 +275,7 @@ function extractGitHubGistId(url: string): { id: string; file?: string } | null 
     return { id: fullMatch[1], file: fullMatch[2] }
   }
   
-  const idPattern = /^([a-f0-9]{32}|[a-f0-9]{20})$/
+  const idPattern = new RegExp(`^([a-f0-9]{${GIST_ID_LENGTH_LONG}}|[a-f0-9]{${GIST_ID_LENGTH_SHORT}})$`)
   const idMatch = url.match(idPattern)
   if (idMatch) {
     return { id: idMatch[1] }
