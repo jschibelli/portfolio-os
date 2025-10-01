@@ -1,0 +1,145 @@
+name: PR Conflict Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq gh
+
+      - name: Check mergeability
+        id: pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+          PR='${{ github.event.pull_request.number }}'
+          MERGEABLE=$(gh pr view "$PR" --json mergeable -q .mergeable)
+          echo "mergeable=$MERGEABLE" >> $GITHUB_OUTPUT
+          echo "Mergeable: $MERGEABLE"
+
+      - name: Try auto-rebase onto base branch
+        if: steps.pr.outputs.mergeable == 'CONFLICTING'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BASE='${{ github.event.pull_request.base.ref }}'
+          echo "Base branch: $BASE"
+          git fetch origin "$BASE"
+
+          # Rebase; if conflicts, try a safe lockfile regeneration, then rebase again
+          if ! git rebase "origin/$BASE"; then
+            echo "Rebase had conflicts. Attempt safe fixes..."
+            git rebase --abort || true
+
+            if [ -f pnpm-lock.yaml ] || [ -f package-lock.json ] || [ -f yarn.lock ]; then
+              echo "Regenerating lockfile..."
+              if [ -f pnpm-lock.yaml ]; then
+                corepack enable || true
+                pnpm i --lockfile-only || true
+                git add pnpm-lock.yaml || true
+              elif [ -f package-lock.json ]; then
+                npm i --package-lock-only || true
+                git add package-lock.json || true
+              elif [ -f yarn.lock ]; then
+                corepack enable || true
+                yarn install --mode update-lockfile || true
+                git add yarn.lock || true
+              fi
+              if git diff --cached --quiet; then
+                echo "No lockfile changes detected"
+              else
+                git commit -m "chore: regenerate lockfile to aid conflict resolution"
+              fi
+            fi
+
+            echo "Retry rebase..."
+            git rebase "origin/$BASE"
+          fi
+
+          git push --force-with-lease
+
+      - name: Comment and label if unresolved
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          
+          # Validate required environment variables
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "Error: GITHUB_TOKEN is required but not set"
+            exit 1
+          fi
+          
+          # Authenticate with GitHub CLI
+          echo "Authenticating with GitHub CLI..."
+          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+          
+          PR='${{ github.event.pull_request.number }}'
+          BASE_REF='${{ github.event.pull_request.base.ref }}'
+          
+          echo "Processing PR #$PR with base ref: $BASE_REF"
+          
+          # Generate conflict resolution comment
+          COMMENT_BODY=$(cat <<EOF
+          ## ⚠️ Merge Conflicts Detected
+          
+          Merge conflicts were detected and could not be auto-resolved. Please resolve locally:
+          
+          \`\`\`bash
+          # Checkout the PR branch
+          gh pr checkout $PR
+          
+          # Fetch latest changes and rebase
+          git fetch origin $BASE_REF && git rebase origin/$BASE_REF
+          
+          # Resolve conflicts in files shown by:
+          git status
+          
+          # After resolving conflicts:
+          git add -A && git rebase --continue
+          
+          # Push the resolved changes
+          git push --force-with-lease
+          \`\`\`
+          
+          **Note**: This will require force push after resolving conflicts.
+          EOF
+          )
+          
+          # Post comment and add label with error handling
+          echo "Posting conflict resolution comment..."
+          if gh pr comment "$PR" --body "$COMMENT_BODY"; then
+            echo "Successfully posted conflict resolution comment"
+          else
+            echo "Warning: Failed to post comment to PR #$PR"
+          fi
+          
+          echo "Adding conflict resolution label..."
+          if gh pr edit "$PR" --add-label "needs: conflict-resolution"; then
+            echo "Successfully added conflict resolution label"
+          else
+            echo "Warning: Failed to add label to PR #$PR"
+          fi
+

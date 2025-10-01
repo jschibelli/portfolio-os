@@ -1,159 +1,242 @@
 /**
- * Validation utilities for the dashboard application
- * 
- * This module provides comprehensive input validation and sanitization
- * functions to ensure data integrity and security.
+ * Input validation utilities for security and data integrity
  */
 
-import { z } from 'zod'
+export interface ValidationResult {
+  isValid: boolean
+  errors: string[]
+}
 
-// Article ID validation schema
-const articleIdSchema = z.string().uuid('Invalid article ID format')
-
-// Input sanitization regex patterns
-const SANITIZATION_PATTERNS = {
-  // Remove potentially dangerous characters
-  dangerousChars: /[<>'"&]/g,
-  // Remove excessive whitespace
-  excessiveWhitespace: /\s+/g,
-  // Remove non-printable characters
-  nonPrintable: /[\x00-\x1F\x7F]/g,
-} as const
-
-/**
- * Validates if a string is a valid article ID (UUID format)
- * @param id - The article ID to validate
- * @returns true if valid, false otherwise
- */
-export function validateArticleId(id: string): boolean {
-  try {
-    articleIdSchema.parse(id)
-    return true
-  } catch {
-    return false
-  }
+export interface ValidationRule {
+  required?: boolean
+  minLength?: number
+  maxLength?: number
+  pattern?: RegExp
+  custom?: (value: any) => boolean | string
 }
 
 /**
- * Sanitizes input string by removing dangerous characters and normalizing whitespace
- * @param input - The input string to sanitize
- * @returns Sanitized string
+ * Validates a single value against rules
  */
-export function sanitizeInput(input: string): string {
-  if (typeof input !== 'string') {
-    return ''
-  }
-
-  return input
-    .replace(SANITIZATION_PATTERNS.dangerousChars, '')
-    .replace(SANITIZATION_PATTERNS.nonPrintable, '')
-    .replace(SANITIZATION_PATTERNS.excessiveWhitespace, ' ')
-    .trim()
-}
-
-/**
- * Validates and sanitizes article title
- * @param title - The article title to validate
- * @returns Sanitized title or empty string if invalid
- */
-export function validateArticleTitle(title: string): string {
-  const sanitized = sanitizeInput(title)
-  
-  if (sanitized.length < 1 || sanitized.length > 200) {
-    return ''
-  }
-  
-  return sanitized
-}
-
-/**
- * Validates and sanitizes article slug
- * @param slug - The article slug to validate
- * @returns Sanitized slug or empty string if invalid
- */
-export function validateArticleSlug(slug: string): string {
-  const sanitized = sanitizeInput(slug)
-  
-  // Check if slug contains only valid characters (letters, numbers, hyphens, underscores)
-  if (!/^[a-zA-Z0-9-_]+$/.test(sanitized)) {
-    return ''
-  }
-  
-  if (sanitized.length < 1 || sanitized.length > 100) {
-    return ''
-  }
-  
-  return sanitized
-}
-
-/**
- * Validates and sanitizes tag names
- * @param tagName - The tag name to validate
- * @returns Sanitized tag name or empty string if invalid
- */
-export function validateTagName(tagName: string): string {
-  const sanitized = sanitizeInput(tagName)
-  
-  if (sanitized.length < 1 || sanitized.length > 50) {
-    return ''
-  }
-  
-  return sanitized
-}
-
-/**
- * Validates email format
- * @param email - The email to validate
- * @returns true if valid email format, false otherwise
- */
-export function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}
-
-/**
- * Validates user role
- * @param role - The role to validate
- * @returns true if valid role, false otherwise
- */
-export function validateUserRole(role: string): boolean {
-  const validRoles = ['admin', 'editor', 'author', 'guest']
-  return validRoles.includes(role)
-}
-
-/**
- * Comprehensive input validation for article data
- * @param data - The article data to validate
- * @returns Validation result with sanitized data or errors
- */
-export function validateArticleData(data: {
-  title: string
-  slug: string
-  content: any
-  tags?: string[]
-}) {
+export function validateValue(value: any, rules: ValidationRule): ValidationResult {
   const errors: string[] = []
-  
-  const validatedTitle = validateArticleTitle(data.title)
-  if (!validatedTitle) {
-    errors.push('Invalid article title')
+
+  // Required check
+  if (rules.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
+    errors.push('This field is required')
   }
-  
-  const validatedSlug = validateArticleSlug(data.slug)
-  if (!validatedSlug) {
-    errors.push('Invalid article slug')
+
+  // Skip other validations if value is empty and not required
+  if (!value && !rules.required) {
+    return { isValid: true, errors: [] }
   }
-  
-  const validatedTags = data.tags?.map(validateTagName).filter(Boolean) || []
-  
+
+  // String length validations
+  if (typeof value === 'string') {
+    if (rules.minLength && value.length < rules.minLength) {
+      errors.push(`Minimum length is ${rules.minLength} characters`)
+    }
+    if (rules.maxLength && value.length > rules.maxLength) {
+      errors.push(`Maximum length is ${rules.maxLength} characters`)
+    }
+  }
+
+  // Pattern validation
+  if (rules.pattern && typeof value === 'string' && !rules.pattern.test(value)) {
+    errors.push('Invalid format')
+  }
+
+  // Custom validation
+  if (rules.custom) {
+    const customResult = rules.custom(value)
+    if (customResult !== true) {
+      errors.push(typeof customResult === 'string' ? customResult : 'Invalid value')
+    }
+  }
+
   return {
     isValid: errors.length === 0,
-    errors,
-    data: {
-      title: validatedTitle,
-      slug: validatedSlug,
-      content: data.content,
-      tags: validatedTags
+    errors
+  }
+}
+
+/**
+ * Validates an object against a schema
+ */
+export function validateObject<T extends Record<string, any>>(
+  data: T,
+  schema: Record<keyof T, ValidationRule>
+): ValidationResult {
+  const errors: string[] = []
+  let isValid = true
+
+  for (const [key, rules] of Object.entries(schema)) {
+    const result = validateValue(data[key], rules)
+    if (!result.isValid) {
+      isValid = false
+      errors.push(...result.errors.map(error => `${key}: ${error}`))
     }
+  }
+
+  return { isValid, errors }
+}
+
+/**
+ * Common validation rules
+ */
+export const commonRules = {
+  required: { required: true },
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    custom: (value: string) => {
+      if (!value.includes('@')) return 'Invalid email format'
+      if (value.length > 254) return 'Email is too long'
+      return true
+    }
+  },
+  url: {
+    required: true,
+    pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+    custom: (value: string) => {
+      try {
+        new URL(value.startsWith('http') ? value : `https://${value}`)
+        return true
+      } catch {
+        return 'Invalid URL format'
+      }
+    }
+  },
+  password: {
+    required: true,
+    minLength: 8,
+    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    custom: (value: string) => {
+      if (value.length < 8) return 'Password must be at least 8 characters'
+      if (!/[a-z]/.test(value)) return 'Password must contain lowercase letter'
+      if (!/[A-Z]/.test(value)) return 'Password must contain uppercase letter'
+      if (!/\d/.test(value)) return 'Password must contain number'
+      if (!/[@$!%*?&]/.test(value)) return 'Password must contain special character'
+      return true
+    }
+  },
+  username: {
+    required: true,
+    minLength: 3,
+    maxLength: 20,
+    pattern: /^[a-zA-Z0-9_-]+$/,
+    custom: (value: string) => {
+      if (value.includes(' ')) return 'Username cannot contain spaces'
+      if (value.startsWith('-') || value.endsWith('-')) return 'Username cannot start or end with dash'
+      return true
+    }
+  },
+  text: {
+    maxLength: 1000,
+    custom: (value: string) => {
+      // Basic XSS prevention
+      if (/<script|javascript:|on\w+=/i.test(value)) {
+        return 'Invalid characters detected'
+      }
+      return true
+    }
+  },
+  html: {
+    maxLength: 10000,
+    custom: (value: string) => {
+      // More comprehensive XSS prevention
+      const dangerousPatterns = [
+        /<script[^>]*>.*?<\/script>/gi,
+        /javascript:/gi,
+        /on\w+\s*=/gi,
+        /<iframe[^>]*>.*?<\/iframe>/gi,
+        /<object[^>]*>.*?<\/object>/gi,
+        /<embed[^>]*>.*?<\/embed>/gi
+      ]
+      
+      for (const pattern of dangerousPatterns) {
+        if (pattern.test(value)) {
+          return 'Potentially dangerous content detected'
+        }
+      }
+      return true
+    }
+  }
+}
+
+/**
+ * Sanitizes HTML content to prevent XSS
+ */
+export function sanitizeHtml(html: string): string {
+  // Remove script tags and event handlers
+  return html
+    .replace(/<script[^>]*>.*?<\/script>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/<iframe[^>]*>.*?<\/iframe>/gi, '')
+    .replace(/<object[^>]*>.*?<\/object>/gi, '')
+    .replace(/<embed[^>]*>.*?<\/embed>/gi, '')
+}
+
+/**
+ * Validates and sanitizes user input
+ */
+export function validateAndSanitizeInput(
+  input: string,
+  rules: ValidationRule
+): { isValid: boolean; sanitizedValue: string; errors: string[] } {
+  const validation = validateValue(input, rules)
+  
+  let sanitizedValue = input
+  if (rules.pattern === commonRules.html.pattern || rules.custom === commonRules.html.custom) {
+    sanitizedValue = sanitizeHtml(input)
+  }
+  
+  return {
+    isValid: validation.isValid,
+    sanitizedValue,
+    errors: validation.errors
+  }
+}
+
+/**
+ * Rate limiting validation
+ */
+export class RateLimiter {
+  private attempts: Map<string, number[]> = new Map()
+  
+  constructor(
+    private maxAttempts: number = 5,
+    private windowMs: number = 15 * 60 * 1000 // 15 minutes
+  ) {}
+  
+  isAllowed(identifier: string): boolean {
+    const now = Date.now()
+    const attempts = this.attempts.get(identifier) || []
+    
+    // Remove old attempts outside the window
+    const recentAttempts = attempts.filter(time => now - time < this.windowMs)
+    
+    if (recentAttempts.length >= this.maxAttempts) {
+      return false
+    }
+    
+    // Record this attempt
+    recentAttempts.push(now)
+    this.attempts.set(identifier, recentAttempts)
+    
+    return true
+  }
+  
+  getRemainingAttempts(identifier: string): number {
+    const attempts = this.attempts.get(identifier) || []
+    const now = Date.now()
+    const recentAttempts = attempts.filter(time => now - time < this.windowMs)
+    
+    return Math.max(0, this.maxAttempts - recentAttempts.length)
+  }
+  
+  reset(identifier: string): void {
+    this.attempts.delete(identifier)
   }
 }
