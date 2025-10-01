@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useCallback, useEffect } from 'react'
-import { format } from 'date-fns'
 import { 
   Calendar, 
   Clock, 
@@ -81,12 +80,28 @@ const VISIBILITY_OPTIONS = [
   { value: 'MEMBERS_ONLY', label: 'Members Only', icon: UserCheck, description: 'Visible to members only' }
 ]
 
+/**
+ * PublishingPanel Component
+ * 
+ * Comprehensive publishing options panel for blog articles with Hashnode-equivalent features.
+ * Includes status management, visibility controls, scheduling, and cross-platform publishing.
+ * 
+ * @param articleId - Optional ID of the article being edited
+ * @param initialData - Initial publishing options data
+ * @param onSave - Callback function when options are saved
+ * @param onPreview - Callback function for preview action
+ * @param series - Array of available series (optional, loaded from API if not provided)
+ * @param articleTitle - Title of the article for URL preview
+ * @param articleSlug - Slug for generating publication URL
+ * @param articleContent - Content for automatic reading time calculation
+ * @param className - Additional CSS classes
+ */
 export function PublishingPanel({
   articleId,
   initialData,
   onSave,
   onPreview,
-  series = [],
+  series: propSeries = [],
   articleTitle = '',
   articleSlug = '',
   articleContent = '',
@@ -113,28 +128,64 @@ export function PublishingPanel({
   const [isSaving, setIsSaving] = useState(false)
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(options.scheduledAt)
   const [scheduledTime, setScheduledTime] = useState<string>('12:00')
+  const [series, setSeries] = useState<Series[]>(propSeries)
   const [selectedSeries, setSelectedSeries] = useState<Series | null>(
     series.find(s => s.id === options.seriesId) || null
   )
   const [readingTime, setReadingTime] = useState(options.readingMinutes)
 
-  // Calculate reading time from content
+  /**
+   * Load available series from API on component mount
+   * Falls back to prop-provided series if API fails
+   */
+  useEffect(() => {
+    const loadSeries = async () => {
+      try {
+        const response = await fetch('/api/series')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success && data.series) {
+            setSeries(data.series)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load series:', error)
+        // Fall back to prop series if API fails
+        if (propSeries.length > 0) {
+          setSeries(propSeries)
+        }
+      }
+    }
+
+    loadSeries()
+  }, [propSeries])
+
+  /**
+   * Calculate reading time from article content
+   * Uses average reading speed of 225 words per minute
+   * Updates automatically when content changes
+   */
   useEffect(() => {
     if (articleContent) {
-      // Average reading speed: 200-250 words per minute
-      // We'll use 225 as a middle ground
-      const words = articleContent.split(/\s+/).length
-      const minutes = Math.ceil(words / 225)
+      // Sanitize content and count words
+      const sanitized = articleContent.replace(/<[^>]*>/g, '') // Remove HTML tags
+      const words = sanitized.split(/\s+/).filter(word => word.length > 0).length
+      const minutes = Math.max(1, Math.ceil(words / 225)) // Minimum 1 minute
       setReadingTime(minutes)
       setOptions(prev => ({ ...prev, readingMinutes: minutes }))
     }
   }, [articleContent])
 
-  // Generate publication URL preview
+  /**
+   * Generate publication URL preview
+   * Returns the full URL where the article will be published
+   */
   const getPublicationUrl = () => {
     if (!articleSlug) return 'https://example.com/blog/your-article-slug'
+    // Sanitize slug to prevent XSS
+    const sanitizedSlug = articleSlug.replace(/[^a-z0-9-]/gi, '-')
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://example.com'
-    return `${baseUrl}/blog/${articleSlug}`
+    return `${baseUrl}/blog/${sanitizedSlug}`
   }
 
   // Handle option changes
@@ -269,7 +320,7 @@ export function PublishingPanel({
               <div className="mt-2 flex items-center gap-2">
                 <Input
                   type="datetime-local"
-                  value={options.scheduledAt ? format(options.scheduledAt, "yyyy-MM-dd'T'HH:mm") : ''}
+                  value={options.scheduledAt ? new Date(options.scheduledAt).toISOString().slice(0, 16) : ''}
                   onChange={(e) => {
                     const date = e.target.value ? new Date(e.target.value) : undefined
                     setOptions(prev => ({ ...prev, scheduledAt: date }))

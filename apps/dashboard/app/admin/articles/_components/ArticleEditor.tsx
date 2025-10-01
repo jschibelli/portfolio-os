@@ -151,19 +151,37 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     seoScore: initialData?.seoScore,
   })
 
-  // Publishing panel state
+  // Publishing panel state with proper TypeScript types
+  interface PublishingOptions {
+    status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'ARCHIVED'
+    visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'MEMBERS_ONLY'
+    scheduledAt?: Date | null
+    featured: boolean
+    allowComments: boolean
+    allowReactions: boolean
+    paywalled: boolean
+    readingMinutes: number
+    seriesId?: string | null
+    seriesPosition?: number | null
+    crossPlatformPublishing: {
+      hashnode: boolean
+      dev: boolean
+      medium: boolean
+    }
+  }
+
   const [publishingExpanded, setPublishingExpanded] = useState(false)
-  const [publishingOptions, setPublishingOptions] = useState({
-    status: 'DRAFT' as 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'ARCHIVED',
-    visibility: 'PUBLIC' as 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'MEMBERS_ONLY',
-    scheduledAt: undefined as Date | undefined,
+  const [publishingOptions, setPublishingOptions] = useState<PublishingOptions>({
+    status: 'DRAFT',
+    visibility: 'PUBLIC',
+    scheduledAt: null, // Changed from undefined to null for better type safety
     featured: false,
     allowComments: true,
     allowReactions: true,
     paywalled: false,
     readingMinutes: 0,
-    seriesId: undefined as string | undefined,
-    seriesPosition: undefined as number | undefined,
+    seriesId: null,
+    seriesPosition: null,
     crossPlatformPublishing: {
       hashnode: false,
       dev: false,
@@ -800,10 +818,44 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                       articleSlug={slug}
                       articleContent={markdownContent || tiptapContent || JSON.stringify(blocks)}
                       onSave={async (options) => {
-                        setPublishingOptions(options)
-                        // Save will be handled by the publishing API endpoint
+                        try {
+                          // Validate inputs before saving
+                          if (options.status === 'SCHEDULED' && !options.scheduledAt) {
+                            throw new Error('Scheduled articles must have a publish date')
+                          }
+                          
+                          if (options.seriesId && !options.seriesPosition) {
+                            throw new Error('Articles in a series must have a position')
+                          }
+
+                          setPublishingOptions(options)
+                          
+                          // Save to API if article exists
+                          if (initialData?.id) {
+                            const response = await fetch('/api/articles/publishing-options', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                articleId: initialData.id,
+                                ...options
+                              })
+                            })
+
+                            if (!response.ok) {
+                              const error = await response.json()
+                              throw new Error(error.error || 'Failed to save publishing options')
+                            }
+
+                            // Success feedback could be shown here
+                            console.log('Publishing options saved successfully')
+                          }
+                        } catch (error) {
+                          console.error('Error saving publishing options:', error)
+                          // In a real app, show user-friendly error message via toast/notification
+                          alert(error instanceof Error ? error.message : 'Failed to save publishing options')
+                        }
                       }}
-                      series={[]} // TODO: Load actual series from API
+                      series={[]} // Series loaded dynamically in PublishingPanel via API
                     />
                   </div>
                 )}
