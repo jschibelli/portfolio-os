@@ -20,7 +20,15 @@
     "quality:check": "node scripts/code-quality-checker.js",
     "quality:maintenance": "node scripts/dependency-maintenance.js",
     "quality:verify": "node scripts/implementation-verifier.js",
-    "quality:all": "npm run quality:check && npm run quality:maintenance && npm run quality:verify"
+    "quality:all": "npm run quality:check && npm run quality:maintenance && npm run quality:verify",
+    "migration:migrate": "tsx scripts/migration/cli.ts migrate",
+    "migration:backup": "tsx scripts/migration/cli.ts backup",
+    "migration:restore": "tsx scripts/migration/cli.ts restore",
+    "migration:list": "tsx scripts/migration/cli.ts list-backups",
+    "migration:sync": "tsx scripts/migration/cli.ts sync",
+    "migration:status": "tsx scripts/migration/cli.ts status",
+    "migration:analytics": "tsx scripts/migration/cli.ts analytics",
+    "migration:test": "jest __tests__/migration.test.ts"
   },
   "dependencies": {
     "@mindware-blog/chatbot": "workspace:*",
@@ -57,7 +65,9 @@
     "recharts": "^2.15.4",
     "sonner": "^1.7.3",
     "tippy.js": "^6.3.7",
-    "turndown": "^7.2.1"
+    "turndown": "^7.2.1",
+    "commander": "^11.1.0",
+    "tsx": "^4.7.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.8.0",
