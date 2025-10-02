@@ -26,42 +26,42 @@ $agents = @{
         Name = "Frontend Agent"
         Description = "Handles UI/UX, React components, styling, and frontend functionality"
         Specialties = @("react", "typescript", "css", "ui", "ux", "responsive", "accessibility")
-        Color = "blue"
+        Color = "0e8a16"
         Priority = 1
     }
     "agent-backend" = @{
         Name = "Backend Agent"
         Description = "Handles APIs, database, server logic, and backend infrastructure"
         Specialties = @("api", "database", "server", "nodejs", "graphql", "authentication")
-        Color = "green"
+        Color = "1d76db"
         Priority = 2
     }
     "agent-docs" = @{
         Name = "Documentation Agent"
         Description = "Handles documentation, README updates, and content management"
         Specialties = @("documentation", "readme", "content", "markdown", "guides")
-        Color = "yellow"
+        Color = "f9ca24"
         Priority = 3
     }
     "agent-testing" = @{
         Name = "Testing Agent"
         Description = "Handles testing, quality assurance, and test automation"
         Specialties = @("testing", "jest", "playwright", "quality", "coverage", "e2e")
-        Color = "purple"
+        Color = "6f42c1"
         Priority = 4
     }
     "agent-ai" = @{
         Name = "AI Assistant Agent"
         Description = "Handles AI integrations, automation, and intelligent features"
         Specialties = @("ai", "automation", "ml", "nlp", "intelligence", "assistant")
-        Color = "orange"
+        Color = "fd7e14"
         Priority = 5
     }
     "agent-default" = @{
         Name = "Default Agent"
         Description = "Fallback agent for general tasks"
         Specialties = @("general", "misc", "utility")
-        Color = "gray"
+        Color = "6c757d"
         Priority = 6
     }
 }
