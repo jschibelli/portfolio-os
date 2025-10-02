@@ -1,4 +1,4 @@
-﻿Automate end-to-end: https://github.com/jschibelli/portfolio-os/pull/231#issue-3475859962. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+﻿Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
 **For Issues:**
 - Use `.\scripts\enhanced-autonomous-automation.ps1 -IssueNumber <NUMBER> -Agent <AGENT>` (NEW: Completely autonomous agents)
