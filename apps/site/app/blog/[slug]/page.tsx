@@ -2,6 +2,7 @@ import { AppProvider } from '../../../components/contexts/appContext';
 import Chatbot from '../../../components/features/chatbot/Chatbot';
 import ModernHeader from '../../../components/features/navigation/modern-header';
 import { Footer } from '../../../components/shared/footer';
+import { SocialSharing } from '../../../components/features/blog/social-sharing';
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Metadata } from "next";
@@ -82,6 +83,8 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
     };
   }
 
+  const postUrl = `https://schibelli.dev/blog/${params.slug}`;
+  
   return {
     title: post.title,
     description: post.brief || `Read ${post.title} by ${post.author?.name || "our team"}`,
@@ -89,13 +92,29 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
       title: post.title,
       description: post.brief,
       type: "article",
-      images: post.coverImage ? [post.coverImage.url] : [],
+      url: postUrl,
+      siteName: "John Schibelli Blog",
+      locale: "en_US",
+      images: post.coverImage ? [{
+        url: post.coverImage.url,
+        width: 1200,
+        height: 630,
+        alt: post.title,
+      }] : [],
+      publishedTime: post.publishedAt,
+      authors: post.author?.name ? [post.author.name] : [],
+      tags: post.tags?.map((tag: any) => tag.name) || [],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.brief,
+      site: "@johnschibelli",
+      creator: "@johnschibelli",
       images: post.coverImage ? [post.coverImage.url] : [],
+    },
+    alternates: {
+      canonical: postUrl,
     },
   };
 }
@@ -229,15 +248,25 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
 
           {/* Footer */}
           <footer className="mt-12 pt-8 border-t border-stone-200 dark:border-stone-700">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-stone-600 dark:text-stone-400">
-                {post.author?.name && (
-                  <p>Written by {post.author.name}</p>
-                )}
-              </div>
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="text-sm text-stone-600 dark:text-stone-400">
+                  {post.author?.name && (
+                    <p>Written by {post.author.name}</p>
+                  )}
+                </div>
 
-              <div className="text-sm text-stone-600 dark:text-stone-400">
-                <p>Last updated: {format(new Date(post.publishedAt), "MMM d, yyyy")}</p>
+                <div className="text-sm text-stone-600 dark:text-stone-400">
+                  <p>Last updated: {format(new Date(post.publishedAt), "MMM d, yyyy")}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-center pt-4 border-t border-stone-200 dark:border-stone-700">
+                <SocialSharing 
+                  title={post.title}
+                  url={`https://schibelli.dev/blog/${params.slug}`}
+                  description={post.brief}
+                />
               </div>
             </div>
           </footer>
