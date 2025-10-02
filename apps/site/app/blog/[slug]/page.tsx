@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
-import { fetchPostBySlug, fetchPublication } from '../../../lib/hashnode-api';
+import { fetchPostBySlug, fetchPublication } from '../../../lib/content-api';
 
 interface BlogPostPageProps {
   params: Promise<{
