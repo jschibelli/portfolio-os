@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DRY_RUN_RESPONSES: "true" # set to "false" to enable posting
+  DRY_RUN_RESPONSES: "false" # set to "false" to enable posting
 
 jobs:
   detect-and-route:

@@ -23,7 +23,7 @@ env:
   # PR number is available on PR-triggered events; fall back handled later
   PR_NUMBER: ${{ github.event.pull_request.number }}
   # When true, responders won't post comments; CI prints intent instead
-  DRY_RUN_RESPONSES: "true" # set to "false" to allow auto-posting responses
+  DRY_RUN_RESPONSES: "false" # set to "false" to allow auto-posting responses
 
 jobs:
   configure-pr:
