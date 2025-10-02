@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Fuse from 'fuse.js';
 import { AppProvider } from '../../components/contexts/appContext';
@@ -13,7 +13,6 @@ import { DEFAULT_COVER } from '../../utils/const';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../components/icons';
 import Link from 'next/link';
 import { ArticleSVG } from '../../components/icons';
-import FeaturedPost from '../../components/features/blog/featured-post';
 import ModernPostCard from '../../components/features/blog/modern-post-card';
 import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import BlogSearch from '../../components/features/blog/search';
@@ -24,8 +23,32 @@ import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { X, SlidersHorizontal } from 'lucide-react';
 
+interface Publication {
+  id: string;
+  title: string;
+  displayTitle: string;
+  descriptionSEO: string;
+  url: string;
+  posts: {
+    totalDocuments: number;
+  };
+  preferences: {
+    logo: string | null;
+  };
+  author: {
+    name: string;
+    profilePicture: string | null;
+  };
+  followersCount: number;
+  isTeam: boolean;
+  favicon: string | null;
+  ogMetaData: {
+    image: string | null;
+  };
+}
+
 // Default publication object for fallback
-const defaultPublication = {
+const defaultPublication: Publication = {
   id: 'fallback-blog',
   title: 'John Schibelli',
   displayTitle: 'John Schibelli',
@@ -64,7 +87,7 @@ interface BlogPageClientProps {
   initialPosts: BlogPost[];
 }
 
-export default function BlogPageClient({ initialPosts }: BlogPageClientProps) {
+export default function BlogPageClient({ initialPosts }: BlogPageClientProps): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -174,11 +197,14 @@ export default function BlogPageClient({ initialPosts }: BlogPageClientProps) {
       updateFilters({ search: value });
       
       // Track search analytics
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'search', {
-          search_term: value,
-          page_location: '/blog',
-        });
+      if (typeof window !== 'undefined' && 'gtag' in window) {
+        const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+        if (gtag) {
+          gtag('event', 'search', {
+            search_term: value,
+            page_location: '/blog',
+          });
+        }
       }
     },
     [updateFilters]
@@ -221,7 +247,7 @@ export default function BlogPageClient({ initialPosts }: BlogPageClientProps) {
   const hasActiveFilters = currentSearch || currentTags.length > 0 || currentSort !== 'date-desc';
 
   return (
-    <AppProvider publication={defaultPublication as any}>
+    <AppProvider publication={defaultPublication}>
       {/* Navigation */}
       <ModernHeader publication={defaultPublication} />
 
@@ -302,7 +328,7 @@ export default function BlogPageClient({ initialPosts }: BlogPageClientProps) {
                 <ArticleSVG className="stroke-current" />
               </div>
               <p className="animate-fade-in-up animation-delay-200 text-xl font-semibold">
-                Hang tight! We're drafting the first article.
+                Hang tight! We&apos;re drafting the first article.
               </p>
             </div>
           </div>
