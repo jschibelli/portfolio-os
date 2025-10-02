@@ -70,16 +70,42 @@ export default async function BlogPage() {
   try {
     const res = await fetch(GQL_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
       body: JSON.stringify({ query, variables: { host, first: 10 } }),
-      next: { revalidate: 60 },
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts'],
+      },
     });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog posts: ${res.status} ${res.statusText}`);
+    }
+
     const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
     const edges = data?.data?.publication?.posts?.edges || [];
     posts = edges.map((e: any) => e.node);
   } catch (error) {
     console.error('Error fetching Hashnode posts:', error);
-    posts = [];
+    // Re-throw the error to be caught by the error boundary
+    // In production, you might want to handle this differently
+    if (process.env.NODE_ENV === 'production') {
+      // In production, return empty array instead of throwing
+      posts = [];
+    } else {
+      // In development, throw to see error details
+      throw error;
+    }
   }
 
   const featuredPost = posts[0];

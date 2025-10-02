@@ -66,11 +66,29 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
   try {
     const res = await fetch(GQL_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
       body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
-      next: { revalidate: 60 },
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts', `blog-post-${params.slug}`],
+      },
     });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog post: ${res.status} ${res.statusText}`);
+    }
+
     const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
     post = data?.data?.publication?.post;
   } catch (error) {
     console.error('Error fetching Hashnode post:', error);
@@ -132,14 +150,36 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
   try {
     const res = await fetch(GQL_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
       body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
-      next: { revalidate: 60 },
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts', `blog-post-${params.slug}`],
+      },
     });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog post: ${res.status} ${res.statusText}`);
+    }
+
     const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
     post = data?.data?.publication?.post;
   } catch (error) {
     console.error('Error fetching Hashnode post:', error);
+    // Re-throw to trigger error boundary if it's a network error
+    if (error instanceof Error && !error.message.includes('404')) {
+      throw error;
+    }
   }
 
   if (!post) {
