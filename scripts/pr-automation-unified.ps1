@@ -100,17 +100,17 @@ function Test-BaseBranch {
         Write-ColorOutput "Checking base branch: $baseBranch" "Yellow"
         
         if ($baseBranch -ne "develop") {
-            Write-ColorOutput "❌ CRITICAL ERROR: Base branch is '$baseBranch' but must be 'develop'" "Red"
+            Write-ColorOutput "CRITICAL ERROR: Base branch is '$baseBranch' but must be 'develop'" "Red"
             
             if ($AutoFix) {
-                Write-ColorOutput "🔧 Attempting to auto-fix base branch to 'develop'..." "Yellow"
+                Write-ColorOutput "Attempting to auto-fix base branch to 'develop'..." "Yellow"
                 try {
                     gh pr edit $PRNumber --base develop
-                    Write-ColorOutput "✅ Base branch automatically changed to 'develop'" "Green"
+                    Write-ColorOutput "Base branch automatically changed to 'develop'" "Green"
                     return $true
                 }
                 catch {
-                    Write-ColorOutput "❌ Failed to auto-fix base branch: $($_.Exception.Message)" "Red"
+                    Write-ColorOutput "Failed to auto-fix base branch: $($_.Exception.Message)" "Red"
                     Write-ColorOutput "Please manually update the PR base branch and try again" "Red"
                     return $false
                 }
@@ -122,7 +122,7 @@ function Test-BaseBranch {
             }
         }
         
-        Write-ColorOutput "✅ Base branch verification passed: $baseBranch" "Green"
+        Write-ColorOutput "Base branch verification passed: $baseBranch" "Green"
         return $true
     }
     catch {
@@ -263,7 +263,7 @@ function Invoke-QualityCheck {
     try {
         # Run linting
         Write-ColorOutput "  Running ESLint..." "White"
-        $lintResult = npm run lint 2>&1
+        $lintResult = pnpm run lint 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-ColorOutput "  [PASS] Linting passed" "Green"
         } else {
@@ -273,12 +273,32 @@ function Invoke-QualityCheck {
         
         # Run type checking
         Write-ColorOutput "  Running TypeScript check..." "White"
-        $typeResult = npm run type-check 2>&1
+        $typeResult = pnpm run typecheck 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-ColorOutput "  [PASS] Type checking passed" "Green"
         } else {
             Write-ColorOutput "  [FAIL] Type checking failed" "Red"
             Write-ColorOutput $typeResult "Red"
+        }
+
+        # Run tests
+        Write-ColorOutput "  Running tests..." "White"
+        $testResult = pnpm run test 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-ColorOutput "  [PASS] Tests passed" "Green"
+        } else {
+            Write-ColorOutput "  [FAIL] Tests failed" "Red"
+            Write-ColorOutput $testResult "Red"
+        }
+
+        # Run build
+        Write-ColorOutput "  Running build..." "White"
+        $buildResult = pnpm run build 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-ColorOutput "  [PASS] Build succeeded" "Green"
+        } else {
+            Write-ColorOutput "  [FAIL] Build failed" "Red"
+            Write-ColorOutput $buildResult "Red"
         }
         
         Write-ColorOutput ""
@@ -323,12 +343,12 @@ function Start-WatchMode {
 Show-Banner
 
 # CRITICAL: Verify base branch is 'develop' before proceeding
-Write-ColorOutput "🔍 Verifying base branch requirement..." "Yellow"
+Write-ColorOutput "Verifying base branch requirement..." "Yellow"
 $baseBranchValid = Test-BaseBranch -PRNumber $PRNumber -AutoFix:$AutoFix
 
 if (-not $baseBranchValid) {
     Write-ColorOutput "" "White"
-    Write-ColorOutput "❌ AUTOMATION STOPPED: Base branch must be 'develop'" "Red"
+    Write-ColorOutput "AUTOMATION STOPPED: Base branch must be 'develop'" "Red"
     Write-ColorOutput "Please update the PR base branch and run the automation again" "Red"
     exit 1
 }
@@ -369,4 +389,4 @@ foreach ($action in $actions) {
     }
 }
 
-Write-ColorOutput "✅ Automation complete! (Base branch verified: develop)" "Green"
+Write-ColorOutput "Automation complete! (Base branch verified: develop)" "Green"

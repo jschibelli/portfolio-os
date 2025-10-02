@@ -5,7 +5,7 @@
 
 param(
     [Parameter(Mandatory=$false)]
-    [ValidateSet("continuous", "single-issue", "single-pr", "queue", "status", "monitor", "help")]
+    [ValidateSet("continuous", "single-issue", "single-pr", "queue", "status", "monitor", "help", "setup", "issue", "pr", "all")]
     [string]$Mode = "help",
     
     [Parameter(Mandatory=$false)]
@@ -13,6 +13,16 @@ param(
     
     [Parameter(Mandatory=$false)]
     [string]$Options = "",
+    
+    [Parameter(Mandatory=$false)]
+    [string]$IssueNumber = "",
+    
+    [Parameter(Mandatory=$false)]
+    [string]$PRNumber = "",
+    
+    [Parameter(Mandatory=$false)]
+    [ValidateSet("agent-frontend", "agent-backend", "agent-docs", "agent-testing", "agent-ai", "agent-default")]
+    [string]$Agent = "",
     
     [Parameter(Mandatory=$false)]
     [switch]$DryRun,
@@ -34,6 +44,14 @@ if (Test-Path $sharedPath) {
 } else {
     Write-Error "Shared utilities not found at $sharedPath"
     exit 1
+}
+
+function Write-ColorOutput {
+    param(
+        [string]$Message,
+        [string]$Color = "White"
+    )
+    Write-Host $Message -ForegroundColor $Color
 }
 
 function Show-Banner {
@@ -59,11 +77,13 @@ function Show-Help {
     Write-ColorOutput "2. SINGLE ISSUE" "Yellow"
     Write-ColorOutput "   Process one specific issue through the full pipeline" "White"
     Write-ColorOutput "   Usage: .\scripts\master-automation.ps1 -Mode single-issue -Target 123" "Gray"
+    Write-ColorOutput "   Legacy: .\scripts\master-automation.ps1 -Mode issue -IssueNumber 123" "Gray"
     Write-ColorOutput ""
     
     Write-ColorOutput "3. SINGLE PR" "Yellow"
     Write-ColorOutput "   Monitor and automate a specific pull request" "White"
     Write-ColorOutput "   Usage: .\scripts\master-automation.ps1 -Mode single-pr -Target 456" "Gray"
+    Write-ColorOutput "   Legacy: .\scripts\master-automation.ps1 -Mode pr -PRNumber 456" "Gray"
     Write-ColorOutput ""
     
     Write-ColorOutput "4. QUEUE MANAGEMENT" "Yellow"
@@ -80,6 +100,11 @@ function Show-Help {
     Write-ColorOutput "6. PROJECT MONITOR" "Yellow"
     Write-ColorOutput "   Real-time monitoring of project board status" "White"
     Write-ColorOutput "   Usage: .\scripts\master-automation.ps1 -Mode monitor" "Gray"
+    Write-ColorOutput ""
+    
+    Write-ColorOutput "7. SYSTEM SETUP" "Yellow"
+    Write-ColorOutput "   Set up complete multi-agent system" "White"
+    Write-ColorOutput "   Usage: .\scripts\master-automation.ps1 -Mode setup" "Gray"
     Write-ColorOutput ""
     
     Write-ColorOutput "📚 Examples:" "Cyan"
@@ -99,6 +124,68 @@ function Show-Help {
     Write-ColorOutput "# Dry run to preview what would happen" "White"
     Write-ColorOutput ".\scripts\master-automation.ps1 -Mode continuous -MaxIssues 3 -DryRun" "Gray"
     Write-ColorOutput ""
+}
+
+function Setup-CompleteSystem {
+    Write-ColorOutput "Setting up complete integrated system..." "Yellow"
+    
+    # Step 1: Initialize multi-agent system
+    Write-ColorOutput "1. Initializing multi-agent system..." "White"
+    & .\scripts\multi-agent-orchestrator.ps1 -Action setup -DryRun:$DryRun
+    
+    # Step 2: Create project views
+    Write-ColorOutput "2. Creating project views..." "White"
+    & .\scripts\project-views-config.ps1 -Action create -DryRun:$DryRun
+    
+    # Step 3: Test system integration
+    Write-ColorOutput "3. Testing system integration..." "White"
+    & .\scripts\agent-workload-manager.ps1 -Action status -DryRun:$DryRun
+    
+    Write-ColorOutput "✅ Complete system setup finished!" "Green"
+}
+
+function Process-IssueComplete {
+    param(
+        [string]$IssueNumber,
+        [string]$Agent
+    )
+    
+    Write-ColorOutput "Processing issue #$IssueNumber with complete automation..." "Yellow"
+    
+    # Use enhanced issue configuration
+    & .\scripts\enhanced-issue-config.ps1 -IssueNumber $IssueNumber -Agent $Agent -AddToProject -DryRun:$DryRun
+    
+    Write-ColorOutput "✅ Complete issue processing finished!" "Green"
+}
+
+function Process-PRComplete {
+    param(
+        [string]$PRNumber,
+        [string]$Agent
+    )
+    
+    Write-ColorOutput "Processing PR #$PRNumber with complete automation..." "Yellow"
+    
+    # Use enhanced PR automation
+    & .\scripts\enhanced-pr-automation.ps1 -PRNumber $PRNumber -Agent $Agent -Action all -AutoFix -DryRun:$DryRun
+    
+    Write-ColorOutput "✅ Complete PR processing finished!" "Green"
+}
+
+function Show-CompleteStatus {
+    Write-ColorOutput "=== Complete System Status ===" "Blue"
+    
+    # Multi-agent status
+    Write-ColorOutput "Multi-Agent System:" "White"
+    & .\scripts\multi-agent-orchestrator.ps1 -Action status -DryRun:$DryRun
+    
+    # Project workflow status
+    Write-ColorOutput "Project Workflow:" "White"
+    & .\scripts\real-time-workflow-automation.ps1 -DryRun:$DryRun
+    
+    # Merge queue status
+    Write-ColorOutput "Merge Queue:" "White"
+    & .\scripts\merge-queue-system.ps1 -Action status -DryRun:$DryRun
 }
 
 function Start-ContinuousPipeline {
@@ -280,6 +367,12 @@ function Log-AutomationEvent {
 try {
     Show-Banner
     
+    if ($DryRun) {
+        Write-ColorOutput "*** DRY RUN MODE - No changes will be made ***" "Cyan"
+    }
+    
+    Write-ColorOutput ""
+    
     # Initialize log file
     $logHeader = @"
 # Master Automation Log
@@ -287,6 +380,9 @@ Started: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
 Mode: $Mode
 Target: $Target
 Options: $Options
+Issue Number: $IssueNumber
+PR Number: $PRNumber
+Agent: $Agent
 Dry Run: $DryRun
 Watch: $Watch
 Max Issues: $MaxIssues
@@ -295,6 +391,16 @@ Max Issues: $MaxIssues
     $logHeader | Out-File -FilePath $LogFile -Encoding UTF8
     
     Log-AutomationEvent "INFO" "Master automation started with mode: $Mode"
+    
+    # Handle legacy parameters
+    if ($Mode -eq "issue" -and $IssueNumber) {
+        $Mode = "single-issue"
+        $Target = $IssueNumber
+    }
+    if ($Mode -eq "pr" -and $PRNumber) {
+        $Mode = "single-pr"
+        $Target = $PRNumber
+    }
     
     switch ($Mode) {
         "continuous" {
@@ -314,6 +420,26 @@ Max Issues: $MaxIssues
         }
         "monitor" {
             & .\scripts\project-status-monitor.ps1 -Watch -Interval 30
+        }
+        "setup" {
+            Setup-CompleteSystem
+        }
+        "issue" {
+            if ($IssueNumber) {
+                Process-IssueComplete -IssueNumber $IssueNumber -Agent $Agent
+            } else {
+                Write-ColorOutput "Please provide IssueNumber" "Red"
+            }
+        }
+        "pr" {
+            if ($PRNumber) {
+                Process-PRComplete -PRNumber $PRNumber -Agent $Agent
+            } else {
+                Write-ColorOutput "Please provide PRNumber" "Red"
+            }
+        }
+        "all" {
+            Show-CompleteStatus
         }
         "help" {
             Show-Help
