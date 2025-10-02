@@ -1,4 +1,65 @@
-Automate end-to-end: https://github.com/jschibelli/portfolio-os/pull/223#issue-3471917573. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+Automate end-to-end: https://github.com/jschibelli/portfolio-os/issues/41#issue-3391948162. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+
+**🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Todo → In progress → Ready → Done → Merged in sequence, then continues to the next available issues until no more work is available.
+
+## 🚀 **Continuous Pipeline (NEW - Primary Method)**
+
+### **Start Continuous Processing:**
+```powershell
+# Process up to 10 issues continuously
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 10 -Status "Backlog" -Priority "P1"
+
+# Process with specific filters
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 5 -App "Portfolio Site" -Area "Frontend"
+
+# Watch mode - continuously monitor for new issues
+.\scripts\continuous-issue-pipeline.ps1 -Watch -Interval 30
+
+# Dry run to see what would be processed
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 3 -DryRun
+```
+
+### **Queue Management:**
+```powershell
+# List available queues
+.\scripts\issue-queue-manager.ps1 -Operation list
+
+# Check queue status
+.\scripts\issue-queue-manager.ps1 -Operation status -Queue "blog"
+
+# Process specific queue
+.\scripts\issue-queue-manager.ps1 -Operation process -Queue "blog"
+
+# Create custom queue
+.\scripts\issue-queue-manager.ps1 -Operation create -Queue "custom" -Priority "P1" -App "Portfolio Site" -Area "Frontend" -MaxConcurrent 3
+```
+
+## 🔄 **Continuous Workflow Process**
+
+**For Each Issue (Automated Loop):**
+1. **Discovery**: Find next available issues matching criteria (Status=Todo, Priority=P1, etc.)
+2. **Configuration**: Auto-configure project fields using `issue-config-unified.ps1`
+3. **Status Update**: Set issue to **"In progress"** on project board
+4. **Branch Creation**: Create branch from `develop` using `create-branch-from-develop.ps1`
+5. **Implementation**: Implement using `issue-implementation.ps1`
+6. **PR Creation**: Automatically create PR with proper base branch
+7. **Status Update**: Set issue to **"Ready"** (in review) on project board
+8. **PR Automation**: Monitor and automate using `pr-automation-unified.ps1`
+9. **Status Update**: Set issue to **"Done"** after successful merge
+10. **Continue**: Move to next issue in queue
+
+**📊 Real-time Project Board Updates:**
+- **Backlog** → **In progress** (when work starts)
+- **In progress** → **Ready** (when PR is created and in review)
+- **Ready** → **Done** (when PR is merged successfully)
+
+**Queue Processing Features:**
+- **Priority-based ordering** (P0 > P1 > P2 > P3)
+- **Dependency checking** (waits for blocked issues)
+- **Concurrent processing** (configurable limits per queue)
+- **Failure recovery** (resume from failed issues)
+- **Real-time monitoring** (watch mode with intervals)
+- **Comprehensive logging** (detailed pipeline logs)
 
 **For Issues:**
 - Use `.\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> -Preset blog -AddToProject`
@@ -24,3 +85,7 @@ Automate end-to-end: https://github.com/jschibelli/portfolio-os/pull/223#issue-3
 - Security and performance analysis
 - Documentation updates
 - Status tracking and reporting
+- **🆕 NEW**: Continuous pipeline processing
+- **🆕 NEW**: Queue management and prioritization
+- **🆕 NEW**: Dependency resolution
+- **🆕 NEW**: Failure recovery and resumption
