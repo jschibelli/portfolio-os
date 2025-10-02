@@ -1,17 +1,17 @@
 ﻿Here's a set of ready-to-paste one‑liners you can use (swap in your links/values).
 
+**🤖 COMPLETELY AUTONOMOUS AGENTS (RECOMMENDED)**
+- Autonomous agent: <ISSUE_URL>. Completely autonomous agent that implements, commits, creates PR, responds to reviews, and drives to merge.
+- Smart autonomous assignment: <ISSUE_URL>. Auto-assign best agent, create autonomous environment, generate autonomous prompt for complete automation.
+- Enhanced autonomous workflow: <ISSUE_URL>. Full autonomous workflow with agent assignment, work environment, and complete automation.
+- Agent status: Check agent workloads, utilization, and capacity across all agents.
+
 Issue-focused
 - Analyze and plan: <ISSUE_URL>. Generate plan, acceptance criteria, risks, and next commands.
 - Auto-configure: <ISSUE_URL>. Set Status=Ready, Priority=P1, Size=M, App=Portfolio Site, Area=Frontend; label ready-to-implement.
 - Start work: <ISSUE_URL>. Assign me, set Status=In progress, create branch name, list first 3 steps.
 - Implement end-to-end: <ISSUE_URL>. Analyze, set fields, create and track PR, monitor CR‑GPT, reply, update Status, guide to merge.
 - Grooming: <ISSUE_URL>. Break into subtasks with estimates and labels.
-
-NEW: Completely Autonomous Agent Processing
-- Autonomous agent: <ISSUE_URL>. Completely autonomous agent that implements, commits, creates PR, responds to reviews, and drives to merge.
-- Smart autonomous assignment: <ISSUE_URL>. Auto-assign best agent, create autonomous environment, generate autonomous prompt for complete automation.
-- Enhanced autonomous workflow: <ISSUE_URL>. Full autonomous workflow with agent assignment, work environment, and complete automation.
-- Agent status: Check agent workloads, utilization, and capacity across all agents.
 
 NEW: Multi-Agent Issue Processing
 - Agent work: <ISSUE_URL>. Auto-assign agent, configure issue, create work environment, generate agent prompt.

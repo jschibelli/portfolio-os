@@ -56,3 +56,9 @@
 - Documentation updates
 - Status tracking and reporting
 - **NEW: Completely autonomous multi-agent coordination and workload management**
+
+**QUICK START COMMANDS:**
+- **Autonomous agent work**: `<ISSUE_URL>` - Completely autonomous agent that implements, commits, creates PR, responds to reviews, and drives to merge
+- **Smart autonomous assignment**: `<ISSUE_URL>` - Auto-assign best agent, create autonomous environment, generate autonomous prompt
+- **Enhanced autonomous workflow**: `<ISSUE_URL>` - Full autonomous workflow with agent assignment and complete automation
+- **System status**: Check complete autonomous agent system status, agent workloads, merge queue, project views
