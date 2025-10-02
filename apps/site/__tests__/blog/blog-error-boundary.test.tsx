@@ -61,9 +61,9 @@ describe('BlogErrorBoundary', () => {
   });
 
   it('should display "Connection Error" for network errors', () => {
-    function NetworkError() {
+    const NetworkError: React.FC = () => {
       throw new Error('Failed to fetch blog posts');
-    }
+    };
 
     render(
       <BlogErrorBoundary>
@@ -76,9 +76,9 @@ describe('BlogErrorBoundary', () => {
   });
 
   it('should display "Content Not Found" for 404 errors', () => {
-    function NotFoundError() {
+    const NotFoundError: React.FC = () => {
       throw new Error('404 not found');
-    }
+    };
 
     render(
       <BlogErrorBoundary>
@@ -124,7 +124,11 @@ describe('BlogErrorBoundary', () => {
 
   it('should show error details in development mode', () => {
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      writable: true,
+      configurable: true,
+    });
 
     render(
       <BlogErrorBoundary>
@@ -135,7 +139,11 @@ describe('BlogErrorBoundary', () => {
     expect(screen.getByText('Error Details (Development Only)')).toBeInTheDocument();
     expect(screen.getByText('Test error')).toBeInTheDocument();
 
-    process.env.NODE_ENV = originalEnv;
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalEnv,
+      writable: true,
+      configurable: true,
+    });
   });
 
   it('should reset error state when "Try Again" is clicked', () => {
