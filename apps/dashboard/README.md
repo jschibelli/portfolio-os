@@ -10,6 +10,7 @@ A comprehensive admin dashboard for managing blog content, articles, and user in
 - **Image Upload**: Secure image handling with validation
 - **Draft Management**: Auto-save and draft functionality
 - **Scheduling**: Schedule articles for future publication
+- **Unified Publishing Workflow**: Multi-platform publishing system with Hashnode integration
 
 ### Content Management
 - **Article Creation**: Create and edit articles with rich formatting
@@ -150,6 +151,129 @@ Enhanced toolbar component with comprehensive formatting options:
 #### Environment-Based Scripts
 - `npm run dev:env` - Start development server with custom port (via `DASHBOARD_PORT` env var)
 - `npm run start:env` - Start production server with custom port (via `PORT` env var)
+
+### Database Commands
+- `npm run db:generate` - Generate Prisma client
+- `npm run db:push` - Push database schema changes
+- `npm run db:migrate` - Run database migrations
+- `npm run db:studio` - Open Prisma Studio
+
+## Unified Publishing Workflow
+
+The Dashboard includes a comprehensive unified publishing workflow that allows you to publish content to multiple platforms from a single interface.
+
+### Features
+
+- **Multi-Platform Publishing**: Publish to Dashboard, Hashnode, Dev.to, Medium, and LinkedIn
+- **Publishing Queue**: Schedule content for future publishing with automatic processing
+- **Status Tracking**: Real-time tracking of publishing status across all platforms
+- **Publishing Templates**: Pre-configured templates for quick publishing
+- **Cross-Platform Analytics**: Unified analytics dashboard showing performance across all platforms
+- **Retry Logic**: Automatic retry with exponential backoff for failed publishing attempts
+
+### Quick Start
+
+1. **Configure Platform Credentials**
+
+   Add the following environment variables to your `.env.local`:
+
+   ```env
+   # Hashnode
+   HASHNODE_API_TOKEN=your-hashnode-token
+   HASHNODE_PUBLICATION_ID=your-publication-id
+
+   # Dev.to
+   DEVTO_API_KEY=your-devto-api-key
+
+   # Medium
+   MEDIUM_USER_ID=your-medium-user-id
+   MEDIUM_ACCESS_TOKEN=your-medium-token
+
+   # LinkedIn
+   LINKEDIN_ACCESS_TOKEN=your-linkedin-token
+   LINKEDIN_AUTHOR_ID=your-linkedin-author-id
+
+   # Enable automatic queue processing
+   ENABLE_QUEUE_PROCESSOR=true
+   ```
+
+2. **Run Database Migration**
+
+   The unified publishing workflow requires additional database tables:
+
+   ```bash
+   npm run db:generate
+   npm run db:push
+   ```
+
+3. **Initialize Default Templates**
+
+   Run this in your application or via a migration script:
+
+   ```typescript
+   import { initializeDefaultTemplates } from '@/lib/publishing/default-templates';
+   import { PrismaClient } from '@prisma/client';
+
+   const prisma = new PrismaClient();
+   await initializeDefaultTemplates(prisma);
+   ```
+
+### Publishing API Endpoints
+
+- `POST /api/publishing/publish` - Publish or schedule an article
+- `GET /api/publishing/queue` - Get publishing queue
+- `POST /api/publishing/queue` - Add item to queue
+- `DELETE /api/publishing/queue?id=xxx` - Remove from queue
+- `POST /api/publishing/queue/process` - Manually trigger queue processing
+- `GET /api/publishing/templates` - Get publishing templates
+- `POST /api/publishing/templates` - Create template
+- `GET /api/publishing/analytics` - Get analytics
+- `POST /api/publishing/analytics/refresh` - Refresh analytics
+
+### Using the Publishing Workflow
+
+```typescript
+// Publish to multiple platforms
+const response = await fetch('/api/publishing/publish', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    articleId: 'article-id',
+    options: {
+      platforms: [
+        {
+          id: 'dashboard',
+          name: 'dashboard',
+          enabled: true,
+          status: 'pending',
+          settings: {}
+        },
+        {
+          id: 'hashnode',
+          name: 'hashnode',
+          enabled: true,
+          status: 'pending',
+          settings: {
+            publicationId: process.env.HASHNODE_PUBLICATION_ID
+          }
+        }
+      ],
+      crossPost: true,
+      tags: ['javascript', 'tutorial'],
+      seo: {
+        title: 'SEO Title',
+        description: 'SEO Description'
+      },
+      social: {
+        autoShare: true,
+        platforms: ['twitter', 'linkedin']
+      }
+    }
+  })
+});
+```
+
+For complete documentation, see [UNIFIED_PUBLISHING_WORKFLOW.md](./UNIFIED_PUBLISHING_WORKFLOW.md).
 
 ### Database Commands
 
