@@ -583,3 +583,4 @@ export class BackupSystem {
 
 // Export for use in other modules
 export { BackupSystem, BackupConfig, BackupMetadata, BackupData, RollbackResult };
+

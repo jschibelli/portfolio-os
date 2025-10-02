@@ -560,3 +560,4 @@ describe('Migration System', () => {
     });
   });
 });
+

@@ -443,3 +443,4 @@ export class BidirectionalSync extends EventEmitter {
 
 // Export for use in other modules
 export { BidirectionalSync, SyncConfig, SyncEvent, SyncStatus };
+

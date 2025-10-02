@@ -115,3 +115,4 @@ function verifyWebhookSignature(body: string, signature: string): boolean {
     Buffer.from(calculatedSignature, 'hex')
   );
 }
+

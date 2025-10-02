@@ -293,3 +293,4 @@ program.on('command:*', () => {
   console.error('❌ Unknown command. Use --help for available commands.');
   process.exit(1);
 });
+

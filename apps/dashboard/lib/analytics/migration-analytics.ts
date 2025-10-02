@@ -618,3 +618,4 @@ export class MigrationAnalytics {
 
 // Export for use in other modules
 export { MigrationAnalytics, AnalyticsConfig, MigrationMetrics, MigrationReport, RealTimeMetrics };
+
