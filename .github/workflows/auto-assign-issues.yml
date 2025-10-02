@@ -1,0 +1,115 @@
+name: Auto Assign Issues
+
+on:
+  issues:
+    types: [opened, labeled, unlabeled]
+  issue_comment:
+    types: [created]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    if: github.event.issue.state == 'open'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup GitHub CLI
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/githubcli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+          
+      - name: Auto Assign Issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get issue details
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          ISSUE_LABELS="${{ join(github.event.issue.labels.*.name, ',') }}"
+          
+          echo "Issue #$ISSUE_NUMBER: $ISSUE_TITLE"
+          echo "Labels: $ISSUE_LABELS"
+          
+          # Check if already assigned
+          ASSIGNEES=$(gh issue view $ISSUE_NUMBER --json assignees --jq '.assignees[].login' | tr '\n' ',' | sed 's/,$//')
+          if [ -n "$ASSIGNEES" ]; then
+            echo "Issue already assigned to: $ASSIGNEES"
+            exit 0
+          fi
+          
+          # Determine assignee based on content and labels
+          ASSIGNEE=""
+          
+          # Check for explicit labels
+          if echo "$ISSUE_LABELS" | grep -qi "copilot\|automation"; then
+            ASSIGNEE="jschibelli"  # Fallback since Copilot user doesn't exist
+          elif echo "$ISSUE_LABELS" | grep -qi "human\|manual"; then
+            ASSIGNEE="jschibelli"
+          elif echo "$ISSUE_LABELS" | grep -qi "p0\|critical\|urgent"; then
+            ASSIGNEE="jschibelli"
+          elif echo "$ISSUE_LABELS" | grep -qi "xl\|large\|epic"; then
+            ASSIGNEE="jschibelli"
+          elif echo "$ISSUE_LABELS" | grep -qi "xs\|small\|quick"; then
+            ASSIGNEE="jschibelli"  # Fallback since Copilot user doesn't exist
+          else
+            # Analyze content for keywords
+            TEXT_TO_ANALYZE="$ISSUE_TITLE $ISSUE_BODY"
+            
+            # Copilot keywords (documentation, automation, etc.)
+            COPILOT_KEYWORDS="documentation docs readme guide tutorial example setup configuration config environment env automation script workflow ci/cd deployment testing test spec coverage quality refactor cleanup optimization performance seo meta analytics tracking monitoring integration api webhook sync migration accessibility a11y responsive mobile security auth permission validation"
+            
+            # Human keywords (design, critical features, etc.)
+            HUMAN_KEYWORDS="design ui ux user interface user experience creative branding visual layout styling business logic core functionality feature architecture system design database schema critical urgent priority high p0 p1 review approval decision strategy planning client customer user stakeholder requirement"
+            
+            COPILOT_SCORE=0
+            HUMAN_SCORE=0
+            
+            for keyword in $COPILOT_KEYWORDS; do
+              if echo "$TEXT_TO_ANALYZE" | grep -qi "$keyword"; then
+                COPILOT_SCORE=$((COPILOT_SCORE + 1))
+              fi
+            done
+            
+            for keyword in $HUMAN_KEYWORDS; do
+              if echo "$TEXT_TO_ANALYZE" | grep -qi "$keyword"; then
+                HUMAN_SCORE=$((HUMAN_SCORE + 1))
+              fi
+            done
+            
+            if [ $COPILOT_SCORE -gt $HUMAN_SCORE ]; then
+              ASSIGNEE="jschibelli"  # Fallback since Copilot user doesn't exist
+            elif [ $HUMAN_SCORE -gt $COPILOT_SCORE ]; then
+              ASSIGNEE="jschibelli"
+            else
+              ASSIGNEE="jschibelli"  # Default fallback
+            fi
+          fi
+          
+          if [ -n "$ASSIGNEE" ]; then
+            echo "Assigning issue #$ISSUE_NUMBER to $ASSIGNEE"
+            gh issue edit $ISSUE_NUMBER --add-assignee $ASSIGNEE
+            
+            # Add a comment explaining the assignment
+            gh issue comment $ISSUE_NUMBER --body "🤖 **Auto-assigned** to @$ASSIGNEE based on issue content and labels.
+            
+            **Assignment Logic:**
+            - Documentation, automation, testing → jschibelli
+            - Design, critical features, business logic → jschibelli  
+            - Priority P0/P1/Critical → jschibelli
+            - Size XL/Large/Epic → jschibelli
+            - Size XS/Small/Quick → jschibelli
+            
+            *Note: Copilot user not available, assigning to jschibelli instead*"
+          else
+            echo "No assignment determined for issue #$ISSUE_NUMBER"
+          fi
