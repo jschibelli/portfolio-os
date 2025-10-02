@@ -4,6 +4,9 @@
  */
 
 import { PlatformAdapter, PublishingAnalytics } from '../types';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export class HashnodeAdapter implements PlatformAdapter {
   name = 'hashnode';

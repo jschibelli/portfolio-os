@@ -397,4 +397,60 @@ model NewsletterCampaign {
   updatedAt       DateTime      @updatedAt
 }
 
+// Publishing System Models
+model PublishingStatus {
+  id           String   @id @default(cuid())
+  articleId    String
+  status       String   // 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed' | 'cancelled'
+  platforms    Json     // Array of PublishingPlatform objects
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  publishedAt  DateTime?
+  scheduledFor DateTime?
+  error        String?
+  retryCount   Int      @default(0)
+  metadata     Json?
+}
+
+model PublishingQueue {
+  id           String   @id @default(cuid())
+  articleId    String
+  status       String   // 'pending' | 'processing' | 'completed' | 'failed'
+  priority     String   // 'low' | 'normal' | 'high' | 'urgent'
+  platforms    Json     // Array of PublishingPlatform objects
+  scheduledFor DateTime?
+  createdAt    DateTime @default(now())
+  startedAt    DateTime?
+  completedAt  DateTime?
+  error        String?
+  retryCount   Int      @default(0)
+  maxRetries   Int      @default(3)
+}
+
+model PublishingTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  options     Json     // PublishingOptions object
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PublishingAnalytics {
+  id              String   @id @default(cuid())
+  articleId       String
+  platform        String
+  views           Int      @default(0)
+  likes           Int      @default(0)
+  shares          Int      @default(0)
+  comments        Int      @default(0)
+  engagement      Int      @default(0)
+  lastUpdated     DateTime @default(now())
+  metrics         Json?    // Additional metrics object
+  createdAt       DateTime @default(now())
+  
+  @@unique([articleId, platform])
+}
+
 
