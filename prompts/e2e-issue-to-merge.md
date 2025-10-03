@@ -1,4 +1,4 @@
-Automate end-to-end: https://github.com/jschibelli/portfolio-os/issues/41#issue-3391948162. Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+﻿Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign me, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
 **🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Todo → In progress → Ready → Done → Merged in sequence, then continues to the next available issues until no more work is available.
 
