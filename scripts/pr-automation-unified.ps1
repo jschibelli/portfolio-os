@@ -369,4 +369,3 @@ foreach ($action in $actions) {
     }
 }
 
-Write-ColorOutput "✅ Automation complete! (Base branch verified: develop)" "Green"
