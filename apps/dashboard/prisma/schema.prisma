@@ -180,6 +180,11 @@ model Article {
   readingMinutes  Int?
   seriesPosition  Int?
   views           Int           @default(0)
+  
+  // Cross-platform publishing
+  /// Hashnode post ID - Stores the Hashnode API post ID for sync
+  hashnodeId      String?
+  
   tags            ArticleTag[]
   versions        ArticleVersion[]
   reactions       Reaction[]

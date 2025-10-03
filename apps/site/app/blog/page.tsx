@@ -12,7 +12,7 @@ import { ArticleSVG } from '../../components/icons';
 import FeaturedPost from '../../components/features/blog/featured-post';
 import ModernPostCard from '../../components/features/blog/modern-post-card';
 import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
-import { fetchPosts, fetchPublication } from '../../lib/hashnode-api';
+import { fetchPosts, fetchPublication } from '../../lib/content-api';
 
 export const revalidate = 60;
 
