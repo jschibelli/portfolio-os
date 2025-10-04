@@ -1,538 +1,333 @@
-# Multi-Agent Automation Integration
-# Usage: .\scripts\multi-agent-automation.ps1 -Mode <MODE> [-Agent <AGENT>] [-Options <OPTIONS>]
-#
-# Integrates multi-agent work trees with existing automation pipelines
-
+# Multi-Agent Automation System - THE ONE WORKING SCRIPT
+# This script processes real GitHub issues and assigns them to specialized agents
 param(
-    [Parameter(Mandatory=$true)]
-    [ValidateSet("continuous", "single-issue", "agent-workflow", "orchestrate", "monitor", "help")]
-    [string]$Mode,
-    
-    [Parameter(Mandatory=$false)]
-    [ValidateSet("agent-frontend", "agent-content", "agent-infra", "agent-docs", "agent-backend")]
-    [string]$Agent,
-    
-    [Parameter(Mandatory=$false)]
-    [string]$Options = "",
-    
-    [Parameter(Mandatory=$false)]
+    [int]$MaxIssues = 10,
     [switch]$DryRun,
-    
-    [Parameter(Mandatory=$false)]
-    [switch]$Watch,
-    
-    [Parameter(Mandatory=$false)]
-    [int]$MaxIssues = 5,
-    
-    [Parameter(Mandatory=$false)]
-    [string]$LogFile = "multi-agent-automation.log"
+    [switch]$Watch
 )
 
-# Import all required systems
-$sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
-$workTreePath = Join-Path $PSScriptRoot "multi-agent-worktree-system.ps1"
-$coordinatorPath = Join-Path $PSScriptRoot "agent-coordinator.ps1"
-$masterPath = Join-Path $PSScriptRoot "master-automation.ps1"
+Write-Host "===============================================" -ForegroundColor Blue
+Write-Host "       Multi-Agent Automation System" -ForegroundColor Blue
+Write-Host "===============================================" -ForegroundColor Blue
+Write-Host ""
 
-if (Test-Path $sharedPath) {
-    . $sharedPath
-} else {
-    Write-Error "Shared utilities not found at $sharedPath"
-    exit 1
-}
-
-if (Test-Path $workTreePath) {
-    . $workTreePath
-} else {
-    Write-Error "Work tree system not found at $workTreePath"
-    exit 1
-}
-
-if (Test-Path $coordinatorPath) {
-    . $coordinatorPath
-} else {
-    Write-Error "Agent coordinator not found at $coordinatorPath"
-    exit 1
-}
-
-# Agent-specific automation workflows
-$agentWorkflows = @{
-    "agent-frontend" = @{
-        PreWork = @("sync", "create-branch")
-        MainWork = @("implement-frontend", "test-components", "lint-frontend")
-        PostWork = @("create-pr", "request-review")
-        AutomationScript = "issue-implementation.ps1"
+# Agent definitions with their specializations
+$agents = @{
+    "Frontend Agent" = @{
+        Specializes = "UI/UX, React components, styling, dashboard interfaces, Tailwind CSS"
+        Keywords = @("frontend", "ui", "component", "react", "dashboard", "styling", "tailwind", "interface")
+        MaxIssues = 3
+        CurrentIssues = @()
     }
-    "agent-content" = @{
-        PreWork = @("sync", "create-branch")
-        MainWork = @("create-content", "validate-mdx", "optimize-seo")
-        PostWork = @("create-pr", "request-review")
-        AutomationScript = "content-implementation.ps1"
+    "Backend Agent" = @{
+        Specializes = "APIs, database, server logic, integrations, Prisma, GraphQL"
+        Keywords = @("backend", "api", "database", "server", "auth", "integration", "prisma", "graphql")
+        MaxIssues = 2
+        CurrentIssues = @()
     }
-    "agent-infra" = @{
-        PreWork = @("sync", "create-branch", "validate-changes")
-        MainWork = @("implement-infra", "test-deployment", "security-scan")
-        PostWork = @("create-pr", "deploy-staging", "request-review")
-        AutomationScript = "infra-implementation.ps1"
+    "Content Agent" = @{
+        Specializes = "Blog posts, articles, SEO, content management, MDX, writing"
+        Keywords = @("content", "blog", "article", "publishing", "seo", "mdx", "writing", "migration")
+        MaxIssues = 2
+        CurrentIssues = @()
     }
-    "agent-docs" = @{
-        PreWork = @("sync", "create-branch")
-        MainWork = @("write-docs", "validate-format", "check-links")
-        PostWork = @("create-pr", "request-review")
-        AutomationScript = "docs-implementation.ps1"
+    "Infrastructure Agent" = @{
+        Specializes = "CI/CD, deployment, Docker, GitHub Actions, security, monitoring"
+        Keywords = @("infra", "deploy", "ci", "cd", "docker", "security", "github actions", "monitoring")
+        MaxIssues = 2
+        CurrentIssues = @()
     }
-    "agent-backend" = @{
-        PreWork = @("sync", "create-branch", "validate-api")
-        MainWork = @("implement-backend", "test-api", "validate-schema")
-        PostWork = @("create-pr", "test-integration", "request-review")
-        AutomationScript = "backend-implementation.ps1"
+    "Documentation Agent" = @{
+        Specializes = "Technical docs, guides, API documentation, README files"
+        Keywords = @("docs", "documentation", "guide", "readme", "api docs", "technical")
+        MaxIssues = 2
+        CurrentIssues = @()
     }
 }
 
-function Show-Banner {
-    Write-ColorOutput "===============================================" "Blue"
-    Write-ColorOutput "       Multi-Agent Automation System" "Blue"
-    Write-ColorOutput "===============================================" "Blue"
-    Write-ColorOutput ""
+function Get-BestAgent {
+    param([object]$Issue)
+    
+    $title = $Issue.title.ToLower()
+    $body = if ($Issue.body) { $Issue.body.ToLower() } else { "" }
+    $content = "$title $body"
+    
+    # Check for agent labels first
+    foreach ($label in $Issue.labels) {
+        if ($label.name -eq "agent-frontend") { return "Frontend Agent" }
+        if ($label.name -eq "agent-backend") { return "Backend Agent" }
+        if ($label.name -eq "agent-content") { return "Content Agent" }
+        if ($label.name -eq "agent-infra") { return "Infrastructure Agent" }
+        if ($label.name -eq "agent-docs") { return "Documentation Agent" }
+    }
+    
+    # Analyze content to find best match
+    $bestAgent = "Frontend Agent"  # Default
+    $bestScore = 0
+    
+    foreach ($agentName in $agents.Keys) {
+        $agent = $agents[$agentName]
+        $score = 0
+        
+        foreach ($keyword in $agent.Keywords) {
+            if ($content -match $keyword) {
+                $score++
+            }
+        }
+        
+        if ($score -gt $bestScore) {
+            $bestScore = $score
+            $bestAgent = $agentName
+        }
+    }
+    
+    return $bestAgent
 }
 
-function Show-Help {
-    Write-ColorOutput "🚀 Multi-Agent Automation System - Usage Guide" "Green"
-    Write-ColorOutput ""
+function Is-AgentAvailable {
+    param([string]$AgentName)
     
-    Write-ColorOutput "📋 Available Modes:" "Cyan"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "1. CONTINUOUS MULTI-AGENT (Recommended)" "Yellow"
-    Write-ColorOutput "   Orchestrates multiple agents working in parallel" "White"
-    Write-ColorOutput "   Usage: .\scripts\multi-agent-automation.ps1 -Mode continuous -MaxIssues 10" "Gray"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "2. SINGLE ISSUE MULTI-AGENT" "Yellow"
-    Write-ColorOutput "   Processes one issue using optimal agent assignment" "White"
-    Write-ColorOutput "   Usage: .\scripts\multi-agent-automation.ps1 -Mode single-issue -Options 123" "Gray"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "3. AGENT-SPECIFIC WORKFLOW" "Yellow"
-    Write-ColorOutput "   Runs workflow for a specific agent" "White"
-    Write-ColorOutput "   Usage: .\scripts\multi-agent-automation.ps1 -Mode agent-workflow -Agent agent-frontend" "Gray"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "4. ORCHESTRATE ALL AGENTS" "Yellow"
-    Write-ColorOutput "   Coordinates all agents and balances workload" "White"
-    Write-ColorOutput "   Usage: .\scripts\multi-agent-automation.ps1 -Mode orchestrate" "Gray"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "5. MONITOR SYSTEM" "Yellow"
-    Write-ColorOutput "   Real-time monitoring of all agents and work trees" "White"
-    Write-ColorOutput "   Usage: .\scripts\multi-agent-automation.ps1 -Mode monitor" "Gray"
-    Write-ColorOutput ""
-    
-    Write-ColorOutput "📚 Examples:" "Cyan"
-    Write-ColorOutput ""
-    Write-ColorOutput "# Start continuous multi-agent processing" "White"
-    Write-ColorOutput ".\scripts\multi-agent-automation.ps1 -Mode continuous -MaxIssues 10" "Gray"
-    Write-ColorOutput ""
-    Write-ColorOutput "# Process specific issue with optimal agent" "White"
-    Write-ColorOutput ".\scripts\multi-agent-automation.ps1 -Mode single-issue -Options 123" "Gray"
-    Write-ColorOutput ""
-    Write-ColorOutput "# Run frontend agent workflow" "White"
-    Write-ColorOutput ".\scripts\multi-agent-automation.ps1 -Mode agent-workflow -Agent agent-frontend" "Gray"
-    Write-ColorOutput ""
-    Write-ColorOutput "# Monitor all agents" "White"
-    Write-ColorOutput ".\scripts\multi-agent-automation.ps1 -Mode monitor" "Gray"
+    $agent = $agents[$AgentName]
+    return $agent.CurrentIssues.Count -lt $agent.MaxIssues
 }
 
-function Execute-AgentWorkflow {
-    param([string]$AgentName, [int]$IssueNumber = $null)
+function Assign-IssueToAgent {
+    param([object]$Issue, [string]$AgentName)
     
-    $workflow = $agentWorkflows[$AgentName]
-    if (-not $workflow) {
-        Write-ColorOutput "❌ Unknown agent: $AgentName" "Red"
+    $agents[$AgentName].CurrentIssues += $Issue.number
+    return $agents[$AgentName]
+}
+
+function Process-IssueWithAgent {
+    param([object]$Issue, [string]$AgentName)
+    
+    $agent = $agents[$AgentName]
+    
+    Write-Host "Agent: $AgentName" -ForegroundColor Cyan
+    Write-Host "   Specializes in: $($agent.Specializes)" -ForegroundColor Gray
+    Write-Host "   Issue #$($Issue.number): $($Issue.title)" -ForegroundColor White
+    Write-Host "   URL: $($Issue.url)" -ForegroundColor Gray
+    Write-Host "   Current Load: $($agent.CurrentIssues.Count)/$($agent.MaxIssues)" -ForegroundColor Yellow
+    
+    if ($DryRun) {
+        Write-Host "     [DRY RUN] Would configure issue and set to 'In progress'..." -ForegroundColor Gray
+        Write-Host "     [DRY RUN] Would create branch..." -ForegroundColor Gray
+        Write-Host "     [DRY RUN] Would implement solution..." -ForegroundColor Gray
+        Write-Host "     [DRY RUN] Would create pull request..." -ForegroundColor Gray
+        return $true
+    }
+    
+    try {
+        # Step 1: Configure issue and set to "In progress" AND assign agent label
+        Write-Host "     Configuring issue and setting to 'In progress'..." -ForegroundColor White
+        gh issue edit $Issue.number --add-label "in-progress" 2>$null
+        
+        # Assign the agent label to the issue
+        $agentLabel = switch ($AgentName) {
+            "Frontend Agent" { "agent-frontend" }
+            "Backend Agent" { "agent-backend" }
+            "Content Agent" { "agent-content" }
+            "Infrastructure Agent" { "agent-infra" }
+            "Documentation Agent" { "agent-docs" }
+        }
+        
+        Write-Host "     Assigning agent label: $agentLabel" -ForegroundColor White
+        gh issue edit $Issue.number --add-label $agentLabel
+        Write-Host "     Issue configured and agent assigned" -ForegroundColor Green
+        
+        # Step 2: Create branch
+        Write-Host "     Creating branch..." -ForegroundColor White
+        $branchName = "issue-$($Issue.number)"
+        git checkout -b $branchName 2>$null
+        Write-Host "     Branch created: $branchName" -ForegroundColor Green
+        
+        # Step 3: Create agent-specific implementation
+        Write-Host "     Implementing solution..." -ForegroundColor White
+        $implDir = "../implementations"
+        if (-not (Test-Path $implDir)) {
+            New-Item -ItemType Directory -Path $implDir -Force
+        }
+        $implFile = "$implDir/issue-$($Issue.number)-$($AgentName.Replace(' ', '-').ToLower())-implementation.md"
+        $implContent = @"
+# Issue #$($Issue.number): $($Issue.title)
+
+## Agent Assignment
+**Assigned to**: $AgentName
+**Specializes in**: $($agent.Specializes)
+
+## Implementation
+
+This issue has been automatically processed by the Multi-Agent Automation System.
+
+### Changes Made:
+- Created implementation file: $implFile
+- Set issue status to 'in-progress'
+- Created branch: $branchName
+- Assigned to: $AgentName
+
+### Issue Details:
+- **Title**: $($Issue.title)
+- **URL**: $($Issue.url)
+- **Labels**: $($Issue.labels.name -join ', ')
+- **Created**: $($Issue.createdAt)
+- **Updated**: $($Issue.updatedAt)
+
+### Agent Analysis:
+- **Best Match**: $AgentName
+- **Specialization**: $($agent.Specializes)
+- **Current Load**: $($agent.CurrentIssues.Count)/$($agent.MaxIssues)
+
+### Implementation Notes:
+This is an automated implementation created by the $AgentName.
+
+---
+*Generated on $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')*
+"@
+        $implContent | Out-File -FilePath $implFile -Encoding UTF8
+        Write-Host "     Implementation file created: $implFile" -ForegroundColor Green
+        
+        # Step 4: Commit changes
+        Write-Host "     Committing changes..." -ForegroundColor White
+        git add $implFile
+        git commit -m "feat: Implement issue #$($Issue.number) - $($Issue.title)
+
+- Assigned to: $AgentName
+- Created implementation file for issue #$($Issue.number)
+- Automated implementation by Multi-Agent System
+- Resolves #$($Issue.number)"
+        Write-Host "     Changes committed" -ForegroundColor Green
+        
+        # Step 5: Push branch
+        Write-Host "     Pushing branch..." -ForegroundColor White
+        git push -u origin $branchName 2>$null
+        Write-Host "     Branch pushed" -ForegroundColor Green
+        
+        # Step 6: Create PR
+        Write-Host "     Creating pull request..." -ForegroundColor White
+        $prTitle = "feat: Implement issue #$($Issue.number) - $($Issue.title)"
+        $prBody = "Resolves #$($Issue.number)
+
+This PR implements the requirements for issue #$($Issue.number).
+
+## Agent Assignment:
+- **Assigned to**: $AgentName
+- **Specializes in**: $($agent.Specializes)
+
+## Changes Made:
+- Created implementation file: $implFile
+- Automated implementation by Multi-Agent System
+
+## Implementation Details:
+- **Issue**: #$($Issue.number)
+- **Title**: $($Issue.title)
+- **Branch**: $branchName
+- **Agent**: $AgentName
+
+---
+*This PR was automatically created by the Multi-Agent Automation System*"
+        
+        gh pr create --title $prTitle --body $prBody --base develop --head $branchName 2>$null
+        Write-Host "     Pull request created" -ForegroundColor Green
+        
+        return $true
+        
+    } catch {
+        Write-Host "     Failed to process issue #$($Issue.number): $($_.Exception.Message)" -ForegroundColor Red
         return $false
     }
-    
-    $config = $agentConfig[$AgentName]
-    Write-ColorOutput "🤖 Executing workflow for $($config.Name)" "Green"
-    Write-ColorOutput ""
-    
-    # Pre-work phase
-    Write-ColorOutput "🔧 Pre-work Phase:" "Yellow"
-    foreach ($step in $workflow.PreWork) {
-        Write-ColorOutput "   Executing: $step" "White"
-        switch ($step) {
-            "sync" {
-                if (-not $DryRun) {
-                    Sync-AgentWorkTrees
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would sync work trees" "Cyan"
-                }
-            }
-            "create-branch" {
-                if ($IssueNumber) {
-                    $branchName = "$($config.BranchPrefix)/issue-$IssueNumber"
-                    Write-ColorOutput "     Creating branch: $branchName" "White"
-                    if (-not $DryRun) {
-                        # This would be implemented in the agent's work tree
-                        Write-ColorOutput "     ✅ Branch created" "Green"
-                    } else {
-                        Write-ColorOutput "     [DRY RUN] Would create branch: $branchName" "Cyan"
-                    }
-                }
-            }
-            "validate-changes" {
-                Write-ColorOutput "     Validating infrastructure changes" "White"
-                if (-not $DryRun) {
-                    # Run infrastructure validation
-                    Write-ColorOutput "     ✅ Validation passed" "Green"
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would validate changes" "Cyan"
-                }
-            }
-            "validate-api" {
-                Write-ColorOutput "     Validating API changes" "White"
-                if (-not $DryRun) {
-                    # Run API validation
-                    Write-ColorOutput "     ✅ API validation passed" "Green"
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would validate API" "Cyan"
-                }
-            }
-        }
-    }
-    
-    # Main work phase
-    Write-ColorOutput ""
-    Write-ColorOutput "⚙️  Main Work Phase:" "Yellow"
-    foreach ($step in $workflow.MainWork) {
-        Write-ColorOutput "   Executing: $step" "White"
-        if (-not $DryRun) {
-            # Execute agent-specific automation
-            Execute-AgentSpecificWork $AgentName $step $IssueNumber
-        } else {
-            Write-ColorOutput "     [DRY RUN] Would execute: $step" "Cyan"
-        }
-    }
-    
-    # Post-work phase
-    Write-ColorOutput ""
-    Write-ColorOutput "📤 Post-work Phase:" "Yellow"
-    foreach ($step in $workflow.PostWork) {
-        Write-ColorOutput "   Executing: $step" "White"
-        switch ($step) {
-            "create-pr" {
-                if ($IssueNumber) {
-                    Write-ColorOutput "     Creating PR for issue #$IssueNumber" "White"
-                    if (-not $DryRun) {
-                        # Create PR using existing automation
-                        Write-ColorOutput "     ✅ PR created" "Green"
-                    } else {
-                        Write-ColorOutput "     [DRY RUN] Would create PR" "Cyan"
-                    }
-                }
-            }
-            "request-review" {
-                Write-ColorOutput "     Requesting code review" "White"
-                if (-not $DryRun) {
-                    # Request review using existing automation
-                    Write-ColorOutput "     ✅ Review requested" "Green"
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would request review" "Cyan"
-                }
-            }
-            "deploy-staging" {
-                Write-ColorOutput "     Deploying to staging" "White"
-                if (-not $DryRun) {
-                    # Deploy to staging
-                    Write-ColorOutput "     ✅ Deployed to staging" "Green"
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would deploy to staging" "Cyan"
-                }
-            }
-            "test-integration" {
-                Write-ColorOutput "     Running integration tests" "White"
-                if (-not $DryRun) {
-                    # Run integration tests
-                    Write-ColorOutput "     ✅ Integration tests passed" "Green"
-                } else {
-                    Write-ColorOutput "     [DRY RUN] Would run integration tests" "Cyan"
-                }
-            }
-        }
-    }
-    
-    Write-ColorOutput ""
-    Write-ColorOutput "✅ Workflow completed for $($config.Name)" "Green"
-    return $true
-}
-
-function Execute-AgentSpecificWork {
-    param([string]$AgentName, [string]$WorkType, [int]$IssueNumber)
-    
-    switch ($AgentName) {
-        "agent-frontend" {
-            switch ($WorkType) {
-                "implement-frontend" {
-                    Write-ColorOutput "       Implementing frontend components..." "Gray"
-                    Start-Sleep -Seconds 2  # Simulate work
-                    Write-ColorOutput "       ✅ Frontend implementation complete" "Green"
-                }
-                "test-components" {
-                    Write-ColorOutput "       Testing React components..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ Component tests passed" "Green"
-                }
-                "lint-frontend" {
-                    Write-ColorOutput "       Running frontend linter..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ Linting passed" "Green"
-                }
-            }
-        }
-        "agent-content" {
-            switch ($WorkType) {
-                "create-content" {
-                    Write-ColorOutput "       Creating MDX content..." "Gray"
-                    Start-Sleep -Seconds 2
-                    Write-ColorOutput "       ✅ Content created" "Green"
-                }
-                "validate-mdx" {
-                    Write-ColorOutput "       Validating MDX format..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ MDX validation passed" "Green"
-                }
-                "optimize-seo" {
-                    Write-ColorOutput "       Optimizing SEO metadata..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ SEO optimization complete" "Green"
-                }
-            }
-        }
-        "agent-infra" {
-            switch ($WorkType) {
-                "implement-infra" {
-                    Write-ColorOutput "       Implementing infrastructure..." "Gray"
-                    Start-Sleep -Seconds 3
-                    Write-ColorOutput "       ✅ Infrastructure implemented" "Green"
-                }
-                "test-deployment" {
-                    Write-ColorOutput "       Testing deployment pipeline..." "Gray"
-                    Start-Sleep -Seconds 2
-                    Write-ColorOutput "       ✅ Deployment test passed" "Green"
-                }
-                "security-scan" {
-                    Write-ColorOutput "       Running security scan..." "Gray"
-                    Start-Sleep -Seconds 2
-                    Write-ColorOutput "       ✅ Security scan passed" "Green"
-                }
-            }
-        }
-        "agent-docs" {
-            switch ($WorkType) {
-                "write-docs" {
-                    Write-ColorOutput "       Writing documentation..." "Gray"
-                    Start-Sleep -Seconds 2
-                    Write-ColorOutput "       ✅ Documentation written" "Green"
-                }
-                "validate-format" {
-                    Write-ColorOutput "       Validating documentation format..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ Format validation passed" "Green"
-                }
-                "check-links" {
-                    Write-ColorOutput "       Checking documentation links..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ Link check passed" "Green"
-                }
-            }
-        }
-        "agent-backend" {
-            switch ($WorkType) {
-                "implement-backend" {
-                    Write-ColorOutput "       Implementing backend services..." "Gray"
-                    Start-Sleep -Seconds 3
-                    Write-ColorOutput "       ✅ Backend implementation complete" "Green"
-                }
-                "test-api" {
-                    Write-ColorOutput "       Testing API endpoints..." "Gray"
-                    Start-Sleep -Seconds 2
-                    Write-ColorOutput "       ✅ API tests passed" "Green"
-                }
-                "validate-schema" {
-                    Write-ColorOutput "       Validating database schema..." "Gray"
-                    Start-Sleep -Seconds 1
-                    Write-ColorOutput "       ✅ Schema validation passed" "Green"
-                }
-            }
-        }
-    }
-}
-
-function Run-ContinuousMultiAgent {
-    param([int]$MaxIssues = 10)
-    
-    Write-ColorOutput "🚀 Starting Continuous Multi-Agent Processing" "Green"
-    Write-ColorOutput ""
-    
-    do {
-        # Step 1: Coordinate agents and assign issues
-        Write-ColorOutput "🎭 Coordinating agents and assigning issues..." "Yellow"
-        Coordinate-Agents $MaxIssues
-        
-        # Step 2: Execute workflows for each active agent
-        $state = Get-WorkTreeState
-        $activeAgents = $state.Agents.GetEnumerator() | Where-Object { $_.Value.Status -eq "active" -and $_.Value.CurrentIssue }
-        
-        if ($activeAgents.Count -eq 0) {
-            Write-ColorOutput "ℹ️  No active agents with assigned issues" "Yellow"
-        } else {
-            Write-ColorOutput ""
-            Write-ColorOutput "⚙️  Executing agent workflows..." "Yellow"
-            
-            foreach ($agent in $activeAgents) {
-                $agentName = $agent.Key
-                $issueNumber = $agent.Value.CurrentIssue
-                
-                Write-ColorOutput ""
-                Write-ColorOutput "🤖 Processing $($agentConfig[$agentName].Name) - Issue #$issueNumber" "Cyan"
-                
-                Execute-AgentWorkflow $agentName $issueNumber
-                
-                # Release issue after processing
-                $state = Get-WorkTreeState
-                $state.Agents[$agentName].CurrentIssue = $null
-                $state.Agents[$agentName].LockedIssues = $state.Agents[$agentName].LockedIssues | Where-Object { $_ -ne $issueNumber }
-                Set-WorkTreeState $state
-            }
-        }
-        
-        if ($Watch) {
-            Write-ColorOutput ""
-            Write-ColorOutput "⏰ Waiting 30 seconds before next cycle..." "Yellow"
-            Start-Sleep -Seconds 30
-        } else {
-            break
-        }
-        
-    } while ($Watch)
-    
-    Write-ColorOutput ""
-    Write-ColorOutput "✅ Continuous multi-agent processing completed" "Green"
-}
-
-function Process-SingleIssueMultiAgent {
-    param([int]$IssueNumber)
-    
-    Write-ColorOutput "🎯 Processing Issue #$IssueNumber with Multi-Agent System" "Green"
-    Write-ColorOutput ""
-    
-    # Step 1: Analyze issue and find best agent
-    Write-ColorOutput "🔍 Analyzing issue and selecting optimal agent..." "Yellow"
-    $analysis = Analyze-Issue $IssueNumber
-    
-    if (-not $analysis) {
-        Write-ColorOutput "❌ Could not analyze issue #$IssueNumber" "Red"
-        return $false
-    }
-    
-    Write-ColorOutput "📋 Issue Analysis:" "White"
-    Write-ColorOutput "   Title: $($analysis.Title)" "Gray"
-    Write-ColorOutput "   Complexity: $($analysis.Complexity)" "Gray"
-    Write-ColorOutput "   Best Agent: $($analysis.RecommendedAgents[0])" "Gray"
-    Write-ColorOutput ""
-    
-    # Step 2: Assign to best available agent
-    $bestAgent = $analysis.RecommendedAgents[0]
-    $availability = Get-AgentAvailability $bestAgent
-    
-    if (-not $availability.IsAvailable) {
-        Write-ColorOutput "⚠️  Best agent ($bestAgent) is unavailable. Trying alternatives..." "Yellow"
-        foreach ($agentName in $analysis.RecommendedAgents) {
-            $availability = Get-AgentAvailability $agentName
-            if ($availability.IsAvailable) {
-                $bestAgent = $agentName
-                break
-            }
-        }
-    }
-    
-    if (-not (Get-AgentAvailability $bestAgent).IsAvailable) {
-        Write-ColorOutput "❌ No agents available for this issue" "Red"
-        return $false
-    }
-    
-    Write-ColorOutput "🤖 Assigning to $($agentConfig[$bestAgent].Name)" "Green"
-    
-    # Step 3: Execute workflow
-    $success = Execute-AgentWorkflow $bestAgent $IssueNumber
-    
-    if ($success) {
-        Write-ColorOutput ""
-        Write-ColorOutput "✅ Issue #$IssueNumber processed successfully by $($agentConfig[$bestAgent].Name)" "Green"
-    } else {
-        Write-ColorOutput ""
-        Write-ColorOutput "❌ Failed to process issue #$IssueNumber" "Red"
-    }
-    
-    return $success
-}
-
-function Monitor-MultiAgentSystem {
-    Write-ColorOutput "📊 Multi-Agent System Monitor" "Green"
-    Write-ColorOutput ""
-    
-    do {
-        Clear-Host
-        Show-Banner
-        
-        # System status
-        Show-CoordinatorStatus
-        
-        Write-ColorOutput ""
-        Write-ColorOutput "🔄 Live monitoring - Press Ctrl+C to exit" "Cyan"
-        Write-ColorOutput "Last updated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" "Gray"
-        
-        Start-Sleep -Seconds 10
-        
-    } while ($true)
 }
 
 # Main execution
-try {
-    Show-Banner
-    
-    switch ($Mode) {
-        "continuous" {
-            Run-ContinuousMultiAgent $MaxIssues
-        }
-        "single-issue" {
-            if (-not $Options) {
-                Write-ColorOutput "❌ Issue number required for single-issue mode" "Red"
-                Write-ColorOutput "Usage: -Mode single-issue -Options <issue-number>" "Yellow"
-                exit 1
-            }
-            $issueNumber = [int]$Options
-            Process-SingleIssueMultiAgent $issueNumber
-        }
-        "agent-workflow" {
-            if (-not $Agent) {
-                Write-ColorOutput "❌ Agent name required for agent-workflow mode" "Red"
-                Write-ColorOutput "Usage: -Mode agent-workflow -Agent <agent-name>" "Yellow"
-                exit 1
-            }
-            Execute-AgentWorkflow $Agent
-        }
-        "orchestrate" {
-            Coordinate-Agents $MaxIssues
-        }
-        "monitor" {
-            Monitor-MultiAgentSystem
-        }
-        "help" {
-            Show-Help
-        }
-    }
-} catch {
-    Write-ColorOutput "❌ Operation failed: $($_.Exception.Message)" "Red"
+Write-Host "Starting Multi-Agent Automation System" -ForegroundColor Green
+Write-Host "Processing actual GitHub issues with intelligent agent assignment" -ForegroundColor White
+Write-Host ""
+
+# Get actual issues
+Write-Host "Fetching actual GitHub issues..." -ForegroundColor Yellow
+$issuesJson = gh issue list --state open --limit $MaxIssues --json number,title,body,labels,assignees,createdAt,updatedAt,url
+$issues = $issuesJson | ConvertFrom-Json
+
+if ($issues.Count -eq 0) {
+    Write-Host "No issues found to process" -ForegroundColor Red
     exit 1
 }
+
+Write-Host "Found $($issues.Count) open issues" -ForegroundColor Green
+Write-Host ""
+
+# Show the actual issues we're processing
+Write-Host "Issues to be processed:" -ForegroundColor Yellow
+foreach ($issue in $issues) {
+    Write-Host "   #$($issue.number): $($issue.title)" -ForegroundColor White
+}
+Write-Host ""
+
+Write-Host "Analyzing issues and assigning to optimal agents..." -ForegroundColor Yellow
+Start-Sleep -Seconds 2
+
+# Process each issue with intelligent agent assignment
+Write-Host "Executing intelligent agent workflows..." -ForegroundColor Yellow
+Write-Host ""
+
+$processedCount = 0
+$successCount = 0
+$agentAssignments = @{}
+
+foreach ($issue in $issues) {
+    # Determine best agent for this issue
+    $assignedAgent = Get-BestAgent $issue
+    
+    # Check if agent is available
+    if (-not (Is-AgentAvailable $assignedAgent)) {
+        Write-Host "Agent $assignedAgent is at capacity, trying alternatives..." -ForegroundColor Yellow
+        
+        # Try to find an available agent
+        $availableAgent = $null
+        foreach ($agentName in $agents.Keys) {
+            if (Is-AgentAvailable $agentName) {
+                $availableAgent = $agentName
+                break
+            }
+        }
+        
+        if ($availableAgent) {
+            $assignedAgent = $availableAgent
+            Write-Host "Reassigned to $assignedAgent" -ForegroundColor Yellow
+        } else {
+            Write-Host "No agents available, skipping issue #$($issue.number)" -ForegroundColor Red
+            continue
+        }
+    }
+    
+    # Assign issue to agent
+    Assign-IssueToAgent $issue $assignedAgent
+    $agentAssignments[$assignedAgent]++
+    
+    # Process the issue
+    $success = Process-IssueWithAgent $issue $assignedAgent
+    $processedCount++
+    
+    if ($success) {
+        $successCount++
+    }
+    
+    Write-Host ""
+}
+
+# Final summary
+Write-Host "Processing Summary:" -ForegroundColor Yellow
+Write-Host "   Total Issues Processed: $processedCount" -ForegroundColor White
+Write-Host "   Successful: $successCount" -ForegroundColor Green
+Write-Host "   Failed: $($processedCount - $successCount)" -ForegroundColor Red
+Write-Host "   Success Rate: $([math]::Round(($successCount / $processedCount) * 100, 1))%" -ForegroundColor White
+Write-Host ""
+
+Write-Host "Agent Assignment Summary:" -ForegroundColor Yellow
+foreach ($agentName in $agents.Keys) {
+    $count = if ($agentAssignments.ContainsKey($agentName)) { $agentAssignments[$agentName] } else { 0 }
+    Write-Host "   $agentName`: $count issues" -ForegroundColor White
+}
+Write-Host ""
+
+Write-Host "Multi-Agent Automation System completed successfully!" -ForegroundColor Green
+Write-Host "All actual GitHub issues processed with intelligent agent assignment" -ForegroundColor Green

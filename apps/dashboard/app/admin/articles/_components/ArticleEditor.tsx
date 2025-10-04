@@ -56,6 +56,7 @@ import { SEOPanel, SEOData } from './SEOPanel'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { DualModeEditor } from './DualModeEditor'
 import { PublishingPanel } from './PublishingPanel'
+import { EnhancedEditor } from '../../components/editor/EnhancedEditor'
 import { 
   Save,
   Eye,
@@ -114,6 +115,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
   const [isTipTapMode, setIsTipTapMode] = useState(false)
   const [isDualMode, setIsDualMode] = useState(false)
+  const [isEnhancedMode, setIsEnhancedMode] = useState(true)
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
@@ -503,14 +505,28 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               {/* Editor Mode Toggle */}
               <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                 <Button
-                  variant={!isMarkdownMode && !isTipTapMode && !isDualMode ? "default" : "ghost"}
+                  variant={isEnhancedMode ? "default" : "ghost"}
                   size="sm"
                   onClick={() => {
+                    setIsEnhancedMode(true)
                     setIsMarkdownMode(false)
                     setIsTipTapMode(false)
                     setIsDualMode(false)
                   }}
-                  className={!isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={isEnhancedMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                >
+                  Enhanced
+                </Button>
+                <Button
+                  variant={!isEnhancedMode && !isMarkdownMode && !isTipTapMode && !isDualMode ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => {
+                    setIsEnhancedMode(false)
+                    setIsMarkdownMode(false)
+                    setIsTipTapMode(false)
+                    setIsDualMode(false)
+                  }}
+                  className={!isEnhancedMode && !isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
                 >
                   Block Editor
                 </Button>
@@ -519,6 +535,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   size="sm"
                   onClick={() => {
                     setIsDualMode(true)
+                    setIsEnhancedMode(false)
                     setIsTipTapMode(false)
                     setIsMarkdownMode(false)
                   }}
@@ -531,6 +548,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   size="sm"
                   onClick={() => {
                     setIsTipTapMode(true)
+                    setIsEnhancedMode(false)
                     setIsMarkdownMode(false)
                     setIsDualMode(false)
                   }}
@@ -543,6 +561,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   size="sm"
                   onClick={() => {
                     setIsMarkdownMode(true)
+                    setIsEnhancedMode(false)
                     setIsTipTapMode(false)
                     setIsDualMode(false)
                   }}
@@ -697,7 +716,14 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
               <Separator />
 
               {/* Editor Content */}
-              {isDualMode ? (
+              {isEnhancedMode ? (
+                <EnhancedEditor
+                  blocks={blocks}
+                  onBlocksChange={setBlocks}
+                  onSave={saveDraft}
+                  onPublish={publishArticle}
+                />
+              ) : isDualMode ? (
                 <DualModeEditor
                   content={tiptapContent}
                   onChange={(content) => {
