@@ -5,28 +5,29 @@
 
 import React from 'react';
 import { BlockRegistry, BlockCategory, BLOCK_CATEGORIES } from './types';
+export { BLOCK_CATEGORIES };
 
-// Import block components (we'll create these)
-import { CodeBlock } from '../components/content-blocks/CodeBlock';
-import { CTABlock } from '../components/content-blocks/CTABlock';
-import { ButtonBlock } from '../components/content-blocks/ButtonBlock';
-import { QuoteBlock } from '../components/content-blocks/QuoteBlock';
-import { ImageGalleryBlock } from '../components/content-blocks/ImageGalleryBlock';
-import { VideoBlock } from '../components/content-blocks/VideoBlock';
-import { DividerBlock } from '../components/content-blocks/DividerBlock';
-import { SpacerBlock } from '../components/content-blocks/SpacerBlock';
-import { EmbedBlock } from '../components/content-blocks/EmbedBlock';
+// Import block components
+import { CodeBlock } from '@/components/content-blocks/CodeBlock';
+import { CTABlock } from '@/components/content-blocks/CTABlock';
+import { ButtonBlock } from '@/components/content-blocks/ButtonBlock';
+import { QuoteBlock } from '@/components/content-blocks/QuoteBlock';
+import { ImageGalleryBlock } from '@/components/content-blocks/ImageGalleryBlock';
+import { VideoBlock } from '@/components/content-blocks/VideoBlock';
+import { DividerBlock } from '@/components/content-blocks/DividerBlock';
+import { SpacerBlock } from '@/components/content-blocks/SpacerBlock';
+import { EmbedBlock } from '@/components/content-blocks/EmbedBlock';
 
 // Import block settings components
-import { CodeBlockSettings } from '../components/content-blocks/settings/CodeBlockSettings';
-import { CTABlockSettings } from '../components/content-blocks/settings/CTABlockSettings';
-import { ButtonBlockSettings } from '../components/content-blocks/settings/ButtonBlockSettings';
-import { QuoteBlockSettings } from '../components/content-blocks/settings/QuoteBlockSettings';
-import { ImageGalleryBlockSettings } from '../components/content-blocks/settings/ImageGalleryBlockSettings';
-import { VideoBlockSettings } from '../components/content-blocks/settings/VideoBlockSettings';
-import { DividerBlockSettings } from '../components/content-blocks/settings/DividerBlockSettings';
-import { SpacerBlockSettings } from '../components/content-blocks/settings/SpacerBlockSettings';
-import { EmbedBlockSettings } from '../components/content-blocks/settings/EmbedBlockSettings';
+import { CodeBlockSettings } from '@/components/content-blocks/settings/CodeBlockSettings';
+import { CTABlockSettings } from '@/components/content-blocks/settings/CTABlockSettings';
+import { ButtonBlockSettings } from '@/components/content-blocks/settings/ButtonBlockSettings';
+import { QuoteBlockSettings } from '@/components/content-blocks/settings/QuoteBlockSettings';
+import { ImageGalleryBlockSettings } from '@/components/content-blocks/settings/ImageGalleryBlockSettings';
+import { VideoBlockSettings } from '@/components/content-blocks/settings/VideoBlockSettings';
+import { DividerBlockSettings } from '@/components/content-blocks/settings/DividerBlockSettings';
+import { SpacerBlockSettings } from '@/components/content-blocks/settings/SpacerBlockSettings';
+import { EmbedBlockSettings } from '@/components/content-blocks/settings/EmbedBlockSettings';
 
 // Icons (using Lucide React icons)
 import { 

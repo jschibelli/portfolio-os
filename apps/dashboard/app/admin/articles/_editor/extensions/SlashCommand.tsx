@@ -7,6 +7,7 @@ import { ReactRenderer } from '@tiptap/react'
 import Suggestion from '@tiptap/suggestion'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { SlashCommand } from '@/lib/types/article'
+import { contentBlockSlashCommands } from '@/lib/blocks/slash-commands'
 import tippy from 'tippy.js'
 
 interface CommandItemProps {
@@ -137,7 +138,8 @@ export const SlashCommandExtension = Extension.create({
   },
 })
 
-export const slashCommands: SlashCommand[] = [
+// Traditional TipTap commands
+const traditionalSlashCommands: SlashCommand[] = [
   {
     title: 'Heading 1',
     description: 'Big section heading',
@@ -181,14 +183,14 @@ export const slashCommands: SlashCommand[] = [
     command: (editor) => editor.chain().focus().toggleTaskList().run(),
   },
   {
-    title: 'Quote',
-    description: 'Create a blockquote',
+    title: 'Basic Quote',
+    description: 'Create a basic blockquote',
     icon: '"',
     command: (editor) => editor.chain().focus().toggleBlockquote().run(),
   },
   {
-    title: 'Code Block',
-    description: 'Create a code block',
+    title: 'Basic Code Block',
+    description: 'Create a basic code block',
     icon: '</>',
     command: (editor) => editor.chain().focus().toggleCodeBlock().run(),
   },
@@ -269,6 +271,23 @@ export const slashCommands: SlashCommand[] = [
       content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Component content here...' }] }]
     }).run(),
   },
+]
+
+// Combined slash commands (traditional + content blocks)
+export const slashCommands: SlashCommand[] = [
+  // Traditional commands first
+  ...traditionalSlashCommands,
+  
+  // Separator
+  {
+    title: '--- Content Blocks ---',
+    description: 'Advanced modular content blocks',
+    icon: '🎨',
+    command: () => {}, // No-op for separator
+  },
+  
+  // Content block commands
+  ...contentBlockSlashCommands,
 ]
 
 function extractYouTubeId(url: string): string | null {

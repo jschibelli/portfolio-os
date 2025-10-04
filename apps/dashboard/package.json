@@ -46,6 +46,7 @@
     "@tiptap/react": "^3.4.4",
     "@tiptap/starter-kit": "^3.4.4",
     "@tiptap/suggestion": "^3.4.4",
+    "@hello-pangea/dnd": "^16.6.0",
     "@types/jest-axe": "^3.5.9",
     "@types/react-syntax-highlighter": "^15.5.13",
     "bcrypt": "^6.0.0",

@@ -20,6 +20,8 @@ import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
 // import { createLowlight } from 'lowlight'
 // import { common } from 'lowlight'
 import { EditorToolbar } from './EditorToolbar'
+import { ContentBlock } from '../_editor/extensions/ContentBlock'
+import { SlashCommandExtension, slashCommands } from '../_editor/extensions/SlashCommand'
 
 // Create lowlight instance for syntax highlighting
 // const lowlight = createLowlight(common)
@@ -150,6 +152,23 @@ export function CompleteTipTapEditor({
       HorizontalRule.configure({
         HTMLAttributes: {
           class: 'border-t border-gray-300 my-6',
+        },
+      }),
+      // Content Block Extension
+      ContentBlock.configure({
+        HTMLAttributes: {
+          class: 'content-block-wrapper my-4',
+        },
+      }),
+      // Slash Command Extension
+      SlashCommandExtension.configure({
+        suggestion: {
+          items: ({ query }: { query: string }) => {
+            return slashCommands.filter(item => 
+              item.title.toLowerCase().includes(query.toLowerCase()) ||
+              item.description.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 10)
+          },
         },
       }),
     ],
