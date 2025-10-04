@@ -12,6 +12,7 @@ import { ArticleSVG } from '../../components/icons';
 import FeaturedPost from '../../components/features/blog/featured-post';
 import ModernPostCard from '../../components/features/blog/modern-post-card';
 import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
+import { fetchPosts, fetchPublication } from '../../lib/content-api';
 
 export const revalidate = 60;
 
@@ -20,8 +21,8 @@ const defaultPublication = {
   id: 'fallback-blog',
   title: 'John Schibelli',
   displayTitle: 'John Schibelli',
-  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications. Expert in React, Next.js, TypeScript, and modern development practices. Available for freelance projects and consulting.',
-  url: 'https://schibelli.dev',
+  descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building scalable, high-performance web applications with modern development practices. Available for freelance projects and consulting.',
+  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
   },
@@ -41,54 +42,22 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  const GQL_ENDPOINT = 'https://gql.hashnode.com/';
-  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+  // Fetch latest posts and publication data from Hashnode
+  const [posts, publication] = await Promise.all([
+    fetchPosts(10),
+    fetchPublication()
+  ]);
 
-  // Fetch latest posts from Hashnode
-  const query = `
-    query PostsByPublication($host: String!, $first: Int!, $after: String) {
-      publication(host: $host) {
-        posts(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              title
-              brief
-              slug
-              publishedAt
-              coverImage { url }
-              author { name }
-              tags { name slug }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  let posts: any[] = [];
-  try {
-    const res = await fetch(GQL_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables: { host, first: 10 } }),
-      next: { revalidate: 60 },
-    });
-    const data = await res.json();
-    const edges = data?.data?.publication?.posts?.edges || [];
-    posts = edges.map((e: any) => e.node);
-  } catch (error) {
-    console.error('Error fetching Hashnode posts:', error);
-    posts = [];
-  }
+  // Use fetched publication or fallback to default
+  const currentPublication = publication || defaultPublication;
 
   const featuredPost = posts[0];
   const morePosts = posts.slice(1, 4);
 
   return (
-    <AppProvider publication={defaultPublication as any}>
+    <AppProvider publication={currentPublication as any}>
       {/* Navigation */}
-      <ModernHeader publication={defaultPublication} />
+      <ModernHeader publication={currentPublication} />
 
       {/* Modern Hero Section */}
       {posts.length > 0 && (
@@ -239,7 +208,7 @@ export default async function BlogPage() {
         )}
       </Container>
       <Chatbot />
-      <Footer publication={defaultPublication} />
+      <Footer publication={currentPublication} />
     </AppProvider>
   );
 }

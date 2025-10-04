@@ -1,0 +1,72 @@
+name: E2E (Optimized)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "apps/site/**"
+      - ".github/workflows/**"
+  push:
+    branches: [ develop ]
+    paths:
+      - "apps/site/**"
+      - ".github/workflows/**"
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build site
+        run: pnpm --filter @mindware-blog/site run build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/site/package.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @mindware-blog/site exec playwright install --with-deps
+
+      - name: Run Playwright chromium fast suite
+        run: pnpm --filter @mindware-blog/site exec playwright test tests/ci-integration.spec.ts --project=chromium --reporter=line
+      
+      - name: Run accessibility tests
+        run: pnpm --filter @mindware-blog/site run test:accessibility --if-present
+
+      - name: Upload Playwright report (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/site/playwright-report
+          if-no-files-found: ignore
+
+
