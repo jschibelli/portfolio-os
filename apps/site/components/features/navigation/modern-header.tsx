@@ -2,10 +2,12 @@
 
 import { Menu } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { BlueskySVG, FacebookSVG, GithubSVG, LinkedinSVG, RssSVG } from '../../icons';
 import { PersonalLogo } from '../../shared/personal-logo';
 import { Button } from '../../ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../ui/sheet';
+import { SkipLink } from '../../ui/skip-link';
 import { ThemeToggle } from '../../ui/theme-toggle';
 import { GlobalSearch } from '../search/global-search';
 
@@ -21,11 +23,14 @@ interface ModernHeaderProps {
 
 export default function ModernHeader({ publication }: ModernHeaderProps) {
 	const siteTitle = publication.displayTitle || publication.title;
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	return (
-		<header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
-			<div className="container mx-auto px-4">
-				<div className="flex h-16 items-center justify-between">
+		<>
+			<SkipLink />
+			<header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
+				<div className="container mx-auto px-4">
+					<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 					<div className="flex-shrink-0">
 						<PersonalLogo size="small" />
@@ -82,14 +87,14 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 						</Button>
 
 						{/* Mobile Menu */}
-						<Sheet>
+						<Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
 							<SheetTrigger asChild>
 								<Button
 									variant="ghost"
 									size="icon"
-									className="md:hidden"
+									className="md:hidden focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
 									aria-label="Toggle mobile menu"
-									aria-expanded="false"
+									aria-expanded={isMobileMenuOpen}
 									aria-controls="mobile-menu"
 								>
 									<Menu className="h-5 w-5" />
@@ -210,5 +215,6 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 				</div>
 			</div>
 		</header>
+		</>
 	);
 }
