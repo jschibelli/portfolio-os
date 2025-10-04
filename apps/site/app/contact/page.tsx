@@ -1,5 +1,4 @@
-"use client";
-
+import { Metadata } from 'next';
 import { useState } from 'react';
 import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
@@ -29,6 +28,52 @@ const defaultPublication = {
   ogMetaData: { image: null },
 };
 
+export const metadata: Metadata = {
+  title: 'Contact John Schibelli | Get In Touch',
+  description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services. Specializing in React, Next.js, TypeScript, and AI integration. Available for new opportunities.',
+  keywords: ['contact', 'John Schibelli', 'hire', 'freelance', 'front-end developer', 'React', 'Next.js', 'TypeScript', 'web development'],
+  authors: [{ name: 'John Schibelli' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: 'Contact John Schibelli | Get In Touch',
+    description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services. Specializing in React, Next.js, TypeScript, and AI integration.',
+    url: 'https://johnschibelli.dev/contact',
+    siteName: 'John Schibelli Portfolio',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/assets/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Contact John Schibelli - Senior Front-End Developer',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact John Schibelli | Get In Touch',
+    description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services.',
+    creator: '@johnschibelli',
+    images: ['/assets/og.png'],
+  },
+  alternates: {
+    canonical: 'https://johnschibelli.dev/contact',
+  },
+};
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', projectType: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,12 +99,26 @@ export default function ContactPage() {
     if (errs.length) { setSubmitStatus('error'); setTimeout(() => setSubmitStatus('idle'), 4000); return; }
     setIsSubmitting(true);
     try {
-      await new Promise(r => setTimeout(r, 1200));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', company: '', projectType: '', message: '' });
       setTimeout(() => setSubmitStatus('idle'), 4000);
-    } catch {
+    } catch (error) {
+      console.error('Contact form submission error:', error);
       setIsSubmitting(false);
       setSubmitStatus('error');
       setTimeout(() => setSubmitStatus('idle'), 4000);
