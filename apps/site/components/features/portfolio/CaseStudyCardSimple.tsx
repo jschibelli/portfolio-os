@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 import { Badge, Button, Card, CardContent, CardHeader } from '@/components/ui';
 import Link from 'next/link';
+import Image from 'next/image';
 import { PortfolioItem } from '../../types/portfolio';
 
 interface CaseStudyCardProps {
@@ -15,11 +15,13 @@ export default function CaseStudyCardSimple({ item, index }: CaseStudyCardProps)
 				<div className="relative overflow-hidden">
 					<div className="relative aspect-video overflow-hidden">
 						{item.image && item.image.startsWith('/') ? (
-							<img
+							<Image
 								src={item.image}
 								alt={`Screenshot of ${item.title}`}
-								className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-								loading="lazy"
+								fill
+								className="object-cover transition-transform duration-500 group-hover:scale-105"
+								priority={false}
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
 								onError={(e) => {
 									const target = e.target as HTMLImageElement;
 									target.style.display = 'none';

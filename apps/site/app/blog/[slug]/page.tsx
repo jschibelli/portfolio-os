@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
 import { fetchPostBySlug, fetchPublication } from '../../../lib/content-api';
 
@@ -97,11 +98,14 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           <header className="mb-8">
             {post.coverImage && (
               <div className="mb-6">
-                <img
+                <Image
                   src={post.coverImage.url}
                   alt={post.title}
+                  width={800}
+                  height={400}
                   className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-                  loading="lazy"
+                  priority={false}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
                 />
               </div>
             )}

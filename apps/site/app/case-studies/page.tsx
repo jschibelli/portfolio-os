@@ -9,6 +9,7 @@ import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { ArrowRight, Calendar, User, Tag } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Mock case studies data - in a real app, this would come from your CMS or database
 const caseStudies = [
@@ -76,11 +77,13 @@ export default function CaseStudiesPage() {
                 {caseStudies.map((caseStudy) => (
                   <Card key={caseStudy.id} className="group overflow-hidden border border-stone-200 bg-white shadow-lg transition-all duration-300 hover:border-stone-300 hover:shadow-xl dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600">
                     <div className="relative aspect-video overflow-hidden">
-                      <img
+                      <Image
                         src={caseStudy.image}
                         alt={caseStudy.title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        loading="lazy"
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        priority={false}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                       

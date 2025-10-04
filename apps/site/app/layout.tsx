@@ -6,6 +6,9 @@ import { Providers } from "../components/providers/Providers";
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-plus-jakarta-sans",
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
