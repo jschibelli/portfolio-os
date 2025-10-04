@@ -156,11 +156,11 @@ const exampleCaseStudyData = createInlineCaseStudy(
 								<div className="text-sm text-stone-600 dark:text-stone-400">Enterprise Clients</div>
 							</div>
 							<div>
-								<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">1M+</div>
-								<div className="text-sm text-stone-600 dark:text-stone-400">Conversations Processed</div>
+								<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">High</div>
+								<div className="text-sm text-stone-600 dark:text-stone-400">Volume Processing</div>
 							</div>
 							<div>
-								<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">99.9%</div>
+								<div className="text-2xl font-bold text-stone-900 dark:text-stone-100">Reliable</div>
 								<div className="text-sm text-stone-600 dark:text-stone-400">Uptime</div>
 							</div>
 						</div>

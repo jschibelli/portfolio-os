@@ -25,8 +25,8 @@ const caseStudies = [
     author: 'John Schibelli',
     featured: true,
     metrics: {
-      revenueIncrease: '150%',
-      userRetention: '91%',
+      revenueIncrease: 'Strong Growth',
+      userRetention: 'High',
       setupTime: '18 minutes'
     },
     liveUrl: 'https://tendril.intrawebtech.com',
@@ -72,15 +72,15 @@ Our research revealed that existing solutions like Intercom, Zendesk, and Drift 
 - **Architecture**: Multi-tenant scalable design with complete data isolation
 - **AI Integration**: Advanced natural language processing with GPT-4
 =======
-- **Revenue Increase**: 150% growth in first 6 months
-- **User Retention**: 91% monthly retention rate
+- **Revenue Increase**: Strong growth in first 6 months
+- **User Retention**: High monthly retention rate
 >>>>>>> origin/main
 - **Setup Time**: Average 18 minutes from signup to first conversation
 - **Active Users**: 2,500+ monthly active users
 
 ### Technical Achievements
 - **Response Time**: <200ms average response time
-- **Uptime**: 99.9% availability
+- **Uptime**: High availability
 - **Scalability**: Handles 10,000+ concurrent conversations
 
 ## Lessons Learned
@@ -113,7 +113,7 @@ Our research revealed that existing solutions like Intercom, Zendesk, and Drift 
 <<<<<<< HEAD
 The Tendril project successfully addressed the SMB chatbot market gap by providing a scalable, multi-tenant solution that serves both individual businesses and agencies. The robust architecture and AI-powered features demonstrate strong technical execution and platform scalability.
 =======
-The Tendril project successfully addressed the SMB chatbot market gap by providing a scalable, multi-tenant solution that serves both individual businesses and agencies. The 150% revenue increase and 91% user retention demonstrate strong product-market fit and customer satisfaction.
+The Tendril project successfully addressed the SMB chatbot market gap by providing a scalable, multi-tenant solution that serves both individual businesses and agencies. The strong revenue increase and high user retention demonstrate strong product-market fit and customer satisfaction.
 >>>>>>> origin/main
 
 The strategic analysis and implementation plan provided a clear roadmap for success, resulting in a platform that now serves thousands of users across multiple industries.`

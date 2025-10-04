@@ -46,7 +46,7 @@ const experience = [
     achievements: [
       'Developed 15+ production React applications',
       'Implemented AI-powered features in web applications',
-      'Achieved 95%+ Lighthouse performance scores',
+      'Achieved high Lighthouse performance scores',
       'Led technical architecture decisions for enterprise clients'
     ],
     technologies: ['React', 'Next.js', 'TypeScript', 'AI Integration', 'Performance Optimization']

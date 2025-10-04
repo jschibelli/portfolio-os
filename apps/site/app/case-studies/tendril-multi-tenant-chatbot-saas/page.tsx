@@ -51,7 +51,7 @@ const caseStudyData = {
   technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "OpenAI API", "Stripe", "Vercel"],
   challenges: "Multi-tenant architecture, real-time chat performance, scalable AI integration",
   solution: "Built a comprehensive SaaS platform with tenant isolation, real-time messaging, and AI-powered chatbot capabilities",
-  results: "Successfully launched MVP with 150% revenue increase and 91% user retention",
+  results: "Successfully launched MVP with significant revenue increase and strong user retention",
   liveUrl: "https://tendril.intrawebtech.com",
   githubUrl: "https://github.com/jschibelli/tendrilo",
   documentationUrl: "https://docs.tendrilo.ai",
@@ -98,7 +98,7 @@ const competitiveData = [
 const keyMetrics = [
   {
     title: "Revenue Growth",
-    value: "150%",
+    value: "Strong Growth",
     description: "Within first 6 months",
     trend: "up" as const,
     icon: <TrendingUp className="h-5 w-5" />
@@ -729,7 +729,7 @@ export default function TendrilCaseStudy() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Uptime</span>
-                          <Badge variant="secondary">99.9%</Badge>
+                          <Badge variant="secondary">High</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Concurrent Users</span>
@@ -747,11 +747,11 @@ export default function TendrilCaseStudy() {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Revenue Growth</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">+150%</Badge>
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">Strong Growth</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">User Retention</span>
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">91%</Badge>
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">High</Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Setup Time</span>
