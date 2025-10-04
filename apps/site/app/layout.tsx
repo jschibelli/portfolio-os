@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "../styles/index.css";
 import { Providers } from "../components/providers/Providers";
+import { PAGE_METADATA } from "../lib/metadata";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -9,54 +10,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "John Schibelli - Senior Front-End Engineer",
-  description: "Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.",
-  authors: [{ name: "John Schibelli" }],
-  creator: "John Schibelli",
-  publisher: "John Schibelli",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://johnschibelli.dev'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: 'John Schibelli - Senior Front-End Engineer',
-    description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.',
-    url: 'https://johnschibelli.dev',
-    siteName: 'John Schibelli Portfolio',
-    locale: 'en_US',
-    type: 'website',
-    images: [
-      {
-        url: '/assets/og.png',
-        width: 1200,
-        height: 630,
-        alt: 'John Schibelli - Senior Front-End Engineer',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'John Schibelli - Senior Front-End Engineer',
-    description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.',
-    creator: '@johnschibelli',
-    images: ['/assets/og.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  ...PAGE_METADATA.home,
   verification: {
     google: 'your-google-site-verification-code',
   },

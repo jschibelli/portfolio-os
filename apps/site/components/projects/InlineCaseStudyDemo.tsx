@@ -134,17 +134,17 @@ const exampleCaseStudyData = createInlineCaseStudy(
 						<div className="rounded-lg bg-green-50 p-4 dark:bg-green-950/20">
 							<h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">Performance</h4>
 							<ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
-								<li>• 95% reduction in page load times</li>
-								<li>• 99.9% uptime achieved</li>
-								<li>• Support for 10,000+ concurrent users</li>
+								<li>• Significant reduction in page load times</li>
+								<li>• High uptime achieved</li>
+								<li>• Support for high concurrent users</li>
 							</ul>
 						</div>
 						<div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-950/20">
 							<h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Business Impact</h4>
 							<ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-								<li>• 300% increase in user engagement</li>
-								<li>• 50% reduction in support tickets</li>
-								<li>• 25% increase in conversion rates</li>
+								<li>• Significant increase in user engagement</li>
+								<li>• Reduction in support tickets</li>
+								<li>• Improved conversion rates</li>
 							</ul>
 						</div>
 					</div>

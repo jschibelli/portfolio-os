@@ -225,10 +225,10 @@ export default function VisualSkillsShowcase({ className = '' }: VisualSkillsSho
 					</div>
 					<div className="text-center">
 						<div className="text-xl font-bold text-stone-900 dark:text-stone-100 sm:text-2xl">
-							100%
+							Quality
 						</div>
 						<div className="text-xs text-stone-600 dark:text-stone-400 sm:text-sm">
-							Client Satisfaction
+							Focus
 						</div>
 					</div>
 				</div>
