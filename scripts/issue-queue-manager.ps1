@@ -1,4 +1,4 @@
-# Issue Queue Management System
+﻿# Issue Queue Management System
 # Usage: .\scripts\issue-queue-manager.ps1 [-Operation <OPERATION>] [-Queue <QUEUE_NAME>] [-Priority <PRIORITY>]
 #
 # Manages issue queues, dependencies, and prioritization for continuous automation

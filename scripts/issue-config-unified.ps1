@@ -1,4 +1,4 @@
-# Unified Issue Configuration Script - Combines all issue configuration functionality
+﻿# Unified Issue Configuration Script - Combines all issue configuration functionality
 # Usage: .\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> [-Preset <PRESET>] [-Priority <PRIORITY>] [-Size <SIZE>] [-App <APP>] [-Area <AREA>] [-Status <STATUS>] [-Labels <LABELS>] [-Milestone <MILESTONE>] [-AddToProject] [-DryRun]
 
 param(

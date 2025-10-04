@@ -1,4 +1,4 @@
-# Continuous Issue-to-Merge Pipeline Automation
+﻿# Continuous Issue-to-Merge Pipeline Automation
 # Usage: .\scripts\continuous-issue-pipeline.ps1 [-MaxIssues <NUMBER>] [-Status <STATUS>] [-Priority <PRIORITY>] [-Watch] [-DryRun]
 # 
 # This script continuously processes issues from Todo → In progress → Ready → Done → Merged
@@ -180,8 +180,7 @@ function Process-SingleIssue {
     param([object]$Issue)
     
     $issueNumber = $Issue.Number
-    Write-ColorOutput "
-🔄 Processing Issue #$issueNumber: $($Issue.Title)" "Cyan"
+    Write-ColorOutput "🔄 Processing Issue #${issueNumber}: $($Issue.Title)" "Cyan"
     Write-ColorOutput "URL: $($Issue.URL)" "White"
     
     $pipelineState.CurrentIssue = $Issue
@@ -274,7 +273,7 @@ Resolves #$issueNumber
         
     }
     catch {
-        Write-ColorOutput "  ❌ Failed to process issue #$issueNumber: $($_.Exception.Message)" "Red"
+        Write-ColorOutput "  ❌ Failed to process issue #${issueNumber}: $($_.Exception.Message)" "Red"
         $pipelineState.FailedIssues += $Issue
         Log-PipelineEvent "ERROR" "Issue #$issueNumber failed: $($_.Exception.Message)"
         return $false
@@ -341,24 +340,21 @@ function Log-PipelineEvent {
 }
 
 function Show-PipelineStatus {
-    Write-ColorOutput "
-📊 Pipeline Status:" "Cyan"
+    Write-ColorOutput "📊 Pipeline Status:" "Cyan"
     Write-ColorOutput "  Processed: $($pipelineState.ProcessedIssues.Count)" "Green"
     Write-ColorOutput "  Failed: $($pipelineState.FailedIssues.Count)" "Red"
     Write-ColorOutput "  Runtime: $((Get-Date) - $pipelineState.StartTime)" "White"
     Write-ColorOutput "  Log File: $LogFile" "White"
     
     if ($pipelineState.ProcessedIssues.Count -gt 0) {
-        Write-ColorOutput "
-✅ Successfully Processed:" "Green"
+        Write-ColorOutput "✅ Successfully Processed:" "Green"
         foreach ($issue in $pipelineState.ProcessedIssues) {
             Write-ColorOutput "  - Issue #$($issue.Number): $($issue.Title)" "White"
         }
     }
     
     if ($pipelineState.FailedIssues.Count -gt 0) {
-        Write-ColorOutput "
-❌ Failed Issues:" "Red"
+        Write-ColorOutput "❌ Failed Issues:" "Red"
         foreach ($issue in $pipelineState.FailedIssues) {
             Write-ColorOutput "  - Issue #$($issue.Number): $($issue.Title)" "White"
         }
@@ -402,8 +398,7 @@ function Start-ContinuousLoop {
             Show-PipelineStatus
             
             if ($Watch) {
-                Write-ColorOutput "
-⏳ Waiting $Interval seconds before next check..." "Yellow"
+                Write-ColorOutput "⏳ Waiting $Interval seconds before next check..." "Yellow"
                 Start-Sleep -Seconds $Interval
             } else {
                 break
@@ -444,8 +439,7 @@ try {
     # Final status
     Show-PipelineStatus
     
-    Write-ColorOutput "
-🎉 Continuous Pipeline Complete!" "Green"
+    Write-ColorOutput "🎉 Continuous Pipeline Complete!" "Green"
     Write-ColorOutput "Check the log file for detailed information: $LogFile" "Cyan"
     
 } catch {

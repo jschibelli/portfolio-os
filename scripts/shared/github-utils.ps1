@@ -1,4 +1,4 @@
-# GitHub Utilities - Shared functions for all automation scripts
+﻿# GitHub Utilities - Shared functions for all automation scripts
 # This module provides common GitHub API functions to eliminate duplication
 
 # Get repository information (cached)
@@ -168,15 +168,16 @@ function Test-GitHubAuth {
 }
 
 # Export functions for use in other scripts
-Export-ModuleMember -Function @(
-    'Get-RepoInfo',
-    'Get-CRGPTComments', 
-    'Get-PRComments',
-    'Get-PRInfo',
-    'Get-ProjectItemId',
-    'Get-ProjectFieldValue',
-    'Set-ProjectFieldValue',
-    'Add-IssueToProject',
-    'Write-ColorOutput',
-    'Test-GitHubAuth'
-)
+# Note: Export-ModuleMember is commented out because this file is dot-sourced, not imported as a module
+# Export-ModuleMember -Function @(
+#     'Get-RepoInfo',
+#     'Get-CRGPTComments', 
+#     'Get-PRComments',
+#     'Get-PRInfo',
+#     'Get-ProjectItemId',
+#     'Get-ProjectFieldValue',
+#     'Set-ProjectFieldValue',
+#     'Add-IssueToProject',
+#     'Write-ColorOutput',
+#     'Test-GitHubAuth'
+# )

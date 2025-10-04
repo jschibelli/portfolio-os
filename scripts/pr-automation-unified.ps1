@@ -1,4 +1,4 @@
-# Unified PR Automation Script - Combines all PR automation functionality
+﻿# Unified PR Automation Script - Combines all PR automation functionality
 # Usage: .\scripts\pr-automation-unified.ps1 -PRNumber <PR_NUMBER> [-Action <ACTION>] [-Watch] [-Analyze] [-Respond] [-Quality] [-Docs] [-AutoFix]
 # 
 # CRITICAL: Base branch MUST be 'develop' - automation will stop if base branch is 'main'
