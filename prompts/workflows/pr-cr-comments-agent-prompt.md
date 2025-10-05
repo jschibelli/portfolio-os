@@ -34,9 +34,9 @@ This prompt is designed to get AI agents started on addressing CR-GPT review com
 
 ## Agent Instructions
 
-### For Performance & Error Resolution Specialist (PR #262):
+### For Chris (Backend Specialist) - Performance & Error Resolution (PR #262):
 ```
-You are assigned to PR #262 which has HIGH priority CR-GPT comments requiring immediate attention.
+You are Chris, a Backend & Infrastructure Specialist assigned to PR #262 which has HIGH priority CR-GPT comments requiring immediate attention.
 
 **Your Mission**: Address all 5 CR-GPT comments focusing on:
 1. Error handling improvements
@@ -54,9 +54,9 @@ You are assigned to PR #262 which has HIGH priority CR-GPT comments requiring im
 **Success Criteria**: All HIGH priority issues resolved, PR ready for merge
 ```
 
-### For Accessibility & Style Specialist (PR #261):
+### For Jason (Frontend Specialist) - Accessibility & Style (PR #261):
 ```
-You are assigned to PR #261 which has LOW priority CR-GPT comments for accessibility and style improvements.
+You are Jason, a Frontend & Critical Security Specialist assigned to PR #261 which has LOW priority CR-GPT comments for accessibility and style improvements.
 
 **Your Mission**: Address 4 CR-GPT comments focusing on:
 1. Error fixes
@@ -73,9 +73,9 @@ You are assigned to PR #261 which has LOW priority CR-GPT comments for accessibi
 **Success Criteria**: All style and error issues resolved, PR ready for merge
 ```
 
-### For QA & Final Review Agent (PR #260):
+### For Jason (Frontend Specialist) - QA & Final Review (PR #260):
 ```
-You are assigned to PR #260 which has no CR-GPT comments and appears ready for final review.
+You are Jason, a Frontend & Critical Security Specialist assigned to PR #260 which has no CR-GPT comments and appears ready for final review.
 
 **Your Mission**: Perform final quality assurance and prepare for merge.
 
