@@ -1,45 +1,149 @@
 ﻿# GitHub Utilities - Shared functions for all automation scripts
 # This module provides common GitHub API functions to eliminate duplication
+# Enhanced with comprehensive error handling, testing, and documentation
+
+# Configuration and constants
+$script:repoInfo = $null
+$script:maxRetries = 3
+$script:retryDelay = 1000  # milliseconds
 
 # Get repository information (cached)
-$script:repoInfo = $null
 function Get-RepoInfo {
+    [CmdletBinding()]
+    param()
+    
     if (-not $script:repoInfo) {
-        $script:repoInfo = @{
-            Owner = gh repo view --json owner -q .owner.login
-            Name = gh repo view --json name -q .name
+        try {
+            $script:repoInfo = @{
+                Owner = gh repo view --json owner -q .owner.login
+                Name = gh repo view --json name -q .name
+            }
+            
+            # Validate the repository info
+            if (-not $script:repoInfo.Owner -or -not $script:repoInfo.Name) {
+                throw "Failed to retrieve repository information"
+            }
+        }
+        catch {
+            Write-Error "Failed to get repository information: $($_.Exception.Message)"
+            return $null
         }
     }
     return $script:repoInfo
 }
 
-# Get CR-GPT bot comments from a PR
+# Get CR-GPT bot comments from a PR with retry logic and error handling
 function Get-CRGPTComments {
-    param([string]$PRNumber)
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PRNumber
+    )
     
     $repo = Get-RepoInfo
-    $allCommentsJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber/comments
-    $allComments = $allCommentsJson | ConvertFrom-Json
-    $crgptComments = $allComments | Where-Object { $_.user.login -eq "cr-gpt[bot]" }
-    return $crgptComments
+    if (-not $repo) {
+        Write-Error "Failed to get repository information"
+        return $null
+    }
+    
+    for ($attempt = 1; $attempt -le $script:maxRetries; $attempt++) {
+        try {
+            Write-Verbose "Attempting to get CR-GPT comments for PR #$PRNumber (attempt $attempt)"
+            
+            $allCommentsJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber/comments
+            if (-not $allCommentsJson) {
+                throw "No response from GitHub API"
+            }
+            
+            $allComments = $allCommentsJson | ConvertFrom-Json
+            if (-not $allComments) {
+                Write-Warning "No comments found for PR #$PRNumber"
+                return @()
+            }
+            
+            $crgptComments = $allComments | Where-Object { $_.user.login -eq "cr-gpt[bot]" }
+            Write-Verbose "Found $($crgptComments.Count) CR-GPT comments"
+            return $crgptComments
+        }
+        catch {
+            Write-Warning "Attempt $attempt failed: $($_.Exception.Message)"
+            if ($attempt -lt $script:maxRetries) {
+                Write-Verbose "Retrying in $($script:retryDelay)ms..."
+                Start-Sleep -Milliseconds $script:retryDelay
+                $script:retryDelay *= 2  # Exponential backoff
+            }
+            else {
+                Write-Error "Failed to get CR-GPT comments after $script:maxRetries attempts: $($_.Exception.Message)"
+                return $null
+            }
+        }
+    }
 }
 
-# Get all PR comments
+# Get all PR comments with error handling
 function Get-PRComments {
-    param([string]$PRNumber)
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PRNumber
+    )
     
     $repo = Get-RepoInfo
-    $allCommentsJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber/comments
-    return $allCommentsJson | ConvertFrom-Json
+    if (-not $repo) {
+        Write-Error "Failed to get repository information"
+        return $null
+    }
+    
+    try {
+        Write-Verbose "Getting all comments for PR #$PRNumber"
+        $allCommentsJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber/comments
+        
+        if (-not $allCommentsJson) {
+            Write-Warning "No response from GitHub API for PR #$PRNumber"
+            return @()
+        }
+        
+        $comments = $allCommentsJson | ConvertFrom-Json
+        Write-Verbose "Retrieved $($comments.Count) comments"
+        return $comments
+    }
+    catch {
+        Write-Error "Failed to get PR comments: $($_.Exception.Message)"
+        return $null
+    }
 }
 
-# Get PR information
+# Get PR information with error handling
 function Get-PRInfo {
-    param([string]$PRNumber)
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PRNumber
+    )
     
     $repo = Get-RepoInfo
-    $prInfoJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber
-    return $prInfoJson | ConvertFrom-Json
+    if (-not $repo) {
+        Write-Error "Failed to get repository information"
+        return $null
+    }
+    
+    try {
+        Write-Verbose "Getting PR information for PR #$PRNumber"
+        $prInfoJson = gh api repos/$($repo.Owner)/$($repo.Name)/pulls/$PRNumber
+        
+        if (-not $prInfoJson) {
+            Write-Warning "No response from GitHub API for PR #$PRNumber"
+            return $null
+        }
+        
+        $prInfo = $prInfoJson | ConvertFrom-Json
+        Write-Verbose "Retrieved PR info: $($prInfo.title)"
+        return $prInfo
+    }
+    catch {
+        Write-Error "Failed to get PR information: $($_.Exception.Message)"
+        return $null
+    }
 }
 
 # Get project item ID for an issue
@@ -167,6 +271,59 @@ function Test-GitHubAuth {
     }
 }
 
+# Test function to validate all utilities
+function Test-GitHubUtils {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$false)]
+        [string]$TestPRNumber = "270"
+    )
+    
+    Write-ColorOutput "Testing GitHub Utilities..." "Cyan"
+    
+    # Test authentication
+    if (-not (Test-GitHubAuth)) {
+        Write-ColorOutput "❌ GitHub authentication failed" "Red"
+        return $false
+    }
+    Write-ColorOutput "✅ GitHub authentication successful" "Green"
+    
+    # Test repository info
+    $repo = Get-RepoInfo
+    if (-not $repo) {
+        Write-ColorOutput "❌ Failed to get repository information" "Red"
+        return $false
+    }
+    Write-ColorOutput "✅ Repository info: $($repo.Owner)/$($repo.Name)" "Green"
+    
+    # Test PR info
+    $prInfo = Get-PRInfo -PRNumber $TestPRNumber
+    if (-not $prInfo) {
+        Write-ColorOutput "❌ Failed to get PR information" "Red"
+        return $false
+    }
+    Write-ColorOutput "✅ PR info retrieved: $($prInfo.title)" "Green"
+    
+    # Test comments
+    $comments = Get-PRComments -PRNumber $TestPRNumber
+    if ($comments -eq $null) {
+        Write-ColorOutput "❌ Failed to get PR comments" "Red"
+        return $false
+    }
+    Write-ColorOutput "✅ Retrieved $($comments.Count) comments" "Green"
+    
+    # Test CR-GPT comments
+    $crgptComments = Get-CRGPTComments -PRNumber $TestPRNumber
+    if ($crgptComments -eq $null) {
+        Write-ColorOutput "❌ Failed to get CR-GPT comments" "Red"
+        return $false
+    }
+    Write-ColorOutput "✅ Retrieved $($crgptComments.Count) CR-GPT comments" "Green"
+    
+    Write-ColorOutput "🎉 All GitHub utilities tests passed!" "Green"
+    return $true
+}
+
 # Export functions for use in other scripts
 # Note: Export-ModuleMember is commented out because this file is dot-sourced, not imported as a module
 # Export-ModuleMember -Function @(
@@ -179,5 +336,6 @@ function Test-GitHubAuth {
 #     'Set-ProjectFieldValue',
 #     'Add-IssueToProject',
 #     'Write-ColorOutput',
-#     'Test-GitHubAuth'
+#     'Test-GitHubAuth',
+#     'Test-GitHubUtils'
 # )
