@@ -202,11 +202,34 @@ All PRs are already added to Portfolio Site project (#20) with these default fie
 - Area: Frontend
 - Assignee: jschibelli
 
+### Project Board Status Workflow:
+**Issues → PRs → Review → Ready → Merge**
+
+1. **Backlog**: Issues picked up from backlog
+2. **In Progress**: When being worked on (agents actively coding)
+3. **In Review**: When PR is created and sent for review
+4. **Ready**: When PR is complete and ready for merge
+5. **Ready for Merge**: Project board updated to "Ready for Merge" status
+6. **User Responsibility**: User reviews, decides, and actually merges the PR
+
+**Agent Responsibilities:**
+- Work on PRs until they are merge-ready (no conflicts, all checks pass)
+- Update project board status as work progresses
+- Move to "Ready for Merge" when PR is complete
+- Report completion - PR is ready for user to merge
+
+**User Responsibilities:**
+- Review completed PRs
+- Decide when to merge
+- Actually merge PRs into develop
+
 ## Success Metrics
 - **PR #262**: All HIGH priority CR-GPT comments resolved
 - **PR #261**: All LOW priority CR-GPT comments resolved  
 - **PR #260**: Quality verified, ready for merge
 - All PRs moved to "Ready for Merge" status on project board
+- All PRs are merge-ready (no conflicts, all checks pass)
+- User can review and merge PRs when ready
 
 ## Next Steps
 1. Agents should start with their assigned PRs immediately
