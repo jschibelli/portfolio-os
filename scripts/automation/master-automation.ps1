@@ -140,15 +140,15 @@ function Process-SingleIssue {
     try {
         # Step 1: Configure issue and set to "In progress"
         Write-ColorOutput "  📋 Configuring issue and setting to 'In progress'..." "Yellow"
-        & .\scripts\issue-config-unified.ps1 -IssueNumber $IssueNumber -Preset "blog" -AddToProject -Status "In progress"
+        & .\..\issue-config-unified.ps1 -IssueNumber $IssueNumber -Preset "blog" -AddToProject -Status "In progress"
         
         # Step 2: Create branch
         Write-ColorOutput "  🌿 Creating branch..." "Yellow"
-        & .\scripts\create-branch-from-develop.ps1 -IssueNumber $IssueNumber
+        & .\..\create-branch-from-develop.ps1 -IssueNumber $IssueNumber
         
         # Step 3: Implement
         Write-ColorOutput "  🔨 Implementing issue..." "Yellow"
-        & .\scripts\issue-implementation.ps1 -IssueNumber $IssueNumber -Action all
+        & .\..\issue-implementation.ps1 -IssueNumber $IssueNumber -Action all
         
         # Step 4: Create PR and set to "Ready" (in review)
         Write-ColorOutput "  📝 Creating PR and setting to 'Ready'..." "Yellow"
@@ -164,7 +164,7 @@ function Process-SingleIssue {
         Write-ColorOutput "  🤖 Automating PR..." "Yellow"
         $prNumber = gh pr list --head "issue-$IssueNumber" --json number -q '.[0].number' 2>$null
         if ($prNumber) {
-            & .\scripts\pr-automation-unified.ps1 -PRNumber $prNumber -Action all -AutoFix
+            & .\pr-automation-unified.ps1 -PRNumber $prNumber -Action all -AutoFix
         }
         
         # Step 6: Set to "Done" after successful processing
@@ -191,7 +191,7 @@ function Process-SinglePR {
     Write-ColorOutput "🔄 Processing Single PR #$PRNumber..." "Green"
     
     try {
-        & .\scripts\pr-automation-unified.ps1 -PRNumber $PRNumber -Action all -AutoFix
+        & .\pr-automation-unified.ps1 -PRNumber $PRNumber -Action all -AutoFix
         Write-ColorOutput "✅ PR #$PRNumber processed successfully!" "Green"
     }
     catch {

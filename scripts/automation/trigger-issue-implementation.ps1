@@ -45,7 +45,7 @@ function Trigger-LocalImplementation {
     
     # Run local implementation
     Write-Host "🚀 Starting local issue implementation..." -ForegroundColor Cyan
-    & .\scripts\issue-implementation.ps1 -IssueNumber $IssueNumber -Action all
+    & .\..\issue-implementation.ps1 -IssueNumber $IssueNumber -Action all
     
     return $true
 }

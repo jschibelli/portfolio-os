@@ -190,7 +190,7 @@ function Process-SingleIssue {
         # Step 1: Configure issue and set to "In progress"
         Write-ColorOutput "  📋 Step 1: Configuring issue and setting to 'In progress'..." "Yellow"
         if (-not $DryRun) {
-            & .\scripts\issue-config-unified.ps1 -IssueNumber $issueNumber -Preset "blog" -AddToProject -Status "In progress"
+            & .\..\issue-config-unified.ps1 -IssueNumber $issueNumber -Preset "blog" -AddToProject -Status "In progress"
             # Update project status to "In progress"
             Update-ProjectStatus -Issue $Issue -Status "In progress"
         } else {
@@ -200,7 +200,7 @@ function Process-SingleIssue {
         # Step 2: Create branch from develop
         Write-ColorOutput "  🌿 Step 2: Creating branch..." "Yellow"
         if (-not $DryRun) {
-            & .\scripts\create-branch-from-develop.ps1 -IssueNumber $issueNumber
+            & .\..\create-branch-from-develop.ps1 -IssueNumber $issueNumber
         } else {
             Write-ColorOutput "    [DRY RUN] Would create branch for issue #$issueNumber" "Cyan"
         }
@@ -208,7 +208,7 @@ function Process-SingleIssue {
         # Step 3: Implement the issue
         Write-ColorOutput "  🔨 Step 3: Implementing issue..." "Yellow"
         if (-not $DryRun) {
-            & .\scripts\issue-implementation.ps1 -IssueNumber $issueNumber -Action all
+            & .\..\issue-implementation.ps1 -IssueNumber $issueNumber -Action all
         } else {
             Write-ColorOutput "    [DRY RUN] Would implement issue #$issueNumber" "Cyan"
         }
@@ -250,7 +250,7 @@ Resolves #$issueNumber
             # Get the PR number
             $prNumber = gh pr list --head "issue-$issueNumber" --json number -q '.[0].number' 2>$null
             if ($prNumber) {
-                & .\scripts\pr-automation-unified.ps1 -PRNumber $prNumber -Action all -AutoFix
+                & .\pr-automation-unified.ps1 -PRNumber $prNumber -Action all -AutoFix
             }
         } else {
             Write-ColorOutput "    [DRY RUN] Would automate PR for issue #$issueNumber" "Cyan"

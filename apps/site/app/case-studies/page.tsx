@@ -47,12 +47,24 @@ export const metadata: Metadata = {
 export default function CaseStudiesPage() {
   return (
     <AppProvider publication={{
+      id: 'john-schibelli',
       title: 'John Schibelli',
-      displayTitle: 'John Schibelli',
-      descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
+      description: 'Senior Front-End Developer with 15+ years of experience',
       url: 'https://schibelli.dev',
-      author: { name: 'John Schibelli' },
-      preferences: { logo: null as any },
+      favicon: '',
+      logo: '',
+      isTeam: false,
+      preferences: { 
+        logo: '',
+        darkMode: { logo: '' },
+        navbarItems: [],
+        layout: {
+          navbarStyle: 'default',
+          footerStyle: 'default',
+          showBranding: true
+        },
+        members: []
+      },
     }}>
       <Layout>
         <main className="min-h-screen bg-background">

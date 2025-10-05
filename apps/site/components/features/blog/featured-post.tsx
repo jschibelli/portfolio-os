@@ -6,11 +6,11 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Badge } from '../../ui';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
-import { PostFragment } from '../../../generated/graphql';
+import { UnifiedPost } from '../../../lib/content-api';
 import { useState, useEffect } from 'react';
 
 interface FeaturedPostProps {
-  post: PostFragment;
+  post: UnifiedPost;
   coverImage: string;
   readTime: string;
   tags: string[];
