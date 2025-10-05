@@ -1,6 +1,6 @@
 import React from 'react';
 // import { Toaster } from 'sonner';
-const Toaster = ({ position, richColors }: { position?: string; richColors?: boolean }) => null;
+const Toaster = ({ position: _position, richColors: _richColors }: { position?: string; richColors?: boolean }) => null;
 
 const ControlCenterLayout = ({ children }: { children: React.ReactNode }) => {
   return (
