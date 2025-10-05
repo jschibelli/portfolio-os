@@ -4,19 +4,48 @@ This directory contains all automation scripts organized by functionality for ea
 
 ## 📁 **Directory Structure**
 
-### **`automation/`** - Core Automation Scripts
-Contains the main automation scripts that orchestrate the entire system:
+### **`automation/`** - Organized Automation Scripts
+Contains all automation scripts organized by functionality and reliability:
 
+#### **`working/`** - ✅ Fully Functional Scripts
 - **`agent-coordinator.ps1`** - Coordinates multiple AI agents and manages workload distribution
-- **`continuous-issue-pipeline.ps1`** - Processes issues continuously from backlog to completion
-- **`integrate-multi-agent.ps1`** - Integrates and validates multi-agent system components
-- **`master-automation.ps1`** - Main automation controller and system orchestrator
-- **`multi-agent-automation.ps1`** - Core multi-agent automation engine
-- **`multi-agent-worktree-system.ps1`** - Manages isolated work environments for agents
-- **`multi-pr-automation.ps1`** - Automates pull request processing and management
-- **`pr-automation-enhanced-simple.ps1`** - Enhanced PR automation with simplified interface
-- **`pr-automation-unified.ps1`** - Unified PR automation system
+- **`analyze-stale-issues.ps1`** - Analyzes and reports on stale GitHub issues
+- **`branch-manager.ps1`** - Manages Git branches and worktrees
+- **`cleanup-analysis-simple.ps1`** - Simple cleanup and analysis utilities
+- **`cleanup-analysis-text.ps1`** - Text-based cleanup and analysis
+- **`code-quality-checker.ps1`** - Checks code quality and standards
+- **`create-branch-from-develop.ps1`** - Creates new branches from develop
+- **`issue-config-unified.ps1`** - Unified issue configuration management
+- **`multi-agent-worktree-system.ps1`** - Multi-agent worktree management system
+
+#### **`issue-management/`** - 🎫 Issue Management Scripts
+- **`issue-analyzer.ps1`** - Analyzes issues and provides insights
+- **`issue-creator.ps1`** - Creates new GitHub issues
+- **`issue-implementation.ps1`** - Implements issue solutions
+- **`issue-queue-manager.ps1`** - Manages issue queues and priorities
 - **`trigger-issue-implementation.ps1`** - Triggers issue implementation workflows
+
+#### **`pr-management/`** - 🔄 Pull Request Management
+- **`auto-configure-pr.ps1`** - Automatically configures PR settings
+- **`pr-aliases.ps1`** - PR management aliases and shortcuts
+
+#### **`project-management/`** - 📊 Project Management Scripts
+- **`backfill-project-fields.ps1`** - Backfills project board fields
+- **`project-manager.ps1`** - Main project management script
+- **`project-status-monitor.ps1`** - Monitors project status
+- **`sync-project-board.ps1`** - Syncs project board data
+
+#### **`core-utilities/`** - 🔧 Core Utility Scripts
+- **`github-utils.ps1`** - GitHub API utilities and helpers
+
+#### **`maintenance/`** - 🛠️ Maintenance Scripts
+- **`docs-updater.ps1`** - Updates documentation automatically
+- **`fix-quotes.ps1`** - Fixes quote formatting issues
+
+#### **`broken/`** - ❌ Scripts with Issues
+- **`integrate-multi-agent.ps1`** - Multi-agent integration (has syntax errors)
+- **`master-automation.ps1`** - Master automation script (has syntax errors)
+- **`multi-agent-automation.ps1`** - Multi-agent automation (has syntax errors)
 
 ### **`project-management/`** - Project Management Scripts
 Scripts for managing GitHub projects, boards, and project-related tasks:
