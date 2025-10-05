@@ -28,6 +28,7 @@ $fieldMappings = @{
         readyOption = "e18bf179"
         inProgressOption = "47fc9ee4"
         inReviewOption = "aba860b9"
+        readyForMergeOption = "5c9bd758"  # NEW: Ready for Merge
         doneOption = "98236657"
     }
     Priority = @{
