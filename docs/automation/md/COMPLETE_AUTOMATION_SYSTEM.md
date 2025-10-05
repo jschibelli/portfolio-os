@@ -143,21 +143,21 @@ $queueConfig = @{
     "default" = @{
         MaxConcurrent = 3
         Priority = "P1"
-        Status = "Todo"
+        Status = "Backlog"
         App = "Portfolio Site"
         Area = "Frontend"
     }
     "blog" = @{
         MaxConcurrent = 2
         Priority = "P1"
-        Status = "Todo"
+        Status = "Backlog"
         App = "Portfolio Site"
         Area = "Frontend"
     }
     "dashboard" = @{
         MaxConcurrent = 2
         Priority = "P1"
-        Status = "Todo"
+        Status = "Backlog"
         App = "Dashboard"
         Area = "Frontend"
     }

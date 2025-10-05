@@ -1,6 +1,6 @@
 ﻿Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign Jason or Chris, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
-**🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Todo → In progress → Ready → Done → Merged in sequence, then continues to the next available issues until no more work is available.
+**🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Backlog → In progress → In review → Ready → Ready for Merge → Done → Merged in sequence, then continues to the next available issues until no more work is available.
 
 **Agent Assignment:**
 - **Jason (Frontend Specialist)**: Frontend components, UI/UX, user workflows, analytics dashboards
@@ -41,7 +41,7 @@
 ## 🔄 **Continuous Workflow Process**
 
 **For Each Issue (Automated Loop):**
-1. **Discovery**: Find next available issues matching criteria (Status=Todo, Priority=P1, etc.)
+1. **Discovery**: Find next available issues matching criteria (Status=Backlog, Priority=P1, etc.)
 2. **Configuration**: Auto-configure project fields using `issue-config-unified.ps1`
 3. **Status Update**: Set issue to **"In progress"** on project board
 4. **Branch Creation**: Create branch from `develop` using `create-branch-from-develop.ps1`

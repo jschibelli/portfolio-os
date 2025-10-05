@@ -43,7 +43,7 @@ The Portfolio OS project includes a comprehensive suite of PowerShell automation
 ```
 
 **Features**:
-- Continuous issue processing from Todo → Done → Merged
+- Continuous issue processing from Backlog → In progress → In review → Ready → Ready for Merge → Done → Merged
 - Automatic issue assignment and prioritization
 - Workload balancing across agents
 - Real-time monitoring and status updates
