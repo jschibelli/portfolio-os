@@ -61,7 +61,6 @@ export default function QuickStats({
               item.className
             )}
             tabIndex={0}
-            role="listitem"
             aria-label={`${item.type}: ${item.label}`}
           >
             {item.label}

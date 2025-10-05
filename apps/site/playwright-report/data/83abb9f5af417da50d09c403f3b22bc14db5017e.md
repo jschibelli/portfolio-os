@@ -1,0 +1,280 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "John Schibelli - Home page" [ref=e6]:
+        - /url: /
+        - img "John Schibelli" [ref=e8]
+      - generic [ref=e9]:
+        - button "Switch to light theme" [ref=e10] [cursor=pointer]:
+          - img
+          - generic [ref=e11] [cursor=pointer]: Toggle theme
+        - button "Toggle mobile menu" [ref=e12] [cursor=pointer]:
+          - img
+          - generic [ref=e13] [cursor=pointer]: Toggle mobile menu
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - img "Professional background for John Schibelli's portfolio" [ref=e17]
+      - generic [ref=e20]:
+        - heading "Building Reliable, Scalable Web Applications" [level=1] [ref=e21]:
+          - text: Building Reliable, Scalable
+          - text: Web Applications
+        - region "John Schibelli" [ref=e22]:
+          - paragraph [ref=e23]: John Schibelli
+          - paragraph [ref=e24]: Senior Front-End Developer
+          - paragraph [ref=e25]: I work with React, Next.js, and TypeScript — helping teams build apps that are maintainable, scalable, and user-friendly.
+        - navigation "Primary navigation actions" [ref=e26]:
+          - button "Start a conversation about your project goals and business objectives" [ref=e27] [cursor=pointer]:
+            - generic [ref=e28] [cursor=pointer]:
+              - img
+              - text: Discuss Your Goals
+              - img
+          - button "View proven results and case studies of successful web applications" [ref=e29] [cursor=pointer]:
+            - generic [ref=e30] [cursor=pointer]:
+              - text: See My Results
+              - img
+        - paragraph [ref=e32]:
+          - text: Prefer email?
+          - link "Send email directly to discuss your project" [ref=e33]:
+            - /url: mailto:john@schibelli.dev?subject=Project%20Discussion%20-%20Let's%20Talk
+            - text: Email me directly
+    - generic [ref=e37]:
+      - img "John Schibelli - Senior Frontend Developer" [ref=e40]
+      - article [ref=e41]:
+        - heading "Introduction" [level=2] [ref=e43]
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: "My journey into development started in an unexpected place—teaching web development at Anthem Institute, where I discovered my passion for helping solve complex problems through thoughtful solutions. That experience shaped my approach: I believe good code should be teachable, maintainable, and built with the end user in mind."
+          - paragraph [ref=e46]: Today, I work as a senior front-end developer with over 15 years of experience, but I still approach every project with that educator's mindset. Whether I'm working on React applications, exploring AI-powered tools like SynaplyAI, or contributing to enterprise UIs for financial platforms, I believe in creating solutions that work well and can be understood and maintained by other developers.
+          - paragraph [ref=e47]: Based in Northern New Jersey, I work with React, Next.js, TypeScript, and Tailwind CSS, with a focus on accessibility and SEO. I work to combine technical quality with clear communication—believing that good code should be understandable and well-documented.
+    - region "Featured portfolio projects" [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - heading "Featured Projects" [level=2] [ref=e51]
+          - paragraph [ref=e52]: A selection of recent projects demonstrating various web development approaches
+        - generic [ref=e53]:
+          - generic [ref=e55]:
+            - generic [ref=e56]:
+              - img "Screenshot of Tendril Multi-Tenant Chatbot SaaS project - A strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. Features comprehensive market research, competitive analysis, and detailed technical architecture." [ref=e57]
+              - generic [ref=e59]:
+                - generic [ref=e60]: Next.js
+                - generic [ref=e61]: TypeScript
+                - generic [ref=e62]: AI/ML
+              - generic [ref=e64]: View Case Study
+              - generic [ref=e66]:
+                - img [ref=e67]
+                - text: Case Study
+            - heading "Tendril Multi-Tenant Chatbot SaaS" [level=3] [ref=e70]
+            - generic [ref=e71]:
+              - paragraph [ref=e73]: A strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. Features comprehensive market research, competitive analysis, and detailed technical architecture.
+              - generic [ref=e75]:
+                - generic [ref=e76]:
+                  - img [ref=e77]
+                  - generic [ref=e81]:
+                    - generic [ref=e82]: Problem
+                    - paragraph [ref=e83]: SMBs needed affordable, scalable chatbot solutions
+                - generic [ref=e84]:
+                  - img [ref=e85]
+                  - generic [ref=e88]:
+                    - generic [ref=e89]: Solution
+                    - paragraph [ref=e90]: Multi-tenant SaaS platform with AI-powered automation
+                - generic [ref=e91]:
+                  - img [ref=e92]
+                  - generic [ref=e95]:
+                    - generic [ref=e96]: Results
+                    - paragraph [ref=e97]: Scalable architecture and improved customer engagement
+              - generic [ref=e100]:
+                - generic [ref=e101]: Improved
+                - generic [ref=e102]: Faster Load Time
+              - button "View case study for Tendril Multi-Tenant Chatbot SaaS" [ref=e105] [cursor=pointer]:
+                - img
+                - text: Case Study
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - img "Screenshot of Zeus E-Commerce Platform project - A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration." [ref=e109]
+              - generic [ref=e111]:
+                - generic [ref=e112]: Next.js
+                - generic [ref=e113]: Tailwind CSS
+                - generic [ref=e114]: Stripe
+              - generic [ref=e116]: View Case Study
+              - generic [ref=e118]:
+                - img [ref=e119]
+                - text: Case Study
+            - heading "Zeus E-Commerce Platform" [level=3] [ref=e122]
+            - generic [ref=e123]:
+              - paragraph [ref=e125]: A scalable, mobile-first e-commerce experience built with Next.js, Tailwind CSS, and Stripe integration. Features blazing-fast performance and custom CMS integration.
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - img [ref=e129]
+                  - generic [ref=e133]:
+                    - generic [ref=e134]: Problem
+                    - paragraph [ref=e135]: Slow e-commerce site with poor mobile experience
+                - generic [ref=e136]:
+                  - img [ref=e137]
+                  - generic [ref=e140]:
+                    - generic [ref=e141]: Solution
+                    - paragraph [ref=e142]: Next.js optimization with mobile-first design
+                - generic [ref=e143]:
+                  - img [ref=e144]
+                  - generic [ref=e147]:
+                    - generic [ref=e148]: Results
+                    - paragraph [ref=e149]: Improved performance and enhanced mobile experience
+              - generic [ref=e152]:
+                - generic [ref=e153]: Significantly Improved
+                - generic [ref=e154]: Faster Load Time
+              - button "View case study for Zeus E-Commerce Platform" [ref=e157] [cursor=pointer]:
+                - img
+                - text: Case Study
+          - generic [ref=e159]:
+            - generic [ref=e160]:
+              - img "Screenshot of Schibelli.dev project - A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects." [ref=e161]
+              - generic [ref=e163]:
+                - generic [ref=e164]: Next.js
+                - generic [ref=e165]: TypeScript
+                - generic [ref=e166]: Tailwind CSS
+              - generic [ref=e168]: View Case Study
+              - generic [ref=e170]:
+                - img [ref=e171]
+                - text: Case Study
+            - heading "Schibelli.dev" [level=3] [ref=e174]
+            - generic [ref=e175]:
+              - paragraph [ref=e177]: A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - img [ref=e181]
+                  - generic [ref=e185]:
+                    - generic [ref=e186]: Problem
+                    - paragraph [ref=e187]: Outdated portfolio lacking modern design and performance
+                - generic [ref=e188]:
+                  - img [ref=e189]
+                  - generic [ref=e192]:
+                    - generic [ref=e193]: Solution
+                    - paragraph [ref=e194]: Complete redesign with Next.js and performance optimization
+                - generic [ref=e195]:
+                  - img [ref=e196]
+                  - generic [ref=e199]:
+                    - generic [ref=e200]: Results
+                    - paragraph [ref=e201]: Modern design with improved performance and accessibility
+              - generic [ref=e204]:
+                - generic [ref=e205]: Optimized Performance
+                - generic [ref=e206]: Faster Load Time
+              - button "View case study for Schibelli.dev" [ref=e209] [cursor=pointer]:
+                - img
+                - text: Case Study
+        - generic [ref=e210]:
+          - button "View all portfolio projects" [ref=e211] [cursor=pointer]:
+            - text: View All Projects
+            - img
+          - generic [ref=e212]: Navigate to the projects page to view all portfolio projects and case studies
+    - region "Latest blog posts section" [ref=e213]:
+      - generic [ref=e214]:
+        - generic [ref=e215]:
+          - heading "Latest from the Blog" [level=2] [ref=e216]
+          - paragraph [ref=e217]: Insights, tutorials, and thoughts on modern web development and technology
+        - generic [ref=e218]:
+          - generic [ref=e220]:
+            - generic [ref=e221]:
+              - generic [ref=e222]:
+                - generic [ref=e223]:
+                  - img [ref=e224]
+                  - generic [ref=e226]: January 14, 2024
+                - generic [ref=e227]:
+                  - img [ref=e228]
+                  - generic [ref=e231]: 8 min read
+              - heading "Building Scalable React Applications with TypeScript" [level=3] [ref=e232]
+            - generic [ref=e233]:
+              - paragraph [ref=e234]: Learn how to structure large React applications using TypeScript, proper state management, and performance optimization techniques.
+              - link "Read More" [ref=e235]:
+                - /url: /blog/building-scalable-react-applications
+                - text: Read More
+                - img [ref=e236]
+          - generic [ref=e239]:
+            - generic [ref=e240]:
+              - generic [ref=e241]:
+                - generic [ref=e242]:
+                  - img [ref=e243]
+                  - generic [ref=e245]: January 9, 2024
+                - generic [ref=e246]:
+                  - img [ref=e247]
+                  - generic [ref=e250]: 6 min read
+              - heading "The Future of AI-Driven Development" [level=3] [ref=e251]
+            - generic [ref=e252]:
+              - paragraph [ref=e253]: Exploring how AI tools are transforming the development workflow and what this means for developers in 2024.
+              - link "Read More" [ref=e254]:
+                - /url: /blog/future-of-ai-driven-development
+                - text: Read More
+                - img [ref=e255]
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - img [ref=e262]
+                  - generic [ref=e264]: January 4, 2024
+                - generic [ref=e265]:
+                  - img [ref=e266]
+                  - generic [ref=e269]: 10 min read
+              - heading "Optimizing Next.js Performance for Production" [level=3] [ref=e270]
+            - generic [ref=e271]:
+              - paragraph [ref=e272]: Deep dive into Next.js performance optimization strategies, from image optimization to bundle analysis.
+              - link "Read More" [ref=e273]:
+                - /url: /blog/optimizing-nextjs-performance
+                - text: Read More
+                - img [ref=e274]
+        - generic [ref=e276]:
+          - button "Read all blog posts and articles" [ref=e277] [cursor=pointer]:
+            - text: Read the Blog
+            - img
+          - generic [ref=e278]: Navigate to the blog page to read all available articles and posts
+    - generic [ref=e282]:
+      - generic [ref=e283]:
+        - heading "Let's Discuss Your Project Goals" [level=2] [ref=e284]
+        - paragraph [ref=e285]: Ready to discuss your ideas for digital experiences? Let's explore how we can work together to achieve your business objectives.
+      - generic [ref=e286]:
+        - button "Start a conversation about your project goals" [ref=e287] [cursor=pointer]:
+          - img
+          - text: Start Conversation
+        - button "Send email directly to discuss your project" [ref=e288] [cursor=pointer]:
+          - img
+          - text: Email Directly
+      - generic [ref=e289]:
+        - generic [ref=e290]:
+          - img [ref=e291]
+          - generic [ref=e294]: Quick response time and code samples available on request
+        - generic [ref=e295]:
+          - img [ref=e296]
+          - generic [ref=e298]: Available for remote work and local projects in Northern NJ
+      - generic [ref=e299]:
+        - generic [ref=e300]:
+          - generic [ref=e301]: 24h
+          - generic [ref=e302]: Response Time
+        - generic [ref=e303]:
+          - generic [ref=e304]: ✓
+          - generic [ref=e305]: Client Success Focus
+        - generic [ref=e306]:
+          - generic [ref=e307]: 15+
+          - generic [ref=e308]: Years Experience
+    - button "Open chatbot" [ref=e309] [cursor=pointer]:
+      - img [ref=e310] [cursor=pointer]
+  - contentinfo [ref=e312]:
+    - generic [ref=e314]:
+      - link "John Schibelli - Home page" [ref=e316]:
+        - /url: /
+        - img "John Schibelli" [ref=e318]
+      - navigation "Social media links" [ref=e319]:
+        - list [ref=e320]:
+          - listitem "Find us on Facebook, external website, opens in new tab" [ref=e321]:
+            - img [ref=e322]
+          - listitem "Find us on Github, external website, opens in new tab" [ref=e324]:
+            - img [ref=e325]
+          - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e327]:
+            - img [ref=e328]
+          - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e330]:
+            - img [ref=e331]
+          - listitem "Open blog XML Feed, opens in new tab" [ref=e333]:
+            - img [ref=e334]
+      - paragraph [ref=e337]: © 2025 John Schibelli. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e343] [cursor=pointer]:
+    - img [ref=e344] [cursor=pointer]
+  - alert [ref=e349]
+```

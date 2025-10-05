@@ -1,0 +1,158 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - navigation "Main navigation" [ref=e8]:
+        - link "Home" [ref=e9]:
+          - /url: /
+        - link "Projects" [ref=e10]:
+          - /url: /projects
+        - link "Blog" [ref=e11]:
+          - /url: /blog
+        - link "About" [ref=e12]:
+          - /url: /about
+        - link "Contact" [ref=e13]:
+          - /url: /contact
+      - generic [ref=e16]:
+        - img [ref=e17]
+        - textbox "Search..." [ref=e20]
+      - generic [ref=e21]:
+        - button "Toggle theme" [disabled]:
+          - img
+          - generic: Toggle theme
+        - button "Subscribe to newsletter" [ref=e22] [cursor=pointer]: Subscribe
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - img "Hero background" [ref=e26]
+      - generic [ref=e30]:
+        - heading "Let's Work Together" [level=1] [ref=e31]:
+          - text: Let's Work
+          - generic [ref=e32]: Together
+        - paragraph [ref=e33]: I work with teams to build digital experiences that help achieve business goals and bring ideas to life.
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - img [ref=e36]
+            - text: Northern New Jersey, USA
+          - generic [ref=e39]:
+            - img [ref=e40]
+            - text: Remote & Local Development
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - heading "Ready to Transform Your Vision?" [level=2] [ref=e48]
+          - paragraph [ref=e49]: Whether you're launching a startup, scaling an enterprise, or need to modernize your existing platform – let's discuss how we can work together to build something that meets your goals and supports your business growth.
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - img [ref=e52]
+              - text: Free Consultation
+            - generic [ref=e55]:
+              - img [ref=e56]
+              - text: No Commitment
+            - generic [ref=e59]:
+              - img [ref=e60]
+              - text: Quick Response
+        - form "Contact form" [ref=e63]:
+          - generic [ref=e64]:
+            - generic [ref=e65]:
+              - generic [ref=e66]: Name *
+              - textbox "Name *" [ref=e67]
+            - generic [ref=e68]:
+              - generic [ref=e69]: Email *
+              - textbox "Email *" [ref=e70]
+          - generic [ref=e71]:
+            - generic [ref=e72]: Company
+            - textbox "Company" [ref=e73]
+          - generic [ref=e74]:
+            - generic [ref=e75]: Project type
+            - combobox "Project type" [ref=e76]:
+              - option "Select" [selected]
+              - option "Web Application"
+              - option "Website"
+              - option "E-commerce"
+              - option "Consulting"
+              - option "Maintenance & Support"
+              - option "Other"
+          - generic [ref=e77]:
+            - generic [ref=e78]: Project details *
+            - textbox "Project details *" [ref=e79]
+          - button "Send Message" [ref=e80] [cursor=pointer]:
+            - generic [ref=e81] [cursor=pointer]:
+              - text: Send Message
+              - img
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - heading "Why Choose John Schibelli?" [level=2] [ref=e84]
+          - paragraph [ref=e85]: I'm a developer who works collaboratively with clients to support their digital transformation goals. Based in Northern New Jersey, I combine technical skills with business understanding to help deliver solutions that support your objectives.
+        - generic [ref=e86]:
+          - generic [ref=e87]:
+            - img [ref=e89]
+            - generic [ref=e92]:
+              - heading "Professional Email" [level=3] [ref=e93]
+              - link "john@schibelli.dev" [ref=e94]:
+                - /url: mailto:john@schibelli.dev
+          - generic [ref=e95]:
+            - img [ref=e97]
+            - generic [ref=e100]:
+              - heading "Northern New Jersey Development Services" [level=3] [ref=e101]
+              - paragraph [ref=e102]: Serving clients worldwide with remote React and Next.js development
+        - generic [ref=e103]:
+          - heading "Expert Front-End Development Services" [level=3] [ref=e104]
+          - generic [ref=e105]:
+            - generic [ref=e106]: React Development
+            - generic [ref=e107]: Next.js Applications
+            - generic [ref=e108]: TypeScript Development
+            - generic [ref=e109]: AI Integration
+            - generic [ref=e110]: UI/UX Design
+            - generic [ref=e111]: Technical Consulting
+            - generic [ref=e112]: Performance Optimization
+            - generic [ref=e113]: SEO Implementation
+        - generic [ref=e114]:
+          - heading "Connect With John Schibelli" [level=3] [ref=e115]
+          - generic [ref=e116]:
+            - link "Connect with John Schibelli on LinkedIn, external website, opens in new tab" [ref=e117]:
+              - /url: https://linkedin.com/in/johnschibelli
+              - img [ref=e118]
+            - link "View John Schibelli's GitHub profile, external website, opens in new tab" [ref=e120]:
+              - /url: https://github.com/johnschibelli
+              - img [ref=e121]
+            - link "Follow John Schibelli on Twitter, external website, opens in new tab" [ref=e123]:
+              - /url: https://twitter.com/johnschibelli
+              - img [ref=e124]
+            - link "Follow John Schibelli on Bluesky, external website, opens in new tab" [ref=e126]:
+              - /url: https://bsky.app/profile/johnschibelli
+              - img [ref=e127]
+    - generic [ref=e131]:
+      - heading "Working Together on Next.js & React Development" [level=2] [ref=e132]
+      - generic [ref=e133]:
+        - generic [ref=e134]:
+          - heading "15+ Years of Front-End Development Experience" [level=3] [ref=e135]
+          - paragraph [ref=e136]: With over 15 years of experience in web development, I work with React and Next.js to build high-performance applications. My experience includes TypeScript, modern CSS frameworks, and AI integration to support user experiences.
+        - generic [ref=e137]:
+          - heading "Northern New Jersey Based, Globally Available" [level=3] [ref=e138]
+          - paragraph [ref=e139]: Located in Northern New Jersey, I serve clients both locally and remotely worldwide. Whether you need a complete web application rebuild or consultation on your existing React project, I'm here to help.
+        - generic [ref=e140]:
+          - heading "Professional Service & Quality Code" [level=3] [ref=e141]
+          - paragraph [ref=e142]: My focus is on delivering clean, maintainable code with excellent performance and SEO optimization for your business success. Quick response times and professional communication throughout the project.
+        - generic [ref=e143]:
+          - heading "Full-Stack Front-End Solutions" [level=3] [ref=e144]
+          - paragraph [ref=e145]: From initial design to deployment, I provide comprehensive front-end development services including UI/UX design, performance optimization, accessibility compliance, and ongoing maintenance support.
+    - button "Open chatbot" [ref=e146] [cursor=pointer]:
+      - img [ref=e147] [cursor=pointer]
+    - contentinfo [ref=e149]:
+      - generic [ref=e151]:
+        - navigation "Social media links" [ref=e155]:
+          - list [ref=e156]:
+            - listitem "Find us on Facebook, external website, opens in new tab" [ref=e157]:
+              - img [ref=e158]
+            - listitem "Find us on Github, external website, opens in new tab" [ref=e160]:
+              - img [ref=e161]
+            - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e163]:
+              - img [ref=e164]
+            - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e166]:
+              - img [ref=e167]
+            - listitem "Open blog XML Feed, opens in new tab" [ref=e169]:
+              - img [ref=e170]
+        - paragraph [ref=e173]: © 2025 John Schibelli. All rights reserved.
+```

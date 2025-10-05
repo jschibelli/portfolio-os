@@ -65,4 +65,29 @@ export async function testSpecificAccessibilityRules(
 	return results
 }
 
+export async function testKeyboardNavigation(page: Page, maxTabs: number = 10) {
+	// Test keyboard navigation by tabbing through interactive elements
+	for (let i = 0; i < maxTabs; i++) {
+		await page.keyboard.press('Tab')
+		
+		// Check if we have a focused element
+		const focusedElement = await page.evaluate(() => document.activeElement)
+		expect(focusedElement).not.toBeNull()
+		
+		// Check if the focused element has visible focus indicators
+		const hasFocusStyles = await page.evaluate(() => {
+			const activeElement = document.activeElement as HTMLElement
+			if (!activeElement) return false
+			
+			const computedStyle = window.getComputedStyle(activeElement)
+			const hasOutline = computedStyle.outline !== 'none' && computedStyle.outline !== ''
+			const hasRing = computedStyle.boxShadow.includes('ring') || computedStyle.boxShadow.includes('shadow')
+			
+			return hasOutline || hasRing
+		})
+		
+		expect(hasFocusStyles).toBe(true)
+	}
+}
+
 
