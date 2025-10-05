@@ -45,10 +45,10 @@ You are assigned to PR #262 which has HIGH priority CR-GPT comments requiring im
 4. Code style improvements
 
 **Action Plan**:
-1. Run: `.\scripts\pr-automation-unified.ps1 -PRNumber 262 -Action analyze` to get detailed comment analysis
-2. Run: `.\scripts\pr-automation-unified.ps1 -PRNumber 262 -Action respond` to generate automated responses
+1. Review all CR-GPT comments on PR #262 and document key issues for analysis
+2. Draft responses to each comment, referencing relevant code changes and improvements
 3. Review each comment and implement fixes
-4. Run quality checks: `.\scripts\pr-automation-unified.ps1 -PRNumber 262 -Action quality`
+4. Run quality checks manually or using available CI tools (e.g., lint, test, security scan)
 5. Update project status and drive to merge
 
 **Success Criteria**: All HIGH priority issues resolved, PR ready for merge
@@ -64,10 +64,10 @@ You are assigned to PR #261 which has LOW priority CR-GPT comments for accessibi
 3. Accessibility compliance
 
 **Action Plan**:
-1. Run: `.\scripts\pr-automation-unified.ps1 -PRNumber 261 -Action analyze` to get detailed comment analysis
-2. Run: `.\scripts\pr-automation-unified.ps1 -PRNumber 261 -Action respond` to generate automated responses
+1. Review all CR-GPT comments on PR #261 and document key issues for analysis
+2. Draft responses to each comment, referencing relevant code changes and improvements
 3. Review and implement style/error fixes
-4. Run quality checks: `.\scripts\pr-automation-unified.ps1 -PRNumber 261 -Action quality`
+4. Run quality checks manually or using available CI tools (e.g., lint, test, security scan)
 5. Update project status
 
 **Success Criteria**: All style and error issues resolved, PR ready for merge
@@ -80,7 +80,7 @@ You are assigned to PR #260 which has no CR-GPT comments and appears ready for f
 **Your Mission**: Perform final quality assurance and prepare for merge.
 
 **Action Plan**:
-1. Run: `.\scripts\pr-automation-unified.ps1 -PRNumber 260 -Action quality` to run final checks
+1. Run quality checks manually or using available CI tools (e.g., lint, test, security scan)
 2. Verify all tests pass
 3. Check for any remaining issues
 4. Update project status to "Ready for Merge"
@@ -94,22 +94,22 @@ You are assigned to PR #260 which has no CR-GPT comments and appears ready for f
 ### Universal Commands for All Agents:
 ```powershell
 # Monitor PR status
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action monitor
+git fetch origin && git checkout develop
 
 # Analyze CR-GPT comments  
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action analyze
+# Review GitHub PR comments and document key issues
 
 # Generate automated responses
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action respond
+# Draft responses to each comment with relevant code changes
 
 # Run quality checks
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action quality
+npm run lint && npm run test
 
 # Update documentation
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action docs
+# Update relevant documentation files
 
 # Run all actions (recommended)
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action all
+# Follow the complete workflow: analyze -> respond -> fix -> quality -> docs
 ```
 
 ### Project Board Integration:

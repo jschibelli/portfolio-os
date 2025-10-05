@@ -332,3 +332,4 @@ Max Issues: $MaxIssues
     Log-AutomationEvent "ERROR" "Master automation failed: $($_.Exception.Message)"
     exit 1
 }
+}

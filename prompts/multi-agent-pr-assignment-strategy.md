@@ -173,49 +173,101 @@ Based on workload analysis and complexity distribution, **5 specialized agents**
 ### **Universal Commands for All Agents:**
 ```powershell
 # Monitor assigned PRs
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action monitor
+git fetch origin && git checkout develop
 
 # Analyze CR-GPT comments
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action analyze
+# Review GitHub PR comments and document key issues
 
 # Generate automated responses
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action respond
+# Draft responses to each comment with relevant code changes
 
 # Run quality checks
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action quality
+npm run lint && npm run test
 
 # Run all actions (recommended)
-.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action all
+# Follow the complete workflow: analyze -> respond -> fix -> quality -> docs
 ```
 
 ### **Agent-Specific Starting Commands:**
 
 **Agent 1 (Critical Security):**
 ```powershell
-.\scripts\pr-automation-unified.ps1 -PRNumber 240 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 258 -Action all  
-.\scripts\pr-automation-unified.ps1 -PRNumber 255 -Action all
+# Follow the complete workflow for PR #240
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+# Follow the complete workflow for PR #258
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+
+# Follow the complete workflow for PR #255
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
 ```
 
 **Agent 2 (Performance & High Priority):**
 ```powershell
-.\scripts\pr-automation-unified.ps1 -PRNumber 262 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 244 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 259 -Action all
+# Follow the complete workflow for PR #262
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+# Follow the complete workflow for PR #244
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+
+# Follow the complete workflow for PR #259
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
 ```
 
 **Agent 3 (General Code Quality):**
 ```powershell
-.\scripts\pr-automation-unified.ps1 -PRNumber 245 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 243 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 242 -Action all
+# Follow the complete workflow for PR #245
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+# Follow the complete workflow for PR #243
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+
+# Follow the complete workflow for PR #242
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
 ```
 
 **Agent 4 (QA & Final Review):**
 ```powershell
-.\scripts\pr-automation-unified.ps1 -PRNumber 260 -Action quality
-.\scripts\pr-automation-unified.ps1 -PRNumber 261 -Action all
-.\scripts\pr-automation-unified.ps1 -PRNumber 256 -Action quality
+# Follow the complete workflow for PR #260
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+# Follow the complete workflow for PR #261
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
+
+# Follow the complete workflow for PR #256
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
 ```
 
 **Agent 5 (Copilot Integration):**
@@ -224,7 +276,11 @@ Based on workload analysis and complexity distribution, **5 specialized agents**
 gh pr view 236 --json title,body,headRefName
 gh pr view 235 --json title,body,headRefName
 gh pr view 234 --json title,body,headRefName
-.\scripts\pr-automation-unified.ps1 -PRNumber 241 -Action all
+# Follow the complete workflow for PR #241
+git fetch origin && git checkout develop
+# Review GitHub PR comments and document key issues
+# Draft responses to each comment with relevant code changes
+npm run lint && npm run test
 ```
 
 ---
