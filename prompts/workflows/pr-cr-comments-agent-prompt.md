@@ -213,9 +213,10 @@ All PRs are already added to Portfolio Site project (#20) with these default fie
 6. **User Responsibility**: User reviews, decides, and actually merges the PR
 
 **Agent Responsibilities:**
-- Work on PRs until they are merge-ready (no conflicts, all checks pass)
-- Update project board status as work progresses
-- Move to "Ready for Merge" when PR is complete
+- Start with PR in "Ready" status, move to "In Progress" when beginning work
+- Work through the ENTIRE CR review process (address all CR-GPT comments, fix all issues, resolve conflicts)
+- Stay in "In Progress" until CR review process is completely done
+- Move to "Ready for Merge" ONLY when there are no more CR review comments and automation process is complete
 - Report completion - PR is ready for user to merge
 
 **User Responsibilities:**
@@ -227,8 +228,8 @@ All PRs are already added to Portfolio Site project (#20) with these default fie
 - **PR #262**: All HIGH priority CR-GPT comments resolved
 - **PR #261**: All LOW priority CR-GPT comments resolved  
 - **PR #260**: Quality verified, ready for merge
-- All PRs moved to "Ready for Merge" status on project board
-- All PRs are merge-ready (no conflicts, all checks pass)
+- All PRs moved to "Ready for Merge" status on project board ONLY after CR review process is complete
+- All PRs are merge-ready (no conflicts, all checks pass, no more CR review comments)
 - User can review and merge PRs when ready
 
 ## Next Steps
