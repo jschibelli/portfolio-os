@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Clock, Edit, Trash2, Plus, Search, Filter, Eye, CalendarDays } from "lucide-react";
+import { Calendar, Clock, Edit, Trash2, Plus, Search, Eye, CalendarDays } from "lucide-react";
 
 interface ScheduledArticle {
   id: string;

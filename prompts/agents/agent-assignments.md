@@ -1,6 +1,27 @@
 # Agent Assignments - Automation System Development
 
-## 🔴 **Jason: Backend & Infrastructure Specialist**
+## 🔴 **Jason: Frontend & Critical Security Specialist**
+
+**Your Issues:**
+- **Issue #266**: Create Issue Implementation System
+- **Issue #268**: Create Advanced Analytics and Monitoring System
+
+**Issue Links:**
+- https://github.com/jschibelli/portfolio-os/issues/266
+- https://github.com/jschibelli/portfolio-os/issues/268
+
+**Your Working Branch:** `jason-automation-frontend`
+
+**Script Files You'll Work On:**
+- `scripts/automation/issue-implementation.ps1` (create new)
+- `scripts/automation/monitoring/automation-metrics.ps1` (create new)
+- `scripts/automation/monitoring/` (create new directory)
+
+**Your Focus:** Frontend components, UI/UX, user workflows, analytics dashboards, user experience
+
+---
+
+## 🟢 **Chris: Backend & Infrastructure Specialist**
 
 **Your Issues:**
 - **Issue #264**: Create AI Services Integration Layer
@@ -12,7 +33,7 @@
 - https://github.com/jschibelli/portfolio-os/issues/265
 - https://github.com/jschibelli/portfolio-os/issues/267
 
-**Your Working Branch:** `jason-automation-backend`
+**Your Working Branch:** `chris-automation-backend`
 
 **Script Files You'll Work On:**
 - `scripts/automation/core-utilities/ai-services.ps1` (create new)
@@ -22,27 +43,6 @@
 - `scripts/automation/continuous-issue-pipeline.ps1` (update existing)
 
 **Your Focus:** Backend infrastructure, AI services, queue management, PowerShell integration
-
----
-
-## 🟢 **Chris: Frontend & User Experience Specialist**
-
-**Your Issues:**
-- **Issue #266**: Create Issue Implementation System
-- **Issue #268**: Create Advanced Analytics and Monitoring System
-
-**Issue Links:**
-- https://github.com/jschibelli/portfolio-os/issues/266
-- https://github.com/jschibelli/portfolio-os/issues/268
-
-**Your Working Branch:** `chris-automation-frontend`
-
-**Script Files You'll Work On:**
-- `scripts/automation/issue-implementation.ps1` (create new)
-- `scripts/automation/monitoring/automation-metrics.ps1` (create new)
-- `scripts/automation/monitoring/` (create new directory)
-
-**Your Focus:** User workflows, code generation, analytics dashboards, user experience
 
 ---
 

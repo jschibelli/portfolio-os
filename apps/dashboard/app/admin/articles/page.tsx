@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Filter, MoreVertical, Eye, Edit, Trash2, Calendar, User, BarChart3, Download } from "lucide-react";
+import { Search, Eye, Edit, Trash2 } from "lucide-react";
 import { adminDataService, AdminArticle } from "@/lib/admin-data-service";
 
 export default function AdminArticles() {

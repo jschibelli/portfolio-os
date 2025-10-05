@@ -150,37 +150,45 @@ function Invoke-CodeChanges {
         # Apply specific changes based on PR number
         switch ($PRNumber) {
             "270" {
-                Write-Log "Applying Jason's backend infrastructure improvements for PR #270" "INFO"
+                Write-Log "Applying Chris's backend infrastructure improvements for PR #270" "INFO"
                 
-                # Enhance github-utils.ps1
-                $utilsPath = "scripts/automation/core-utilities/github-utils.ps1"
-                if (Test-Path $utilsPath) {
-                    Write-Log "Enhancing GitHub utilities with error handling and testing" "INFO"
-                    # The enhanced version is already in the workspace
+                # Copy files from develop branch to current PR branch
+                Write-Log "Copying enhanced files from develop branch" "INFO"
+                
+                # Copy enhanced github-utils.ps1
+                git show develop:scripts/automation/core-utilities/github-utils.ps1 > scripts/automation/core-utilities/github-utils.ps1
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "Copied enhanced GitHub utilities" "SUCCESS"
                 }
                 
-                # Create agent assignments documentation
-                $agentAssignmentsPath = "prompts/agents/agent-assignments.md"
-                if (-not (Test-Path $agentAssignmentsPath)) {
-                    Write-Log "Creating agent assignments documentation for Jason and Chris" "INFO"
-                    # Create the file with agent coordination documentation
+                # Copy agent assignments documentation
+                git show develop:prompts/agents/agent-assignments.md > prompts/agents/agent-assignments.md
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "Copied agent assignments documentation" "SUCCESS"
+                }
+                
+                # Copy enhanced PR automation script
+                git show develop:scripts/automation/pr-automation-unified.ps1 > scripts/automation/pr-automation-unified.ps1
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "Copied enhanced PR automation script" "SUCCESS"
                 }
             }
             "259" {
-                Write-Log "Applying Chris's SEO and code quality improvements for PR #259" "INFO"
+                Write-Log "Applying Jason's SEO and code quality improvements for PR #259" "INFO"
                 
-                # Refactor about page to use proper metadata
-                $aboutPagePath = "apps/site/app/about/page.tsx"
-                if (Test-Path $aboutPagePath) {
-                    Write-Log "Refactoring about page to use Next.js 13+ metadata pattern" "INFO"
-                    # The refactored version is already in the workspace
+                # Copy files from develop branch to current PR branch
+                Write-Log "Copying enhanced files from develop branch" "INFO"
+                
+                # Copy refactored about page
+                git show develop:apps/site/app/about/page.tsx > apps/site/app/about/page.tsx
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "Copied refactored about page" "SUCCESS"
                 }
                 
-                # Create about-client component
-                $aboutClientPath = "apps/site/app/about/about-client.tsx"
-                if (-not (Test-Path $aboutClientPath)) {
-                    Write-Log "Creating about client component" "INFO"
-                    # Create the client component
+                # Copy about-client component
+                git show develop:apps/site/app/about/about-client.tsx > apps/site/app/about/about-client.tsx
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Log "Copied about client component" "SUCCESS"
                 }
             }
             default {
