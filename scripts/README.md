@@ -1,190 +1,126 @@
-# Portfolio OS Scripts
+# Scripts Directory
 
-This directory contains essential automation scripts for the Portfolio OS project.
+This directory contains all automation scripts organized by functionality for easy navigation and maintenance.
 
-## 📁 **Current Scripts**
+## 📁 **Directory Structure**
 
-### **🆕 Unified Scripts (Recommended - New!)**
-- **`pr-automation-unified.ps1`** - Master PR automation (combines 5+ scripts)
-- **`issue-config-unified.ps1`** - Unified issue configuration (combines 3+ scripts)
-- **`shared/github-utils.ps1`** - Shared utilities (eliminates 50+ duplicate functions)
+### **`automation/`** - Core Automation Scripts
+Contains the main automation scripts that orchestrate the entire system:
 
-### **🆕 Unified Management Scripts (Recommended)**
-- **`project-manager.ps1`** - Comprehensive project management (combines 14+ scripts)
-- **`branch-manager.ps1`** - Branch operations and naming (combines 2+ scripts)
-- **`issue-creator.ps1`** - Issue creation with templates (enhanced version)
+- **`agent-coordinator.ps1`** - Coordinates multiple AI agents and manages workload distribution
+- **`continuous-issue-pipeline.ps1`** - Processes issues continuously from backlog to completion
+- **`integrate-multi-agent.ps1`** - Integrates and validates multi-agent system components
+- **`master-automation.ps1`** - Main automation controller and system orchestrator
+- **`multi-agent-automation.ps1`** - Core multi-agent automation engine
+- **`multi-agent-worktree-system.ps1`** - Manages isolated work environments for agents
+- **`multi-pr-automation.ps1`** - Automates pull request processing and management
+- **`pr-automation-enhanced-simple.ps1`** - Enhanced PR automation with simplified interface
+- **`pr-automation-unified.ps1`** - Unified PR automation system
+- **`trigger-issue-implementation.ps1`** - Triggers issue implementation workflows
 
-### **Issue & PR Configuration**
-- **`auto-configure-issue-simple.ps1`** - Simple issue configuration with presets
-- **`auto-configure-issue.ps1`** - Full issue configuration with custom options
-- **`auto-configure-pr.ps1`** - PR configuration and project field updates
+### **`project-management/`** - Project Management Scripts
+Scripts for managing GitHub projects, boards, and project-related tasks:
 
-### **PR & Issue Automation**
-- **`pr-automation.ps1`** - Master PR automation script
-- **`pr-monitor.ps1`** - Monitor PR activity and CR-GPT comments
-- **`cr-gpt-analyzer.ps1`** - Analyze CR-GPT bot comments
-- **`auto-response-generator.ps1`** - Generate automated responses
-- **`issue-analyzer.ps1`** - Analyze issue requirements
-- **`issue-implementation.ps1`** - Implement issue solutions
-- **`trigger-issue-implementation.ps1`** - Trigger issue implementation
+- **`backfill-project-fields.ps1`** - Backfills missing project fields for existing issues
+- **`branch-manager.ps1`** - Manages branch creation, naming, and cleanup
+- **`create-branch-from-develop.ps1`** - Creates new branches from develop branch
+- **`project-manager.ps1`** - Main project management controller
+- **`project-status-monitor.ps1`** - Monitors project status and health
+- **`sync-project-board.ps1`** - Synchronizes GitHub project board with automation system
 
-### **Code Quality & Documentation**
-- **`code-quality-checker.ps1`** - Run code quality checks
-- **`docs-updater.ps1`** - Update documentation
-- **`fast-pr-workflow.ps1`** - Fast PR workflow automation
-- **`pr-aliases.ps1`** - PR aliases and shortcuts
+### **`analysis/`** - Analysis and Quality Scripts
+Scripts for analyzing code quality, stale issues, and system health:
 
-### **Setup & Configuration**
-- **`setup-pr-workflow.ps1`** - Setup PR workflow
-- **`setup_portfolio_project.ps1`** - Setup portfolio project
-- **`reply-to-review-comment.ps1`** - Reply to review comments
-- **`configure_project_20.sh`** - GitHub Project #20 configuration script
-- **`build.sh`** - Build script
-- **`reply-to-review-comment.sh`** - Shell script for review replies
+- **`analyze-stale-issues.ps1`** - Analyzes and reports on stale issues
+- **`cleanup-analysis-simple.ps1`** - Simple cleanup analysis and recommendations
+- **`cleanup-analysis-text.ps1`** - Text-based cleanup analysis
+- **`code-quality-checker.ps1`** - Checks code quality and standards compliance
+- **`issue-analyzer.ps1`** - Analyzes issues for complexity, priority, and assignment
 
-### **Legacy Scripts (Still Available)**
-- **`configure-project-fields-manual.ps1`** - Manual project field configuration
-- **`create-remaining-issues.ps1`** - Create remaining issues
-- **`rename-branches-with-issue-numbers.ps1`** - Rename branches
+### **`utilities/`** - Utility Scripts
+General utility scripts for configuration, testing, and maintenance:
+
+- **`auto-configure-pr.ps1`** - Automatically configures PR fields and metadata
+- **`build.sh`** - Build script for the entire project
+- **`issue-config-unified.ps1`** - Unified issue configuration system
+- **`issue-creator.ps1`** - Creates new issues with proper configuration
+- **`issue-implementation.ps1`** - Implements issue solutions
+- **`issue-queue-manager.ps1`** - Manages issue queues and processing
+- **`pr-aliases.ps1`** - PowerShell aliases for common PR operations
+- **`test-multi-pr-automation.ps1`** - Tests multi-PR automation functionality
+- **`worktree-config.json`** - Configuration for worktree management
+
+### **`documentation/`** - Documentation Scripts
+Scripts for generating and maintaining documentation:
+
+- **`docs-updater.ps1`** - Updates documentation automatically
+- **`CONTINUOUS-AUTOMATION-GUIDE.md`** - Guide for continuous automation
+- **`issue-227-frontend-agent-implementation.md`** - Implementation docs
+- **`issue-228-backend-agent-implementation.md`** - Backend agent implementation
+- **`issue-228-implementation.md`** - Implementation documentation
+- **`issue-229-frontend-agent-implementation.md`** - Frontend agent docs
+- **`issue-229-implementation.md`** - Implementation guide
+- **`issue-230-backend-agent-implementation.md`** - Backend implementation
+- **`issue-230-implementation.md`** - Implementation documentation
+
+### **`shared/`** - Shared Utilities
+Common utilities used across multiple scripts:
+
+- **`github-utils.ps1`** - GitHub API utilities and helper functions
 
 ## 🚀 **Quick Start**
 
-### **🆕 NEW: Unified Scripts (Recommended - Start Here!)**
+### **Essential Commands**
 ```powershell
-# Complete PR automation (replaces 5+ separate scripts)
-.\scripts\pr-automation-unified.ps1 -PRNumber 218 -Action all
+# Start the main automation system
+.\automation\master-automation.ps1 -Mode continuous
 
-# Unified issue configuration (replaces 3+ separate scripts)  
-.\scripts\issue-config-unified.ps1 -IssueNumber 208 -Preset "blog" -AddToProject
+# Process issues automatically
+.\automation\multi-agent-automation.ps1 -Mode continuous -MaxIssues 10
 
-# Shared utilities (imported automatically by unified scripts)
-# No need to call directly - used by other scripts
+# Monitor system health
+.\automation\integrate-multi-agent.ps1 -Operation validate
+
+# Check project status
+.\project-management\project-status-monitor.ps1
 ```
 
-### **🆕 Unified Project Management (Recommended)**
-```powershell
-# Add blog issues to project and configure them
-.\scripts\project-manager.ps1 -Operation "all" -Preset "blog" -Priority "P1" -Status "Ready"
+### **Common Workflows**
+1. **Start Automation**: `.\automation\master-automation.ps1 -Mode start`
+2. **Process Issues**: `.\automation\continuous-issue-pipeline.ps1 -MaxIssues 5`
+3. **Monitor Agents**: `.\automation\multi-agent-automation.ps1 -Mode monitor`
+4. **Check Health**: `.\automation\integrate-multi-agent.ps1 -Operation validate`
 
-# Set status for specific issues
-.\scripts\project-manager.ps1 -Operation "status" -Issues @(196, 197, 198) -Status "In progress"
+## 📋 **Usage Guidelines**
 
-# Add labels and milestone to issues
-.\scripts\project-manager.ps1 -Operation "labels" -Preset "dashboard" -Labels @("frontend", "priority: high")
+### **Script Categories**
+- **Automation**: Core system automation and orchestration
+- **Project Management**: GitHub project and board management
+- **Analysis**: Code quality and system analysis
+- **Utilities**: General purpose utilities and tools
+- **Documentation**: Documentation generation and maintenance
 
-# Dry run to see what would happen
-.\scripts\project-manager.ps1 -Operation "all" -Preset "blog" -DryRun
-```
+### **Best Practices**
+- Always run scripts from the project root directory
+- Use PowerShell execution policy: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+- Check script parameters with `-Help` or `-?` flags
+- Monitor logs for any errors or warnings
 
-### **🆕 Branch Management**
-```powershell
-# Update current branch name with issue number
-.\scripts\branch-manager.ps1 -Operation "update" -Issues @(196) -Type "feature"
+### **Troubleshooting**
+- Check PowerShell execution policy
+- Verify GitHub token is configured
+- Ensure all dependencies are installed
+- Review script logs for detailed error information
 
-# Rename branch for specific issue
-.\scripts\branch-manager.ps1 -Operation "rename" -Issues @(197) -Type "bugfix"
+## 🔧 **System Integration**
 
-# List and validate all branches
-.\scripts\branch-manager.ps1 -Operation "list"
+These scripts work together to provide:
+- **Automated Issue Processing**: From creation to completion
+- **Multi-Agent Coordination**: Parallel development workflows
+- **Project Management**: GitHub project board integration
+- **Quality Assurance**: Automated testing and code review
+- **Documentation**: Auto-generated and maintained docs
 
-# Validate current branch name
-.\scripts\branch-manager.ps1 -Operation "validate"
-```
+---
 
-### **🆕 Issue Creation**
-```powershell
-# Create a blog issue with template
-.\scripts\issue-creator.ps1 -Template "blog" -Title "Advanced SEO Techniques" -AddToProject
-
-# Create multiple dashboard issues
-.\scripts\issue-creator.ps1 -Template "dashboard" -Count 3 -AddToProject
-
-# Create a bug report
-.\scripts\issue-creator.ps1 -Template "bug" -Title "Login form validation error"
-
-# Create documentation task
-.\scripts\issue-creator.ps1 -Template "docs" -Title "API documentation update"
-```
-
-### **Legacy Scripts (Still Available)**
-```powershell
-# Simple issue configuration
-.\scripts\auto-configure-issue-simple.ps1 190 blog
-
-# Full issue configuration
-.\scripts\auto-configure-issue.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend"
-
-# PR configuration
-.\scripts\auto-configure-pr.ps1 -PRNumber 200
-```
-
-## 📂 **Other Script Directories**
-
-### **`/apps/site/scripts/`** - Site-Specific Scripts
-Contains specialized scripts for site management (automation scripts moved to main `/scripts/`):
-- **Build & Deployment**: `vercel-build.js`
-- **Image Optimization**: `create-optimized-images.js`
-- **Content Management**: `import-hashnode-articles.ts`, `validate-case-studies.ts`
-- **Development Tools**: `performance-optimization.js`
-- **Setup & Configuration**: Various setup scripts for auth, analytics, OAuth
-
-### **`/apps/dashboard/scripts/`** - Dashboard-Specific Scripts
-Contains specialized scripts for dashboard maintenance:
-- **`dependency-maintenance.js`** - Dependency updates and maintenance
-- **`implementation-verifier.js`** - Implementation verification
-- **`code-quality-checker.js`** - Dashboard-specific code quality checks
-
-## Available Presets
-
-| Preset | Priority | Size | App | Area | Use Case |
-|--------|----------|------|-----|------|----------|
-| `blog` | P1 | M | Portfolio Site | Frontend | Blog-related issues |
-| `dashboard` | P1 | M | Dashboard | Frontend | Dashboard features |
-| `docs` | P2 | S | Docs | Content | Documentation |
-| `infra` | P1 | L | Portfolio Site | Infra | Infrastructure |
-
-## GitHub Actions
-
-The automation is also available as a GitHub Action that triggers automatically when issues are created or edited. See `.github/workflows/auto-configure-issues.yml` for details.
-
-## Manual Configuration
-
-If you prefer to configure issues manually, use these commands:
-
-```bash
-# Set milestone
-gh issue edit ISSUE_NUMBER --milestone "MILESTONE_NAME"
-
-# Set labels
-gh issue edit ISSUE_NUMBER --add-label "label1,label2,label3"
-
-# Set project fields (requires project item ID)
-gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId="PVT_kwHOAEnMVc4BCu-c" -f itemId="PROJECT_ITEM_ID" -f fieldId="FIELD_ID" -f value="OPTION_ID"
-```
-
-## Troubleshooting
-
-### Common Issues
-- **Permission denied**: Ensure GitHub CLI is authenticated (`gh auth login`)
-- **Issue not found**: Verify issue number exists
-- **Project not found**: Ensure issue is added to the correct project
-- **Field update fails**: Check field IDs and option IDs are correct
-
-### Debug Commands
-```bash
-# Check authentication
-gh auth status
-
-# List projects
-gh project list
-
-# View issue details
-gh issue view ISSUE_NUMBER --json id,projectItems
-
-# Test GraphQL
-gh api graphql -f query='query { viewer { login } }'
-```
-
-## Configuration Reference
-
-See `prompts/github-issue-auto-configuration.md` for detailed configuration options and field mappings.
+**This organized structure makes the Portfolio OS automation system easy to navigate, maintain, and extend!** 🚀
