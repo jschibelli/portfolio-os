@@ -8,11 +8,9 @@ import {
   Users, 
   Search, 
   Zap, 
-  Globe, 
   Mail, 
   Shield,
   Save,
-  Eye,
   EyeOff
 } from "lucide-react";
 

@@ -1,6 +1,6 @@
 # Agent Assignments - Automation System Development
 
-## 🔴 **Agent 1: Backend & Infrastructure Specialist**
+## 🔴 **Jason: Backend & Infrastructure Specialist**
 
 **Your Issues:**
 - **Issue #264**: Create AI Services Integration Layer
@@ -12,7 +12,7 @@
 - https://github.com/jschibelli/portfolio-os/issues/265
 - https://github.com/jschibelli/portfolio-os/issues/267
 
-**Your Working Branch:** `agent-1-automation-backend`
+**Your Working Branch:** `jason-automation-backend`
 
 **Script Files You'll Work On:**
 - `scripts/automation/core-utilities/ai-services.ps1` (create new)
@@ -25,7 +25,7 @@
 
 ---
 
-## 🟢 **Agent 2: Frontend & User Experience Specialist**
+## 🟢 **Chris: Frontend & User Experience Specialist**
 
 **Your Issues:**
 - **Issue #266**: Create Issue Implementation System
@@ -35,7 +35,7 @@
 - https://github.com/jschibelli/portfolio-os/issues/266
 - https://github.com/jschibelli/portfolio-os/issues/268
 
-**Your Working Branch:** `agent-2-automation-frontend`
+**Your Working Branch:** `chris-automation-frontend`
 
 **Script Files You'll Work On:**
 - `scripts/automation/issue-implementation.ps1` (create new)

@@ -54,7 +54,6 @@ export default function AdminDashboard() {
   
   // Google Analytics and Dashboard Stats state
   const [analyticsData, setAnalyticsData] = useState<AnalyticsOverview | null>(null);
-  const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
   const [isMockData, setIsMockData] = useState(false);
   const [loading, setLoading] = useState(true);
 

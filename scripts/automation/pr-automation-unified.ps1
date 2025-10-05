@@ -150,7 +150,7 @@ function Invoke-CodeChanges {
         # Apply specific changes based on PR number
         switch ($PRNumber) {
             "270" {
-                Write-Log "Applying backend infrastructure improvements for PR #270" "INFO"
+                Write-Log "Applying Jason's backend infrastructure improvements for PR #270" "INFO"
                 
                 # Enhance github-utils.ps1
                 $utilsPath = "scripts/automation/core-utilities/github-utils.ps1"
@@ -162,12 +162,12 @@ function Invoke-CodeChanges {
                 # Create agent assignments documentation
                 $agentAssignmentsPath = "prompts/agents/agent-assignments.md"
                 if (-not (Test-Path $agentAssignmentsPath)) {
-                    Write-Log "Creating agent assignments documentation" "INFO"
+                    Write-Log "Creating agent assignments documentation for Jason and Chris" "INFO"
                     # Create the file with agent coordination documentation
                 }
             }
             "259" {
-                Write-Log "Applying SEO and code quality improvements for PR #259" "INFO"
+                Write-Log "Applying Chris's SEO and code quality improvements for PR #259" "INFO"
                 
                 # Refactor about page to use proper metadata
                 $aboutPagePath = "apps/site/app/about/page.tsx"
