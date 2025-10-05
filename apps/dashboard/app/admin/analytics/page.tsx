@@ -1,14 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
-  BarChart, 
-  Bar, 
-  LineChart, 
-  Line, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -102,29 +98,27 @@ const pageViewsData = [
   { date: "Jan 14", views: 2600, visitors: 1800, bounceRate: 25 },
 ];
 
-// Mock data for future analytics features
-const topArticlesData = [
-  { title: "Getting Started with Blog Management", views: 1250, engagement: 78, readTime: 8 },
-  { title: "Case Study: Hybrid Development Approach", views: 890, engagement: 82, readTime: 15 },
-  { title: "Advanced SEO Strategies for 2025", views: 650, engagement: 75, readTime: 12 },
-  { title: "Tendril Multi-Tenant Chatbot SaaS", views: 520, engagement: 88, readTime: 20 },
-  { title: "Building Scalable Web Applications", views: 480, engagement: 71, readTime: 10 },
-];
+// Mock data for future analytics features - will be used when analytics are implemented
+// const topArticlesData = [
+//   { title: "Getting Started with Blog Management", views: 1250, engagement: 78, readTime: 8 },
+//   { title: "Case Study: Hybrid Development Approach", views: 890, engagement: 82, readTime: 15 },
+//   { title: "Advanced SEO Strategies for 2025", views: 650, engagement: 75, readTime: 12 },
+//   { title: "Tendril Multi-Tenant Chatbot SaaS", views: 520, engagement: 88, readTime: 20 },
+//   { title: "Building Scalable Web Applications", views: 480, engagement: 71, readTime: 10 },
+// ];
 
-// Mock data for future analytics features
-const trafficSourcesData = [
-  { name: "Direct", value: 45, color: "#3b82f6" },
-  { name: "Organic Search", value: 30, color: "#10b981" },
-  { name: "Social Media", value: 15, color: "#f59e0b" },
-  { name: "Referral", value: 10, color: "#8b5cf6" },
-];
+// const trafficSourcesData = [
+//   { name: "Direct", value: 45, color: "#3b82f6" },
+//   { name: "Organic Search", value: 30, color: "#10b981" },
+//   { name: "Social Media", value: 15, color: "#f59e0b" },
+//   { name: "Referral", value: 10, color: "#8b5cf6" },
+// ];
 
-// Mock data for future analytics features
-const deviceData = [
-  { device: "Desktop", users: 65, color: "#3b82f6" },
-  { device: "Mobile", users: 30, color: "#10b981" },
-  { device: "Tablet", users: 5, color: "#f59e0b" },
-];
+// const deviceData = [
+//   { device: "Desktop", users: 65, color: "#3b82f6" },
+//   { device: "Mobile", users: 30, color: "#10b981" },
+//   { device: "Tablet", users: 5, color: "#f59e0b" },
+// ];
 
 export default function AdminAnalytics() {
   const sessionResult = useSession();
@@ -157,20 +151,20 @@ export default function AdminAnalytics() {
   const [isMockData, setIsMockData] = useState(false);
 
   // Fetch dashboard stats (for future implementation)
-  const fetchDashboardStats = async () => {
-    try {
-      const response = await fetch('/api/admin/stats');
-      if (response.ok) {
-        const stats = await response.json();
-        setDashboardStats(stats);
-      }
-    } catch (err) {
-      setError('Failed to fetch dashboard stats');
-    }
-  };
+  // const fetchDashboardStats = async () => {
+  //   try {
+  //     const response = await fetch('/api/admin/stats');
+  //     if (response.ok) {
+  //       const stats = await response.json();
+  //       setDashboardStats(stats);
+  //     }
+  //   } catch (err) {
+  //     setError('Failed to fetch dashboard stats');
+  //   }
+  // };
 
   // Fetch analytics data
-  const fetchAnalyticsData = async () => {
+  const fetchAnalyticsData = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -202,12 +196,12 @@ export default function AdminAnalytics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange]);
 
   // Load data when component mounts or timeRange changes
   useEffect(() => {
     fetchAnalyticsData();
-  }, [timeRange]);
+  }, [fetchAnalyticsData]);
 
   if (status === "loading") {
     return (
@@ -217,7 +211,7 @@ export default function AdminAnalytics() {
     );
   }
 
-  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as { role?: string })?.role || "")) {
     router.push("/login");
     return null;
   }
@@ -589,7 +583,7 @@ export default function AdminAnalytics() {
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                 }}
                 labelStyle={{ color: '#374151' }}
-                formatter={(value: any) => [
+                formatter={(value: number) => [
                   selectedMetric === 'bounceRate' ? `${value}%` : value.toLocaleString(),
                   metricData.label
                 ]}
@@ -675,7 +669,7 @@ export default function AdminAnalytics() {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value: any) => [`${value}%`, 'Traffic']}
+                    formatter={(value: number) => [`${value}%`, 'Traffic']}
                     contentStyle={{
                       backgroundColor: '#ffffff',
                       border: '1px solid #e5e7eb',

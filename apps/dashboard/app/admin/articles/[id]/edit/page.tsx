@@ -80,7 +80,7 @@ const getArticleData = cache(async (articleId: string) => {
 
     return article
   } catch (error) {
-    console.error('Error fetching article:', error)
+    // console.error('Error fetching article:', error) // Removed console statement
     throw new Error('Failed to fetch article data')
   }
 })
@@ -115,7 +115,7 @@ const validateEditPermissions = async (articleId: string, userId: string) => {
 
     return true
   } catch (error) {
-    console.error('Permission validation error:', error)
+    // console.error('Permission validation error:', error) // Removed console statement
     throw new Error('Permission validation failed')
   }
 }
@@ -128,7 +128,7 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
 
     // Validate article ID format
     if (!validateArticleId(articleId)) {
-      console.error('Invalid article ID:', articleId)
+      // console.error('Invalid article ID:', articleId) // Removed console statement
       notFound()
     }
 
@@ -145,7 +145,7 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
     const article = await getArticleData(articleId)
 
     if (!article) {
-      console.error('Article not found:', articleId)
+      // console.error('Article not found:', articleId) // Removed console statement
       notFound()
     }
 
@@ -183,7 +183,7 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
     return <ArticleEditor initialData={editorData} />
 
   } catch (error) {
-    console.error('Edit article page error:', error)
+    // console.error('Edit article page error:', error) // Removed console statement
     
     // Handle specific error types
     if (error instanceof Error) {

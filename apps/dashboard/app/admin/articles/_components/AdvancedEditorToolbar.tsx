@@ -23,15 +23,10 @@ import {
   Minus,
   Undo,
   Redo,
-  Type,
   Heading1,
   Heading2,
   Heading3,
-  Table,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify
+  Table
 } from 'lucide-react'
 
 interface AdvancedEditorToolbarProps {

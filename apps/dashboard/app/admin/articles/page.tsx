@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Filter, MoreVertical, Eye, Edit, Trash2, Calendar, User, BarChart3, Download } from "lucide-react";
+import { Search, Eye, Edit, Trash2 } from "lucide-react";
 import { adminDataService, AdminArticle } from "@/lib/admin-data-service";
 
 export default function AdminArticles() {
@@ -25,7 +25,7 @@ export default function AdminArticles() {
   useEffect(() => {
     if (status === "loading") return;
     
-    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as { role?: string })?.role || "")) {
       router.push("/login");
       return;
     }
@@ -35,7 +35,7 @@ export default function AdminArticles() {
 
   useEffect(() => {
     filterArticles();
-  }, [articles, searchTerm, statusFilter]);
+  }, [articles, searchTerm, statusFilter, filterArticles]);
 
   const fetchArticles = async () => {
     try {
@@ -43,7 +43,7 @@ export default function AdminArticles() {
       const articlesData = await adminDataService.getArticles();
       setArticles(articlesData);
     } catch (error) {
-      console.error("Failed to fetch articles:", error);
+      // console.error("Failed to fetch articles:", error); // Removed console statement
       setError("Failed to load articles");
     } finally {
       setIsLoading(false);
@@ -81,7 +81,7 @@ export default function AdminArticles() {
       // Show success message
       alert(`Successfully imported articles from Hashnode! Total articles: ${result.importedCount}`);
     } catch (error) {
-      console.error("Failed to import Hashnode articles:", error);
+      // console.error("Failed to import Hashnode articles:", error); // Removed console statement
       setError("Failed to import articles from Hashnode. Please check your GitHub token configuration.");
     } finally {
       setIsImporting(false);
@@ -111,7 +111,7 @@ export default function AdminArticles() {
       setArticles(articles.filter(article => article.id !== id));
       setSelectedArticles(selectedArticles.filter(articleId => articleId !== id));
     } catch (error) {
-      console.error("Failed to delete article:", error);
+      // console.error("Failed to delete article:", error); // Removed console statement
       alert("Failed to delete article");
     }
   };
@@ -187,7 +187,7 @@ export default function AdminArticles() {
           break;
       }
     } catch (error) {
-      console.error(`Failed to perform bulk action ${action}:`, error);
+      // console.error(`Failed to perform bulk action ${action}:`, error); // Removed console statement
       alert(`Failed to perform bulk action: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
