@@ -36,10 +36,46 @@ export const metadata: Metadata = {
   title: 'Case Studies | John Schibelli Portfolio',
   description: 'Explore detailed case studies showcasing successful projects, strategic analysis, and implementation results.',
   keywords: ['case studies', 'portfolio', 'projects', 'strategic analysis', 'implementation'],
+  authors: [{ name: 'John Schibelli', url: 'https://johnschibelli.dev' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  metadataBase: new URL('https://johnschibelli.dev'),
+  alternates: {
+    canonical: '/case-studies',
+  },
   openGraph: {
     title: 'Case Studies | John Schibelli Portfolio',
     description: 'Explore detailed case studies showcasing successful projects, strategic analysis, and implementation results.',
+    url: 'https://johnschibelli.dev/case-studies',
+    siteName: 'John Schibelli Portfolio',
+    images: [
+      {
+        url: '/case-studies/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Case Studies - John Schibelli Portfolio',
+      },
+    ],
+    locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Case Studies | John Schibelli Portfolio',
+    description: 'Explore detailed case studies showcasing successful projects, strategic analysis, and implementation results.',
+    creator: '@johnschibelli',
+    images: ['/case-studies/opengraph-image'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

@@ -170,7 +170,7 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
       siteName: 'John Schibelli Portfolio',
       images: [
         {
-          url: caseStudy.image,
+          url: `/case-studies/${caseStudy.slug}/opengraph-image`,
           width: 1200,
           height: 630,
           alt: `${caseStudy.title} - Case Study`,
@@ -183,7 +183,7 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
       description,
       creator: '@johnschibelli',
       site: '@johnschibelli',
-      images: [caseStudy.image],
+      images: [`/case-studies/${caseStudy.slug}/opengraph-image`],
     },
     alternates: {
       canonical,

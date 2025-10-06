@@ -17,6 +17,10 @@
 - `scripts/automation/monitoring/automation-metrics.ps1` (create new)
 - `scripts/automation/monitoring/` (create new directory)
 
+**Agent Status Update Scripts (NEW):**
+- `scripts/agent-status-update.ps1` - Direct project status updates
+- `scripts/agent-project-status-webhook.ps1` - Webhook-triggered status updates
+
 **Your Focus:** Frontend components, UI/UX, user workflows, analytics dashboards, user experience
 
 ---
@@ -41,6 +45,10 @@
 - `scripts/automation/issue-management/issue-config-unified.ps1` (update existing)
 - `scripts/automation/pr-automation-unified.ps1` (update existing)
 - `scripts/automation/continuous-issue-pipeline.ps1` (update existing)
+
+**Agent Status Update Scripts (NEW):**
+- `scripts/agent-status-update.ps1` - Direct project status updates
+- `scripts/agent-project-status-webhook.ps1` - Webhook-triggered status updates
 
 **Your Focus:** Backend infrastructure, AI services, queue management, PowerShell integration
 

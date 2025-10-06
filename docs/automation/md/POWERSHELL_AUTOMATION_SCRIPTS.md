@@ -23,6 +23,27 @@ The Portfolio OS project includes a comprehensive suite of PowerShell automation
 
 **Location**: `scripts/master-automation.ps1`
 
+### 2. Agent Status Update Scripts (NEW - P0 Fix)
+
+**Purpose**: Allow agents to update project board status when working on issues
+
+**Location**: `scripts/agent-status-update.ps1` and `scripts/agent-project-status-webhook.ps1`
+
+**Usage**:
+```powershell
+# Direct method - Fast and immediate
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Webhook method - Reliable with logging  
+.\scripts\agent-project-status-webhook.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+```
+
+**Available Actions**:
+- `start` - Move issue to "In Progress"
+- `complete` - Move issue to "Ready"
+- `create-pr` - Move issue to "Ready" 
+- `merge-pr` - Move issue to "Done"
+
 **Usage**:
 ```powershell
 .\scripts\master-automation.ps1 -Mode <MODE> [-Target <TARGET>] [-Options <OPTIONS>]

@@ -1,0 +1,275 @@
+name: Agent Project Status Update
+
+# This workflow is triggered by agents to update project board status
+# Can be triggered via webhook or manual dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      issueNumber:
+        description: 'Issue number to update'
+        required: true
+        type: number
+      action:
+        description: 'Action (start, complete, create-pr, merge-pr)'
+        required: true
+        type: string
+      agentName:
+        description: 'Name of the agent'
+        required: false
+        type: string
+        default: 'agent-3'
+  repository_dispatch:
+    types: [agent-status-update]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  projects: write
+
+concurrency:
+  group: agent-status-${{ github.event.inputs.issueNumber || github.event.client_payload.issueNumber || github.sha }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: PVT_kwHOAEnMVc4BCu-c
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  update-agent-status:
+    name: Update Agent Project Status
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update Project Status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          script: |
+            const { github, context, core } = require('@actions/github');
+            
+            const projectId = process.env.PROJECT_ID;
+            if (!projectId) {
+              core.setFailed('PROJECT_ID environment variable is not set.');
+              return;
+            }
+            
+            let issueNumber;
+            let action;
+            let agentName;
+            
+            if (context.eventName === 'workflow_dispatch') {
+              issueNumber = context.payload.inputs.issueNumber;
+              action = context.payload.inputs.action;
+              agentName = context.payload.inputs.agentName || 'agent-3';
+              core.info(`Workflow Dispatch Triggered - Issue: #${issueNumber}, Action: ${action}, Agent: ${agentName}`);
+            } else if (context.eventName === 'repository_dispatch') {
+              issueNumber = context.payload.client_payload.issueNumber;
+              action = context.payload.client_payload.action;
+              agentName = context.payload.client_payload.agentName || 'agent-3';
+              core.info(`Repository Dispatch Triggered - Issue: #${issueNumber}, Action: ${action}, Agent: ${agentName}`);
+            } else {
+              core.info(`Unsupported event: ${context.eventName}`);
+              return;
+            }
+            
+            if (!issueNumber) {
+              core.info('No issue number found, skipping project update.');
+              return;
+            }
+            
+            core.info(`🤖 Agent ${agentName} updating Issue #${issueNumber} with action: ${action}`);
+            
+            // Fetch project details to get field and option IDs
+            const projectQuery = `
+              query($projectId: ID!) {
+                node(id: $projectId) {
+                  ... on ProjectV2 {
+                    id
+                    fields(first: 20) {
+                      nodes {
+                        ... on ProjectV2SingleSelectField {
+                          id
+                          name
+                          options {
+                            id
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+            
+            const projectResult = await github.graphql(projectQuery, { projectId });
+            const project = projectResult.node;
+            
+            if (!project) {
+              core.setFailed(`Project with ID ${projectId} not found.`);
+              return;
+            }
+            
+            const statusField = project.fields.nodes.find(field => field.name === 'Status');
+            if (!statusField) {
+              core.setFailed('Project does not have a "Status" field.');
+              return;
+            }
+            
+            const getStatusOptionId = (statusName) => {
+              const option = statusField.options.find(opt => opt.name === statusName);
+              return option ? option.id : null;
+            };
+            
+            let targetStatus = null;
+            
+            // Determine target status based on action
+            switch (action) {
+              case 'start':
+                targetStatus = 'In Progress';
+                break;
+              case 'complete':
+                targetStatus = 'Ready';
+                break;
+              case 'create-pr':
+                targetStatus = 'Ready';
+                break;
+              case 'merge-pr':
+                targetStatus = 'Done';
+                break;
+              default:
+                core.info(`No target status determined for action: ${action}`);
+                return;
+            }
+            
+            const targetStatusOptionId = getStatusOptionId(targetStatus);
+            if (!targetStatusOptionId) {
+              core.setFailed(`Status option "${targetStatus}" not found in project.`);
+              return;
+            }
+            
+            // Find the project item for the issue
+            const searchItemQuery = `
+              query($projectId: ID!, $issueNumber: Int!) {
+                node(id: $projectId) {
+                  ... on ProjectV2 {
+                    items(first: 100, query: "#${issueNumber}") {
+                      nodes {
+                        id
+                        content {
+                          ... on Issue {
+                            number
+                          }
+                          ... on PullRequest {
+                            number
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+            
+            const searchResult = await github.graphql(searchItemQuery, { projectId, issueNumber });
+            const projectItems = searchResult.node.items.nodes;
+            const projectItem = projectItems.find(item => item.content && item.content.number === issueNumber);
+            
+            if (!projectItem) {
+              core.info(`Project item for #${issueNumber} not found in project ${projectId}. Attempting to add.`);
+              
+              // Get the issue details to add to project
+              const issueQuery = `
+                query($owner: String!, $repo: String!, $issueNumber: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    issue(number: $issueNumber) {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              const issueResult = await github.graphql(issueQuery, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issueNumber: issueNumber
+              });
+              
+              const issueId = issueResult.repository.issue.id;
+              
+              // Add item to project
+              const addIssueToProjectMutation = `
+                mutation($projectId: ID!, $contentId: ID!) {
+                  addProjectV2Item(input: {projectId: $projectId, contentId: $contentId}) {
+                    item {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              const addResult = await github.graphql(addIssueToProjectMutation, { projectId, contentId: issueId });
+              const newProjectItem = addResult.addProjectV2Item.item;
+              
+              if (!newProjectItem) {
+                core.setFailed(`Failed to add issue #${issueNumber} to project ${projectId}.`);
+                return;
+              }
+              
+              core.info(`Successfully added issue #${issueNumber} to project ${projectId} with item ID: ${newProjectItem.id}`);
+              
+              // Update the project item's status field
+              const updateMutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: $projectId,
+                    itemId: $itemId,
+                    fieldId: $fieldId,
+                    value: $value
+                  }) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              const updateResult = await github.graphql(updateMutation, {
+                projectId: projectId,
+                itemId: newProjectItem.id,
+                fieldId: statusField.id,
+                value: { singleSelectOptionId: targetStatusOptionId }
+              });
+              
+              core.info(`✅ Successfully updated status of item ${newProjectItem.id} to "${targetStatus}"`);
+            } else {
+              // Update the existing project item's status field
+              const updateMutation = `
+                mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+                  updateProjectV2ItemFieldValue(input: {
+                    projectId: $projectId,
+                    itemId: $itemId,
+                    fieldId: $fieldId,
+                    value: $value
+                  }) {
+                    projectV2Item {
+                      id
+                    }
+                  }
+                }
+              `;
+              
+              const updateResult = await github.graphql(updateMutation, {
+                projectId: projectId,
+                itemId: projectItem.id,
+                fieldId: statusField.id,
+                value: { singleSelectOptionId: targetStatusOptionId }
+              });
+              
+              core.info(`✅ Successfully updated status of item ${projectItem.id} to "${targetStatus}"`);
+            }
+            
+            core.info(`🎯 Agent ${agentName} successfully updated Issue #${issueNumber} to "${targetStatus}"`);

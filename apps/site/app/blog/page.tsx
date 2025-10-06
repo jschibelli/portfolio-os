@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { AppProvider } from '../../components/contexts/appContext';
 import Chatbot from '../../components/features/chatbot/Chatbot';
 import ModernHero from '../../components/features/homepage/modern-hero';
@@ -15,6 +16,70 @@ import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: 'Blog | John Schibelli - React & Next.js Developer',
+  description: 'Insights on React, Next.js, TypeScript, and modern web development. Learn from a senior front-end engineer\'s experience building scalable applications.',
+  keywords: [
+    'John Schibelli',
+    'Blog',
+    'React Blog',
+    'Next.js Blog',
+    'TypeScript Blog',
+    'Web Development',
+    'Front-End Development',
+    'Programming Tutorials',
+    'Tech Articles',
+    'JavaScript',
+    'Modern Web Development'
+  ],
+  authors: [{ name: 'John Schibelli', url: 'https://johnschibelli.dev' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://johnschibelli.dev'),
+  alternates: {
+    canonical: '/blog',
+  },
+  openGraph: {
+    title: 'Blog | John Schibelli - React & Next.js Developer',
+    description: 'Insights on React, Next.js, TypeScript, and modern web development. Learn from a senior front-end engineer\'s experience building scalable applications.',
+    url: 'https://johnschibelli.dev/blog',
+    siteName: 'John Schibelli Portfolio',
+    images: [
+      {
+        url: '/blog/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'John Schibelli\'s Blog - React & Next.js Development',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | John Schibelli - React & Next.js Developer',
+    description: 'Insights on React, Next.js, TypeScript, and modern web development. Learn from a senior front-end engineer\'s experience building scalable applications.',
+    creator: '@johnschibelli',
+    images: ['/blog/opengraph-image'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
 
 // Default publication object for fallback
 const defaultPublication = {

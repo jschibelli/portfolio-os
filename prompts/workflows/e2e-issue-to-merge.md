@@ -23,6 +23,32 @@
 .\scripts\continuous-issue-pipeline.ps1 -MaxIssues 3 -DryRun
 ```
 
+## 🤖 **Agent Status Updates (NEW - P0 Fix)**
+
+### **Update Project Board Status:**
+```powershell
+# Direct method - Fast and immediate
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Webhook method - Reliable with logging
+.\scripts\agent-project-status-webhook.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Complete work
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action complete -AgentName "jason"
+
+# Create PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action create-pr -AgentName "jason"
+
+# Merge PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action merge-pr -AgentName "jason"
+```
+
+### **Available Actions:**
+- `start` - Move issue to "In Progress"
+- `complete` - Move issue to "Ready" 
+- `create-pr` - Move issue to "Ready"
+- `merge-pr` - Move issue to "Done"
+
 ### **Queue Management:**
 ```powershell
 # List available queues
