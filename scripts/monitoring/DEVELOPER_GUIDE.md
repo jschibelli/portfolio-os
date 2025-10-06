@@ -605,8 +605,6 @@ function Get-MonitoringLogs {
 
 ### Team Contacts
 - **Lead Developer**: John Schibelli - john@schibelli.dev
-- **DevOps**: [DevOps Contact] - devops@domain.com
-- **System Admin**: [Admin Contact] - admin@domain.com
 
 ---
 
