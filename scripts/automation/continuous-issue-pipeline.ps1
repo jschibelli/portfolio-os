@@ -40,29 +40,130 @@ param(
     [string]$LogFile = "continuous-pipeline.log"
 )
 
-# Import shared utilities
+# Enhanced continuous pipeline with improved backend infrastructure
+# Import shared utilities with enhanced error handling and validation
+
 $sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
-if (Test-Path $sharedPath) {
-    . $sharedPath
-} else {
-    Write-Error "Shared utilities not found at $sharedPath"
+
+# Enhanced dependency validation
+function Test-PipelineDependencies {
+    $dependencies = @(
+        @{ Path = $sharedPath; Name = "Shared Utilities" }
+    )
+    
+    $allValid = $true
+    
+    foreach ($dep in $dependencies) {
+        if (Test-Path $dep.Path) {
+            Write-ColorOutput "✓ $($dep.Name) found" "Green"
+        } else {
+            Write-ColorOutput "✗ $($dep.Name) not found at $($dep.Path)" "Red"
+            $allValid = $false
+        }
+    }
+    
+    return $allValid
+}
+
+# Validate dependencies before proceeding
+if (-not (Test-PipelineDependencies)) {
+    Write-Error "Missing required dependencies. Please ensure all automation scripts are available."
     exit 1
 }
 
-# Pipeline state management
+# Import shared utilities with enhanced error handling
+try {
+    . $sharedPath
+    Write-ColorOutput "✓ Shared utilities loaded successfully" "Green"
+} catch {
+    Write-Error "Failed to load shared utilities: $($_.Exception.Message)"
+    exit 1
+}
+
+# Enhanced pipeline state management with performance monitoring
 $pipelineState = @{
     ProcessedIssues = @()
     FailedIssues = @()
     CurrentIssue = $null
     StartTime = Get-Date
     LogFile = $LogFile
+    PerformanceMetrics = @{
+        TotalIssuesProcessed = 0
+        SuccessfulIssues = 0
+        FailedIssues = 0
+        AverageProcessingTime = 0
+        TotalProcessingTime = 0
+    }
+    ErrorCount = 0
+    LastError = $null
 }
 
 function Show-Banner {
     Write-ColorOutput "===============================================" "Blue"
-    Write-ColorOutput "    Continuous Issue-to-Merge Pipeline" "Blue"
+    Write-ColorOutput "    Enhanced Continuous Issue Pipeline" "Blue"
+    Write-ColorOutput "    (Backend Infrastructure Improved)" "Blue"
     Write-ColorOutput "===============================================" "Blue"
     Write-ColorOutput ""
+}
+
+# Enhanced performance monitoring functions
+function Update-PerformanceMetrics {
+    param(
+        [string]$Operation,
+        [double]$Duration,
+        [bool]$Success
+    )
+    
+    $pipelineState.PerformanceMetrics.TotalIssuesProcessed++
+    $pipelineState.PerformanceMetrics.TotalProcessingTime += $Duration
+    
+    if ($Success) {
+        $pipelineState.PerformanceMetrics.SuccessfulIssues++
+    } else {
+        $pipelineState.PerformanceMetrics.FailedIssues++
+    }
+    
+    # Calculate average processing time
+    $pipelineState.PerformanceMetrics.AverageProcessingTime = 
+        $pipelineState.PerformanceMetrics.TotalProcessingTime / 
+        $pipelineState.PerformanceMetrics.TotalIssuesProcessed
+}
+
+function Show-PerformanceMetrics {
+    Write-ColorOutput "📊 Performance Metrics:" "Yellow"
+    Write-ColorOutput "  Total Issues Processed: $($pipelineState.PerformanceMetrics.TotalIssuesProcessed)" "White"
+    Write-ColorOutput "  Successful: $($pipelineState.PerformanceMetrics.SuccessfulIssues)" "Green"
+    Write-ColorOutput "  Failed: $($pipelineState.PerformanceMetrics.FailedIssues)" "Red"
+    Write-ColorOutput "  Average Processing Time: $([Math]::Round($pipelineState.PerformanceMetrics.AverageProcessingTime, 2))s" "White"
+    Write-ColorOutput "  Total Processing Time: $([Math]::Round($pipelineState.PerformanceMetrics.TotalProcessingTime, 2))s" "White"
+    Write-ColorOutput "  Error Count: $($pipelineState.ErrorCount)" "Red"
+    Write-ColorOutput ""
+}
+
+# Enhanced error handling with detailed logging
+function Log-PipelineError {
+    param(
+        [string]$Operation,
+        [string]$ErrorMessage,
+        [object]$Context = $null
+    )
+    
+    $pipelineState.ErrorCount++
+    $pipelineState.LastError = @{
+        Operation = $Operation
+        ErrorMessage = $ErrorMessage
+        Timestamp = Get-Date
+        Context = $Context
+    }
+    
+    $errorLog = @"
+[ERROR] $Operation - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+Message: $ErrorMessage
+Context: $($Context | ConvertTo-Json -Compress)
+"@
+    
+    $errorLog | Add-Content -Path $pipelineState.LogFile -Encoding UTF8
+    Write-ColorOutput "❌ Error in $Operation : $ErrorMessage" "Red"
 }
 
 function Initialize-Pipeline {

@@ -106,14 +106,48 @@
     color: hsl(var(--muted-foreground, 240 3.8% 46.1%));
   }
 
-  /* Improve focus states for interactive elements */
+  /* Enhanced focus states for interactive elements with better specificity */
+  /* Cross-browser compatible focus styles for accessibility compliance */
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
   select:focus-visible,
-  textarea:focus-visible {
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
     outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
     outline-offset: 2px;
+    border-radius: 4px;
+    /* Fallback for older browsers */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* Enhanced focus for navigation elements with higher specificity */
+  nav a:focus-visible,
+  nav button:focus-visible {
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
+    outline-offset: 2px;
+    background-color: hsl(var(--accent, 240 4.8% 95.9%));
+  }
+
+  /* Skip link specific styling for accessibility */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: hsl(var(--foreground, 240 10% 3.9%));
+    color: hsl(var(--background, 0 0% 100%));
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+  }
+
+  .skip-link:focus {
+    top: 6px;
   }
 
   /* Screen reader only content */

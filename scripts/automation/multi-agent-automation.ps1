@@ -28,30 +28,64 @@ param(
     [string]$LogFile = "multi-agent-automation.log"
 )
 
-# Import all required systems
+# Enhanced multi-agent automation with improved backend infrastructure
+# Import all required systems with enhanced error handling
+
 $sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
 $workTreePath = Join-Path $PSScriptRoot "multi-agent-worktree-system.ps1"
 $coordinatorPath = Join-Path $PSScriptRoot "agent-coordinator.ps1"
 $masterPath = Join-Path $PSScriptRoot "master-automation.ps1"
 
-if (Test-Path $sharedPath) {
+# Enhanced system validation with detailed error reporting
+function Test-SystemDependencies {
+    $dependencies = @(
+        @{ Path = $sharedPath; Name = "Shared Utilities" }
+        @{ Path = $workTreePath; Name = "Work Tree System" }
+        @{ Path = $coordinatorPath; Name = "Agent Coordinator" }
+    )
+    
+    $allValid = $true
+    
+    foreach ($dep in $dependencies) {
+        if (Test-Path $dep.Path) {
+            Write-ColorOutput "✓ $($dep.Name) found" "Green"
+        } else {
+            Write-ColorOutput "✗ $($dep.Name) not found at $($dep.Path)" "Red"
+            $allValid = $false
+        }
+    }
+    
+    return $allValid
+}
+
+# Validate all dependencies before proceeding
+if (-not (Test-SystemDependencies)) {
+    Write-Error "Missing required system dependencies. Please ensure all automation scripts are available."
+    exit 1
+}
+
+# Import systems with enhanced error handling
+try {
     . $sharedPath
-} else {
-    Write-Error "Shared utilities not found at $sharedPath"
+    Write-ColorOutput "✓ Shared utilities loaded" "Green"
+} catch {
+    Write-Error "Failed to load shared utilities: $($_.Exception.Message)"
     exit 1
 }
 
-if (Test-Path $workTreePath) {
+try {
     . $workTreePath
-} else {
-    Write-Error "Work tree system not found at $workTreePath"
+    Write-ColorOutput "✓ Work tree system loaded" "Green"
+} catch {
+    Write-Error "Failed to load work tree system: $($_.Exception.Message)"
     exit 1
 }
 
-if (Test-Path $coordinatorPath) {
+try {
     . $coordinatorPath
-} else {
-    Write-Error "Agent coordinator not found at $coordinatorPath"
+    Write-ColorOutput "✓ Agent coordinator loaded" "Green"
+} catch {
+    Write-Error "Failed to load agent coordinator: $($_.Exception.Message)"
     exit 1
 }
 

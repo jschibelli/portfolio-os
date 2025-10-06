@@ -27,21 +27,53 @@ param(
     [string]$LogFile = "agent-coordinator.log"
 )
 
-# Import shared utilities and work tree system
+# Enhanced agent coordinator with improved backend infrastructure
+# Import shared utilities and work tree system with enhanced error handling
+
 $sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
 $workTreePath = Join-Path $PSScriptRoot "multi-agent-worktree-system.ps1"
 
-if (Test-Path $sharedPath) {
-    . $sharedPath
-} else {
-    Write-Error "Shared utilities not found at $sharedPath"
+# Enhanced dependency validation
+function Test-CoordinatorDependencies {
+    $dependencies = @(
+        @{ Path = $sharedPath; Name = "Shared Utilities" }
+        @{ Path = $workTreePath; Name = "Work Tree System" }
+    )
+    
+    $allValid = $true
+    
+    foreach ($dep in $dependencies) {
+        if (Test-Path $dep.Path) {
+            Write-ColorOutput "✓ $($dep.Name) found" "Green"
+        } else {
+            Write-ColorOutput "✗ $($dep.Name) not found at $($dep.Path)" "Red"
+            $allValid = $false
+        }
+    }
+    
+    return $allValid
+}
+
+# Validate dependencies before proceeding
+if (-not (Test-CoordinatorDependencies)) {
+    Write-Error "Missing required dependencies. Please ensure all automation scripts are available."
     exit 1
 }
 
-if (Test-Path $workTreePath) {
+# Import systems with enhanced error handling
+try {
+    . $sharedPath
+    Write-ColorOutput "✓ Shared utilities loaded successfully" "Green"
+} catch {
+    Write-Error "Failed to load shared utilities: $($_.Exception.Message)"
+    exit 1
+}
+
+try {
     . $workTreePath
-} else {
-    Write-Error "Work tree system not found at $workTreePath"
+    Write-ColorOutput "✓ Work tree system loaded successfully" "Green"
+} catch {
+    Write-Error "Failed to load work tree system: $($_.Exception.Message)"
     exit 1
 }
 

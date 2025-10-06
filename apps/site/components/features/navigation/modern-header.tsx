@@ -19,6 +19,19 @@ interface ModernHeaderProps {
 	};
 }
 
+/**
+ * ModernHeader Component
+ * 
+ * A responsive navigation header with desktop and mobile navigation support.
+ * Features include:
+ * - Accessible navigation with proper ARIA attributes
+ * - Mobile menu with sheet component
+ * - Social media links with proper accessibility
+ * - Theme toggle integration
+ * - Global search functionality
+ * 
+ * @param publication - Publication data including title and logo
+ */
 export default function ModernHeader({ publication }: ModernHeaderProps) {
 	const siteTitle = publication.displayTitle || publication.title;
 
@@ -148,7 +161,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												aria-label="Find us on Facebook, external website, opens in new tab"
 												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 											>
-												<FacebookSVG className="h-5 w-5" />
+												<FacebookSVG className="h-5 w-5" aria-hidden="true" />
 											</a>
 
 											{/* GitHub */}
@@ -159,7 +172,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												aria-label="Find us on Github, external website, opens in new tab"
 												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 											>
-												<GithubSVG className="h-5 w-5 stroke-current" />
+												<GithubSVG className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 
 											{/* LinkedIn */}
@@ -170,7 +183,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												aria-label="Find us on Linkedin, external website, opens in new tab"
 												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 											>
-												<LinkedinSVG className="h-5 w-5 stroke-current" />
+												<LinkedinSVG className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 
 											{/* Bluesky */}
@@ -181,7 +194,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												aria-label="Find us on Bluesky, external website, opens in new tab"
 												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 											>
-												<BlueskySVG className="h-5 w-5 stroke-current" />
+												<BlueskySVG className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</a>
 
 											{/* RSS Feed */}
@@ -193,7 +206,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												aria-label="Open blog XML Feed, opens in new tab"
 												className="flex items-center justify-center rounded-full border border-border p-3 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 											>
-												<RssSVG className="h-5 w-5 stroke-current" />
+												<RssSVG className="h-5 w-5 stroke-current" aria-hidden="true" />
 											</Link>
 										</div>
 									</div>
