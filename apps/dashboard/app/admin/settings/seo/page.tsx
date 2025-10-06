@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Globe, BarChart3, Settings, Save, Eye, Code, Map, TrendingUp, Target, Zap, Edit } from "lucide-react";
+import { Search, Globe, BarChart3, Settings, Save, Eye, Code, Zap, Edit } from "lucide-react";
 
 interface SEOSettings {
   siteTitle: string;
@@ -49,7 +49,6 @@ export default function SEOSettingsPage() {
   const [settings, setSettings] = useState<SEOSettings>(defaultSEOSettings);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
-  const [showPreview, setShowPreview] = useState(false);
 
   const handleSave = () => {
     // Here you would typically save to your backend

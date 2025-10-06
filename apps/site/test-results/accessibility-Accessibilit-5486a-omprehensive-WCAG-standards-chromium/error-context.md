@@ -2,6 +2,11 @@
 
 ```yaml
 - generic [active] [ref=e1]:
+<<<<<<< HEAD
+=======
+  - link "Skip to main content":
+    - /url: "#main-content"
+>>>>>>> develop
   - banner [ref=e2]:
     - generic [ref=e4]:
       - link "John Schibelli - Home page" [ref=e6] [cursor=pointer]:
@@ -288,5 +293,11 @@
           - listitem "Open blog XML Feed, opens in new tab" [ref=e343] [cursor=pointer]:
             - img [ref=e344] [cursor=pointer]
       - paragraph [ref=e347]: © 2025 John Schibelli. All rights reserved.
+<<<<<<< HEAD
   - alert [ref=e348]
+=======
+  - button "Open Next.js Dev Tools" [ref=e353] [cursor=pointer]:
+    - img [ref=e354] [cursor=pointer]
+  - alert [ref=e357]
+>>>>>>> develop
 ```

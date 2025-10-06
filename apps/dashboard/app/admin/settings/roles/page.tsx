@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Shield, Plus, Edit, Trash2, Search, Filter, Lock, Unlock, Users, Key } from "lucide-react";
+import { Shield, Plus, Edit, Trash2, Search, Users, Key } from "lucide-react";
 
 interface RoleData {
   id: string;

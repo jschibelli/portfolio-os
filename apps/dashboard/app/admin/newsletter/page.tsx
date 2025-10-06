@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mailbox, Users, Send, Plus, Edit, Trash2, Search, Filter, Eye, BarChart3, Calendar, Target, Mail } from "lucide-react";
+import { Mailbox, Users, Send, Plus, Edit, Trash2, Search } from "lucide-react";
 
 interface Subscriber {
   id: string;

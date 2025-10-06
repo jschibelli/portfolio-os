@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Database, Save, RotateCcw, Download, Upload, Trash2, RefreshCw, CheckCircle, AlertCircle, HardDrive, Activity, Settings, Eye, EyeOff, Play, Pause, Clock, BarChart3 } from "lucide-react";
+import { Database, Download, Upload, Trash2, RefreshCw, CheckCircle, AlertCircle, HardDrive, Activity, Settings, Clock, BarChart3 } from "lucide-react";
 
 interface DatabaseInfo {
   type: string;
@@ -62,8 +62,6 @@ const mockBackups: BackupInfo[] = [
 ];
 
 export default function DatabasePage() {
-  const [databaseInfo, setDatabaseInfo] = useState<DatabaseInfo>(mockDatabaseInfo);
-  const [tables, setTables] = useState<TableInfo[]>(mockTables);
   const [backups, setBackups] = useState<BackupInfo[]>(mockBackups);
   const [activeTab, setActiveTab] = useState('overview');
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -180,7 +178,6 @@ export default function DatabasePage() {
 
   const totalSize = tables.reduce((acc, table) => {
     const size = parseFloat(table.size.replace(/[^\d.]/g, ''));
-    const unit = table.size.replace(/[\d.]/g, '');
     return acc + size;
   }, 0);
 
