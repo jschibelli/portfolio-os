@@ -50,8 +50,12 @@ jobs:
               return;
             }
             
+            console.log(`Project URL: ${projectUrl}`);
+            
             // Extract project number from URL
             const projectNumber = projectUrl.split('/').pop();
+            console.log(`Project number: ${projectNumber}`);
+            
             const owner = 'jschibelli';
             const repo = 'portfolio-os';
             
@@ -79,18 +83,31 @@ jobs:
                 }
               `;
               
+              console.log(`Querying project for owner: ${owner}, number: ${projectNumber}`);
+              
               const projectResult = await github.graphql(projectQuery, {
                 owner: owner,
                 number: parseInt(projectNumber)
               });
               
+              console.log('Project query result:', JSON.stringify(projectResult, null, 2));
+              
               const project = projectResult.user.projectV2;
+              if (!project) {
+                console.log('Project not found');
+                return;
+              }
+              
               const statusField = project.fields.nodes.find(field => field.name === 'Status');
               
               if (!statusField) {
                 console.log('Status field not found in project');
+                console.log('Available fields:', project.fields.nodes.map(f => f.name));
                 return;
               }
+              
+              console.log(`Found status field: ${statusField.name} (${statusField.id})`);
+              console.log('Available status options:', statusField.options.map(opt => `${opt.name} (${opt.id})`));
               
               // Get project item for this PR
               const itemQuery = `
@@ -117,6 +134,8 @@ jobs:
                 projectId: project.id
               });
               
+              console.log('Item query result:', JSON.stringify(itemResult, null, 2));
+              
               const projectItem = itemResult.repository.pullRequest.projectItems.nodes.find(
                 item => item.project.id === project.id
               );
@@ -125,6 +144,8 @@ jobs:
                 console.log(`PR #${pr.number} not found in project`);
                 return;
               }
+              
+              console.log(`Found project item: ${projectItem.id}`);
               
               // Determine new status based on PR action
               let newStatusId;
@@ -149,6 +170,9 @@ jobs:
               }
               
               if (newStatusId) {
+                const statusName = statusField.options.find(opt => opt.id === newStatusId)?.name;
+                console.log(`Updating status to: ${statusName} (${newStatusId})`);
+                
                 // Update the project item status
                 const updateMutation = `
                   mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
@@ -167,18 +191,22 @@ jobs:
                   }
                 `;
                 
-                await github.graphql(updateMutation, {
+                const updateResult = await github.graphql(updateMutation, {
                   projectId: project.id,
                   itemId: projectItem.id,
                   fieldId: statusField.id,
                   optionId: newStatusId
                 });
                 
-                console.log(`Updated PR #${pr.number} status to ${statusField.options.find(opt => opt.id === newStatusId)?.name}`);
+                console.log('Update result:', JSON.stringify(updateResult, null, 2));
+                console.log(`✅ Updated PR #${pr.number} status to ${statusName}`);
+              } else {
+                console.log('No valid status option found');
               }
               
             } catch (error) {
               console.error('Error updating project status:', error);
+              console.error('Error details:', JSON.stringify(error, null, 2));
             }
 
   update-issue-status:
@@ -196,6 +224,8 @@ jobs:
             const issue = context.payload.issue;
             const action = context.payload.action;
             
+            console.log(`Processing Issue #${issue.number} with action: ${action}`);
+            
             // Get project ID from URL
             const projectUrl = process.env.PROJECT_URL;
             if (!projectUrl) {
@@ -203,8 +233,12 @@ jobs:
               return;
             }
             
+            console.log(`Project URL: ${projectUrl}`);
+            
             // Extract project number from URL
             const projectNumber = projectUrl.split('/').pop();
+            console.log(`Project number: ${projectNumber}`);
+            
             const owner = 'jschibelli';
             const repo = 'portfolio-os';
             
@@ -232,18 +266,31 @@ jobs:
                 }
               `;
               
+              console.log(`Querying project for owner: ${owner}, number: ${projectNumber}`);
+              
               const projectResult = await github.graphql(projectQuery, {
                 owner: owner,
                 number: parseInt(projectNumber)
               });
               
+              console.log('Project query result:', JSON.stringify(projectResult, null, 2));
+              
               const project = projectResult.user.projectV2;
+              if (!project) {
+                console.log('Project not found');
+                return;
+              }
+              
               const statusField = project.fields.nodes.find(field => field.name === 'Status');
               
               if (!statusField) {
                 console.log('Status field not found in project');
+                console.log('Available fields:', project.fields.nodes.map(f => f.name));
                 return;
               }
+              
+              console.log(`Found status field: ${statusField.name} (${statusField.id})`);
+              console.log('Available status options:', statusField.options.map(opt => `${opt.name} (${opt.id})`));
               
               // Get project item for this issue
               const itemQuery = `
@@ -270,6 +317,8 @@ jobs:
                 projectId: project.id
               });
               
+              console.log('Item query result:', JSON.stringify(itemResult, null, 2));
+              
               const projectItem = itemResult.repository.issue.projectItems.nodes.find(
                 item => item.project.id === project.id
               );
@@ -278,6 +327,8 @@ jobs:
                 console.log(`Issue #${issue.number} not found in project`);
                 return;
               }
+              
+              console.log(`Found project item: ${projectItem.id}`);
               
               // Determine new status based on issue action
               let newStatusId;
@@ -293,6 +344,7 @@ jobs:
                 case 'labeled':
                   // Check if specific labels trigger status changes
                   const labels = context.payload.issue.labels.map(label => label.name);
+                  console.log('Issue labels:', labels);
                   if (labels.includes('ready-to-implement')) {
                     newStatusId = statusField.options.find(opt => opt.name === 'Planned')?.id;
                   } else if (labels.includes('in-progress')) {
@@ -309,6 +361,9 @@ jobs:
               }
               
               if (newStatusId) {
+                const statusName = statusField.options.find(opt => opt.id === newStatusId)?.name;
+                console.log(`Updating status to: ${statusName} (${newStatusId})`);
+                
                 // Update the project item status
                 const updateMutation = `
                   mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
@@ -327,44 +382,20 @@ jobs:
                   }
                 `;
                 
-                await github.graphql(updateMutation, {
+                const updateResult = await github.graphql(updateMutation, {
                   projectId: project.id,
                   itemId: projectItem.id,
                   fieldId: statusField.id,
                   optionId: newStatusId
                 });
                 
-                console.log(`Updated Issue #${issue.number} status to ${statusField.options.find(opt => opt.id === newStatusId)?.name}`);
+                console.log('Update result:', JSON.stringify(updateResult, null, 2));
+                console.log(`✅ Updated Issue #${issue.number} status to ${statusName}`);
+              } else {
+                console.log('No valid status option found');
               }
               
             } catch (error) {
               console.error('Error updating project status:', error);
-            }
-
-  link-pr-to-issue:
-    name: Link PR to Issue and Update Status
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Link PR to Related Issue
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ env.GITHUB_TOKEN }}
-          script: |
-            const pr = context.payload.pull_request;
-            
-            // Check if PR description contains issue references
-            const issueMatches = pr.body.match(/(?:resolves?|fixes?|closes?)\s+#(\d+)/gi);
-            
-            if (issueMatches && issueMatches.length > 0) {
-              for (const match of issueMatches) {
-                const issueNumber = parseInt(match.match(/#(\d+)/)[1]);
-                console.log(`PR #${pr.number} references issue #${issueNumber}`);
-                
-                // The PR is already linked to the issue via the "closes" reference
-                // We just need to ensure the project status is updated
-                console.log(`Issue #${issueNumber} will be automatically linked to PR #${pr.number}`);
-              }
+              console.error('Error details:', JSON.stringify(error, null, 2));
             }
