@@ -4,6 +4,22 @@ This directory contains PowerShell scripts and documentation for managing GitHub
 
 ## 📁 Directory Structure
 
+```
+scripts/issue-management/
+├── analysis/           # Issue analysis tools
+│   ├── analyze-issues.ps1
+│   └── analyze-stale-issues.ps1
+├── configuration/      # Issue configuration tools
+│   ├── configure-issue-auto.ps1
+│   └── configure-issues-unified.ps1
+├── implementation/     # Issue implementation tools
+│   └── implement-issues.ps1
+├── management/         # Queue and pipeline management
+│   ├── manage-issue-queue.ps1
+│   └── run-issue-pipeline.ps1
+└── README.md          # Complete documentation
+```
+
 ### 🔍 Analysis (`analysis/`)
 Scripts for analyzing issues and identifying patterns:
 
@@ -27,24 +43,18 @@ Scripts for managing issue queues and processing pipelines:
 - **`manage-issue-queue.ps1`** - Queue management system for prioritized issue processing
 - **`run-issue-pipeline.ps1`** - Continuous issue pipeline for automated processing
 
-### 📚 Documentation (`documentation/`)
-Implementation documentation for completed issues:
-
-- **`issue-228-implementation.md`** - Unified Publishing Workflow implementation
-- **`issue-229-implementation.md`** - Site Content Rendering System implementation  
-- **`issue-230-implementation.md`** - Content Migration & Sync implementation
 
 ## 🧹 Recent Cleanup
 
 This folder was recently reorganized using an intelligent cleanup script that:
 
-- ✅ **Removed 10 redundant files** that duplicated functionality
+- ✅ **Removed 13 redundant files** that duplicated functionality
 - ✅ **Organized by function** rather than file extension
 - ✅ **Kept the most comprehensive** version of each script type
 - ✅ **Preserved unique functionality** across all remaining files
 
 ### Files Removed (Redundant):
-- 3 agent-specific implementation documentation files
+- 6 issue comment/implementation documentation files (should have been cleaned up)
 - 4 redundant configuration scripts (kept `configure-issue-auto.ps1`)
 - 2 redundant implementation scripts (kept `implement-issues.ps1`)
 - 1 redundant unified configuration script
