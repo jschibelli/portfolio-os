@@ -5,4 +5,12 @@
    ▲ Next.js 15.5.2
    - Environments: .env.local
 
-   Creating an optimized production build ...
+
+> Build error occurred
+[Error: EINVAL: invalid argument, readlink 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\site\.next\server\app\api\admin\newsletter\campaigns\[id]\route.js'] {
+  errno: -4071,
+  code: 'EINVAL',
+  syscall: 'readlink',
+  path: 'C:\\Users\\jschi\\OneDrive\\Desktop\\2025_portfolio\\portfolio-os\\apps\\site\\.next\\server\\app\\api\\admin\\newsletter\\campaigns\\[id]\\route.js'
+}
+ ELIFECYCLE  Command failed with exit code 1.
