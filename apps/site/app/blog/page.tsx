@@ -21,8 +21,8 @@ const defaultPublication = {
   id: 'fallback-blog',
   title: 'John Schibelli',
   displayTitle: 'John Schibelli',
-  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications. Expert in React, Next.js, TypeScript, and modern development practices. Available for freelance projects and consulting.',
-  url: 'https://schibelli.dev',
+  descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building scalable, high-performance web applications with modern development practices. Available for freelance projects and consulting.',
+  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
   },

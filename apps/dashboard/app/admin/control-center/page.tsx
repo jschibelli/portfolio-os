@@ -5,7 +5,7 @@ import ControlCenterLayout from './layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Mail, TrendingUp, DollarSign, Activity, Users, Eye, RefreshCw, Loader2 } from 'lucide-react';
+import { Calendar, Mail, TrendingUp, DollarSign, Activity, Users, RefreshCw, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DashboardData {

@@ -1,11 +1,31 @@
 # Portfolio OS Documentation
 
-This directory contains comprehensive documentation for the Portfolio OS automation system, organized by category for easy navigation and maintenance.
+This directory contains comprehensive documentation for the Portfolio OS system, organized by audience and use case for easy navigation and maintenance.
 
 ## 📁 **Directory Structure**
 
+### **`developer/`** - Developer Documentation
+Complete documentation for developers working on the Portfolio OS project:
+
+- **`DEVELOPER_GUIDE.md`** - Comprehensive developer guide with architecture, workflows, and best practices
+
+### **`user-guides/`** - End User Documentation
+Documentation for users of the Portfolio OS system:
+
+- **`USER_GUIDE.md`** - Complete user guide for portfolio site and admin dashboard
+
+### **`api/`** - API Documentation
+Complete API reference and integration guides:
+
+- **`API_DOCUMENTATION.md`** - Comprehensive REST API documentation with examples and SDKs
+
+### **`troubleshooting/`** - Problem Resolution
+Troubleshooting guides for common issues:
+
+- **`TROUBLESHOOTING_GUIDE.md`** - Comprehensive troubleshooting guide for development, deployment, and automation issues
+
 ### **`automation/`** - Automation System Documentation
-Contains complete documentation for the multi-agent automation system:
+Complete documentation for the multi-agent automation system:
 
 - **`AUTOMATION_SYSTEM_MANUAL.md`** - Complete user manual explaining how to understand and use the automation system
 - **`QUICK_START_GUIDE.md`** - Get up and running in 10 minutes with the automation system

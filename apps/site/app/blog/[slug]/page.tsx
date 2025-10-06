@@ -20,8 +20,8 @@ const defaultPublication = {
   id: 'fallback-blog-post',
   title: 'John Schibelli',
   displayTitle: 'John Schibelli',
-  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
-  url: 'https://schibelli.dev',
+  descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
+  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
   },
