@@ -14,7 +14,9 @@ import {
   BookOpen,
   CheckCircle,
   Globe,
-  UserCheck
+  UserCheck,
+  Save,
+  RefreshCw
 } from 'lucide-react'
 
 // UI Components
@@ -24,6 +26,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 // Note: Popover and Calendar components need to be created or imported from a UI library
 // For now, using basic input for date selection
 import { cn } from '@/lib/utils'
@@ -133,6 +136,8 @@ export function PublishingPanel({
     series.find(s => s.id === options.seriesId) || null
   )
   const [readingTime, setReadingTime] = useState(options.readingMinutes)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   /**
    * Load available series from API on component mount
@@ -229,7 +234,10 @@ export function PublishingPanel({
 
   // Handle save
   const handleSave = async () => {
+    setSaveStatus('saving')
+    setErrorMessage(null)
     setIsSaving(true)
+    
     try {
       if (onSave) {
         await onSave(options)
@@ -246,14 +254,23 @@ export function PublishingPanel({
         })
 
         if (!response.ok) {
-          throw new Error('Failed to save publishing options')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to save publishing options')
         }
 
         const result = await response.json()
         // Publishing options saved successfully
       }
+      setSaveStatus('success')
+      setTimeout(() => setSaveStatus('idle'), 3000)
     } catch (error) {
-      // Handle error silently or show user-friendly message
+      console.error('Failed to save publishing options:', error)
+      setSaveStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to save publishing options')
+      setTimeout(() => {
+        setSaveStatus('idle')
+        setErrorMessage(null)
+      }, 5000)
     } finally {
       setIsSaving(false)
     }
@@ -580,10 +597,14 @@ export function PublishingPanel({
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Publish to Dev.to
               </p>
+              <Badge variant="secondary" className="text-xs">
+                Coming Soon
+              </Badge>
             </div>
             <Switch
               id="dev"
               checked={options.crossPlatformPublishing.dev}
+              disabled={true}
               onCheckedChange={(checked) => 
                 handleOptionChange('crossPlatformPublishing', {
                   ...options.crossPlatformPublishing,
@@ -599,10 +620,14 @@ export function PublishingPanel({
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Publish to Medium
               </p>
+              <Badge variant="secondary" className="text-xs">
+                Coming Soon
+              </Badge>
             </div>
             <Switch
               id="medium"
               checked={options.crossPlatformPublishing.medium}
+              disabled={true}
               onCheckedChange={(checked) => 
                 handleOptionChange('crossPlatformPublishing', {
                   ...options.crossPlatformPublishing,
@@ -614,6 +639,25 @@ export function PublishingPanel({
         </CardContent>
       </Card>
 
+      {/* Status Messages */}
+      {saveStatus === 'error' && errorMessage && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+            <span className="text-sm">{errorMessage}</span>
+          </div>
+        </div>
+      )}
+      
+      {saveStatus === 'success' && (
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4" />
+            <span className="text-sm">Publishing options saved successfully!</span>
+          </div>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="flex gap-3">
         <Button
@@ -621,12 +665,23 @@ export function PublishingPanel({
           disabled={isSaving}
           className="flex-1"
         >
-          {isSaving ? 'Saving...' : 'Save Options'}
+          {isSaving ? (
+            <>
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 mr-2" />
+              Save Options
+            </>
+          )}
         </Button>
         <Button
           variant="outline"
           onClick={handlePreview}
         >
+          <Eye className="w-4 h-4 mr-2" />
           Preview
         </Button>
       </div>

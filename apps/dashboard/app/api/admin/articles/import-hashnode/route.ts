@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { PrismaClient } from "@prisma/client";
-import { importHashnodeArticles } from "@/scripts/import-hashnode-articles";
+import { importHashnodeArticles } from "../../../../../scripts/import-hashnode-articles";
 
 const prisma = new PrismaClient();
 
