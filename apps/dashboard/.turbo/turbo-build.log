@@ -3,5 +3,40 @@
 > next build
 
    ▲ Next.js 15.5.2
+   - Environments: .env.local, .env
 
    Creating an optimized production build ...
+Failed to compile.
+
+./app/api/admin/articles/import-hashnode/route.ts
+Module not found: Can't resolve '@/scripts/import-hashnode-articles'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./lib/publishing/service.ts
+Module not found: Can't resolve './adapters/medium'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/api/publishing/publish/route.ts
+
+./lib/publishing/service.ts
+Module not found: Can't resolve './adapters/devto'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/api/publishing/publish/route.ts
+
+./lib/publishing/service.ts
+Module not found: Can't resolve './adapters/linkedin'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/api/publishing/publish/route.ts
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.
