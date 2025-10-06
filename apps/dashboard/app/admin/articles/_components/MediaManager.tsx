@@ -250,11 +250,67 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
     if (!confirm(`Delete ${selectedItems.size} selected item(s)?`)) return
 
     try {
-      // TODO: Implement actual delete API
+      const selectedIds = Array.from(selectedItems)
+      const response = await fetch(`/api/admin/media?ids=${selectedIds.join(',')}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to delete items')
+      }
+
+      const result = await response.json()
+      
+      // Update local state to remove deleted items
       setMedia(prev => prev.filter(item => !selectedItems.has(item.id)))
       setSelectedItems(new Set())
+      
+      // Show success message
+      alert(`Successfully deleted ${result.deletedCount} item(s)`)
     } catch (error) {
+      console.error('Delete error:', error)
       alert(error instanceof Error ? error.message : 'Failed to delete items')
+    }
+  }
+
+  /**
+   * Delete a single media item
+   */
+  const handleDeleteItem = async (item: MediaItem) => {
+    if (!confirm(`Delete "${item.alt || item.url.split('/').pop()}"?`)) return
+
+    try {
+      const response = await fetch(`/api/admin/media?ids=${item.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to delete item')
+      }
+
+      const result = await response.json()
+      
+      // Update local state to remove deleted item
+      setMedia(prev => prev.filter(mediaItem => mediaItem.id !== item.id))
+      setSelectedItems(prev => {
+        const next = new Set(prev)
+        next.delete(item.id)
+        return next
+      })
+      
+      // Show success message
+      alert('Item deleted successfully')
+    } catch (error) {
+      console.error('Delete error:', error)
+      alert(error instanceof Error ? error.message : 'Failed to delete item')
     }
   }
 
@@ -430,6 +486,18 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
                     {selectedItems.has(item.id) && <Check className="w-4 h-4 text-white" />}
                   </button>
                   
+                  {/* Delete button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteItem(item)
+                    }}
+                    className="absolute top-2 right-2 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    title="Delete image"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  
                   {/* Quick actions */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="flex items-center justify-between text-white text-xs">
@@ -463,20 +531,34 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
                       </div>
                     )}
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleSelection(item.id)
-                    }}
-                  >
-                    {selectedItems.has(item.id) ? (
-                      <Check className="w-4 h-4 text-blue-600" />
-                    ) : (
-                      <div className="w-4 h-4 border-2 border-gray-300 rounded" />
-                    )}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteItem(item)
+                      }}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      title="Delete image"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleSelection(item.id)
+                      }}
+                    >
+                      {selectedItems.has(item.id) ? (
+                        <Check className="w-4 h-4 text-blue-600" />
+                      ) : (
+                        <div className="w-4 h-4 border-2 border-gray-300 rounded" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>
