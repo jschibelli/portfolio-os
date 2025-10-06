@@ -44,7 +44,58 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
   const params = await props.params;
   
   // Fetch post from Hashnode
+<<<<<<< HEAD
   const post = await fetchPostBySlug(params.slug);
+=======
+  const query = `
+    query PostBySlug($host: String!, $slug: String!) {
+      publication(host: $host) {
+        post(slug: $slug) {
+          id
+          title
+          brief
+          slug
+          publishedAt
+          coverImage { url }
+          author { name }
+          tags { name slug }
+        }
+      }
+    }
+  `;
+
+  let post: any = null;
+  try {
+    const res = await fetch(GQL_ENDPOINT, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+      body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts', `blog-post-${params.slug}`],
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog post: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
+    post = data?.data?.publication?.post;
+  } catch (error) {
+    console.error('Error fetching Hashnode post:', error);
+  }
+>>>>>>> origin/copilot/fix-56aab07e-3258-4fb2-868f-299adc76e886
 
   if (!post) {
     return {
@@ -72,12 +123,76 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
+<<<<<<< HEAD
   
   // Fetch post and publication data from Hashnode
   const [post, publication] = await Promise.all([
     fetchPostBySlug(params.slug),
     fetchPublication()
   ]);
+=======
+  const GQL_ENDPOINT = 'https://gql.hashnode.com/';
+  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+
+  // Fetch post from Hashnode
+  const query = `
+    query PostBySlug($host: String!, $slug: String!) {
+      publication(host: $host) {
+        post(slug: $slug) {
+          id
+          title
+          brief
+          slug
+          publishedAt
+          coverImage { url }
+          author { name }
+          tags { name slug }
+          content {
+            markdown
+            html
+          }
+          readTimeInMinutes
+        }
+      }
+    }
+  `;
+
+  let post: any = null;
+  try {
+    const res = await fetch(GQL_ENDPOINT, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+      body: JSON.stringify({ query, variables: { host, slug: params.slug } }),
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts', `blog-post-${params.slug}`],
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog post: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
+    post = data?.data?.publication?.post;
+  } catch (error) {
+    console.error('Error fetching Hashnode post:', error);
+    // Re-throw to trigger error boundary if it's a network error
+    if (error instanceof Error && !error.message.includes('404')) {
+      throw error;
+    }
+  }
+>>>>>>> origin/copilot/fix-56aab07e-3258-4fb2-868f-299adc76e886
 
   if (!post) {
     notFound();
