@@ -1,8 +1,14 @@
 import { Metadata } from 'next';
+<<<<<<< HEAD
 import { PAGE_METADATA } from '../../lib/metadata';
 import { AboutPageClient } from './about-client';
 
 export const metadata: Metadata = PAGE_METADATA.about;
+=======
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+import Link from 'next/link';
+>>>>>>> origin/issue-247-contact-resend-integration
 
 export default function AboutPage() {
   return <AboutPageClient />;
@@ -118,6 +124,52 @@ const experience = [
     logo: '/assets/personal-logo.png',
   },
 ];
+
+export const metadata: Metadata = {
+  title: 'About John Schibelli | Senior Front-End Developer',
+  description: 'Learn about John Schibelli, a Senior Front-End Developer with 15+ years of experience in React, Next.js, TypeScript, and AI integration. From teaching to modern development, discover the journey that shaped his expertise.',
+  keywords: ['about', 'John Schibelli', 'front-end developer', 'React', 'Next.js', 'TypeScript', 'web development', 'portfolio', 'experience'],
+  authors: [{ name: 'John Schibelli' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: 'About John Schibelli | Senior Front-End Developer',
+    description: 'Learn about John Schibelli, a Senior Front-End Developer with 15+ years of experience in React, Next.js, TypeScript, and AI integration. From teaching to modern development, discover the journey that shaped his expertise.',
+    url: 'https://johnschibelli.dev/about',
+    siteName: 'John Schibelli Portfolio',
+    locale: 'en_US',
+    type: 'profile',
+    images: [
+      {
+        url: '/assets/hero/profile.png',
+        width: 1200,
+        height: 630,
+        alt: 'John Schibelli - Senior Front-End Developer',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About John Schibelli | Senior Front-End Developer',
+    description: 'Learn about John Schibelli, a Senior Front-End Developer with 15+ years of experience in React, Next.js, TypeScript, and AI integration.',
+    creator: '@johnschibelli',
+    images: ['/assets/hero/profile.png'],
+  },
+  alternates: {
+    canonical: 'https://johnschibelli.dev/about',
+  },
+};
 
 export default function AboutPage() {
   return (

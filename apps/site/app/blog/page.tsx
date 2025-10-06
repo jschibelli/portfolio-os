@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { AppProvider } from '../../components/contexts/appContext';
 import Chatbot from '../../components/features/chatbot/Chatbot';
 import ModernHero from '../../components/features/homepage/modern-hero';
@@ -15,6 +16,52 @@ import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: 'Blog | John Schibelli - Web Development Insights',
+  description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli. Covering React, Next.js, TypeScript, AI integration, and modern web development practices.',
+  keywords: ['blog', 'web development', 'React', 'Next.js', 'TypeScript', 'tutorials', 'insights', 'John Schibelli', 'front-end development'],
+  authors: [{ name: 'John Schibelli' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: 'Blog | John Schibelli - Web Development Insights',
+    description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli. Covering React, Next.js, TypeScript, AI integration, and modern web development practices.',
+    url: 'https://johnschibelli.dev/blog',
+    siteName: 'John Schibelli Portfolio',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/assets/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'John Schibelli Blog - Web Development Insights',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | John Schibelli - Web Development Insights',
+    description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli.',
+    creator: '@johnschibelli',
+    images: ['/assets/og.png'],
+  },
+  alternates: {
+    canonical: 'https://johnschibelli.dev/blog',
+  },
+};
 
 // Default publication object for fallback
 const defaultPublication = {
