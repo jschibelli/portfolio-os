@@ -925,9 +925,8 @@ function Update-ProjectField {
 - **Slack**: #portfolio-os-dev channel for real-time help
 
 ### Team Contacts
-- **Lead Developer**: [Your Name] - your.email@domain.com
-- **DevOps**: [DevOps Contact] - devops@domain.com
-- **Product Owner**: [Product Owner] - product@domain.com
+- **Lead Developer**: John Schibelli - john@schibelli.dev
+
 
 ---
 
