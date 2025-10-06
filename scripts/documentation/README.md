@@ -18,15 +18,6 @@ This folder contains comprehensive documentation for the Portfolio OS scripts sy
 - **[File Rename Mapping](FILE_RENAME_MAPPING.md)** - Old to new file name mapping
 - **[House Cleaning Guide](HOUSE_CLEANING_GUIDE.md)** - Cleanup procedures
 
-### **📊 Reports and Summaries**
-- **[Organization Summary](ORGANIZATION_SUMMARY.md)** - Folder organization summary
-- **[Final Organization Summary](FINAL_ORGANIZATION_SUMMARY.md)** - Final organization status
-- **[Scripts Organization Analysis](SCRIPTS_ORGANIZATION_ANALYSIS.md)** - Organization analysis
-- **[Script Cleanup Summary](SCRIPT_CLEANUP_SUMMARY.md)** - Cleanup summary
-- **[Cleanup Completion](CLEANUP_COMPLETION.md)** - Cleanup completion report
-- **[Prompt Updates Summary](PROMPT_UPDATES_SUMMARY.md)** - Prompt updates summary
-- **[Documentation Cleanup Summary](DOCUMENTATION_CLEANUP_SUMMARY.md)** - Documentation cleanup
-
 ### **🔧 Configuration**
 - **[README Auto-Configuration](README-AUTO-CONFIGURATION.md)** - Auto-configuration guide
 
