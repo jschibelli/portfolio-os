@@ -352,15 +352,15 @@ The Portfolio OS project includes a comprehensive suite of PowerShell automation
 - **Validation Scripts**: Creates validation and verification scripts
 - **Quality Checks**: Performs code quality and style checks
 
-### 3. Issue Analyzer (`issue-analyzer.ps1`)
+### 3. Issue Analyzer (`analyze-issues.ps1`)
 
 **Purpose**: Analyzes issues for complexity, requirements, and optimal assignment
 
-**Location**: `scripts/issue-analyzer.ps1`
+**Location**: `scripts/analyze-issues.ps1`
 
 **Usage**:
 ```powershell
-.\scripts\issue-analyzer.ps1 -IssueNumber <NUMBER> [-Options <OPTIONS>]
+.\scripts\analyze-issues.ps1 -IssueNumber <NUMBER> [-Options <OPTIONS>]
 ```
 
 **Analysis Features**:
@@ -649,7 +649,7 @@ pr-close <number>
 
 **Purpose**: Intelligent issue assignment and agent coordination
 
-**Location**: `scripts/agent-coordinator.ps1`
+**Location**: `scripts/agent-management/manage-agent-coordinator.ps1`
 
 **Usage**:
 ```powershell

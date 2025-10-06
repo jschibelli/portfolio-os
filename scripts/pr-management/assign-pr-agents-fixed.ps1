@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 # PR Agent Assignment Workflow
 # Evaluates current PRs, backfills project fields, determines optimal agent count, and assigns PRs
-# Usage: .\scripts\automation\assign-pr-agents.ps1 [-ProjectNumber <NUMBER>] [-Owner <USERNAME>] [-DryRun]
+# Usage: .\scripts\automation\pr-agent-assignment-workflow.ps1 [-ProjectNumber <NUMBER>] [-Owner <USERNAME>] [-DryRun]
 
 param(
     [string]$ProjectNumber = "20",
@@ -296,4 +296,3 @@ if ($DryRun) {
     Write-Host "Project fields have been backfilled" -ForegroundColor Green
     Write-Host "Assignment report generated: $ExportTo" -ForegroundColor Green
 }
-

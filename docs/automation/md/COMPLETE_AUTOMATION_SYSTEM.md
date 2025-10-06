@@ -233,7 +233,7 @@ $agentConfig = @{
 }
 ```
 
-#### 2. Agent Coordinator (`agent-coordinator.ps1`)
+#### 2. Agent Coordinator (`manage-agent-coordinator.ps1`)
 
 **Purpose**: Intelligent issue assignment and coordination
 
@@ -468,10 +468,10 @@ Issues are automatically configured based on:
 #### Manual Issue Assignment
 ```powershell
 # Assign to specific agent
-.\scripts\agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123
 
 # Auto-assign to optimal agents
-.\scripts\agent-coordinator.ps1 -Operation auto-assign -MaxIssues 5
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation auto-assign -MaxIssues 5
 ```
 
 #### Work Tree Management
@@ -543,7 +543,7 @@ Issues are automatically configured based on:
 .\scripts\multi-agent-worktree-system.ps1 -Operation status
 
 # Force reassignment
-.\scripts\agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123 -Force
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123 -Force
 ```
 
 #### Sync Issues
@@ -571,7 +571,7 @@ Remove-Item worktree-state.json
 #### Agent Conflicts
 ```powershell
 # Release all agent locks
-.\scripts\agent-coordinator.ps1 -Operation balance-load
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation balance-load
 
 # Reset specific agent
 .\scripts\multi-agent-worktree-system.ps1 -Operation destroy -Agent agent-frontend

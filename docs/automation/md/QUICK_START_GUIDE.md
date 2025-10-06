@@ -135,13 +135,13 @@ The system automatically:
 ### Check Agent Workload
 ```powershell
 # See which agents are busy and which are available
-.\scripts\agent-coordinator.ps1 -Operation status
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation status
 ```
 
 ### Balance Workload
 ```powershell
 # Redistribute work if some agents are overloaded
-.\scripts\agent-coordinator.ps1 -Operation balance-load
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation balance-load
 ```
 
 ## What You'll See
@@ -204,7 +204,7 @@ You'll receive notifications for:
 ### Work Not Being Assigned
 ```powershell
 # Check agent status and workload
-.\scripts\agent-coordinator.ps1 -Operation status
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation status
 ```
 
 ### Quality Issues
@@ -245,7 +245,7 @@ You'll receive notifications for:
 # Get help for any script
 .\scripts\master-automation.ps1 -Mode help
 .\scripts\multi-agent-automation.ps1 -Mode help
-.\scripts\agent-coordinator.ps1 -Operation help
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation help
 ```
 
 ### Status Commands
@@ -253,7 +253,7 @@ You'll receive notifications for:
 # Check system status
 .\scripts\master-automation.ps1 -Mode status
 .\scripts\multi-agent-automation.ps1 -Mode monitor
-.\scripts\agent-coordinator.ps1 -Operation status
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation status
 ```
 
 This quick start guide gets you up and running with the automation system in minutes. The system is designed to work seamlessly with your existing workflow while providing powerful new capabilities for parallel development and intelligent automation.
