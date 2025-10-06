@@ -615,7 +615,7 @@ function Validate-Implementation {
         $global:implementationState.Steps += @{
             Timestamp = Get-Date
             Action = "Implementation Validation"
-            Status = if ($validation.Status -eq "Passed") { "Success" } else { "Warning"
+            Status = if ($validation.Status -eq "Passed") { "Success" } else { "Warning" }
             Details = "Validation $($validation.Status.ToLower()): $($validation.Passed) passed, $($validation.Failed) failed, $($validation.Warnings) warnings"
         }
         

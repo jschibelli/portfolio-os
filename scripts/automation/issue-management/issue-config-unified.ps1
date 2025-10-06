@@ -26,8 +26,8 @@ param(
     [string]$Area = "Frontend",
     
     [Parameter(Mandatory=$false)]
-    [ValidateSet("Todo", "In progress", "Ready", "Done")]
-    [string]$Status = "Todo",
+    [ValidateSet("Backlog", "In progress", "In review", "Ready", "Ready for Merge", "Done")]
+    [string]$Status = "Backlog",
     
     [Parameter(Mandatory=$false)]
     [string[]]$Labels = @(),

@@ -15,6 +15,14 @@ const LIVE = new Set([
 export function middleware(req: NextRequest) {
   const { pathname, hostname } = req.nextUrl;
 
+  // Canonical host redirect - enforce apex domain (johnschibelli.dev)
+  const canonicalHost = 'johnschibelli.dev';
+  if (hostname === `www.${canonicalHost}`) {
+    const url = req.nextUrl.clone();
+    url.hostname = canonicalHost;
+    return NextResponse.redirect(url, 301);
+  }
+
   // Allow static assets, Next internals, API, maintenance page, and common file types
   // These paths should always be accessible even during maintenance
   const pass =

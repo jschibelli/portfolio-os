@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, User, Plus, Edit, Trash2, Search, Filter, Shield, Mail, Calendar, Activity, Eye, Loader2 } from "lucide-react";
+import { Users, User, Plus, Edit, Trash2, Search, Shield, Mail, Calendar, Activity, Loader2 } from "lucide-react";
 
 interface UserData {
   id: string;

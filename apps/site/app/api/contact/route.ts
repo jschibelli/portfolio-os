@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { emailService } from '../../../lib/email-service';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -87,22 +88,47 @@ export async function POST(request: NextRequest) {
       clientIP
     });
 
-    // In a real implementation, you would:
-    // 1. Send an email notification to the site owner
-    // 2. Store the submission in a database
-    // 3. Send an auto-reply to the user
-    // 4. Integrate with CRM systems
-    
-    // For now, we'll simulate successful processing
-    // TODO: Implement actual email sending using services like:
-    // - SendGrid
-    // - AWS SES
-    // - Nodemailer with SMTP
-    // - Resend
-    // - EmailJS
+    // Send email notification to site owner
+    const emailResult = await emailService.sendEmail({
+      to: 'john@schibelli.dev',
+      from: process.env.EMAIL_FROM || 'noreply@schibelli.dev',
+      subject: `New Contact Form Submission from ${validatedData.name}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${validatedData.name}</p>
+        <p><strong>Email:</strong> ${validatedData.email}</p>
+        <p><strong>Company:</strong> ${validatedData.company || 'Not provided'}</p>
+        <p><strong>Project Type:</strong> ${validatedData.projectType || 'Not specified'}</p>
+        <p><strong>Message:</strong></p>
+        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.message}</p>
+        <hr>
+        <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
+        <p><small>Client IP: ${clientIP}</small></p>
+      `,
+      text: `
+New Contact Form Submission
 
-    // Simulate email sending delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+Name: ${validatedData.name}
+Email: ${validatedData.email}
+Company: ${validatedData.company || 'Not provided'}
+Project Type: ${validatedData.projectType || 'Not specified'}
+
+Message:
+${validatedData.message}
+
+---
+Submitted on: ${new Date().toLocaleString()}
+Client IP: ${clientIP}
+      `,
+      replyTo: validatedData.email,
+    });
+
+    if (!emailResult.success) {
+      console.error('📧 Failed to send email notification:', emailResult.error);
+      // Don't fail the request if email sending fails - still log the submission
+    } else {
+      console.log('📧 Email notification sent successfully:', emailResult.messageId);
+    }
 
     // Return success response
     return NextResponse.json({

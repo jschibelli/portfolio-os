@@ -77,16 +77,64 @@ export class EmailService {
    * Send email with Resend
    */
   private async sendWithResend(options: EmailOptions): Promise<EmailResult> {
-    // Mock implementation for testing
-    if (process.env.NODE_ENV === 'test') {
+    try {
+      // Mock implementation for testing
+      if (process.env.NODE_ENV === 'test') {
+        return {
+          success: true,
+          messageId: 'test-message-id',
+        };
+      }
+
+      // Import Resend dynamically to avoid issues in test environments
+      const { Resend } = await import('resend');
+      
+      if (!this.config.apiKey || this.config.apiKey === 'test-api-key') {
+        throw new Error('Resend API key is not configured');
+      }
+
+      const resend = new Resend(this.config.apiKey);
+
+      // Prepare email data for Resend
+      const emailData: any = {
+        from: this.config.fromEmail,
+        to: Array.isArray(options.to) ? options.to : [options.to],
+        subject: options.subject,
+      };
+
+      // Add content (prefer HTML over text)
+      if (options.html) {
+        emailData.html = options.html;
+      } else if (options.text) {
+        emailData.text = options.text;
+      }
+
+      // Add reply-to if specified
+      if (options.replyTo) {
+        emailData.reply_to = options.replyTo;
+      }
+
+      // Send email via Resend
+      const result = await resend.emails.send(emailData);
+
+      if (result.error) {
+        return {
+          success: false,
+          error: `Resend API error: ${result.error.message}`,
+        };
+      }
+
       return {
         success: true,
-        messageId: 'test-message-id',
+        messageId: result.data?.id,
+      };
+
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred while sending email',
       };
     }
-
-    // Real implementation would use Resend API
-    throw new Error('Resend implementation not available in test environment');
   }
 
   /**
