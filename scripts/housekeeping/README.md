@@ -151,6 +151,38 @@ The housekeeping folder contains a comprehensive suite of PowerShell scripts des
 .\clean-house-working.ps1 -Mode full -DryRun
 ```
 
+### 7. `clean-house-advanced.ps1` - Advanced House Cleaning with Security & Performance Analysis
+**Purpose**: Comprehensive housekeeping with advanced security scanning, performance analysis, and dependency management.
+
+**What it does**:
+- **Advanced Security Scanning**: Scans for sensitive files (`.env`, `.key`, `.pem`, etc.) and hardcoded secrets in code files, providing security vulnerability assessment.
+- **Performance Analysis**: Identifies large files, duplicate files, and unused assets, providing detailed performance optimization recommendations.
+- **Dependency Analysis**: Checks for outdated packages, unused dependencies, and security vulnerabilities in project dependencies.
+- **Git History Cleanup**: Analyzes Git history for large commits, merge patterns, old branches, and large files in history.
+- **Deep Cleaning Operations**: Removes old backups, logs, and temporary directories with configurable age limits.
+- **Comprehensive Reporting**: Generates detailed reports covering security findings, performance issues, dependency status, and Git history analysis.
+
+**Features**:
+- Security vulnerability scanning
+- Performance optimization analysis
+- Dependency management
+- Git history analysis
+- Deep cleaning operations
+- Advanced reporting
+
+**Usage**:
+```powershell
+.\clean-house-advanced.ps1 -Mode full -DryRun -Verbose
+```
+
+**Modes**:
+- `full`: Complete advanced housekeeping (security + performance + dependencies + git + deep clean)
+- `deep-clean`: Deep cleaning operations only
+- `security`: Security scanning only
+- `performance`: Performance analysis only
+- `dependencies`: Dependency analysis only
+- `git-history`: Git history cleanup only
+
 ## Common Features
 
 ### File Organization
@@ -428,6 +460,9 @@ $VerbosePreference = "Continue"
 # Full housekeeping
 .\clean-house-main.ps1 -Mode full
 
+# Advanced housekeeping with security & performance analysis
+.\clean-house-advanced.ps1 -Mode full -DryRun
+
 # Target specific folder
 .\clean-house-target.ps1 -Target scripts
 
@@ -439,6 +474,9 @@ $VerbosePreference = "Continue"
 ```powershell
 # Dry run everything
 .\clean-house-main.ps1 -Mode full -DryRun
+
+# Advanced security scan
+.\clean-house-advanced.ps1 -Mode security -DryRun
 
 # Validate only
 .\clean-house-quick.ps1 -Action validate
