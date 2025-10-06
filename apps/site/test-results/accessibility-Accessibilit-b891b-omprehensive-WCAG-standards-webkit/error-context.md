@@ -1,0 +1,337 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content":
+    - /url: "#main-content"
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "John Schibelli - Home page" [ref=e6]:
+        - /url: /
+        - img "John Schibelli" [ref=e8]
+      - navigation "Main navigation" [ref=e9]:
+        - link "Home" [ref=e10]:
+          - /url: /
+        - link "Projects" [ref=e11]:
+          - /url: /projects
+        - link "Blog" [ref=e12]:
+          - /url: /blog
+        - link "About" [ref=e13]:
+          - /url: /about
+        - link "Contact" [ref=e14]:
+          - /url: /contact
+      - generic [ref=e17]:
+        - img [ref=e18]
+        - textbox "Search..." [ref=e21]
+      - generic [ref=e22]:
+        - button "Switch to light theme" [ref=e23] [cursor=pointer]:
+          - img
+          - generic [ref=e24] [cursor=pointer]: Toggle theme
+        - button "Subscribe to newsletter" [ref=e25] [cursor=pointer]: Subscribe
+  - main [ref=e27]:
+    - main [ref=e28]:
+      - generic [ref=e37]:
+        - generic [ref=e39]:
+          - img "John Schibelli - Senior Front-End Developer" [ref=e42]
+          - img [ref=e44]
+        - generic [ref=e47]:
+          - paragraph [ref=e49]: Helping Transform Ideas Into Digital Solutions
+          - heading "John Schibelli" [level=1] [ref=e50]
+          - paragraph [ref=e51]: Senior Front-End Developer
+          - paragraph [ref=e52]: Building high-performance web applications that support business growth. I work with React, Next.js, and TypeScript with 15+ years of experience creating scalable digital experiences that help clients achieve their goals.
+          - generic [ref=e53]:
+            - generic [ref=e55]:
+              - img [ref=e56]
+              - generic [ref=e59]: Towaco, NJ
+            - generic [ref=e61]:
+              - img [ref=e62]
+              - generic [ref=e65]: Senior Level
+            - generic [ref=e67]:
+              - img [ref=e68]
+              - generic [ref=e70]: Available
+          - generic [ref=e71]:
+            - button "Get In Touch" [ref=e72] [cursor=pointer]:
+              - text: Get In Touch
+              - img
+            - button "View My Projects" [ref=e73] [cursor=pointer]
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "My Journey" [level=2] [ref=e78]
+          - paragraph [ref=e79]: "From teaching to development: A story of resilience, learning, and growth"
+        - generic [ref=e82]:
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - img [ref=e90]
+              - generic [ref=e93]:
+                - heading "The Teaching Years" [level=3] [ref=e94]
+                - paragraph [ref=e95]: 2005 - 2009
+            - paragraph [ref=e96]:
+              - text: As Web Development Program Director at Anthem Institute, I discovered my passion for making complex concepts accessible. Teaching HTML, CSS, JavaScript, and PHP to students across multiple campuses taught me that
+              - strong [ref=e97]: code should be teachable and maintainable
+              - text: – principles that still guide my development approach today.
+          - generic [ref=e102]:
+            - generic [ref=e103]:
+              - img [ref=e105]
+              - generic [ref=e107]:
+                - heading "Overcoming Challenges" [level=3] [ref=e108]
+                - paragraph [ref=e109]: Personal Growth
+            - paragraph [ref=e110]:
+              - text: Life presented unexpected challenges that tested my resilience. Through these experiences, I learned that
+              - strong [ref=e111]: perseverance and adaptability are as crucial in life as they are in code
+              - text: . This deepened my understanding of accessibility and inclusive design – principles I now champion in every project.
+          - generic [ref=e116]:
+            - generic [ref=e117]:
+              - img [ref=e119]
+              - generic [ref=e122]:
+                - heading "Modern Development" [level=3] [ref=e123]
+                - paragraph [ref=e124]: 2009 - Present
+            - paragraph [ref=e125]:
+              - text: My journey evolved from WordPress customization to building enterprise-scale applications with React, Next.js, and AI integrations. The educator in me still shines through – I believe in
+              - strong [ref=e126]: writing code that tells a story
+              - text: ", documenting thoroughly, and mentoring team members to ensure every project is built for the long term."
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - img [ref=e134]
+              - generic [ref=e136]:
+                - heading "Today's Mission" [level=3] [ref=e137]
+                - paragraph [ref=e138]: Building the Future
+            - paragraph [ref=e139]:
+              - text: "As Founder and Lead Developer at IntraWeb Technologies, I'm exploring AI-driven solutions like SynaplyAI and their potential in web development. My mission:"
+              - strong [ref=e140]: contributing to technology that helps people
+              - text: – whether that's through accessible interfaces, intelligent automation, or mentoring the next generation of developers.
+        - generic [ref=e142]:
+          - heading "My Development Philosophy" [level=3] [ref=e143]
+          - paragraph [ref=e144]:
+            - strong [ref=e145]: Code is communication.
+            - text: Every line should be clear, every function should tell a story, and every system should be built with future developers in mind. This educator mindset drives me to create solutions that are not just functional, but truly maintainable and scalable.
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - heading "Why Choose Me" [level=2] [ref=e150]
+          - paragraph [ref=e151]: Results-focused development that supports business growth through collaborative web development and client partnerships
+        - generic [ref=e152]:
+          - generic [ref=e153]:
+            - img [ref=e155]
+            - heading "Project Delivery" [level=3] [ref=e158]
+            - generic [ref=e159]: Multiple Projects
+            - paragraph [ref=e160]: Delivered web applications and digital solutions across various industries, working with teams to build e-commerce platforms and AI-driven collaboration tools.
+          - generic [ref=e161]:
+            - img [ref=e163]
+            - heading "Client Success" [level=3] [ref=e168]
+            - generic [ref=e169]: Strong Relationships
+            - paragraph [ref=e170]: Maintained strong client relationships through reliable service delivery, clear communication, and meeting project goals consistently.
+          - generic [ref=e171]:
+            - img [ref=e173]
+            - heading "Response Time" [level=3] [ref=e176]
+            - generic [ref=e177]: 24h Response
+            - paragraph [ref=e178]: Focused on clear communication and timely responses. I prioritize your project needs and aim to respond within 24 hours to keep projects moving forward.
+          - generic [ref=e179]:
+            - img [ref=e181]
+            - heading "AI-Enhanced Development" [level=3] [ref=e183]
+            - generic [ref=e184]: Future-Ready
+            - paragraph [ref=e185]: Working with modern AI tools and development practices to build intelligent, scalable solutions that grow with your business needs.
+          - generic [ref=e186]:
+            - img [ref=e188]
+            - heading "Accessibility & SEO" [level=3] [ref=e191]
+            - generic [ref=e192]: WCAG Compliant
+            - paragraph [ref=e193]: Building inclusive, accessible web experiences that reach all users while optimizing for search engines to maximize your digital presence.
+          - generic [ref=e194]:
+            - img [ref=e196]
+            - heading "Process Excellence" [level=3] [ref=e198]
+            - generic [ref=e199]: Extensive Experience
+            - paragraph [ref=e200]: Refined development processes through years of experience, ensuring consistent quality, on-time delivery, and seamless project execution.
+        - generic [ref=e201]:
+          - paragraph [ref=e202]: Ready to experience these results for your project?
+          - button "Start Your Project" [ref=e203] [cursor=pointer]:
+            - text: Start Your Project
+            - img
+      - generic [ref=e206]:
+        - generic [ref=e207]:
+          - heading "Career Journey" [level=2] [ref=e208]
+          - paragraph [ref=e209]: My professional experience and key achievements in web development
+          - generic [ref=e210]:
+            - generic [ref=e211]:
+              - generic [ref=e212]:
+                - generic [ref=e213]: Senior
+                - generic [ref=e214]: Level Expertise
+              - generic [ref=e215]:
+                - generic [ref=e216]: "6"
+                - generic [ref=e217]: Companies
+              - generic [ref=e218]:
+                - generic [ref=e219]: AI
+                - generic [ref=e220]: Innovation Focus
+            - paragraph [ref=e222]: From teaching web development to leading AI-driven projects, my journey spans the evolution of modern web technologies.
+        - generic [ref=e223]:
+          - generic [ref=e229]:
+            - generic [ref=e231]: 2020 - Present
+            - generic [ref=e232]:
+              - heading "Senior Front-End Developer" [level=3] [ref=e233]
+              - generic [ref=e234]:
+                - generic [ref=e235]: IntraWeb Technology
+                - generic [ref=e236]: •
+                - generic [ref=e237]: Montville, NJ
+            - paragraph [ref=e238]: Lead front-end for company site and client projects; incubated SynaplyAI.
+            - generic [ref=e239]:
+              - generic [ref=e242]: Built the IntraWeb Technologies website with Next.js, React, TypeScript, and Tailwind CSS; shipped an accessible, SEO-optimized presence.
+              - generic [ref=e245]: Delivered custom WordPress and Shopify builds emphasizing mobile performance and SEO for clients including KAL Design.
+              - generic [ref=e248]: Scoped requirements, owned timelines, and served as primary client liaison to ensure quality delivery and satisfaction.
+              - generic [ref=e251]: Incubated SynaplyAI (multi-tenant AI content collaboration) with front-end architecture, OpenAI integrations, real-time collab editing, and adaptive AI content generation.
+          - generic [ref=e257]:
+            - generic [ref=e259]: "2024"
+            - generic [ref=e260]:
+              - heading "Full-Stack Developer" [level=3] [ref=e261]
+              - generic [ref=e262]:
+                - generic [ref=e263]: ColorStreet
+                - generic [ref=e264]: •
+                - generic [ref=e265]: Totowa, NJ
+            - paragraph [ref=e266]: Contributed to e-commerce platform quality and integrations.
+            - generic [ref=e267]:
+              - generic [ref=e270]: Implemented automated UI testing with Playwright, improving reliability across releases.
+              - generic [ref=e273]: Integrated and validated Nest.js APIs; ensured stable data flow and interface alignment.
+              - generic [ref=e276]: Partnered with QA, design, and product to support sprint delivery and UI improvements.
+          - generic [ref=e282]:
+            - generic [ref=e284]: 2016 - 2020
+            - generic [ref=e285]:
+              - heading "Senior Front-End Developer" [level=3] [ref=e286]
+              - generic [ref=e287]:
+                - generic [ref=e288]: Executive Five Star
+                - generic [ref=e289]: •
+                - generic [ref=e290]: Montville, NJ
+            - paragraph [ref=e291]: Owned front-end for the company's car service site and online booking.
+            - generic [ref=e292]:
+              - generic [ref=e295]: Developed and maintained the primary WordPress site with improved usability and mobile responsiveness.
+              - generic [ref=e298]: Integrated Limo Anywhere API for real-time reservations and back-office sync.
+              - generic [ref=e301]: Streamlined dispatch workflows by connecting booking front-end to internal systems.
+          - generic [ref=e307]:
+            - generic [ref=e309]: 2013 - 2016
+            - generic [ref=e310]:
+              - heading "Front-End Developer" [level=3] [ref=e311]
+              - generic [ref=e312]:
+                - generic [ref=e313]: Robert Half Technology
+                - generic [ref=e314]: •
+                - generic [ref=e315]: Parsippany, NJ
+            - paragraph [ref=e316]: Built enterprise UIs and internal tooling in JavaScript ecosystems.
+            - generic [ref=e317]:
+              - generic [ref=e320]: Developed UIs for internal financial platforms using JavaScript, jQuery, and Bootstrap to improve reporting workflows.
+              - generic [ref=e323]: Built interactive presentation tools for pharmaceutical clients using Veeva CRM and HTML5.
+              - generic [ref=e326]: Delivered front-end features aligned with enterprise UX guidelines in Agile cycles.
+              - generic [ref=e329]: Led multiple internal WordPress projects and mentored junior developers on front-end best practices.
+          - generic [ref=e335]:
+            - generic [ref=e337]: 2009 - 2013
+            - generic [ref=e338]:
+              - heading "Web Developer (Contract)" [level=3] [ref=e339]
+              - generic [ref=e340]:
+                - generic [ref=e341]: Level-Nine Creative
+                - generic [ref=e342]: •
+                - generic [ref=e343]: Merritt Island, FL
+            - paragraph [ref=e344]: Delivered custom WordPress sites for small businesses and agencies.
+            - generic [ref=e345]:
+              - generic [ref=e348]: Designed and developed custom websites using WordPress, PHP, JavaScript, and CSS.
+              - generic [ref=e351]: Built reusable UI components for responsive, cross-browser performance.
+              - generic [ref=e354]: Customized themes/plugins to support marketing workflows and SEO.
+          - generic [ref=e360]:
+            - generic [ref=e362]: 2005 - 2009
+            - generic [ref=e363]:
+              - heading "Web Development Program Director" [level=3] [ref=e364]
+              - generic [ref=e365]:
+                - generic [ref=e366]: Anthem Institute
+                - generic [ref=e367]: •
+                - generic [ref=e368]: Parsippany, NJ
+            - paragraph [ref=e369]: Led curriculum and instruction across multiple campuses.
+            - generic [ref=e370]:
+              - generic [ref=e373]: Taught HTML, CSS, JavaScript, PHP, and MySQL; built industry-ready skills.
+              - generic [ref=e376]: Managed a team of 8 instructors across 4 campuses; ensured curriculum alignment.
+              - generic [ref=e379]: Oversaw accreditation compliance; partnered with Pearson VUE for certification programs.
+      - generic [ref=e382]:
+        - generic [ref=e383]:
+          - heading "Who I Work With" [level=2] [ref=e384]
+          - paragraph [ref=e385]: Tailored solutions for different audiences and project types
+        - generic [ref=e386]:
+          - generic [ref=e387]:
+            - img [ref=e390]
+            - heading "Recruiters" [level=4] [ref=e395]
+            - paragraph [ref=e396]: Open to new opportunities and exciting roles in front-end development and technical leadership
+            - generic [ref=e397]: Available Now • Remote OK
+          - generic [ref=e398]:
+            - img [ref=e401]
+            - heading "Startup Founders" [level=4] [ref=e403]
+            - paragraph [ref=e404]: MVP development, technical consulting, and scaling your product from idea to market
+            - generic [ref=e405]: Fast Turnaround • Proven Results
+          - generic [ref=e406]:
+            - img [ref=e409]
+            - heading "Enterprise" [level=4] [ref=e412]
+            - paragraph [ref=e413]: Technical consulting, architecture design, and enterprise-scale application development
+            - generic [ref=e414]: Enterprise Ready • Scalable Solutions
+          - generic [ref=e415]:
+            - img [ref=e418]
+            - heading "Developers" [level=4] [ref=e421]
+            - paragraph [ref=e422]: Collaboration opportunities, knowledge sharing, and contributing to the developer community
+            - generic [ref=e423]: Open Source • Mentoring
+      - generic [ref=e426]:
+        - generic [ref=e427]:
+          - heading "Let's Build Something Amazing" [level=2] [ref=e428]
+          - paragraph [ref=e429]: Ready to transform your ideas into digital success? I'm here to help you achieve your goals with expert development and strategic guidance.
+          - generic [ref=e432]: Available for New Projects
+        - generic [ref=e434]:
+          - generic [ref=e435]:
+            - heading "Get In Touch" [level=3] [ref=e436]
+            - generic [ref=e437]:
+              - generic [ref=e438]:
+                - img [ref=e440]
+                - generic [ref=e443]:
+                  - paragraph [ref=e444]: Email
+                  - link "john@schibelli.dev" [ref=e445]:
+                    - /url: mailto:john@schibelli.dev
+              - generic [ref=e446]:
+                - img [ref=e448]
+                - generic [ref=e451]:
+                  - paragraph [ref=e452]: Location
+                  - paragraph [ref=e453]: Northern NJ
+              - generic [ref=e454]:
+                - img [ref=e456]
+                - generic [ref=e459]:
+                  - paragraph [ref=e460]: Response Time
+                  - paragraph [ref=e461]: Within 24 hours
+          - generic [ref=e462]:
+            - heading "Connect & Learn More" [level=3] [ref=e463]
+            - generic [ref=e464]:
+              - generic [ref=e465]:
+                - img [ref=e467]
+                - generic [ref=e471]:
+                  - paragraph [ref=e472]: LinkedIn
+                  - link "Connect with me" [ref=e473]:
+                    - /url: https://linkedin.com/in/johnschibelli
+              - generic [ref=e474]:
+                - img [ref=e476]
+                - generic [ref=e478]:
+                  - paragraph [ref=e479]: Availability
+                  - paragraph [ref=e480]: Available for new projects
+              - generic [ref=e481]:
+                - img [ref=e483]
+                - generic [ref=e485]:
+                  - paragraph [ref=e486]: Core Specialties
+                  - paragraph [ref=e487]: React, Next.js, TypeScript, AI Integration
+        - button "Start Your Project" [ref=e489] [cursor=pointer]:
+          - text: Start Your Project
+          - img
+    - button "Open chatbot" [ref=e490] [cursor=pointer]:
+      - img [ref=e491] [cursor=pointer]
+  - contentinfo [ref=e493]:
+    - generic [ref=e495]:
+      - link "John Schibelli - Home page" [ref=e497]:
+        - /url: /
+        - img "John Schibelli" [ref=e499]
+      - navigation "Social media links" [ref=e500]:
+        - list [ref=e501]:
+          - listitem "Find us on Facebook, external website, opens in new tab" [ref=e502]:
+            - img [ref=e503]
+          - listitem "Find us on Github, external website, opens in new tab" [ref=e505]:
+            - img [ref=e506]
+          - listitem "Find us on Linkedin, external website, opens in new tab" [ref=e508]:
+            - img [ref=e509]
+          - listitem "Find us on Bluesky, external website, opens in new tab" [ref=e511]:
+            - img [ref=e512]
+          - listitem "Open blog XML Feed, opens in new tab" [ref=e514]:
+            - img [ref=e515]
+      - paragraph [ref=e518]: © 2025 John Schibelli. All rights reserved.
+  - alert [ref=e519]
+```
