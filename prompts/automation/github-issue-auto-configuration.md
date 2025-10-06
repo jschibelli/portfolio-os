@@ -8,28 +8,34 @@ When creating or updating GitHub issues, use this automation to ensure consisten
 
 ## Available Scripts
 
-### 1. Full Configuration Script
-**File:** `scripts/auto-configure-issue.ps1`
+### 1. Updated Configuration Script (Recommended)
+**File:** `scripts/auto-configure-issue-updated.ps1`
 
 **Usage:**
 ```powershell
-.\scripts\auto-configure-issue.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues" -Labels "ready-to-implement,priority: high,area: functionality"
+# Basic configuration
+.\scripts\auto-configure-issue-updated.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend"
+
+# Full configuration with estimate and milestone
+.\scripts\auto-configure-issue-updated.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Estimate 3 -Milestone "Sprint 1" -Labels "ready-to-implement"
 ```
 
-### 2. Simplified Script with Presets
-**File:** `scripts/auto-configure-issue-simple.ps1`
+### 2. Set Estimate and Iteration
+**File:** `scripts/set-estimate-iteration.ps1`
 
 **Usage:**
 ```powershell
-# Using presets
-.\scripts\auto-configure-issue-simple.ps1 190 blog
-.\scripts\auto-configure-issue-simple.ps1 191 dashboard
-.\scripts\auto-configure-issue-simple.ps1 192 docs
-.\scripts\auto-configure-issue-simple.ps1 193 infra
+# Set estimate only
+.\scripts\set-estimate-iteration.ps1 -IssueNumber 190 -Estimate 3
 
-# Custom configuration
-.\scripts\auto-configure-issue-simple.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Milestone "Blog Functionality & Connection Issues"
+# Set both estimate and iteration
+.\scripts\set-estimate-iteration.ps1 -IssueNumber 190 -Estimate 3 -Iteration "Sprint 1"
 ```
+
+### 3. Legacy Scripts (Deprecated)
+**Files:** `scripts/auto-configure-issue.ps1`, `scripts/auto-configure-issue-simple.ps1`
+
+**Note:** These scripts use GraphQL mutations which can fail silently. Use the updated scripts above instead.
 
 ## Configuration Presets
 
@@ -63,6 +69,16 @@ When creating or updating GitHub issues, use this automation to ensure consisten
 
 ## Project Field Mappings
 
+### Field IDs (Current as of 2025-01-07)
+- **Project ID:** PVT_kwHOAEnMVc4BCu-c
+- **Status Field:** PVTSSF_lAHOAEnMVc4BCu-czg028oM
+- **Priority Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qQ
+- **Size Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qU
+- **App Field:** PVTSSF_lAHOAEnMVc4BCu-czg156-s
+- **Area Field:** PVTSSF_lAHOAEnMVc4BCu-czg156_Y
+- **Estimate Field:** PVTF_lAHOAEnMVc4BCu-czg028qY
+- **Iteration Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qY
+
 ### Status Options
 - **Ready:** e18bf179
 - **In progress:** 47fc9ee4
@@ -93,6 +109,13 @@ When creating or updating GitHub issues, use this automation to ensure consisten
 - **Infra:** 5a298e61
 - **DX/Tooling:** a67a98e5
 
+### Estimate Options (Number Field)
+- **1-2 days:** 1
+- **3-5 days:** 3
+- **1 week:** 5
+- **2 weeks:** 10
+- **1 month:** 20
+
 ## GitHub Actions Integration
 
 ### Workflow Example
@@ -115,7 +138,7 @@ jobs:
 
 ## Manual Configuration Commands
 
-### Set Project Fields
+### Set Project Fields (Recommended Method)
 ```bash
 # Get issue ID
 ISSUE_ID=$(gh issue view ISSUE_NUMBER --json id -q .id)
@@ -123,8 +146,24 @@ ISSUE_ID=$(gh issue view ISSUE_NUMBER --json id -q .id)
 # Get project item ID
 PROJECT_ITEM_ID=$(gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id title } } } } } }' -f issueId=$ISSUE_ID | jq -r '.data.node.projectItems.nodes[0].id')
 
-# Update fields (example for Status: Ready)
-gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' -f projectId="PVT_kwHOAEnMVc4BCu-c" -f itemId=$PROJECT_ITEM_ID -f fieldId="PVTSSF_lAHOAEnMVc4BCu-czg028oM" -f value="e18bf179"
+# Update fields using gh project item-edit (RECOMMENDED)
+# Priority
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qQ" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "0a877460"
+
+# Size
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qU" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "86db8eb3"
+
+# App
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg156-s" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "de5faa4a"
+
+# Area
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg156_Y" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "5618641d"
+
+# Estimate (number field)
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTF_lAHOAEnMVc4BCu-czg028qY" --project-id "PVT_kwHOAEnMVc4BCu-c" --number 3
+
+# Sprint/Iteration (if needed)
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qY" --project-id "PVT_kwHOAEnMVc4BCu-c" --iteration-id "ITERATION_ID"
 ```
 
 ### Set Milestone
@@ -137,21 +176,39 @@ gh issue edit ISSUE_NUMBER --milestone "MILESTONE_NAME"
 gh issue edit ISSUE_NUMBER --add-label "label1,label2,label3"
 ```
 
+## Key Improvements (2025-01-07)
+
+### ✅ What's Fixed
+- **Reliable field updates** using `gh project item-edit` instead of GraphQL mutations
+- **Added Estimate field support** for story points/time tracking
+- **Added Iteration field support** for sprint planning
+- **Better error handling** with clear success/failure feedback
+- **Updated field IDs** to current project structure
+
+### ✅ What's New
+- **Estimate field** - Set story points (1-20 days)
+- **Iteration field** - Assign to sprints/iterations
+- **Simplified syntax** - No complex GraphQL mutations needed
+- **Better debugging** - Clear error messages and status updates
+
 ## Best Practices
 
-1. **Always use presets** when possible for consistency
-2. **Set milestone** for issue tracking and sprint planning
-3. **Use appropriate labels** for filtering and organization
-4. **Configure all project fields** for proper project board organization
-5. **Test the automation** with a test issue before using in production
+1. **Use the updated scripts** (`auto-configure-issue-updated.ps1`) for reliability
+2. **Set estimate values** for better sprint planning (1-20 days)
+3. **Set milestone** for issue tracking and sprint planning
+4. **Use appropriate labels** for filtering and organization
+5. **Configure all project fields** for proper project board organization
+6. **Test the automation** with a test issue before using in production
+7. **Check field IDs** if project structure changes using `gh project view 20 --json fields`
 
 ## Troubleshooting
 
 ### Common Issues
 - **Issue not found:** Verify issue number exists
 - **Project not found:** Ensure issue is added to the correct project
-- **Field update fails:** Check field IDs and option IDs are correct
+- **Field update fails:** Use `gh project item-edit` instead of GraphQL mutations
 - **Permission denied:** Ensure GitHub CLI is authenticated
+- **GraphQL mutations succeed but don't update:** This is a known issue - use `gh project item-edit` instead
 
 ### Debug Commands
 ```bash
@@ -164,9 +221,18 @@ gh project list
 # View issue details
 gh issue view ISSUE_NUMBER --json id,projectItems
 
-# Test GraphQL query
-gh api graphql -f query='query { viewer { login } }'
+# Get current project field values
+gh project view 20 --json fields
+
+# Test individual field update
+gh project item-edit --id PROJECT_ITEM_ID --field-id FIELD_ID --project-id PROJECT_ID --single-select-option-id OPTION_ID
 ```
+
+### Why Use `gh project item-edit` Instead of GraphQL?
+- **GraphQL mutations can "succeed" but not actually update fields** - this is a known GitHub API issue
+- **`gh project item-edit` is more reliable** - it directly updates the project fields
+- **Better error handling** - clearer success/failure feedback
+- **Simpler syntax** - no need to construct complex GraphQL mutations
 
 ## Integration with Development Workflow
 
