@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-06T00:36:00Z",
+  "agents": {
+    "agent-1-chris": {
+      "name": "Chris - Backend Agent",
+      "description": "Chris handles backend infrastructure, API, and automation",
+      "type": "agent-backend",
+      "status": "active",
+      "workTreePath": "worktrees/agent-1-chris",
+      "currentBranch": "feat/backend/agent-1-chris",
+      "currentIssue": null,
+      "lockedIssues": [],
+      "lastActivity": "2025-10-06T00:36:00Z",
+      "assignedIssues": [],
+      "maxConcurrent": 2,
+      "issueRanges": [200, 220],
+      "skills": ["Node.js", "API", "Database", "Prisma", "GraphQL", "PowerShell", "Automation"]
+    },
+    "agent-2-jason": {
+      "name": "Jason - Frontend Agent", 
+      "description": "Jason handles frontend development, UI/UX, and user experience",
+      "type": "agent-frontend",
+      "status": "active",
+      "workTreePath": "worktrees/agent-2-jason",
+      "currentBranch": "feat/frontend/agent-2-jason",
+      "currentIssue": null,
+      "lockedIssues": [],
+      "lastActivity": "2025-10-06T00:36:00Z",
+      "assignedIssues": [],
+      "maxConcurrent": 3,
+      "issueRanges": [150, 160, 196, 208],
+      "skills": ["React", "Next.js", "TypeScript", "Tailwind", "UI/UX", "Frontend"]
+    }
+  },
+  "system": {
+    "totalWorkTrees": 2,
+    "activeWorkTrees": 2,
+    "lastSync": "2025-10-06T00:36:00Z",
+    "conflictPrevention": {
+      "enabled": true,
+      "lockTimeout": 3600,
+      "maxRetries": 3
+    }
+  }
+}

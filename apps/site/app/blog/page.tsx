@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { AppProvider } from '../../components/contexts/appContext';
 import Chatbot from '../../components/features/chatbot/Chatbot';
 import ModernHero from '../../components/features/homepage/modern-hero';
@@ -15,6 +16,52 @@ import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: 'Blog | John Schibelli - Web Development Insights',
+  description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli. Covering React, Next.js, TypeScript, AI integration, and modern web development practices.',
+  keywords: ['blog', 'web development', 'React', 'Next.js', 'TypeScript', 'tutorials', 'insights', 'John Schibelli', 'front-end development'],
+  authors: [{ name: 'John Schibelli' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: 'Blog | John Schibelli - Web Development Insights',
+    description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli. Covering React, Next.js, TypeScript, AI integration, and modern web development practices.',
+    url: 'https://johnschibelli.dev/blog',
+    siteName: 'John Schibelli Portfolio',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/assets/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'John Schibelli Blog - Web Development Insights',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | John Schibelli - Web Development Insights',
+    description: 'Explore web development insights, tutorials, and industry thoughts from John Schibelli.',
+    creator: '@johnschibelli',
+    images: ['/assets/og.png'],
+  },
+  alternates: {
+    canonical: 'https://johnschibelli.dev/blog',
+  },
+};
 
 // Default publication object for fallback
 const defaultPublication = {
@@ -48,8 +95,74 @@ export default async function BlogPage() {
     fetchPublication()
   ]);
 
+<<<<<<< HEAD
   // Use fetched publication or fallback to default
   const currentPublication = publication || defaultPublication;
+=======
+  // Fetch latest posts from Hashnode
+  const query = `
+    query PostsByPublication($host: String!, $first: Int!, $after: String) {
+      publication(host: $host) {
+        posts(first: $first, after: $after) {
+          edges {
+            node {
+              id
+              title
+              brief
+              slug
+              publishedAt
+              coverImage { url }
+              author { name }
+              tags { name slug }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  let posts: any[] = [];
+  try {
+    const res = await fetch(GQL_ENDPOINT, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+      body: JSON.stringify({ query, variables: { host, first: 10 } }),
+      next: { 
+        revalidate: 60,
+        tags: ['blog-posts'],
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch blog posts: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    
+    // Check for GraphQL errors
+    if (data.errors) {
+      console.error('GraphQL errors:', data.errors);
+      throw new Error(`GraphQL error: ${data.errors[0]?.message || 'Unknown error'}`);
+    }
+
+    const edges = data?.data?.publication?.posts?.edges || [];
+    posts = edges.map((e: any) => e.node);
+  } catch (error) {
+    console.error('Error fetching Hashnode posts:', error);
+    // Re-throw the error to be caught by the error boundary
+    // In production, you might want to handle this differently
+    if (process.env.NODE_ENV === 'production') {
+      // In production, return empty array instead of throwing
+      posts = [];
+    } else {
+      // In development, throw to see error details
+      throw error;
+    }
+  }
+>>>>>>> origin/copilot/fix-56aab07e-3258-4fb2-868f-299adc76e886
 
   const featuredPost = posts[0];
   const morePosts = posts.slice(1, 4);
