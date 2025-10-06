@@ -7,8 +7,8 @@ import EnhancedCTASection from '../../components/features/cta/enhanced-cta-secti
 import { Layout } from '../../components/shared/layout';
 
 import { allProjects as projectMetaList } from '../../data/projects';
+import { ArrowRight, Calendar, Code, Users, MapPin, CheckCircle, Search, Award } from 'lucide-react';
 import { ProjectsPageClient } from './projects-client';
-import { Calendar, Code, Users, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Projects and Case Studies | John Schibelli',
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Server-side data preparation
-function getProjectsData() {
-  const projects = projectMetaList.map(projectMeta => ({
+// Transform data/projects ProjectMeta into ProjectCard Project shape
+function toProjectCard(projectMeta: any) {
+  return {
     id: projectMeta.id,
     title: projectMeta.title,
     description: projectMeta.description,
@@ -74,17 +74,37 @@ function getProjectsData() {
     industry: projectMeta.industry,
     startDate: projectMeta.startDate,
     endDate: projectMeta.endDate,
-  }));
+  };
+}
 
+function getProjectsData() {
+  const projects = projectMetaList.map(toProjectCard);
+  
+  // Get all unique tags for filtering
   const allTags = Array.from(new Set(projects.flatMap(p => p.tags))).sort();
+  
+  // Get all unique categories
+  const allCategories = Array.from(new Set(projects.map(p => p.category || 'other'))).sort();
+  
+  // Get all unique technologies
+  const allTechnologies = Array.from(new Set(projects.flatMap(p => p.technologies || []))).sort();
+  
+  // Get all unique statuses
+  const allStatuses = Array.from(new Set(projects.map(p => p.status || 'completed'))).sort();
+  
+  // Get all unique clients
+  const allClients = Array.from(new Set(projects.map(p => p.client).filter(Boolean))).sort();
   
   return {
     projects,
     allTags,
+    allCategories,
+    allTechnologies,
+    allStatuses,
+    allClients,
     projectCount: projects.length,
   };
 }
-
 export default function ProjectsPage() {
   const { projects, allTags, projectCount } = getProjectsData();
 
@@ -100,8 +120,10 @@ export default function ProjectsPage() {
           <div className="relative z-10">
             <Container className="px-4 sm:px-6">
               <div className="mx-auto max-w-5xl text-center space-y-6 sm:space-y-8">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
-                  Projects and Case Studies
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-stone-900 dark:text-stone-100 leading-tight
+                  bg-gradient-to-r from-stone-900 via-stone-700 to-stone-900 dark:from-stone-100 dark:via-stone-300 dark:to-stone-100
+                  bg-clip-text text-transparent">
+                  Projects & Case Studies
                 </h1>
                 <div className="space-y-3 sm:space-y-4">
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-stone-800 dark:text-stone-200">John Schibelli</h2>
@@ -189,7 +211,11 @@ export default function ProjectsPage() {
 
         {/* Interactive Features (Client-side) */}
         <Suspense fallback={<div className="min-h-screen bg-white dark:bg-stone-950" />}>
-          <ProjectsPageClient />
+          <ProjectsPageClient 
+            initialProjects={projects}
+            allTags={allTags}
+            projectCount={projectCount}
+          />
         </Suspense>
 
         {/* Technologies & Skills */}
@@ -229,4 +255,3 @@ export default function ProjectsPage() {
     </Layout>
   );
 }
-

@@ -170,8 +170,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Parse comma-separated IDs
-    const mediaIds = ids.split(',').filter(id => id.trim());
+    const mediaIds = ids.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
     
     if (mediaIds.length === 0) {
       return NextResponse.json(
@@ -184,44 +183,31 @@ export async function DELETE(request: NextRequest) {
     const usedMedia = await prisma.imageAsset.findMany({
       where: {
         id: { in: mediaIds },
-        usedBy: {
-          some: {}
-        }
+        usedBy: { some: {} }
       },
-      include: {
-        usedBy: {
-          select: {
-            title: true,
-            slug: true
-          }
-        }
-      }
+      select: { id: true, url: true }
     });
 
     if (usedMedia.length > 0) {
-      const usedInArticles = usedMedia.map(item => 
-        `${item.url} (used in: ${item.usedBy.map(article => article.title).join(', ')})`
-      ).join(', ');
-      
       return NextResponse.json(
         { 
           error: "Cannot delete media items that are being used by articles",
-          details: usedInArticles
+          usedItems: usedMedia.map(item => item.url)
         },
         { status: 400 }
       );
     }
 
     // Delete the media items
-    const deleteResult = await prisma.imageAsset.deleteMany({
+    const deletedCount = await prisma.imageAsset.deleteMany({
       where: {
         id: { in: mediaIds }
       }
     });
 
     return NextResponse.json({
-      message: `Successfully deleted ${deleteResult.count} media item(s)`,
-      deletedCount: deleteResult.count
+      message: `Successfully deleted ${deletedCount.count} media item(s)`,
+      deletedCount: deletedCount.count
     });
   } catch (error) {
     console.error("Error deleting media items:", error);

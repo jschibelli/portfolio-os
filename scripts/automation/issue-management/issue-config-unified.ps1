@@ -39,16 +39,32 @@ param(
     [switch]$AddToProject,
     
     [Parameter(Mandatory=$false)]
-    [switch]$DryRun
+    [switch]$DryRun,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$EnableAI,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$AIPreset = ""
 )
 
 # Import shared utilities
-$sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
+$sharedPath = Join-Path $PSScriptRoot "..\core-utilities\github-utils.ps1"
+$aiServicesPath = Join-Path $PSScriptRoot "..\core-utilities\ai-services.ps1"
+
 if (Test-Path $sharedPath) {
     . $sharedPath
 } else {
     Write-Error "Shared utilities not found at $sharedPath"
     exit 1
+}
+
+if (Test-Path $aiServicesPath) {
+    . $aiServicesPath
+    $script:aiEnabled = $true
+} else {
+    Write-Warning "AI services not found at $aiServicesPath - AI features disabled"
+    $script:aiEnabled = $false
 }
 
 # Validate authentication
@@ -231,18 +247,137 @@ function Set-IssueMilestone {
     }
 }
 
+function Get-AIIssueConfiguration {
+    param(
+        [string]$IssueNumber,
+        [string]$IssueTitle,
+        [string]$IssueBody
+    )
+    
+    if (-not $script:aiEnabled) {
+        Write-ColorOutput "AI features disabled - using default configuration" "Yellow"
+        return $null
+    }
+    
+    Write-ColorOutput "🤖 Analyzing issue with AI..." "Cyan"
+    
+    try {
+        # Initialize AI services if not already done
+        if (-not (Get-Variable -Name "aiInitialized" -Scope Script -ErrorAction SilentlyContinue)) {
+            if (Initialize-AIServices) {
+                $script:aiInitialized = $true
+            } else {
+                Write-Warning "Failed to initialize AI services"
+                return $null
+            }
+        }
+        
+        $prompt = @"
+Analyze the following GitHub issue and recommend optimal configuration:
+
+Issue #$IssueNumber: $IssueTitle
+
+Description:
+$IssueBody
+
+Please recommend:
+1. Priority (P0, P1, P2, P3) - P0 is critical, P3 is low
+2. Size (XS, S, M, L, XL) - XS is tiny, XL is very large
+3. App (Portfolio Site, Dashboard, Docs, Infra)
+4. Area (Frontend, Backend, Infra, Content, Design)
+5. Status (Todo, In progress, Ready, Done)
+6. Labels (comma-separated list)
+7. Milestone (if applicable)
+
+Consider the issue type, complexity, impact, and urgency.
+Respond in JSON format:
+{
+  "priority": "P1",
+  "size": "M",
+  "app": "Portfolio Site",
+  "area": "Frontend",
+  "status": "Todo",
+  "labels": ["bug", "frontend"],
+  "milestone": "Bug Fixes"
+}
+"@
+        
+        $response = Invoke-AICompletion -Prompt $prompt -SystemMessage "You are an expert project manager who analyzes GitHub issues and recommends optimal configuration for project management."
+        
+        # Parse JSON response
+        $aiConfig = $response | ConvertFrom-Json
+        Write-ColorOutput "✅ AI analysis completed" "Green"
+        
+        return $aiConfig
+    }
+    catch {
+        Write-Warning "AI analysis failed: $($_.Exception.Message)"
+        return $null
+    }
+}
+
+function Apply-AIConfiguration {
+    param(
+        [object]$AIConfig,
+        [string]$IssueNumber
+    )
+    
+    if (-not $AIConfig) { return }
+    
+    Write-ColorOutput "🤖 Applying AI-recommended configuration..." "Cyan"
+    
+    # Apply AI recommendations
+    $script:Priority = $AIConfig.priority
+    $script:Size = $AIConfig.size
+    $script:App = $AIConfig.app
+    $script:Area = $AIConfig.area
+    $script:Status = $AIConfig.status
+    $script:Labels = $AIConfig.labels
+    $script:Milestone = $AIConfig.milestone
+    
+    Write-ColorOutput "  ✅ AI configuration applied" "Green"
+    Write-ColorOutput "    Priority: $Priority" "White"
+    Write-ColorOutput "    Size: $Size" "White"
+    Write-ColorOutput "    App: $App" "White"
+    Write-ColorOutput "    Area: $Area" "White"
+    Write-ColorOutput "    Status: $Status" "White"
+    Write-ColorOutput "    Labels: $($Labels -join ', ')" "White"
+    Write-ColorOutput "    Milestone: $Milestone" "White"
+}
+
 # Main execution
 Show-Banner
 
 Write-ColorOutput "Configuring Issue #$IssueNumber" "Green"
 Write-ColorOutput "Preset: $Preset" "White"
+Write-ColorOutput "AI Features: $(if ($script:aiEnabled) { 'Enabled' } else { 'Disabled' })" "White"
 
 if ($DryRun) {
     Write-ColorOutput "*** DRY RUN MODE - No changes will be made ***" "Cyan"
 }
 
-# Apply preset configuration
-if ($Preset -ne "custom") {
+# Get issue data for AI analysis if enabled
+$issueData = $null
+if ($script:aiEnabled -and ($EnableAI -or -not [string]::IsNullOrEmpty($AIPreset))) {
+    try {
+        $issueJson = gh issue view $IssueNumber --json title,body
+        $issueData = $issueJson | ConvertFrom-Json
+    }
+    catch {
+        Write-Warning "Failed to get issue data for AI analysis: $($_.Exception.Message)"
+    }
+}
+
+# Apply AI configuration if enabled
+if ($script:aiEnabled -and ($EnableAI -or -not [string]::IsNullOrEmpty($AIPreset)) -and $issueData) {
+    $aiConfig = Get-AIIssueConfiguration -IssueNumber $IssueNumber -IssueTitle $issueData.title -IssueBody $issueData.body
+    if ($aiConfig) {
+        Apply-AIConfiguration -AIConfig $aiConfig -IssueNumber $IssueNumber
+    }
+}
+
+# Apply preset configuration (only if not using AI or if AI failed)
+if ($Preset -ne "custom" -and (-not $aiConfig -or [string]::IsNullOrEmpty($AIPreset))) {
     Apply-Preset -PresetName $Preset
 }
 

@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { Container } from '../../components/shared/container';
 import ProjectCard, { Project } from '../../components/features/portfolio/project-card';
 
-import { allProjects as projectMetaList } from '../../data/projects';
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
@@ -16,35 +15,19 @@ import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Search, X } from 'lucide-react';
 
-// Transform data/projects ProjectMeta into ProjectCard Project shape
-function toProjectCard(projectMeta: any): Project {
-  return {
-    id: projectMeta.id,
-    title: projectMeta.title,
-    description: projectMeta.description,
-    image: projectMeta.image || '/assets/hero/hero-image.webp',
-    tags: projectMeta.tags || [],
-    caseStudyUrl: projectMeta.caseStudyUrl,
-    slug: projectMeta.slug,
-    liveUrl: projectMeta.liveUrl,
-    category: projectMeta.category,
-    status: projectMeta.status,
-    technologies: projectMeta.technologies,
-    client: projectMeta.client,
-    industry: projectMeta.industry,
-    startDate: projectMeta.startDate,
-    endDate: projectMeta.endDate,
-  };
+interface ProjectsPageClientProps {
+  initialProjects: Project[];
+  allTags: string[];
+  projectCount: number;
 }
 
-export function ProjectsPageClient() {
+export function ProjectsPageClient({ initialProjects, allTags, projectCount }: ProjectsPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const projects: Project[] = useMemo(() => projectMetaList.map(toProjectCard), []);
+  const projects: Project[] = useMemo(() => initialProjects, [initialProjects]);
 
   // Facets
-  const allTags = useMemo(() => Array.from(new Set(projects.flatMap(p => p.tags))).sort(), [projects]);
   const allTechnologies = useMemo(() => Array.from(new Set(projects.flatMap(p => p.tags))).sort(), [projects]);
   const allCategories = useMemo(() => Array.from(new Set(projects.map(p => p.category || 'other'))).sort(), [projects]);
   const allStatuses = useMemo(() => Array.from(new Set(projects.map(p => p.status || 'completed'))).sort(), [projects]);
@@ -131,7 +114,7 @@ export function ProjectsPageClient() {
   }, [currentSearch, allTags, allTechnologies, allClients, allCategories]);
 
   // Filter + sort
-  const filtered = useMemo(() => {
+  const filteredProjects = useMemo(() => {
     let list = [...projects];
 
     if (currentSearch) list = enhancedSearch(currentSearch, list);
@@ -167,7 +150,12 @@ export function ProjectsPageClient() {
         list.sort((a, b) => (a.tags?.length || 0) - (b.tags?.length || 0));
         break;
       default:
-        break;
+        // Default: most recent first
+        list.sort((a, b) => {
+          const dateA = new Date(a.endDate || a.startDate || 0);
+          const dateB = new Date(b.endDate || b.startDate || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
     }
 
     return list;
@@ -272,7 +260,7 @@ export function ProjectsPageClient() {
             <div className="space-y-3 text-center text-xs sm:text-sm text-stone-600 dark:text-stone-400">
               {hasActiveFilters ? (
                 <span>
-                  Showing {filtered.length} of {projects.length} projects
+                  Showing {filteredProjects.length} of {projects.length} projects
                   {currentTags.length > 0 && (<span className="block sm:inline"> • for {currentTags.length} tech filter{currentTags.length > 1 ? 's' : ''}</span>)}
                   {currentSearch && (<span className="block sm:inline"> • matching "{currentSearch}"</span>)}
                 </span>
@@ -309,7 +297,7 @@ export function ProjectsPageClient() {
       {/* Interactive Projects Grid */}
       <section className="bg-stone-50 py-12 sm:py-16 lg:py-20 dark:bg-stone-900">
         <Container className="px-4 sm:px-6">
-          {filtered.length === 0 ? (
+          {filteredProjects.length === 0 ? (
             <div className="text-center py-12 sm:py-16">
               <div className="mx-auto max-w-md px-4">
                 <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100 mb-4">No projects found</h3>
@@ -326,12 +314,12 @@ export function ProjectsPageClient() {
               <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} viewport={{ once: true }} className="mb-12 sm:mb-16 text-center">
                 <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">Filtered Results</h2>
                 <p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-stone-600 dark:text-stone-400 px-4">
-                  {hasActiveFilters ? `Showing ${filtered.length} of ${projects.length} projects` : 'All projects are displayed below.'}
+                  {hasActiveFilters ? `Showing ${filteredProjects.length} of ${projects.length} projects` : 'All projects are displayed below.'}
                 </p>
               </motion.div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {filtered.map((project, index) => (
+                {filteredProjects.map((project, index) => (
                   <ProjectCard key={project.id} project={project} index={index} />
                 ))}
               </div>
