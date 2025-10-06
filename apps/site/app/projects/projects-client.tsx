@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { ArrowRight, Calendar, Code, Users, MapPin, CheckCircle, Search, Award, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 interface ProjectsPageClientProps {
   initialProjects: Project[];
@@ -92,391 +92,239 @@ export function ProjectsPageClient({ initialProjects, allTags, projectCount }: P
   const handleStatusChange = useCallback((value: string) => updateFilters({ status: value === 'all' ? null : value }), [updateFilters]);
   const handleTechnologyChange = useCallback((value: string) => updateFilters({ technology: value === 'all' ? null : value }), [updateFilters]);
   const handleClientChange = useCallback((value: string) => updateFilters({ client: value === 'all' ? null : value }), [updateFilters]);
+  const clearAllFilters = useCallback(() => router.replace('/projects'), [router]);
 
-  // Filter and sort projects
+  const hasActiveFilters = currentTags.length > 0 || currentSearch || currentSort !== 'default' || currentCategory || currentStatus || currentTechnology || currentClient;
+
+  // Suggestions
+  useEffect(() => {
+    if (currentSearch && currentSearch.length > 1) {
+      const suggestions = [
+        ...allTags.filter(t => t.toLowerCase().includes(currentSearch.toLowerCase())),
+        ...allTechnologies.filter(t => t.toLowerCase().includes(currentSearch.toLowerCase())),
+        ...allClients.filter(c => c.toLowerCase().includes(currentSearch.toLowerCase())),
+        ...allCategories.filter(c => c.toLowerCase().includes(currentSearch.toLowerCase())),
+      ].slice(0, 5);
+      setSearchSuggestions(suggestions);
+      setShowSuggestions(suggestions.length > 0);
+    } else {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, [currentSearch, allTags, allTechnologies, allClients, allCategories]);
+
+  // Filter + sort
   const filteredProjects = useMemo(() => {
-    let filtered = projects;
+    let list = [...projects];
 
-    // Apply search filter
-    if (currentSearch) {
-      filtered = enhancedSearch(currentSearch, filtered);
-    }
+    if (currentSearch) list = enhancedSearch(currentSearch, list);
+    if (currentTags.length) list = list.filter(p => currentTags.some(t => (p.tags || []).includes(t)));
+    if (currentCategory) list = list.filter(p => (p.category || 'other') === currentCategory);
+    if (currentStatus) list = list.filter(p => (p.status || 'completed') === currentStatus);
+    if (currentTechnology) list = list.filter(p => (p.tags || []).includes(currentTechnology));
+    if (currentClient) list = list.filter(p => p.client === currentClient);
 
-    // Apply tag filter
-    if (currentTags.length > 0) {
-      filtered = filtered.filter(project => 
-        currentTags.some(tag => project.tags?.includes(tag))
-      );
-    }
-
-    // Apply category filter
-    if (currentCategory) {
-      filtered = filtered.filter(project => project.category === currentCategory);
-    }
-
-    // Apply status filter
-    if (currentStatus) {
-      filtered = filtered.filter(project => project.status === currentStatus);
-    }
-
-    // Apply technology filter
-    if (currentTechnology) {
-      filtered = filtered.filter(project => 
-        project.technologies?.includes(currentTechnology)
-      );
-    }
-
-    // Apply client filter
-    if (currentClient) {
-      filtered = filtered.filter(project => project.client === currentClient);
-    }
-
-    // Apply sorting
     switch (currentSort) {
-      case 'title':
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
+      case 'title-asc':
+        list.sort((a, b) => a.title.localeCompare(b.title));
         break;
-      case 'date':
-        filtered.sort((a, b) => {
-          const dateA = new Date(a.endDate || a.startDate || 0);
-          const dateB = new Date(b.endDate || b.startDate || 0);
-          return dateB.getTime() - dateA.getTime();
-        });
+      case 'title-desc':
+        list.sort((a, b) => b.title.localeCompare(a.title));
         break;
-      case 'status':
-        filtered.sort((a, b) => (a.status || '').localeCompare(b.status || ''));
+      case 'date-newest':
+        list.sort((a, b) => new Date(b.endDate || b.startDate || '').getTime() - new Date(a.endDate || a.startDate || '').getTime());
+        break;
+      case 'date-oldest':
+        list.sort((a, b) => new Date(a.startDate || a.endDate || '').getTime() - new Date(b.startDate || b.endDate || '').getTime());
+        break;
+      case 'client-asc':
+        list.sort((a, b) => (a.client || '').localeCompare(b.client || ''));
+        break;
+      case 'client-desc':
+        list.sort((a, b) => (b.client || '').localeCompare(a.client || ''));
+        break;
+      case 'tags-asc':
+        list.sort((a, b) => (b.tags?.length || 0) - (a.tags?.length || 0));
+        break;
+      case 'tags-desc':
+        list.sort((a, b) => (a.tags?.length || 0) - (b.tags?.length || 0));
         break;
       default:
         // Default: most recent first
-        filtered.sort((a, b) => {
+        list.sort((a, b) => {
           const dateA = new Date(a.endDate || a.startDate || 0);
           const dateB = new Date(b.endDate || b.startDate || 0);
           return dateB.getTime() - dateA.getTime();
         });
     }
 
-    return filtered;
+    return list;
   }, [projects, currentSearch, currentTags, currentCategory, currentStatus, currentTechnology, currentClient, currentSort, enhancedSearch]);
-
-  // Get search suggestions
-  const searchSuggestions = useMemo(() => {
-    if (!currentSearch || currentSearch.length < 2) return [];
-    
-    const suggestions = new Set<string>();
-    projects.forEach(project => {
-      if (project.title.toLowerCase().includes(currentSearch.toLowerCase())) {
-        suggestions.add(project.title);
-      }
-      if (project.client?.toLowerCase().includes(currentSearch.toLowerCase())) {
-        suggestions.add(project.client);
-      }
-      project.tags?.forEach(tag => {
-        if (tag.toLowerCase().includes(currentSearch.toLowerCase())) {
-          suggestions.add(tag);
-        }
-      });
-    });
-    
-    return Array.from(suggestions).slice(0, 5);
-  }, [currentSearch, projects]);
 
   return (
     <>
-      {/* Filters Section */}
-      <section className="py-8 bg-stone-50 dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700">
+      {/* Interactive Filters */}
+      <section className="border-b border-stone-200 bg-white py-6 sm:py-8 dark:border-stone-800 dark:bg-stone-950">
         <Container className="px-4 sm:px-6">
-          <div className="mx-auto max-w-7xl">
-            <div className="space-y-6">
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-stone-400 h-5 w-5" />
-                <Input
-                  type="text"
-                  placeholder="Search projects, technologies, or clients..."
-                  value={currentSearch}
-                  onChange={(e) => {
-                    handleSearchChange(e.target.value);
-                    setShowSuggestions(true);
-                  }}
-                  onFocus={() => setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                  className="pl-10 pr-4 py-3 text-base border-stone-300 dark:border-stone-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                
-                {/* Search Suggestions */}
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="w-full">
+                <Label htmlFor="search" className="sr-only">Search projects</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+                  <Input 
+                    id="search" 
+                    type="text" 
+                    placeholder="Search projects, technologies, clients..." 
+                    value={currentSearch} 
+                    onChange={(e) => handleSearchChange(e.target.value)} 
+                    onFocus={() => setShowSuggestions(true)} 
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)} 
+                    className="w-full h-12 text-base pl-10" 
+                    autoComplete="off" 
+                    spellCheck={false} 
+                  />
+                </div>
                 {showSuggestions && searchSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-md shadow-lg">
-                    {searchSuggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-stone-50 dark:hover:bg-stone-700 focus:outline-none focus:bg-stone-50 dark:focus:bg-stone-700"
-                      >
-                        {suggestion}
-                      </button>
+                  <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-stone-200 bg-white shadow-lg dark:border-stone-700 dark:bg-stone-800">
+                    {searchSuggestions.map((s, i) => (
+                      <button key={i} onMouseDown={(e) => e.preventDefault()} onClick={() => handleSuggestionClick(s)} className="w-full px-4 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700">{s}</button>
                     ))}
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Filter Controls */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                {/* Sort */}
-                <div className="space-y-2">
-                  <Label htmlFor="sort" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    Sort by
-                  </Label>
-                  <Select value={currentSort} onValueChange={handleSortChange}>
-                    <SelectTrigger id="sort" className="w-full">
-                      <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">Most Recent</SelectItem>
-                      <SelectItem value="title">Title A-Z</SelectItem>
-                      <SelectItem value="date">Date</SelectItem>
-                      <SelectItem value="status">Status</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Category */}
-                <div className="space-y-2">
-                  <Label htmlFor="category" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    Category
-                  </Label>
-                  <Select value={currentCategory} onValueChange={handleCategoryChange}>
-                    <SelectTrigger id="category" className="w-full">
-                      <SelectValue placeholder="All Categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {allCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Status */}
-                <div className="space-y-2">
-                  <Label htmlFor="status" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    Status
-                  </Label>
-                  <Select value={currentStatus} onValueChange={handleStatusChange}>
-                    <SelectTrigger id="status" className="w-full">
-                      <SelectValue placeholder="All Statuses" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Statuses</SelectItem>
-                      {allStatuses.map((status) => (
-                        <SelectItem key={status} value={status}>
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Technology */}
-                <div className="space-y-2">
-                  <Label htmlFor="technology" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    Technology
-                  </Label>
-                  <Select value={currentTechnology} onValueChange={handleTechnologyChange}>
-                    <SelectTrigger id="technology" className="w-full">
-                      <SelectValue placeholder="All Technologies" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Technologies</SelectItem>
-                      {allTechnologies.map((tech) => (
-                        <SelectItem key={tech} value={tech}>
-                          {tech}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Client */}
-                <div className="space-y-2">
-                  <Label htmlFor="client" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    Client
-                  </Label>
-                  <Select value={currentClient} onValueChange={handleClientChange}>
-                    <SelectTrigger id="client" className="w-full">
-                      <SelectValue placeholder="All Clients" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Clients</SelectItem>
-                      {allClients.map((client) => (
-                        <SelectItem key={client} value={client}>
-                          {client}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center sm:justify-center">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Label htmlFor="sort" className="text-sm font-medium">Sort:</Label>
+                <Select value={currentSort} onValueChange={handleSortChange}>
+                  <SelectTrigger id="sort" className="w-full sm:w-40 h-12 text-base" aria-label="Sort projects">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="title-asc">Title A-Z</SelectItem>
+                    <SelectItem value="title-desc">Title Z-A</SelectItem>
+                    <SelectItem value="date-newest">Newest First</SelectItem>
+                    <SelectItem value="date-oldest">Oldest First</SelectItem>
+                    <SelectItem value="client-asc">Client A-Z</SelectItem>
+                    <SelectItem value="client-desc">Client Z-A</SelectItem>
+                    <SelectItem value="tags-asc">Most Tags</SelectItem>
+                    <SelectItem value="tags-desc">Fewest Tags</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* Active Filters */}
-              {(currentTags.length > 0 || currentSearch || currentCategory || currentStatus || currentTechnology || currentClient) && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Active filters:</span>
-                  
-                  {currentSearch && (
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      Search: {currentSearch}
-                      <button
-                        onClick={() => handleSearchChange('')}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  {currentTags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                      {tag}
-                      <button
-                        onClick={() => handleTagToggle(tag)}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                  
-                  {currentCategory && (
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      Category: {currentCategory}
-                      <button
-                        onClick={() => handleCategoryChange('all')}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  {currentStatus && (
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      Status: {currentStatus}
-                      <button
-                        onClick={() => handleStatusChange('all')}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  {currentTechnology && (
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      Tech: {currentTechnology}
-                      <button
-                        onClick={() => handleTechnologyChange('all')}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  {currentClient && (
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      Client: {currentClient}
-                      <button
-                        onClick={() => handleClientChange('all')}
-                        className="ml-1 hover:text-red-500"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  )}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      updateFilters({ search: null, tags: null, category: null, status: null, technology: null, client: null });
-                    }}
-                    className="text-xs"
-                  >
-                    Clear all
-                  </Button>
-                </div>
+              {hasActiveFilters && (
+                <Button variant="outline" size="sm" onClick={clearAllFilters} className="flex items-center gap-2 h-12 px-4 w-full sm:w-auto">
+                  <X className="h-4 w-4" />
+                  Clear Filters
+                </Button>
               )}
+            </div>
 
-              {/* Results Count */}
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-stone-600 dark:text-stone-400">
-                  Showing {filteredProjects.length} of {projectCount} projects
-                </p>
-                
-                {/* Tag Cloud */}
-                <div className="flex flex-wrap gap-2">
-                  {allTags.slice(0, 10).map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => handleTagToggle(tag)}
-                      className={`px-2 py-1 text-xs rounded-full transition-colors ${
-                        currentTags.includes(tag)
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          : 'bg-stone-100 text-stone-700 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                  {allTags.length > 10 && (
-                    <span className="text-xs text-stone-500 dark:text-stone-400">
-                      +{allTags.length - 10} more
-                    </span>
-                  )}
-                </div>
+            {hasActiveFilters && (
+              <div className="flex flex-wrap items-center gap-2 justify-center">
+                <span className="text-xs sm:text-sm font-medium">Active filters:</span>
+                {currentSearch && (
+                  <Badge variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1">
+                    <span className="truncate max-w-[120px] sm:max-w-none">Search: "{currentSearch}"</span>
+                    <button onClick={() => handleSearchChange('')} className="ml-1 hover:text-red-600" aria-label="Remove search filter"><X className="h-3 w-3" /></button>
+                  </Badge>
+                )}
+                {currentCategory && (
+                  <Badge variant="secondary" className="flex items-center gap-1">Type: {currentCategory.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}<button onClick={() => handleCategoryChange('all')} className="ml-1 hover:text-red-600" aria-label="Remove category filter"><X className="h-3 w-3" /></button></Badge>
+                )}
+                {currentStatus && (
+                  <Badge variant="secondary" className="flex items-center gap-1">Status: {currentStatus.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}<button onClick={() => handleStatusChange('all')} className="ml-1 hover:text-red-600" aria-label="Remove status filter"><X className="h-3 w-3" /></button></Badge>
+                )}
+                {currentTechnology && (
+                  <Badge variant="secondary" className="flex items-center gap-1">Tech: {currentTechnology}<button onClick={() => handleTechnologyChange('all')} className="ml-1 hover:text-red-600" aria-label="Remove technology filter"><X className="h-3 w-3" /></button></Badge>
+                )}
+                {currentClient && (
+                  <Badge variant="secondary" className="flex items-center gap-1">Client: {currentClient}<button onClick={() => handleClientChange('all')} className="ml-1 hover:text-red-600" aria-label="Remove client filter"><X className="h-3 w-3" /></button></Badge>
+                )}
+                {currentSort !== 'default' && (
+                  <Badge variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1">Sort: {currentSort.replace('-', ' ')}<button onClick={() => handleSortChange('default')} className="ml-1 hover:text-red-600" aria-label="Remove sort filter"><X className="h-3 w-3" /></button></Badge>
+                )}
+                {currentTags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="flex items-center gap-1 text-xs px-2 py-1">
+                    <span className="truncate max-w-[80px] sm:max-w-none">{tag}</span>
+                    <button onClick={() => handleTagToggle(tag)} className="ml-1 hover:text-red-600" aria-label={`Remove ${tag} filter`}><X className="h-3 w-3" /></button>
+                  </Badge>
+                ))}
               </div>
+            )}
+
+            <div className="space-y-3 text-center text-xs sm:text-sm text-stone-600 dark:text-stone-400">
+              {hasActiveFilters ? (
+                <span>
+                  Showing {filteredProjects.length} of {projects.length} projects
+                  {currentTags.length > 0 && (<span className="block sm:inline"> • for {currentTags.length} tech filter{currentTags.length > 1 ? 's' : ''}</span>)}
+                  {currentSearch && (<span className="block sm:inline"> • matching "{currentSearch}"</span>)}
+                </span>
+              ) : (
+                <span>Showing all {projects.length} projects</span>
+              )}
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Projects Grid */}
-      <section className="py-12 sm:py-16 md:py-20">
-        <Container className="px-4 sm:px-6">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+      {/* Technology Tags */}
+      <section className="bg-background py-6">
+        <Container className="px-4">
+          <div className="space-y-3 text-center">
+            <Label className="text-sm font-medium">Filter by Technology:</Label>
+            <div className="flex flex-wrap gap-2 justify-center max-h-32 sm:max-h-none overflow-y-auto sm:overflow-visible">
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => handleTagToggle(tag)}
+                  className={`inline-flex items-center rounded-full px-3 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 min-h-[36px] ${currentTags.includes(tag) ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900' : 'bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300'}`}
+                  aria-pressed={currentTags.includes(tag)}
+                  aria-label={`Filter by ${tag} technology`}
+                >
+                  {tag}
+                </button>
               ))}
             </div>
-            
-            {filteredProjects.length === 0 && (
-              <div className="text-center py-12">
-                <div className="mx-auto max-w-md">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center">
-                    <Search className="h-8 w-8 text-stone-400" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
-                    No projects found
-                  </h3>
-                  <p className="text-stone-600 dark:text-stone-400 mb-4">
-                    Try adjusting your search or filter criteria.
-                  </p>
-                  <Button
-                    onClick={() => {
-                      updateFilters({ search: null, tags: null, category: null, status: null, technology: null, client: null });
-                    }}
-                    variant="outline"
-                  >
-                    Clear all filters
-                  </Button>
+          </div>
+        </Container>
+      </section>
+
+      {/* Interactive Projects Grid */}
+      <section className="bg-stone-50 py-12 sm:py-16 lg:py-20 dark:bg-stone-900">
+        <Container className="px-4 sm:px-6">
+          {filteredProjects.length === 0 ? (
+            <div className="text-center py-12 sm:py-16">
+              <div className="mx-auto max-w-md px-4">
+                <h3 className="text-lg sm:text-xl font-semibold text-stone-900 dark:text-stone-100 mb-4">No projects found</h3>
+                <p className="text-sm sm:text-base text-stone-600 dark:text-stone-400 mb-6">Try adjusting your search criteria or clearing the filters to see all projects.</p>
+                <div className="space-y-2 text-xs sm:text-sm text-stone-500 dark:text-stone-500">
+                  <p>• Check your search terms for typos</p>
+                  <p>• Try different technology filters</p>
+                  <p>• Clear all filters to see everything</p>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }} viewport={{ once: true }} className="mb-12 sm:mb-16 text-center">
+                <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">Filtered Results</h2>
+                <p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-stone-600 dark:text-stone-400 px-4">
+                  {hasActiveFilters ? `Showing ${filteredProjects.length} of ${projects.length} projects` : 'All projects are displayed below.'}
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                {filteredProjects.map((project, index) => (
+                  <ProjectCard key={project.id} project={project} index={index} />
+                ))}
+              </div>
+            </>
+          )}
         </Container>
       </section>
     </>

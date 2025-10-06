@@ -54,12 +54,26 @@ export default function ContactPage() {
     if (errs.length) { setSubmitStatus('error'); setTimeout(() => setSubmitStatus('idle'), 4000); return; }
     setIsSubmitting(true);
     try {
-      await new Promise(r => setTimeout(r, 1200));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', company: '', projectType: '', message: '' });
       setTimeout(() => setSubmitStatus('idle'), 4000);
-    } catch {
+    } catch (error) {
+      console.error('Contact form submission error:', error);
       setIsSubmitting(false);
       setSubmitStatus('error');
       setTimeout(() => setSubmitStatus('idle'), 4000);
