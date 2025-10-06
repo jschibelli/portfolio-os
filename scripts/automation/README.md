@@ -38,6 +38,11 @@ Scripts for system maintenance and updates (1 script):
 
 - **`fix-quotes.ps1`** - Fixes quote formatting issues (TESTED & WORKING)
 
+### **`monitoring/`** - 📊 **Monitoring and Analytics Scripts**
+Advanced analytics and monitoring system for automation:
+
+- **`automation-metrics.ps1`** - Advanced analytics and monitoring system (NEW)
+
 ### **`core-utilities/`** - 🔧 **Core Utility Scripts**
 Essential utility scripts for automation:
 
@@ -135,6 +140,36 @@ Scripts in the `issue-management-broken/` directory have known issues and should
 
 # Create branch from develop
 .\branch-management\create-branch-from-develop.ps1
+```
+
+### **For Monitoring and Analytics:**
+```powershell
+# View system overview
+.\monitoring\automation-metrics.ps1 -Operation overview
+
+# Check system health
+.\monitoring\automation-metrics.ps1 -Operation health
+
+# Analyze performance
+.\monitoring\automation-metrics.ps1 -Operation performance
+
+# Export detailed report
+.\monitoring\automation-metrics.ps1 -ExportTo "metrics-report.json"
+```
+
+### **For Issue Implementation:**
+```powershell
+# Analyze an issue
+.\issue-implementation.ps1 -IssueNumber 123 -Mode analyze
+
+# Generate implementation plan
+.\issue-implementation.ps1 -IssueNumber 123 -Mode plan
+
+# Full automated implementation
+.\issue-implementation.ps1 -IssueNumber 123 -Mode auto
+
+# Interactive implementation
+.\issue-implementation.ps1 -IssueNumber 123 -Interactive
 ```
 
 ### **For Maintenance:**
