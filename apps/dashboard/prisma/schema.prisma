@@ -54,7 +54,7 @@ model User {
   name      String?
   email     String   @unique
   password  String
-  role      Role     @default(AUTHOR)
+  role      String   @default("AUTHOR") // 'ADMIN' | 'EDITOR' | 'AUTHOR'
   image     String?
   status    String   @default("active") // 'active' | 'inactive' | 'suspended'
   permissions Json?  // Additional permissions beyond role
@@ -65,7 +65,6 @@ model User {
   articles  Article[] @relation("AuthorArticles")
   caseStudies CaseStudy[] @relation("AuthorCaseStudies")
   comments  Comment[] @relation("CommentAuthor")
-  userRoles UserRole[] @relation("UserRoles")
 }
 
 model Tag {
@@ -74,7 +73,6 @@ model Tag {
   slug        String   @unique
   description String?
   color       String?
-  _count      Json?    // For aggregation queries
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   articles    ArticleTag[]
@@ -446,15 +444,6 @@ model Media {
   updatedAt   DateTime @updatedAt
 }
 
-model Role {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  permissions Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       User[]   @relation("UserRoles")
-}
 
 model AppearanceSettings {
   id              String   @id @default(cuid())
@@ -522,16 +511,6 @@ model DatabaseSettings {
   updatedAt       DateTime @updatedAt
 }
 
-// Junction table for User-Role many-to-many relationship
-model UserRole {
-  id     String @id @default(cuid())
-  userId String
-  roleId String
-  user   User   @relation("UserRoles", fields: [userId], references: [id])
-  role   Role   @relation("UserRoles", fields: [roleId], references: [id])
-  
-  @@unique([userId, roleId])
-}
 
 // Article Category model
 model ArticleCategory {

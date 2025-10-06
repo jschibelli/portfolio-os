@@ -55,7 +55,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "^2.30.0",
-    "framer-motion": "^11.11.17",
+    "framer-motion": "^11.18.2",
     "googleapis": "^128.0.0",
     "graphql-request": "^6.1.0",
     "gray-matter": "^4.0.3",
