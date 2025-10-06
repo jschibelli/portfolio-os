@@ -141,3 +141,80 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userRole = (session.user as any)?.role;
+    if (!userRole || !["ADMIN", "EDITOR", "AUTHOR"].includes(userRole)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const ids = searchParams.get('ids');
+    
+    if (!ids) {
+      return NextResponse.json(
+        { error: "Media IDs are required" },
+        { status: 400 }
+      );
+    }
+
+    const mediaIds = ids.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+    
+    if (mediaIds.length === 0) {
+      return NextResponse.json(
+        { error: "No valid media IDs provided" },
+        { status: 400 }
+      );
+    }
+
+    // Check if any of the media items are being used by articles
+    const usedMedia = await prisma.imageAsset.findMany({
+      where: {
+        id: { in: mediaIds },
+        usedBy: { some: {} }
+      },
+      select: { id: true, url: true }
+    });
+
+    if (usedMedia.length > 0) {
+      return NextResponse.json(
+        { 
+          error: "Cannot delete media items that are being used by articles",
+          usedItems: usedMedia.map(item => item.url)
+        },
+        { status: 400 }
+      );
+    }
+
+    // Delete the media items
+    const deletedCount = await prisma.imageAsset.deleteMany({
+      where: {
+        id: { in: mediaIds }
+      }
+    });
+
+    return NextResponse.json({
+      message: `Successfully deleted ${deletedCount.count} media item(s)`,
+      deletedCount: deletedCount.count
+    });
+  } catch (error) {
+    console.error("Error deleting media items:", error);
+    return NextResponse.json(
+      { error: "Failed to delete media items" },
+      { status: 500 }
+    );
+  }
+}
+
