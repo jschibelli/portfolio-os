@@ -56,19 +56,28 @@ model User {
   password  String
   role      Role     @default(AUTHOR)
   image     String?
+  status    String   @default("active") // 'active' | 'inactive' | 'suspended'
+  permissions Json?  // Additional permissions beyond role
+  joinedAt  DateTime @default(now())
+  lastLogin DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   articles  Article[] @relation("AuthorArticles")
   caseStudies CaseStudy[] @relation("AuthorCaseStudies")
+  comments  Comment[] @relation("CommentAuthor")
+  userRoles UserRole[] @relation("UserRoles")
 }
 
 model Tag {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  articles  ArticleTag[]
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?
+  _count      Json?    // For aggregation queries
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  articles    ArticleTag[]
 }
 
 model Series {
@@ -188,6 +197,10 @@ model Article {
   tags            ArticleTag[]
   versions        ArticleVersion[]
   reactions       Reaction[]
+  comments        Comment[]     @relation("ArticleComments")
+  categories      ArticleCategory[]
+  wordCount       Int?
+  estimatedReadTime Int?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
@@ -400,6 +413,135 @@ model NewsletterCampaign {
   tags            String[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+// Missing models that are referenced in the codebase
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  author    User     @relation("CommentAuthor", fields: [authorId], references: [id])
+  articleId String?
+  article   Article? @relation("ArticleComments", fields: [articleId], references: [id])
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  alt         String?
+  caption     String?
+  uploadedBy  String
+  uploadedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  permissions Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]   @relation("UserRoles")
+}
+
+model AppearanceSettings {
+  id              String   @id @default(cuid())
+  theme           String   @default("light")
+  primaryColor    String   @default("#3b82f6")
+  secondaryColor  String   @default("#64748b")
+  fontFamily      String   @default("Inter")
+  fontSize        String   @default("16px")
+  borderRadius    String   @default("8px")
+  spacing         String   @default("1rem")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model EmailSettings {
+  id                String   @id @default(cuid())
+  smtpHost          String?
+  smtpPort          Int?
+  smtpUser          String?
+  smtpPassword      String?
+  fromEmail         String?
+  fromName          String?
+  replyToEmail      String?
+  replyToName       String?
+  testEmail         String?
+  isConfigured      Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Integration {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  type        String   // 'email' | 'social' | 'analytics' | 'cms'
+  provider    String   // 'gmail' | 'linkedin' | 'google_analytics' | 'hashnode'
+  config      Json?
+  isActive    Boolean  @default(false)
+  lastSync    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SeoSettings {
+  id                String   @id @default(cuid())
+  siteName          String?
+  siteDescription   String?
+  defaultImage      String?
+  twitterHandle     String?
+  facebookAppId     String?
+  googleAnalyticsId String?
+  googleTagManagerId String?
+  robotsTxt         String?
+  sitemapUrl        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model DatabaseSettings {
+  id              String   @id @default(cuid())
+  backupEnabled   Boolean  @default(true)
+  backupFrequency String   @default("daily")
+  retentionDays   Int      @default(30)
+  lastBackup      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Junction table for User-Role many-to-many relationship
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  user   User   @relation("UserRoles", fields: [userId], references: [id])
+  role   Role   @relation("UserRoles", fields: [roleId], references: [id])
+  
+  @@unique([userId, roleId])
+}
+
+// Article Category model
+model ArticleCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  articles  Article[]
 }
 
 
