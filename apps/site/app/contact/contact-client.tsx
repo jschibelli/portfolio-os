@@ -1,54 +1,35 @@
-import { Metadata } from 'next';
-import { ContactPageClient } from './contact-client';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Contact John Schibelli | Get In Touch',
-  description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services. Specializing in React, Next.js, TypeScript, and AI integration. Available for new opportunities.',
-  keywords: ['contact', 'John Schibelli', 'hire', 'freelance', 'front-end developer', 'React', 'Next.js', 'TypeScript', 'web development'],
-  authors: [{ name: 'John Schibelli' }],
-  creator: 'John Schibelli',
-  publisher: 'John Schibelli',
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: {
-    title: 'Contact John Schibelli | Get In Touch',
-    description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services. Specializing in React, Next.js, TypeScript, and AI integration.',
-    url: 'https://johnschibelli.dev/contact',
-    siteName: 'John Schibelli Portfolio',
-    locale: 'en_US',
-    type: 'website',
-    images: [
-      {
-        url: '/assets/og.png',
-        width: 1200,
-        height: 630,
-        alt: 'Contact John Schibelli - Senior Front-End Developer',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact John Schibelli | Get In Touch',
-    description: 'Ready to start your next project? Contact John Schibelli for expert front-end development services.',
-    creator: '@johnschibelli',
-    images: ['/assets/og.png'],
-  },
-  alternates: {
-    canonical: 'https://johnschibelli.dev/contact',
-  },
+import { useState } from 'react';
+import { AppProvider } from '../../components/contexts/appContext';
+import ModernHeader from '../../components/features/navigation/modern-header';
+import { Footer } from '../../components/shared/footer';
+import { Container } from '../../components/shared/container';
+import Chatbot from '../../components/features/chatbot/Chatbot';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Button } from '../../components/ui/button';
+import { Badge } from '../../components/ui/badge';
+import { Mail as MailIcon, MapPin as MapPinIcon, Send as SendIcon, CheckCircle as CheckCircleIcon } from 'lucide-react';
+import { BlueskySVG as BlueskyIcon, FacebookSVG as FacebookIcon, GithubSVG as GithubIcon, LinkedinSVG as LinkedinIcon } from '../../components/icons';
+
+const defaultPublication = {
+  id: 'fallback-contact',
+  title: 'John Schibelli',
+  displayTitle: 'John Schibelli',
+  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
+  url: 'https://schibelli.dev',
+  posts: { totalDocuments: 0 },
+  preferences: { logo: null },
+  author: { name: 'John Schibelli', profilePicture: null },
+  followersCount: 0,
+  isTeam: false,
+  favicon: null,
+  ogMetaData: { image: null },
 };
 
-export default function ContactPage() {
-<<<<<<< HEAD
+export function ContactPageClient() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', projectType: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -72,6 +53,7 @@ export default function ContactPage() {
     const errs = validate();
     if (errs.length) { setSubmitStatus('error'); setTimeout(() => setSubmitStatus('idle'), 4000); return; }
     setIsSubmitting(true);
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -149,7 +131,7 @@ export default function ContactPage() {
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-800"><SendIcon className="h-4 w-4 text-green-600 dark:text-green-400" /></div>
                       <div>
                         <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">Message Sent!</h3>
-                        <p className="text-green-700 dark:text-green-300">Thanks — I’ll be in touch shortly.</p>
+                        <p className="text-green-700 dark:text-green-300">Thanks — I'll be in touch shortly.</p>
                       </div>
                     </div>
                   </div>
@@ -292,7 +274,3 @@ export default function ContactPage() {
     </AppProvider>
   );
 }
-=======
-  return <ContactPageClient />;
-}
->>>>>>> origin/issue-247-contact-resend-integration
