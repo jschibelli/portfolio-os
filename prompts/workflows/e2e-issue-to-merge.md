@@ -1,6 +1,6 @@
 ﻿Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign Jason or Chris, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
-**🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Todo → In progress → Ready → Done → Merged in sequence, then continues to the next available issues until no more work is available.
+**🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Backlog → In progress → In review → Ready → Ready for Merge → Done → Merged in sequence, then continues to the next available issues until no more work is available.
 
 **Agent Assignment:**
 - **Jason (Frontend Specialist)**: Frontend components, UI/UX, user workflows, analytics dashboards
@@ -64,18 +64,44 @@
 .\scripts\issue-queue-manager.ps1 -Operation create -Queue "custom" -Priority "P1" -App "Portfolio Site" -Area "Frontend" -MaxConcurrent 3
 ```
 
+## 🤖 **Agent Status Updates (NEW - P0 Fix)**
+
+### **Update Project Board Status:**
+```powershell
+# Direct method - Fast and immediate
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Webhook method - Reliable with logging
+.\scripts\agent-project-status-webhook.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Complete work
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action complete -AgentName "jason"
+
+# Create PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action create-pr -AgentName "jason"
+
+# Merge PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action merge-pr -AgentName "jason"
+```
+
+### **Available Actions:**
+- `start` - Move issue to "In Progress"
+- `complete` - Move issue to "Ready" 
+- `create-pr` - Move issue to "Ready"
+- `merge-pr` - Move issue to "Done"
+
 ## 🔄 **Continuous Workflow Process**
 
 **For Each Issue (Automated Loop):**
-1. **Discovery**: Find next available issues matching criteria (Status=Todo, Priority=P1, etc.)
+1. **Discovery**: Find next available issues matching criteria (Status=Backlog, Priority=P1, etc.)
 2. **Configuration**: Auto-configure project fields using `issue-config-unified.ps1`
-3. **Status Update**: Set issue to **"In progress"** on project board
+3. **Status Update**: Set issue to **"In progress"** on project board using `agent-status-update.ps1`
 4. **Branch Creation**: Create branch from `develop` using `create-branch-from-develop.ps1`
 5. **Implementation**: Implement using `issue-implementation.ps1`
 6. **PR Creation**: Automatically create PR with proper base branch
-7. **Status Update**: Set issue to **"Ready"** (in review) on project board
+7. **Status Update**: Set issue to **"Ready"** (in review) on project board using `agent-status-update.ps1`
 8. **PR Automation**: Monitor and automate using `pr-automation-unified.ps1`
-9. **Status Update**: Set issue to **"Done"** after successful merge
+9. **Status Update**: Set issue to **"Done"** after successful merge using `agent-status-update.ps1`
 10. **Continue**: Move to next issue in queue
 
 **📊 Real-time Project Board Updates:**

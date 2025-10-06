@@ -73,6 +73,7 @@
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.13",
     "recharts": "^2.15.4",
+    "resend": "^6.1.0",
     "stripe": "^16.0.0",
     "tailwind-merge": "^2.5.4",
     "uuid": "^10.0.0",

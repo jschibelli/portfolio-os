@@ -33,7 +33,7 @@ param(
     [string[]]$Labels = @(),
     
     [Parameter(Mandatory=$false)]
-    [ValidateSet("Todo", "In progress", "Ready", "Done")]
+    [ValidateSet("Backlog", "In progress", "In review", "Ready", "Ready for Merge", "Done")]
     [string]$Status = "Ready",
     
     [Parameter(Mandatory=$false)]
@@ -76,10 +76,12 @@ $optionIds = @{
         "XL" = "f47ac10b-58cc-4372-a567-0e02b2c3d487"
     }
     "Status" = @{
-        "Todo" = "f47ac10b-58cc-4372-a567-0e02b2c3d488"
-        "In progress" = "f47ac10b-58cc-4372-a567-0e02b2c3d489"
+        "Backlog" = "f75ad846"
+        "In progress" = "47fc9ee4"
+        "In review" = "aba860b9"
         "Ready" = "e18bf179"
-        "Done" = "f47ac10b-58cc-4372-a567-0e02b2c3d490"
+        "Ready for Merge" = "5c9bd758"
+        "Done" = "98236657"
     }
 }
 

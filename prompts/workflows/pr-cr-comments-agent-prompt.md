@@ -3,39 +3,49 @@
 ## Overview
 This prompt is designed to get AI agents started on addressing CR-GPT review comments on open pull requests to drive them to merge-ready status.
 
+## Current Status (Updated: October 6, 2025)
+**Total Open PRs**: 18 | **Jason's Workload**: 6 PRs | **Chris's Workload**: 5 PRs | **Ready for Merge**: 0 PRs
+
 ## Agent Assignment Strategy
 
 ### 🔴 **Jason (Frontend & Critical Security Specialist)**
 **Focus**: Frontend components, UI/UX, user workflows, analytics dashboards, user experience
 
-#### PR #259 - SEO and code quality improvements
-- **Status**: CR-GPT comments for About page refactoring
+#### PR #259 - SEO robots.ts + sitemap.ts + per-page metadata
+- **Status**: ⚠️ UNRESOLVED CR-GPT comments in sitemap.ts
 - **Agent**: Jason (Frontend Specialist)
-- **Focus**: SEO improvements, metadata, client components
-- **Priority**: P1 - Frontend optimization
+- **Focus**: Dynamic sitemap generation, blogPages bug fix, error handling
+- **Priority**: P0 - CRITICAL - Address CR-GPT comments immediately
+- **Issues**: blogPages not populated, caseStudies incorrectly fetched, performance optimizations needed
 
-#### PR #261 - A11y pass: navigation & focus states  
-- **Status**: 4 CR-GPT comments, LOW priority (Error, Style)
+#### PR #273 - A11y pass: navigation & focus states (main branch)
+- **Status**: Accessibility improvements needed
 - **Agent**: Jason (Frontend Specialist)
-- **Focus**: Accessibility compliance, error fixes, code style
-- **Priority**: P1 - Address after high priority items
+- **Focus**: Navigation accessibility, focus states, WCAG 2.1 AA compliance
+- **Priority**: P1 - Frontend accessibility
 
-#### PR #260 - Social OG/Twitter images
-- **Status**: No CR-GPT comments
+#### PR #261 - A11y pass: navigation & focus states (develop branch)
+- **Status**: Accessibility improvements needed
+- **Agent**: Jason (Frontend Specialist)
+- **Focus**: Navigation accessibility, focus states, WCAG 2.1 AA compliance
+- **Priority**: P1 - Frontend accessibility
+
+#### PR #260 - Social OG/Twitter images + Remove inflated metrics
+- **Status**: ✅ COMPLETED - Dynamic OG images implemented
 - **Agent**: Jason (Frontend Specialist)
 - **Focus**: Social media integration, frontend assets
 - **Priority**: P2 - Ready for final review and merge
 
-#### PR #244 - Dashboard editor implementation
-- **Status**: Frontend component improvements
+#### PR #244 - Enhanced Dashboard Editor (HIGH)
+- **Status**: Frontend component improvements needed
 - **Agent**: Jason (Frontend Specialist)
-- **Focus**: UI components, user experience
+- **Focus**: UI components, user experience, dashboard functionality
 - **Priority**: P1 - Frontend development
 
-#### PR #258 - SSR improvements
-- **Status**: Frontend performance optimization
+#### PR #258 - Projects page SSR + crawlability
+- **Status**: Frontend performance optimization needed
 - **Agent**: Jason (Frontend Specialist)
-- **Focus**: Server-side rendering, frontend performance
+- **Focus**: Server-side rendering, frontend performance, SEO
 - **Priority**: P1 - Performance optimization
 
 ### 🟢 **Chris (Backend & Infrastructure Specialist)**
@@ -48,25 +58,25 @@ This prompt is designed to get AI agents started on addressing CR-GPT review com
 - **Priority**: P0 - CRITICAL - Address immediately
 
 #### PR #262 - Performance: images, fonts, headers
-- **Status**: 5 CR-GPT comments, HIGH priority (Error, Performance)
+- **Status**: Backend performance optimizations needed
 - **Agent**: Chris (Backend Specialist)
 - **Focus**: Backend performance optimizations, error handling, security fixes
-- **Priority**: P0 - Address immediately
+- **Priority**: P1 - Backend performance
 
-#### PR #256 - Middleware improvements
-- **Status**: Backend services optimization
+#### PR #256 - Canonical host redirect middleware
+- **Status**: Backend middleware optimization needed
 - **Agent**: Chris (Backend Specialist)
 - **Focus**: Middleware, backend services, API improvements
 - **Priority**: P1 - Backend optimization
 
-#### PR #257 - Metrics and monitoring
-- **Status**: Backend analytics and monitoring
+#### PR #255 - Contact route and Resend integration
+- **Status**: Backend API integration needed
 - **Agent**: Chris (Backend Specialist)
-- **Focus**: Backend monitoring, metrics collection, analytics
-- **Priority**: P1 - Backend monitoring
+- **Focus**: API routes, email integration, backend services
+- **Priority**: P1 - Backend API development
 
-#### PR #243 - Workflow automation
-- **Status**: Backend automation scripts
+#### PR #243 - Unified Publishing Workflow (MEDIUM)
+- **Status**: Backend automation scripts needed
 - **Agent**: Chris (Backend Specialist)
 - **Focus**: PowerShell scripts, automation, backend workflows
 - **Priority**: P1 - Backend automation
@@ -75,98 +85,208 @@ This prompt is designed to get AI agents started on addressing CR-GPT review com
 
 ### 🔴 **Jason (Frontend Specialist) - PR Assignments:**
 
-#### For PR #259 (SEO and code quality improvements):
+#### For PR #259 (SEO robots.ts + sitemap.ts + per-page metadata) - CRITICAL:
 ```
-You are Jason, a Frontend & Critical Security Specialist assigned to PR #259 for SEO and code quality improvements.
+You are Jason, a Frontend & Critical Security Specialist assigned to PR #259 for CRITICAL SEO fixes.
 
-**Your Mission**: Address CR-GPT comments focusing on:
-1. About page refactoring for Next.js 13+ metadata
-2. SEO improvements and metadata optimization
-3. Client component separation
-4. Code quality enhancements
+**Your Mission**: Address UNRESOLVED CR-GPT comments in sitemap.ts focusing on:
+1. Fix blogPages variable not populated (commented-out code)
+2. Fix caseStudies incorrectly fetched from getAllProjects()
+3. Implement proper error handling and performance optimizations
+4. Add comprehensive documentation and testing
 
 **Action Plan**:
-1. Review all CR-GPT comments on PR #259 and document key issues
-2. Implement About page refactoring with proper metadata
-3. Create separate client component for interactivity
-4. Run quality checks and tests
-5. Update project status
+1. Check out PR #259 branch: issue-250-seo-robots-sitemap-metadata
+2. Review CR-GPT comments on sitemap.ts file
+3. Fix blogPages generation with proper Hashnode API integration
+4. Fix caseStudies data source and filtering
+5. Add error handling, caching, and performance optimizations
+6. Run quality checks and tests
+7. Update project status
 
-**Success Criteria**: SEO improvements implemented, code quality enhanced
+**Success Criteria**: All CR-GPT comments resolved, dynamic sitemap working correctly
 ```
 
-#### For PR #261 (A11y pass: navigation & focus states):
+#### For PR #273 & #261 (A11y pass: navigation & focus states):
 ```
-You are Jason, a Frontend & Critical Security Specialist assigned to PR #261 for accessibility improvements.
+You are Jason, a Frontend & Critical Security Specialist assigned to PRs #273 and #261 for accessibility improvements.
 
-**Your Mission**: Address 4 CR-GPT comments focusing on:
-1. Navigation accessibility
-2. Focus state improvements
-3. Error fixes and code style
-4. Accessibility compliance
+**Your Mission**: Implement comprehensive accessibility improvements focusing on:
+1. Navigation accessibility and keyboard navigation
+2. Focus state improvements and visible focus indicators
+3. WCAG 2.1 AA compliance
+4. ARIA roles and semantic HTML
 
 **Action Plan**:
-1. Review all CR-GPT comments on PR #261 and document key issues
-2. Implement accessibility improvements
-3. Fix navigation and focus states
-4. Run accessibility tests
-5. Update project status
+1. Check out PR branches: agent-3-automation-fix (PR #273) and issue-253-a11y-navigation-focus (PR #261)
+2. Review accessibility requirements and current issues
+3. Implement navigation accessibility improvements
+4. Fix focus states and keyboard navigation
+5. Run accessibility tests (axe-core, Playwright)
+6. Update project status
 
-**Success Criteria**: All accessibility issues resolved, A11y compliance achieved
+**Success Criteria**: WCAG 2.1 AA compliance achieved, all accessibility issues resolved
 ```
 
-#### For PR #260 (Social OG/Twitter images):
+#### For PR #260 (Social OG/Twitter images) - COMPLETED:
 ```
-You are Jason, a Frontend & Critical Security Specialist assigned to PR #260 for social media integration.
+You are Jason, a Frontend & Critical Security Specialist. PR #260 is COMPLETED.
 
-**Your Mission**: Implement social media Open Graph and Twitter card images.
+**Status**: ✅ COMPLETED - Dynamic OG images implemented for all pages
+**Next Action**: Final review and merge when ready
+```
+
+#### For PR #244 (Enhanced Dashboard Editor):
+```
+You are Jason, a Frontend & Critical Security Specialist assigned to PR #244 for dashboard editor improvements.
+
+**Your Mission**: Enhance dashboard editor functionality focusing on:
+1. UI component improvements
+2. User experience enhancements
+3. Dashboard functionality and workflows
 
 **Action Plan**:
-1. Review PR requirements for social media integration
-2. Implement OG image generation
-3. Add Twitter card support
-4. Test social media previews
-5. Update project status
+1. Check out PR branch: issue-227
+2. Review dashboard editor requirements
+3. Implement UI component improvements
+4. Enhance user experience and workflows
+5. Run quality checks and tests
+6. Update project status
 
-**Success Criteria**: Social media integration complete, OG images working
+**Success Criteria**: Dashboard editor enhanced, user experience improved
+```
+
+#### For PR #258 (Projects page SSR + crawlability):
+```
+You are Jason, a Frontend & Critical Security Specialist assigned to PR #258 for SSR improvements.
+
+**Your Mission**: Implement server-side rendering and crawlability improvements focusing on:
+1. Server-side rendering optimization
+2. Frontend performance improvements
+3. SEO and crawlability enhancements
+
+**Action Plan**:
+1. Check out PR branch: issue-249-projects-ssr-crawlability
+2. Review SSR requirements and current implementation
+3. Implement server-side rendering improvements
+4. Optimize frontend performance
+5. Enhance SEO and crawlability
+6. Run performance tests
+7. Update project status
+
+**Success Criteria**: SSR optimized, performance improved, SEO enhanced
 ```
 
 ### 🟢 **Chris (Backend Specialist) - PR Assignments:**
 
-#### For PR #270 (Complete Backend Infrastructure Implementation):
+#### For PR #270 (Complete Backend Infrastructure Implementation) - CRITICAL:
 ```
 You are Chris, a Backend & Infrastructure Specialist assigned to PR #270 for CRITICAL backend infrastructure.
 
-**Your Mission**: Implement comprehensive backend infrastructure improvements.
+**Your Mission**: Implement comprehensive backend infrastructure improvements focusing on:
+1. GitHub utilities and automation scripts
+2. Backend infrastructure enhancements
+3. Error handling and security improvements
+4. Agent assignments documentation
 
 **Action Plan**:
-1. Review all CR-GPT comments on PR #270 and document key issues
-2. Enhance GitHub utilities with error handling
-3. Create agent assignments documentation
-4. Improve PR automation scripts
-5. Update project status
+1. Check out PR branch: agent-1-automation-backend
+2. Review backend infrastructure requirements
+3. Enhance GitHub utilities with proper error handling
+4. Create comprehensive agent assignments documentation
+5. Improve PR automation scripts and workflows
+6. Run quality checks and tests
+7. Update project status
 
-**Success Criteria**: Backend infrastructure enhanced, automation improved
+**Success Criteria**: Backend infrastructure enhanced, automation improved, documentation complete
 ```
 
 #### For PR #262 (Performance: images, fonts, headers):
 ```
 You are Chris, a Backend & Infrastructure Specialist assigned to PR #262 for backend performance optimization.
 
-**Your Mission**: Address 5 CR-GPT comments focusing on:
+**Your Mission**: Implement backend performance optimizations focusing on:
 1. Backend performance optimizations
 2. Error handling improvements
 3. Security enhancements
-4. Code style improvements
+4. Code style and quality improvements
 
 **Action Plan**:
-1. Review all CR-GPT comments on PR #262 and document key issues
-2. Implement backend performance improvements
-3. Enhance error handling and security
-4. Run quality checks and tests
-5. Update project status
+1. Check out PR branch: issue-254-performance-images-fonts-headers
+2. Review performance requirements and current implementation
+3. Implement backend performance improvements
+4. Enhance error handling and security measures
+5. Run quality checks and performance tests
+6. Update project status
 
 **Success Criteria**: Backend performance optimized, all issues resolved
+```
+
+#### For PR #256 (Canonical host redirect middleware):
+```
+You are Chris, a Backend & Infrastructure Specialist assigned to PR #256 for middleware improvements.
+
+**Your Mission**: Implement middleware improvements focusing on:
+1. Canonical host redirect functionality
+2. Backend middleware optimization
+3. API improvements and security
+4. Performance enhancements
+
+**Action Plan**:
+1. Check out PR branch: issue-248-canonical-host-redirect
+2. Review middleware requirements and current implementation
+3. Implement canonical host redirect middleware
+4. Optimize backend middleware performance
+5. Enhance API security and functionality
+6. Run quality checks and tests
+7. Update project status
+
+**Success Criteria**: Middleware optimized, canonical redirects working, API improved
+```
+
+#### For PR #255 (Contact route and Resend integration):
+```
+You are Chris, a Backend & Infrastructure Specialist assigned to PR #255 for API integration.
+
+**Your Mission**: Implement contact route and Resend email integration focusing on:
+1. API route development
+2. Email integration with Resend
+3. Backend services optimization
+4. Error handling and validation
+
+**Action Plan**:
+1. Check out PR branch: issue-247-contact-resend-integration
+2. Review contact route and email integration requirements
+3. Implement contact API route with proper validation
+4. Integrate Resend email service
+5. Optimize backend services and error handling
+6. Run quality checks and tests
+7. Update project status
+
+**Success Criteria**: Contact route implemented, Resend integration working, API optimized
+```
+
+#### For PR #243 (Unified Publishing Workflow):
+```
+You are Chris, a Backend & Infrastructure Specialist assigned to PR #243 for workflow automation.
+
+**Your Mission**: Implement unified publishing workflow focusing on:
+1. PowerShell scripts and automation
+2. Backend workflow orchestration
+3. Publishing pipeline optimization
+4. Error handling and monitoring
+
+**Action Plan**:
+1. Check out PR branch: issue-228
+2. Review publishing workflow requirements
+3. Implement PowerShell automation scripts
+4. Create unified publishing workflow
+5. Optimize backend workflow orchestration
+6. Add error handling and monitoring
+7. Run quality checks and tests
+8. Update project status
+
+**Success Criteria**: Publishing workflow unified, automation scripts working, backend optimized
 ```
 
 ## Automation Commands Reference
@@ -202,15 +322,60 @@ All PRs are already added to Portfolio Site project (#20) with these default fie
 - Area: Frontend
 - Assignee: jschibelli
 
+### Project Board Status Workflow:
+**Issues → PRs → Review → Ready → Merge**
+
+1. **Backlog**: Issues picked up from backlog
+2. **In Progress**: When being worked on (agents actively coding)
+3. **In Review**: When PR is created and sent for review
+4. **Ready**: When PR is complete and ready for merge
+5. **Ready for Merge**: Project board updated to "Ready for Merge" status
+6. **User Responsibility**: User reviews, decides, and actually merges the PR
+
+**Agent Responsibilities:**
+- Start with PR in "Ready" status, move to "In Progress" when beginning work
+- Work through the ENTIRE CR review process (address all CR-GPT comments, fix all issues, resolve conflicts)
+- Stay in "In Progress" until CR review process is completely done
+- Move to "Ready for Merge" ONLY when there are no more CR review comments and automation process is complete
+- Report completion - PR is ready for user to merge
+
+**User Responsibilities:**
+- Review completed PRs
+- Decide when to merge
+- Actually merge PRs into develop
+
 ## Success Metrics
-- **PR #262**: All HIGH priority CR-GPT comments resolved
-- **PR #261**: All LOW priority CR-GPT comments resolved  
-- **PR #260**: Quality verified, ready for merge
-- All PRs moved to "Ready for Merge" status on project board
+- **PR #259**: ⚠️ CRITICAL - All CR-GPT comments resolved in sitemap.ts (blogPages, caseStudies, error handling)
+- **PR #273 & #261**: WCAG 2.1 AA compliance achieved, all accessibility issues resolved
+- **PR #260**: ✅ COMPLETED - Quality verified, ready for merge
+- **PR #244**: Dashboard editor enhanced, user experience improved
+- **PR #258**: SSR optimized, performance improved, SEO enhanced
+- **PR #270**: Backend infrastructure enhanced, automation improved
+- **PR #262**: Backend performance optimized, all issues resolved
+- **PR #256**: Middleware optimized, canonical redirects working
+- **PR #255**: Contact route implemented, Resend integration working
+- **PR #243**: Publishing workflow unified, automation scripts working
+- All PRs moved to "Ready for Merge" status on project board ONLY after CR review process is complete
+- All PRs are merge-ready (no conflicts, all checks pass, no more CR review comments)
+- User can review and merge PRs when ready
+
+## Current Priority Order
+1. **P0 - CRITICAL**: PR #259 (SEO sitemap.ts CR-GPT comments)
+2. **P0 - CRITICAL**: PR #270 (Backend infrastructure)
+3. **P1 - HIGH**: PR #273 & #261 (Accessibility improvements)
+4. **P1 - HIGH**: PR #244 (Dashboard editor)
+5. **P1 - HIGH**: PR #258 (SSR improvements)
+6. **P1 - HIGH**: PR #262 (Performance optimization)
+7. **P1 - HIGH**: PR #256 (Middleware improvements)
+8. **P1 - HIGH**: PR #255 (Contact integration)
+9. **P1 - HIGH**: PR #243 (Publishing workflow)
+10. **P2 - READY**: PR #260 (Social OG images - completed)
 
 ## Next Steps
-1. Agents should start with their assigned PRs immediately
-2. Use the automation scripts for consistent workflow
-3. Update project board status as work progresses
-4. Report completion and any blockers
-5. Move to next available PRs once current assignments are complete
+1. **IMMEDIATE**: Jason should address PR #259 CR-GPT comments (CRITICAL)
+2. **IMMEDIATE**: Chris should start PR #270 backend infrastructure (CRITICAL)
+3. Use the automation scripts for consistent workflow
+4. Update project board status as work progresses
+5. Report completion and any blockers
+6. Move to next available PRs once current assignments are complete
+7. Focus on P0 and P1 priority items first
