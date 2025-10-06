@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
-import ProjectsPageClient from './projects-client'
+import { getAllProjects } from '../../lib/project-utils'
+import ProjectsPageServer from './projects-server'
 
 export const metadata: Metadata = {
   title: 'Projects | John Schibelli Portfolio - React & Next.js Developer',
@@ -67,6 +68,13 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ProjectsPage() {
-  return <ProjectsPageClient />
+// Enable static generation for better SEO and performance
+export const dynamic = 'force-static'
+export const revalidate = 3600 // Revalidate every hour
+
+export default async function ProjectsPage() {
+  // Fetch projects data at build time for SSR
+  const projects = await getAllProjects()
+  
+  return <ProjectsPageServer projects={projects} />
 }
