@@ -41,6 +41,28 @@ Portfolio OS is a Next.js 14 monorepo built with TypeScript, Tailwind CSS, and T
 - OpenAI (image + text), Resend (email)
 - Turborepo monorepo, PNPM
 
+## 📁 **Project Organization**
+
+### **Scripts Directory** (`scripts/`)
+Organized automation scripts for the Portfolio OS system:
+- **`automation/`** - Core automation and orchestration scripts
+- **`project-management/`** - GitHub project and board management
+- **`analysis/`** - Code quality and system analysis tools
+- **`utilities/`** - General purpose utilities and configuration
+- **`documentation/`** - Documentation generation and maintenance
+- **`shared/`** - Common utilities and helper functions
+
+### **Documentation Directory** (`docs/`)
+Comprehensive documentation organized by category:
+- **`automation/`** - Complete automation system documentation
+- **`setup/`** - Setup guides and configuration documentation
+
+### **Prompts Directory** (`prompts/`)
+AI prompts and templates for automation:
+- **`automation/`** - GitHub issue and project automation prompts
+- **`workflows/`** - End-to-end workflow automation prompts
+- **`templates/`** - Reusable prompt templates and quick references
+
 ## Getting Started
 
 1. Install PNPM and Node 18+

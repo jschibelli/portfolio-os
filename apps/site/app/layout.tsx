@@ -9,8 +9,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "John Schibelli - Senior Front-End Developer",
-  description: "Building smarter, faster web applications. Expert in React, Next.js, and TypeScript with 15+ years of proven results.",
+  title: "John Schibelli - Senior Front-End Engineer",
+  description: "Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.",
   authors: [{ name: "John Schibelli" }],
   creator: "John Schibelli",
   publisher: "John Schibelli",
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://schibelli.dev'),
+  metadataBase: new URL('https://johnschibelli.dev'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'John Schibelli - Senior Front-End Developer',
-    description: 'Building smarter, faster web applications. Expert in React, Next.js, and TypeScript with 15+ years of proven results.',
-    url: 'https://schibelli.dev',
+    title: 'John Schibelli - Senior Front-End Engineer',
+    description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.',
+    url: 'https://johnschibelli.dev',
     siteName: 'John Schibelli Portfolio',
     locale: 'en_US',
     type: 'website',
@@ -35,14 +35,14 @@ export const metadata: Metadata = {
         url: '/assets/og.png',
         width: 1200,
         height: 630,
-        alt: 'John Schibelli - Senior Front-End Developer',
+        alt: 'John Schibelli - Senior Front-End Engineer',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'John Schibelli - Senior Front-End Developer',
-    description: 'Building smarter, faster web applications. Expert in React, Next.js, and TypeScript with 15+ years of proven results.',
+    title: 'John Schibelli - Senior Front-End Engineer',
+    description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility. Building smarter, faster web applications with modern development practices.',
     creator: '@johnschibelli',
     images: ['/assets/og.png'],
   },

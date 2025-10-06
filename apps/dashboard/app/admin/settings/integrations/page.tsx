@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Link, Settings, Plus, Edit, Trash2, ExternalLink, CheckCircle, XCircle, AlertCircle, RefreshCw, Key, Globe, Database, MessageSquare, BarChart3, Mail, Shield, Zap } from "lucide-react";
+import { Settings, Plus, Edit, Trash2, ExternalLink, CheckCircle, XCircle, AlertCircle, RefreshCw, Key, Database, MessageSquare, BarChart3, Mail, Shield, Zap } from "lucide-react";
 
 interface Integration {
   id: string;
@@ -174,7 +174,6 @@ export default function IntegrationsPage() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingIntegration, setEditingIntegration] = useState<Integration | null>(null);
 
   const filteredIntegrations = integrations.filter(integration => {
     const matchesSearch = integration.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
