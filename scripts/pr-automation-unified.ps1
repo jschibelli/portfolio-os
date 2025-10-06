@@ -303,6 +303,45 @@ function Invoke-DocsUpdate {
     }
 }
 
+function Invoke-AutoCommit {
+    param([string]$PRNumber, [string]$Action)
+    
+    Write-ColorOutput "Committing and pushing changes..." "Yellow"
+    
+    try {
+        # Check if there are any changes to commit
+        $status = git status --porcelain
+        if (-not $status) {
+            Write-ColorOutput "  No changes to commit" "Yellow"
+            return
+        }
+        
+        # Stage all changes
+        Write-ColorOutput "  Staging changes..." "White"
+        git add .
+        
+        # Create commit message based on action and PR number
+        $commitMessage = "Auto-fix: Processed PR #$PRNumber - $Action - Applied fixes and generated auto-responses"
+        
+        # Commit changes
+        Write-ColorOutput "  Committing changes..." "White"
+        git commit -m $commitMessage
+        
+        # Get current branch name
+        $currentBranch = git branch --show-current
+        
+        # Push to remote
+        Write-ColorOutput "  Pushing to origin/$currentBranch..." "White"
+        git push origin $currentBranch
+        
+        Write-ColorOutput "  ✅ Changes committed and pushed successfully" "Green"
+        Write-ColorOutput ""
+    }
+    catch {
+        Write-ColorOutput "Failed to commit and push changes: $($_.Exception.Message)" "Red"
+    }
+}
+
 function Start-WatchMode {
     param([string]$PRNumber, [int]$Interval)
     
@@ -367,5 +406,11 @@ foreach ($action in $actions) {
         "quality" { Invoke-QualityCheck -PRNumber $PRNumber }
         "docs" { Invoke-DocsUpdate -PRNumber $PRNumber }
     }
+}
+
+# Auto-commit and push changes if any actions were performed
+if ($actions -and $actions.Count -gt 0 -and -not $DryRun) {
+    Write-ColorOutput "🔧 Finalizing automation..." "Yellow"
+    Invoke-AutoCommit -PRNumber $PRNumber -Action ($actions -join ", ")
 }
 
