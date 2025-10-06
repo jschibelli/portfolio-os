@@ -1,566 +1,782 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Search, Globe, BarChart3, Settings, Save, Eye, Code, Map, TrendingUp, Target, Zap, Edit } from "lucide-react";
+import React, { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { 
+  Save, 
+  RefreshCw, 
+  Eye, 
+  Search, 
+  Globe, 
+  Twitter, 
+  Facebook, 
+  Linkedin, 
+  Github,
+  Settings,
+  TrendingUp,
+  Shield,
+  Zap
+} from 'lucide-react'
 
 interface SEOSettings {
-  siteTitle: string;
-  siteDescription: string;
-  siteKeywords: string[];
-  defaultMetaTitle: string;
-  defaultMetaDescription: string;
-  ogImage: string;
-  twitterCard: 'summary' | 'summary_large_image';
-  robotsTxt: string;
-  sitemapEnabled: boolean;
-  analyticsEnabled: boolean;
-  googleAnalyticsId: string;
-  googleSearchConsole: string;
-  bingWebmasterTools: string;
-  structuredData: boolean;
-  schemaMarkup: string;
+  meta: {
+    title: string
+    description: string
+    keywords: string
+    author: string
+    robots: string
+    canonical: string
+  }
+  social: {
+    twitter: {
+      handle: string
+      card: string
+      site: string
+    }
+    facebook: {
+      appId: string
+      pageId: string
+    }
+    linkedin: {
+      profile: string
+    }
+    github: {
+      profile: string
+    }
+  }
+  analytics: {
+    googleAnalytics: {
+      trackingId: string
+      enabled: boolean
+    }
+    googleTagManager: {
+      containerId: string
+      enabled: boolean
+    }
+    facebookPixel: {
+      pixelId: string
+      enabled: boolean
+    }
+  }
+  structuredData: {
+    organization: {
+      name: string
+      url: string
+      logo: string
+      description: string
+      sameAs: string[]
+    }
+    person: {
+      name: string
+      url: string
+      jobTitle: string
+      worksFor: string
+      description: string
+      knowsAbout: string[]
+    }
+  }
+  sitemap: {
+    enabled: boolean
+    priority: number
+    changefreq: string
+    excludePatterns: string[]
+  }
+  robots: {
+    enabled: boolean
+    allow: string[]
+    disallow: string[]
+    sitemap: string
+    crawlDelay: number | null
+  }
+  performance: {
+    imageOptimization: {
+      enabled: boolean
+      formats: string[]
+      quality: number
+      lazyLoading: boolean
+    }
+    caching: {
+      staticAssets: string
+      htmlPages: string
+      apiResponses: string
+    }
+  }
 }
-
-const defaultSEOSettings: SEOSettings = {
-  siteTitle: "Mindware Blog",
-  siteDescription: "A comprehensive blog about technology, design, and innovation",
-  siteKeywords: ["technology", "design", "innovation", "blog", "development"],
-  defaultMetaTitle: "Mindware Blog - Technology, Design & Innovation",
-  defaultMetaDescription: "Discover insights about technology trends, design principles, and innovative solutions. Stay updated with the latest in tech and design.",
-  ogImage: "/images/og-default.jpg",
-  twitterCard: "summary_large_image",
-  robotsTxt: "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /private/\nSitemap: https://yoursite.com/sitemap.xml",
-  sitemapEnabled: true,
-  analyticsEnabled: true,
-  googleAnalyticsId: "GA_MEASUREMENT_ID",
-  googleSearchConsole: "https://search.google.com/search-console",
-  bingWebmasterTools: "https://www.bing.com/webmasters",
-  structuredData: true,
-  schemaMarkup: `{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Mindware Blog",
-  "description": "Technology, Design & Innovation Blog",
-  "url": "https://yoursite.com"
-}`
-};
 
 export default function SEOSettingsPage() {
-  const [settings, setSettings] = useState<SEOSettings>(defaultSEOSettings);
-  const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('general');
-  const [showPreview, setShowPreview] = useState(false);
+  const [settings, setSettings] = useState<SEOSettings | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
-  const handleSave = () => {
-    // Here you would typically save to your backend
-    console.log('Saving SEO settings:', settings);
-    setIsEditing(false);
-    // Show success message
-    alert('SEO settings saved successfully!');
-  };
+  // Load SEO settings
+  useEffect(() => {
+    loadSEOSettings()
+  }, [])
 
-  const handleReset = () => {
-    if (confirm('Are you sure you want to reset all SEO settings to default? This action cannot be undone.')) {
-      setSettings(defaultSEOSettings);
-      setIsEditing(false);
+  const loadSEOSettings = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/admin/settings/seo')
+      
+      if (!response.ok) {
+        throw new Error('Failed to load SEO settings')
+      }
+      
+      const data = await response.json()
+      setSettings(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load settings')
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  const updateSetting = (key: keyof SEOSettings, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
-  };
+  const saveSEOSettings = async () => {
+    if (!settings) return
 
-  const updateKeywords = (keywordsString: string) => {
-    const keywords = keywordsString.split(',').map(k => k.trim()).filter(k => k);
-    updateSetting('siteKeywords', keywords);
-  };
+    try {
+      setSaving(true)
+      setError(null)
+      
+      const response = await fetch('/api/admin/settings/seo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+      })
 
-  const tabs = [
-    { id: 'general', label: 'General', icon: Settings },
-    { id: 'meta', label: 'Meta Tags', icon: Code },
-    { id: 'social', label: 'Social Media', icon: Globe },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'technical', label: 'Technical', icon: Zap },
-    { id: 'preview', label: 'Preview', icon: Eye }
-  ];
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save SEO settings')
+      }
 
-  const renderGeneralTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Site Title
-          </label>
-          <input
-            type="text"
-            value={settings.siteTitle}
-            onChange={(e) => updateSetting('siteTitle', e.target.value)}
-            disabled={!isEditing}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="Your Site Title"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            The main title of your website (50-60 characters recommended)
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Site Description
-          </label>
-          <textarea
-            value={settings.siteDescription}
-            onChange={(e) => updateSetting('siteDescription', e.target.value)}
-            disabled={!isEditing}
-            rows={3}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="Brief description of your website"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Brief description of your website (150-160 characters recommended)
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Keywords (comma-separated)
-        </label>
-        <input
-          type="text"
-          value={settings.siteKeywords.join(', ')}
-          onChange={(e) => updateKeywords(e.target.value)}
-          disabled={!isEditing}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-          placeholder="technology, design, innovation, blog"
-        />
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Main keywords for your website (separate with commas)
-        </p>
-      </div>
-
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">SEO Score</h4>
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-            <span className="text-2xl font-bold text-green-600 dark:text-green-400">85</span>
-          </div>
-          <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Good SEO Score</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Your site has good SEO fundamentals. Consider adding more meta descriptions and structured data.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderMetaTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Default Meta Title
-          </label>
-          <input
-            type="text"
-            value={settings.defaultMetaTitle}
-            onChange={(e) => updateSetting('defaultMetaTitle', e.target.value)}
-            disabled={!isEditing}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="Default page title"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Default title for pages without specific meta titles
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Default Meta Description
-          </label>
-          <textarea
-            value={settings.defaultMetaDescription}
-            onChange={(e) => updateSetting('defaultMetaDescription', e.target.value)}
-            disabled={!isEditing}
-            rows={3}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="Default page description"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Default description for pages without specific meta descriptions
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          robots.txt Content
-        </label>
-        <textarea
-          value={settings.robotsTxt}
-          onChange={(e) => updateSetting('robotsTxt', e.target.value)}
-          disabled={!isEditing}
-          rows={6}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50 font-mono text-sm"
-          placeholder="User-agent: *\nAllow: /"
-        />
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Instructions for search engine crawlers
-        </p>
-      </div>
-    </div>
-  );
-
-  const renderSocialTab = () => (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Open Graph Image URL
-        </label>
-        <input
-          type="url"
-          value={settings.ogImage}
-          onChange={(e) => updateSetting('ogImage', e.target.value)}
-          disabled={!isEditing}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-          placeholder="https://yoursite.com/images/og-image.jpg"
-        />
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Default image for social media sharing (1200x630px recommended)
-        </p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Twitter Card Type
-        </label>
-        <select
-          value={settings.twitterCard}
-          onChange={(e) => updateSetting('twitterCard', e.target.value)}
-          disabled={!isEditing}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-        >
-          <option value="summary">Summary</option>
-          <option value="summary_large_image">Summary Large Image</option>
-        </select>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          How your content appears when shared on Twitter
-        </p>
-      </div>
-
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Social Media Preview</h4>
-        <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900">
-          <div className="p-3 border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-blue-500 rounded"></div>
-              <span className="text-xs text-slate-600 dark:text-slate-400">facebook.com</span>
-            </div>
-          </div>
-          <div className="p-3">
-            <h5 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">
-              {settings.siteTitle}
-            </h5>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
-              {settings.siteDescription}
-            </p>
-            {settings.ogImage && (
-              <div className="w-full h-24 bg-slate-200 dark:bg-slate-700 rounded flex items-center justify-center">
-                <span className="text-xs text-slate-500">Image Preview</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderAnalyticsTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Google Analytics ID
-          </label>
-          <input
-            type="text"
-            value={settings.googleAnalyticsId}
-            onChange={(e) => updateSetting('googleAnalyticsId', e.target.value)}
-            disabled={!isEditing}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="G-XXXXXXXXXX"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Your Google Analytics measurement ID
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Google Search Console
-          </label>
-          <input
-            type="url"
-            value={settings.googleSearchConsole}
-            onChange={(e) => updateSetting('googleSearchConsole', e.target.value)}
-            disabled={!isEditing}
-            className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-            placeholder="https://search.google.com/search-console"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Google Search Console verification URL
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Bing Webmaster Tools
-        </label>
-        <input
-          type="url"
-          value={settings.bingWebmasterTools}
-          onChange={(e) => updateSetting('bingWebmasterTools', e.target.value)}
-          disabled={!isEditing}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50"
-          placeholder="https://www.bing.com/webmasters"
-        />
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Bing Webmaster Tools verification URL
-        </p>
-      </div>
-
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Analytics Status</h4>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Google Analytics</span>
-            <span className={`px-2 py-1 text-xs rounded-full ${
-              settings.googleAnalyticsId && settings.googleAnalyticsId !== 'GA_MEASUREMENT_ID'
-                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-            }`}>
-              {settings.googleAnalyticsId && settings.googleAnalyticsId !== 'GA_MEASUREMENT_ID' ? 'Connected' : 'Not Connected'}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Search Console</span>
-            <span className={`px-2 py-1 text-xs rounded-full ${
-              settings.googleSearchConsole && settings.googleSearchConsole !== 'https://search.google.com/search-console'
-                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-            }`}>
-              {settings.googleSearchConsole && settings.googleSearchConsole !== 'https://search.google.com/search-console' ? 'Connected' : 'Not Connected'}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderTechnicalTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Sitemap Generation
-          </label>
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={settings.sitemapEnabled}
-              onChange={(e) => updateSetting('sitemapEnabled', e.target.checked)}
-              disabled={!isEditing}
-              className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
-            />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              Enable automatic sitemap generation
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Automatically generate XML sitemap for search engines
-          </p>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Structured Data
-          </label>
-          <div className="flex items-center space-x-3">
-            <input
-              type="checkbox"
-              checked={settings.structuredData}
-              onChange={(e) => updateSetting('structuredData', e.target.checked)}
-              disabled={!isEditing}
-              className="rounded border-slate-300 text-slate-600 focus:ring-slate-500"
-            />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              Enable JSON-LD structured data
-            </span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Add structured data markup for better search results
-          </p>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Schema Markup
-        </label>
-        <textarea
-          value={settings.schemaMarkup}
-          onChange={(e) => updateSetting('schemaMarkup', e.target.value)}
-          disabled={!isEditing}
-          rows={8}
-          className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-500 focus:border-transparent disabled:opacity-50 font-mono text-sm"
-          placeholder='{"@context": "https://schema.org", "@type": "WebSite"}'
-        />
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          JSON-LD structured data for your website
-        </p>
-      </div>
-
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Technical SEO Status</h4>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Sitemap</span>
-            <span className={`px-2 py-1 text-xs rounded-full ${
-              settings.sitemapEnabled ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-            }`}>
-              {settings.sitemapEnabled ? 'Enabled' : 'Disabled'}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Structured Data</span>
-            <span className={`px-2 py-1 text-xs rounded-full ${
-              settings.structuredData ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-            }`}>
-              {settings.structuredData ? 'Enabled' : 'Disabled'}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderPreviewTab = () => (
-    <div className="space-y-6">
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Search Result Preview</h4>
-        <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-900">
-          <div className="p-3">
-            <div className="text-sm text-green-600 dark:text-green-400 mb-1">
-              {window.location.hostname}
-            </div>
-            <h5 className="text-lg text-blue-600 dark:text-blue-400 mb-1 hover:underline cursor-pointer">
-              {settings.siteTitle}
-            </h5>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              {settings.siteDescription}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Meta Tags Preview</h4>
-        <div className="space-y-2 text-xs font-mono bg-white dark:bg-slate-900 p-3 rounded border border-slate-200 dark:border-slate-700">
-          <div>&lt;title&gt;{settings.siteTitle}&lt;/title&gt;</div>
-          <div>&lt;meta name=&quot;description&quot; content=&quot;{settings.siteDescription}&quot; /&gt;</div>
-          <div>&lt;meta name=&quot;keywords&quot; content=&quot;{settings.siteKeywords.join(', ')}&quot; /&gt;</div>
-          <div>&lt;meta property=&quot;og:title&quot; content=&quot;{settings.siteTitle}&quot; /&gt;</div>
-          <div>&lt;meta property=&quot;og:description&quot; content=&quot;{settings.siteDescription}&quot; /&gt;</div>
-          <div>&lt;meta property=&quot;og:image&quot; content=&quot;{settings.ogImage}&quot; /&gt;</div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'general': return renderGeneralTab();
-      case 'meta': return renderMetaTab();
-      case 'social': return renderSocialTab();
-      case 'analytics': return renderAnalyticsTab();
-      case 'technical': return renderTechnicalTab();
-      case 'preview': return renderPreviewTab();
-      default: return renderGeneralTab();
+      setSuccess(true)
+      setTimeout(() => setSuccess(false), 3000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save settings')
+    } finally {
+      setSaving(false)
     }
-  };
+  }
+
+  const updateSetting = (path: string, value: any) => {
+    if (!settings) return
+
+    const keys = path.split('.')
+    const newSettings = { ...settings }
+    let current = newSettings as any
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]]
+    }
+
+    current[keys[keys.length - 1]] = value
+    setSettings(newSettings)
+  }
+
+  const getCharacterCount = (text: string) => text.length
+  const getCharacterColor = (count: number, min: number, max: number) => {
+    if (count < min) return 'text-yellow-600'
+    if (count > max) return 'text-red-600'
+    return 'text-green-600'
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <RefreshCw className="w-6 h-6 animate-spin mr-2" />
+        <span>Loading SEO settings...</span>
+      </div>
+    )
+  }
+
+  if (!settings) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-red-600">Failed to load SEO settings</p>
+        <Button onClick={loadSEOSettings} className="mt-4">
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Retry
+        </Button>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">SEO Settings</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
-            Optimize your website for search engines
+          <h1 className="text-3xl font-bold">SEO Settings</h1>
+          <p className="text-muted-foreground mt-1">
+            Configure search engine optimization and social media settings
           </p>
         </div>
-        <div className="flex space-x-3 mt-4 sm:mt-0">
-          {!isEditing ? (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-100 text-slate-100 dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Edit Settings
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={handleReset}
-                className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleSave}
-                className="inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-100 text-slate-100 dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
-              </button>
-            </>
-          )}
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={loadSEOSettings}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+          <Button onClick={saveSEOSettings} disabled={saving}>
+            {saving ? (
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
+            Save Changes
+          </Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="border-b border-slate-200 dark:border-slate-700">
-        <nav className="flex space-x-8 overflow-x-auto">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-slate-500 text-slate-900 dark:text-slate-100'
-                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
+      {/* Status Messages */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          {error}
+        </div>
+      )}
+      
+      {success && (
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+          SEO settings saved successfully!
+        </div>
+      )}
+
+      <Tabs defaultValue="meta" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="meta" className="flex items-center gap-2">
+            <Search className="w-4 h-4" />
+            Meta Tags
+          </TabsTrigger>
+          <TabsTrigger value="social" className="flex items-center gap-2">
+            <Globe className="w-4 h-4" />
+            Social Media
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="structured" className="flex items-center gap-2">
+            <Settings className="w-4 h-4" />
+            Structured Data
+          </TabsTrigger>
+          <TabsTrigger value="technical" className="flex items-center gap-2">
+            <Shield className="w-4 h-4" />
+            Technical SEO
+          </TabsTrigger>
+          <TabsTrigger value="performance" className="flex items-center gap-2">
+            <Zap className="w-4 h-4" />
+            Performance
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Meta Tags Tab */}
+        <TabsContent value="meta" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Meta Tags</CardTitle>
+              <CardDescription>
+                Configure basic meta tags for search engines
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="meta-title">Meta Title</Label>
+                <Input
+                  id="meta-title"
+                  value={settings.meta.title}
+                  onChange={(e) => updateSetting('meta.title', e.target.value)}
+                  placeholder="Your site title"
+                />
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    Recommended: 30-60 characters
+                  </span>
+                  <span className={getCharacterColor(settings.meta.title.length, 30, 60)}>
+                    {getCharacterCount(settings.meta.title)} characters
+                  </span>
                 </div>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+              </div>
 
-      {/* Tab Content */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-        {renderTabContent()}
-      </div>
+              <div className="space-y-2">
+                <Label htmlFor="meta-description">Meta Description</Label>
+                <Textarea
+                  id="meta-description"
+                  value={settings.meta.description}
+                  onChange={(e) => updateSetting('meta.description', e.target.value)}
+                  placeholder="Brief description of your site"
+                  rows={3}
+                />
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    Recommended: 120-160 characters
+                  </span>
+                  <span className={getCharacterColor(settings.meta.description.length, 120, 160)}>
+                    {getCharacterCount(settings.meta.description)} characters
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="meta-keywords">Keywords</Label>
+                <Input
+                  id="meta-keywords"
+                  value={settings.meta.keywords}
+                  onChange={(e) => updateSetting('meta.keywords', e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Comma-separated keywords (optional)
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="meta-author">Author</Label>
+                  <Input
+                    id="meta-author"
+                    value={settings.meta.author}
+                    onChange={(e) => updateSetting('meta.author', e.target.value)}
+                    placeholder="Author name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="meta-canonical">Canonical URL</Label>
+                  <Input
+                    id="meta-canonical"
+                    value={settings.meta.canonical}
+                    onChange={(e) => updateSetting('meta.canonical', e.target.value)}
+                    placeholder="https://yoursite.com"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Social Media Tab */}
+        <TabsContent value="social" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Twitter className="w-5 h-5 text-blue-400" />
+                  Twitter
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="twitter-handle">Twitter Handle</Label>
+                  <Input
+                    id="twitter-handle"
+                    value={settings.social.twitter.handle}
+                    onChange={(e) => updateSetting('social.twitter.handle', e.target.value)}
+                    placeholder="@yourhandle"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="twitter-card">Card Type</Label>
+                  <select
+                    id="twitter-card"
+                    value={settings.social.twitter.card}
+                    onChange={(e) => updateSetting('social.twitter.card', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="summary">Summary</option>
+                    <option value="summary_large_image">Summary Large Image</option>
+                  </select>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Facebook className="w-5 h-5 text-blue-600" />
+                  Facebook
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="facebook-app-id">App ID</Label>
+                  <Input
+                    id="facebook-app-id"
+                    value={settings.social.facebook.appId}
+                    onChange={(e) => updateSetting('social.facebook.appId', e.target.value)}
+                    placeholder="Facebook App ID"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="facebook-page-id">Page ID</Label>
+                  <Input
+                    id="facebook-page-id"
+                    value={settings.social.facebook.pageId}
+                    onChange={(e) => updateSetting('social.facebook.pageId', e.target.value)}
+                    placeholder="Facebook Page ID"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Linkedin className="w-5 h-5 text-blue-700" />
+                  LinkedIn
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="linkedin-profile">Profile URL</Label>
+                  <Input
+                    id="linkedin-profile"
+                    value={settings.social.linkedin.profile}
+                    onChange={(e) => updateSetting('social.linkedin.profile', e.target.value)}
+                    placeholder="https://linkedin.com/in/yourprofile"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Github className="w-5 h-5 text-gray-800" />
+                  GitHub
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="github-profile">Profile URL</Label>
+                  <Input
+                    id="github-profile"
+                    value={settings.social.github.profile}
+                    onChange={(e) => updateSetting('social.github.profile', e.target.value)}
+                    placeholder="https://github.com/yourusername"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Analytics & Tracking</CardTitle>
+              <CardDescription>
+                Configure analytics and tracking services
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Google Analytics</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Track website traffic and user behavior
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.analytics.googleAnalytics.enabled}
+                    onCheckedChange={(checked) => updateSetting('analytics.googleAnalytics.enabled', checked)}
+                  />
+                </div>
+                {settings.analytics.googleAnalytics.enabled && (
+                  <div className="space-y-2">
+                    <Label htmlFor="ga-tracking-id">Tracking ID</Label>
+                    <Input
+                      id="ga-tracking-id"
+                      value={settings.analytics.googleAnalytics.trackingId}
+                      onChange={(e) => updateSetting('analytics.googleAnalytics.trackingId', e.target.value)}
+                      placeholder="G-XXXXXXXXXX"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Google Tag Manager</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Manage all tracking codes in one place
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.analytics.googleTagManager.enabled}
+                    onCheckedChange={(checked) => updateSetting('analytics.googleTagManager.enabled', checked)}
+                  />
+                </div>
+                {settings.analytics.googleTagManager.enabled && (
+                  <div className="space-y-2">
+                    <Label htmlFor="gtm-container-id">Container ID</Label>
+                    <Input
+                      id="gtm-container-id"
+                      value={settings.analytics.googleTagManager.containerId}
+                      onChange={(e) => updateSetting('analytics.googleTagManager.containerId', e.target.value)}
+                      placeholder="GTM-XXXXXXX"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Facebook Pixel</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Track conversions and create custom audiences
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.analytics.facebookPixel.enabled}
+                    onCheckedChange={(checked) => updateSetting('analytics.facebookPixel.enabled', checked)}
+                  />
+                </div>
+                {settings.analytics.facebookPixel.enabled && (
+                  <div className="space-y-2">
+                    <Label htmlFor="fb-pixel-id">Pixel ID</Label>
+                    <Input
+                      id="fb-pixel-id"
+                      value={settings.analytics.facebookPixel.pixelId}
+                      onChange={(e) => updateSetting('analytics.facebookPixel.pixelId', e.target.value)}
+                      placeholder="1234567890123456"
+                    />
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Technical SEO Tab */}
+        <TabsContent value="technical" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Robots.txt</CardTitle>
+                <CardDescription>
+                  Control search engine crawling
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="robots-enabled">Enable robots.txt</Label>
+                  <Switch
+                    checked={settings.robots.enabled}
+                    onCheckedChange={(checked) => updateSetting('robots.enabled', checked)}
+                  />
+                </div>
+                
+                {settings.robots.enabled && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="robots-sitemap">Sitemap URL</Label>
+                      <Input
+                        id="robots-sitemap"
+                        value={settings.robots.sitemap}
+                        onChange={(e) => updateSetting('robots.sitemap', e.target.value)}
+                        placeholder="https://yoursite.com/sitemap.xml"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="robots-allow">Allowed Paths</Label>
+                      <Textarea
+                        id="robots-allow"
+                        value={settings.robots.allow.join('\n')}
+                        onChange={(e) => updateSetting('robots.allow', e.target.value.split('\n').filter(Boolean))}
+                        placeholder="One path per line"
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="robots-disallow">Disallowed Paths</Label>
+                      <Textarea
+                        id="robots-disallow"
+                        value={settings.robots.disallow.join('\n')}
+                        onChange={(e) => updateSetting('robots.disallow', e.target.value.split('\n').filter(Boolean))}
+                        placeholder="One path per line"
+                        rows={3}
+                      />
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Sitemap</CardTitle>
+                <CardDescription>
+                  Configure XML sitemap settings
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="sitemap-enabled">Enable sitemap</Label>
+                  <Switch
+                    checked={settings.sitemap.enabled}
+                    onCheckedChange={(checked) => updateSetting('sitemap.enabled', checked)}
+                  />
+                </div>
+                
+                {settings.sitemap.enabled && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="sitemap-priority">Default Priority</Label>
+                      <Input
+                        id="sitemap-priority"
+                        type="number"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        value={settings.sitemap.priority}
+                        onChange={(e) => updateSetting('sitemap.priority', parseFloat(e.target.value))}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="sitemap-changefreq">Change Frequency</Label>
+                      <select
+                        id="sitemap-changefreq"
+                        value={settings.sitemap.changefreq}
+                        onChange={(e) => updateSetting('sitemap.changefreq', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="always">Always</option>
+                        <option value="hourly">Hourly</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="never">Never</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Performance Tab */}
+        <TabsContent value="performance" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Optimization</CardTitle>
+              <CardDescription>
+                Configure performance and caching settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Image Optimization</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically optimize images for better performance
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.performance.imageOptimization.enabled}
+                    onCheckedChange={(checked) => updateSetting('performance.imageOptimization.enabled', checked)}
+                  />
+                </div>
+                
+                {settings.performance.imageOptimization.enabled && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="image-quality">Image Quality</Label>
+                      <Input
+                        id="image-quality"
+                        type="number"
+                        min="1"
+                        max="100"
+                        value={settings.performance.imageOptimization.quality}
+                        onChange={(e) => updateSetting('performance.imageOptimization.quality', parseInt(e.target.value))}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="lazy-loading">Lazy Loading</Label>
+                      <Switch
+                        checked={settings.performance.imageOptimization.lazyLoading}
+                        onCheckedChange={(checked) => updateSetting('performance.imageOptimization.lazyLoading', checked)}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <h4 className="font-medium">Caching Settings</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cache-static">Static Assets</Label>
+                    <select
+                      id="cache-static"
+                      value={settings.performance.caching.staticAssets}
+                      onChange={(e) => updateSetting('performance.caching.staticAssets', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="1h">1 hour</option>
+                      <option value="1d">1 day</option>
+                      <option value="1w">1 week</option>
+                      <option value="1M">1 month</option>
+                      <option value="1y">1 year</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cache-html">HTML Pages</Label>
+                    <select
+                      id="cache-html"
+                      value={settings.performance.caching.htmlPages}
+                      onChange={(e) => updateSetting('performance.caching.htmlPages', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="5m">5 minutes</option>
+                      <option value="1h">1 hour</option>
+                      <option value="1d">1 day</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cache-api">API Responses</Label>
+                    <select
+                      id="cache-api"
+                      value={settings.performance.caching.apiResponses}
+                      onChange={(e) => updateSetting('performance.caching.apiResponses', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="1m">1 minute</option>
+                      <option value="5m">5 minutes</option>
+                      <option value="1h">1 hour</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
-  );
+  )
 }
-
