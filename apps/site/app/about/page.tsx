@@ -1,14 +1,12 @@
-"use client";
+import { Metadata } from 'next';
+import { PAGE_METADATA } from '../../lib/metadata';
+import { AboutPageClient } from './about-client';
 
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
+export const metadata: Metadata = PAGE_METADATA.about;
 
-import { Layout } from '../../components/shared/layout';
-import { Container } from '../../components/shared/container';
-import { Button } from '../../components/ui/button';
-import Chatbot from '../../components/features/chatbot/Chatbot';
-import { Timeline, TimelineItem } from '../../components/ui/timeline';
+export default function AboutPage() {
+  return <AboutPageClient />;
+}
 
 import {
   ArrowRight,
