@@ -344,8 +344,8 @@ function Execute-Implementation {
                         $implementation.CompletedTasks += $task
                         Write-ColorOutput "      ✅ Completed" "Green"
                     } else {
-                        $implementation.Errors += "$task`: $($taskResult.ErrorMessage)"
-                        Write-ColorOutput "      ❌ Failed: $($taskResult.ErrorMessage)" "Red"
+                        $implementation.Errors += "$task: $($taskResult.Error)"
+                        Write-ColorOutput "      ❌ Failed: $($taskResult.Error)" "Red"
                     }
                 } else {
                     Write-ColorOutput "      [DRY RUN] Would execute: $task" "Yellow"
@@ -432,7 +432,7 @@ function Invoke-ImplementationTask {
                 if ($LASTEXITCODE -eq 0) {
                     return @{ Success = $true; Output = "Linting passed" }
                 } else {
-                    return @{ Success = $false; ErrorMessage = "Linting failed: $lintResult" }
+                    return @{ Success = $false; Error = "Linting failed: $lintResult" }
                 }
             }
             "Test functionality manually" {
@@ -488,7 +488,7 @@ $($global:implementationState.Plan.Deliverables -join "`n")
             }
         }
     } catch {
-        return @{ Success = $false; ErrorMessage = $_.Exception.Message }
+        return @{ Success = $false; Error = $_.Exception.Message }
     }
 }
 
