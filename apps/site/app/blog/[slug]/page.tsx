@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
+import { fetchPostBySlug, fetchPublication } from '../../../lib/content-api';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -19,8 +20,8 @@ const defaultPublication = {
   id: 'fallback-blog-post',
   title: 'John Schibelli',
   displayTitle: 'John Schibelli',
-  descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
-  url: 'https://schibelli.dev',
+  descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
+  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
   },
@@ -41,10 +42,9 @@ const defaultPublication = {
 
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params;
-  const GQL_ENDPOINT = 'https://gql.hashnode.com/';
-  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
-
+  
   // Fetch post from Hashnode
+<<<<<<< HEAD
   const query = `
     query PostBySlug($host: String!, $slug: String!) {
       publication(host: $host) {
@@ -93,6 +93,9 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
   } catch (error) {
     console.error('Error fetching Hashnode post:', error);
   }
+=======
+  const post = await fetchPostBySlug(params.slug);
+>>>>>>> develop
 
   if (!post) {
     return {
@@ -120,6 +123,7 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
+<<<<<<< HEAD
   const GQL_ENDPOINT = 'https://gql.hashnode.com/';
   const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
 
@@ -181,15 +185,26 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       throw error;
     }
   }
+=======
+  
+  // Fetch post and publication data from Hashnode
+  const [post, publication] = await Promise.all([
+    fetchPostBySlug(params.slug),
+    fetchPublication()
+  ]);
+>>>>>>> develop
 
   if (!post) {
     notFound();
   }
 
+  // Use fetched publication or fallback to default
+  const currentPublication = publication || defaultPublication;
+
   return (
-    <AppProvider publication={defaultPublication as any}>
+    <AppProvider publication={currentPublication as any}>
       {/* Navigation */}
-      <ModernHeader publication={defaultPublication} />
+      <ModernHeader publication={currentPublication} />
 
       <article className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -285,7 +300,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
       </article>
 
       <Chatbot />
-      <Footer publication={defaultPublication} />
+      <Footer publication={currentPublication} />
     </AppProvider>
   );
 }

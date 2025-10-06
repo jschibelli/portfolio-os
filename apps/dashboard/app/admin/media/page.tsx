@@ -8,9 +8,6 @@ import {
   Search, 
   Grid3X3, 
   List, 
-  Filter, 
-  MoreVertical, 
-  Download, 
   Trash2, 
   Copy, 
   Eye,
@@ -42,7 +39,6 @@ export default function AdminMedia() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [media, setMedia] = useState<MediaItem[]>([]);
-  const [filteredMedia, setFilteredMedia] = useState<MediaItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
