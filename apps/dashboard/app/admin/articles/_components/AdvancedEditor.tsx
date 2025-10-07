@@ -1,6 +1,9 @@
 // /app/(admin)/admin/articles/_components/AdvancedEditor.tsx
 // Complete TipTap editor implementation with all extensions
 
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component, enabling React hooks,
+// browser APIs, and third-party libraries like TipTap that require DOM access
 'use client'
 
 import React, { useEffect } from 'react'

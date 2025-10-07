@@ -5,6 +5,8 @@
 // Type icon have been moved to a context menu for a cleaner toolbar UX.
 // The toolbar now focuses on the most frequently used formatting options.
 
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component for interactive toolbar buttons
 'use client'
 
 import React from 'react'

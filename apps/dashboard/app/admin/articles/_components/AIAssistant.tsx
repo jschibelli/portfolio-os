@@ -1,3 +1,5 @@
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component for interactive AI assistant features
 'use client'
 
 import React, { useState } from 'react'

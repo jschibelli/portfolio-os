@@ -7,6 +7,10 @@
  * Migration path: Existing content will be gradually migrated to the new editor format.
  * This component will be removed in a future version once all content is migrated.
  */
+
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component, enabling React hooks
+// and browser APIs (useState, useRef, event handlers, etc.)
 'use client'
 
 import React, { useState, useRef } from 'react'
