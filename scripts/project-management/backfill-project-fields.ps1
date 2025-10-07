@@ -63,6 +63,30 @@ $fieldMappings = @{
         infraOption = "5a298e61"
         dxToolingOption = "a67a98e5"
     }
+    RiskLevel = @{
+        fieldId = "PVTSSF_lAHOAEnMVc4BCu-czg2Ywbs"
+        defaultOption = "efffd501" # Low
+        lowOption = "efffd501"
+        mediumOption = "ce3412e2"
+        highOption = "e854f1c6"
+        criticalOption = "e08a45aa"
+    }
+    Dependencies = @{
+        fieldId = "PVTSSF_lAHOAEnMVc4BCu-czg2YwgE"
+        defaultOption = "b9219285" # None
+        noneOption = "b9219285"
+        lowOption = "0a52397b"
+        mediumOption = "2c3739c2"
+        highOption = "d608a3c9"
+    }
+    Testing = @{
+        fieldId = "PVTSSF_lAHOAEnMVc4BCu-czg2Ywhs"
+        defaultOption = "daf54688" # Unit
+        unitOption = "daf54688"
+        integrationOption = "e8023120"
+        e2eOption = "d4844e39"
+        manualOption = "85607d0c"
+    }
 }
 
 # Function to determine priority based on issue title and labels
@@ -153,6 +177,84 @@ function Get-AreaFromIssue {
     return $fieldMappings.Area.frontendOption
 }
 
+# Function to determine risk level based on issue content
+function Get-RiskLevelFromIssue {
+    param($issue)
+    
+    $title = $issue.content.title.ToLower()
+    $body = $issue.content.body.ToLower()
+    
+    # Critical risk keywords
+    if ($title -match "critical|security|vulnerability|breach|data.*loss" -or $body -match "critical|security|vulnerability|breach") {
+        return $fieldMappings.RiskLevel.criticalOption
+    }
+    
+    # High risk keywords
+    if ($title -match "high.*risk|breaking.*change|migration|refactor" -or $body -match "high risk|breaking change|migration") {
+        return $fieldMappings.RiskLevel.highOption
+    }
+    
+    # Medium risk keywords
+    if ($title -match "medium|moderate|enhancement|feature" -or $body -match "medium risk|moderate|enhancement") {
+        return $fieldMappings.RiskLevel.mediumOption
+    }
+    
+    # Default to Low risk
+    return $fieldMappings.RiskLevel.lowOption
+}
+
+# Function to determine dependencies based on issue content
+function Get-DependenciesFromIssue {
+    param($issue)
+    
+    $title = $issue.content.title.ToLower()
+    $body = $issue.content.body.ToLower()
+    
+    # High dependency keywords
+    if ($title -match "depends.*on|blocked.*by|requires.*merge" -or $body -match "depends on|blocked by|requires merge|waiting for") {
+        return $fieldMappings.Dependencies.highOption
+    }
+    
+    # Medium dependency keywords
+    if ($title -match "integration|api.*change|database.*change" -or $body -match "integration|api change|database change") {
+        return $fieldMappings.Dependencies.mediumOption
+    }
+    
+    # Low dependency keywords
+    if ($title -match "standalone|independent|isolated" -or $body -match "standalone|independent|isolated") {
+        return $fieldMappings.Dependencies.lowOption
+    }
+    
+    # Default to None dependencies
+    return $fieldMappings.Dependencies.noneOption
+}
+
+# Function to determine testing requirements based on issue content
+function Get-TestingFromIssue {
+    param($issue)
+    
+    $title = $issue.content.title.ToLower()
+    $body = $issue.content.body.ToLower()
+    
+    # Manual testing keywords
+    if ($title -match "ui|ux|design|visual|user.*experience" -or $body -match "ui|ux|design|visual|user experience|manual testing") {
+        return $fieldMappings.Testing.manualOption
+    }
+    
+    # E2E testing keywords
+    if ($title -match "e2e|end.*to.*end|workflow|user.*journey" -or $body -match "e2e|end to end|workflow|user journey") {
+        return $fieldMappings.Testing.e2eOption
+    }
+    
+    # Integration testing keywords
+    if ($title -match "integration|api|service|component.*integration" -or $body -match "integration|api|service|component integration") {
+        return $fieldMappings.Testing.integrationOption
+    }
+    
+    # Default to Unit testing
+    return $fieldMappings.Testing.unitOption
+}
+
 # Process each item
 $processedCount = 0
 $errorCount = 0
@@ -168,6 +270,9 @@ foreach ($item in $projectItems.items) {
         $size = Get-SizeFromIssue -issue $item
         $app = Get-AppFromIssue -issue $item
         $area = Get-AreaFromIssue -issue $item
+        $riskLevel = Get-RiskLevelFromIssue -issue $item
+        $dependencies = Get-DependenciesFromIssue -issue $item
+        $testing = Get-TestingFromIssue -issue $item
         
         # Update Status
         Write-Host "  Setting Status to Backlog..." -ForegroundColor Gray
@@ -188,6 +293,18 @@ foreach ($item in $projectItems.items) {
         # Update Area
         Write-Host "  Setting Area..." -ForegroundColor Gray
         gh project item-edit --id $item.id --field-id $fieldMappings.Area.fieldId --single-select-option-id $area 2>$null
+        
+        # Update Risk Level
+        Write-Host "  Setting Risk Level..." -ForegroundColor Gray
+        gh project item-edit --id $item.id --field-id $fieldMappings.RiskLevel.fieldId --single-select-option-id $riskLevel 2>$null
+        
+        # Update Dependencies
+        Write-Host "  Setting Dependencies..." -ForegroundColor Gray
+        gh project item-edit --id $item.id --field-id $fieldMappings.Dependencies.fieldId --single-select-option-id $dependencies 2>$null
+        
+        # Update Testing
+        Write-Host "  Setting Testing..." -ForegroundColor Gray
+        gh project item-edit --id $item.id --field-id $fieldMappings.Testing.fieldId --single-select-option-id $testing 2>$null
         
         # Set Estimate to 3 (default per memory)
         Write-Host "  Setting Estimate to 3..." -ForegroundColor Gray
