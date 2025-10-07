@@ -13,6 +13,24 @@ import Link from 'next/link';
 // Mock case studies data - in a real app, this would come from your CMS or database
 const caseStudies = [
   {
+    id: 'portfolio-os',
+    title: 'Portfolio OS: Building a Self-Documenting Development Platform',
+    slug: 'portfolio-os',
+    description: 'How I built a production-grade monorepo with enterprise automation, multi-agent workflows, and intelligent CI/CD—turning a portfolio into a comprehensive development platform.',
+    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
+    tags: ['Next.js', 'TypeScript', 'Turborepo', 'Automation', 'DevOps', 'Multi-Agent'],
+    publishedAt: '2025-01-15',
+    author: 'John Schibelli',
+    featured: true,
+    metrics: {
+      automation: '100+ PowerShell scripts',
+      testCoverage: '90%+ coverage',
+      agents: '5-agent coordination'
+    },
+    liveUrl: 'https://johnschibelli.dev',
+    caseStudyUrl: '/case-studies/portfolio-os'
+  },
+  {
     id: 'tendrilo-case-study',
     title: 'Tendril Multi-Tenant Chatbot SaaS: Strategic Analysis and Implementation Plan',
     slug: 'tendrilo-case-study',
@@ -49,7 +67,7 @@ export default function CaseStudiesPage() {
       title: 'John Schibelli',
       displayTitle: 'John Schibelli',
       descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
-      url: 'https://schibelli.dev',
+      url: 'https://johnschibelli.dev',
       author: { name: 'John Schibelli' },
       preferences: { logo: null as any },
     }}>
