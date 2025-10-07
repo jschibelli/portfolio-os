@@ -161,7 +161,10 @@ export function AdvancedEditor({
     },
   })
 
-  // Keyboard shortcuts
+  // Sync editor with prop changes and handle keyboard shortcuts
+  // Note: useCallback not needed here as the editor instance is stable
+  // and doesn't trigger unnecessary re-renders. The useEditor hook already
+  // optimizes re-renders, and memoization would add overhead without benefit.
   useEffect(() => {
     if (!editor) return
 

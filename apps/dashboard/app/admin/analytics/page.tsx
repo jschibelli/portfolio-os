@@ -136,7 +136,7 @@ export default function AdminAnalytics() {
   const [isMockData, setIsMockData] = useState(false);
 
 
-  // Fetch analytics data
+  // Fetch analytics data with robust error handling
   const fetchAnalyticsData = async () => {
     setLoading(true);
     setError(null);
@@ -148,24 +148,45 @@ export default function AdminAnalytics() {
         fetch('/api/admin/stats')
       ]);
       
-      // Process analytics data
-      if (analyticsResponse.status === 'fulfilled' && analyticsResponse.value.ok) {
-        const data = await analyticsResponse.value.json();
+      // Process analytics data with explicit status checking
+      if (analyticsResponse.status === 'fulfilled') {
+        const response = analyticsResponse.value;
+        
+        if (!response.ok) {
+          throw new Error(
+            `Analytics API error: HTTP ${response.status} ${response.statusText || 'Unknown error'}`
+          );
+        }
+        
+        const data = await response.json();
         setAnalyticsData(data);
         
         // Check if we're using mock data by looking for specific mock values
         setIsMockData(data.overview?.visitors === 1250 && data.overview?.pageviews === 3200);
       } else {
-        throw new Error('Failed to fetch analytics data');
+        // Network error or fetch rejection
+        throw new Error(
+          analyticsResponse.reason?.message || 'Network error: Failed to reach analytics API'
+        );
       }
       
-      // Process dashboard stats
+      // Process dashboard stats (optional - don't block on failure)
       if (statsResponse.status === 'fulfilled' && statsResponse.value.ok) {
-        const stats = await statsResponse.value.json();
-        setDashboardStats(stats);
+        try {
+          const stats = await statsResponse.value.json();
+          setDashboardStats(stats);
+        } catch (jsonError) {
+          console.warn('Failed to parse dashboard stats JSON:', jsonError);
+        }
+      } else if (statsResponse.status === 'rejected') {
+        console.warn('Dashboard stats fetch failed:', statsResponse.reason);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load analytics data');
+      const errorMessage = err instanceof Error 
+        ? err.message 
+        : 'Failed to load analytics data. Please try again.';
+      setError(errorMessage);
+      console.error('Analytics fetch error:', err);
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,12 @@
+/**
+ * @deprecated BlockEditor is being phased out in favor of AdvancedEditor (TipTap).
+ * 
+ * This component is maintained for backward compatibility with existing content only.
+ * New features and article creation should use the AdvancedEditor component instead.
+ * 
+ * Migration path: Existing content will be gradually migrated to the new editor format.
+ * This component will be removed in a future version once all content is migrated.
+ */
 'use client'
 
 import React, { useState, useRef } from 'react'

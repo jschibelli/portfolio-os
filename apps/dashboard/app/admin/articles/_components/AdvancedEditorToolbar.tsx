@@ -1,5 +1,9 @@
 // /app/(admin)/admin/articles/_components/AdvancedEditorToolbar.tsx
 // Comprehensive toolbar for the AdvancedEditor with all formatting options
+//
+// Note: Alignment controls (AlignLeft, AlignCenter, AlignRight, AlignJustify) and
+// Type icon have been moved to a context menu for a cleaner toolbar UX.
+// The toolbar now focuses on the most frequently used formatting options.
 
 'use client'
 
