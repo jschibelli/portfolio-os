@@ -6,6 +6,12 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+// Icon imports (all are used in component):
+// - ArrowLeft: Back button (line ~74)
+// - Megaphone: Marketing suggestion button (line ~118)
+// - PenTool: Writing style button (line ~135)
+// - Send: Send message button (line ~156)
+// - Sparkles: SEO optimization button (line ~127)
 import { 
   ArrowLeft,
   Megaphone,

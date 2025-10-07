@@ -6,6 +6,10 @@
 // browser APIs, and third-party libraries like TipTap that require DOM access
 'use client'
 
+// React hooks used in this component:
+// - useEffect: Syncs editor content with props and manages keyboard shortcuts
+// Note: useCallback was intentionally removed as it added overhead without benefit
+// The useEditor hook from TipTap already optimizes re-renders effectively
 import React, { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'

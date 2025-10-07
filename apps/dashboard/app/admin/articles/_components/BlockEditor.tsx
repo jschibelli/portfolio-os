@@ -13,6 +13,9 @@
 // and browser APIs (useState, useRef, event handlers, etc.)
 'use client'
 
+// React hooks used in this component:
+// - useState: Tracks focusedBlockId for UI state management
+// - useRef: Stores DOM references to blocks for focus management and DOM manipulation
 import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { 

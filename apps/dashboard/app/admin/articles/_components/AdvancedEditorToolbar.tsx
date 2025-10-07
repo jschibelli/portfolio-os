@@ -13,6 +13,11 @@ import React from 'react'
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+
+// Icon imports - Note: The following icons were intentionally removed:
+// - Type, AlignLeft, AlignCenter, AlignRight, AlignJustify
+// These alignment controls have been moved to a context menu (not yet implemented)
+// to reduce toolbar complexity and improve UX
 import { 
   Bold, 
   Italic, 
