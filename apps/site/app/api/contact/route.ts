@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { emailService } from '../../../lib/email-service';
+import { prisma } from '../../../lib/prisma';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -77,15 +78,29 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = ContactFormSchema.parse(body);
 
-    // Log the contact form submission (in production, you might want to store this in a database)
-    console.log('📧 Contact form submission received:', {
+    // Get user agent for tracking
+    const userAgent = request.headers.get('user-agent') || undefined;
+
+    // Save submission to database FIRST (before attempting email)
+    // This ensures we never lose submissions even if email fails
+    const submission = await prisma.contactSubmission.create({
+      data: {
+        name: validatedData.name,
+        email: validatedData.email,
+        company: validatedData.company,
+        projectType: validatedData.projectType,
+        message: validatedData.message,
+        ipAddress: clientIP,
+        userAgent: userAgent,
+        status: 'pending',
+      },
+    });
+
+    console.log('💾 Contact submission saved to database:', {
+      id: submission.id,
       name: validatedData.name,
       email: validatedData.email,
-      company: validatedData.company,
-      projectType: validatedData.projectType,
-      messageLength: validatedData.message.length,
-      timestamp: new Date().toISOString(),
-      clientIP
+      timestamp: submission.createdAt.toISOString(),
     });
 
     // Send email notification to site owner
@@ -123,18 +138,41 @@ Client IP: ${clientIP}
       replyTo: validatedData.email,
     });
 
+    // Update submission status based on email result
     if (!emailResult.success) {
       console.error('📧 Failed to send email notification:', emailResult.error);
-      // Don't fail the request if email sending fails - still log the submission
+      
+      // Update database with failure status
+      await prisma.contactSubmission.update({
+        where: { id: submission.id },
+        data: {
+          status: 'failed',
+          emailError: emailResult.error,
+          retryCount: 0,
+        },
+      });
+
+      // Note: Submission is saved, but email failed
+      // Admin can retry sending from the admin panel
+      console.log('⚠️  Submission saved but email failed. Admin can retry from dashboard.');
     } else {
       console.log('📧 Email notification sent successfully:', emailResult.messageId);
+      
+      // Update database with success status
+      await prisma.contactSubmission.update({
+        where: { id: submission.id },
+        data: {
+          status: 'sent',
+          emailSentAt: new Date(),
+        },
+      });
     }
 
-    // Return success response
+    // Return success response with the actual submission ID
     return NextResponse.json({
       success: true,
       message: 'Thank you for your message! I will get back to you within 24 hours.',
-      submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      submissionId: submission.id
     });
 
   } catch (error) {
