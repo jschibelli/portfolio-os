@@ -179,8 +179,21 @@ export function validateEnv() {
   }
 }
 
-// Export validated environment variables
-export const env = validateEnv();
+// Lazy-loaded validated environment variables
+let _env: any = null;
+function getEnv() {
+  if (!_env) {
+    _env = validateEnv();
+  }
+  return _env;
+}
+
+// Export validated environment variables with lazy evaluation
+export const env = new Proxy({} as any, {
+  get(target, prop) {
+    return getEnv()[prop];
+  }
+});
 
 // Type-safe environment variables
 export type Env = z.infer<typeof envSchema>;
@@ -193,9 +206,9 @@ export type Env = z.infer<typeof envSchema>;
  * - isDevelopment: Running in development mode
  * - isTest: Running in test mode
  */
-export const isProduction = env.NODE_ENV === 'production';
-export const isDevelopment = env.NODE_ENV === 'development';
-export const isTest = env.NODE_ENV === 'test';
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isDevelopment = process.env.NODE_ENV === 'development';
+export const isTest = process.env.NODE_ENV === 'test';
 
 /**
  * Feature flags based on environment variables
@@ -212,23 +225,51 @@ export const isTest = env.NODE_ENV === 'test';
  * - sentry: Sentry error tracking
  * - plausible: Plausible analytics
  * 
- * Usage: if (features.email) { /* Send email */ }
+ * @example
+ * if (features.email) {
+ *   // Send email
+ * }
  */
-export const features = {
-  googleCalendar: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_OAUTH_REFRESH_TOKEN && env.GOOGLE_CALENDAR_ID),
-  email: Boolean(env.RESEND_API_KEY && env.EMAIL_FROM),
-  openai: Boolean(env.OPENAI_API_KEY),
-  stripe: Boolean(env.STRIPE_SECRET_KEY),
-  linkedin: Boolean(env.LINKEDIN_CLIENT_ID && env.LINKEDIN_CLIENT_SECRET),
-  facebook: Boolean(env.FACEBOOK_APP_ID && env.FACEBOOK_APP_SECRET),
-  github: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
-  vercel: Boolean(env.VERCEL_API_TOKEN),
-  sentry: Boolean(env.SENTRY_API_TOKEN),
-  plausible: Boolean(env.PLAUSIBLE_API_TOKEN && env.PLAUSIBLE_SITE_ID),
-} as const;
+export const features = new Proxy({} as any, {
+  get(target, prop) {
+    const e = getEnv();
+    switch (prop) {
+      case 'googleCalendar':
+        return Boolean(e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET && e.GOOGLE_OAUTH_REFRESH_TOKEN && e.GOOGLE_CALENDAR_ID);
+      case 'email':
+        return Boolean(e.RESEND_API_KEY && e.EMAIL_FROM);
+      case 'openai':
+        return Boolean(e.OPENAI_API_KEY);
+      case 'stripe':
+        return Boolean(e.STRIPE_SECRET_KEY);
+      case 'linkedin':
+        return Boolean(e.LINKEDIN_CLIENT_ID && e.LINKEDIN_CLIENT_SECRET);
+      case 'facebook':
+        return Boolean(e.FACEBOOK_APP_ID && e.FACEBOOK_APP_SECRET);
+      case 'github':
+        return Boolean(e.GITHUB_CLIENT_ID && e.GITHUB_CLIENT_SECRET);
+      case 'vercel':
+        return Boolean(e.VERCEL_API_TOKEN);
+      case 'sentry':
+        return Boolean(e.SENTRY_API_TOKEN);
+      case 'plausible':
+        return Boolean(e.PLAUSIBLE_API_TOKEN && e.PLAUSIBLE_SITE_ID);
+      default:
+        return undefined;
+    }
+  }
+});
 
-// SSL/TLS configuration
-export const sslConfig = {
-  fixEnabled: env.FIX_SSL_ISSUES,
-  nodeOptions: env.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined,
-} as const;
+// SSL/TLS configuration (lazy-loaded)
+export const sslConfig = new Proxy({} as any, {
+  get(target, prop) {
+    const e = getEnv();
+    if (prop === 'fixEnabled') {
+      return e.FIX_SSL_ISSUES;
+    }
+    if (prop === 'nodeOptions') {
+      return e.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined;
+    }
+    return undefined;
+  }
+});
