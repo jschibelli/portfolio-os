@@ -15,12 +15,19 @@ const LIVE = new Set([
 export function middleware(req: NextRequest) {
   const { pathname, hostname } = req.nextUrl;
 
+  // Debug logging
+  console.log(`[middleware] Processing request: ${hostname}${pathname}`);
+
   // Canonical host redirect - enforce apex domain (johnschibelli.dev)
+  // TEMPORARILY DISABLED - investigating redirect loop issue
   const canonicalHost = 'johnschibelli.dev';
   if (hostname === `www.${canonicalHost}`) {
-    const url = req.nextUrl.clone();
-    url.hostname = canonicalHost;
-    return NextResponse.redirect(url, 301);
+    console.log(`[middleware] Would redirect www.${canonicalHost} to ${canonicalHost} but disabled for debugging`);
+    // const url = req.nextUrl.clone();
+    // url.hostname = canonicalHost;
+    // url.protocol = 'https:'; // Ensure HTTPS
+    // console.log(`[middleware] Redirecting www.${canonicalHost} to ${canonicalHost}`);
+    // return NextResponse.redirect(url, 301);
   }
 
   // Allow static assets, Next internals, API, maintenance page, and common file types
