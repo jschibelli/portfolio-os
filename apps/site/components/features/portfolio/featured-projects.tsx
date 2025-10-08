@@ -35,7 +35,7 @@ export default function FeaturedProjects() {
 	}
 
 	// Convert portfolio data to Project interface with error handling
-	const featuredProjects: Project[] = portfolioData.slice(0, 3).map((item: any) => {
+	const featuredProjects = portfolioData.slice(0, 3).map((item: any) => {
 		// Validate required fields
 		if (!item.id || !item.title || !item.description) {
 			console.warn('FeaturedProjects: Invalid project data for item:', {
@@ -60,8 +60,23 @@ export default function FeaturedProjects() {
 			slug: item.slug,
 			metrics: item.metrics,
 			caseStudyPreview: item.caseStudyPreview,
-		};
-	}).filter(Boolean); // Remove null entries
+		} as Project;
+	}).filter(Boolean) as Project[]; // Remove null entries
+
+	// Dynamic grid layout based on number of projects
+	// 1 item: Single large centered card (max-w-2xl)
+	// 2 items: Two cards side-by-side (max-w-4xl)
+	// 3+ items: Full 3-column grid
+	const getGridClasses = () => {
+		const count = featuredProjects.length;
+		if (count === 1) {
+			return "max-w-2xl mx-auto";
+		} else if (count === 2) {
+			return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto";
+		} else {
+			return "grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch";
+		}
+	};
 
 	return (
 		<section 
@@ -82,12 +97,15 @@ export default function FeaturedProjects() {
 						Featured Projects
 					</h2>
 					<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
-						A selection of recent projects demonstrating various web development approaches
+						{featuredProjects.length === 1 
+							? "An in-depth look at a featured project showcasing development expertise"
+							: "A selection of recent projects demonstrating various web development approaches"
+						}
 					</p>
 				</motion.div>
 
-				{/* Projects Grid */}
-				<div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch">
+				{/* Dynamic Projects Grid - adapts to 1, 2, or 3+ items */}
+				<div className={`mb-12 ${getGridClasses()}`}>
 					{featuredProjects.map((project, index) => (
 						<ProjectCard key={project.id} project={project} index={index} />
 					))}
