@@ -16,10 +16,9 @@ import { Footer } from '../../../components/shared/footer';
 import { AppProvider } from '../../../components/contexts/appContext';
 
 // Dynamic import for Chatbot to improve initial page load performance
-const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
-  ssr: false,
-  loading: () => null,
-});
+// Note: ssr: false cannot be used in Server Components (Next.js App Router)
+// The Chatbot component itself handles client-side rendering via 'use client'
+const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'));
 
 interface ProjectPageProps {
   params: {
