@@ -6,7 +6,7 @@
  */
 
 /**
- * Custom error classes for email service
+ * Custom error types for better error handling
  */
 export class EmailConfigError extends Error {
   constructor(message: string) {
@@ -33,9 +33,12 @@ export class EmailRateLimitError extends Error {
 }
 
 export class EmailValidationError extends Error {
-  constructor(message: string) {
+  public errors: string[];
+  
+  constructor(message: string, errors: string[]) {
     super(message);
     this.name = 'EmailValidationError';
+    this.errors = errors;
   }
 }
 
@@ -51,7 +54,6 @@ export interface EmailOptions {
 export interface EmailResult {
   success: boolean;
   messageId?: string;
-  error?: string;
 }
 
 export interface EmailServiceConfig {
@@ -73,50 +75,50 @@ export class EmailService {
 
   /**
    * Send email
+   * @throws {EmailValidationError} If email options are invalid
+   * @throws {EmailConfigError} If email service is misconfigured
+   * @throws {EmailNetworkError} If network error occurs
+   * @throws {EmailRateLimitError} If rate limit is exceeded
    */
   async sendEmail(options: EmailOptions): Promise<EmailResult> {
-    try {
-      // Validate email options
-      const validation = this.validateEmailOptions(options);
-      if (!validation.isValid) {
-        throw new EmailValidationError(`Invalid email options: ${validation.errors.join(', ')}`);
-      }
+    // Validate email options
+    const validation = this.validateEmailOptions(options);
+    if (!validation.isValid) {
+      throw new EmailValidationError(
+        `Invalid email options: ${validation.errors.join(', ')}`,
+        validation.errors
+      );
+    }
 
-      // Use configured provider
-      switch (this.config.provider) {
-        case 'resend':
-          return await this.sendWithResend(options);
-        case 'sendgrid':
-          return await this.sendWithSendGrid(options);
-        case 'nodemailer':
-          return await this.sendWithNodemailer(options);
-        default:
-          return {
-            success: false,
-            error: `Unsupported email provider: ${this.config.provider}`,
-          };
-      }
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
-      };
+    // Use configured provider
+    switch (this.config.provider) {
+      case 'resend':
+        return await this.sendWithResend(options);
+      case 'sendgrid':
+        return await this.sendWithSendGrid(options);
+      case 'nodemailer':
+        return await this.sendWithNodemailer(options);
+      default:
+        throw new EmailConfigError(`Unsupported email provider: ${this.config.provider}`);
     }
   }
 
   /**
    * Send email with Resend
+   * @throws {EmailConfigError} If API key is not configured
+   * @throws {EmailNetworkError} If network error occurs
+   * @throws {EmailRateLimitError} If rate limit is exceeded
    */
   private async sendWithResend(options: EmailOptions): Promise<EmailResult> {
-    try {
-      // Mock implementation for testing
-      if (process.env.NODE_ENV === 'test') {
-        return {
-          success: true,
-          messageId: 'test-message-id',
-        };
-      }
+    // Mock implementation for testing
+    if (process.env.NODE_ENV === 'test') {
+      return {
+        success: true,
+        messageId: 'test-message-id',
+      };
+    }
 
+    try {
       // Import Resend dynamically to avoid issues in test environments
       const { Resend } = await import('resend');
       
@@ -149,10 +151,19 @@ export class EmailService {
       const result = await resend.emails.send(emailData);
 
       if (result.error) {
-        return {
-          success: false,
-          error: `Resend API error: ${result.error.message}`,
-        };
+        // Check if it's a rate limit error
+        if (result.error.message?.toLowerCase().includes('rate limit')) {
+          throw new EmailRateLimitError('Rate limit exceeded. Please try again later.', 60);
+        }
+        
+        // Check if it's a configuration error
+        if (result.error.message?.toLowerCase().includes('api key') || 
+            result.error.message?.toLowerCase().includes('unauthorized')) {
+          throw new EmailConfigError(`Resend API error: ${result.error.message}`);
+        }
+        
+        // Default to network error
+        throw new EmailNetworkError(`Failed to send email: ${result.error.message}`);
       }
 
       return {
@@ -161,15 +172,23 @@ export class EmailService {
       };
 
     } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred while sending email',
-      };
+      // Re-throw our custom errors
+      if (error instanceof EmailConfigError || 
+          error instanceof EmailRateLimitError || 
+          error instanceof EmailNetworkError) {
+        throw error;
+      }
+      
+      // Wrap other errors as network errors
+      throw new EmailNetworkError(
+        error instanceof Error ? error.message : 'Unknown error occurred while sending email'
+      );
     }
   }
 
   /**
    * Send email with SendGrid
+   * @throws {EmailConfigError} If SendGrid is not configured
    */
   private async sendWithSendGrid(options: EmailOptions): Promise<EmailResult> {
     // Mock implementation for testing
@@ -181,11 +200,12 @@ export class EmailService {
     }
 
     // Real implementation would use SendGrid API
-    throw new Error('SendGrid implementation not available in test environment');
+    throw new EmailConfigError('SendGrid implementation not available. Please use Resend provider.');
   }
 
   /**
    * Send email with Nodemailer
+   * @throws {EmailConfigError} If Nodemailer is not configured
    */
   private async sendWithNodemailer(options: EmailOptions): Promise<EmailResult> {
     // Mock implementation for testing
@@ -197,7 +217,7 @@ export class EmailService {
     }
 
     // Real implementation would use Nodemailer
-    throw new Error('Nodemailer implementation not available in test environment');
+    throw new EmailConfigError('Nodemailer implementation not available. Please use Resend provider.');
   }
 
   /**

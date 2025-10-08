@@ -12,6 +12,7 @@ This folder contains comprehensive documentation for the Portfolio OS scripts sy
 - **[Developer Tutorial](DEVELOPER_TUTORIAL.md)** - Complete guide to using scripts
 - **[Quick Reference](QUICK_REFERENCE.md)** - Most used commands and workflows
 - **[Prompt Integration Guide](PROMPT_INTEGRATION_GUIDE.md)** - Using scripts with AI prompts
+- **[Changelog Generator Guide](CHANGELOG_GENERATOR_GUIDE.md)** - Generate complete project changelog
 
 ### **📋 System Documentation**
 - **[Script Analysis and Naming Conventions](SCRIPT_ANALYSIS_AND_NAMING_CONVENTIONS.md)** - Script naming standards
@@ -127,6 +128,11 @@ Essential utility scripts:
 - `manage-ai-services.ps1` - AI service management
 - `clean-house-advanced.ps1` - Advanced cleanup
 
+### **📝 Documentation Tools**
+Documentation generation and management:
+- `generate-full-changelog.ps1` - Generate complete project changelog from git history
+- `docs-updater.ps1` - Update documentation for individual PRs
+
 ---
 
 ## 🚀 **Common Workflows**
@@ -168,6 +174,18 @@ Essential utility scripts:
 
 # 3. Advanced cleanup if needed
 .\core-utilities\clean-house-advanced.ps1
+```
+
+### **Documentation Generation Workflow**
+```powershell
+# 1. Preview changelog (dry run)
+.\documentation\generate-full-changelog.ps1 -DryRun
+
+# 2. Generate complete changelog
+.\documentation\generate-full-changelog.ps1 -IncludePRs
+
+# 3. Update docs for specific PR
+.\core-utilities\docs-updater.ps1 -PRNumber 123 -UpdateChangelog -UpdateReadme
 ```
 
 ---

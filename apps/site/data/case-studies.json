@@ -20,7 +20,8 @@
 			"results": "Self-documenting platform showcasing real-world DevOps, testing, and CI/CD expertise"
 		},
 		"liveUrl": "https://johnschibelli.dev",
-		"caseStudyUrl": "/case-studies/portfolio-os"
+		"caseStudyUrl": "/case-studies/portfolio-os",
+		"projectUrl": "/projects/portfolio-os"
 	},
 	{
 		"id": "tendrilo-case-study",

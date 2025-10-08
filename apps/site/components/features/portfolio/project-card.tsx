@@ -238,8 +238,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										Case Study
 									</Link>
 								</Button>
-								{/* Second button for live URL */}
-								{project.liveUrl && (
+								{/* Second button for project details */}
+								{project.projectUrl && (
 									<Button
 										variant="outline"
 										size="sm"
@@ -247,9 +247,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										asChild
 									>
 										<Link 
-											href={project.liveUrl}
-											target="_blank"
-											rel="noopener noreferrer"
+											href={project.projectUrl}
 											aria-label={`View details for ${project.title} project`}
 										>
 											<ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
