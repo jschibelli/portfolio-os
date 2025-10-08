@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { emailService } from '../../../lib/email-service';
+import { features } from '../../../lib/env-validation';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -49,6 +50,19 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is configured
+    if (!features.email) {
+      console.error('📧 Email service not configured. Missing environment variables: RESEND_API_KEY or EMAIL_FROM');
+      return NextResponse.json(
+        { 
+          error: 'Email service is not configured. Please contact the site administrator.',
+          code: 'EMAIL_SERVICE_NOT_CONFIGURED',
+          details: 'The contact form requires email service configuration. Please ensure RESEND_API_KEY and EMAIL_FROM environment variables are set.'
+        },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting implementation
     const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
@@ -125,16 +139,34 @@ Client IP: ${clientIP}
 
     if (!emailResult.success) {
       console.error('📧 Failed to send email notification:', emailResult.error);
-      // Don't fail the request if email sending fails - still log the submission
-    } else {
-      console.log('📧 Email notification sent successfully:', emailResult.messageId);
+      
+      // Return error response if email fails
+      // Note: In Issue #280, we'll implement database persistence so submissions
+      // are saved even if email fails. For now, we return an error to the user.
+      return NextResponse.json(
+        { 
+          error: 'Failed to send your message. Please try again later or contact us directly.',
+          code: 'EMAIL_SEND_FAILED',
+          details: emailResult.error,
+          // Include submission data for logging/debugging
+          submission: {
+            name: validatedData.name,
+            email: validatedData.email,
+            timestamp: new Date().toISOString()
+          }
+        },
+        { status: 500 }
+      );
     }
+
+    console.log('📧 Email notification sent successfully:', emailResult.messageId);
 
     // Return success response
     return NextResponse.json({
       success: true,
       message: 'Thank you for your message! I will get back to you within 24 hours.',
-      submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      messageId: emailResult.messageId
     });
 
   } catch (error) {
