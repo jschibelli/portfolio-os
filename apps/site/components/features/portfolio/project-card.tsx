@@ -249,10 +249,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 											href={project.liveUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											aria-label={`View live ${project.title} project`}
+											aria-label={`View details for ${project.title} project`}
 										>
 											<ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-											Live Site
+											View Details
 										</Link>
 									</Button>
 								)}
