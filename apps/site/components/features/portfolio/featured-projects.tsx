@@ -35,8 +35,10 @@ export default function FeaturedProjects() {
 	}
 
 	// Convert case studies data to Project interface with error handling
-	// Only show featured case studies (all case studies in the file are considered featured)
-	const featuredProjects = caseStudiesData.map((item: any) => {
+	// Only show case studies marked as featured: true
+	const featuredProjects = caseStudiesData
+		.filter((item: any) => item.featured === true)
+		.map((item: any) => {
 		// Validate required fields
 		if (!item.id || !item.title || !item.description) {
 			console.warn('FeaturedProjects: Invalid project data for item:', {

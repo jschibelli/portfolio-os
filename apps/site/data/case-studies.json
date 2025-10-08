@@ -26,7 +26,7 @@
 		"tags": ["SaaS", "AI", "Multi-tenant", "Chatbot"],
 		"publishedAt": "2025-08-29",
 		"author": "John Schibelli",
-		"featured": true,
+		"featured": false,
 		"metrics": {
 			"architecture": "Multi-tenant scalable design",
 			"aiIntegration": "AI-powered automation",
