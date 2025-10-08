@@ -181,17 +181,26 @@ export function validateEnv() {
 
 // Lazy-loaded validated environment variables
 let _env: any = null;
+
 function getEnv() {
   if (!_env) {
+    console.log('[env-validation] Initializing environment variables...');
     _env = validateEnv();
+    console.log('[env-validation] Environment variables initialized');
   }
   return _env;
 }
 
 // Export validated environment variables with lazy evaluation
+// Using a simpler approach that's more compatible with Next.js edge runtime
 export const env = new Proxy({} as any, {
-  get(target, prop) {
-    return getEnv()[prop];
+  get(_target, prop) {
+    const envVars = getEnv();
+    return envVars[prop];
+  },
+  has(_target, prop) {
+    const envVars = getEnv();
+    return prop in envVars;
   }
 });
 
@@ -231,45 +240,55 @@ export const isTest = process.env.NODE_ENV === 'test';
  * }
  */
 export const features = new Proxy({} as any, {
-  get(target, prop) {
-    const e = getEnv();
-    switch (prop) {
-      case 'googleCalendar':
-        return Boolean(e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET && e.GOOGLE_OAUTH_REFRESH_TOKEN && e.GOOGLE_CALENDAR_ID);
-      case 'email':
-        return Boolean(e.RESEND_API_KEY && e.EMAIL_FROM);
-      case 'openai':
-        return Boolean(e.OPENAI_API_KEY);
-      case 'stripe':
-        return Boolean(e.STRIPE_SECRET_KEY);
-      case 'linkedin':
-        return Boolean(e.LINKEDIN_CLIENT_ID && e.LINKEDIN_CLIENT_SECRET);
-      case 'facebook':
-        return Boolean(e.FACEBOOK_APP_ID && e.FACEBOOK_APP_SECRET);
-      case 'github':
-        return Boolean(e.GITHUB_CLIENT_ID && e.GITHUB_CLIENT_SECRET);
-      case 'vercel':
-        return Boolean(e.VERCEL_API_TOKEN);
-      case 'sentry':
-        return Boolean(e.SENTRY_API_TOKEN);
-      case 'plausible':
-        return Boolean(e.PLAUSIBLE_API_TOKEN && e.PLAUSIBLE_SITE_ID);
-      default:
-        return undefined;
+  get(_target, prop) {
+    try {
+      const e = getEnv();
+      switch (prop) {
+        case 'googleCalendar':
+          return Boolean(e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET && e.GOOGLE_OAUTH_REFRESH_TOKEN && e.GOOGLE_CALENDAR_ID);
+        case 'email':
+          return Boolean(e.RESEND_API_KEY && e.EMAIL_FROM);
+        case 'openai':
+          return Boolean(e.OPENAI_API_KEY);
+        case 'stripe':
+          return Boolean(e.STRIPE_SECRET_KEY);
+        case 'linkedin':
+          return Boolean(e.LINKEDIN_CLIENT_ID && e.LINKEDIN_CLIENT_SECRET);
+        case 'facebook':
+          return Boolean(e.FACEBOOK_APP_ID && e.FACEBOOK_APP_SECRET);
+        case 'github':
+          return Boolean(e.GITHUB_CLIENT_ID && e.GITHUB_CLIENT_SECRET);
+        case 'vercel':
+          return Boolean(e.VERCEL_API_TOKEN);
+        case 'sentry':
+          return Boolean(e.SENTRY_API_TOKEN);
+        case 'plausible':
+          return Boolean(e.PLAUSIBLE_API_TOKEN && e.PLAUSIBLE_SITE_ID);
+        default:
+          return undefined;
+      }
+    } catch (error) {
+      console.error(`[env-validation] Error accessing feature.${String(prop)}:`, error);
+      return false;
     }
   }
 });
 
 // SSL/TLS configuration (lazy-loaded)
 export const sslConfig = new Proxy({} as any, {
-  get(target, prop) {
-    const e = getEnv();
-    if (prop === 'fixEnabled') {
-      return e.FIX_SSL_ISSUES;
+  get(_target, prop) {
+    try {
+      const e = getEnv();
+      if (prop === 'fixEnabled') {
+        return e.FIX_SSL_ISSUES;
+      }
+      if (prop === 'nodeOptions') {
+        return e.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined;
+      }
+      return undefined;
+    } catch (error) {
+      console.error(`[env-validation] Error accessing sslConfig.${String(prop)}:`, error);
+      return undefined;
     }
-    if (prop === 'nodeOptions') {
-      return e.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined;
-    }
-    return undefined;
   }
 });
