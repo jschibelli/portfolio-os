@@ -60,6 +60,8 @@ export default function FeaturedProjects() {
 			image: item.image || '/placeholder-image.jpg', // Fallback image
 			tags: item.tags || [],
 			caseStudyUrl: item.caseStudyUrl,
+			projectUrl: item.projectUrl, // Add the projectUrl field
+			liveUrl: item.liveUrl,
 			slug: item.slug,
 			metrics: item.metrics,
 			caseStudyPreview: item.caseStudyPreview,
