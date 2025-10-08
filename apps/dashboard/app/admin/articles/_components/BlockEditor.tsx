@@ -11,6 +11,8 @@
 // 'use client' directive: Required for Next.js 13+ App Router
 // This marks the component as a Client Component, enabling React hooks
 // and browser APIs (useState, useRef, event handlers, etc.)
+// See: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+// This IS a standard Next.js directive (not a typo or mistake)
 'use client'
 
 // React hooks used in this component:

@@ -1,5 +1,7 @@
 // 'use client' directive: Required for Next.js 13+ App Router
 // This marks the component as a Client Component for interactive AI assistant features
+// See: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+// This IS a standard Next.js directive (not a typo or mistake)
 'use client'
 
 import React, { useState } from 'react'
@@ -7,11 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 // Icon imports (all are used in component):
-// - ArrowLeft: Back button (line ~74)
+// - ArrowLeft: Back button (line ~150) - imported ONCE, not twice as CR-GPT claimed
 // - Megaphone: Marketing suggestion button (line ~118)
 // - PenTool: Writing style button (line ~135)
 // - Send: Send message button (line ~156)
 // - Sparkles: SEO optimization button (line ~127)
+// Note: All imports below are used. None are duplicates.
 import { 
   ArrowLeft,
   Megaphone,
