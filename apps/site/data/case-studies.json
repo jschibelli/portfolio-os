@@ -14,6 +14,11 @@
 			"testCoverage": "90%+ coverage",
 			"agents": "5-agent coordination"
 		},
+		"caseStudyPreview": {
+			"problem": "Need to demonstrate enterprise engineering capabilities through portfolio",
+			"solution": "Built production-grade monorepo with 100+ automation scripts and multi-agent AI workflows",
+			"results": "Self-documenting platform showcasing real-world DevOps, testing, and CI/CD expertise"
+		},
 		"liveUrl": "https://johnschibelli.dev",
 		"caseStudyUrl": "/case-studies/portfolio-os"
 	},
@@ -31,6 +36,11 @@
 			"architecture": "Multi-tenant scalable design",
 			"aiIntegration": "AI-powered automation",
 			"setupTime": "18 minutes"
+		},
+		"caseStudyPreview": {
+			"problem": "SMBs needed affordable, scalable chatbot solutions without technical complexity",
+			"solution": "Strategic analysis and implementation plan for multi-tenant SaaS platform with AI automation",
+			"results": "Comprehensive architecture and market strategy for scalable chatbot platform"
 		},
 		"liveUrl": "",
 		"caseStudyUrl": "/case-studies/tendrilo-case-study"
