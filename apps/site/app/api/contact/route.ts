@@ -190,17 +190,18 @@ Client IP: ${clientIP}
       }, { status: 500 });
     }
 
-  } catch (error) {
-    console.error('📧 Contact form error:', error);
+  } catch (err: unknown) {
+    console.error('📧 Contact form error:', err);
 
     // Handle validation errors
-    if (error instanceof z.ZodError) {
+    if (err instanceof z.ZodError) {
+      const zodError = err as z.ZodError;
       return NextResponse.json(
         { 
           error: 'Validation failed',
-          details: error.errors.map(err => ({
-            field: err.path.join('.'),
-            message: err.message
+          details: zodError.errors.map((validationError: z.ZodIssue) => ({
+            field: validationError.path.join('.'),
+            message: validationError.message
           }))
         },
         { status: 400 }
