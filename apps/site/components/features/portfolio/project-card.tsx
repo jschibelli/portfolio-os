@@ -120,13 +120,6 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						</div>
 					) : null}
 
-					{/* Enhanced Hover Overlay with Case Study Indicator - Mobile Optimized */}
-					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
-						<div className="bg-primary/95 text-primary-foreground rounded-lg px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold backdrop-blur-sm shadow-lg touch-manipulation">
-							{hasCaseStudy ? 'View Case Study' : 'View Project'}
-						</div>
-					</div>
-
 					{/* Case Study Badge - Mobile Optimized */}
 					{hasCaseStudy && (
 						<div className="absolute left-2 sm:left-3 top-2 sm:top-3">
