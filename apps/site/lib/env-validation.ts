@@ -23,6 +23,11 @@ const envSchema = z.object({
   // SSL/TLS fix
   FIX_SSL_ISSUES: z.string().transform(val => val === 'true').default('false'),
   
+  // Email service (Resend) - optional during build, required for contact form
+  RESEND_API_KEY: z.string().min(1, 'Resend API key is required for email functionality').optional(),
+  EMAIL_FROM: z.string().email('Invalid EMAIL_FROM format').optional(),
+  EMAIL_REPLY_TO: z.string().email('Invalid EMAIL_REPLY_TO format').optional(),
+  
   // Optional integrations
   OPENAI_API_KEY: z.string().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
@@ -87,6 +92,9 @@ export function validateEnv() {
           GOOGLE_OAUTH_REFRESH_TOKEN: process.env.GOOGLE_OAUTH_REFRESH_TOKEN || '',
           GOOGLE_CALENDAR_ID: process.env.GOOGLE_CALENDAR_ID || '',
           FIX_SSL_ISSUES: process.env.FIX_SSL_ISSUES === 'true',
+          RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+          EMAIL_FROM: process.env.EMAIL_FROM || '',
+          EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || '',
           OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
           STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
           STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || '',
@@ -146,6 +154,7 @@ export const isTest = env.NODE_ENV === 'test';
 // Feature flags based on environment variables
 export const features = {
   googleCalendar: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_OAUTH_REFRESH_TOKEN && env.GOOGLE_CALENDAR_ID),
+  email: Boolean(env.RESEND_API_KEY && env.EMAIL_FROM),
   openai: Boolean(env.OPENAI_API_KEY),
   stripe: Boolean(env.STRIPE_SECRET_KEY),
   linkedin: Boolean(env.LINKEDIN_CLIENT_ID && env.LINKEDIN_CLIENT_SECRET),

@@ -7,6 +7,7 @@ import {
   EmailRateLimitError,
   EmailValidationError 
 } from '../../../lib/email-service';
+import { features } from '../../../lib/env-validation';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -55,6 +56,19 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is configured
+    if (!features.email) {
+      console.error('📧 Email service not configured. Missing environment variables: RESEND_API_KEY or EMAIL_FROM');
+      return NextResponse.json(
+        { 
+          error: 'Email service is not configured. Please contact the site administrator.',
+          code: 'EMAIL_SERVICE_NOT_CONFIGURED',
+          details: 'The contact form requires email service configuration. Please ensure RESEND_API_KEY and EMAIL_FROM environment variables are set.'
+        },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting implementation
     const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
