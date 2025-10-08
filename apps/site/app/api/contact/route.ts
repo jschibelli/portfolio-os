@@ -8,6 +8,7 @@ import {
   EmailValidationError 
 } from '../../../lib/email-service';
 import { features } from '../../../lib/env-validation';
+import { prisma } from '../../../lib/prisma';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -56,6 +57,19 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is configured
+    if (!features.email) {
+      console.error('📧 Email service not configured. Missing environment variables: RESEND_API_KEY or EMAIL_FROM');
+      return NextResponse.json(
+        { 
+          error: 'Email service is not configured. Please contact the site administrator.',
+          code: 'EMAIL_SERVICE_NOT_CONFIGURED',
+          details: 'The contact form requires email service configuration. Please ensure RESEND_API_KEY and EMAIL_FROM environment variables are set.'
+        },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting implementation
     const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
@@ -84,15 +98,29 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = ContactFormSchema.parse(body);
 
-    // Log the contact form submission (in production, you might want to store this in a database)
-    console.log('📧 Contact form submission received:', {
+    // Get user agent for tracking
+    const userAgent = request.headers.get('user-agent') || undefined;
+
+    // Save submission to database FIRST (before attempting email)
+    // This ensures we never lose submissions even if email fails
+    const submission = await prisma.contactSubmission.create({
+      data: {
+        name: validatedData.name,
+        email: validatedData.email,
+        company: validatedData.company,
+        projectType: validatedData.projectType,
+        message: validatedData.message,
+        ipAddress: clientIP,
+        userAgent: userAgent,
+        status: 'pending',
+      },
+    });
+
+    console.log('💾 Contact submission saved to database:', {
+      id: submission.id,
       name: validatedData.name,
       email: validatedData.email,
-      company: validatedData.company,
-      projectType: validatedData.projectType,
-      messageLength: validatedData.message.length,
-      timestamp: new Date().toISOString(),
-      clientIP
+      timestamp: submission.createdAt.toISOString(),
     });
 
     // Send email notification to site owner
@@ -131,64 +159,85 @@ Client IP: ${clientIP}
         replyTo: validatedData.email,
       });
 
+      // Email sent successfully - update database
       console.log('📧 Email notification sent successfully:', emailResult.messageId);
+      
+      await prisma.contactSubmission.update({
+        where: { id: submission.id },
+        data: {
+          status: 'sent',
+          emailSentAt: new Date(),
+        },
+      });
 
-      // Return success response
+      // Return success response with actual submission ID
       return NextResponse.json({
         success: true,
         message: 'Thank you for your message! I will get back to you within 24 hours.',
-        submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        submissionId: submission.id
       });
 
     } catch (emailError) {
       console.error('📧 Failed to send email notification:', emailError);
 
-      // Handle different error types with appropriate responses
+      // Determine error message and update database
+      let errorMessage = 'Unknown error';
+      let errorCode = 'email_send_failed';
+      let statusCode = 500;
+      let retryAfter: number | undefined;
+
       if (emailError instanceof EmailConfigError) {
-        // Configuration error - return 500 with helpful message
-        return NextResponse.json({
-          success: false,
-          error: 'email_config_error',
-          message: "We're experiencing technical difficulties with our contact form. Please email john@schibelli.dev directly. We apologize for the inconvenience.",
-          fallbackEmail: 'john@schibelli.dev',
-          submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` // Still provide submission ID for logging
-        }, { status: 500 });
+        errorMessage = emailError.message;
+        errorCode = 'email_config_error';
+        statusCode = 500;
+      } else if (emailError instanceof EmailRateLimitError) {
+        errorMessage = emailError.message;
+        errorCode = 'rate_limit';
+        statusCode = 429;
+        retryAfter = emailError.retryAfter || 60;
+      } else if (emailError instanceof EmailNetworkError) {
+        errorMessage = emailError.message;
+        errorCode = 'network_error';
+        statusCode = 503;
+      } else if (emailError instanceof Error) {
+        errorMessage = emailError.message;
       }
 
-      if (emailError instanceof EmailRateLimitError) {
-        // Rate limit error - return 429
-        return NextResponse.json({
-          success: false,
-          error: 'rate_limit',
-          message: "You've submitted multiple messages recently. Please wait a few minutes before trying again, or email john@schibelli.dev directly.",
-          fallbackEmail: 'john@schibelli.dev',
-          retryAfter: emailError.retryAfter || 60
-        }, { 
-          status: 429,
-          headers: {
-            'Retry-After': (emailError.retryAfter || 60).toString()
-          }
-        });
-      }
+      // Update database with failure status
+      await prisma.contactSubmission.update({
+        where: { id: submission.id },
+        data: {
+          status: 'failed',
+          emailError: errorMessage,
+          retryCount: 0,
+        },
+      });
 
-      if (emailError instanceof EmailNetworkError) {
-        // Network error - return 503 (Service Unavailable)
-        return NextResponse.json({
-          success: false,
-          error: 'network_error',
-          message: 'Unable to send message due to a network issue. Please try again in a moment or email john@schibelli.dev directly.',
-          fallbackEmail: 'john@schibelli.dev',
-          retryable: true
-        }, { status: 503 });
-      }
+      console.log('⚠️  Submission saved but email failed. Admin can retry from dashboard.');
 
-      // Generic email error - return 500
-      return NextResponse.json({
+      // Return appropriate error response
+      const response: any = {
         success: false,
-        error: 'email_send_failed',
-        message: 'Failed to send your message. Please try again or email john@schibelli.dev directly.',
-        fallbackEmail: 'john@schibelli.dev'
-      }, { status: 500 });
+        error: errorCode,
+        message: "We've received your message but couldn't send the email notification. We'll follow up with you shortly. Alternatively, you can email john@schibelli.dev directly.",
+        fallbackEmail: 'john@schibelli.dev',
+        submissionId: submission.id,
+      };
+
+      if (retryAfter) {
+        response.retryAfter = retryAfter;
+      }
+
+      if (statusCode === 503 || emailError instanceof EmailNetworkError) {
+        response.retryable = true;
+      }
+
+      const headers: any = {};
+      if (retryAfter) {
+        headers['Retry-After'] = retryAfter.toString();
+      }
+
+      return NextResponse.json(response, { status: statusCode, headers });
     }
 
   } catch (err: unknown) {
@@ -254,5 +303,3 @@ export async function OPTIONS() {
     },
   });
 }
-
-

@@ -249,6 +249,28 @@ model Lead {
   createdAt DateTime  @default(now())
 }
 
+model ContactSubmission {
+  id           String    @id @default(cuid())
+  name         String
+  email        String
+  company      String?
+  projectType  String?
+  message      String    @db.Text
+  status       String    @default("pending") // pending, sent, failed
+  emailSentAt  DateTime?
+  emailError   String?   @db.Text
+  retryCount   Int       @default(0)
+  lastRetryAt  DateTime?
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
 model CaseStudyView {
   id          Int       @id @default(autoincrement())
   caseStudyId String
