@@ -238,6 +238,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										Case Study
 									</Link>
 								</Button>
+								{/* Second button for live URL */}
 								{project.liveUrl && (
 									<Button
 										variant="outline"
