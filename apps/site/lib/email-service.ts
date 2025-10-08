@@ -123,7 +123,7 @@ export class EmailService {
       const { Resend } = await import('resend');
       
       if (!this.config.apiKey || this.config.apiKey === 'test-api-key') {
-        throw new EmailConfigError('Resend API key is not configured. Please contact support.');
+        throw new EmailConfigError('Resend API key is not configured. Please set RESEND_API_KEY environment variable.');
       }
 
       const resend = new Resend(this.config.apiKey);
