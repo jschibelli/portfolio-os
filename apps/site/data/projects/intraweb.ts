@@ -11,6 +11,7 @@ export const intraweb: ProjectMeta = {
   caseStudyUrl: '/case-studies/intraweb',
   githubUrl: 'https://github.com/jschibelli/intraweb-technologies',
   featured: false,
+  published: false,
   status: 'completed',
   startDate: '2024-04-01',
   endDate: '2024-06-30',

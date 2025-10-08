@@ -1,14 +1,19 @@
 import { Metadata } from 'next';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
-import { Footer } from '../../components/shared/footer';
-import Chatbot from '../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import { AppProvider } from '../../components/contexts/appContext';
 import { Badge } from '../../components/ui/badge';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { ArrowRight, Calendar, User, Tag } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  loading: () => null,
+});
 
 // Mock case studies data - in a real app, this would come from your CMS or database
 const caseStudies = [
@@ -18,7 +23,7 @@ const caseStudies = [
     slug: 'portfolio-os',
     description: 'How I built a production-grade monorepo with enterprise automation, multi-agent workflows, and intelligent CI/CD—turning a portfolio into a comprehensive development platform.',
     image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
-    tags: ['Next.js', 'TypeScript', 'Turborepo', 'Automation', 'DevOps', 'Multi-Agent'],
+    tags: ['NextJS', 'TypeScript', 'Turborepo', 'Automation', 'DevOps', 'Multi-Agent', 'Monorepo', 'CICD'],
     publishedAt: '2025-01-15',
     author: 'John Schibelli',
     featured: true,
@@ -94,11 +99,15 @@ export default function CaseStudiesPage() {
                 {caseStudies.map((caseStudy) => (
                   <Card key={caseStudy.id} className="group overflow-hidden border border-stone-200 bg-white shadow-lg transition-all duration-300 hover:border-stone-300 hover:shadow-xl dark:border-stone-700 dark:bg-stone-800 dark:hover:border-stone-600">
                     <div className="relative aspect-video overflow-hidden">
-                      <img
+                      <Image
                         src={caseStudy.image}
                         alt={caseStudy.title}
+                        width={800}
+                        height={600}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
+                        quality={85}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                       

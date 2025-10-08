@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Container } from '../../components/shared/container';
-import Chatbot from '../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import AudienceSpecificCTA from '../../components/features/cta/audience-specific-cta';
 import EnhancedCTASection from '../../components/features/cta/enhanced-cta-section';
 import { Layout } from '../../components/shared/layout';
@@ -9,6 +9,12 @@ import { Layout } from '../../components/shared/layout';
 import { allProjects as projectMetaList } from '../../data/projects';
 import { ArrowRight, Calendar, Code, Users, MapPin, CheckCircle, Search, Award } from 'lucide-react';
 import { ProjectsPageClient } from './projects-client';
+import { AnimatedProjectCard } from '../../components/features/projects/animated-project-card';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  loading: () => null,
+});
 
 export const metadata: Metadata = {
   title: 'Projects and Case Studies | John Schibelli',
@@ -78,31 +84,32 @@ function toProjectCard(projectMeta: any) {
 }
 
 function getProjectsData() {
-  const projects = projectMetaList.map(toProjectCard);
+  // Filter to only show published projects
+  const publishedProjects = projectMetaList.filter(project => project.published !== false).map(toProjectCard);
   
   // Get all unique tags for filtering
-  const allTags = Array.from(new Set(projects.flatMap(p => p.tags))).sort();
+  const allTags = Array.from(new Set(publishedProjects.flatMap(p => p.tags))).sort();
   
   // Get all unique categories
-  const allCategories = Array.from(new Set(projects.map(p => p.category || 'other'))).sort();
+  const allCategories = Array.from(new Set(publishedProjects.map(p => p.category || 'other'))).sort();
   
   // Get all unique technologies
-  const allTechnologies = Array.from(new Set(projects.flatMap(p => p.technologies || []))).sort();
+  const allTechnologies = Array.from(new Set(publishedProjects.flatMap(p => p.technologies || []))).sort();
   
   // Get all unique statuses
-  const allStatuses = Array.from(new Set(projects.map(p => p.status || 'completed'))).sort();
+  const allStatuses = Array.from(new Set(publishedProjects.map(p => p.status || 'completed'))).sort();
   
   // Get all unique clients
-  const allClients = Array.from(new Set(projects.map(p => p.client).filter(Boolean))).sort();
+  const allClients = Array.from(new Set(publishedProjects.map(p => p.client).filter(Boolean))).sort();
   
   return {
-    projects,
+    projects: publishedProjects,
     allTags,
     allCategories,
     allTechnologies,
     allStatuses,
     allClients,
-    projectCount: projects.length,
+    projectCount: publishedProjects.length,
   };
 }
 export default function ProjectsPage() {
@@ -152,71 +159,24 @@ export default function ProjectsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {projects.map((project, index) => (
-                <article key={project.id} className="bg-white dark:bg-stone-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="aspect-video bg-stone-200 dark:bg-stone-700">
-                    <img 
-                      src={project.image} 
-                      alt={`${project.title} project screenshot`}
-                      className="w-full h-full object-cover"
-                      loading={index < 6 ? 'eager' : 'lazy'}
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">{project.title}</h3>
-                    <p className="text-stone-600 dark:text-stone-400 mb-4 line-clamp-3">{project.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="inline-block bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs px-2 py-1 rounded">
-                          {tag}
-                        </span>
-                      ))}
-                      {project.tags.length > 3 && (
-                        <span className="inline-block bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs px-2 py-1 rounded">
-                          +{project.tags.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      {project.liveUrl && (
-                        <a 
-                          href={project.liveUrl} 
-                          className="inline-flex items-center px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded hover:bg-stone-800 transition-colors"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View Live
-                        </a>
-                      )}
-                      {project.caseStudyUrl && (
-                        <a 
-                          href={project.caseStudyUrl} 
-                          className="inline-flex items-center px-4 py-2 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 text-sm font-medium rounded hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-                        >
-                          Case Study
-                        </a>
-                      )}
-                      <a 
-                        href={`/projects/${project.slug}`} 
-                        className="inline-flex items-center px-4 py-2 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 text-sm font-medium rounded hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-                      >
-                        Details
-                      </a>
-                    </div>
-                  </div>
-                </article>
+                <AnimatedProjectCard 
+                  key={project.id}
+                  project={project}
+                  index={index}
+                />
               ))}
             </div>
           </Container>
         </section>
 
-        {/* Interactive Features (Client-side) */}
-        <Suspense fallback={<div className="min-h-screen bg-white dark:bg-stone-950" />}>
+        {/* Interactive Features (Client-side) - Hidden for now */}
+        {/* <Suspense fallback={<div className="min-h-screen bg-white dark:bg-stone-950" />}>
           <ProjectsPageClient 
             initialProjects={projects}
             allTags={allTags}
             projectCount={projectCount}
           />
-        </Suspense>
+        </Suspense> */}
 
         {/* Technologies & Skills */}
         <section className="bg-white py-12 sm:py-16 lg:py-20 dark:bg-stone-950">

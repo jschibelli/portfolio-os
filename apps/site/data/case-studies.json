@@ -5,7 +5,7 @@
 		"slug": "portfolio-os",
 		"description": "How I built a production-grade monorepo with enterprise automation, multi-agent workflows, and intelligent CI/CD—turning a portfolio into a comprehensive development platform.",
 		"image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop",
-		"tags": ["Next.js", "TypeScript", "Turborepo", "Automation", "DevOps", "Multi-Agent"],
+		"tags": ["NextJS", "TypeScript", "Turborepo", "Automation", "DevOps", "Multi-Agent", "Monorepo", "CICD"],
 		"publishedAt": "2025-01-15",
 		"author": "John Schibelli",
 		"featured": true,

@@ -11,6 +11,7 @@ export const schibelliSite: ProjectMeta = {
   caseStudyUrl: '/case-studies/portfolio-os',
   githubUrl: 'https://github.com/jschibelli/portfolio-os',
   featured: true,
+  published: false,
   status: 'completed',
   startDate: '2024-06-01',
   endDate: '2025-01-15',

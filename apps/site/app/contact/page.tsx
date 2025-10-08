@@ -5,7 +5,7 @@ import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
 import { Container } from '../../components/shared/container';
-import Chatbot from '../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -13,6 +13,12 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Mail as MailIcon, MapPin as MapPinIcon, Send as SendIcon, CheckCircle as CheckCircleIcon } from 'lucide-react';
 import { BlueskySVG as BlueskyIcon, FacebookSVG as FacebookIcon, GithubSVG as GithubIcon, LinkedinSVG as LinkedinIcon } from '../../components/icons';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  ssr: false,
+  loading: () => null,
+});
 
 const defaultPublication = {
   id: 'fallback-contact',

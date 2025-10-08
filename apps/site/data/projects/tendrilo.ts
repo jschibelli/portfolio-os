@@ -12,6 +12,7 @@ export const tendrilo: ProjectMeta = {
   githubUrl: 'https://github.com/jschibelli/tendrilo',
   documentationUrl: 'https://docs.tendrilo.ai',
   featured: true,
+  published: false,
   status: 'completed',
   startDate: '2024-01-15',
   endDate: '2024-08-30',

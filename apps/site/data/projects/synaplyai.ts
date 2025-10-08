@@ -12,6 +12,7 @@ export const synaplyai: ProjectMeta = {
   githubUrl: 'https://github.com/jschibelli/synaplyai',
   documentationUrl: 'https://docs.synaply.ai',
   featured: true,
+  published: false,
   status: 'completed',
   startDate: '2024-01-15',
   endDate: '2024-08-30',

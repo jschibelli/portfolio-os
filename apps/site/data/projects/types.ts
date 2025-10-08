@@ -10,7 +10,8 @@ export interface ProjectMeta {
   githubUrl?: string;
   documentationUrl?: string;
   featured?: boolean;
-  status: 'completed' | 'in-progress' | 'planned' | 'archived';
+  published?: boolean;
+  status: 'completed' | 'in-progress' | 'planned' | 'archived' | 'production-ready';
   startDate?: string;
   endDate?: string;
   technologies: string[];
