@@ -1,0 +1,453 @@
+---
+title: Development Workflow
+description: Branching strategy, commit conventions, and PR process for Portfolio OS
+---
+
+# Development Workflow
+
+Learn the recommended development process, branching strategy, and collaboration patterns for Portfolio OS.
+
+## Branching Strategy
+
+Portfolio OS uses a Git Flow-inspired branching model:
+
+<Mermaid chart={`gitGraph
+    commit id: "Initial"
+    branch develop
+    checkout develop
+    commit id: "Setup"
+    branch feature/blog
+    checkout feature/blog
+    commit id: "Add blog"
+    commit id: "Add tests"
+    checkout develop
+    merge feature/blog
+    branch feature/dashboard
+    checkout feature/dashboard
+    commit id: "Add dashboard"
+    checkout develop
+    merge feature/dashboard
+    checkout main
+    merge develop tag: "v1.0.0"`} />
+
+### Branch Types
+
+| Branch | Purpose | Naming | Base | Merge To |
+|--------|---------|--------|------|----------|
+| `main` | Production code | `main` | - | - |
+| `develop` | Integration branch | `develop` | `main` | `main` |
+| `feature/*` | New features | `feature/feature-name` | `develop` | `develop` |
+| `fix/*` | Bug fixes | `fix/bug-description` | `develop` | `develop` |
+| `hotfix/*` | Critical fixes | `hotfix/critical-bug` | `main` | `main` + `develop` |
+| `release/*` | Release prep | `release/v1.0.0` | `develop` | `main` |
+
+### Workflow Steps
+
+<Step>
+  <StepItem title="Create Feature Branch">
+    Always branch from `develop` for new features:
+    
+    ```bash
+    git checkout develop
+    git pull origin develop
+    git checkout -b feature/add-dark-mode
+    ```
+  </StepItem>
+
+  <StepItem title="Develop and Commit">
+    Make changes following [coding standards](/docs/developer-guide/standards):
+    
+    ```bash
+    # Make changes
+    git add .
+    git commit -m "feat(site): add dark mode toggle"
+    ```
+  </StepItem>
+
+  <StepItem title="Keep Branch Updated">
+    Regularly sync with develop to avoid conflicts:
+    
+    ```bash
+    git checkout develop
+    git pull origin develop
+    git checkout feature/add-dark-mode
+    git rebase develop
+    ```
+  </StepItem>
+
+  <StepItem title="Push and Create PR">
+    ```bash
+    git push origin feature/add-dark-mode
+    # Then create PR on GitHub
+    ```
+  </StepItem>
+
+  <StepItem title="Code Review and Merge">
+    After approval, squash and merge to `develop`
+  </StepItem>
+</Step>
+
+## Commit Convention
+
+Portfolio OS follows [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+### Commit Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+### Commit Types
+
+| Type | Usage | Example |
+|------|-------|---------|
+| `feat` | New feature | `feat(blog): add comment system` |
+| `fix` | Bug fix | `fix(dashboard): resolve login issue` |
+| `docs` | Documentation | `docs: update installation guide` |
+| `style` | Code style/formatting | `style: format with prettier` |
+| `refactor` | Code refactoring | `refactor(ui): simplify button component` |
+| `perf` | Performance improvement | `perf(site): optimize image loading` |
+| `test` | Add/update tests | `test(lib): add unit tests for cache` |
+| `chore` | Maintenance | `chore: update dependencies` |
+| `ci` | CI/CD changes | `ci: add e2e tests to workflow` |
+
+### Scopes
+
+Common scopes in Portfolio OS:
+
+- `site` - Site app
+- `dashboard` - Dashboard app
+- `docs` - Documentation app
+- `ui` - UI package
+- `lib` - Lib package
+- `db` - Database package
+- `scripts` - Automation scripts
+
+### Examples
+
+<Tabs defaultValue="good">
+  <TabsList>
+    <TabsTrigger value="good">Good Commits</TabsTrigger>
+    <TabsTrigger value="bad">Bad Commits</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="good">
+    ```bash
+    feat(site): add RSS feed for blog posts
+    
+    fix(dashboard): resolve media upload timeout
+    
+    docs(getting-started): add environment setup guide
+    
+    refactor(ui): extract button variants to shared config
+    
+    perf(site): implement Redis caching for blog posts
+    Reduces page load time by 60%
+    Closes #123
+    
+    chore(deps): upgrade Next.js to 14.2.32
+    
+    test(lib): add integration tests for Hashnode client
+    ```
+  </TabsContent>
+  
+  <TabsContent value="bad">
+    ```bash
+    ❌ update code
+    ❌ fix bug
+    ❌ WIP
+    ❌ changes
+    ❌ asdf
+    ❌ Final changes before deployment
+    ```
+  </TabsContent>
+</Tabs>
+
+<Note type="warning">
+Commits that don't follow the convention may be rejected by CI checks.
+</Note>
+
+## Pull Request Process
+
+### Creating a PR
+
+<Step>
+  <StepItem title="Prepare Your Branch">
+    ```bash
+    # Ensure tests pass
+    pnpm test
+    
+    # Ensure linting passes
+    pnpm lint
+    
+    # Type check
+    pnpm typecheck
+    
+    # Build to catch errors
+    pnpm build
+    ```
+  </StepItem>
+
+  <StepItem title="Push to GitHub">
+    ```bash
+    git push origin feature/your-feature
+    ```
+  </StepItem>
+
+  <StepItem title="Create Pull Request">
+    Go to GitHub and click "New Pull Request"
+    
+    **PR Title Format:**
+    ```
+    feat(scope): Brief description
+    ```
+    
+    **PR Description Template:**
+    ```markdown
+    ## What
+    Brief description of what this PR does
+    
+    ## Why
+    Explanation of why this change is needed
+    
+    ## How
+    Technical approach and implementation details
+    
+    ## Testing
+    - [ ] Unit tests added/updated
+    - [ ] Integration tests added/updated
+    - [ ] Manual testing completed
+    
+    ## Screenshots
+    (if applicable)
+    
+    ## Breaking Changes
+    (if any)
+    
+    Closes #issue_number
+    ```
+  </StepItem>
+
+  <StepItem title="Address Review Comments">
+    Push additional commits to address feedback:
+    
+    ```bash
+    git add .
+    git commit -m "fix: address review comments"
+    git push origin feature/your-feature
+    ```
+  </StepItem>
+
+  <StepItem title="Merge">
+    Once approved, use **Squash and Merge** to keep history clean
+  </StepItem>
+</Step>
+
+### PR Checklist
+
+Before requesting review, ensure:
+
+- [ ] Code follows [coding standards](/docs/developer-guide/standards)
+- [ ] Tests are added/updated and passing
+- [ ] Documentation is updated
+- [ ] No console errors or warnings
+- [ ] Build passes successfully
+- [ ] Linting passes
+- [ ] TypeScript has no errors
+- [ ] Commit messages follow convention
+- [ ] PR description is complete
+
+### Review Guidelines
+
+**For Reviewers:**
+
+1. **Code Quality**: Check for clarity, maintainability
+2. **Testing**: Verify adequate test coverage
+3. **Performance**: Look for potential bottlenecks
+4. **Security**: Check for vulnerabilities
+5. **Documentation**: Ensure changes are documented
+
+**Providing Feedback:**
+
+```markdown
+✅ Good: "Consider extracting this logic into a separate function for reusability"
+❌ Bad: "This code is bad"
+
+✅ Good: "This could cause a memory leak. Try using useEffect cleanup"
+❌ Bad: "Won't work"
+```
+
+## Release Process
+
+### Version Numbers
+
+Portfolio OS follows [Semantic Versioning](https://semver.org/):
+
+- **Major (x.0.0)**: Breaking changes
+- **Minor (0.x.0)**: New features (backward compatible)
+- **Patch (0.0.x)**: Bug fixes
+
+### Creating a Release
+
+<Step>
+  <StepItem title="Create Release Branch">
+    ```bash
+    git checkout develop
+    git pull origin develop
+    git checkout -b release/v1.2.0
+    ```
+  </StepItem>
+
+  <StepItem title="Update Version Numbers">
+    ```bash
+    # Update package.json versions
+    # Update CHANGELOG.md
+    ```
+  </StepItem>
+
+  <StepItem title="Test Thoroughly">
+    ```bash
+    pnpm install
+    pnpm build
+    pnpm test
+    # Manual testing
+    ```
+  </StepItem>
+
+  <StepItem title="Merge to Main">
+    ```bash
+    git checkout main
+    git merge release/v1.2.0
+    git tag v1.2.0
+    git push origin main --tags
+    ```
+  </StepItem>
+
+  <StepItem title="Merge Back to Develop">
+    ```bash
+    git checkout develop
+    git merge main
+    git push origin develop
+    ```
+  </StepItem>
+</Step>
+
+## Hotfix Process
+
+For critical production bugs:
+
+<Step>
+  <StepItem title="Create Hotfix Branch">
+    ```bash
+    git checkout main
+    git checkout -b hotfix/critical-security-fix
+    ```
+  </StepItem>
+
+  <StepItem title="Fix and Test">
+    ```bash
+    # Make fix
+    git commit -m "fix: resolve critical security vulnerability"
+    pnpm test
+    ```
+  </StepItem>
+
+  <StepItem title="Merge to Main and Develop">
+    ```bash
+    git checkout main
+    git merge hotfix/critical-security-fix
+    git tag v1.2.1
+    git push origin main --tags
+    
+    git checkout develop
+    git merge hotfix/critical-security-fix
+    git push origin develop
+    ```
+  </StepItem>
+</Step>
+
+## Development Best Practices
+
+### 1. Small, Focused PRs
+
+<Note type="success">
+**Good PR:** Adds dark mode toggle (200 lines)
+**Bad PR:** Adds dark mode, refactors navigation, updates dependencies (2000 lines)
+</Note>
+
+### 2. Regular Commits
+
+Commit frequently with meaningful messages:
+
+```bash
+git commit -m "feat(site): add dark mode context"
+git commit -m "feat(site): implement theme toggle button"
+git commit -m "feat(site): persist theme preference"
+git commit -m "test(site): add dark mode tests"
+```
+
+### 3. Keep Dependencies Updated
+
+```bash
+# Check for outdated packages
+pnpm outdated
+
+# Update safely
+pnpm update --latest --interactive
+```
+
+### 4. Sync Frequently
+
+```bash
+# Sync with develop daily
+git checkout develop
+git pull origin develop
+git checkout your-branch
+git rebase develop
+```
+
+## Automation Tools
+
+Portfolio OS includes PowerShell scripts for common workflows:
+
+```powershell
+# Create new feature branch
+.\scripts\branch-management\create-branch.ps1 -Type feature -Name "add-comments"
+
+# Create PR
+.\scripts\pr-management\create-pr.ps1 -Title "feat(blog): add comment system"
+
+# Sync all worktrees
+.\scripts\agent-management\sync-agents.ps1
+```
+
+See [Scripts Reference](/docs/scripts-reference/overview) for details.
+
+## Multi-Agent Development
+
+For parallel development with multiple agents:
+
+```powershell
+# Create agent worktree
+.\scripts\agent-management\create-agent.ps1 -AgentName "agent-1"
+
+# Assign task to agent
+.\scripts\agent-management\assign-task.ps1 -AgentName "agent-1" -Task "Implement dark mode"
+```
+
+See [Multi-Agent System](/docs/multi-agent/quick-start) for more.
+
+## Next Steps
+
+- [Coding Standards](/docs/developer-guide/standards) - Learn code quality guidelines
+- [Monorepo Structure](/docs/developer-guide/monorepo) - Understand workspace organization
+- [Scripts Reference](/docs/scripts-reference/overview) - Explore automation tools
+
+<Note>
+Following this workflow ensures consistent, high-quality contributions. Questions? Check [Troubleshooting](/docs/troubleshooting/common-issues).
+</Note>
+

@@ -1,0 +1,295 @@
+---
+title: Common Issues
+description: Solutions to frequently encountered problems
+---
+
+# Common Issues
+
+Solutions to the most common problems in Portfolio OS.
+
+## Installation Issues
+
+### PNPM Command Not Found
+
+**Problem:** `pnpm: command not found` after installation
+
+**Solution:**
+```bash
+# Restart terminal first
+# If still not working, reinstall
+npm install -g pnpm
+
+# Or using Homebrew (macOS)
+brew install pnpm
+
+# Verify
+pnpm --version
+```
+
+### Module Not Found Errors
+
+**Problem:** Import errors after installation
+
+**Solution:**
+```bash
+# Clean install
+rm -rf node_modules
+pnpm install
+
+# If persists, clear cache
+pnpm store prune
+pnpm install
+```
+
+### Prisma Generation Fails
+
+**Problem:** `@prisma/client` not found
+
+**Solution:**
+```bash
+cd apps/dashboard
+pnpm prisma generate
+
+# Or from root
+pnpm --filter=@mindware-blog/dashboard prisma generate
+```
+
+## Development Issues
+
+### Port Already in Use
+
+**Problem:** `EADDRINUSE: address already in use :::3000`
+
+**Solution:**
+```bash
+# Find process using port
+# Windows
+netstat -ano | findstr :3000
+
+# macOS/Linux
+lsof -i :3000
+
+# Kill process or change port in next.config.js
+```
+
+### Hot Reload Not Working
+
+**Problem:** Changes don't reflect in browser
+
+**Solution:**
+1. Check if Fast Refresh is enabled
+2. Restart dev server
+3. Clear `.next` cache:
+```bash
+rm -rf apps/site/.next
+pnpm dev
+```
+
+### TypeScript Errors
+
+**Problem:** TypeScript compilation errors
+
+**Solution:**
+```bash
+# Check for errors
+pnpm typecheck
+
+# Regenerate types
+pnpm --filter=@mindware-blog/dashboard prisma generate
+
+# Clear TS cache
+rm -rf **/*.tsbuildinfo
+```
+
+## Build Issues
+
+### Build Fails with Memory Error
+
+**Problem:** `JavaScript heap out of memory`
+
+**Solution:**
+```bash
+# Increase Node memory
+NODE_OPTIONS="--max-old-space-size=4096" pnpm build
+```
+
+### Missing Environment Variables
+
+**Problem:** Build fails due to missing env vars
+
+**Solution:**
+```bash
+# Check .env.local exists
+ls apps/site/.env.local
+
+# Copy from example
+cp apps/site/.env.example apps/site/.env.local
+
+# Add required variables
+```
+
+### Import Path Errors
+
+**Problem:** Cannot find module '@mindware-blog/...'
+
+**Solution:**
+```bash
+# Rebuild packages
+pnpm build --filter="./packages/*"
+
+# Reinstall
+rm -rf node_modules
+pnpm install
+```
+
+## Runtime Issues
+
+### API Route 500 Errors
+
+**Problem:** API routes return 500 status
+
+**Solution:**
+1. Check server logs
+2. Verify environment variables
+3. Check API route implementation:
+```typescript
+export async function GET() {
+  try {
+    // Your code
+  } catch (error) {
+    console.error('API Error:', error) // Add logging
+    return new Response('Error', { status: 500 })
+  }
+}
+```
+
+### Database Connection Fails
+
+**Problem:** Cannot connect to database
+
+**Solution:**
+```bash
+# Check DATABASE_URL
+echo $DATABASE_URL
+
+# Test connection
+cd apps/dashboard
+pnpm prisma db push
+
+# Reset if needed
+pnpm prisma migrate reset
+```
+
+### Redis Connection Errors
+
+**Problem:** Cannot connect to Redis
+
+**Solution:**
+1. Verify credentials in .env.local
+2. Test connection:
+```typescript
+import { Redis } from '@upstash/redis'
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+await redis.ping() // Should return 'PONG'
+```
+
+## Git/Worktree Issues
+
+### Cannot Create Worktree
+
+**Problem:** `fatal: 'worktrees/agent-1' already exists`
+
+**Solution:**
+```bash
+# Remove existing worktree
+git worktree remove worktrees/agent-1
+
+# Or force remove
+git worktree remove --force worktrees/agent-1
+
+# Prune stale references
+git worktree prune
+```
+
+### Merge Conflicts
+
+**Problem:** Conflicts when rebasing
+
+**Solution:**
+```bash
+# View conflicts
+git status
+
+# Resolve manually, then
+git add .
+git rebase --continue
+
+# Or abort
+git rebase --abort
+```
+
+## Performance Issues
+
+### Slow Build Times
+
+**Solution:**
+```bash
+# Use Turbo cache
+pnpm build # Cached on second run
+
+# Clear cache if stale
+rm -rf .turbo
+pnpm build
+```
+
+### Slow Page Loads
+
+**Solution:**
+1. Enable Redis caching
+2. Check bundle size:
+```bash
+pnpm build
+# Check .next/analyze output
+```
+
+## Quick Fixes
+
+### Complete Reset
+
+When all else fails:
+
+```bash
+# Clean everything
+rm -rf node_modules .next .turbo
+rm -rf apps/*/node_modules apps/*/.next
+rm -rf packages/*/node_modules
+
+# Reinstall
+pnpm install
+
+# Regenerate Prisma
+cd apps/dashboard
+pnpm prisma generate
+cd ../..
+
+# Rebuild
+pnpm build
+```
+
+## Getting Help
+
+If issues persist:
+
+1. Check [Development Problems](/docs/troubleshooting/development)
+2. Check [Deployment Issues](/docs/troubleshooting/deployment)
+3. Search GitHub Issues
+4. Open new issue with:
+   - Error message
+   - Steps to reproduce
+   - Environment (OS, Node version, PNPM version)
+   - Relevant logs

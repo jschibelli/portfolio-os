@@ -1,0 +1,205 @@
+---
+title: Dashboard App
+description: Admin dashboard and content management system
+---
+
+# Dashboard App
+
+Admin interface for managing Portfolio OS content at `apps/dashboard`.
+
+## Overview
+
+**URL**: http://localhost:3001 (development)
+
+The dashboard provides a content management system with media library, analytics, and admin tools.
+
+## Features
+
+- 📝 **Content Management**: Create and edit posts
+- 🖼️ **Media Library**: Upload and manage images/files
+- 📊 **Analytics**: View site metrics
+- ✍️ **Rich Text Editor**: TipTap WYSIWYG editor
+- 🗄️ **Database**: Prisma ORM with SQLite/PostgreSQL
+- 🔐 **Authentication**: Session-based admin access
+
+## Tech Stack
+
+- Next.js 14 App Router
+- Prisma ORM
+- SQLite (dev) / PostgreSQL (prod)
+- Vercel Blob Storage
+- TipTap Editor
+- Tailwind CSS
+
+## Directory Structure
+
+<FileTree>
+  <Folder name="dashboard" defaultOpen>
+    <Folder name="app">
+      <Folder name="dashboard">
+        <File name="page.tsx" />
+        <Folder name="posts">
+          <File name="page.tsx" />
+          <File name="new/page.tsx" />
+          <File name="[id]/edit/page.tsx" />
+        </Folder>
+        <Folder name="media">
+          <File name="page.tsx" />
+        </Folder>
+      </Folder>
+      <Folder name="api">
+        <File name="posts/route.ts" />
+        <File name="media/route.ts" />
+      </Folder>
+    </Folder>
+    <Folder name="components">
+      <File name="Editor.tsx" />
+      <File name="MediaUploader.tsx" />
+    </Folder>
+    <Folder name="prisma">
+      <File name="schema.prisma" />
+    </Folder>
+  </Folder>
+</FileTree>
+
+## Database Schema
+
+```typescript
+// apps/dashboard/prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  slug      String   @unique
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
+}
+```
+
+## Key Features
+
+### Content Editor
+
+```tsx
+// apps/dashboard/components/Editor.tsx
+'use client'
+
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+
+export function Editor({ content, onChange }: EditorProps) {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML())
+    },
+  })
+  
+  return <EditorContent editor={editor} />
+}
+```
+
+### Media Upload
+
+```tsx
+// apps/dashboard/components/MediaUploader.tsx
+'use client'
+
+import { useState } from 'react'
+import { put } from '@vercel/blob'
+
+export function MediaUploader() {
+  async function handleUpload(file: File) {
+    const blob = await put(file.name, file, {
+      access: 'public',
+    })
+    
+    // Save to database
+    await fetch('/api/media', {
+      method: 'POST',
+      body: JSON.stringify({
+        url: blob.url,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+      }),
+    })
+  }
+  
+  return <input type="file" onChange={(e) => handleUpload(e.target.files[0])} />
+}
+```
+
+## API Routes
+
+### Posts CRUD
+
+```ts
+// apps/dashboard/app/api/posts/route.ts
+import { prisma } from '@mindware-blog/db'
+import { NextResponse } from 'next/server'
+
+export async function GET() {
+  const posts = await prisma.post.findMany({
+    orderBy: { createdAt: 'desc' },
+  })
+  return NextResponse.json({ posts })
+}
+
+export async function POST(request: Request) {
+  const data = await request.json()
+  const post = await prisma.post.create({ data })
+  return NextResponse.json({ post })
+}
+```
+
+## Development
+
+```bash
+# Setup database
+cd apps/dashboard
+pnpm prisma generate
+pnpm prisma migrate dev
+
+# Start dev server
+pnpm dev
+
+# Open Prisma Studio
+pnpm prisma studio
+```
+
+## Deployment
+
+```bash
+# Migrate production database
+pnpm prisma migrate deploy
+
+# Deploy to Vercel
+vercel --prod
+```
+
+## Next Steps
+
+- [Site App](/docs/apps-packages/site) - Public site
+- [Database Setup](/docs/setup/database) - Database configuration
+- [Deployment](/docs/setup/deployment) - Production deployment

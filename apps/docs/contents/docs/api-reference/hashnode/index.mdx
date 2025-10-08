@@ -1,0 +1,383 @@
+---
+title: Hashnode Integration
+description: Blog content integration with Hashnode GraphQL API
+---
+
+# Hashnode Integration
+
+Portfolio OS integrates with Hashnode to source blog content via their GraphQL API.
+
+## Overview
+
+Hashnode provides a GraphQL API to fetch blog posts, allowing Portfolio OS to use Hashnode as a headless CMS while maintaining full control over the frontend.
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# apps/site/.env.local
+NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=yourblog.hashnode.dev
+```
+
+### Client Setup
+
+```typescript
+// packages/hashnode/src/client.ts
+const HASHNODE_API_URL = 'https://gql.hashnode.com'
+
+export async function hashnodeQuery(query: string, variables: any = {}) {
+  const response = await fetch(HASHNODE_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  })
+  
+  if (!response.ok) {
+    throw new Error(`Hashnode API error: ${response.statusText}`)
+  }
+  
+  return response.json()
+}
+```
+
+## GraphQL Queries
+
+### Get All Posts
+
+```graphql
+query GetAllPosts($host: String!) {
+  publication(host: $host) {
+    posts(first: 20) {
+      edges {
+        node {
+          id
+          title
+          slug
+          brief
+          content {
+            html
+            markdown
+          }
+          coverImage {
+            url
+          }
+          publishedAt
+          author {
+            name
+            profilePicture
+          }
+          tags {
+            name
+            slug
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+```
+
+**Usage:**
+```typescript
+import { hashnodeQuery } from '@mindware-blog/hashnode'
+
+const GET_ALL_POSTS = `...` // Query above
+
+export async function getAllPosts() {
+  const data = await hashnodeQuery(GET_ALL_POSTS, {
+    host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST
+  })
+  
+  return data.data.publication.posts.edges.map(edge => edge.node)
+}
+```
+
+### Get Single Post
+
+```graphql
+query GetPost($host: String!, $slug: String!) {
+  publication(host: $host) {
+    post(slug: $slug) {
+      id
+      title
+      slug
+      brief
+      content {
+        html
+        markdown
+      }
+      coverImage {
+        url
+      }
+      publishedAt
+      readTimeInMinutes
+      author {
+        name
+        username
+        profilePicture
+        bio {
+          text
+        }
+      }
+      tags {
+        name
+        slug
+      }
+      seo {
+        title
+        description
+      }
+    }
+  }
+}
+```
+
+**Usage:**
+```typescript
+export async function getPostBySlug(slug: string) {
+  const data = await hashnodeQuery(GET_POST, {
+    host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+    slug
+  })
+  
+  return data.data.publication.post
+}
+```
+
+## Caching Strategy
+
+Cache Hashnode responses to reduce API calls:
+
+```typescript
+import { getCached } from '@mindware-blog/lib/cache'
+
+export async function getAllPostsCached() {
+  return getCached(
+    'hashnode:posts:all',
+    () => getAllPosts(),
+    3600 // 1 hour TTL
+  )
+}
+
+export async function getPostBySlugCached(slug: string) {
+  return getCached(
+    `hashnode:post:${slug}`,
+    () => getPostBySlug(slug),
+    7200 // 2 hour TTL
+  )
+}
+```
+
+## Type Definitions
+
+```typescript
+// packages/hashnode/src/types.ts
+export interface HashnodePost {
+  id: string
+  title: string
+  slug: string
+  brief: string
+  content: {
+    html: string
+    markdown: string
+  }
+  coverImage?: {
+    url: string
+  }
+  publishedAt: string
+  readTimeInMinutes: number
+  author: {
+    name: string
+    username: string
+    profilePicture?: string
+    bio?: {
+      text: string
+    }
+  }
+  tags: Array<{
+    name: string
+    slug: string
+  }>
+  seo?: {
+    title: string
+    description: string
+  }
+}
+
+export interface HashnodePublication {
+  posts: {
+    edges: Array<{
+      node: HashnodePost
+    }>
+    pageInfo: {
+      hasNextPage: boolean
+      endCursor: string
+    }
+  }
+}
+```
+
+## Usage in Pages
+
+### Blog Listing
+
+```typescript
+// apps/site/app/blog/page.tsx
+import { getAllPostsCached } from '@mindware-blog/hashnode'
+
+export default async function BlogPage() {
+  const posts = await getAllPostsCached()
+  
+  return (
+    <div>
+      <h1>Blog</h1>
+      <div className="grid gap-6">
+        {posts.map(post => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+### Single Post
+
+```typescript
+// apps/site/app/blog/[slug]/page.tsx
+import { getPostBySlugCached } from '@mindware-blog/hashnode'
+import { notFound } from 'next/navigation'
+
+export default async function PostPage({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlugCached(params.slug)
+  
+  if (!post) {
+    notFound()
+  }
+  
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.content.html }} />
+    </article>
+  )
+}
+```
+
+## Webhooks
+
+Set up Hashnode webhooks to invalidate cache on new posts:
+
+```typescript
+// apps/site/app/api/webhooks/hashnode/route.ts
+import { revalidatePath } from 'next/cache'
+import { redis } from '@mindware-blog/lib/cache'
+
+export async function POST(request: Request) {
+  const signature = request.headers.get('x-hashnode-signature')
+  
+  // Verify webhook signature
+  if (!verifySignature(signature)) {
+    return new Response('Invalid signature', { status: 401 })
+  }
+  
+  const body = await request.json()
+  
+  // Invalidate cache
+  await redis.del('hashnode:posts:all')
+  revalidatePath('/blog')
+  
+  return new Response('OK')
+}
+```
+
+## Error Handling
+
+```typescript
+export async function getAllPosts() {
+  try {
+    const data = await hashnodeQuery(GET_ALL_POSTS, {
+      host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST
+    })
+    
+    if (!data.data?.publication) {
+      throw new Error('Publication not found')
+    }
+    
+    return data.data.publication.posts.edges.map(edge => edge.node)
+  } catch (error) {
+    console.error('Failed to fetch posts from Hashnode:', error)
+    return [] // Return empty array as fallback
+  }
+}
+```
+
+## Pagination
+
+```typescript
+export async function getPaginatedPosts(cursor?: string, limit: number = 10) {
+  const PAGINATED_QUERY = `
+    query GetPosts($host: String!, $first: Int!, $after: String) {
+      publication(host: $host) {
+        posts(first: $first, after: $after) {
+          edges {
+            node { ... }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+  `
+  
+  const data = await hashnodeQuery(PAGINATED_QUERY, {
+    host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+    first: limit,
+    after: cursor
+  })
+  
+  return {
+    posts: data.data.publication.posts.edges.map(edge => edge.node),
+    pageInfo: data.data.publication.posts.pageInfo
+  }
+}
+```
+
+## Testing
+
+```typescript
+// __tests__/hashnode/client.test.ts
+import { getAllPosts, getPostBySlug } from '@mindware-blog/hashnode'
+
+describe('Hashnode Client', () => {
+  it('fetches all posts', async () => {
+    const posts = await getAllPosts()
+    expect(Array.isArray(posts)).toBe(true)
+    expect(posts[0]).toHaveProperty('title')
+  })
+  
+  it('fetches post by slug', async () => {
+    const post = await getPostBySlug('example-post')
+    expect(post).toHaveProperty('title')
+    expect(post).toHaveProperty('content')
+  })
+})
+```
+
+## Next Steps
+
+- [REST API](/docs/api-reference/rest-api) - Internal API routes
+- [GraphQL](/docs/api-reference/graphql) - GraphQL implementation
+- [Setup Guide](/docs/setup/caching) - Cache configuration

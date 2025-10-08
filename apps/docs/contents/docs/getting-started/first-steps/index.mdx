@@ -1,0 +1,409 @@
+---
+title: First Steps Tutorial
+description: Learn the fundamentals by exploring the codebase and making your first changes
+---
+
+# First Steps Tutorial
+
+Now that you have Portfolio OS running, let's take a tour and make some changes to get comfortable with the codebase.
+
+<Note type="success">
+**Time to Complete:** 20-30 minutes
+</Note>
+
+## Understanding the Monorepo Structure
+
+Portfolio OS uses a monorepo architecture with Turborepo and PNPM workspaces:
+
+<FileTree>
+  <Folder name="portfolio-os" defaultOpen>
+    <Folder name="apps" defaultOpen>
+      <Folder name="site">
+        <File name="app/" />
+        <File name="components/" />
+        <File name="lib/" />
+      </Folder>
+      <Folder name="dashboard">
+        <File name="app/" />
+        <File name="components/" />
+        <File name="prisma/" />
+      </Folder>
+      <Folder name="docs">
+        <File name="contents/" />
+        <File name="components/" />
+      </Folder>
+    </Folder>
+    <Folder name="packages" defaultOpen>
+      <File name="ui/" />
+      <File name="lib/" />
+      <File name="utils/" />
+      <File name="db/" />
+      <File name="hashnode/" />
+    </Folder>
+    <Folder name="scripts">
+      <File name="agent-management/" />
+      <File name="pr-management/" />
+      <File name="automation/" />
+    </Folder>
+    <File name="package.json" />
+    <File name="turbo.json" />
+  </Folder>
+</FileTree>
+
+## Tutorial 1: Explore the Site App
+
+Let's start by understanding the main portfolio site.
+
+<Step>
+  <StepItem title="Open the Site in Your Browser">
+    Navigate to [http://localhost:3000](http://localhost:3000)
+    
+    You should see the portfolio homepage. Take a moment to explore:
+    - Homepage with hero section
+    - Projects page
+    - Blog posts
+    - Navigation menu
+  </StepItem>
+
+  <StepItem title="Locate the Homepage Code">
+    Open `apps/site/app/page.tsx` in your editor.
+    
+    This is the main homepage using Next.js App Router. Notice:
+    - Server Component by default (no `"use client"` directive)
+    - Async component that can fetch data
+    - Imports from shared packages (`@mindware-blog/ui`, `@mindware-blog/lib`)
+  </StepItem>
+
+  <StepItem title="Make Your First Change">
+    Let's customize the homepage. Find the hero section and update the text:
+    
+    ```tsx title="apps/site/app/page.tsx"
+    export default async function HomePage() {
+      return (
+        <div className="flex flex-col gap-8">
+          <h1 className="text-4xl font-bold">
+            Welcome to My Portfolio // [!code --]
+            Hello! I'm Building Something Awesome // [!code ++]
+          </h1>
+          {/* Rest of the component */}
+        </div>
+      )
+    }
+    ```
+    
+    Save the file and watch the browser auto-refresh with your changes!
+  </StepItem>
+</Step>
+
+<Note type="success">
+🎉 **Nice work!** You just made your first change. The browser updated automatically thanks to Next.js Fast Refresh.
+</Note>
+
+## Tutorial 2: Working with Shared Packages
+
+One of the key benefits of the monorepo is code sharing. Let's see how packages work.
+
+<Step>
+  <StepItem title="Explore the UI Package">
+    Open `packages/ui/src/button.tsx`
+    
+    This is a shared Button component used across all apps. It uses:
+    - Tailwind CSS for styling
+    - Radix UI primitives for accessibility
+    - TypeScript for type safety
+  </StepItem>
+
+  <StepItem title="Use the Component in Site">
+    The Button is already imported and used throughout the site. Check `apps/site/app/page.tsx`:
+    
+    ```tsx
+    import { Button } from "@mindware-blog/ui"
+    
+    export default function HomePage() {
+      return (
+        <div>
+          <Button>Click Me</Button>
+        </div>
+      )
+    }
+    ```
+    
+    Notice the import path: `@mindware-blog/ui` maps to `packages/ui`
+  </StepItem>
+
+  <StepItem title="Modify a Shared Component">
+    Let's add a new variant to the Button. Open `packages/ui/src/button.tsx`:
+    
+    ```tsx title="packages/ui/src/button.tsx"
+    const buttonVariants = cva(
+      "inline-flex items-center justify-center...",
+      {
+        variants: {
+          variant: {
+            default: "bg-primary text-primary-foreground",
+            destructive: "bg-destructive text-destructive-foreground",
+            outline: "border border-input bg-background",
+            // Add your custom variant // [!code ++]
+            custom: "bg-purple-600 text-white hover:bg-purple-700", // [!code ++]
+          },
+        },
+      }
+    )
+    ```
+    
+    Now use it in the site:
+    
+    ```tsx title="apps/site/app/page.tsx"
+    <Button variant="custom">Custom Style</Button>
+    ```
+  </StepItem>
+</Step>
+
+<Note>
+**Monorepo Magic:** Changes to `packages/ui` are immediately available in all apps without publishing to npm!
+</Note>
+
+## Tutorial 3: Understanding Data Flow
+
+Let's explore how Portfolio OS fetches and displays blog posts from Hashnode.
+
+<Step>
+  <StepItem title="Examine the Blog Page">
+    Open `apps/site/app/blog/page.tsx`
+    
+    This server component:
+    1. Fetches posts from Hashnode using GraphQL
+    2. Optionally caches results in Redis
+    3. Renders the post list
+  </StepItem>
+
+  <StepItem title="Explore the Hashnode Client">
+    Open `packages/hashnode/src/client.ts`
+    
+    This package encapsulates all Hashnode API interactions:
+    ```ts
+    export async function getAllPosts() {
+      const response = await fetch(HASHNODE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: GET_ALL_POSTS_QUERY }),
+      })
+      return response.json()
+    }
+    ```
+  </StepItem>
+
+  <StepItem title="Check the Caching Layer">
+    Open `apps/site/lib/cache.ts` (if it exists)
+    
+    Portfolio OS uses Redis to cache blog posts for better performance:
+    - Cache key: `blog:posts:all`
+    - TTL: 3600 seconds (1 hour)
+    - Automatic invalidation on new posts
+  </StepItem>
+</Step>
+
+## Tutorial 4: Working with the Dashboard
+
+The dashboard app provides admin functionality for content management.
+
+<Step>
+  <StepItem title="Open the Dashboard">
+    Navigate to [http://localhost:3001](http://localhost:3001)
+    
+    Explore the dashboard features:
+    - Content management
+    - Analytics
+    - Media library
+  </StepItem>
+
+  <StepItem title="Understand the Database">
+    Open `apps/dashboard/prisma/schema.prisma`
+    
+    This defines the database schema using Prisma:
+    ```typescript
+    model Post {
+      id        String   @id @default(cuid())
+      title     String
+      content   String
+      published Boolean  @default(false)
+      createdAt DateTime @default(now())
+      updatedAt DateTime @updatedAt
+    }
+    ```
+  </StepItem>
+
+  <StepItem title="Query the Database">
+    Open `apps/dashboard/lib/db.ts` to see how data is queried:
+    
+    ```ts
+    import { prisma } from "@mindware-blog/db"
+    
+    export async function getPosts() {
+      return await prisma.post.findMany({
+        where: { published: true },
+        orderBy: { createdAt: "desc" },
+      })
+    }
+    ```
+  </StepItem>
+</Step>
+
+## Common Development Tasks
+
+Now that you understand the basics, here are common tasks you'll perform:
+
+### Running Commands
+
+<Tabs defaultValue="dev">
+  <TabsList>
+    <TabsTrigger value="dev">Development</TabsTrigger>
+    <TabsTrigger value="build">Building</TabsTrigger>
+    <TabsTrigger value="test">Testing</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="dev">
+    ```bash
+    # Run all apps
+    pnpm dev
+    
+    # Run specific app
+    pnpm dev --filter=@mindware-blog/site
+    pnpm dev --filter=@mindware-blog/dashboard
+    
+    # Run multiple specific apps
+    pnpm dev --filter=@mindware-blog/site --filter=@mindware-blog/dashboard
+    ```
+  </TabsContent>
+  
+  <TabsContent value="build">
+    ```bash
+    # Build everything
+    pnpm build
+    
+    # Build specific app
+    pnpm build --filter=@mindware-blog/site
+    
+    # Build packages only
+    pnpm build --filter="./packages/*"
+    ```
+  </TabsContent>
+  
+  <TabsContent value="test">
+    ```bash
+    # Run all tests
+    pnpm test
+    
+    # Run tests for specific package
+    pnpm test --filter=@mindware-blog/lib
+    
+    # Run tests in watch mode
+    pnpm test -- --watch
+    ```
+  </TabsContent>
+</Tabs>
+
+### Adding a New Package
+
+```bash
+# Create new package directory
+mkdir packages/my-new-package
+cd packages/my-new-package
+
+# Initialize package
+pnpm init
+
+# Add to workspace (automatically detected)
+# Add dependencies
+pnpm add some-dependency
+
+# Use in app
+# In apps/site/package.json, add:
+# "@mindware-blog/my-new-package": "workspace:*"
+```
+
+### Database Migrations
+
+```bash
+# Create a migration
+cd apps/dashboard
+pnpm prisma migrate dev --name add_new_field
+
+# Apply migrations
+pnpm prisma migrate deploy
+
+# Open Prisma Studio to browse data
+pnpm prisma studio
+```
+
+## Understanding Turborepo
+
+Portfolio OS uses Turborepo for build orchestration:
+
+```json title="turbo.json"
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+```
+
+**Key Concepts:**
+- **`^build`**: Build dependencies first
+- **`outputs`**: Cache these directories
+- **`persistent`**: Keep dev servers running
+
+## Next Steps
+
+You're now familiar with the basics! Here's what to explore next:
+
+<CardGrid>
+  <Card 
+    href="/docs/developer-guide/architecture" 
+    title="Architecture Deep Dive" 
+    description="Understand the system architecture and design patterns" 
+  />
+  <Card 
+    href="/docs/developer-guide/workflow" 
+    title="Development Workflow" 
+    description="Learn the recommended development process" 
+  />
+  <Card 
+    href="/docs/scripts-reference/overview" 
+    title="Automation Scripts" 
+    description="Discover powerful automation tools" 
+  />
+</CardGrid>
+
+## Tips for Success
+
+<Note type="success">
+**Best Practices:**
+
+1. **Use TypeScript strictly** - The codebase is fully typed
+2. **Follow the monorepo conventions** - Keep packages focused and composable
+3. **Leverage shared packages** - Don't duplicate code between apps
+4. **Write tests** - Especially for shared packages used across apps
+5. **Use Turbo caching** - Builds and tests are cached for speed
+</Note>
+
+## Getting Help
+
+Need assistance?
+
+- **Documentation**: You're in the right place! Explore the sidebar.
+- **Troubleshooting**: Check [Common Issues](/docs/troubleshooting/common-issues)
+- **GitHub Issues**: Open an issue for bugs or feature requests
+- **Developer Guide**: See [Architecture](/docs/developer-guide/architecture) for deeper concepts
+
+<Note>
+Ready for advanced features? Check out the [Multi-Agent System](/docs/multi-agent/quick-start) for parallel development workflows.
+</Note>
+

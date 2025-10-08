@@ -7,17 +7,40 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
-import { fetchPostBySlug, fetchPublication } from '../../../lib/content-api';
+import { fetchPostBySlug, fetchPublication, getAllPostSlugs } from '../../../lib/content-api';
 
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
   loading: () => null,
 });
 
+// Enable dynamic rendering for new posts not generated at build time
+export const dynamicParams = true;
+
+// Revalidate every 60 seconds
+export const revalidate = 60;
+
 interface BlogPostPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+/**
+ * Generate static params for all blog posts at build time
+ * This ensures all existing posts have pre-rendered pages
+ */
+export async function generateStaticParams() {
+  try {
+    const slugs = await getAllPostSlugs();
+    return slugs.map((slug) => ({
+      slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params for blog posts:', error);
+    // Return empty array on error to allow build to continue
+    return [];
+  }
 }
 
 // Default publication object for fallback

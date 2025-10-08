@@ -1,0 +1,75 @@
+---
+title: Shared Packages
+description: Reusable packages across Portfolio OS applications
+---
+
+# Shared Packages
+
+Shared packages provide reusable code across all Portfolio OS applications.
+
+## Package List
+
+| Package | Description | Dependencies |
+|---------|-------------|--------------|
+| `@mindware-blog/ui` | React components | `utils` |
+| `@mindware-blog/lib` | Business logic | `utils`, `hashnode` |
+| `@mindware-blog/utils` | Utility functions | None |
+| `@mindware-blog/db` | Database client | None |
+| `@mindware-blog/hashnode` | Hashnode API | None |
+| `@mindware-blog/emails` | Email templates | None |
+| `@mindware-blog/tsconfig` | TypeScript configs | None |
+| `@mindware-blog/eslint-config-custom` | ESLint config | None |
+
+## Using Packages
+
+### In Applications
+
+```json
+// apps/site/package.json
+{
+  "dependencies": {
+    "@mindware-blog/ui": "workspace:*",
+    "@mindware-blog/lib": "workspace:*",
+    "@mindware-blog/utils": "workspace:*"
+  }
+}
+```
+
+```tsx
+// apps/site/app/page.tsx
+import { Button } from '@mindware-blog/ui'
+import { getAllPosts } from '@mindware-blog/lib'
+import { formatDate } from '@mindware-blog/utils'
+```
+
+## Package Details
+
+See [Package System](/docs/developer-guide/packages) for comprehensive documentation on each package.
+
+## Development
+
+```bash
+# Make changes to package
+cd packages/ui
+# Edit components
+
+# Changes automatically available in all apps
+cd ../../apps/site
+pnpm dev  # Uses updated package
+```
+
+## Testing
+
+```bash
+# Test specific package
+pnpm test --filter=@mindware-blog/ui
+
+# Test all packages
+pnpm test --filter="./packages/*"
+```
+
+## Next Steps
+
+- [Package System](/docs/developer-guide/packages) - Detailed package docs
+- [UI Components](/docs/apps-packages/ui-components) - Component library
+- [Developer Guide](/docs/developer-guide/architecture) - Architecture overview

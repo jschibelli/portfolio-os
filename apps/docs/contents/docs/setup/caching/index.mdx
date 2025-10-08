@@ -1,0 +1,144 @@
+---
+title: Caching Configuration
+description: Redis caching setup for Portfolio OS
+---
+
+# Caching Configuration
+
+Configure Redis caching for optimal performance.
+
+## Upstash Redis Setup
+
+<Step>
+  <StepItem title="Create Redis Database">
+    1. Go to [upstash.com](https://upstash.com)
+    2. Click "Create Database"
+    3. Choose region closest to your deployment
+  </StepItem>
+
+  <StepItem title="Get Credentials">
+    Copy REST URL and Token from database details
+  </StepItem>
+
+  <StepItem title="Configure Environment">
+    ```bash
+    # apps/site/.env.local
+    UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+    UPSTASH_REDIS_REST_TOKEN=your-token-here
+    ```
+  </StepItem>
+</Step>
+
+## Cache Implementation
+
+```typescript
+// packages/lib/src/cache/redis.ts
+import { Redis } from '@upstash/redis'
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+export async function getCached<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl: number = 3600
+): Promise<T> {
+  // Try cache
+  const cached = await redis.get<T>(key)
+  if (cached) return cached
+  
+  // Fetch and cache
+  const data = await fetcher()
+  await redis.setex(key, ttl, JSON.stringify(data))
+  
+  return data
+}
+
+export async function invalidateCache(pattern: string) {
+  const keys = await redis.keys(pattern)
+  if (keys.length > 0) {
+    await redis.del(...keys)
+  }
+}
+```
+
+## Usage
+
+```typescript
+import { getCached } from '@mindware-blog/lib/cache'
+
+// Cache blog posts for 1 hour
+const posts = await getCached(
+  'blog:posts:all',
+  () => getAllPosts(),
+  3600
+)
+
+// Cache single post for 2 hours
+const post = await getCached(
+  `blog:post:${slug}`,
+  () => getPostBySlug(slug),
+  7200
+)
+```
+
+## Cache Strategies
+
+| Content | TTL | Strategy |
+|---------|-----|----------|
+| Blog posts list | 1 hour | Time-based |
+| Single post | 2 hours | Time-based |
+| Static pages | 24 hours | Time-based |
+| API responses | 15 min | Time-based |
+
+## Cache Invalidation
+
+### Manual Invalidation
+
+```typescript
+import { invalidateCache } from '@mindware-blog/lib/cache'
+
+// Invalidate all blog posts
+await invalidateCache('blog:*')
+
+// Invalidate specific post
+await invalidateCache(`blog:post:${slug}`)
+```
+
+### Webhook Invalidation
+
+```typescript
+// apps/site/app/api/webhooks/invalidate/route.ts
+import { invalidateCache } from '@mindware-blog/lib/cache'
+import { revalidatePath } from 'next/cache'
+
+export async function POST(request: Request) {
+  const { pattern } = await request.json()
+  
+  await invalidateCache(pattern)
+  revalidatePath('/blog')
+  
+  return new Response('OK')
+}
+```
+
+## Monitoring
+
+Check cache performance:
+
+```typescript
+// Get cache stats
+const stats = {
+  hits: await redis.get('stats:cache:hits'),
+  misses: await redis.get('stats:cache:misses'),
+  hitRate: hits / (hits + misses)
+}
+```
+
+## Next Steps
+
+- [Environment Configuration](/docs/getting-started/environment) - Environment setup
+- [Deployment](/docs/setup/deployment) - Production deployment
+- [Performance](/docs/troubleshooting/performance) - Performance optimization

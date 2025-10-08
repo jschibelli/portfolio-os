@@ -1,0 +1,619 @@
+---
+title: Coding Standards
+description: TypeScript, React, and styling best practices for Portfolio OS
+---
+
+# Coding Standards
+
+Maintain code quality and consistency across Portfolio OS with these guidelines.
+
+## TypeScript Guidelines
+
+### Strict Configuration
+
+Portfolio OS uses strict TypeScript settings:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+### Type Safety Rules
+
+<Tabs defaultValue="good">
+  <TabsList>
+    <TabsTrigger value="good">✅ Good</TabsTrigger>
+    <TabsTrigger value="bad">❌ Avoid</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="good">
+    ```typescript
+    // Use proper types
+    interface User {
+      id: string
+      name: string
+      email: string
+    }
+    
+    function getUser(id: string): Promise<User> {
+      return fetch(`/api/users/${id}`).then(res => res.json())
+    }
+    
+    // Use type guards
+    function isUser(obj: unknown): obj is User {
+      return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        'id' in obj &&
+        'name' in obj
+      )
+    }
+    
+    // Use enums for constants
+    enum UserRole {
+      Admin = 'admin',
+      User = 'user',
+      Guest = 'guest',
+    }
+    ```
+  </TabsContent>
+  
+  <TabsContent value="bad">
+    ```typescript
+    // Avoid any
+    function getUser(id: any): any {
+      return fetch(`/api/users/${id}`).then(res => res.json())
+    }
+    
+    // Don't ignore errors
+    // @ts-ignore
+    const user = getData()
+    
+    // Avoid implicit any
+    function process(data) {
+      return data.map(item => item.value)
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+### Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Interfaces | PascalCase | `UserProfile`, `ApiResponse` |
+| Types | PascalCase | `PostStatus`, `Theme` |
+| Functions | camelCase | `getUserById`, `formatDate` |
+| Variables | camelCase | `userData`, `isLoading` |
+| Constants | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT`, `API_URL` |
+| Components | PascalCase | `Button`, `UserProfile` |
+| Files | kebab-case | `user-profile.tsx`, `api-client.ts` |
+
+## React Best Practices
+
+### Component Structure
+
+```tsx
+// 1. Imports
+import { useState } from "react"
+import { Button } from "@mindware-blog/ui"
+import { formatDate } from "@mindware-blog/utils"
+
+// 2. Types
+interface PostCardProps {
+  title: string
+  date: Date
+  excerpt: string
+  onRead: () => void
+}
+
+// 3. Component
+export function PostCard({ title, date, excerpt, onRead }: PostCardProps) {
+  // 4. Hooks
+  const [isExpanded, setIsExpanded] = useState(false)
+  
+  // 5. Event handlers
+  const handleToggle = () => setIsExpanded(!isExpanded)
+  
+  // 6. Render
+  return (
+    <article>
+      <h2>{title}</h2>
+      <time>{formatDate(date)}</time>
+      <p>{isExpanded ? excerpt : excerpt.slice(0, 100)}</p>
+      <Button onClick={handleToggle}>
+        {isExpanded ? 'Show Less' : 'Show More'}
+      </Button>
+      <Button onClick={onRead}>Read More</Button>
+    </article>
+  )
+}
+```
+
+### Server vs Client Components
+
+<Tabs defaultValue="server">
+  <TabsList>
+    <TabsTrigger value="server">Server Component</TabsTrigger>
+    <TabsTrigger value="client">Client Component</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="server">
+    **Use for:**
+    - Data fetching
+    - Direct database access
+    - Rendering static content
+    - SEO-critical content
+    
+    ```tsx
+    // No "use client" = Server Component
+    export default async function BlogPage() {
+      const posts = await db.post.findMany()
+      
+      return (
+        <div>
+          {posts.map(post => (
+            <PostCard key={post.id} {...post} />
+          ))}
+        </div>
+      )
+    }
+    ```
+  </TabsContent>
+  
+  <TabsContent value="client">
+    **Use for:**
+    - Interactivity (onClick, onChange)
+    - State management (useState, useReducer)
+    - Effects (useEffect)
+    - Browser APIs
+    
+    ```tsx
+    "use client"
+    
+    import { useState } from "react"
+    
+    export function SearchBar() {
+      const [query, setQuery] = useState("")
+      
+      return (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search..."
+        />
+      )
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+### Hooks Rules
+
+```tsx
+// ✅ Good: Custom hooks
+function useUser(id: string) {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    fetchUser(id).then(setUser).finally(() => setLoading(false))
+  }, [id])
+  
+  return { user, loading }
+}
+
+// ✅ Good: Cleanup effects
+useEffect(() => {
+  const controller = new AbortController()
+  
+  fetch('/api/data', { signal: controller.signal })
+    .then(res => res.json())
+    .then(setData)
+  
+  return () => controller.abort()
+}, [])
+
+// ❌ Bad: Hooks in conditionals
+if (condition) {
+  useState('value') // Error!
+}
+
+// ❌ Bad: Hooks in loops
+data.forEach(item => {
+  useEffect(() => {}) // Error!
+})
+```
+
+## Styling Guidelines
+
+### Tailwind CSS Usage
+
+<Tabs defaultValue="good">
+  <TabsList>
+    <TabsTrigger value="good">✅ Good</TabsTrigger>
+    <TabsTrigger value="bad">❌ Avoid</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="good">
+    ```tsx
+    // Use utility classes
+    <div className="flex items-center gap-4 p-6 rounded-lg border">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        Title
+      </h2>
+    </div>
+    
+    // Use cn() helper for conditional classes
+    import { cn } from "@mindware-blog/utils"
+    
+    <button
+      className={cn(
+        "px-4 py-2 rounded-md font-medium",
+        variant === "primary" && "bg-blue-600 text-white",
+        variant === "secondary" && "bg-gray-200 text-gray-900",
+        disabled && "opacity-50 cursor-not-allowed"
+      )}
+    />
+    
+    // Responsive design
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Mobile: 1 col, Tablet: 2 cols, Desktop: 3 cols */}
+    </div>
+    ```
+  </TabsContent>
+  
+  <TabsContent value="bad">
+    ```tsx
+    // Don't use inline styles
+    <div style={{ display: 'flex', padding: '24px' }}>
+      {/* Use Tailwind instead */}
+    </div>
+    
+    // Don't create custom CSS files
+    // Use Tailwind utilities or create components
+    
+    // Don't use arbitrary values everywhere
+    <div className="p-[13.5px]"> {/* Use standard spacing */}
+      <h2 className="text-[23px]"> {/* Use standard text sizes */}
+    ```
+  </TabsContent>
+</Tabs>
+
+### Component Variants with CVA
+
+```tsx
+import { cva, type VariantProps } from "class-variance-authority"
+
+const buttonVariants = cva(
+  // Base styles
+  "inline-flex items-center justify-center rounded-md font-medium transition-colors",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {}
+
+export function Button({ className, variant, size, ...props }: ButtonProps) {
+  return (
+    <button
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+```
+
+## File Organization
+
+### Directory Structure
+
+```
+src/
+├── app/              # Next.js app directory
+│   ├── (routes)/     # Route groups
+│   ├── api/          # API routes
+│   └── layout.tsx    # Root layout
+├── components/       # React components
+│   ├── ui/           # UI primitives
+│   └── features/     # Feature components
+├── lib/              # Utilities and helpers
+│   ├── api/          # API clients
+│   ├── hooks/        # Custom hooks
+│   └── utils/        # Utility functions
+├── types/            # TypeScript types
+└── styles/           # Global styles
+```
+
+### Import Organization
+
+```tsx
+// 1. React/Next.js
+import { useState } from "react"
+import Image from "next/image"
+
+// 2. External packages
+import { cva } from "class-variance-authority"
+
+// 3. Internal packages
+import { Button } from "@mindware-blog/ui"
+import { formatDate } from "@mindware-blog/utils"
+
+// 4. Relative imports
+import { PostCard } from "./PostCard"
+import type { Post } from "./types"
+```
+
+<Note>
+Use Prettier with `prettier-plugin-organize-imports` to auto-sort imports.
+</Note>
+
+## Error Handling
+
+### API Routes
+
+```tsx
+// app/api/posts/route.ts
+import { NextResponse } from "next/server"
+import { z } from "zod"
+
+const schema = z.object({
+  title: z.string().min(1),
+  content: z.string(),
+})
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const data = schema.parse(body)
+    
+    const post = await db.post.create({ data })
+    
+    return NextResponse.json(post, { status: 201 })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid input", details: error.errors },
+        { status: 400 }
+      )
+    }
+    
+    console.error("Failed to create post:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### Client-Side
+
+```tsx
+"use client"
+
+import { useEffect } from "react"
+
+export function ErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  useEffect(() => {
+    console.error(error)
+  }, [error])
+  
+  return (
+    <div>
+      <h2>Something went wrong!</h2>
+      <button onClick={() => reset()}>Try again</button>
+    </div>
+  )
+}
+```
+
+## Testing Standards
+
+### Unit Tests
+
+```tsx
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { Button } from "./Button"
+
+describe("Button", () => {
+  it("renders with text", () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText("Click me")).toBeInTheDocument()
+  })
+  
+  it("calls onClick when clicked", async () => {
+    const user = userEvent.setup()
+    const handleClick = jest.fn()
+    
+    render(<Button onClick={handleClick}>Click me</Button>)
+    await user.click(screen.getByText("Click me"))
+    
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+  
+  it("is disabled when disabled prop is true", () => {
+    render(<Button disabled>Click me</Button>)
+    expect(screen.getByRole("button")).toBeDisabled()
+  })
+})
+```
+
+### API Tests
+
+```tsx
+import { POST } from "./route"
+
+describe("/api/posts", () => {
+  it("creates a post with valid data", async () => {
+    const request = new Request("http://localhost/api/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Test Post",
+        content: "Test content",
+      }),
+    })
+    
+    const response = await POST(request)
+    const data = await response.json()
+    
+    expect(response.status).toBe(201)
+    expect(data).toHaveProperty("id")
+    expect(data.title).toBe("Test Post")
+  })
+  
+  it("returns 400 for invalid data", async () => {
+    const request = new Request("http://localhost/api/posts", {
+      method: "POST",
+      body: JSON.stringify({ title: "" }),
+    })
+    
+    const response = await POST(request)
+    
+    expect(response.status).toBe(400)
+  })
+})
+```
+
+## Performance Best Practices
+
+### 1. Memoization
+
+```tsx
+import { useMemo, useCallback } from "react"
+
+function ExpensiveComponent({ data }: { data: Item[] }) {
+  // Memoize expensive computations
+  const processedData = useMemo(() => {
+    return data.map(item => processItem(item))
+  }, [data])
+  
+  // Memoize callbacks
+  const handleClick = useCallback((id: string) => {
+    // Handle click
+  }, [])
+  
+  return <div>{/* Render */}</div>
+}
+```
+
+### 2. Lazy Loading
+
+```tsx
+import dynamic from "next/dynamic"
+
+const HeavyChart = dynamic(() => import("./HeavyChart"), {
+  loading: () => <p>Loading chart...</p>,
+  ssr: false,
+})
+```
+
+### 3. Image Optimization
+
+```tsx
+import Image from "next/image"
+
+<Image
+  src="/hero.jpg"
+  alt="Hero image"
+  width={1200}
+  height={630}
+  priority // For above-the-fold images
+  placeholder="blur"
+  blurDataURL="data:image/..."
+/>
+```
+
+## Accessibility
+
+```tsx
+// Use semantic HTML
+<button>Click me</button> // Not <div onClick={...}>
+
+// Add ARIA labels
+<button aria-label="Close dialog">
+  <X />
+</button>
+
+// Keyboard navigation
+<div
+  role="button"
+  tabIndex={0}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleClick()
+    }
+  }}
+>
+
+// Color contrast (WCAG AA minimum)
+<p className="text-gray-900 dark:text-gray-100">
+  Ensure sufficient contrast
+</p>
+```
+
+<Note type="warning">
+All interactive elements must be keyboard accessible and have appropriate ARIA attributes.
+</Note>
+
+## Documentation
+
+### JSDoc Comments
+
+```typescript
+/**
+ * Fetches a user by ID from the database
+ * @param id - The unique identifier of the user
+ * @returns A promise that resolves to the user object
+ * @throws {NotFoundError} When user doesn't exist
+ * @example
+ * ```ts
+ * const user = await getUserById('user_123')
+ * ```
+ */
+export async function getUserById(id: string): Promise<User> {
+  // Implementation
+}
+```
+
+## Next Steps
+
+- [Monorepo Structure](/docs/developer-guide/monorepo) - Navigate the workspace
+- [Package System](/docs/developer-guide/packages) - Work with shared code
+- [Development Workflow](/docs/developer-guide/workflow) - Learn the process
+
+<Note>
+These standards ensure consistent, maintainable code. Use linters and formatters to enforce them automatically.
+</Note>
+

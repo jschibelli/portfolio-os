@@ -1,0 +1,65 @@
+---
+title: UI Components
+description: Shared UI component library
+---
+
+# UI Components
+
+The UI package (`@mindware-blog/ui`) provides shared React components using Radix UI and Tailwind CSS.
+
+## Available Components
+
+| Component | Description | Primitives |
+|-----------|-------------|------------|
+| Button | Accessible button | - |
+| Card | Content container | - |
+| Dialog | Modal dialogs | Radix Dialog |
+| Input | Form input | - |
+| Select | Dropdown select | Radix Select |
+| Tabs | Tab navigation | Radix Tabs |
+| Toast | Notifications | Radix Toast |
+
+## Usage
+
+```tsx
+import { Button, Card } from '@mindware-blog/ui'
+
+export function Example() {
+  return (
+    <Card>
+      <h2>Card Title</h2>
+      <p>Card content</p>
+      <Button variant="primary" size="lg">
+        Click Me
+      </Button>
+    </Card>
+  )
+}
+```
+
+## Component Examples
+
+See [Package System](/docs/developer-guide/packages) for detailed component documentation and examples.
+
+## Customization
+
+Components use Tailwind CSS and can be customized via theme:
+
+```js
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#your-color',
+      },
+    },
+  },
+}
+```
+
+## Next Steps
+
+- [Package System](/docs/developer-guide/packages) - Full component docs
+- [Coding Standards](/docs/developer-guide/standards) - Component best practices
+- [Site App](/docs/apps-packages/site) - Usage examples

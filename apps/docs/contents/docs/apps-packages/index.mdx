@@ -1,0 +1,203 @@
+---
+title: Apps & Packages
+description: Overview of Portfolio OS applications and shared packages
+---
+
+# Apps & Packages
+
+Portfolio OS is organized as a monorepo with multiple applications and shared packages.
+
+## Applications
+
+<CardGrid>
+  <Card href="/docs/apps-packages/site" title="Site App" description="Public portfolio and blog at localhost:3000" />
+  <Card href="/docs/apps-packages/dashboard" title="Dashboard App" description="Admin interface at localhost:3001" />
+  <Card href="/docs/apps-packages/shared-packages" title="Shared Packages" description="Reusable code across apps" />
+  <Card href="/docs/apps-packages/ui-components" title="UI Components" description="Component library" />
+</CardGrid>
+
+## Architecture Overview
+
+<Mermaid chart={`graph TB
+    subgraph "Applications"
+        Site[Site App<br/>Public Portfolio]
+        Dashboard[Dashboard App<br/>Admin Panel]
+        Docs[Docs App<br/>Documentation]
+    end
+    
+    subgraph "Shared Packages"
+        UI[UI Components]
+        Lib[Business Logic]
+        Utils[Utilities]
+        DB[Database]
+        Hashnode[Hashnode Client]
+    end
+    
+    Site --> UI
+    Site --> Lib
+    Site --> Utils
+    Site --> Hashnode
+    
+    Dashboard --> UI
+    Dashboard --> Lib
+    Dashboard --> Utils
+    Dashboard --> DB
+    
+    Docs --> UI`} />
+
+## Application Matrix
+
+| App | Purpose | Port | Stack |
+|-----|---------|------|-------|
+| **Site** | Public portfolio & blog | 3000 | Next.js, React, Tailwind |
+| **Dashboard** | Admin CMS | 3001 | Next.js, Prisma, TipTap |
+| **Docs** | Documentation | 3002 | Next.js, MDX |
+
+## Package Overview
+
+### Core Packages
+
+| Package | Purpose | Size |
+|---------|---------|------|
+| `@mindware-blog/ui` | Shared React components | ~50 components |
+| `@mindware-blog/lib` | Business logic & services | ~20 modules |
+| `@mindware-blog/utils` | Utility functions | ~15 functions |
+| `@mindware-blog/db` | Prisma client & schema | Database layer |
+| `@mindware-blog/hashnode` | Hashnode API client | GraphQL integration |
+
+### Supporting Packages
+
+| Package | Purpose |
+|---------|---------|
+| `@mindware-blog/emails` | Email templates (Resend) |
+| `@mindware-blog/tsconfig` | Shared TypeScript configs |
+| `@mindware-blog/eslint-config-custom` | ESLint configuration |
+
+## Getting Started
+
+### Running All Apps
+
+```bash
+# From repository root
+pnpm dev
+
+# All apps start in parallel
+# Site: http://localhost:3000
+# Dashboard: http://localhost:3001
+# Docs: http://localhost:3002 (if configured)
+```
+
+### Running Specific App
+
+```bash
+# Site only
+pnpm dev --filter=@mindware-blog/site
+
+# Dashboard only
+pnpm dev --filter=@mindware-blog/dashboard
+```
+
+## Development Workflow
+
+### Making Changes to Apps
+
+```bash
+# Navigate to app
+cd apps/site
+
+# Make changes
+# Hot reload will update automatically
+
+# Run tests
+pnpm test
+
+# Build
+pnpm build
+```
+
+### Making Changes to Packages
+
+```bash
+# Navigate to package
+cd packages/ui
+
+# Make changes to component
+# All apps using this component will update
+
+# Test package
+pnpm test
+
+# Typecheck
+pnpm typecheck
+```
+
+## Inter-Package Dependencies
+
+Apps depend on packages, packages depend on each other:
+
+```json
+// apps/site/package.json
+{
+  "dependencies": {
+    "@mindware-blog/ui": "workspace:*",
+    "@mindware-blog/lib": "workspace:*",
+    "@mindware-blog/utils": "workspace:*",
+    "@mindware-blog/hashnode": "workspace:*"
+  }
+}
+```
+
+```json
+// packages/ui/package.json
+{
+  "dependencies": {
+    "@mindware-blog/utils": "workspace:*"
+  }
+}
+```
+
+## Building for Production
+
+```bash
+# Build all apps and packages
+pnpm build
+
+# Build specific app
+pnpm build --filter=@mindware-blog/site
+
+# Build output
+apps/site/.next/        # Next.js build
+apps/dashboard/.next/   # Next.js build
+```
+
+## Environment Variables
+
+Each app has its own environment configuration:
+
+```
+apps/
+├── site/
+│   ├── .env.local          # Site environment
+│   └── .env.example        # Template
+├── dashboard/
+│   ├── .env.local          # Dashboard environment
+│   └── .env.example        # Template
+└── docs/
+    ├── .env.local          # Docs environment
+    └── .env.example        # Template
+```
+
+See [Environment Configuration](/docs/getting-started/environment) for details.
+
+## Next Steps
+
+Explore specific apps and packages:
+
+- [Site App](/docs/apps-packages/site) - Public portfolio
+- [Dashboard App](/docs/apps-packages/dashboard) - Admin panel
+- [Shared Packages](/docs/apps-packages/shared-packages) - Package details
+- [UI Components](/docs/apps-packages/ui-components) - Component library
+
+<Note>
+For detailed package information, see [Package System](/docs/developer-guide/packages) in the Developer Guide.
+</Note>

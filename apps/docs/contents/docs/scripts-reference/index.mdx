@@ -1,0 +1,307 @@
+---
+title: Scripts Reference
+description: PowerShell automation scripts for Portfolio OS development and operations
+---
+
+# Scripts Reference
+
+Portfolio OS includes a comprehensive suite of PowerShell automation scripts for development workflow, project management, and operations.
+
+<Note type="success">
+All scripts are located in the `scripts/` directory and use PowerShell for cross-platform compatibility.
+</Note>
+
+## Script Categories
+
+<CardGrid>
+  <Card 
+    href="/docs/scripts-reference/agent-management" 
+    title="Agent Management" 
+    description="Multi-agent development system setup and coordination" 
+  />
+  <Card 
+    href="/docs/scripts-reference/pr-management" 
+    title="PR Management" 
+    description="Pull request automation, analysis, and quality checks" 
+  />
+  <Card 
+    href="/docs/scripts-reference/issue-management" 
+    title="Issue Management" 
+    description="GitHub issue automation, triage, and pipeline management" 
+  />
+  <Card 
+    href="/docs/scripts-reference/core-utilities" 
+    title="Core Utilities" 
+    description="Essential utilities for GitHub, documentation, and AI services" 
+  />
+  <Card 
+    href="/docs/scripts-reference/automation" 
+    title="Automation Scripts" 
+    description="CI/CD automation, monitoring, and workflow orchestration" 
+  />
+  <Card 
+    href="/docs/scripts-reference/overview" 
+    title="Complete Overview" 
+    description="Full catalog of all available scripts" 
+  />
+</CardGrid>
+
+## Quick Start
+
+### Prerequisites
+
+| Requirement | Purpose |
+|-------------|---------|
+| PowerShell 7+ | Script execution engine |
+| GitHub CLI (`gh`) | GitHub API operations |
+| Git | Version control operations |
+| Node.js & PNPM | For build operations |
+
+### Basic Usage
+
+```powershell
+# Navigate to scripts directory
+cd scripts/category-name
+
+# View help
+Get-Help .\script-name.ps1 -Full
+
+# Execute script
+.\script-name.ps1 -Parameter Value
+```
+
+## Common Workflows
+
+### 1. Create and Manage PR
+
+```powershell
+# Create PR automatically
+.\pr-management\automate-pr-unified.ps1 `
+  -Title "feat: add dark mode" `
+  -Body "Implements dark mode toggle"
+
+# Analyze PR quality
+.\pr-management\pr-quality-checker.ps1 -PRNumber 123
+
+# Monitor PR status
+.\pr-management\pr-monitor.ps1
+```
+
+### 2. Multi-Agent Development
+
+```powershell
+# Setup agent worktree
+.\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+
+# Start multi-agent workflow
+.\agent-management\start-multi-agent-e2e-unified.ps1 `
+  -NumAgents 2 `
+  -Tasks "Implement feature A", "Implement feature B"
+
+# Update agent status
+.\agent-management\update-agent-status.ps1 -AgentName "agent-1" -Status "in-progress"
+```
+
+### 3. Documentation Updates
+
+```powershell
+# Update docs for PR
+.\core-utilities\docs-updater.ps1 `
+  -PRNumber 123 `
+  -UpdateChangelog `
+  -GenerateDocs
+
+# Generate full changelog
+.\documentation\generate-full-changelog.ps1
+```
+
+### 4. Project Management
+
+```powershell
+# Update project fields
+.\project-management\manage-projects.ps1 `
+  -Action update `
+  -IssueNumber 123 `
+  -Status "In Progress"
+
+# Create release
+.\project-management\create-release.ps1 -Version "1.2.0"
+```
+
+## Script Directory Structure
+
+```
+scripts/
+├── agent-management/         # Multi-agent development
+│   ├── setup-agent-development.ps1
+│   ├── manage-multi-agent-system.ps1
+│   └── start-multi-agent-e2e-unified.ps1
+│
+├── pr-management/           # PR automation
+│   ├── automate-pr-unified.ps1
+│   ├── pr-quality-checker.ps1
+│   └── pr-analyzer.ps1
+│
+├── issue-management/        # Issue automation
+│   ├── management/
+│   ├── analysis/
+│   └── implementation/
+│
+├── core-utilities/          # Essential tools
+│   ├── get-github-utilities.ps1
+│   ├── docs-updater.ps1
+│   └── manage-ai-services.ps1
+│
+├── project-management/      # Project operations
+│   ├── manage-projects.ps1
+│   ├── create-release.ps1
+│   └── backfill-project-fields.ps1
+│
+├── monitoring/              # System monitoring
+│   ├── real-time-dashboard.ps1
+│   ├── performance-analyzer.ps1
+│   └── automation-metrics.ps1
+│
+├── housekeeping/           # Maintenance
+│   ├── clean-house-main.ps1
+│   └── clean-folder-intelligent.ps1
+│
+└── branch-management/       # Git operations
+    ├── create-branch-from-develop.ps1
+    └── manage-branches.ps1
+```
+
+## Configuration
+
+### Environment Variables
+
+Scripts use these environment variables:
+
+```powershell
+# GitHub token (required for API access)
+$env:GITHUB_TOKEN = "ghp_..."
+
+# OpenAI API key (for AI-powered features)
+$env:OPENAI_API_KEY = "sk-..."
+
+# Repository information
+$env:GITHUB_REPOSITORY = "jschibelli/portfolio-os"
+```
+
+### GitHub CLI
+
+Ensure GitHub CLI is authenticated:
+
+```powershell
+gh auth status
+
+# If not authenticated
+gh auth login
+```
+
+## Error Handling
+
+All scripts include comprehensive error handling:
+
+```powershell
+# Scripts check prerequisites
+if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+    Write-Error "GitHub CLI not installed"
+    exit 1
+}
+
+# Dry run mode available
+.\script-name.ps1 -DryRun
+```
+
+## Common Parameters
+
+Most scripts support these parameters:
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `-DryRun` | Switch | Preview changes without executing |
+| `-Verbose` | Switch | Show detailed output |
+| `-Force` | Switch | Skip confirmations |
+| `-Help` | Switch | Show help information |
+
+## Best Practices
+
+<Note type="warning">
+**Script Execution Tips:**
+
+1. Always review script help with `Get-Help` first
+2. Use `-DryRun` to preview changes
+3. Check GitHub CLI authentication before running
+4. Review output logs for errors
+5. Use `-Verbose` for debugging
+</Note>
+
+## Advanced Features
+
+### 1. Retry Logic
+
+Scripts include automatic retry for API calls:
+
+```powershell
+# Automatically retries on failure
+$prInfo = Get-PRInfo -PRNumber "123" -MaxRetries 3
+```
+
+### 2. Caching
+
+Common operations are cached:
+
+```powershell
+# Repository info is cached
+$repo = Get-RepoInfo # Cached after first call
+```
+
+### 3. Logging
+
+Comprehensive logging to track operations:
+
+```powershell
+# Logs saved to logs/
+.\script-name.ps1 # Creates logs/script-name-YYYY-MM-DD.log
+```
+
+## Troubleshooting
+
+### Script Won't Run
+
+```powershell
+# Check execution policy
+Get-ExecutionPolicy
+
+# If restricted, allow scripts
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+### API Rate Limits
+
+```powershell
+# Check rate limit
+gh api rate_limit
+
+# Use personal access token with higher limits
+$env:GITHUB_TOKEN = "your-token"
+```
+
+### Module Not Found
+
+```powershell
+# Install required modules
+Install-Module -Name SomeModule -Scope CurrentUser
+```
+
+## Next Steps
+
+- [Agent Management](/docs/scripts-reference/agent-management) - Setup multi-agent development
+- [PR Management](/docs/scripts-reference/pr-management) - Automate pull requests
+- [Core Utilities](/docs/scripts-reference/core-utilities) - Essential tools
+
+<Note>
+For detailed information on each script category, explore the links above. Each page includes usage examples and parameters.
+</Note>
+

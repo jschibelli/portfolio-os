@@ -1,0 +1,656 @@
+---
+title: Package System
+description: Working with shared packages in Portfolio OS
+---
+
+# Package System
+
+Portfolio OS uses shared packages to promote code reuse and maintain consistency across applications.
+
+## Package Overview
+
+<CardGrid>
+  <Card title="UI" description="Shared React components with Radix UI primitives" />
+  <Card title="Lib" description="Business logic, API clients, and services" />
+  <Card title="Utils" description="Pure utility functions and helpers" />
+  <Card title="DB" description="Prisma schema and database client" />
+  <Card title="Hashnode" description="Hashnode API integration" />
+  <Card title="Emails" description="Transactional email templates" />
+</CardGrid>
+
+## UI Package
+
+**Location**: `packages/ui`
+
+Shared React components built with Radix UI and Tailwind CSS.
+
+### Structure
+
+<FileTree>
+  <Folder name="ui" defaultOpen>
+    <Folder name="src" defaultOpen>
+      <File name="button.tsx" />
+      <File name="card.tsx" />
+      <File name="dialog.tsx" />
+      <File name="input.tsx" />
+      <File name="select.tsx" />
+      <File name="toast.tsx" />
+      <File name="index.ts" />
+    </Folder>
+    <File name="package.json" />
+    <File name="tsconfig.json" />
+  </Folder>
+</FileTree>
+
+### Example Component
+
+```tsx title="packages/ui/src/button.tsx"
+import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, ...props }, ref) => {
+    return (
+      <button
+        className={buttonVariants({ variant, size, className })}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Button.displayName = "Button"
+```
+
+### Usage
+
+```tsx title="apps/site/components/Hero.tsx"
+import { Button } from "@mindware-blog/ui"
+
+export function Hero() {
+  return (
+    <div>
+      <h1>Welcome</h1>
+      <Button variant="default" size="lg">
+        Get Started
+      </Button>
+      <Button variant="outline">
+        Learn More
+      </Button>
+    </div>
+  )
+}
+```
+
+### Available Components
+
+| Component | Description | Primitives |
+|-----------|-------------|------------|
+| `Button` | Accessible button with variants | - |
+| `Card` | Content container | - |
+| `Dialog` | Modal dialogs | Radix Dialog |
+| `DropdownMenu` | Contextual menus | Radix Dropdown |
+| `Input` | Form input | - |
+| `Select` | Dropdown select | Radix Select |
+| `Tabs` | Tab navigation | Radix Tabs |
+| `Toast` | Notifications | Radix Toast |
+
+## Lib Package
+
+**Location**: `packages/lib`
+
+Business logic, API clients, and service integrations.
+
+### Structure
+
+<FileTree>
+  <Folder name="lib" defaultOpen>
+    <Folder name="src" defaultOpen>
+      <Folder name="hashnode">
+        <File name="client.ts" />
+        <File name="queries.ts" />
+        <File name="types.ts" />
+      </Folder>
+      <Folder name="openai">
+        <File name="client.ts" />
+        <File name="image.ts" />
+      </Folder>
+      <Folder name="email">
+        <File name="send.ts" />
+        <File name="templates.ts" />
+      </Folder>
+      <Folder name="cache">
+        <File name="redis.ts" />
+      </Folder>
+      <File name="index.ts" />
+    </Folder>
+    <File name="package.json" />
+  </Folder>
+</FileTree>
+
+### Example: Hashnode Client
+
+```ts title="packages/lib/src/hashnode/client.ts"
+const HASHNODE_API_URL = "https://gql.hashnode.com"
+
+export interface Post {
+  id: string
+  title: string
+  slug: string
+  brief: string
+  content: { html: string }
+  publishedAt: string
+}
+
+export async function getAllPosts(): Promise<Post[]> {
+  const query = `
+    query GetPosts($host: String!) {
+      publication(host: $host) {
+        posts(first: 20) {
+          edges {
+            node {
+              id
+              title
+              slug
+              brief
+              content { html }
+              publishedAt
+            }
+          }
+        }
+      }
+    }
+  `
+  
+  const response = await fetch(HASHNODE_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query,
+      variables: {
+        host: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST,
+      },
+    }),
+  })
+  
+  const data = await response.json()
+  return data.data.publication.posts.edges.map((edge: any) => edge.node)
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  // Implementation
+}
+```
+
+### Example: Cache Service
+
+```ts title="packages/lib/src/cache/redis.ts"
+import { Redis } from "@upstash/redis"
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+export async function getCached<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl: number = 3600
+): Promise<T> {
+  // Try to get from cache
+  const cached = await redis.get<T>(key)
+  if (cached) return cached
+  
+  // Fetch fresh data
+  const data = await fetcher()
+  
+  // Cache it
+  await redis.setex(key, ttl, JSON.stringify(data))
+  
+  return data
+}
+```
+
+### Usage
+
+```tsx title="apps/site/app/blog/page.tsx"
+import { getAllPosts } from "@mindware-blog/lib/hashnode"
+import { getCached } from "@mindware-blog/lib/cache"
+
+export default async function BlogPage() {
+  const posts = await getCached(
+    "blog:posts:all",
+    () => getAllPosts(),
+    3600 // 1 hour
+  )
+  
+  return (
+    <div>
+      {posts.map(post => (
+        <PostCard key={post.id} post={post} />
+      ))}
+    </div>
+  )
+}
+```
+
+## Utils Package
+
+**Location**: `packages/utils`
+
+Pure utility functions without external dependencies.
+
+### Structure
+
+<FileTree>
+  <Folder name="utils" defaultOpen>
+    <Folder name="src" defaultOpen>
+      <File name="cn.ts" />
+      <File name="format.ts" />
+      <File name="slugify.ts" />
+      <File name="truncate.ts" />
+      <File name="index.ts" />
+    </Folder>
+    <File name="package.json" />
+  </Folder>
+</FileTree>
+
+### Example Utilities
+
+<Tabs defaultValue="cn">
+  <TabsList>
+    <TabsTrigger value="cn">cn()</TabsTrigger>
+    <TabsTrigger value="format">formatDate()</TabsTrigger>
+    <TabsTrigger value="slugify">slugify()</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="cn">
+    ```ts title="packages/utils/src/cn.ts"
+    import { clsx, type ClassValue } from "clsx"
+    import { twMerge } from "tailwind-merge"
+    
+    /**
+     * Merge Tailwind CSS classes
+     */
+    export function cn(...inputs: ClassValue[]) {
+      return twMerge(clsx(inputs))
+    }
+    ```
+    
+    **Usage:**
+    ```tsx
+    <div className={cn(
+      "base-class",
+      isActive && "active-class",
+      className
+    )} />
+    ```
+  </TabsContent>
+  
+  <TabsContent value="format">
+    ```ts title="packages/utils/src/format.ts"
+    /**
+     * Format date for display
+     */
+    export function formatDate(date: Date | string): string {
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(new Date(date))
+    }
+    
+    /**
+     * Format relative time
+     */
+    export function formatRelativeTime(date: Date | string): string {
+      const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" })
+      const now = new Date()
+      const then = new Date(date)
+      const diffInDays = Math.floor((then.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      
+      return rtf.format(diffInDays, "day")
+    }
+    ```
+    
+    **Usage:**
+    ```tsx
+    <time>{formatDate(post.publishedAt)}</time>
+    <span>{formatRelativeTime(post.publishedAt)}</span>
+    ```
+  </TabsContent>
+  
+  <TabsContent value="slugify">
+    ```ts title="packages/utils/src/slugify.ts"
+    /**
+     * Convert string to URL-safe slug
+     */
+    export function slugify(text: string): string {
+      return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_-]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+    }
+    ```
+    
+    **Usage:**
+    ```tsx
+    const slug = slugify("Hello World! 123") // "hello-world-123"
+    ```
+  </TabsContent>
+</Tabs>
+
+## DB Package
+
+**Location**: `packages/db`
+
+Prisma schema and database client for the dashboard.
+
+### Structure
+
+<FileTree>
+  <Folder name="db" defaultOpen>
+    <Folder name="prisma">
+      <File name="schema.prisma" />
+    </Folder>
+    <Folder name="src">
+      <File name="index.ts" />
+    </Folder>
+    <File name="package.json" />
+  </Folder>
+</FileTree>
+
+### Schema
+
+```typescript title="packages/db/prisma/schema.prisma"
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
+}
+```
+
+### Client Export
+
+```ts title="packages/db/src/index.ts"
+import { PrismaClient } from "@prisma/client"
+
+declare global {
+  var prisma: PrismaClient | undefined
+}
+
+export const prisma = global.prisma || new PrismaClient()
+
+if (process.env.NODE_ENV !== "production") {
+  global.prisma = prisma
+}
+```
+
+### Usage
+
+```ts title="apps/dashboard/lib/posts.ts"
+import { prisma } from "@mindware-blog/db"
+
+export async function getPosts() {
+  return await prisma.post.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+  })
+}
+
+export async function createPost(data: {
+  title: string
+  content: string
+  slug: string
+}) {
+  return await prisma.post.create({ data })
+}
+```
+
+## Hashnode Package
+
+**Location**: `packages/hashnode`
+
+Dedicated Hashnode API integration.
+
+```ts title="packages/hashnode/src/index.ts"
+export { getAllPosts, getPostBySlug } from "./client"
+export type { Post, Author, Publication } from "./types"
+export { GET_ALL_POSTS_QUERY, GET_POST_QUERY } from "./queries"
+```
+
+## Creating a New Package
+
+<Tabs defaultValue="structure">
+  <TabsList>
+    <TabsTrigger value="structure">File Structure</TabsTrigger>
+    <TabsTrigger value="package">package.json</TabsTrigger>
+    <TabsTrigger value="export">Exports</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="structure">
+    ```bash
+    # Create directory
+    mkdir -p packages/my-package/src
+    cd packages/my-package
+    
+    # Create files
+    touch package.json
+    touch tsconfig.json
+    touch src/index.ts
+    ```
+    
+    <FileTree>
+      <Folder name="my-package">
+        <Folder name="src">
+          <File name="index.ts" />
+          <File name="feature.ts" />
+        </Folder>
+        <File name="package.json" />
+        <File name="tsconfig.json" />
+        <File name="README.md" />
+      </Folder>
+    </FileTree>
+  </TabsContent>
+  
+  <TabsContent value="package">
+    ```json title="packages/my-package/package.json"
+    {
+      "name": "@mindware-blog/my-package",
+      "version": "0.1.0",
+      "main": "./src/index.ts",
+      "types": "./src/index.ts",
+      "exports": {
+        ".": "./src/index.ts"
+      },
+      "scripts": {
+        "lint": "eslint src/",
+        "typecheck": "tsc --noEmit"
+      },
+      "dependencies": {
+        "@mindware-blog/utils": "workspace:*"
+      },
+      "devDependencies": {
+        "typescript": "^5.3.3"
+      }
+    }
+    ```
+  </TabsContent>
+  
+  <TabsContent value="export">
+    ```ts title="packages/my-package/src/index.ts"
+    // Export everything
+    export { feature } from "./feature"
+    export type { FeatureOptions } from "./types"
+    ```
+    
+    **Usage in apps:**
+    ```ts
+    import { feature } from "@mindware-blog/my-package"
+    ```
+  </TabsContent>
+</Tabs>
+
+## Package Best Practices
+
+### 1. Single Responsibility
+
+Each package should do one thing well:
+
+- **UI**: Only React components
+- **Lib**: Business logic and API clients
+- **Utils**: Pure functions only
+
+### 2. Minimal Dependencies
+
+Keep packages lightweight:
+
+```json
+{
+  "dependencies": {
+    // Only essential dependencies
+    "@mindware-blog/utils": "workspace:*"
+  }
+}
+```
+
+### 3. Proper Exports
+
+Export only public APIs:
+
+```ts
+// ✅ Good
+export { Button } from "./button"
+export type { ButtonProps } from "./button"
+
+// ❌ Bad - don't export internal helpers
+export { internalHelper } from "./internal"
+```
+
+### 4. Type Safety
+
+Provide comprehensive types:
+
+```ts
+export interface UserService {
+  getUser(id: string): Promise<User>
+  updateUser(id: string, data: Partial<User>): Promise<User>
+}
+```
+
+### 5. Documentation
+
+Document public APIs with JSDoc:
+
+```ts
+/**
+ * Formats a date for display
+ * @param date - Date to format
+ * @returns Formatted date string
+ */
+export function formatDate(date: Date): string {
+  // Implementation
+}
+```
+
+## Versioning
+
+Packages use `workspace:*` protocol, so versioning is managed at the monorepo level.
+
+When releasing:
+
+1. Update root `package.json` version
+2. Create git tag
+3. Deploy apps
+
+No need to publish packages to npm unless making them public.
+
+## Testing Packages
+
+```tsx title="packages/ui/__tests__/button.test.tsx"
+import { render, screen } from "@testing-library/react"
+import { Button } from "../src/button"
+
+describe("Button", () => {
+  it("renders correctly", () => {
+    render(<Button>Click me</Button>)
+    expect(screen.getByText("Click me")).toBeInTheDocument()
+  })
+})
+```
+
+Run tests:
+
+```bash
+# Test specific package
+pnpm test --filter=@mindware-blog/ui
+
+# Test all packages
+pnpm test --filter="./packages/*"
+```
+
+## Next Steps
+
+- [Monorepo Structure](/docs/developer-guide/monorepo) - Understand workspace organization
+- [Development Workflow](/docs/developer-guide/workflow) - Learn the process
+- [API Reference](/docs/api-reference/rest-api) - Explore APIs
+
+<Note>
+Well-structured packages are the foundation of a maintainable monorepo. Keep them focused, documented, and tested.
+</Note>
+

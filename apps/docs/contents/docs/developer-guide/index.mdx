@@ -1,0 +1,196 @@
+---
+title: Developer Guide
+description: Comprehensive guide for developers working on Portfolio OS
+---
+
+# Developer Guide
+
+Welcome to the Portfolio OS Developer Guide. This comprehensive resource covers everything you need to know to contribute effectively to the project.
+
+## Overview
+
+Portfolio OS is a modern, production-grade monorepo built with Next.js, TypeScript, and Turborepo. It powers a complete portfolio ecosystem including a public site, admin dashboard, and shared component libraries.
+
+<Note type="success">
+This guide assumes you've completed the [Getting Started](/docs/getting-started) section and have a working development environment.
+</Note>
+
+## Quick Navigation
+
+<CardGrid>
+  <Card 
+    href="/docs/developer-guide/architecture" 
+    title="Architecture Overview" 
+    description="Understand the system architecture, tech stack, and design patterns" 
+  />
+  <Card 
+    href="/docs/developer-guide/workflow" 
+    title="Development Workflow" 
+    description="Learn about branching strategy, commits, and pull requests" 
+  />
+  <Card 
+    href="/docs/developer-guide/standards" 
+    title="Coding Standards" 
+    description="Follow TypeScript, React, and styling best practices" 
+  />
+  <Card 
+    href="/docs/developer-guide/monorepo" 
+    title="Monorepo Structure" 
+    description="Navigate the workspace organization and Turborepo setup" 
+  />
+  <Card 
+    href="/docs/developer-guide/packages" 
+    title="Package System" 
+    description="Work with shared packages and create new ones" 
+  />
+</CardGrid>
+
+## Technology Stack at a Glance
+
+| Category | Technologies |
+|----------|-------------|
+| **Framework** | Next.js 14 App Router, React 18 |
+| **Language** | TypeScript 5.3+ |
+| **Styling** | Tailwind CSS, Radix UI, Lucide Icons |
+| **Database** | Prisma ORM, SQLite (dev), PostgreSQL (prod) |
+| **Storage** | Vercel Blob, Upstash Redis |
+| **AI/Services** | OpenAI, Resend, Hashnode API |
+| **Monorepo** | Turborepo, PNPM Workspaces |
+| **Testing** | Jest, React Testing Library, Playwright |
+| **Deployment** | Vercel, GitHub Actions |
+
+## Core Principles
+
+Portfolio OS follows these development principles:
+
+### 1. Type Safety First
+
+- Strict TypeScript configuration across all packages
+- No `any` types without explicit justification
+- Comprehensive type coverage for API responses
+
+### 2. Component Reusability
+
+- Shared UI components in `packages/ui`
+- Business logic in `packages/lib`
+- Utilities in `packages/utils`
+
+### 3. Performance Optimization
+
+- Server Components by default
+- Strategic client-side rendering
+- Redis caching for expensive operations
+- Image optimization with Next.js Image
+
+### 4. Developer Experience
+
+- Fast development with Turbo
+- Hot Module Replacement (HMR)
+- Comprehensive error messages
+- Automated code quality checks
+
+### 5. Automation
+
+- PowerShell scripts for common tasks
+- GitHub Actions for CI/CD
+- Automated PR management
+- Multi-agent development support
+
+## Project Structure Highlights
+
+```
+portfolio-os/
+├── apps/
+│   ├── site/           # Public portfolio (localhost:3000)
+│   ├── dashboard/      # Admin dashboard (localhost:3001)
+│   └── docs/           # Documentation site (localhost:3002)
+│
+├── packages/
+│   ├── ui/             # Shared React components
+│   ├── lib/            # Business logic & services
+│   ├── utils/          # Utility functions
+│   ├── db/             # Prisma schema & client
+│   ├── hashnode/       # Hashnode API integration
+│   ├── emails/         # Email templates
+│   └── tsconfig/       # Shared TypeScript configs
+│
+├── scripts/            # PowerShell automation
+│   ├── agent-management/
+│   ├── pr-management/
+│   ├── issue-management/
+│   └── core-utilities/
+│
+└── docs/              # Technical documentation
+    ├── setup/
+    ├── automation/
+    ├── api/
+    └── troubleshooting/
+```
+
+## Development Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all apps in development mode |
+| `pnpm dev --filter=@mindware-blog/site` | Start only the site app |
+| `pnpm build` | Build all packages and apps |
+| `pnpm lint` | Run ESLint across workspace |
+| `pnpm test` | Run all test suites |
+| `pnpm typecheck` | Type check all TypeScript code |
+| `pnpm format` | Format code with Prettier |
+
+## Working with the Monorepo
+
+### Understanding Turborepo
+
+Turborepo orchestrates builds and tests across the monorepo:
+
+- **Caching**: Build outputs are cached for speed
+- **Parallelization**: Tasks run in parallel when possible
+- **Dependencies**: Automatically builds dependencies first
+
+### PNPM Workspaces
+
+Packages are linked using PNPM workspaces:
+
+```json
+{
+  "dependencies": {
+    "@mindware-blog/ui": "workspace:*",
+    "@mindware-blog/lib": "workspace:*"
+  }
+}
+```
+
+The `workspace:*` protocol links to the local package.
+
+## Best Practices
+
+<Note type="warning">
+**Critical Guidelines:**
+
+1. Always run tests before submitting PRs
+2. Follow the commit convention (see [Workflow](/docs/developer-guide/workflow))
+3. Update documentation when adding features
+4. Review TypeScript errors - don't ignore them
+5. Test both site and dashboard apps when changing shared packages
+</Note>
+
+## Getting Help
+
+- **Architecture Questions**: See [Architecture Overview](/docs/developer-guide/architecture)
+- **Code Issues**: Check [Troubleshooting](/docs/troubleshooting/common-issues)
+- **Setup Problems**: Review [Installation Guide](/docs/getting-started/installation)
+- **Multi-Agent Dev**: Explore [Multi-Agent System](/docs/multi-agent/architecture)
+
+## Next Steps
+
+1. **New to the project?** Start with [Architecture Overview](/docs/developer-guide/architecture)
+2. **Ready to contribute?** Review [Development Workflow](/docs/developer-guide/workflow)
+3. **Building features?** Check [Coding Standards](/docs/developer-guide/standards)
+4. **Working with packages?** See [Package System](/docs/developer-guide/packages)
+
+<Note>
+This developer guide is continuously updated. If you find gaps or inaccuracies, please open an issue or submit a PR!
+</Note>
+

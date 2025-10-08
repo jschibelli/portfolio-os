@@ -87,6 +87,24 @@
         "**/assets/**"
       ]
     },
+    "@portfolio/docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "cache": true,
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.json",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.md",
+        "**/*.mdx",
+        "**/public/**",
+        "**/assets/**"
+      ]
+    },
     "@mindware-blog/chatbot#build": {
       "outputs": [],
       "cache": true

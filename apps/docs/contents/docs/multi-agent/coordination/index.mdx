@@ -1,0 +1,348 @@
+---
+title: Agent Coordination
+description: Strategies for coordinating multiple agents effectively
+---
+
+# Agent Coordination
+
+Learn how to effectively coordinate multiple AI agents working in parallel.
+
+## Coordination Strategies
+
+### Task Assignment Strategies
+
+#### 1. By Feature Boundaries
+
+Assign complete features to agents:
+
+```json
+{
+  "agent-1": ["User Authentication System"],
+  "agent-2": ["Blog Comment System"],
+  "agent-3": ["Analytics Dashboard"]
+}
+```
+
+**Pros**: Clear ownership, minimal conflicts
+**Cons**: Uneven workload
+
+#### 2. By Component Layer
+
+Divide by architectural layer:
+
+```json
+{
+  "agent-1": ["Frontend Components"],
+  "agent-2": ["API Routes"],
+  "agent-3": ["Database Schema"]
+}
+```
+
+**Pros**: Specialized work
+**Cons**: Requires coordination for integration
+
+#### 3. By Priority
+
+Assign by urgency:
+
+```json
+{
+  "agent-1": ["Critical Bug Fixes"],
+  "agent-2": ["High Priority Features"],
+  "agent-3": ["Nice-to-Have Enhancements"]
+}
+```
+
+**Pros**: Focuses on important work
+**Cons**: May cause conflicts if priorities overlap
+
+## Coordination Patterns
+
+### Pattern 1: Independent Parallel
+
+Agents work on completely separate features.
+
+<Mermaid chart={`gantt
+    title Independent Parallel Development
+    dateFormat YYYY-MM-DD
+    section Agent 1
+    Feature A :a1, 2025-10-01, 3d
+    section Agent 2
+    Feature B :a2, 2025-10-01, 3d
+    section Agent 3
+    Feature C :a3, 2025-10-01, 3d`} />
+
+**Use when**: Features are completely independent
+
+### Pattern 2: Sequential Handoff
+
+One agent completes work before next begins.
+
+<Mermaid chart={`gantt
+    title Sequential Handoff
+    dateFormat YYYY-MM-DD
+    section Agent 1
+    API Design :a1, 2025-10-01, 2d
+    section Agent 2
+    Frontend Integration :after a1, 2d
+    section Agent 3
+    Testing & Polish :after a2, 2d`} />
+
+**Use when**: Work has dependencies
+
+### Pattern 3: Parallel with Sync Points
+
+Agents sync periodically.
+
+<Mermaid chart={`gantt
+    title Parallel with Sync
+    dateFormat YYYY-MM-DD
+    section Agent 1
+    Component A :a1, 2025-10-01, 2d
+    Sync :milestone, m1, after a1, 0d
+    Integrate :a1b, after m1, 1d
+    section Agent 2
+    Component B :a2, 2025-10-01, 2d
+    Sync :milestone, m2, after a2, 0d
+    Integrate :a2b, after m2, 1d`} />
+
+**Use when**: Features need periodic integration
+
+## Communication Protocols
+
+### Status Updates
+
+Agents should update status regularly:
+
+```powershell
+# Update status
+.\scripts\agent-management\update-agent-status.ps1 `
+  -AgentName "agent-1" `
+  -Status "in-progress" `
+  -Progress 60 `
+  -Notes "Authentication flow complete, working on UI"
+```
+
+### Dependency Declaration
+
+Declare dependencies upfront:
+
+```json
+{
+  "agent-1": {
+    "task": "Frontend Auth UI",
+    "dependsOn": ["agent-2:auth-api"]
+  },
+  "agent-2": {
+    "task": "Auth API",
+    "blocks": ["agent-1:auth-ui"]
+  }
+}
+```
+
+### Conflict Prevention
+
+Strategies to prevent conflicts:
+
+1. **File ownership**: Assign specific files to agents
+2. **Module boundaries**: Work in different packages
+3. **Regular rebasing**: Sync with develop frequently
+4. **Communication**: Discuss overlapping work
+
+## Coordination Tools
+
+### Agent Configuration File
+
+**scripts/configuration/agent-assignment-config.json**
+
+```json
+{
+  "agents": [
+    {
+      "name": "agent-1",
+      "displayName": "Chris",
+      "role": "Frontend",
+      "worktreePath": "worktrees/agent-1-chris",
+      "branch": "chris-frontend-work",
+      "tasks": [266, 268],
+      "status": "in-progress",
+      "dependencies": [],
+      "blockedBy": []
+    }
+  ],
+  "coordination": {
+    "syncSchedule": "daily",
+    "conflictStrategy": "manual-review",
+    "mergeOrder": ["agent-2", "agent-1"]
+  }
+}
+```
+
+### Worktree State Tracking
+
+**scripts/configuration/worktree-state.json**
+
+```json
+{
+  "worktrees": [
+    {
+      "path": "worktrees/agent-1-chris",
+      "branch": "chris-frontend-work",
+      "lastSync": "2025-10-08T14:30:00Z",
+      "commitsAhead": 5,
+      "commitsBehind": 2,
+      "uncommittedChanges": false,
+      "needsRebase": true
+    }
+  ]
+}
+```
+
+### Coordination Scripts
+
+```powershell
+# Check all agent status
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
+
+# Sync all agents with develop
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action sync
+
+# Detect conflicts
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action check-conflicts
+```
+
+## Handling Conflicts
+
+### When Conflicts Occur
+
+<Step>
+  <StepItem title="Detection">
+    System detects potential conflict during rebase or merge.
+  </StepItem>
+
+  <StepItem title="Notification">
+    Alert relevant agents or human operator.
+  </StepItem>
+
+  <StepItem title="Analysis">
+    Review conflicting changes:
+    ```powershell
+    git diff agent-1..agent-2 --name-only
+    ```
+  </StepItem>
+
+  <StepItem title="Resolution">
+    Options:
+    - Manual resolution
+    - Prioritize one agent's changes
+    - Merge both with adjustments
+  </StepItem>
+
+  <StepItem title="Verification">
+    Run tests to ensure resolution is correct.
+  </StepItem>
+</Step>
+
+### Conflict Prevention Strategies
+
+1. **Proactive sync**: Rebase on develop daily
+2. **File locking**: Declare file ownership
+3. **Communication**: Discuss potential overlaps
+4. **Small PRs**: Merge frequently, reduce conflict window
+5. **Module isolation**: Work in separate packages
+
+## Monitoring & Metrics
+
+Track coordination effectiveness:
+
+| Metric | Target | Meaning |
+|--------|--------|---------|
+| Agent utilization | >80% | Time spent on active work |
+| Conflict rate | <5% | PRs with merge conflicts |
+| Average PR size | <300 lines | Smaller = easier to review |
+| Time to merge | <24 hours | Speed of integration |
+| Rebase frequency | Daily | How often synced with develop |
+
+```powershell
+# Generate metrics
+.\scripts\monitoring\automation-metrics.ps1 -Type agent-coordination
+```
+
+## Best Practices
+
+<Note type="success">
+**Coordination Best Practices:**
+
+1. **Daily standups**: Review agent status
+2. **Clear assignments**: No ambiguity in tasks
+3. **Dependency tracking**: Document dependencies
+4. **Regular syncs**: Rebase on develop daily
+5. **Small iterations**: Merge work frequently
+6. **Communication**: Over-communicate potential conflicts
+</Note>
+
+## Advanced Patterns
+
+### Dynamic Task Assignment
+
+Automatically assign tasks based on agent capacity:
+
+```powershell
+.\scripts\agent-management\assign-tasks.ps1 -Mode automatic
+```
+
+### Load Balancing
+
+Distribute work evenly across agents:
+
+```powershell
+.\scripts\agent-management\balance-load.ps1
+```
+
+### Priority Queue
+
+Assign urgent tasks to available agents:
+
+```powershell
+.\scripts\agent-management\priority-queue.ps1
+```
+
+## Troubleshooting
+
+### Agents Out of Sync
+
+```powershell
+# Sync all agents
+cd worktrees/agent-1
+git fetch origin develop
+git rebase develop
+
+cd ../agent-2
+git fetch origin develop
+git rebase develop
+```
+
+### Conflicting PRs
+
+```powershell
+# Determine merge order
+.\scripts\agent-management\determine-merge-order.ps1
+
+# Merge in order, resolve conflicts
+```
+
+### Agent Blocked
+
+```powershell
+# Check dependencies
+.\scripts\agent-management\check-dependencies.ps1 -AgentName "agent-1"
+
+# Reassign if blocked too long
+.\scripts\agent-management\reassign-task.ps1
+```
+
+## Next Steps
+
+- [Worktree Management](/docs/multi-agent/worktree) - Manage Git worktrees
+- [Workflow Automation](/docs/multi-agent/workflow) - Automate workflows
+- [Scripts Reference](/docs/scripts-reference/agent-management) - Available scripts

@@ -1,0 +1,67 @@
+---
+title: Worktree Setup
+description: Git worktree configuration for multi-agent development
+---
+
+# Worktree Setup
+
+Configure Git worktrees for multi-agent parallel development.
+
+## Quick Setup
+
+```powershell
+# Create agent worktree
+.\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+
+# Verify creation
+git worktree list
+```
+
+## Manual Setup
+
+<Step>
+  <StepItem title="Create Worktree Directory">
+    ```bash
+    mkdir -p worktrees
+    ```
+  </StepItem>
+
+  <StepItem title="Add Worktree">
+    ```bash
+    git worktree add -b feature/new-feature worktrees/agent-1 develop
+    ```
+  </StepItem>
+
+  <StepItem title="Install Dependencies">
+    ```bash
+    cd worktrees/agent-1
+    pnpm install
+    ```
+  </StepItem>
+
+  <StepItem title="Configure Environment">
+    ```bash
+    cp ../../apps/site/.env.example apps/site/.env.local
+    # Edit .env.local with API keys
+    ```
+  </StepItem>
+</Step>
+
+## Configuration
+
+See [Worktree Management](/docs/multi-agent/worktree) for comprehensive worktree documentation.
+
+## Cleanup
+
+```bash
+# Remove worktree
+git worktree remove worktrees/agent-1
+
+# Prune references
+git worktree prune
+```
+
+## Next Steps
+
+- [Multi-Agent System](/docs/multi-agent/quick-start) - Get started with multi-agent
+- [Worktree Management](/docs/multi-agent/worktree) - Advanced techniques

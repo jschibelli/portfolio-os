@@ -1,0 +1,142 @@
+---
+title: Deployment Runbook
+description: Production deployment guide for Portfolio OS
+---
+
+# Deployment Runbook
+
+Complete guide for deploying Portfolio OS to production.
+
+## Deployment Platforms
+
+Portfolio OS is optimized for deployment on:
+- **Vercel** (Recommended)
+- **Railway**
+- **Netlify**
+- **Self-hosted**
+
+## Vercel Deployment
+
+<Step>
+  <StepItem title="Connect Repository">
+    1. Go to [vercel.com](https://vercel.com)
+    2. Click "New Project"
+    3. Import your GitHub repository
+  </StepItem>
+
+  <StepItem title="Configure Build Settings">
+    **Site App:**
+    - Framework Preset: Next.js
+    - Root Directory: `apps/site`
+    - Build Command: `cd ../.. && pnpm build --filter=@mindware-blog/site`
+    - Output Directory: `.next`
+    
+    **Dashboard App:**
+    - Root Directory: `apps/dashboard`
+    - Build Command: `cd ../.. && pnpm build --filter=@mindware-blog/dashboard`
+  </StepItem>
+
+  <StepItem title="Set Environment Variables">
+    Add all required environment variables in Vercel dashboard:
+    
+    ```
+    NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=yourblog.hashnode.dev
+    OPENAI_API_KEY=sk-...
+    RESEND_API_KEY=re_...
+    UPSTASH_REDIS_REST_URL=https://...
+    UPSTASH_REDIS_REST_TOKEN=...
+    BLOB_READ_WRITE_TOKEN=...
+    DATABASE_URL=postgresql://...
+    ```
+  </StepItem>
+
+  <StepItem title="Deploy">
+    Click "Deploy" and Vercel will:
+    - Install dependencies
+    - Run builds
+    - Deploy to production
+  </StepItem>
+</Step>
+
+## Pre-Deployment Checklist
+
+<Note type="warning">
+**Before deploying, ensure:**
+
+- [ ] All environment variables are configured
+- [ ] Database migrations are ready
+- [ ] API keys are production-ready (not development keys)
+- [ ] Build passes locally (`pnpm build`)
+- [ ] Tests pass (`pnpm test`)
+- [ ] No linting errors (`pnpm lint`)
+- [ ] TypeScript compiles (`pnpm typecheck`)
+</Note>
+
+## Database Migration
+
+```bash
+# Production database
+DATABASE_URL="postgresql://..." pnpm prisma migrate deploy
+```
+
+## Custom Domain
+
+1. Go to Vercel project settings
+2. Click "Domains"
+3. Add your custom domain
+4. Update DNS records as instructed
+
+## Monitoring
+
+### Vercel Analytics
+
+Enable in `next.config.js`:
+
+```js
+module.exports = {
+  analytics: {
+    provider: 'vercel',
+  },
+}
+```
+
+### Error Tracking
+
+Configure Sentry or similar:
+
+```bash
+pnpm add @sentry/nextjs
+```
+
+## Rollback
+
+If deployment fails:
+
+1. Go to Vercel dashboard
+2. Find previous working deployment
+3. Click "Promote to Production"
+
+## CI/CD with GitHub Actions
+
+``yaml
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test
+```
+
+## Next Steps
+
+- [Environment Configuration](/docs/getting-started/environment) - Configure variables
+- [Database Setup](/docs/setup/database) - Database configuration
+- [Caching](/docs/setup/caching) - Cache setup

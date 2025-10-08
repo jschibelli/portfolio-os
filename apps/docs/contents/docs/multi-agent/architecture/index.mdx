@@ -1,0 +1,339 @@
+---
+title: System Architecture
+description: Multi-agent system architecture and technical implementation
+---
+
+# Multi-Agent System Architecture
+
+Deep dive into the technical architecture of Portfolio OS's multi-agent development system.
+
+## Architecture Overview
+
+<Mermaid chart={`graph TB
+    subgraph "File System"
+        MainRepo[Main Repository]
+        Worktree1[Agent 1 Worktree]
+        Worktree2[Agent 2 Worktree]
+    end
+    
+    subgraph "Git Layer"
+        GitDB[.git Database]
+        Branch1[Feature Branch 1]
+        Branch2[Feature Branch 2]
+        Develop[Develop Branch]
+    end
+    
+    subgraph "Coordination Layer"
+        Scripts[PowerShell Scripts]
+        Config[Agent Config]
+        State[Worktree State]
+    end
+    
+    subgraph "Integration"
+        PR1[Pull Request 1]
+        PR2[Pull Request 2]
+        CI[CI/CD Pipeline]
+    end
+    
+    MainRepo -.->|Shares| GitDB
+    Worktree1 -.->|Shares| GitDB
+    Worktree2 -.->|Shares| GitDB
+    
+    Worktree1 --> Branch1
+    Worktree2 --> Branch2
+    
+    Scripts --> Config
+    Scripts --> State
+    Scripts --> Worktree1
+    Scripts --> Worktree2
+    
+    Branch1 --> PR1
+    Branch2 --> PR2
+    PR1 --> CI
+    PR2 --> CI
+    CI --> Develop`} />
+
+## Core Components
+
+### 1. Git Worktrees
+
+Git worktrees are the foundation of the multi-agent system:
+
+```bash
+# Worktree structure
+portfolio-os/.git/                  # Shared Git database
+portfolio-os/worktrees/
+  ├── agent-1-chris/               # Agent 1 workspace
+  │   ├── apps/
+  │   ├── packages/
+  │   └── scripts/
+  └── agent-2-jason/               # Agent 2 workspace
+      ├── apps/
+      ├── packages/
+      └── scripts/
+```
+
+**Key Features:**
+- All worktrees share the same `.git` database
+- Each worktree has its own working directory
+- Each worktree tracks a different branch
+- No duplication of Git history
+
+### 2. Coordination Scripts
+
+PowerShell scripts orchestrate agent workflows:
+
+#### Agent Management Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `setup-agent-development.ps1` | Initialize new agent worktree |
+| `manage-multi-agent-system.ps1` | Start/stop/status of agents |
+| `start-multi-agent-e2e-unified.ps1` | Complete workflow automation |
+| `update-agent-status.ps1` | Update agent work status |
+
+#### Configuration Files
+
+**agent-assignment-config.json**
+```json
+{
+  "agents": [
+    {
+      "name": "agent-1",
+      "displayName": "Chris",
+      "role": "Frontend Specialist",
+      "worktreePath": "worktrees/agent-1-chris",
+      "branch": "chris-automation-frontend",
+      "tasks": [
+        {"id": 266, "title": "Create Issue Implementation System"},
+        {"id": 268, "title": "Create Advanced Analytics"}
+      ],
+      "status": "in-progress"
+    }
+  ]
+}
+```
+
+**worktree-state.json**
+```json
+{
+  "worktrees": [
+    {
+      "path": "worktrees/agent-1-chris",
+      "branch": "chris-automation-frontend",
+      "lastSync": "2025-10-08T10:30:00Z",
+      "uncommittedChanges": false,
+      "behindDevelop": 2
+    }
+  ]
+}
+```
+
+### 3. Task Assignment System
+
+Tasks are assigned based on agent roles:
+
+<Tabs defaultValue="frontend">
+  <TabsList>
+    <TabsTrigger value="frontend">Frontend Agent</TabsTrigger>
+    <TabsTrigger value="backend">Backend Agent</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="frontend">
+    **Frontend Specialist Tasks:**
+    - UI components
+    - User workflows
+    - Client-side logic
+    - Analytics dashboards
+    - User experience features
+  </TabsContent>
+  
+  <TabsContent value="backend">
+    **Backend Specialist Tasks:**
+    - API endpoints
+    - Database operations
+    - Infrastructure
+    - AI service integration
+    - Queue management systems
+  </TabsContent>
+</Tabs>
+
+### 4. State Management
+
+The system tracks multiple state dimensions:
+
+**Agent State:**
+- Current branch
+- Assigned tasks
+- Work progress
+- Dependencies
+
+**Worktree State:**
+- Last sync with develop
+- Uncommitted changes
+- Commits ahead/behind develop
+
+**Task State:**
+- Not started
+- In progress
+- In review
+- Completed
+- Blocked
+
+## Workflow Automation
+
+### Complete E2E Flow
+
+<Step>
+  <StepItem title="Initialization">
+    ```powershell
+    .\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+      -NumAgents 2 `
+      -Tasks "Feature A", "Feature B"
+    ```
+    
+    Creates worktrees, assigns tasks, sets up branches.
+  </StepItem>
+
+  <StepItem title="Development">
+    Agents work in parallel in their isolated worktrees.
+    
+    State is tracked in configuration files.
+  </StepItem>
+
+  <StepItem title="Status Updates">
+    ```powershell
+    .\scripts\agent-management\update-agent-status.ps1 `
+      -AgentName "agent-1" `
+      -Status "in-progress"
+    ```
+  </StepItem>
+
+  <StepItem title="PR Creation">
+    Automated PR creation when agent completes work:
+    
+    ```powershell
+    .\scripts\pr-management\automate-pr-unified.ps1 `
+      -Title "feat(agent-1): implement feature A" `
+      -AgentName "agent-1"
+    ```
+  </StepItem>
+
+  <StepItem title="Integration">
+    PRs are reviewed, approved, and merged to develop.
+    
+    Agent worktree can then be synced or reassigned.
+  </StepItem>
+</Step>
+
+## Technical Implementation
+
+### Worktree Creation
+
+```powershell
+# Create worktree
+git worktree add -b $BranchName $WorktreePath develop
+
+# Configure worktree
+cd $WorktreePath
+git config --local user.name "Agent Name"
+git config --local user.email "agent@example.com"
+
+# Install dependencies
+pnpm install
+```
+
+### State Synchronization
+
+```powershell
+# Sync worktree with develop
+cd $WorktreePath
+git fetch origin develop
+git rebase develop
+
+# Update state file
+$state = Get-Content worktree-state.json | ConvertFrom-Json
+$state.lastSync = Get-Date
+$state | ConvertTo-Json | Set-Content worktree-state.json
+```
+
+### Conflict Resolution
+
+When conflicts occur:
+
+1. **Detection**: Script detects uncommitted changes
+2. **Notification**: Alert agent or human operator
+3. **Resolution**: Manual intervention or automated strategies
+4. **Verification**: Tests pass before proceeding
+
+## Performance Considerations
+
+### Disk Space
+
+Each worktree requires:
+- Working directory: ~100MB
+- Node modules: ~500MB
+- Build artifacts: ~50MB
+
+**Total per agent: ~650MB**
+
+### CPU/Memory
+
+- Each agent can run dev server: ~500MB RAM
+- Build processes: 1-2 CPU cores per agent
+- Recommended: 8GB RAM for 2-3 active agents
+
+### Network
+
+- Minimal network overhead
+- Git operations share local .git database
+- Only PRs and pushes use network
+
+## Security Considerations
+
+<Note type="danger">
+**Security Best Practices:**
+
+1. **Isolation**: Each agent works in separate worktree
+2. **Permissions**: Limit agent access to assigned files
+3. **Validation**: Run tests before merging
+4. **Code Review**: Always review agent PRs
+5. **Secrets**: Don't commit secrets in worktrees
+</Note>
+
+## Monitoring & Observability
+
+Track agent system health:
+
+```powershell
+# View all agent status
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
+
+# Check worktree health
+.\scripts\monitoring\performance-analyzer.ps1 -Target worktrees
+
+# Generate metrics
+.\scripts\monitoring\automation-metrics.ps1
+```
+
+## Limitations & Constraints
+
+### Current Limitations
+
+- **Max agents**: 3-4 recommended (disk/resource limits)
+- **Coordination**: Manual task assignment
+- **Conflict resolution**: Requires human intervention
+- **Cleanup**: Worktrees must be manually removed
+
+### Future Improvements
+
+- Automatic task assignment based on agent specialization
+- AI-powered conflict resolution
+- Dynamic agent scaling
+- Cloud-based worktree storage
+
+## Next Steps
+
+- [Quick Start](/docs/multi-agent/quick-start) - Get started with multi-agent
+- [Worktree Management](/docs/multi-agent/worktree) - Manage worktrees
+- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate agents

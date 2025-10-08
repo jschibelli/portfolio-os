@@ -1,0 +1,349 @@
+---
+title: Worktree Management
+description: Advanced Git worktree techniques for multi-agent development
+---
+
+# Worktree Management
+
+Master Git worktrees for efficient multi-agent development.
+
+## Git Worktrees Explained
+
+Git worktrees allow multiple working directories to be attached to a single repository.
+
+<Mermaid chart={`graph LR
+    GitDB[.git Database] --> Main[Main Worktree]
+    GitDB --> WT1[Worktree 1]
+    GitDB --> WT2[Worktree 2]
+    GitDB --> WT3[Worktree 3]
+    
+    Main -.->|main branch| GitDB
+    WT1 -.->|feature-a| GitDB
+    WT2 -.->|feature-b| GitDB
+    WT3 -.->|feature-c| GitDB`} />
+
+**Key Benefits:**
+- Share Git history (no duplication)
+- Independent working directories
+- Separate branches
+- Fast switching between features
+
+## Creating Worktrees
+
+### Basic Creation
+
+```bash
+# Create worktree for new branch
+git worktree add -b feature/auth worktrees/agent-1 develop
+
+# Create worktree from existing branch
+git worktree add worktrees/agent-2 feature/existing
+
+# List all worktrees
+git worktree list
+```
+
+### Using Scripts
+
+```powershell
+# Automated setup
+.\scripts\agent-management\setup-agent-development.ps1 `
+  -AgentName "agent-1" `
+  -BaseBranch "develop" `
+  -FeatureName "authentication"
+```
+
+## Worktree Structure
+
+### Recommended Organization
+
+```
+portfolio-os/
+├── .git/                      # Shared Git database
+├── apps/                      # Main worktree
+├── packages/
+├── worktrees/
+│   ├── agent-1-chris/        # Agent 1 worktree
+│   │   ├── apps/
+│   │   ├── packages/
+│   │   └── .git              # Link to main .git
+│   ├── agent-2-jason/        # Agent 2 worktree
+│   │   ├── apps/
+│   │   ├── packages/
+│   │   └── .git              # Link to main .git
+│   └── agent-3-alex/         # Agent 3 worktree
+```
+
+### Naming Conventions
+
+| Pattern | Example | Use Case |
+|---------|---------|----------|
+| `agent-N-name` | `agent-1-chris` | Agent-specific work |
+| `feature-name` | `feature-auth` | Feature development |
+| `fix-issue-N` | `fix-issue-123` | Bug fixes |
+| `experiment-name` | `experiment-new-ui` | Experimental work |
+
+## Managing Worktrees
+
+### Common Operations
+
+<Tabs defaultValue="create">
+  <TabsList>
+    <TabsTrigger value="create">Create</TabsTrigger>
+    <TabsTrigger value="update">Update</TabsTrigger>
+    <TabsTrigger value="remove">Remove</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="create">
+    ```bash
+    # Create new worktree
+    git worktree add -b feature/new-feature worktrees/new-feature develop
+    
+    # Navigate to worktree
+    cd worktrees/new-feature
+    
+    # Install dependencies
+    pnpm install
+    
+    # Start working
+    pnpm dev
+    ```
+  </TabsContent>
+  
+  <TabsContent value="update">
+    ```bash
+    # Navigate to worktree
+    cd worktrees/agent-1
+    
+    # Fetch latest changes
+    git fetch origin
+    
+    # Rebase on develop
+    git rebase develop
+    
+    # Update dependencies
+    pnpm install
+    ```
+  </TabsContent>
+  
+  <TabsContent value="remove">
+    ```bash
+    # First, ensure no uncommitted changes
+    cd worktrees/agent-1
+    git status
+    
+    # Commit or stash changes
+    git stash
+    
+    # Return to main repo
+    cd ../..
+    
+    # Remove worktree
+    git worktree remove worktrees/agent-1
+    
+    # Or force remove
+    git worktree remove --force worktrees/agent-1
+    ```
+  </TabsContent>
+</Tabs>
+
+### Syncing with Develop
+
+Keep worktrees updated with develop branch:
+
+```bash
+# In worktree
+git fetch origin develop
+git rebase develop
+
+# Handle conflicts if any
+git rebase --continue  # after resolving
+
+# Or abort if needed
+git rebase --abort
+```
+
+## Worktree Lifecycle
+
+<Step>
+  <StepItem title="Creation">
+    Create worktree for specific task:
+    ```bash
+    git worktree add -b feature/task worktrees/task develop
+    ```
+  </StepItem>
+
+  <StepItem title="Development">
+    Work in isolation:
+    ```bash
+    cd worktrees/task
+    # Make changes
+    git commit -m "feat: implement task"
+    ```
+  </StepItem>
+
+  <StepItem title="Push & PR">
+    Push and create PR:
+    ```bash
+    git push origin feature/task
+    # Create PR via GitHub or script
+    ```
+  </StepItem>
+
+  <StepItem title="Cleanup">
+    After PR merged:
+    ```bash
+    cd ../..
+    git worktree remove worktrees/task
+    git branch -d feature/task
+    ```
+  </StepItem>
+</Step>
+
+## Advanced Techniques
+
+### Sharing Node Modules
+
+Symlink to save disk space:
+
+```bash
+# In main repo
+pnpm install
+
+# In worktree (careful!)
+cd worktrees/agent-1
+rm -rf node_modules
+ln -s ../../node_modules node_modules
+```
+
+<Note type="warning">
+**Warning**: Shared node_modules can cause issues if dependencies differ between branches.
+</Note>
+
+### Sparse Worktrees
+
+Only checkout specific directories:
+
+```bash
+# Create sparse worktree
+git worktree add --no-checkout worktrees/docs-only develop
+cd worktrees/docs-only
+git sparse-checkout init --cone
+git sparse-checkout set apps/docs
+git checkout
+```
+
+### Worktree Templates
+
+Create template for consistent setup:
+
+```bash
+# setup-worktree-template.sh
+git worktree add -b $BRANCH $PATH develop
+cd $PATH
+pnpm install
+cp ../../.env.example .env.local
+git config --local user.name "$AGENT_NAME"
+git config --local user.email "$AGENT_EMAIL"
+```
+
+## Troubleshooting
+
+### Worktree Locked
+
+```bash
+# Error: worktree is locked
+Solution:
+git worktree unlock worktrees/agent-1
+```
+
+### Cannot Remove Worktree
+
+```bash
+# Error: worktree contains modifications
+Solution:
+cd worktrees/agent-1
+git stash
+cd ../..
+git worktree remove worktrees/agent-1
+```
+
+### Branch Already Exists
+
+```bash
+# Error: branch 'feature/x' already exists
+Solution:
+git worktree add worktrees/agent-1 existing-branch  # Use existing
+# Or delete old branch first
+git branch -D feature/x
+git worktree add -b feature/x worktrees/agent-1 develop
+```
+
+### Performance Issues
+
+```bash
+# Slow operations
+Solution:
+# Prune old worktree references
+git worktree prune
+
+# Clean up
+git gc
+```
+
+## Best Practices
+
+<Note type="success">
+**Worktree Best Practices:**
+
+1. **One task per worktree** - Keep focused
+2. **Regular cleanup** - Remove unused worktrees
+3. **Meaningful names** - Easy to identify
+4. **Sync frequently** - Rebase on develop daily
+5. **Independent deps** - Don't share node_modules
+6. **Backup work** - Push branches regularly
+</Note>
+
+## Automation Scripts
+
+Portfolio OS includes worktree management scripts:
+
+```powershell
+# Create agent worktree
+.\scripts\agent-management\setup-agent-development.ps1 `
+  -AgentName "agent-1"
+
+# List all worktrees
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
+  -Action list
+
+# Sync worktree with develop
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
+  -Action sync `
+  -WorktreePath "worktrees/agent-1"
+
+# Clean up old worktrees
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
+  -Action cleanup
+```
+
+## Monitoring Worktrees
+
+Track worktree health:
+
+```powershell
+# Check worktree status
+git worktree list --porcelain
+
+# View worktree state
+Get-Content scripts/configuration/worktree-state.json | ConvertFrom-Json
+
+# Generate worktree report
+.\scripts\monitoring\worktree-health-check.ps1
+```
+
+## Next Steps
+
+- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate multiple agents
+- [Workflow Automation](/docs/multi-agent/workflow) - Automate multi-agent workflows
+- [Quick Start](/docs/multi-agent/quick-start) - Get started guide

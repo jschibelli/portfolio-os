@@ -49,7 +49,14 @@ const CACHE_DURATION = 60; // seconds
  * Get the Hashnode publication host from environment variables
  */
 function getHost(): string {
-  return process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+  
+  // Log during build to help diagnose issues
+  if (process.env.NODE_ENV !== 'development') {
+    console.log(`[Hashnode API] Using publication host: ${host}`);
+  }
+  
+  return host;
 }
 
 /**
@@ -126,6 +133,8 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Ha
 export async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
   const host = getHost();
   
+  console.log(`[Hashnode API] Fetching post: ${slug} from ${host}`);
+  
   const query = `
     query PostBySlug($host: String!, $slug: String!) {
       publication(host: $host) {
@@ -150,9 +159,17 @@ export async function fetchPostBySlug(slug: string): Promise<HashnodePost | null
 
   try {
     const data = await makeGraphQLRequest(query, { host, slug });
-    return data?.publication?.post || null;
+    const post = data?.publication?.post || null;
+    
+    if (post) {
+      console.log(`[Hashnode API] Successfully fetched post: ${slug}`);
+    } else {
+      console.warn(`[Hashnode API] Post not found: ${slug}`);
+    }
+    
+    return post;
   } catch (error) {
-    console.error(`Failed to fetch post with slug "${slug}":`, error);
+    console.error(`[Hashnode API] Failed to fetch post "${slug}":`, error);
     return null;
   }
 }

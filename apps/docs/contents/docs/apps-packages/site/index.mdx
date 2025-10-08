@@ -1,0 +1,285 @@
+---
+title: Site App
+description: Public portfolio and blog application documentation
+---
+
+# Site App
+
+The site app is the public-facing portfolio and blog at `apps/site`.
+
+## Overview
+
+**URL**: http://localhost:3000 (development)
+
+The site app showcases your portfolio, blog posts, projects, and provides contact functionality.
+
+## Features
+
+- 🏠 Portfolio homepage with hero section
+- 📝 Blog posts sourced from Hashnode
+- 🚀 Projects showcase with case studies
+- 📬 Contact form with email integration
+- 🎨 Dark mode support
+- ⚡ Optimized performance with caching
+- 🔍 SEO optimized
+
+## Directory Structure
+
+<FileTree>
+  <Folder name="site" defaultOpen>
+    <Folder name="app" defaultOpen>
+      <File name="page.tsx" /> 
+      <File name="layout.tsx" />
+      <Folder name="blog">
+        <File name="page.tsx" />
+        <File name="[slug]/page.tsx" />
+      </Folder>
+      <Folder name="projects">
+        <File name="page.tsx" />
+        <File name="[slug]/page.tsx" />
+      </Folder>
+      <Folder name="api">
+        <File name="contact/route.ts" />
+      </Folder>
+    </Folder>
+    <Folder name="components">
+      <File name="Hero.tsx" />
+      <File name="Navigation.tsx" />
+      <File name="Footer.tsx" />
+    </Folder>
+    <Folder name="lib">
+      <File name="cache.ts" />
+      <File name="metadata.ts" />
+    </Folder>
+  </Folder>
+</FileTree>
+
+## Key Pages
+
+### Homepage
+
+```tsx
+// apps/site/app/page.tsx
+import { Hero } from '@/components/Hero'
+import { FeaturedProjects } from '@/components/FeaturedProjects'
+import { RecentPosts } from '@/components/RecentPosts'
+
+export default async function HomePage() {
+  return (
+    <>
+      <Hero />
+      <FeaturedProjects />
+      <RecentPosts />
+    </>
+  )
+}
+```
+
+### Blog Listing
+
+```tsx
+// apps/site/app/blog/page.tsx
+import { getAllPostsCached } from '@mindware-blog/hashnode'
+
+export default async function BlogPage() {
+  const posts = await getAllPostsCached()
+  
+  return (
+    <div>
+      <h1>Blog</h1>
+      {posts.map(post => (
+        <PostCard key={post.id} post={post} />
+      ))}
+    </div>
+  )
+}
+```
+
+### Project Page
+
+```tsx
+// apps/site/app/projects/[slug]/page.tsx
+import { getProjectBySlug } from '@/lib/projects'
+
+export default async function ProjectPage({ 
+  params 
+}: { 
+  params: { slug: string } 
+}) {
+  const project = await getProjectBySlug(params.slug)
+  
+  return (
+    <article>
+      <h1>{project.title}</h1>
+      <div>{project.description}</div>
+      {/* Project details */}
+    </article>
+  )
+}
+```
+
+## Configuration
+
+### Next.js Config
+
+```js
+// apps/site/next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: ['cdn.hashnode.com'],
+  },
+  experimental: {
+    serverActions: true,
+  },
+}
+
+module.exports = nextConfig
+```
+
+### Tailwind Config
+
+```js
+// apps/site/tailwind.config.js
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
+  ],
+  theme: {
+    extend: {
+      // Custom theme
+    },
+  },
+  plugins: [],
+}
+
+export default config
+```
+
+## API Routes
+
+### Contact Form
+
+```ts
+// apps/site/app/api/contact/route.ts
+import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function POST(request: Request) {
+  const { name, email, message } = await request.json()
+  
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL!,
+    to: process.env.RESEND_TO_EMAIL!,
+    subject: `Contact from ${name}`,
+    html: `<p>${message}</p><p>From: ${email}</p>`
+  })
+  
+  return NextResponse.json({ success: true })
+}
+```
+
+## Caching Strategy
+
+```ts
+// apps/site/lib/cache.ts
+import { Redis } from '@upstash/redis'
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+export async function getCached<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl: number = 3600
+): Promise<T> {
+  const cached = await redis.get<T>(key)
+  if (cached) return cached
+  
+  const data = await fetcher()
+  await redis.setex(key, ttl, JSON.stringify(data))
+  
+  return data
+}
+```
+
+## SEO & Metadata
+
+```tsx
+// apps/site/app/blog/[slug]/page.tsx
+import type { Metadata } from 'next'
+
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { slug: string } 
+}): Promise<Metadata> {
+  const post = await getPostBySlug(params.slug)
+  
+  return {
+    title: post.title,
+    description: post.brief,
+    openGraph: {
+      title: post.title,
+      description: post.brief,
+      images: [post.coverImage?.url],
+    },
+  }
+}
+```
+
+## Development
+
+```bash
+# Start dev server
+cd apps/site
+pnpm dev
+
+# Run tests
+pnpm test
+
+# Build
+pnpm build
+
+# Start production server
+pnpm start
+```
+
+## Environment Variables
+
+```bash
+# apps/site/.env.local
+NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=yourblog.hashnode.dev
+OPENAI_API_KEY=sk-...
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=noreply@yourdomain.com
+RESEND_TO_EMAIL=you@yourdomain.com
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+## Deployment
+
+The site app deploys to Vercel:
+
+```bash
+# Deploy to production
+vercel --prod
+
+# Deploy to preview
+vercel
+```
+
+## Next Steps
+
+- [Dashboard App](/docs/apps-packages/dashboard) - Admin interface
+- [Shared Packages](/docs/apps-packages/shared-packages) - Package details
+- [API Reference](/docs/api-reference/rest-api) - API documentation

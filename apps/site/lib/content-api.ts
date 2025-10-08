@@ -102,13 +102,26 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 
 /**
  * Check if Dashboard API is available
+ * Always returns false during build to use Hashnode directly
  */
 async function isDashboardAvailable(): Promise<boolean> {
+  // Skip Dashboard API check during build - use Hashnode directly
+  if (!process.env.DASHBOARD_API_URL || process.env.NODE_ENV === 'production') {
+    return false;
+  }
+
+  // Only check Dashboard API in development
   try {
-    await dashboardAPI.getPublication();
+    // Simple check with no timeout to avoid hanging
+    const response = await Promise.race([
+      dashboardAPI.getPublication(),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Dashboard API timeout')), 1000)
+      )
+    ]);
     return true;
   } catch (error) {
-    console.warn('Dashboard API not available, falling back to Hashnode:', error);
+    // Dashboard API not available, will use Hashnode
     return false;
   }
 }
@@ -154,20 +167,30 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
  * Fetch a single post by slug with fallback
  */
 export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null> {
+  console.log(`[Content API] Fetching post by slug: ${slug}`);
+  
   try {
     // Try Dashboard API first
     if (await isDashboardAvailable()) {
+      console.log('[Content API] Using Dashboard API for post');
       const post = await dashboardAPI.getPost(slug);
       return transformDashboardPost(post);
     }
   } catch (error) {
-    console.warn('Dashboard API failed for post, falling back to Hashnode:', error);
+    console.warn(`[Content API] Dashboard API failed for post "${slug}", falling back to Hashnode:`, error);
   }
 
   // Fallback to Hashnode
   try {
+    console.log('[Content API] Using Hashnode API for post');
     const hashnodePost = await fetchHashnodePost(slug);
-    if (!hashnodePost) return null;
+    
+    if (!hashnodePost) {
+      console.warn(`[Content API] Post "${slug}" not found in Hashnode`);
+      return null;
+    }
+    
+    console.log(`[Content API] Successfully fetched post "${slug}" from Hashnode`);
     
     return {
       id: hashnodePost.id,
@@ -184,7 +207,7 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
       featured: false
     };
   } catch (error) {
-    console.error('Both Dashboard and Hashnode APIs failed for post:', error);
+    console.error(`[Content API] Both Dashboard and Hashnode APIs failed for post "${slug}":`, error);
     return null;
   }
 }

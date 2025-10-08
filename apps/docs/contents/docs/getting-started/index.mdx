@@ -1,0 +1,119 @@
+---
+title: Quick Start
+description: Get Portfolio OS up and running in 10 minutes
+---
+
+# Quick Start Guide
+
+Get Portfolio OS running on your local machine in just a few minutes. This guide will walk you through the essential setup steps.
+
+<Note type="success">
+**Estimated Time:** 10-15 minutes to have your development environment fully operational.
+</Note>
+
+## What You'll Build
+
+Portfolio OS is a production-ready monorepo that includes:
+
+<CardGrid>
+  <Card href="/docs/apps-packages/site" title="Portfolio Site" description="Public-facing portfolio, blog, and projects showcase" />
+  <Card href="/docs/apps-packages/dashboard" title="Admin Dashboard" description="Content management and analytics dashboard" />
+  <Card href="/docs/developer-guide/packages" title="Shared Packages" description="Reusable UI components, utilities, and integrations" />
+</CardGrid>
+
+## Prerequisites Checklist
+
+Before you begin, ensure you have:
+
+- **Node.js 18+** installed ([Download](https://nodejs.org/))
+- **PNPM** package manager ([Installation Guide](/docs/getting-started/installation))
+- **Git** for version control
+- A code editor (VS Code recommended)
+
+<Note>
+Already have the prerequisites? Skip to [Installation Steps](#installation-steps) below.
+</Note>
+
+## Installation Steps
+
+<Step>
+  <StepItem title="Clone the Repository">
+    ```bash
+    git clone https://github.com/jschibelli/portfolio-os.git
+    cd portfolio-os
+    ```
+  </StepItem>
+
+  <StepItem title="Install Dependencies">
+    ```bash
+    pnpm install
+    ```
+    This will install all packages across the monorepo using PNPM workspaces.
+  </StepItem>
+
+  <StepItem title="Setup Environment Variables">
+    ```bash
+    # Copy environment templates
+    cp apps/site/.env.example apps/site/.env.local
+    cp apps/dashboard/.env.example apps/dashboard/.env.local
+    ```
+    Edit the `.env.local` files with your API keys. See [Environment Configuration](/docs/getting-started/environment) for details.
+  </StepItem>
+
+  <StepItem title="Generate Prisma Client">
+    ```bash
+    cd apps/dashboard
+    pnpm prisma generate
+    cd ../..
+    ```
+    This generates the TypeScript types for database access in the dashboard.
+  </StepItem>
+
+  <StepItem title="Start Development Servers">
+    ```bash
+    pnpm dev
+    ```
+    Both apps will start in parallel:
+    - **Site**: [http://localhost:3000](http://localhost:3000)
+    - **Dashboard**: [http://localhost:3001](http://localhost:3001)
+  </StepItem>
+</Step>
+
+<Note type="success">
+🎉 **Success!** Your Portfolio OS development environment is ready. Open your browser to see the apps running.
+</Note>
+
+## Next Steps
+
+Now that you have Portfolio OS running, explore these guides:
+
+<CardGrid>
+  <Card href="/docs/getting-started/first-steps" title="First Steps Tutorial" description="Learn the basics by building your first feature" />
+  <Card href="/docs/developer-guide/architecture" title="Architecture Overview" description="Understand how the system is structured" />
+  <Card href="/docs/multi-agent/quick-start" title="Multi-Agent Setup" description="Configure the multi-agent development system" />
+</CardGrid>
+
+## Common Issues
+
+<Note type="warning">
+**Port Already in Use?** If ports 3000 or 3001 are busy, stop the conflicting process or change ports in `next.config.js`.
+</Note>
+
+Having trouble? Check our [Troubleshooting Guide](/docs/troubleshooting/common-issues) or see detailed [Installation & Prerequisites](/docs/getting-started/installation).
+
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all apps in development mode |
+| `pnpm build` | Build all packages and apps for production |
+| `pnpm lint` | Run ESLint across the workspace |
+| `pnpm test` | Run all test suites |
+| `pnpm typecheck` | Type check all TypeScript code |
+
+---
+
+<Note>
+For a deeper dive into the tech stack, architecture patterns, and development workflow, continue to the [Developer Guide](/docs/developer-guide/architecture).
+</Note>
+
