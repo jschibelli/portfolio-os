@@ -93,18 +93,23 @@ const envSchema = z.object({
 
 // Parse and validate environment variables
 export function validateEnv() {
+  console.log('[env-validation] Starting validation...');
   try {
-    return envSchema.parse(process.env);
+    const result = envSchema.parse(process.env);
+    console.log('[env-validation] Validation successful');
+    return result;
   } catch (error) {
+    console.log('[env-validation] Validation error occurred');
+
     if (error instanceof z.ZodError) {
       // During build time, Vercel deployment, or development, be more lenient with missing variables
       if (isBuildTime || isVercelDeployment || _isDevelopment) {
-        console.warn('⚠️  Environment validation warnings (development mode):');
+        console.warn('Environment validation warnings (development mode):');
         error.errors.forEach((err) => {
           console.warn(`  - ${err.path.join('.')}: ${err.message}`);
         });
-        console.warn('\n💡 Some features may be disabled until environment variables are configured.');
-        console.warn('   See README.md for complete setup instructions.');
+        console.warn('\nSome features may be disabled until environment variables are configured.');
+        console.warn('See README.md for complete setup instructions.');
         
         // Return a partial environment object for build time
         return {
@@ -143,39 +148,52 @@ export function validateEnv() {
       }
       
       // In development, be strict about validation
-      console.error('❌ Environment validation failed:');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('Environment validation failed:');
+      console.error('================================================================');
       error.errors.forEach((err) => {
-        console.error(`  ✗ ${err.path.join('.')}: ${err.message}`);
+        console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
-      console.error('\n📋 Required environment variables:');
-      console.error('  ┌─ Core:');
-      console.error('  │  • NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST - Your Hashnode publication host');
-      console.error('  ├─ Email (Contact Form):');
-      console.error('  │  • RESEND_API_KEY - Get from https://resend.com/api-keys');
-      console.error('  │  • EMAIL_FROM - Verified sender email (e.g., noreply@yourdomain.com)');
-      console.error('  │  • EMAIL_REPLY_TO - Reply-to email address');
-      console.error('  ├─ Google Calendar (Optional):');
-      console.error('  │  • GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET');
-      console.error('  │  • GOOGLE_REDIRECT_URI, GOOGLE_OAUTH_REFRESH_TOKEN');
-      console.error('  │  • GOOGLE_CALENDAR_ID');
-      console.error('  └─ Security (Production):');
-      console.error('     • CRON_SECRET (min 32 chars)');
-      console.error('     • AUTH_SECRET, NEXTAUTH_SECRET (min 32 chars)');
-      console.error('     • AUTH_ADMIN_EMAIL, AUTH_ADMIN_PASSWORD (min 12 chars)');
-      console.error('\n💡 Setup instructions:');
+      console.error('\nRequired environment variables:');
+      console.error('  Core:');
+      console.error('    - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST - Your Hashnode publication host');
+      console.error('  Email (Contact Form):');
+      console.error('    - RESEND_API_KEY - Get from https://resend.com/api-keys');
+      console.error('    - EMAIL_FROM - Verified sender email (e.g., noreply@yourdomain.com)');
+      console.error('    - EMAIL_REPLY_TO - Reply-to email address');
+      console.error('  Google Calendar (Optional):');
+      console.error('    - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET');
+      console.error('    - GOOGLE_REDIRECT_URI, GOOGLE_OAUTH_REFRESH_TOKEN');
+      console.error('    - GOOGLE_CALENDAR_ID');
+      console.error('  Security (Production):');
+      console.error('    - CRON_SECRET (min 32 chars)');
+      console.error('    - AUTH_SECRET, NEXTAUTH_SECRET (min 32 chars)');
+      console.error('    - AUTH_ADMIN_EMAIL, AUTH_ADMIN_PASSWORD (min 12 chars)');
+      console.error('\nSetup instructions:');
       console.error('  1. Copy apps/site/env.template to apps/site/.env.local');
       console.error('  2. Fill in your API keys and credentials');
       console.error('  3. See README.md for detailed setup guide');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+      console.error('================================================================\n');
       process.exit(1);
     }
     throw error;
   }
 }
 
-// Export validated environment variables
-export const env = validateEnv();
+// Lazy-loaded validated environment variables
+let _env: any = null;
+function getEnv() {
+  if (!_env) {
+    _env = validateEnv();
+  }
+  return _env;
+}
+
+// Export validated environment variables with lazy evaluation
+export const env = new Proxy({} as any, {
+  get(target, prop) {
+    return getEnv()[prop];
+  }
+});
 
 // Type-safe environment variables
 export type Env = z.infer<typeof envSchema>;
@@ -188,9 +206,9 @@ export type Env = z.infer<typeof envSchema>;
  * - isDevelopment: Running in development mode
  * - isTest: Running in test mode
  */
-export const isProduction = env.NODE_ENV === 'production';
-export const isDevelopment = env.NODE_ENV === 'development';
-export const isTest = env.NODE_ENV === 'test';
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isDevelopment = process.env.NODE_ENV === 'development';
+export const isTest = process.env.NODE_ENV === 'test';
 
 /**
  * Feature flags based on environment variables
@@ -207,23 +225,51 @@ export const isTest = env.NODE_ENV === 'test';
  * - sentry: Sentry error tracking
  * - plausible: Plausible analytics
  * 
- * Usage: if (features.email) { /* Send email */ }
+ * @example
+ * if (features.email) {
+ *   // Send email
+ * }
  */
-export const features = {
-  googleCalendar: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_OAUTH_REFRESH_TOKEN && env.GOOGLE_CALENDAR_ID),
-  email: Boolean(env.RESEND_API_KEY && env.EMAIL_FROM),
-  openai: Boolean(env.OPENAI_API_KEY),
-  stripe: Boolean(env.STRIPE_SECRET_KEY),
-  linkedin: Boolean(env.LINKEDIN_CLIENT_ID && env.LINKEDIN_CLIENT_SECRET),
-  facebook: Boolean(env.FACEBOOK_APP_ID && env.FACEBOOK_APP_SECRET),
-  github: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
-  vercel: Boolean(env.VERCEL_API_TOKEN),
-  sentry: Boolean(env.SENTRY_API_TOKEN),
-  plausible: Boolean(env.PLAUSIBLE_API_TOKEN && env.PLAUSIBLE_SITE_ID),
-} as const;
+export const features = new Proxy({} as any, {
+  get(target, prop) {
+    const e = getEnv();
+    switch (prop) {
+      case 'googleCalendar':
+        return Boolean(e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET && e.GOOGLE_OAUTH_REFRESH_TOKEN && e.GOOGLE_CALENDAR_ID);
+      case 'email':
+        return Boolean(e.RESEND_API_KEY && e.EMAIL_FROM);
+      case 'openai':
+        return Boolean(e.OPENAI_API_KEY);
+      case 'stripe':
+        return Boolean(e.STRIPE_SECRET_KEY);
+      case 'linkedin':
+        return Boolean(e.LINKEDIN_CLIENT_ID && e.LINKEDIN_CLIENT_SECRET);
+      case 'facebook':
+        return Boolean(e.FACEBOOK_APP_ID && e.FACEBOOK_APP_SECRET);
+      case 'github':
+        return Boolean(e.GITHUB_CLIENT_ID && e.GITHUB_CLIENT_SECRET);
+      case 'vercel':
+        return Boolean(e.VERCEL_API_TOKEN);
+      case 'sentry':
+        return Boolean(e.SENTRY_API_TOKEN);
+      case 'plausible':
+        return Boolean(e.PLAUSIBLE_API_TOKEN && e.PLAUSIBLE_SITE_ID);
+      default:
+        return undefined;
+    }
+  }
+});
 
-// SSL/TLS configuration
-export const sslConfig = {
-  fixEnabled: env.FIX_SSL_ISSUES,
-  nodeOptions: env.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined,
-} as const;
+// SSL/TLS configuration (lazy-loaded)
+export const sslConfig = new Proxy({} as any, {
+  get(target, prop) {
+    const e = getEnv();
+    if (prop === 'fixEnabled') {
+      return e.FIX_SSL_ISSUES;
+    }
+    if (prop === 'nodeOptions') {
+      return e.FIX_SSL_ISSUES ? '--openssl-legacy-provider' : undefined;
+    }
+    return undefined;
+  }
+});
