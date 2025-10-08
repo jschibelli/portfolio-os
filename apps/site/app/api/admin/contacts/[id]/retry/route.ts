@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../../lib/prisma';
 import { emailService } from '../../../../../../lib/email-service';
+import { z } from 'zod';
+
+// Validation schema for route parameters
+const RouteParamsSchema = z.object({
+  id: z.string().uuid('Invalid submission ID format'),
+});
 
 /**
  * POST /api/admin/contacts/[id]/retry
  * 
  * Retries sending email for a failed contact submission
+ * 
+ * Security:
+ * - UUID validation for submission ID
+ * - Status validation before retry
+ * - Comprehensive error handling
  * 
  * @param request - NextRequest
  * @param params - Route parameters containing submission id
@@ -16,7 +27,24 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    // Validate route parameters
+    const validationResult = RouteParamsSchema.safeParse(params);
+    
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid submission ID format',
+          details: validationResult.error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message,
+          })),
+        },
+        { status: 400 }
+      );
+    }
+    
+    const { id } = validationResult.data;
 
     // Get the submission from database
     const submission = await prisma.contactSubmission.findUnique({
@@ -131,11 +159,19 @@ Previous error: ${submission.emailError || 'Unknown'}
 
   } catch (error) {
     console.error('❌ Error retrying email:', error);
+    
+    // Provide detailed error information for debugging
+    const errorDetails = error instanceof Error ? {
+      message: error.message,
+      name: error.name,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    } : { message: 'Unknown error' };
+    
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to retry email',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: errorDetails,
       },
       { status: 500 }
     );

@@ -1,5 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
+import { z } from 'zod';
+
+// Valid status values
+const VALID_STATUSES = ['pending', 'sent', 'failed'] as const;
+
+// Input validation schema
+const QueryParamsSchema = z.object({
+  status: z.enum(['pending', 'sent', 'failed']).optional(),
+  limit: z.number().int().min(1).max(100).default(50),
+  offset: z.number().int().min(0).default(0),
+  search: z.string().max(100).optional(),
+});
+
+// Simple in-memory rate limiting (use Redis in production)
+// TODO: Implement Redis-based rate limiting for production deployments
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_MAX_REQUESTS = 100; // Max requests per window
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute window
+
+/**
+ * Check rate limit for a given IP address
+ * @param ip - Client IP address
+ * @returns {allowed: boolean, retryAfter?: number}
+ */
+function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const clientData = rateLimitMap.get(ip);
+  
+  if (clientData) {
+    if (now < clientData.resetTime) {
+      if (clientData.count >= RATE_LIMIT_MAX_REQUESTS) {
+        return {
+          allowed: false,
+          retryAfter: Math.ceil((clientData.resetTime - now) / 1000),
+        };
+      }
+      clientData.count++;
+    } else {
+      rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    }
+  } else {
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+  }
+  
+  return { allowed: true };
+}
 
 /**
  * GET /api/admin/contacts
@@ -8,35 +54,94 @@ import { prisma } from '../../../../lib/prisma';
  * 
  * Query parameters:
  * - status: Filter by status (pending, sent, failed)
- * - limit: Number of results to return (default: 50)
- * - offset: Number of results to skip (default: 0)
- * - search: Search by name or email
+ * - limit: Number of results to return (default: 50, max: 100)
+ * - offset: Number of results to skip (default: 0, min: 0)
+ * - search: Search by name, email, or company (max: 100 chars)
+ * 
+ * Security:
+ * - Input validation and sanitization
+ * - SQL injection protection via Prisma
+ * - Rate limiting recommended for production
  * 
  * @param request - NextRequest with query parameters
  * @returns Promise<NextResponse> - List of contact submissions
  */
 export async function GET(request: NextRequest) {
   try {
+    // Rate limiting check
+    const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? 'unknown';
+    const rateLimitResult = checkRateLimit(clientIP);
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Too many requests. Please try again later.',
+          retryAfter: rateLimitResult.retryAfter,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter?.toString() || '60',
+            'X-RateLimit-Limit': RATE_LIMIT_MAX_REQUESTS.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': new Date(Date.now() + (rateLimitResult.retryAfter || 60) * 1000).toISOString(),
+          },
+        }
+      );
+    }
+    
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
-    const search = searchParams.get('search');
+    
+    // Validate and sanitize inputs
+    const rawParams = {
+      status: searchParams.get('status') || undefined,
+      limit: parseInt(searchParams.get('limit') || '50'),
+      offset: parseInt(searchParams.get('offset') || '0'),
+      search: searchParams.get('search') || undefined,
+    };
 
-    // Build where clause
+    // Validate with Zod schema
+    const validatedParams = QueryParamsSchema.safeParse(rawParams);
+    
+    if (!validatedParams.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid query parameters',
+          details: validatedParams.error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message,
+          })),
+        },
+        { status: 400 }
+      );
+    }
+
+    const { status, limit, offset, search } = validatedParams.data;
+
+    // Build where clause with sanitized inputs
     const where: any = {};
     
     if (status) {
       where.status = status;
     }
     
+    // Sanitize search input: Remove special characters that could be used for injection
+    // Prisma handles SQL injection protection, but we still sanitize for safety
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { company: { contains: search, mode: 'insensitive' } },
-      ];
+      const sanitizedSearch = search
+        .replace(/[<>{}[\]]/g, '') // Remove potentially dangerous characters
+        .trim();
+      
+      if (sanitizedSearch.length > 0) {
+        where.OR = [
+          { name: { contains: sanitizedSearch, mode: 'insensitive' } },
+          { email: { contains: sanitizedSearch, mode: 'insensitive' } },
+          { company: { contains: sanitizedSearch, mode: 'insensitive' } },
+        ];
+      }
     }
 
     // Get total count for pagination
@@ -93,11 +198,19 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('❌ Error fetching contact submissions:', error);
+    
+    // Provide more detailed error information for debugging
+    const errorDetails = error instanceof Error ? {
+      message: error.message,
+      name: error.name,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+    } : { message: 'Unknown error' };
+    
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to fetch contact submissions',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: errorDetails,
       },
       { status: 500 }
     );
