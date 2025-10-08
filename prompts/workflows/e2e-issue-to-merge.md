@@ -1,4 +1,4 @@
-﻿Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign Jason or Chris, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+﻿What do you recommend Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign Jason or Chris, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
 
 **🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Backlog → In progress → In review → Ready → Ready for Merge → Done → Merged in sequence, then continues to the next available issues until no more work is available.
 

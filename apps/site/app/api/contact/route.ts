@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { emailService } from '../../../lib/email-service';
+import { 
+  emailService, 
+  EmailConfigError, 
+  EmailNetworkError, 
+  EmailRateLimitError,
+  EmailValidationError 
+} from '../../../lib/email-service';
+import { features } from '../../../lib/env-validation';
 import { prisma } from '../../../lib/prisma';
 
 // Contact form validation schema
@@ -50,6 +57,19 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is configured
+    if (!features.email) {
+      console.error('📧 Email service not configured. Missing environment variables: RESEND_API_KEY or EMAIL_FROM');
+      return NextResponse.json(
+        { 
+          error: 'Email service is not configured. Please contact the site administrator.',
+          code: 'EMAIL_SERVICE_NOT_CONFIGURED',
+          details: 'The contact form requires email service configuration. Please ensure RESEND_API_KEY and EMAIL_FROM environment variables are set.'
+        },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting implementation
     const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
@@ -104,23 +124,24 @@ export async function POST(request: NextRequest) {
     });
 
     // Send email notification to site owner
-    const emailResult = await emailService.sendEmail({
-      to: 'john@schibelli.dev',
-      from: process.env.EMAIL_FROM || 'noreply@schibelli.dev',
-      subject: `New Contact Form Submission from ${validatedData.name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${validatedData.name}</p>
-        <p><strong>Email:</strong> ${validatedData.email}</p>
-        <p><strong>Company:</strong> ${validatedData.company || 'Not provided'}</p>
-        <p><strong>Project Type:</strong> ${validatedData.projectType || 'Not specified'}</p>
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.message}</p>
-        <hr>
-        <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
-        <p><small>Client IP: ${clientIP}</small></p>
-      `,
-      text: `
+    try {
+      const emailResult = await emailService.sendEmail({
+        to: 'john@schibelli.dev',
+        from: process.env.EMAIL_FROM || 'noreply@schibelli.dev',
+        subject: `New Contact Form Submission from ${validatedData.name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${validatedData.name}</p>
+          <p><strong>Email:</strong> ${validatedData.email}</p>
+          <p><strong>Company:</strong> ${validatedData.company || 'Not provided'}</p>
+          <p><strong>Project Type:</strong> ${validatedData.projectType || 'Not specified'}</p>
+          <p><strong>Message:</strong></p>
+          <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.message}</p>
+          <hr>
+          <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
+          <p><small>Client IP: ${clientIP}</small></p>
+        `,
+        text: `
 New Contact Form Submission
 
 Name: ${validatedData.name}
@@ -134,31 +155,13 @@ ${validatedData.message}
 ---
 Submitted on: ${new Date().toLocaleString()}
 Client IP: ${clientIP}
-      `,
-      replyTo: validatedData.email,
-    });
-
-    // Update submission status based on email result
-    if (!emailResult.success) {
-      console.error('📧 Failed to send email notification:', emailResult.error);
-      
-      // Update database with failure status
-      await prisma.contactSubmission.update({
-        where: { id: submission.id },
-        data: {
-          status: 'failed',
-          emailError: emailResult.error,
-          retryCount: 0,
-        },
+        `,
+        replyTo: validatedData.email,
       });
 
-      // Note: Submission is saved, but email failed
-      // Admin can retry sending from the admin panel
-      console.log('⚠️  Submission saved but email failed. Admin can retry from dashboard.');
-    } else {
+      // Email sent successfully - update database
       console.log('📧 Email notification sent successfully:', emailResult.messageId);
       
-      // Update database with success status
       await prisma.contactSubmission.update({
         where: { id: submission.id },
         data: {
@@ -166,14 +169,76 @@ Client IP: ${clientIP}
           emailSentAt: new Date(),
         },
       });
-    }
 
-    // Return success response with the actual submission ID
-    return NextResponse.json({
-      success: true,
-      message: 'Thank you for your message! I will get back to you within 24 hours.',
-      submissionId: submission.id
-    });
+      // Return success response with actual submission ID
+      return NextResponse.json({
+        success: true,
+        message: 'Thank you for your message! I will get back to you within 24 hours.',
+        submissionId: submission.id
+      });
+
+    } catch (emailError) {
+      console.error('📧 Failed to send email notification:', emailError);
+
+      // Determine error message and update database
+      let errorMessage = 'Unknown error';
+      let errorCode = 'email_send_failed';
+      let statusCode = 500;
+      let retryAfter: number | undefined;
+
+      if (emailError instanceof EmailConfigError) {
+        errorMessage = emailError.message;
+        errorCode = 'email_config_error';
+        statusCode = 500;
+      } else if (emailError instanceof EmailRateLimitError) {
+        errorMessage = emailError.message;
+        errorCode = 'rate_limit';
+        statusCode = 429;
+        retryAfter = emailError.retryAfter || 60;
+      } else if (emailError instanceof EmailNetworkError) {
+        errorMessage = emailError.message;
+        errorCode = 'network_error';
+        statusCode = 503;
+      } else if (emailError instanceof Error) {
+        errorMessage = emailError.message;
+      }
+
+      // Update database with failure status
+      await prisma.contactSubmission.update({
+        where: { id: submission.id },
+        data: {
+          status: 'failed',
+          emailError: errorMessage,
+          retryCount: 0,
+        },
+      });
+
+      console.log('⚠️  Submission saved but email failed. Admin can retry from dashboard.');
+
+      // Return appropriate error response
+      const response: any = {
+        success: false,
+        error: errorCode,
+        message: "We've received your message but couldn't send the email notification. We'll follow up with you shortly. Alternatively, you can email john@schibelli.dev directly.",
+        fallbackEmail: 'john@schibelli.dev',
+        submissionId: submission.id,
+      };
+
+      if (retryAfter) {
+        response.retryAfter = retryAfter;
+      }
+
+      if (statusCode === 503 || emailError instanceof EmailNetworkError) {
+        response.retryable = true;
+      }
+
+      const headers: any = {};
+      if (retryAfter) {
+        headers['Retry-After'] = retryAfter.toString();
+      }
+
+      return NextResponse.json(response, { status: statusCode, headers });
+    }
 
   } catch (error) {
     console.error('📧 Contact form error:', error);
