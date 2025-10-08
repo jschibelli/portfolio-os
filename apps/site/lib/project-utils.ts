@@ -6,12 +6,14 @@ import { schibelliSite } from '../data/projects/schibelli-site';
 import { synaplyai } from '../data/projects/synaplyai';
 import { ecommerceShopifyChatbot } from '../data/projects/ecommerce-shopify-chatbot';
 import { intraweb } from '../data/projects/intraweb';
+import { portfolioOS } from '../data/projects/portfolio-os';
 
 // Add other project imports as they become available
 // import { projectName } from '../data/projects/project-name';
 
 // Array of all projects
 const allProjects: ProjectMeta[] = [
+  portfolioOS,
   tendrilo,
   schibelliSite,
   synaplyai,
@@ -20,46 +22,49 @@ const allProjects: ProjectMeta[] = [
   // Add other projects here
 ];
 
+// Filter to only published projects
+const publishedProjects: ProjectMeta[] = allProjects.filter(project => project.published !== false);
+
 /**
  * Get all projects
  */
 export async function getAllProjects(): Promise<ProjectMeta[]> {
-  return allProjects;
+  return publishedProjects;
 }
 
 /**
  * Get a project by its slug
  */
 export async function getProjectBySlug(slug: string): Promise<ProjectMeta | null> {
-  return allProjects.find(project => project.slug === slug) || null;
+  return publishedProjects.find(project => project.slug === slug) || null;
 }
 
 /**
  * Get featured projects
  */
 export async function getFeaturedProjects(): Promise<ProjectMeta[]> {
-  return allProjects.filter(project => project.featured === true);
+  return publishedProjects.filter(project => project.featured === true);
 }
 
 /**
  * Get projects by status
  */
 export async function getProjectsByStatus(status: ProjectMeta['status']): Promise<ProjectMeta[]> {
-  return allProjects.filter(project => project.status === status);
+  return publishedProjects.filter(project => project.status === status);
 }
 
 /**
  * Get projects by category
  */
 export async function getProjectsByCategory(category: ProjectMeta['category']): Promise<ProjectMeta[]> {
-  return allProjects.filter(project => project.category === category);
+  return publishedProjects.filter(project => project.category === category);
 }
 
 /**
  * Get projects by tag
  */
 export async function getProjectsByTag(tag: string): Promise<ProjectMeta[]> {
-  return allProjects.filter(project => 
+  return publishedProjects.filter(project => 
     project.tags.some(projectTag => 
       projectTag.toLowerCase().includes(tag.toLowerCase())
     )
@@ -70,7 +75,7 @@ export async function getProjectsByTag(tag: string): Promise<ProjectMeta[]> {
  * Get all unique tags from all projects
  */
 export async function getAllProjectTags(): Promise<string[]> {
-  const allTags = allProjects.flatMap(project => project.tags);
+  const allTags = publishedProjects.flatMap(project => project.tags);
   return Array.from(new Set(allTags)).sort();
 }
 
@@ -78,7 +83,7 @@ export async function getAllProjectTags(): Promise<string[]> {
  * Get all unique categories from all projects
  */
 export async function getAllProjectCategories(): Promise<ProjectMeta['category'][]> {
-  const allCategories = allProjects.map(project => project.category);
+  const allCategories = publishedProjects.map(project => project.category);
   return Array.from(new Set(allCategories));
 }
 
@@ -88,7 +93,7 @@ export async function getAllProjectCategories(): Promise<ProjectMeta['category']
 export async function searchProjects(query: string): Promise<ProjectMeta[]> {
   const lowercaseQuery = query.toLowerCase();
   
-  return allProjects.filter(project => 
+  return publishedProjects.filter(project => 
     project.title.toLowerCase().includes(lowercaseQuery) ||
     project.description.toLowerCase().includes(lowercaseQuery) ||
     project.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery)) ||

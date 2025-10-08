@@ -1,0 +1,125 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-*'  # Matches pre-release tags like v1.0.0-beta.1
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for changelog generation
+      
+      - name: Get version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          
+          # Check if this is a pre-release
+          if [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+            echo "release_type=stable" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+            # Determine pre-release type
+            if [[ $VERSION == *"alpha"* ]]; then
+              echo "release_type=alpha" >> $GITHUB_OUTPUT
+            elif [[ $VERSION == *"beta"* ]]; then
+              echo "release_type=beta" >> $GITHUB_OUTPUT
+            elif [[ $VERSION == *"rc"* ]]; then
+              echo "release_type=release-candidate" >> $GITHUB_OUTPUT
+            else
+              echo "release_type=pre-release" >> $GITHUB_OUTPUT
+            fi
+          fi
+      
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          
+          # Try to extract the specific version's changelog
+          if grep -q "\[$VERSION\]" CHANGELOG.md 2>/dev/null; then
+            # Extract section between this version and the next version marker
+            NOTES=$(sed -n "/\[$VERSION\]/,/^## \[/p" CHANGELOG.md | sed '1d;$d' | sed '/^---$/d')
+            
+            if [ -z "$NOTES" ]; then
+              NOTES="Release version $VERSION
+
+See CHANGELOG.md for details."
+            fi
+          else
+            # Fallback: use the entire changelog or generic message
+            if [ -f CHANGELOG.md ]; then
+              NOTES=$(head -n 100 CHANGELOG.md)
+              NOTES="$NOTES
+
+*Full changelog available in CHANGELOG.md*"
+            else
+              NOTES="Release version $VERSION
+
+This is an automated release. Check the repository for details."
+            fi
+          fi
+          
+          # Write to file for multiline content
+          echo "$NOTES" > /tmp/release_notes.md
+          echo "notes_file=/tmp/release_notes.md" >> $GITHUB_OUTPUT
+      
+      - name: Generate release title
+        id: title
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          TYPE=${{ steps.get_version.outputs.release_type }}
+          
+          case $TYPE in
+            stable)
+              TITLE="🚀 Portfolio OS v$VERSION"
+              ;;
+            alpha)
+              TITLE="🔬 Portfolio OS v$VERSION (Alpha)"
+              ;;
+            beta)
+              TITLE="🧪 Portfolio OS v$VERSION (Beta)"
+              ;;
+            release-candidate)
+              TITLE="🎯 Portfolio OS v$VERSION (Release Candidate)"
+              ;;
+            *)
+              TITLE="📦 Portfolio OS v$VERSION (Pre-release)"
+              ;;
+          esac
+          
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.title.outputs.title }}
+          body_path: ${{ steps.changelog.outputs.notes_file }}
+          prerelease: ${{ steps.get_version.outputs.prerelease }}
+          draft: false
+          generate_release_notes: true  # Also include auto-generated notes from commits
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Output release info
+        run: |
+          echo "✅ Release created successfully!"
+          echo "📦 Version: ${{ steps.get_version.outputs.version }}"
+          echo "🏷️  Tag: ${{ steps.get_version.outputs.tag }}"
+          echo "📋 Type: ${{ steps.get_version.outputs.release_type }}"
+          echo "🔗 URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.tag }}"
+

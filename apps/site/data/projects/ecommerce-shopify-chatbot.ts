@@ -11,6 +11,7 @@ export const ecommerceShopifyChatbot: ProjectMeta = {
   caseStudyUrl: '/case-studies/ecommerce-shopify-chatbot',
   githubUrl: 'https://github.com/jschibelli/shopify-chatbot',
   featured: false,
+  published: false,
   status: 'completed',
   startDate: '2024-03-01',
   endDate: '2024-05-15',

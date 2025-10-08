@@ -1,5 +1,29 @@
 [
 	{
+		"id": "portfolio-os",
+		"title": "Portfolio OS: Building a Self-Documenting Development Platform",
+		"slug": "portfolio-os",
+		"description": "How I built a production-grade monorepo with enterprise automation, multi-agent workflows, and intelligent CI/CD—turning a portfolio into a comprehensive development platform.",
+		"image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop",
+		"tags": ["NextJS", "TypeScript", "Turborepo", "Automation", "DevOps", "Multi-Agent", "Monorepo", "CICD"],
+		"publishedAt": "2025-01-15",
+		"author": "John Schibelli",
+		"featured": true,
+		"metrics": {
+			"automation": "100+ PowerShell scripts",
+			"testCoverage": "90%+ coverage",
+			"agents": "5-agent coordination"
+		},
+		"caseStudyPreview": {
+			"problem": "Need to demonstrate enterprise engineering capabilities through portfolio",
+			"solution": "Built production-grade monorepo with 100+ automation scripts and multi-agent AI workflows",
+			"results": "Self-documenting platform showcasing real-world DevOps, testing, and CI/CD expertise"
+		},
+		"liveUrl": "https://johnschibelli.dev",
+		"caseStudyUrl": "/case-studies/portfolio-os",
+		"projectUrl": "/projects/portfolio-os"
+	},
+	{
 		"id": "tendrilo-case-study",
 		"title": "Tendril Multi-Tenant Chatbot SaaS: Strategic Analysis and Implementation Plan",
 		"slug": "tendrilo-case-study",
@@ -8,11 +32,16 @@
 		"tags": ["SaaS", "AI", "Multi-tenant", "Chatbot"],
 		"publishedAt": "2025-08-29",
 		"author": "John Schibelli",
-		"featured": true,
+		"featured": false,
 		"metrics": {
 			"architecture": "Multi-tenant scalable design",
 			"aiIntegration": "AI-powered automation",
 			"setupTime": "18 minutes"
+		},
+		"caseStudyPreview": {
+			"problem": "SMBs needed affordable, scalable chatbot solutions without technical complexity",
+			"solution": "Strategic analysis and implementation plan for multi-tenant SaaS platform with AI automation",
+			"results": "Comprehensive architecture and market strategy for scalable chatbot platform"
 		},
 		"liveUrl": "",
 		"caseStudyUrl": "/case-studies/tendrilo-case-study"

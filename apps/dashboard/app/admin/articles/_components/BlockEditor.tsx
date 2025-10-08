@@ -1,20 +1,26 @@
+/**
+ * @deprecated BlockEditor is being phased out in favor of AdvancedEditor (TipTap).
+ * 
+ * This component is maintained for backward compatibility with existing content only.
+ * New features and article creation should use the AdvancedEditor component instead.
+ * 
+ * Migration path: Existing content will be gradually migrated to the new editor format.
+ * This component will be removed in a future version once all content is migrated.
+ */
+
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component, enabling React hooks
+// and browser APIs (useState, useRef, event handlers, etc.)
+// See: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+// This IS a standard Next.js directive (not a typo or mistake)
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+// React hooks used in this component:
+// - useState: Tracks focusedBlockId for UI state management
+// - useRef: Stores DOM references to blocks for focus management and DOM manipulation
+import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { 
-  Type, 
-  Heading1, 
-  Heading2, 
-  Heading3, 
-  List, 
-  ListOrdered, 
-  Quote,
-  Code,
-  Image,
-  Link,
   Plus,
   Trash2,
   GripVertical

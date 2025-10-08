@@ -120,13 +120,6 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 						</div>
 					) : null}
 
-					{/* Enhanced Hover Overlay with Case Study Indicator - Mobile Optimized */}
-					<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100">
-						<div className="bg-primary/95 text-primary-foreground rounded-lg px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold backdrop-blur-sm shadow-lg touch-manipulation">
-							{hasCaseStudy ? 'View Case Study' : 'View Project'}
-						</div>
-					</div>
-
 					{/* Case Study Badge - Mobile Optimized */}
 					{hasCaseStudy && (
 						<div className="absolute left-2 sm:left-3 top-2 sm:top-3">
@@ -245,7 +238,8 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										Case Study
 									</Link>
 								</Button>
-								{project.liveUrl && (
+								{/* Second button for project details */}
+								{project.projectUrl && (
 									<Button
 										variant="outline"
 										size="sm"
@@ -253,13 +247,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
 										asChild
 									>
 										<Link 
-											href={project.liveUrl}
-											target="_blank"
-											rel="noopener noreferrer"
-											aria-label={`View live ${project.title} project`}
+											href={project.projectUrl}
+											aria-label={`View details for ${project.title} project`}
 										>
 											<ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-											Live Site
+											View Details
 										</Link>
 									</Button>
 								)}

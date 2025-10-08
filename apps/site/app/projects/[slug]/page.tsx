@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { ProjectMeta } from '../../../data/projects/types';
 import { getAllProjects, getProjectBySlug } from '../../../lib/project-utils';
 import { generateCreativeWorkStructuredData, generateSoftwareApplicationStructuredData } from '../../../lib/structured-data';
@@ -12,8 +13,12 @@ import { Container } from '../../../components/shared/container';
 import { Badge } from '../../../components/ui/badge';
 import { Layout } from '../../../components/shared/layout';
 import { Footer } from '../../../components/shared/footer';
-import Chatbot from '../../../components/features/chatbot/Chatbot';
 import { AppProvider } from '../../../components/contexts/appContext';
+
+// Dynamic import for Chatbot to improve initial page load performance
+// Note: ssr: false cannot be used in Server Components (Next.js App Router)
+// The Chatbot component itself handles client-side rendering via 'use client'
+const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'));
 
 interface ProjectPageProps {
   params: {
@@ -33,10 +38,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   const title = `${project.title} | John Schibelli Portfolio`;
   const description = project.description;
-  const canonical = `https://schibelli.dev/projects/${project.slug}`;
+  const canonical = `https://johnschibelli.dev/projects/${project.slug}`;
 
   return {
-    metadataBase: new URL('https://schibelli.dev'),
+    metadataBase: new URL('https://johnschibelli.dev'),
     title,
     description,
     keywords: project.tags,
@@ -128,7 +133,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     ? generateSoftwareApplicationStructuredData({
         name: project.title,
         description: project.description,
-        url: `https://schibelli.dev/projects/${project.slug}`,
+        url: `https://johnschibelli.dev/projects/${project.slug}`,
         image: project.image,
         applicationCategory: 'WebApplication',
         operatingSystem: 'Web Browser',
@@ -139,29 +144,29 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         author: {
           name: 'John Schibelli',
           description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
-          url: 'https://schibelli.dev',
+          url: 'https://johnschibelli.dev',
           jobTitle: 'Senior Front-End Developer',
         },
         publisher: {
           name: 'John Schibelli',
-          url: 'https://schibelli.dev',
+          url: 'https://johnschibelli.dev',
         },
         keywords: project.tags,
       })
     : generateCreativeWorkStructuredData({
         name: project.title,
         description: project.description,
-        url: `https://schibelli.dev/projects/${project.slug}`,
+        url: `https://johnschibelli.dev/projects/${project.slug}`,
         image: project.image,
         author: {
           name: 'John Schibelli',
           description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
-          url: 'https://schibelli.dev',
+          url: 'https://johnschibelli.dev',
           jobTitle: 'Senior Front-End Developer',
         },
         publisher: {
           name: 'John Schibelli',
-          url: 'https://schibelli.dev',
+          url: 'https://johnschibelli.dev',
         },
         keywords: project.tags,
       });
@@ -171,7 +176,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     title: 'John Schibelli',
     displayTitle: 'John Schibelli',
     descriptionSEO: 'Senior Front-End Developer with 15+ years of experience',
-    url: 'https://schibelli.dev',
+    url: 'https://johnschibelli.dev',
     author: {
       name: 'John Schibelli',
     },

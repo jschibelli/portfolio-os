@@ -1,4 +1,5 @@
 // Project data exports
+export { portfolioOS } from './portfolio-os';
 export { tendrilo } from './tendrilo';
 export { synaplyai } from './synaplyai';
 export { schibelliSite } from './schibelli-site';
@@ -10,6 +11,7 @@ export { intraweb } from './intraweb';
 export type { ProjectMeta } from './types';
 
 // All projects array for easy iteration
+import { portfolioOS } from './portfolio-os';
 import { tendrilo } from './tendrilo';
 import { synaplyai } from './synaplyai';
 import { schibelliSite } from './schibelli-site';
@@ -19,6 +21,7 @@ import { intraweb } from './intraweb';
 import { ProjectMeta } from './types';
 
 export const allProjects: ProjectMeta[] = [
+  portfolioOS,
   tendrilo,
   synaplyai,
   schibelliSite,

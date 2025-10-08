@@ -1,5 +1,5 @@
 import { AppProvider } from '../../components/contexts/appContext';
-import Chatbot from '../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import ModernHero from '../../components/features/homepage/modern-hero';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
@@ -13,6 +13,11 @@ import FeaturedPost from '../../components/features/blog/featured-post';
 import ModernPostCard from '../../components/features/blog/modern-post-card';
 import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  loading: () => null,
+});
 
 export const revalidate = 60;
 

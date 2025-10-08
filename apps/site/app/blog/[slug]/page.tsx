@@ -1,5 +1,5 @@
 import { AppProvider } from '../../../components/contexts/appContext';
-import Chatbot from '../../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import ModernHeader from '../../../components/features/navigation/modern-header';
 import { Footer } from '../../../components/shared/footer';
 import { notFound } from "next/navigation";
@@ -8,6 +8,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
 import { fetchPostBySlug, fetchPublication } from '../../../lib/content-api';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
+  loading: () => null,
+});
 
 interface BlogPostPageProps {
   params: Promise<{

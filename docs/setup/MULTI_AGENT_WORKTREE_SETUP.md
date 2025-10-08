@@ -143,10 +143,10 @@ Assign issues to specific agents:
 
 ```powershell
 # Assign issue to frontend agent
-.\scripts\agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123
 
 # Auto-assign issues to optimal agents
-.\scripts\agent-coordinator.ps1 -Operation auto-assign -MaxIssues 5
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation auto-assign -MaxIssues 5
 ```
 
 ### System Monitoring
@@ -158,10 +158,10 @@ Monitor all agents and their status:
 .\scripts\multi-agent-automation.ps1 -Mode monitor
 
 # Check coordinator status
-.\scripts\agent-coordinator.ps1 -Operation status
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation status
 
 # Balance agent workload
-.\scripts\agent-coordinator.ps1 -Operation balance-load
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation balance-load
 ```
 
 ## Workflow Process
@@ -233,7 +233,7 @@ Each agent follows a standardized workflow:
 .\scripts\multi-agent-worktree-system.ps1 -Operation status
 
 # Force reassignment
-.\scripts\agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123 -Force
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation claim-issue -Target agent-frontend -Options 123 -Force
 ```
 
 **Sync issues:**

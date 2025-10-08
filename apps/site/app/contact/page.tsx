@@ -5,7 +5,7 @@ import { AppProvider } from '../../components/contexts/appContext';
 import ModernHeader from '../../components/features/navigation/modern-header';
 import { Footer } from '../../components/shared/footer';
 import { Container } from '../../components/shared/container';
-import Chatbot from '../../components/features/chatbot/Chatbot';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -13,6 +13,12 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Mail as MailIcon, MapPin as MapPinIcon, Send as SendIcon, CheckCircle as CheckCircleIcon } from 'lucide-react';
 import { BlueskySVG as BlueskyIcon, FacebookSVG as FacebookIcon, GithubSVG as GithubIcon, LinkedinSVG as LinkedinIcon } from '../../components/icons';
+
+// Lazy load chatbot for better performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  ssr: false,
+  loading: () => null,
+});
 
 const defaultPublication = {
   id: 'fallback-contact',
@@ -29,10 +35,19 @@ const defaultPublication = {
   ogMetaData: { image: null },
 };
 
+interface ErrorResponse {
+  error: string;
+  message: string;
+  fallbackEmail?: string;
+  retryable?: boolean;
+  retryAfter?: number;
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', company: '', projectType: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorDetails, setErrorDetails] = useState<ErrorResponse | null>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,20 +65,69 @@ export default function ContactPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitStatus('idle');
+    setErrorDetails(null);
+    
     const errs = validate();
-    if (errs.length) { setSubmitStatus('error'); setTimeout(() => setSubmitStatus('idle'), 4000); return; }
+    if (errs.length) { 
+      setSubmitStatus('error'); 
+      setErrorDetails({
+        error: 'validation_error',
+        message: 'Please provide a name, valid email, and at least 10 characters in the message.'
+      });
+      setTimeout(() => {
+        setSubmitStatus('idle');
+        setErrorDetails(null);
+      }, 5000); 
+      return; 
+    }
+    
     setIsSubmitting(true);
     try {
-      await new Promise(r => setTimeout(r, 1200));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Store error details for better user messaging
+        setErrorDetails(result as ErrorResponse);
+        setIsSubmitting(false);
+        setSubmitStatus('error');
+        
+        // For retryable errors, don't auto-hide the error message
+        if (!result.retryable) {
+          setTimeout(() => {
+            setSubmitStatus('idle');
+            setErrorDetails(null);
+          }, 10000);
+        }
+        return;
+      }
+
       setIsSubmitting(false);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', company: '', projectType: '', message: '' });
-      setTimeout(() => setSubmitStatus('idle'), 4000);
-    } catch {
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } catch (error) {
+      console.error('Contact form submission error:', error);
       setIsSubmitting(false);
       setSubmitStatus('error');
-      setTimeout(() => setSubmitStatus('idle'), 4000);
+      setErrorDetails({
+        error: 'network_error',
+        message: 'Unable to connect to the server. Please check your internet connection and try again.',
+        retryable: true
+      });
     }
+  };
+  
+  const handleRetry = () => {
+    setSubmitStatus('idle');
+    setErrorDetails(null);
   };
 
   return (
@@ -113,21 +177,76 @@ export default function ContactPage() {
                 {submitStatus === 'success' ? (
                   <div className="rounded-lg border border-green-200 bg-green-50 p-5 dark:border-green-800 dark:bg-green-900/20">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-800"><SendIcon className="h-4 w-4 text-green-600 dark:text-green-400" /></div>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-800"><CheckCircleIcon className="h-4 w-4 text-green-600 dark:text-green-400" /></div>
                       <div>
                         <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">Message Sent!</h3>
-                        <p className="text-green-700 dark:text-green-300">Thanks — I’ll be in touch shortly.</p>
+                        <p className="text-green-700 dark:text-green-300">Thanks — I'll be in touch shortly.</p>
                       </div>
                     </div>
                   </div>
                 ) : submitStatus === 'error' ? (
                   <div className="rounded-lg border border-red-200 bg-red-50 p-5 dark:border-red-800 dark:bg-red-900/20">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-800"><SendIcon className="h-4 w-4 text-red-600 dark:text-red-400" /></div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">Check your inputs</h3>
-                        <p className="text-red-700 dark:text-red-300">Please provide a name, valid email, and at least 10 characters.</p>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-800">
+                          <SendIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-red-800 dark:text-red-200">
+                            {errorDetails?.error === 'validation_error' ? 'Check your inputs' :
+                             errorDetails?.error === 'email_config_error' ? 'Technical Difficulties' :
+                             errorDetails?.error === 'rate_limit' ? 'Too Many Submissions' :
+                             errorDetails?.error === 'network_error' ? 'Connection Issue' :
+                             'Unable to Send Message'}
+                          </h3>
+                          <p className="text-red-700 dark:text-red-300 mt-1">
+                            {errorDetails?.message || 'An unexpected error occurred. Please try again.'}
+                          </p>
+                          {errorDetails?.fallbackEmail && (
+                            <p className="text-red-700 dark:text-red-300 mt-2">
+                              You can also reach out directly at{' '}
+                              <a 
+                                href={`mailto:${errorDetails.fallbackEmail}`}
+                                className="font-semibold underline hover:text-red-900 dark:hover:text-red-100"
+                              >
+                                {errorDetails.fallbackEmail}
+                              </a>
+                            </p>
+                          )}
+                          {errorDetails?.retryAfter && (
+                            <p className="text-sm text-red-600 dark:text-red-400 mt-2">
+                              Please wait {errorDetails.retryAfter} seconds before trying again.
+                            </p>
+                          )}
+                        </div>
                       </div>
+                      {errorDetails?.retryable && (
+                        <div className="flex gap-2">
+                          <Button 
+                            type="button" 
+                            onClick={handleRetry}
+                            variant="outline"
+                            size="sm"
+                            className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
+                          >
+                            Try Again
+                          </Button>
+                          {errorDetails?.fallbackEmail && (
+                            <Button 
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/30"
+                              asChild
+                            >
+                              <a href={`mailto:${errorDetails.fallbackEmail}`}>
+                                <MailIcon className="h-4 w-4 mr-1" />
+                                Email Directly
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : null}

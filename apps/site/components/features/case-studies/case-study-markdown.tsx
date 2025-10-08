@@ -4,6 +4,7 @@ import { useEmbeds } from '@starter-kit/utils/renderer/hooks/useEmbeds';
 import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
 import React, { useEffect, useRef } from 'react';
 import { renderFencedBlocks } from '../../../lib/case-study-blocks';
+import { MermaidDiagram } from './mermaid-diagram';
 
 type Props = {
 	contentMarkdown: string;
@@ -67,10 +68,11 @@ const CaseStudyMarkdownComponent = ({ contentMarkdown }: Props) => {
 
 	// Parse content and preserve block positions
 	const renderContent = () => {
-		// Parse blocks directly in the component
+		// Parse mermaid diagrams first - more flexible regex
+		const mermaidRegex = /```mermaid\s*\n([\s\S]*?)\n```/g;
 		const blockRegex = /:::(\w+)\n([\s\S]*?)\n:::/g;
 		const parts: Array<{
-			type: 'markdown' | 'block';
+			type: 'markdown' | 'block' | 'mermaid';
 			content: string;
 			blockType?: string;
 			blockData?: any;
@@ -78,74 +80,109 @@ const CaseStudyMarkdownComponent = ({ contentMarkdown }: Props) => {
 		let lastIndex = 0;
 		let match;
 
-		// Find all blocks and their positions
+		// Find all mermaid diagrams
+		const mermaidMatches: Array<{ start: number; end: number; content: string }> = [];
+		while ((match = mermaidRegex.exec(contentMarkdown)) !== null) {
+			mermaidMatches.push({
+				start: match.index,
+				end: match.index + match[0].length,
+				content: match[1],
+			});
+		}
+
+		// Combine all special blocks (mermaid + custom blocks)
+		const allBlocks = [
+			...mermaidMatches.map((m) => ({ ...m, type: 'mermaid' as const })),
+		];
+
+		// Find all custom blocks
 		while ((match = blockRegex.exec(contentMarkdown)) !== null) {
 			const [fullMatch, blockType, blockContent] = match;
-			const startIndex = match.index;
+			allBlocks.push({
+				start: match.index,
+				end: match.index + fullMatch.length,
+				type: 'block' as const,
+				blockType,
+				blockContent,
+			});
+		}
 
+		// Sort blocks by position
+		allBlocks.sort((a, b) => a.start - b.start);
+
+		// Process all blocks in order
+		allBlocks.forEach((block) => {
 			// Add markdown content before this block
-			if (startIndex > lastIndex) {
-				const markdownBefore = contentMarkdown.slice(lastIndex, startIndex);
+			if (block.start > lastIndex) {
+				const markdownBefore = contentMarkdown.slice(lastIndex, block.start);
 				if (markdownBefore.trim()) {
 					parts.push({ type: 'markdown', content: markdownBefore });
 				}
 			}
 
-			// Parse block data based on type
-			const lines = blockContent
-				.trim()
-				.split('\n')
-				.filter((line) => line.trim());
-			if (lines.length > 0) {
-				let blockData;
+			if (block.type === 'mermaid') {
+				// Add mermaid diagram
+				parts.push({ type: 'mermaid', content: block.content });
+			} else if (block.type === 'block') {
+				// Process custom block (existing logic)
+				const { blockType, blockContent } = block;
 
-				// Handle different block types with appropriate parsing
-				switch (blockType) {
-					case 'quote':
-						// Parse quote blocks with key-value format
-						const quoteData: any = {};
-						lines.forEach((line) => {
-							const [key, ...valueParts] = line.split(':');
-							if (key && valueParts.length > 0) {
-								quoteData[key.trim()] = valueParts.join(':').trim();
-							}
-						});
-						blockData = { type: 'quote', data: quoteData };
-						break;
+				// Parse block data based on type
+				const lines = blockContent
+					.trim()
+					.split('\n')
+					.filter((line) => line.trim());
+				if (lines.length > 0) {
+					let blockData;
 
-					case 'timeline':
-						// Parse timeline blocks with phase, title, duration, description format
-						const timelineData = lines.map((line) => {
-							const [phase, title, duration, ...descriptionParts] = line
-								.split(',')
-								.map((s) => s.trim());
-							return {
-								phase,
-								title,
-								duration,
-								description: descriptionParts.join(', '),
-							};
-						});
-						blockData = { type: 'timeline', data: timelineData };
-						break;
+					// Handle different block types with appropriate parsing
+					switch (blockType) {
+						case 'quote':
+							// Parse quote blocks with key-value format
+							const quoteData: any = {};
+							lines.forEach((line) => {
+								const [key, ...valueParts] = line.split(':');
+								if (key && valueParts.length > 0) {
+									quoteData[key.trim()] = valueParts.join(':').trim();
+								}
+							});
+							blockData = { type: 'quote', data: quoteData };
+							break;
 
-					default:
-						// Default parsing for table-like blocks
-						const headers = lines[0].split(',').map((h) => h.trim());
-						const rows = lines.slice(1).map((line) => line.split(',').map((cell) => cell.trim()));
-						blockData = { type: blockType, headers, rows };
+						case 'timeline':
+							// Parse timeline blocks with phase, title, duration, description format
+							const timelineData = lines.map((line) => {
+								const [phase, title, duration, ...descriptionParts] = line
+									.split(',')
+									.map((s) => s.trim());
+								return {
+									phase,
+									title,
+									duration,
+									description: descriptionParts.join(', '),
+								};
+							});
+							blockData = { type: 'timeline', data: timelineData };
+							break;
+
+						default:
+							// Default parsing for table-like blocks
+							const headers = lines[0].split(',').map((h) => h.trim());
+							const rows = lines.slice(1).map((line) => line.split(',').map((cell) => cell.trim()));
+							blockData = { type: blockType, headers, rows };
+					}
+
+					parts.push({
+						type: 'block',
+						content: '',
+						blockType,
+						blockData,
+					});
 				}
-
-				parts.push({
-					type: 'block',
-					content: '',
-					blockType,
-					blockData,
-				});
 			}
 
-			lastIndex = startIndex + fullMatch.length;
-		}
+			lastIndex = block.end;
+		});
 
 		// Add remaining markdown content
 		if (lastIndex < contentMarkdown.length) {
@@ -162,7 +199,9 @@ const CaseStudyMarkdownComponent = ({ contentMarkdown }: Props) => {
 				className="hashnode-content-style mx-auto w-full px-5 md:max-w-screen-md"
 			>
 				{parts.map((part, index) => {
-					if (part.type === 'markdown') {
+					if (part.type === 'mermaid') {
+						return <MermaidDiagram key={index} chart={part.content} />;
+					} else if (part.type === 'markdown') {
 						let htmlContent = markdownToHtml(part.content);
 
 						// Add IDs to headings immediately during rendering

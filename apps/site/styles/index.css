@@ -10,12 +10,12 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 346.8 77.2% 49.8%;
+    --primary: 346.8 77.2% 45%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted-foreground: 240 3.8% 40%;
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
@@ -38,7 +38,7 @@
     --card-foreground: 0 0% 95%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
-    --primary: 346.8 77.2% 49.8%;
+    --primary: 346.8 77.2% 45%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -111,9 +111,33 @@
   a:focus-visible,
   input:focus-visible,
   select:focus-visible,
-  textarea:focus-visible {
-    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 45%));
     outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Enhanced focus states for navigation */
+  nav a:focus-visible,
+  nav button:focus-visible {
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 45%));
+    outline-offset: 2px;
+    background-color: hsl(var(--accent, 240 4.8% 95.9%));
+    border-radius: 6px;
+  }
+
+  /* Skip link focus state */
+  .skip-link:focus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background: hsl(var(--primary, 346.8 77.2% 45%));
+    color: hsl(var(--primary-foreground, 355.7 100% 97.3%));
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
   }
 
   /* Screen reader only content */

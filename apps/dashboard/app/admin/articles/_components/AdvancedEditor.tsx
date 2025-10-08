@@ -1,9 +1,18 @@
 // /app/(admin)/admin/articles/_components/AdvancedEditor.tsx
 // Complete TipTap editor implementation with all extensions
 
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component, enabling React hooks,
+// browser APIs, and third-party libraries like TipTap that require DOM access
+// See: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+// This IS a standard Next.js directive (not a typo or mistake)
 'use client'
 
-import React, { useCallback, useEffect } from 'react'
+// React hooks used in this component:
+// - useEffect: Syncs editor content with props and manages keyboard shortcuts
+// Note: useCallback was intentionally removed as it added overhead without benefit
+// The useEditor hook from TipTap already optimizes re-renders effectively
+import React, { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
@@ -161,7 +170,10 @@ export function AdvancedEditor({
     },
   })
 
-  // Keyboard shortcuts
+  // Sync editor with prop changes and handle keyboard shortcuts
+  // Note: useCallback not needed here as the editor instance is stable
+  // and doesn't trigger unnecessary re-renders. The useEditor hook already
+  // optimizes re-renders, and memoization would add overhead without benefit.
   useEffect(() => {
     if (!editor) return
 

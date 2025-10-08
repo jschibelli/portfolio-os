@@ -8,10 +8,10 @@ This guide covers the comprehensive automation system for implementing GitHub is
 ### 1. Analyze Issue Requirements
 ```powershell
 # Analyze issue requirements and generate implementation plan
-.\scripts\issue-analyzer.ps1 -IssueNumber 103 -GeneratePlan
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber 103 -GeneratePlan
 
 # Export analysis to JSON file
-.\scripts\issue-analyzer.ps1 -IssueNumber 103 -GeneratePlan -ExportTo "issue-103-analysis.json"
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber 103 -GeneratePlan -ExportTo "issue-103-analysis.json"
 ```
 
 ### 2. Full Issue Implementation
@@ -56,19 +56,19 @@ Analyzes GitHub issues and extracts requirements, acceptance criteria, and techn
 
 **Usage:**
 ```powershell
-.\scripts\issue-analyzer.ps1 -IssueNumber <ISSUE_NUMBER> [-GeneratePlan] [-ExportTo <FILE>]
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber <ISSUE_NUMBER> [-GeneratePlan] [-ExportTo <FILE>]
 ```
 
 **Examples:**
 ```powershell
 # Basic analysis
-.\scripts\issue-analyzer.ps1 -IssueNumber 103
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber 103
 
 # Generate implementation plan
-.\scripts\issue-analyzer.ps1 -IssueNumber 103 -GeneratePlan
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber 103 -GeneratePlan
 
 # Export analysis to file
-.\scripts\issue-analyzer.ps1 -IssueNumber 103 -GeneratePlan -ExportTo "analysis.json"
+.\scripts\issue-management\analyze-issues.ps1 -IssueNumber 103 -GeneratePlan -ExportTo "analysis.json"
 ```
 
 ### Issue Implementation (`issue-implementation.ps1`)

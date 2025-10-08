@@ -41,30 +41,97 @@ Portfolio OS is a Next.js 14 monorepo built with TypeScript, Tailwind CSS, and T
 - OpenAI (image + text), Resend (email)
 - Turborepo monorepo, PNPM
 
+## 📁 **Project Organization**
+
+### **Scripts Directory** (`scripts/`)
+Organized automation scripts for the Portfolio OS system:
+- **`automation/`** - Core automation and orchestration scripts that handle GitHub Actions workflows, PR automation, and CI/CD pipeline management
+- **`project-management/`** - GitHub project and board management utilities for tracking issues, PRs, and project status updates across multiple repositories
+- **`analysis/`** - Code quality and system analysis tools including linting, type checking, dependency audits, and performance profiling
+- **`utilities/`** - General purpose utilities and configuration helpers for common tasks like environment setup, file operations, and data transformations
+- **`documentation/`** - Documentation generation and maintenance scripts that auto-generate API docs, README updates, and changelog entries
+- **`shared/`** - Common utilities and helper functions used across multiple scripts including logging, error handling, and configuration management
+
+### **Documentation Directory** (`docs/`)
+Comprehensive documentation organized by category:
+- **`automation/`** - Complete automation system documentation covering GitHub Actions, CI/CD pipelines, deployment strategies, and workflow automation patterns
+- **`setup/`** - Setup guides and configuration documentation for local development, environment variables, database setup, and third-party integrations
+- **`developer/`** - Developer guides covering architecture decisions, coding standards, testing strategies, and contribution guidelines
+- **`troubleshooting/`** - Troubleshooting guides for common issues, debugging tips, and solutions to frequently encountered problems
+
+### **Prompts Directory** (`prompts/`)
+AI prompts and templates for automation:
+- **`automation/`** - GitHub issue and project automation prompts for intelligent issue triage, PR analysis, and automated responses to common scenarios
+- **`workflows/`** - End-to-end workflow automation prompts for multi-step processes like release management, code reviews, and deployment pipelines
+- **`templates/`** - Reusable prompt templates and quick references for consistent AI-assisted development and documentation tasks
+
 ## Getting Started
 
-1. Install PNPM and Node 18+
-2. Copy env examples and install deps
+### Prerequisites
 
-```bash
-pnpm i
-cp apps/site/.env.example apps/site/.env.local || true
-cp apps/dashboard/.env.example apps/dashboard/.env.local || true
-```
+1. **Node.js 18+**: Required for Next.js 14 and modern JavaScript features
+   - Download from [nodejs.org](https://nodejs.org/) or use a version manager:
+   ```bash
+   # Using nvm (recommended)
+   nvm install 18
+   nvm use 18
+   
+   # Or using fnm
+   fnm install 18
+   fnm use 18
+   ```
 
-3. Generate Prisma client (dashboard)
+2. **PNPM**: Fast, disk space efficient package manager
+   ```bash
+   # Using npm
+   npm install -g pnpm
+   
+   # Or using Homebrew (macOS)
+   brew install pnpm
+   
+   # Or using Scoop (Windows)
+   scoop install pnpm
+   ```
 
-```bash
-cd apps/dashboard && pnpm prisma generate && cd ../../
-```
+### Installation
 
-4. Run all apps
+1. **Clone and install dependencies**
+   ```bash
+   git clone https://github.com/jschibelli/portfolio-os.git
+   cd portfolio-os
+   pnpm install
+   ```
 
-```bash
-pnpm dev
-```
+2. **Setup environment variables**
+   ```bash
+   # Copy environment templates
+   cp apps/site/.env.example apps/site/.env.local
+   cp apps/dashboard/.env.example apps/dashboard/.env.local
+   
+   # Edit .env.local files with your API keys
+   # Required: OPENAI_API_KEY, RESEND_API_KEY, NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST
+   ```
 
-Visit `http://localhost:3000` for `apps/site`. Dashboard port may vary by your setup.
+3. **Generate Prisma client** (for dashboard database access)
+   ```bash
+   cd apps/dashboard
+   pnpm prisma generate
+   cd ../..
+   ```
+
+4. **Start development servers**
+   ```bash
+   pnpm dev
+   ```
+   - Site: `http://localhost:3000`
+   - Dashboard: `http://localhost:3001` (or check console output)
+
+### Common Setup Issues
+
+- **PNPM command not found**: Restart your terminal after installation or add PNPM to your PATH
+- **Module not found errors**: Run `pnpm install` again and ensure all dependencies are installed
+- **Prisma errors**: Make sure you've run `pnpm prisma generate` in the dashboard directory
+- **Port already in use**: Change ports in `next.config.js` or stop conflicting processes
 
 ## Environment Variables (core)
 

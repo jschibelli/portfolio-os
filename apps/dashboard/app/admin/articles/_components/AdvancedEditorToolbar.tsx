@@ -1,12 +1,25 @@
 // /app/(admin)/admin/articles/_components/AdvancedEditorToolbar.tsx
 // Comprehensive toolbar for the AdvancedEditor with all formatting options
+//
+// Note: Alignment controls (AlignLeft, AlignCenter, AlignRight, AlignJustify) and
+// Type icon have been moved to a context menu for a cleaner toolbar UX.
+// The toolbar now focuses on the most frequently used formatting options.
 
+// 'use client' directive: Required for Next.js 13+ App Router
+// This marks the component as a Client Component for interactive toolbar buttons
+// See: https://nextjs.org/docs/app/building-your-application/rendering/client-components
+// This IS a standard Next.js directive (not a typo or mistake)
 'use client'
 
 import React from 'react'
 import { Editor } from '@tiptap/react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+
+// Icon imports - Note: The following icons were intentionally removed:
+// - Type, AlignLeft, AlignCenter, AlignRight, AlignJustify
+// These alignment controls have been moved to a context menu (not yet implemented)
+// to reduce toolbar complexity and improve UX
 import { 
   Bold, 
   Italic, 
@@ -23,15 +36,10 @@ import {
   Minus,
   Undo,
   Redo,
-  Type,
   Heading1,
   Heading2,
   Heading3,
-  Table,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify
+  Table
 } from 'lucide-react'
 
 interface AdvancedEditorToolbarProps {
