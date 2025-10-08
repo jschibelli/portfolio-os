@@ -93,18 +93,23 @@ const envSchema = z.object({
 
 // Parse and validate environment variables
 export function validateEnv() {
+  console.log('[env-validation] Starting validation...');
   try {
-    return envSchema.parse(process.env);
+    const result = envSchema.parse(process.env);
+    console.log('[env-validation] Validation successful');
+    return result;
   } catch (error) {
+    console.log('[env-validation] Validation error occurred');
+
     if (error instanceof z.ZodError) {
       // During build time, Vercel deployment, or development, be more lenient with missing variables
       if (isBuildTime || isVercelDeployment || _isDevelopment) {
-        console.warn('⚠️  Environment validation warnings (development mode):');
+        console.warn('Environment validation warnings (development mode):');
         error.errors.forEach((err) => {
           console.warn(`  - ${err.path.join('.')}: ${err.message}`);
         });
-        console.warn('\n💡 Some features may be disabled until environment variables are configured.');
-        console.warn('   See README.md for complete setup instructions.');
+        console.warn('\nSome features may be disabled until environment variables are configured.');
+        console.warn('See README.md for complete setup instructions.');
         
         // Return a partial environment object for build time
         return {
@@ -143,31 +148,31 @@ export function validateEnv() {
       }
       
       // In development, be strict about validation
-      console.error('❌ Environment validation failed:');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('Environment validation failed:');
+      console.error('================================================================');
       error.errors.forEach((err) => {
-        console.error(`  ✗ ${err.path.join('.')}: ${err.message}`);
+        console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
-      console.error('\n📋 Required environment variables:');
-      console.error('  ┌─ Core:');
-      console.error('  │  • NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST - Your Hashnode publication host');
-      console.error('  ├─ Email (Contact Form):');
-      console.error('  │  • RESEND_API_KEY - Get from https://resend.com/api-keys');
-      console.error('  │  • EMAIL_FROM - Verified sender email (e.g., noreply@yourdomain.com)');
-      console.error('  │  • EMAIL_REPLY_TO - Reply-to email address');
-      console.error('  ├─ Google Calendar (Optional):');
-      console.error('  │  • GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET');
-      console.error('  │  • GOOGLE_REDIRECT_URI, GOOGLE_OAUTH_REFRESH_TOKEN');
-      console.error('  │  • GOOGLE_CALENDAR_ID');
-      console.error('  └─ Security (Production):');
-      console.error('     • CRON_SECRET (min 32 chars)');
-      console.error('     • AUTH_SECRET, NEXTAUTH_SECRET (min 32 chars)');
-      console.error('     • AUTH_ADMIN_EMAIL, AUTH_ADMIN_PASSWORD (min 12 chars)');
-      console.error('\n💡 Setup instructions:');
+      console.error('\nRequired environment variables:');
+      console.error('  Core:');
+      console.error('    - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST - Your Hashnode publication host');
+      console.error('  Email (Contact Form):');
+      console.error('    - RESEND_API_KEY - Get from https://resend.com/api-keys');
+      console.error('    - EMAIL_FROM - Verified sender email (e.g., noreply@yourdomain.com)');
+      console.error('    - EMAIL_REPLY_TO - Reply-to email address');
+      console.error('  Google Calendar (Optional):');
+      console.error('    - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET');
+      console.error('    - GOOGLE_REDIRECT_URI, GOOGLE_OAUTH_REFRESH_TOKEN');
+      console.error('    - GOOGLE_CALENDAR_ID');
+      console.error('  Security (Production):');
+      console.error('    - CRON_SECRET (min 32 chars)');
+      console.error('    - AUTH_SECRET, NEXTAUTH_SECRET (min 32 chars)');
+      console.error('    - AUTH_ADMIN_EMAIL, AUTH_ADMIN_PASSWORD (min 12 chars)');
+      console.error('\nSetup instructions:');
       console.error('  1. Copy apps/site/env.template to apps/site/.env.local');
       console.error('  2. Fill in your API keys and credentials');
       console.error('  3. See README.md for detailed setup guide');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+      console.error('================================================================\n');
       process.exit(1);
     }
     throw error;
