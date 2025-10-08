@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { emailService } from '../../../lib/email-service';
+import { 
+  emailService, 
+  EmailConfigError, 
+  EmailNetworkError, 
+  EmailRateLimitError,
+  EmailValidationError 
+} from '../../../lib/email-service';
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -89,23 +95,24 @@ export async function POST(request: NextRequest) {
     });
 
     // Send email notification to site owner
-    const emailResult = await emailService.sendEmail({
-      to: 'john@schibelli.dev',
-      from: process.env.EMAIL_FROM || 'noreply@schibelli.dev',
-      subject: `New Contact Form Submission from ${validatedData.name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${validatedData.name}</p>
-        <p><strong>Email:</strong> ${validatedData.email}</p>
-        <p><strong>Company:</strong> ${validatedData.company || 'Not provided'}</p>
-        <p><strong>Project Type:</strong> ${validatedData.projectType || 'Not specified'}</p>
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.message}</p>
-        <hr>
-        <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
-        <p><small>Client IP: ${clientIP}</small></p>
-      `,
-      text: `
+    try {
+      const emailResult = await emailService.sendEmail({
+        to: 'john@schibelli.dev',
+        from: process.env.EMAIL_FROM || 'noreply@schibelli.dev',
+        subject: `New Contact Form Submission from ${validatedData.name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${validatedData.name}</p>
+          <p><strong>Email:</strong> ${validatedData.email}</p>
+          <p><strong>Company:</strong> ${validatedData.company || 'Not provided'}</p>
+          <p><strong>Project Type:</strong> ${validatedData.projectType || 'Not specified'}</p>
+          <p><strong>Message:</strong></p>
+          <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px;">${validatedData.message}</p>
+          <hr>
+          <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
+          <p><small>Client IP: ${clientIP}</small></p>
+        `,
+        text: `
 New Contact Form Submission
 
 Name: ${validatedData.name}
@@ -119,23 +126,69 @@ ${validatedData.message}
 ---
 Submitted on: ${new Date().toLocaleString()}
 Client IP: ${clientIP}
-      `,
-      replyTo: validatedData.email,
-    });
+        `,
+        replyTo: validatedData.email,
+      });
 
-    if (!emailResult.success) {
-      console.error('📧 Failed to send email notification:', emailResult.error);
-      // Don't fail the request if email sending fails - still log the submission
-    } else {
       console.log('📧 Email notification sent successfully:', emailResult.messageId);
-    }
 
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Thank you for your message! I will get back to you within 24 hours.',
-      submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    });
+      // Return success response
+      return NextResponse.json({
+        success: true,
+        message: 'Thank you for your message! I will get back to you within 24 hours.',
+        submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      });
+
+    } catch (emailError) {
+      console.error('📧 Failed to send email notification:', emailError);
+
+      // Handle different error types with appropriate responses
+      if (emailError instanceof EmailConfigError) {
+        // Configuration error - return 500 with helpful message
+        return NextResponse.json({
+          success: false,
+          error: 'email_config_error',
+          message: "We're experiencing technical difficulties with our contact form. Please email john@schibelli.dev directly. We apologize for the inconvenience.",
+          fallbackEmail: 'john@schibelli.dev',
+          submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` // Still provide submission ID for logging
+        }, { status: 500 });
+      }
+
+      if (emailError instanceof EmailRateLimitError) {
+        // Rate limit error - return 429
+        return NextResponse.json({
+          success: false,
+          error: 'rate_limit',
+          message: "You've submitted multiple messages recently. Please wait a few minutes before trying again, or email john@schibelli.dev directly.",
+          fallbackEmail: 'john@schibelli.dev',
+          retryAfter: emailError.retryAfter || 60
+        }, { 
+          status: 429,
+          headers: {
+            'Retry-After': (emailError.retryAfter || 60).toString()
+          }
+        });
+      }
+
+      if (emailError instanceof EmailNetworkError) {
+        // Network error - return 503 (Service Unavailable)
+        return NextResponse.json({
+          success: false,
+          error: 'network_error',
+          message: 'Unable to send message due to a network issue. Please try again in a moment or email john@schibelli.dev directly.',
+          fallbackEmail: 'john@schibelli.dev',
+          retryable: true
+        }, { status: 503 });
+      }
+
+      // Generic email error - return 500
+      return NextResponse.json({
+        success: false,
+        error: 'email_send_failed',
+        message: 'Failed to send your message. Please try again or email john@schibelli.dev directly.',
+        fallbackEmail: 'john@schibelli.dev'
+      }, { status: 500 });
+    }
 
   } catch (error) {
     console.error('📧 Contact form error:', error);
