@@ -3,12 +3,18 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import { Layout } from '../../components/shared/layout';
 import { Container } from '../../components/shared/container';
 import { Button } from '../../components/ui/button';
-import Chatbot from '../../components/features/chatbot/Chatbot';
 import { Timeline, TimelineItem } from '../../components/ui/timeline';
+
+// Dynamic import for Chatbot to improve initial page load performance
+const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
+  ssr: false,
+  loading: () => null,
+});
 
 import {
   ArrowRight,
