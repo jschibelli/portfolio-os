@@ -7,6 +7,10 @@ import {
   EmailRateLimitError,
   EmailValidationError 
 } from '../../../lib/email-service';
+<<<<<<< HEAD
+=======
+import { features } from '../../../lib/env-validation';
+>>>>>>> origin/develop
 
 // Contact form validation schema
 const ContactFormSchema = z.object({
@@ -55,6 +59,19 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is configured
+    if (!features.email) {
+      console.error('📧 Email service not configured. Missing environment variables: RESEND_API_KEY or EMAIL_FROM');
+      return NextResponse.json(
+        { 
+          error: 'Email service is not configured. Please contact the site administrator.',
+          code: 'EMAIL_SERVICE_NOT_CONFIGURED',
+          details: 'The contact form requires email service configuration. Please ensure RESEND_API_KEY and EMAIL_FROM environment variables are set.'
+        },
+        { status: 503 }
+      );
+    }
+
     // Rate limiting implementation
     const clientIP = request.ip ?? request.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const now = Date.now();
@@ -131,6 +148,7 @@ Client IP: ${clientIP}
       });
 
       console.log('📧 Email notification sent successfully:', emailResult.messageId);
+<<<<<<< HEAD
 
       // Return success response
       return NextResponse.json({
@@ -192,6 +210,69 @@ Client IP: ${clientIP}
 
   } catch (err: unknown) {
     console.error('📧 Contact form error:', err);
+=======
+
+      // Return success response
+      return NextResponse.json({
+        success: true,
+        message: 'Thank you for your message! I will get back to you within 24 hours.',
+        submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      });
+
+    } catch (emailError) {
+      console.error('📧 Failed to send email notification:', emailError);
+
+      // Handle different error types with appropriate responses
+      if (emailError instanceof EmailConfigError) {
+        // Configuration error - return 500 with helpful message
+        return NextResponse.json({
+          success: false,
+          error: 'email_config_error',
+          message: "We're experiencing technical difficulties with our contact form. Please email john@schibelli.dev directly. We apologize for the inconvenience.",
+          fallbackEmail: 'john@schibelli.dev',
+          submissionId: `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` // Still provide submission ID for logging
+        }, { status: 500 });
+      }
+
+      if (emailError instanceof EmailRateLimitError) {
+        // Rate limit error - return 429
+        return NextResponse.json({
+          success: false,
+          error: 'rate_limit',
+          message: "You've submitted multiple messages recently. Please wait a few minutes before trying again, or email john@schibelli.dev directly.",
+          fallbackEmail: 'john@schibelli.dev',
+          retryAfter: emailError.retryAfter || 60
+        }, { 
+          status: 429,
+          headers: {
+            'Retry-After': (emailError.retryAfter || 60).toString()
+          }
+        });
+      }
+
+      if (emailError instanceof EmailNetworkError) {
+        // Network error - return 503 (Service Unavailable)
+        return NextResponse.json({
+          success: false,
+          error: 'network_error',
+          message: 'Unable to send message due to a network issue. Please try again in a moment or email john@schibelli.dev directly.',
+          fallbackEmail: 'john@schibelli.dev',
+          retryable: true
+        }, { status: 503 });
+      }
+
+      // Generic email error - return 500
+      return NextResponse.json({
+        success: false,
+        error: 'email_send_failed',
+        message: 'Failed to send your message. Please try again or email john@schibelli.dev directly.',
+        fallbackEmail: 'john@schibelli.dev'
+      }, { status: 500 });
+    }
+
+  } catch (error) {
+    console.error('📧 Contact form error:', error);
+>>>>>>> origin/develop
 
     // Handle validation errors
     if (err instanceof z.ZodError) {

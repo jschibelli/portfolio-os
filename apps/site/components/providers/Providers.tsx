@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import React from "react";
+import { ScrollRestoration } from "./ScrollRestoration";
 
 // Custom Error Boundary Component
 interface ErrorBoundaryState {
@@ -94,6 +95,7 @@ export function Providers({ children }: ProvidersProps) {
           disableTransitionOnChange
           enableColorScheme
         >
+          <ScrollRestoration />
           {children}
         </ThemeProvider>
       </SessionProvider>

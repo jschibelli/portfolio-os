@@ -40,6 +40,32 @@ scripts/project-management/
 .\update-project-status-webhook.ps1 -IssueNumber 250 -Action "start" -AgentName "agent-1"
 ```
 
+### Release Management
+
+**Simple per-app releases:**
+```powershell
+# Launch portfolio site
+.\release-app.ps1 -App site
+
+# Launch docs site (when ready)
+.\release-app.ps1 -App docs
+
+# Launch dashboard (when ready)
+.\release-app.ps1 -App dashboard
+
+# Preview first (dry run)
+.\release-app.ps1 -App site -DryRun
+```
+
+**Advanced manual releases:**
+```powershell
+# Create stable release
+.\create-release.ps1 -Version "1.0.0"
+
+# Create pre-release (beta)
+.\create-release.ps1 -Version "1.1.0" -PreRelease "beta.1"
+```
+
 ## 📋 Core Features
 
 ### 🔧 Project Management (`manage-projects.ps1`)
@@ -59,6 +85,26 @@ scripts/project-management/
 - **Real-time Updates**: Instant project status synchronization
 - **Agent Integration**: Multi-agent workflow support
 - **GitHub Actions**: Seamless CI/CD integration
+
+### 🚀 Release Management
+
+#### `release-app.ps1` (Recommended - Simple!)
+Per-app release automation for monorepo - **just one command per app!**
+
+- **Zero Configuration**: No version numbers to remember
+- **Per-App Releases**: Individual versioning for site, dashboard, docs
+- **Automatic Updates**: Updates all package.json and CHANGELOG.md files
+- **Smart Tagging**: Creates app-specific git tags (v1.0.0-site, etc.)
+- **One Command**: Just `release-app.ps1 -App site` when ready!
+
+#### `create-release.ps1` (Advanced)
+Full manual control for custom versioning scenarios
+
+- **Semantic Versioning**: Manual version specification
+- **Pre-Release Support**: Alpha, Beta, and Release Candidate versions
+- **Git Integration**: Automated tag creation and push
+- **Package Updates**: Automatic package.json version synchronization
+- **GitHub Actions**: Triggers automated release workflow
 
 ## 🎯 Available Presets
 
