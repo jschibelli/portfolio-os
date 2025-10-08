@@ -65,6 +65,11 @@ const envSchema = z.object({
   
   // Database
   DATABASE_URL: z.string().url('Invalid database URL format').optional(),
+  
+  // Email Service (Resend)
+  RESEND_API_KEY: z.string().min(1, 'Resend API key is required for email service').optional(),
+  EMAIL_FROM: z.string().email('Invalid from email format').optional(),
+  EMAIL_REPLY_TO: z.string().email('Invalid reply-to email format').optional(),
 });
 
 // Parse and validate environment variables
@@ -115,6 +120,9 @@ export function validateEnv() {
           AUTH_ADMIN_EMAIL: process.env.AUTH_ADMIN_EMAIL || '',
           AUTH_ADMIN_PASSWORD: process.env.AUTH_ADMIN_PASSWORD || '',
           DATABASE_URL: process.env.DATABASE_URL || '',
+          RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+          EMAIL_FROM: process.env.EMAIL_FROM || '',
+          EMAIL_REPLY_TO: process.env.EMAIL_REPLY_TO || '',
         };
       }
       

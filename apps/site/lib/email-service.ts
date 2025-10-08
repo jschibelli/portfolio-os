@@ -5,6 +5,40 @@
  * and validation. It supports multiple email providers and includes retry logic.
  */
 
+/**
+ * Custom error classes for email service
+ */
+export class EmailConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EmailConfigError';
+  }
+}
+
+export class EmailNetworkError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EmailNetworkError';
+  }
+}
+
+export class EmailRateLimitError extends Error {
+  public retryAfter?: number;
+  
+  constructor(message: string, retryAfter?: number) {
+    super(message);
+    this.name = 'EmailRateLimitError';
+    this.retryAfter = retryAfter;
+  }
+}
+
+export class EmailValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'EmailValidationError';
+  }
+}
+
 export interface EmailOptions {
   to: string | string[];
   from: string;
@@ -45,10 +79,7 @@ export class EmailService {
       // Validate email options
       const validation = this.validateEmailOptions(options);
       if (!validation.isValid) {
-        return {
-          success: false,
-          error: `Invalid email options: ${validation.errors.join(', ')}`,
-        };
+        throw new EmailValidationError(`Invalid email options: ${validation.errors.join(', ')}`);
       }
 
       // Use configured provider
@@ -90,7 +121,7 @@ export class EmailService {
       const { Resend } = await import('resend');
       
       if (!this.config.apiKey || this.config.apiKey === 'test-api-key') {
-        throw new Error('Resend API key is not configured');
+        throw new EmailConfigError('Resend API key is not configured. Please set RESEND_API_KEY environment variable.');
       }
 
       const resend = new Resend(this.config.apiKey);
