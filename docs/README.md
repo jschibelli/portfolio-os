@@ -1,5 +1,18 @@
 # Portfolio OS Documentation
 
+> **📚 New Documentation Site Available!**
+> 
+> Complete, searchable documentation is now available at the documentation site:
+> - **URL**: http://localhost:3000 (when running `pnpm dev`)
+> - **Location**: `apps/docs/`
+> - **Map**: See `DOCS_MAP.md` in repository root for complete navigation
+>
+> This folder contains legacy and technical documentation that complements the main docs site.
+
+---
+
+# Portfolio OS Documentation
+
 This directory contains comprehensive documentation for the Portfolio OS system, organized by audience and use case for easy navigation and maintenance.
 
 ## 📁 **Directory Structure**

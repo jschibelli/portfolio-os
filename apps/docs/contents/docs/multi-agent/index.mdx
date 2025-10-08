@@ -1,0 +1,196 @@
+---
+title: Multi-Agent System
+description: Parallel development with multiple AI agents
+---
+
+# Multi-Agent System
+
+Portfolio OS includes a sophisticated multi-agent development system that enables parallel development by multiple AI agents working simultaneously on different features.
+
+## Overview
+
+The multi-agent system uses Git worktrees to create isolated development environments where each agent can work independently without conflicts. This dramatically accelerates development by allowing multiple features to be built in parallel.
+
+## Key Benefits
+
+- **Parallel Development**: Multiple agents work simultaneously on different features
+- **Zero Conflicts**: Each agent has its own isolated workspace
+- **Easy Integration**: Merge completed work through standard PR process
+- **State Management**: Track agent status and task assignments
+- **Coordination**: PowerShell scripts orchestrate agent workflows
+
+## How It Works
+
+<Mermaid chart={`graph TB
+    Main[Main Repository] --> Agent1[Agent 1 Worktree]
+    Main --> Agent2[Agent 2 Worktree]
+    Main --> Agent3[Agent 3 Worktree]
+    
+    Agent1 --> Feature1[Feature A]
+    Agent2 --> Feature2[Feature B]
+    Agent3 --> Feature3[Feature C]
+    
+    Feature1 --> PR1[PR #123]
+    Feature2 --> PR2[PR #124]
+    Feature3 --> PR3[PR #125]
+    
+    PR1 --> Develop[Develop Branch]
+    PR2 --> Develop
+    PR3 --> Develop`} />
+
+## Core Components
+
+### 1. Git Worktrees
+
+Git worktrees create separate working directories that share the same repository:
+
+```bash
+# Main repo
+portfolio-os/
+
+# Agent worktrees
+worktrees/agent-1-chris/
+worktrees/agent-2-jason/
+worktrees/agent-3-alex/
+```
+
+Each worktree is a full working copy with its own branch.
+
+### 2. Agent Coordination Scripts
+
+PowerShell scripts in `scripts/agent-management/`:
+
+- **setup-agent-development.ps1** - Create new agent worktree
+- **manage-multi-agent-system.ps1** - Coordinate multiple agents
+- **start-multi-agent-e2e-unified.ps1** - Run complete workflows
+- **update-agent-status.ps1** - Track agent progress
+
+### 3. Task Assignment
+
+Agents are assigned specific tasks with clear boundaries:
+
+```json
+{
+  "agent-1": {
+    "name": "Chris",
+    "role": "Frontend Specialist",
+    "tasks": ["Issue #266", "Issue #268"],
+    "branch": "chris-automation-frontend"
+  },
+  "agent-2": {
+    "name": "Jason", 
+    "role": "Backend Specialist",
+    "tasks": ["Issue #264", "Issue #265"],
+    "branch": "jason-automation-backend"
+  }
+}
+```
+
+### 4. State Synchronization
+
+Configuration file tracks agent state:
+
+- Current branch
+- Assigned tasks
+- Work status (pending, in-progress, review, completed)
+- Dependencies
+
+## Typical Workflow
+
+<Step>
+  <StepItem title="Create Agent Worktrees">
+    ```powershell
+    .\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+    .\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-2"
+    ```
+  </StepItem>
+
+  <StepItem title="Assign Tasks to Agents">
+    Each agent receives specific issues or features to implement.
+    
+    Tasks are tracked in `scripts/configuration/agent-assignment-config.json`
+  </StepItem>
+
+  <StepItem title="Agents Work in Parallel">
+    Each agent:
+    - Works in their isolated worktree
+    - Makes commits on their feature branch
+    - Has no conflicts with other agents
+  </StepItem>
+
+  <StepItem title="Create Pull Requests">
+    ```powershell
+    # Agent 1 completes work
+    .\scripts\pr-management\automate-pr-unified.ps1 -Title "feat: implement feature A"
+    
+    # Agent 2 completes work
+    .\scripts\pr-management\automate-pr-unified.ps1 -Title "feat: implement feature B"
+    ```
+  </StepItem>
+
+  <StepItem title="Review and Merge">
+    PRs are reviewed and merged to `develop` branch independently.
+  </StepItem>
+</Step>
+
+## Use Cases
+
+### Parallel Feature Development
+
+Two agents implement different features simultaneously:
+- Agent 1: User authentication system
+- Agent 2: Dashboard analytics
+
+### Bug Fixes + Features
+
+Mix urgent fixes with feature work:
+- Agent 1: Critical security patch
+- Agent 2: New feature development
+
+### Experimentation
+
+Try different approaches in parallel:
+- Agent 1: Implement solution A
+- Agent 2: Implement solution B
+- Compare and choose the best approach
+
+## Getting Started
+
+Ready to use the multi-agent system?
+
+<CardGrid>
+  <Card href="/docs/multi-agent/quick-start" title="Quick Start Guide" description="Set up your first multi-agent workflow" />
+  <Card href="/docs/multi-agent/architecture" title="System Architecture" description="Deep dive into how it works" />
+  <Card href="/docs/scripts-reference/agent-management" title="Agent Scripts" description="Available automation scripts" />
+</CardGrid>
+
+## Best Practices
+
+<Note type="success">
+**Tips for Effective Multi-Agent Development:**
+
+1. **Clear task boundaries** - Minimize overlap between agents
+2. **Regular syncing** - Keep worktrees updated with develop
+3. **Status tracking** - Update agent status regularly
+4. **Communication** - Document decisions in PRs
+5. **Small PRs** - Easier to review and merge
+</Note>
+
+## Limitations
+
+<Note type="warning">
+Be aware of these constraints:
+
+- **Disk space**: Each worktree is a full copy (~100MB each)
+- **Coordination overhead**: More agents = more coordination needed
+- **Merge conflicts**: Can still occur if agents touch same files
+- **Resource usage**: Multiple Node processes if running dev servers
+</Note>
+
+## Next Steps
+
+- [Quick Start](/docs/multi-agent/quick-start) - Set up your first agent
+- [Worktree Management](/docs/multi-agent/worktree) - Manage Git worktrees
+- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate multiple agents
+- [Workflow Automation](/docs/multi-agent/workflow) - Automate agent workflows
+

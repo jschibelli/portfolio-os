@@ -1,0 +1,338 @@
+---
+title: Environment Configuration
+description: Configure API keys, secrets, and environment variables for Portfolio OS
+---
+
+# Environment Configuration
+
+Portfolio OS uses environment variables to configure API keys, database connections, and feature flags across different environments.
+
+## Environment Files Overview
+
+The monorepo uses separate environment files for each app:
+
+| File Location | Purpose | When to Use |
+|---------------|---------|-------------|
+| `apps/site/.env.local` | Site app secrets | Development & Production |
+| `apps/dashboard/.env.local` | Dashboard app secrets | Development & Production |
+| `apps/site/.env.example` | Site environment template | Reference for required variables |
+| `apps/dashboard/.env.example` | Dashboard environment template | Reference for required variables |
+
+<Note type="warning">
+**Never commit `.env.local` files to Git!** They are automatically ignored via `.gitignore` to protect sensitive credentials.
+</Note>
+
+## Quick Setup
+
+<Step>
+  <StepItem title="Copy Environment Templates">
+    ```bash
+    # From the repository root
+    cp apps/site/.env.example apps/site/.env.local
+    cp apps/dashboard/.env.example apps/dashboard/.env.local
+    ```
+  </StepItem>
+
+  <StepItem title="Edit Environment Files">
+    Open each `.env.local` file and fill in your API keys and configuration values.
+    
+    Start with the **required** variables (marked below), then add optional ones as needed.
+  </StepItem>
+
+  <StepItem title="Restart Development Servers">
+    ```bash
+    # Stop the dev servers (Ctrl+C) and restart
+    pnpm dev
+    ```
+    
+    Environment variables are loaded at build time for Next.js.
+  </StepItem>
+</Step>
+
+## Site App Environment Variables
+
+Configuration for `apps/site/.env.local`:
+
+### Required Variables
+
+<Tabs defaultValue="hashnode">
+  <TabsList>
+    <TabsTrigger value="hashnode">Hashnode</TabsTrigger>
+    <TabsTrigger value="openai">OpenAI</TabsTrigger>
+    <TabsTrigger value="resend">Resend</TabsTrigger>
+    <TabsTrigger value="redis">Redis</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="hashnode">
+    **Hashnode Content Integration**
+    
+    Portfolio OS can source blog content from Hashnode via their GraphQL API.
+    
+    ```bash
+    NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=yourblog.hashnode.dev
+    ```
+    
+    **How to get this:**
+    1. Sign up at [hashnode.com](https://hashnode.com)
+    2. Create a publication
+    3. Use your publication's domain (e.g., `mindware.hashnode.dev`)
+    
+    <Note>
+    This variable is **public** (prefixed with `NEXT_PUBLIC_`) and will be exposed to the browser.
+    </Note>
+  </TabsContent>
+  
+  <TabsContent value="openai">
+    **OpenAI API for AI Features**
+    
+    Used for image generation, text processing, and AI-powered features.
+    
+    ```bash
+    OPENAI_API_KEY=sk-proj-...
+    ```
+    
+    **How to get this:**
+    1. Sign up at [platform.openai.com](https://platform.openai.com)
+    2. Navigate to API Keys section
+    3. Create a new secret key
+    
+    <Note type="warning">
+    Keep this key secret! It should never be exposed in client-side code.
+    </Note>
+  </TabsContent>
+  
+  <TabsContent value="resend">
+    **Resend for Transactional Emails**
+    
+    Handles contact forms and transactional email delivery.
+    
+    ```bash
+    RESEND_API_KEY=re_...
+    ```
+    
+    **How to get this:**
+    1. Sign up at [resend.com](https://resend.com)
+    2. Navigate to API Keys
+    3. Create a new API key
+    
+    **Also configure:**
+    ```bash
+    RESEND_FROM_EMAIL=noreply@yourdomain.com
+    RESEND_TO_EMAIL=your-email@example.com
+    ```
+  </TabsContent>
+  
+  <TabsContent value="redis">
+    **Upstash Redis for Caching**
+    
+    Provides fast caching for blog posts and API responses.
+    
+    ```bash
+    UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+    UPSTASH_REDIS_REST_TOKEN=your-token-here
+    ```
+    
+    **How to get this:**
+    1. Sign up at [upstash.com](https://upstash.com)
+    2. Create a Redis database
+    3. Copy the REST URL and Token from the database details
+    
+    <Note type="success">
+    Upstash has a generous free tier perfect for development.
+    </Note>
+  </TabsContent>
+</Tabs>
+
+### Optional Variables
+
+```bash
+# Base URL for absolute URLs (useful for OG images, sitemaps)
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Environment mode
+NEXT_PUBLIC_MODE=development
+
+# Feature flags
+NEXT_PUBLIC_ENABLE_ANALYTICS=false
+NEXT_PUBLIC_ENABLE_COMMENTS=false
+```
+
+## Dashboard App Environment Variables
+
+Configuration for `apps/dashboard/.env.local`:
+
+### Required Variables
+
+**Database URL (SQLite for Development)**
+
+```bash
+DATABASE_URL=file:./dev.db
+```
+
+<Note>
+The dashboard uses Prisma with SQLite for local development. In production, you can switch to PostgreSQL or another database.
+</Note>
+
+**Blob Storage (Vercel Blob)**
+
+```bash
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
+```
+
+**How to get this:**
+1. Create a Vercel account
+2. Enable Blob Storage for your project
+3. Copy the read/write token
+
+### Optional Variables
+
+```bash
+# Admin authentication
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD_HASH=your-bcrypt-hash
+
+# Analytics
+NEXT_PUBLIC_VERCEL_ANALYTICS_ID=your-analytics-id
+```
+
+## Complete Environment File Examples
+
+### apps/site/.env.local
+
+```bash
+# Hashnode Content
+NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST=mindware.hashnode.dev
+
+# AI Features
+OPENAI_API_KEY=sk-proj-your-key-here
+
+# Email
+RESEND_API_KEY=re_your-key-here
+RESEND_FROM_EMAIL=noreply@yourdomain.com
+RESEND_TO_EMAIL=your-email@example.com
+
+# Caching
+UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-token-here
+
+# Optional Configuration
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_MODE=development
+```
+
+### apps/dashboard/.env.local
+
+```bash
+# Database
+DATABASE_URL=file:./dev.db
+
+# Storage
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_your-token-here
+
+# Optional
+ADMIN_EMAIL=admin@example.com
+```
+
+## Environment Variable Loading
+
+Next.js automatically loads environment variables in this order:
+
+1. `.env.local` (highest priority, gitignored)
+2. `.env.development` or `.env.production` (based on NODE_ENV)
+3. `.env` (lowest priority)
+
+<Note>
+Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser and baked into the JavaScript bundle at build time.
+</Note>
+
+## Production Deployment
+
+When deploying to Vercel, Railway, or other platforms:
+
+<Step>
+  <StepItem title="Add Environment Variables to Platform">
+    Navigate to your project settings and add all required environment variables.
+    
+    **For Vercel:**
+    - Go to Project Settings → Environment Variables
+    - Add each variable individually
+    - Select which environments they apply to (Production, Preview, Development)
+  </StepItem>
+
+  <StepItem title="Update Production-Specific Values">
+    ```bash
+    # Change these for production
+    NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+    NEXT_PUBLIC_MODE=production
+    DATABASE_URL=postgresql://user:password@host:5432/dbname
+    ```
+  </StepItem>
+
+  <StepItem title="Redeploy Application">
+    Changes to environment variables require a new deployment to take effect.
+  </StepItem>
+</Step>
+
+## Security Best Practices
+
+<Note type="danger">
+**Critical Security Guidelines:**
+
+1. Never commit `.env.local` files to version control
+2. Don't expose server-side API keys in `NEXT_PUBLIC_` variables
+3. Rotate API keys if they're accidentally exposed
+4. Use different API keys for development and production
+5. Enable rate limiting on production API keys
+</Note>
+
+### Checking for Exposed Secrets
+
+```bash
+# Scan repository for accidentally committed secrets
+git log --all --full-history -- "**/.env.local"
+
+# If found, rotate all exposed credentials immediately
+```
+
+## Troubleshooting
+
+### Environment Variables Not Loading
+
+**Problem:** Variables are undefined in your app
+
+**Solutions:**
+1. Ensure `.env.local` file exists in the correct app directory
+2. Restart development server after adding/changing variables
+3. Check variable names are spelled correctly
+4. For client-side access, ensure variable is prefixed with `NEXT_PUBLIC_`
+
+### Build Errors Due to Missing Variables
+
+**Problem:** Build fails with "Required environment variable X is not set"
+
+**Solutions:**
+1. Check that all required variables are present in `.env.local`
+2. Ensure variables are set in your deployment platform
+3. Verify no typos in variable names
+
+### Variables Work Locally But Not in Production
+
+**Problem:** App works in development but fails in production
+
+**Solutions:**
+1. Add environment variables to your hosting platform (Vercel, Railway, etc.)
+2. Ensure production database URL is correct
+3. Check that `NEXT_PUBLIC_BASE_URL` matches your production domain
+
+## Next Steps
+
+With your environment configured:
+
+1. [First Steps Tutorial](/docs/getting-started/first-steps) - Build your first feature
+2. [Setup Guides](/docs/setup/database) - Configure database and storage
+3. [API Reference](/docs/api-reference/rest-api) - Explore available APIs
+
+<Note>
+For production deployment configuration, see the [Deployment Runbook](/docs/setup/deployment).
+</Note>
+

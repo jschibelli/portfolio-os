@@ -1,0 +1,217 @@
+---
+title: Multi-Agent Quick Start
+description: Get started with multi-agent development in 15 minutes
+---
+
+# Multi-Agent Quick Start
+
+Set up and run your first multi-agent workflow in just 15 minutes.
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- [x] Portfolio OS installed and working
+- [x] PowerShell 7+ installed
+- [x] Git worktree feature available (Git 2.5+)
+- [x] At least 2GB free disk space
+
+## Quick Setup
+
+<Step>
+  <StepItem title="Create Your First Agent">
+    ```powershell
+    cd portfolio-os
+    .\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+    ```
+    
+    This creates a new worktree at `worktrees/agent-1/`
+  </StepItem>
+
+  <StepItem title="Verify Agent Created">
+    ```powershell
+    # List all worktrees
+    git worktree list
+    
+    # Check agent directory
+    ls worktrees/
+    ```
+    
+    You should see the new agent worktree listed.
+  </StepItem>
+
+  <StepItem title="Assign a Task">
+    Edit `scripts/configuration/agent-assignment-config.json`:
+    
+    ```json
+    {
+      "agents": [{
+        "name": "agent-1",
+        "tasks": ["Implement dark mode toggle"],
+        "branch": "feature/dark-mode",
+        "status": "in-progress"
+      }]
+    }
+    ```
+  </StepItem>
+
+  <StepItem title="Agent Starts Working">
+    The agent now works in their isolated worktree:
+    
+    ```powershell
+    cd worktrees/agent-1
+    pnpm dev
+    # Make changes, commit, create PR
+    ```
+  </StepItem>
+</Step>
+
+## Multi-Agent Workflow
+
+Now let's run multiple agents in parallel:
+
+<Step>
+  <StepItem title="Create Multiple Agents">
+    ```powershell
+    .\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+      -NumAgents 2 `
+      -Tasks "Add authentication", "Create admin dashboard"
+    ```
+  </StepItem>
+
+  <StepItem title="Monitor Agent Status">
+    ```powershell
+    .\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
+    ```
+    
+    Shows current status of all agents.
+  </StepItem>
+
+  <StepItem title="Agents Work in Parallel">
+    - Agent 1 implements authentication in `worktrees/agent-1/`
+    - Agent 2 builds admin dashboard in `worktrees/agent-2/`
+    - No conflicts because they're in separate worktrees!
+  </StepItem>
+
+  <StepItem title="Create PRs">
+    ```powershell
+    # Agent 1 completes work
+    cd worktrees/agent-1
+    .\scripts\pr-management\automate-pr-unified.ps1 `
+      -Title "feat: add user authentication" `
+      -Body "Implements JWT-based auth"
+    
+    # Agent 2 completes work
+    cd worktrees/agent-2
+    .\scripts\pr-management\automate-pr-unified.ps1 `
+      -Title "feat: create admin dashboard" `
+      -Body "Adds admin UI with analytics"
+    ```
+  </StepItem>
+</Step>
+
+## Example: Parallel Feature Development
+
+Let's walk through a real example:
+
+### Scenario
+
+Build two features simultaneously:
+- **Feature A**: Blog comment system (Agent 1)
+- **Feature B**: Newsletter subscription (Agent 2)
+
+### Implementation
+
+```powershell
+# Setup
+.\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+.\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-2"
+
+# Agent 1: Comment System
+cd worktrees/agent-1
+git checkout -b feature/comments
+# Implement comment system
+git add .
+git commit -m "feat: add blog comments"
+git push origin feature/comments
+
+# Agent 2: Newsletter
+cd worktrees/agent-2
+git checkout -b feature/newsletter
+# Implement newsletter
+git add .
+git commit -m "feat: add newsletter subscription"
+git push origin feature/newsletter
+
+# Create PRs (both at the same time!)
+```
+
+Both features developed in parallel, zero conflicts!
+
+## Common Commands
+
+| Command | Purpose |
+|---------|---------|
+| `setup-agent-development.ps1` | Create new agent |
+| `manage-multi-agent-system.ps1 -Action status` | Check all agents |
+| `update-agent-status.ps1` | Update agent progress |
+| `git worktree list` | List all worktrees |
+| `git worktree remove <path>` | Delete worktree |
+
+## Troubleshooting
+
+### Worktree Creation Fails
+
+```powershell
+# Error: worktree already exists
+Solution: Remove existing worktree first
+git worktree remove worktrees/agent-1
+
+# Error: branch already exists
+Solution: Use different branch name
+git checkout -b feature/different-name
+```
+
+### Agent Can't Push
+
+```powershell
+# Error: permission denied
+Solution: Ensure Git credentials are configured
+git config --global credential.helper store
+```
+
+### Port Conflicts
+
+```powershell
+# Error: port 3000 in use
+Solution: Each agent should use different port
+# In worktrees/agent-1/apps/site/next.config.js
+module.exports = {
+  devServer: { port: 3001 }
+}
+```
+
+## Best Practices
+
+<Note type="success">
+**Tips for Success:**
+
+1. **Clear boundaries**: Assign non-overlapping features
+2. **Small tasks**: Each agent works on focused features
+3. **Regular syncs**: Rebase on develop frequently
+4. **Status updates**: Keep agent status current
+5. **Clean up**: Remove unused worktrees
+</Note>
+
+## Next Steps
+
+Now that you've created your first multi-agent workflow:
+
+- [System Architecture](/docs/multi-agent/architecture) - Learn how it works
+- [Worktree Management](/docs/multi-agent/worktree) - Advanced worktree techniques
+- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate multiple agents
+- [Agent Scripts](/docs/scripts-reference/agent-management) - Available scripts
+
+<Note>
+Questions? Check the [Troubleshooting Guide](/docs/troubleshooting/common-issues) or see [Multi-Agent Architecture](/docs/multi-agent/architecture) for deep dive.
+</Note>

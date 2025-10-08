@@ -1,0 +1,335 @@
+---
+title: Installation & Prerequisites
+description: Complete guide to setting up your development environment for Portfolio OS
+---
+
+# Installation & Prerequisites
+
+This guide covers everything you need to install and configure for Portfolio OS development.
+
+## System Requirements
+
+### Required Software
+
+<Note type="warning">
+Ensure you meet these minimum requirements before proceeding with installation.
+</Note>
+
+| Software | Minimum Version | Recommended | Purpose |
+|----------|----------------|-------------|---------|
+| Node.js | 18.0.0 | 18.17.0+ | JavaScript runtime |
+| PNPM | 8.0.0 | 10.14.0+ | Package manager |
+| Git | 2.x | Latest | Version control |
+
+### Recommended Tools
+
+- **Code Editor**: VS Code with extensions:
+  - ESLint
+  - Prettier
+  - Tailwind CSS IntelliSense
+  - TypeScript and JavaScript Language Features
+- **Terminal**: iTerm2 (macOS), Windows Terminal (Windows), or your preferred terminal
+- **Browser**: Chrome/Edge with React DevTools extension
+
+## Installing Prerequisites
+
+### Node.js Installation
+
+<Tabs defaultValue="nvm">
+  <TabsList>
+    <TabsTrigger value="nvm">Using NVM (Recommended)</TabsTrigger>
+    <TabsTrigger value="fnm">Using FNM</TabsTrigger>
+    <TabsTrigger value="direct">Direct Install</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="nvm">
+    **Node Version Manager (NVM)** - Best for managing multiple Node versions
+    
+    **macOS/Linux:**
+    ```bash
+    # Install NVM
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    
+    # Install Node.js 18
+    nvm install 18
+    nvm use 18
+    nvm alias default 18
+    ```
+    
+    **Windows:**
+    ```powershell
+    # Install nvm-windows from https://github.com/coreybutler/nvm-windows/releases
+    # Then run:
+    nvm install 18
+    nvm use 18
+    ```
+  </TabsContent>
+  
+  <TabsContent value="fnm">
+    **Fast Node Manager (FNM)** - Faster alternative to NVM
+    
+    **macOS:**
+    ```bash
+    brew install fnm
+    fnm install 18
+    fnm use 18
+    fnm default 18
+    ```
+    
+    **Windows:**
+    ```powershell
+    scoop install fnm
+    fnm install 18
+    fnm use 18
+    ```
+  </TabsContent>
+  
+  <TabsContent value="direct">
+    **Direct Installation**
+    
+    Download the installer from [nodejs.org](https://nodejs.org/) and follow the installation wizard.
+    
+    **Verify installation:**
+    ```bash
+    node --version  # Should show v18.x.x or higher
+    npm --version   # Comes bundled with Node.js
+    ```
+  </TabsContent>
+</Tabs>
+
+### PNPM Installation
+
+PNPM is faster and more disk-efficient than npm. Portfolio OS requires PNPM for workspace management.
+
+<Tabs defaultValue="npm">
+  <TabsList>
+    <TabsTrigger value="npm">Using NPM</TabsTrigger>
+    <TabsTrigger value="brew">Homebrew (macOS)</TabsTrigger>
+    <TabsTrigger value="scoop">Scoop (Windows)</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="npm">
+    ```bash
+    npm install -g pnpm
+    
+    # Verify installation
+    pnpm --version
+    ```
+  </TabsContent>
+  
+  <TabsContent value="brew">
+    ```bash
+    brew install pnpm
+    
+    # Verify installation
+    pnpm --version
+    ```
+  </TabsContent>
+  
+  <TabsContent value="scoop">
+    ```powershell
+    scoop install pnpm
+    
+    # Verify installation
+    pnpm --version
+    ```
+  </TabsContent>
+</Tabs>
+
+<Note>
+After installing PNPM, you may need to restart your terminal for the command to be available.
+</Note>
+
+### Git Installation
+
+<Tabs defaultValue="official">
+  <TabsList>
+    <TabsTrigger value="official">Official Installer</TabsTrigger>
+    <TabsTrigger value="brew">Homebrew (macOS)</TabsTrigger>
+    <TabsTrigger value="scoop">Scoop (Windows)</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="official">
+    Download from [git-scm.com](https://git-scm.com/downloads) and follow the installation wizard.
+    
+    **Configure Git:**
+    ```bash
+    git config --global user.name "Your Name"
+    git config --global user.email "your.email@example.com"
+    ```
+  </TabsContent>
+  
+  <TabsContent value="brew">
+    ```bash
+    brew install git
+    
+    # Configure Git
+    git config --global user.name "Your Name"
+    git config --global user.email "your.email@example.com"
+    ```
+  </TabsContent>
+  
+  <TabsContent value="scoop">
+    ```powershell
+    scoop install git
+    
+    # Configure Git
+    git config --global user.name "Your Name"
+    git config --global user.email "your.email@example.com"
+    ```
+  </TabsContent>
+</Tabs>
+
+## Installing Portfolio OS
+
+Once all prerequisites are installed, follow these steps:
+
+<Step>
+  <StepItem title="Clone the Repository">
+    <Tabs defaultValue="https">
+      <TabsList>
+        <TabsTrigger value="https">HTTPS</TabsTrigger>
+        <TabsTrigger value="ssh">SSH</TabsTrigger>
+        <TabsTrigger value="gh">GitHub CLI</TabsTrigger>
+      </TabsList>
+      
+      <TabsContent value="https">
+        ```bash
+        git clone https://github.com/jschibelli/portfolio-os.git
+        cd portfolio-os
+        ```
+      </TabsContent>
+      
+      <TabsContent value="ssh">
+        ```bash
+        git clone git@github.com:jschibelli/portfolio-os.git
+        cd portfolio-os
+        ```
+      </TabsContent>
+      
+      <TabsContent value="gh">
+        ```bash
+        gh repo clone jschibelli/portfolio-os
+        cd portfolio-os
+        ```
+      </TabsContent>
+    </Tabs>
+  </StepItem>
+
+  <StepItem title="Install Dependencies">
+    ```bash
+    pnpm install
+    ```
+    
+    This command:
+    - Installs all workspace dependencies
+    - Links packages using PNPM workspaces
+    - Runs postinstall hooks (including Prisma generation)
+    
+    <Note type="success">
+    The `postinstall` script automatically runs `prisma generate` for the dashboard app.
+    </Note>
+  </StepItem>
+
+  <StepItem title="Verify Installation">
+    ```bash
+    # Check that all packages are installed
+    pnpm list --depth=0
+    
+    # Verify Turbo can see all workspaces
+    pnpm turbo run build --dry-run
+    ```
+  </StepItem>
+</Step>
+
+## Post-Installation Setup
+
+### Editor Configuration
+
+**VS Code Users:** Install the recommended extensions by opening the command palette (`Cmd/Ctrl + Shift + P`) and running:
+
+```
+Extensions: Show Recommended Extensions
+```
+
+### Environment Variables
+
+You'll need to configure environment variables before running the apps. See the [Environment Configuration](/docs/getting-started/environment) guide for details.
+
+## Troubleshooting Installation Issues
+
+### PNPM Command Not Found
+
+**Problem:** `pnpm: command not found` after installation
+
+**Solutions:**
+1. Restart your terminal
+2. Check if PNPM is in your PATH: `echo $PATH` (macOS/Linux) or `$env:Path` (Windows)
+3. Reinstall PNPM using a different method
+
+### Module Not Found Errors
+
+**Problem:** Import errors after installation
+
+**Solutions:**
+```bash
+# Clean install
+rm -rf node_modules
+pnpm install
+
+# Clear PNPM cache if issues persist
+pnpm store prune
+pnpm install
+```
+
+### Prisma Generation Fails
+
+**Problem:** Prisma client generation errors
+
+**Solutions:**
+```bash
+# Regenerate Prisma client manually
+cd apps/dashboard
+pnpm prisma generate
+
+# If still failing, clean and reinstall
+cd ../..
+rm -rf apps/dashboard/node_modules
+pnpm install
+```
+
+### Port Conflicts
+
+**Problem:** `EADDRINUSE: address already in use :::3000`
+
+**Solutions:**
+1. Stop the conflicting process
+2. Or change the port in `apps/site/next.config.js` (for site) or `apps/dashboard/next.config.js` (for dashboard)
+
+<Note type="warning">
+Still having issues? Check the [Troubleshooting Guide](/docs/troubleshooting/common-issues) for more solutions.
+</Note>
+
+## Next Steps
+
+Once installation is complete:
+
+1. [Configure Environment Variables](/docs/getting-started/environment) - Set up API keys and configuration
+2. [First Steps Tutorial](/docs/getting-started/first-steps) - Build your first feature
+3. [Developer Guide](/docs/developer-guide/architecture) - Learn the architecture
+
+## Version Compatibility
+
+| Package | Version Range | Notes |
+|---------|---------------|-------|
+| Node.js | >=18.0.0 | Next.js 14 requires Node 18+ |
+| PNPM | >=8.0.0 | Workspace features require v8+ |
+| TypeScript | ^5.3.3 | Project uses TS 5.3 features |
+| Next.js | ^14.2.32 | App Router and Server Components |
+| React | ^18.3.1 | Server Components support |
+| Turbo | ^2.5.8 | Monorepo build orchestration |
+
+<Note>
+The project enforces Node and PNPM versions via `package.json` engines field. Installation will fail if versions don't match.
+</Note>
+

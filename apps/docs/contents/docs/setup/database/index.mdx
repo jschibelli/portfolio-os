@@ -1,0 +1,110 @@
+---
+title: Database Setup
+description: Configure Prisma database for Portfolio OS dashboard
+---
+
+# Database Setup
+
+Configure the database for Portfolio OS dashboard using Prisma ORM.
+
+## Development Setup
+
+<Step>
+  <StepItem title="Navigate to Dashboard">
+    ```bash
+    cd apps/dashboard
+    ```
+  </StepItem>
+
+  <StepItem title="Configure Database URL">
+    ```bash
+    # apps/dashboard/.env.local
+    DATABASE_URL="file:./dev.db"
+    ```
+  </StepItem>
+
+  <StepItem title="Generate Prisma Client">
+    ```bash
+    pnpm prisma generate
+    ```
+  </StepItem>
+
+  <StepItem title="Run Migrations">
+    ```bash
+    pnpm prisma migrate dev --name init
+    ```
+  </StepItem>
+
+  <StepItem title="Seed Database (Optional)">
+    ```bash
+    pnpm prisma db seed
+    ```
+  </StepItem>
+</Step>
+
+## Production Setup
+
+### PostgreSQL
+
+```bash
+# apps/dashboard/.env.production
+DATABASE_URL="postgresql://user:password@host:5432/dbname?schema=public"
+```
+
+### Deploy Migrations
+
+```bash
+# Apply migrations to production
+pnpm prisma migrate deploy
+```
+
+## Prisma Studio
+
+```bash
+# Open database GUI
+pnpm prisma studio
+```
+
+Opens at http://localhost:5555
+
+## Common Operations
+
+### Create Migration
+
+```bash
+pnpm prisma migrate dev --name add_user_table
+```
+
+### Reset Database
+
+```bash
+pnpm prisma migrate reset
+```
+
+### Update Schema
+
+1. Edit `prisma/schema.prisma`
+2. Run `pnpm prisma migrate dev --name description`
+3. Prisma client auto-regenerates
+
+## Troubleshooting
+
+### Migration Fails
+
+```bash
+# Reset and re-migrate
+pnpm prisma migrate reset
+pnpm prisma migrate dev
+```
+
+### Client Out of Sync
+
+```bash
+# Regenerate client
+pnpm prisma generate
+```
+
+## Next Steps
+
+- [Dashboard App](/docs/apps-packages/dashboard) - Dashboard documentation
+- [Deployment](/docs/setup/deployment) - Production deployment

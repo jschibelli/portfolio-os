@@ -1,0 +1,517 @@
+---
+title: Architecture Overview
+description: Deep dive into Portfolio OS system architecture and design patterns
+---
+
+# Architecture Overview
+
+Portfolio OS is built using modern web development best practices with a focus on type safety, performance, and developer experience.
+
+## System Architecture
+
+<Mermaid chart={`graph TB
+    subgraph "Client Layer"
+        Browser[Browser]
+    end
+    
+    subgraph "Application Layer"
+        Site[Site App<br/>localhost:3000]
+        Dashboard[Dashboard App<br/>localhost:3001]
+        Docs[Docs App<br/>localhost:3002]
+    end
+    
+    subgraph "Shared Packages"
+        UI[UI Components]
+        Lib[Business Logic]
+        Utils[Utilities]
+        DB[Database Client]
+        Hashnode[Hashnode Client]
+    end
+    
+    subgraph "Data Layer"
+        Redis[(Redis Cache)]
+        SQLite[(SQLite DB)]
+        Blob[Vercel Blob]
+    end
+    
+    subgraph "External Services"
+        HashnodeAPI[Hashnode API]
+        OpenAI[OpenAI API]
+        Resend[Resend Email]
+    end
+    
+    Browser --> Site
+    Browser --> Dashboard
+    Site --> UI
+    Site --> Lib
+    Site --> Hashnode
+    Dashboard --> UI
+    Dashboard --> Lib
+    Dashboard --> DB
+    UI --> Utils
+    Lib --> Redis
+    Lib --> Hashnode
+    DB --> SQLite
+    Dashboard --> Blob
+    Hashnode --> HashnodeAPI
+    Lib --> OpenAI
+    Lib --> Resend`} />
+
+## Monorepo Architecture
+
+Portfolio OS uses a monorepo structure with Turborepo and PNPM workspaces to manage multiple applications and shared packages.
+
+### Directory Structure
+
+<FileTree>
+  <Folder name="portfolio-os" defaultOpen>
+    <Folder name="apps" defaultOpen>
+      <Folder name="site">
+        <Folder name="app" defaultOpen>
+          <File name="(routes)/page.tsx" />
+          <File name="blog/[slug]/page.tsx" />
+          <File name="projects/[slug]/page.tsx" />
+          <File name="api/contact/route.ts" />
+        </Folder>
+        <Folder name="components">
+          <File name="Hero.tsx" />
+          <File name="Navigation.tsx" />
+        </Folder>
+        <Folder name="lib">
+          <File name="cache.ts" />
+          <File name="metadata.ts" />
+        </Folder>
+        <File name="next.config.js" />
+        <File name="tailwind.config.js" />
+      </Folder>
+      <Folder name="dashboard">
+        <Folder name="app">
+          <File name="dashboard/page.tsx" />
+          <File name="api/posts/route.ts" />
+        </Folder>
+        <Folder name="prisma">
+          <File name="schema.prisma" />
+        </Folder>
+        <File name="next.config.js" />
+      </Folder>
+      <Folder name="docs">
+        <Folder name="contents">
+          <File name="docs/*.mdx" />
+        </Folder>
+      </Folder>
+    </Folder>
+    <Folder name="packages" defaultOpen>
+      <Folder name="ui">
+        <File name="src/button.tsx" />
+        <File name="src/card.tsx" />
+      </Folder>
+      <Folder name="lib">
+        <File name="src/hashnode/client.ts" />
+        <File name="src/openai/generate.ts" />
+      </Folder>
+      <Folder name="utils">
+        <File name="src/cn.ts" />
+        <File name="src/format.ts" />
+      </Folder>
+      <Folder name="db">
+        <File name="src/index.ts" />
+        <File name="prisma/schema.prisma" />
+      </Folder>
+    </Folder>
+    <File name="package.json" />
+    <File name="turbo.json" />
+    <File name="pnpm-workspace.yaml" />
+  </Folder>
+</FileTree>
+
+## Application Layer
+
+### Site App (`apps/site`)
+
+The public-facing portfolio and blog application.
+
+**Key Features:**
+- Server-side rendering (SSR) for SEO
+- Blog content from Hashnode
+- Projects showcase with case studies
+- Contact form with email integration
+- Redis caching for performance
+
+**Tech Stack:**
+- Next.js 14 App Router
+- React Server Components
+- Tailwind CSS + Radix UI
+- Hashnode GraphQL API
+
+**Routes:**
+- `/` - Homepage with hero and featured content
+- `/blog` - Blog post listing
+- `/blog/[slug]` - Individual blog post
+- `/projects` - Projects showcase
+- `/projects/[slug]` - Project case study
+- `/about` - About page
+- `/api/*` - API routes (contact, webhooks)
+
+### Dashboard App (`apps/dashboard`)
+
+Admin interface for content management and analytics.
+
+**Key Features:**
+- Content management (CRUD operations)
+- Media library with Vercel Blob storage
+- Analytics dashboard
+- TipTap rich text editor
+- Database management with Prisma
+
+**Tech Stack:**
+- Next.js 14 App Router
+- Prisma ORM
+- SQLite (dev) / PostgreSQL (prod)
+- Vercel Blob storage
+- TipTap editor
+
+**Routes:**
+- `/dashboard` - Main dashboard
+- `/dashboard/posts` - Manage posts
+- `/dashboard/media` - Media library
+- `/dashboard/analytics` - Analytics view
+- `/api/*` - API routes for CRUD operations
+
+### Docs App (`apps/docs`)
+
+Documentation site for developers and users.
+
+**Key Features:**
+- MDX-powered documentation
+- Syntax highlighting
+- Search functionality
+- Component playground
+
+## Package Architecture
+
+### UI Package (`packages/ui`)
+
+Shared React components using Radix UI primitives.
+
+**Components:**
+- `Button` - Accessible button component
+- `Card` - Content card with variants
+- `Input` - Form input with validation
+- `Dialog` - Modal dialogs
+- `Toast` - Notifications
+
+**Example:**
+```tsx
+// packages/ui/src/button.tsx
+import { cva, type VariantProps } from "class-variance-authority"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md font-medium",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground",
+        outline: "border border-input",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 px-3",
+        lg: "h-11 px-8",
+      },
+    },
+  }
+)
+
+export interface ButtonProps extends VariantProps<typeof buttonVariants> {
+  // ...
+}
+```
+
+### Lib Package (`packages/lib`)
+
+Business logic and service integrations.
+
+**Modules:**
+- `hashnode/` - Hashnode API client
+- `openai/` - OpenAI integration
+- `email/` - Email service
+- `analytics/` - Analytics utilities
+- `validation/` - Form validation schemas
+
+**Example:**
+```ts
+// packages/lib/src/hashnode/client.ts
+export async function getAllPosts() {
+  const response = await fetch(HASHNODE_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: GET_ALL_POSTS_QUERY,
+    }),
+  })
+  return response.json()
+}
+```
+
+### Utils Package (`packages/utils`)
+
+Pure utility functions without external dependencies.
+
+**Functions:**
+- `cn()` - Tailwind class name merger
+- `formatDate()` - Date formatting
+- `slugify()` - URL slug generation
+- `truncate()` - Text truncation
+
+### DB Package (`packages/db`)
+
+Prisma schema and database client.
+
+**Schema:**
+```typescript
+// packages/db/prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+## Data Flow Architecture
+
+### Blog Content Flow
+
+<Mermaid chart={`sequenceDiagram
+    participant User
+    participant Site
+    participant Redis
+    participant Hashnode
+    
+    User->>Site: Request /blog
+    Site->>Redis: Check cache
+    alt Cache hit
+        Redis-->>Site: Return cached posts
+    else Cache miss
+        Site->>Hashnode: GraphQL query
+        Hashnode-->>Site: Return posts
+        Site->>Redis: Cache posts (1h TTL)
+    end
+    Site-->>User: Render blog page`} />
+
+### Dashboard Content Flow
+
+<Mermaid chart={`sequenceDiagram
+    participant Admin
+    participant Dashboard
+    participant Database
+    participant Blob
+    
+    Admin->>Dashboard: Create post
+    Dashboard->>Database: Save post metadata
+    Admin->>Dashboard: Upload image
+    Dashboard->>Blob: Store image
+    Blob-->>Dashboard: Return URL
+    Dashboard->>Database: Update post with image URL
+    Dashboard-->>Admin: Success`} />
+
+## Design Patterns
+
+### 1. Server Components by Default
+
+<Tabs defaultValue="server">
+  <TabsList>
+    <TabsTrigger value="server">Server Component</TabsTrigger>
+    <TabsTrigger value="client">Client Component</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="server">
+    ```tsx
+    // apps/site/app/blog/page.tsx
+    // No "use client" directive = Server Component
+    
+    export default async function BlogPage() {
+      // Can fetch data directly
+      const posts = await getAllPosts()
+      
+      return (
+        <div>
+          {posts.map(post => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </div>
+      )
+    }
+    ```
+  </TabsContent>
+  
+  <TabsContent value="client">
+    ```tsx
+    // apps/site/components/SearchBar.tsx
+    "use client"
+    
+    import { useState } from "react"
+    
+    export function SearchBar() {
+      const [query, setQuery] = useState("")
+      
+      return (
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      )
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+### 2. Repository Pattern
+
+Encapsulate data access logic in repository modules:
+
+```ts
+// packages/lib/src/repositories/post.ts
+export class PostRepository {
+  async getAll() {
+    return prisma.post.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    })
+  }
+  
+  async getBySlug(slug: string) {
+    return prisma.post.findUnique({
+      where: { slug },
+    })
+  }
+}
+```
+
+### 3. Service Layer
+
+Business logic separated from data access:
+
+```ts
+// packages/lib/src/services/blog.ts
+import { PostRepository } from "../repositories/post"
+import { CacheService } from "./cache"
+
+export class BlogService {
+  constructor(
+    private postRepo: PostRepository,
+    private cache: CacheService
+  ) {}
+  
+  async getPosts() {
+    const cached = await this.cache.get("posts")
+    if (cached) return cached
+    
+    const posts = await this.postRepo.getAll()
+    await this.cache.set("posts", posts, 3600)
+    return posts
+  }
+}
+```
+
+### 4. Composition over Inheritance
+
+Build complex UIs by composing simple components:
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    Content here
+  </CardContent>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>
+```
+
+## Performance Optimizations
+
+### 1. Redis Caching
+
+```ts
+// Cache blog posts for 1 hour
+const posts = await cache.get("posts", async () => {
+  return await getAllPosts()
+}, { ttl: 3600 })
+```
+
+### 2. Image Optimization
+
+```tsx
+import Image from "next/image"
+
+<Image
+  src="/hero.jpg"
+  alt="Hero"
+  width={1200}
+  height={630}
+  priority // Above the fold
+/>
+```
+
+### 3. Dynamic Imports
+
+```tsx
+import dynamic from "next/dynamic"
+
+const HeavyComponent = dynamic(
+  () => import("./HeavyComponent"),
+  { ssr: false } // Client-only
+)
+```
+
+### 4. Incremental Static Regeneration
+
+```tsx
+export const revalidate = 3600 // Revalidate every hour
+
+export default async function BlogPost({ params }) {
+  const post = await getPost(params.slug)
+  return <Post data={post} />
+}
+```
+
+## Security Considerations
+
+<Note type="danger">
+**Security Best Practices:**
+
+1. **Environment Variables**: Never expose API keys in client code
+2. **Input Validation**: Validate all user input with Zod schemas
+3. **SQL Injection**: Use Prisma parameterized queries
+4. **XSS Protection**: React escapes by default, but be careful with `dangerouslySetInnerHTML`
+5. **CSRF Protection**: Next.js includes built-in protection
+6. **Rate Limiting**: Implement rate limiting on API routes
+</Note>
+
+## Next Steps
+
+- [Development Workflow](/docs/developer-guide/workflow) - Learn the development process
+- [Coding Standards](/docs/developer-guide/standards) - Follow best practices
+- [Monorepo Structure](/docs/developer-guide/monorepo) - Navigate the workspace
+- [Package System](/docs/developer-guide/packages) - Work with shared packages
+
+<Note>
+Understanding the architecture is crucial for effective development. Refer back to this guide as you work on features.
+</Note>
+

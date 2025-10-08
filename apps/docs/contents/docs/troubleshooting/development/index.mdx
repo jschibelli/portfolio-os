@@ -1,0 +1,74 @@
+---
+title: Development Problems
+description: Development environment troubleshooting
+---
+
+# Development Problems
+
+Solutions to development environment issues.
+
+## Editor Issues
+
+### VS Code IntelliSense Not Working
+
+**Solution:**
+1. Reload VS Code window (Cmd/Ctrl + Shift + P → "Reload Window")
+2. Check TypeScript version
+3. Restart TS server (Cmd/Ctrl + Shift + P → "TypeScript: Restart TS Server")
+
+### ESLint Not Running
+
+**Solution:**
+```bash
+# Check ESLint config
+cat .eslintrc.js
+
+# Run manually
+pnpm lint
+
+# Install ESLint extension in VS Code
+```
+
+## Monorepo Issues
+
+### Package Changes Not Reflected
+
+**Solution:**
+```bash
+# Rebuild package
+pnpm build --filter=@mindware-blog/ui
+
+# Restart dev server
+pnpm dev
+```
+
+### Circular Dependencies
+
+**Problem:** Build fails with circular dependency error
+
+**Solution:**
+1. Review package dependencies
+2. Break the cycle by extracting shared code
+3. Use dynamic imports if necessary
+
+## Test Issues
+
+### Tests Failing Locally
+
+**Solution:**
+```bash
+# Clear jest cache
+pnpm test --clearCache
+
+# Run specific test
+pnpm test path/to/test.ts
+
+# Update snapshots
+pnpm test -u
+```
+
+## Next Steps
+
+- [Common Issues](/docs/troubleshooting/common-issues) - Frequent problems
+- [Deployment Issues](/docs/troubleshooting/deployment) - Production problems
+- [Performance](/docs/troubleshooting/performance) - Performance optimization

@@ -1,0 +1,93 @@
+---
+title: GraphQL Endpoints
+description: GraphQL API implementation and queries
+---
+
+# GraphQL Endpoints
+
+GraphQL API for flexible data fetching in Portfolio OS.
+
+## GraphQL vs REST
+
+Portfolio OS uses GraphQL primarily for Hashnode integration, but can be extended for custom GraphQL endpoints.
+
+**Benefits:**
+- Request exactly the data you need
+- Single endpoint for multiple resources
+- Strong typing with GraphQL schema
+- Better performance with batching
+
+## Hashnode GraphQL
+
+See [Hashnode Integration](/docs/api-reference/hashnode) for complete documentation on using Hashnode's GraphQL API.
+
+## Custom GraphQL (Future)
+
+Portfolio OS can be extended with custom GraphQL endpoints:
+
+```typescript
+// Future implementation
+import { graphql } from '@/lib/graphql'
+
+const typeDefs = `
+  type Query {
+    projects: [Project!]!
+    project(slug: String!): Project
+  }
+  
+  type Project {
+    id: ID!
+    title: String!
+    description: String!
+    technologies: [String!]!
+    githubUrl: String
+    liveUrl: String
+  }
+`
+
+const resolvers = {
+  Query: {
+    projects: () => getProjects(),
+    project: (_, { slug }) => getProjectBySlug(slug)
+  }
+}
+```
+
+## GraphQL Client
+
+Use Apollo Client or similar for client-side queries:
+
+```typescript
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+
+const client = new ApolloClient({
+  uri: 'https://gql.hashnode.com',
+  cache: new InMemoryCache()
+})
+
+const GET_POSTS = gql`
+  query GetPosts($host: String!) {
+    publication(host: $host) {
+      posts(first: 10) {
+        edges {
+          node {
+            title
+            slug
+          }
+        }
+      }
+    }
+  }
+`
+
+const { data } = await client.query({
+  query: GET_POSTS,
+  variables: { host: 'yourblog.hashnode.dev' }
+})
+```
+
+## Next Steps
+
+- [Hashnode Integration](/docs/api-reference/hashnode) - Primary GraphQL usage
+- [REST API](/docs/api-reference/rest-api) - REST endpoints
+- [Authentication](/docs/api-reference/authentication) - Auth patterns

@@ -1,0 +1,112 @@
+---
+title: API Reference
+description: Complete API documentation for Portfolio OS
+---
+
+# API Reference
+
+Complete API documentation for Portfolio OS including REST endpoints, GraphQL APIs, and third-party integrations.
+
+## API Overview
+
+Portfolio OS provides multiple API layers:
+
+<CardGrid>
+  <Card href="/docs/api-reference/rest-api" title="REST API" description="Next.js API routes for server actions" />
+  <Card href="/docs/api-reference/hashnode" title="Hashnode Integration" description="Blog content via GraphQL API" />
+  <Card href="/docs/api-reference/graphql" title="GraphQL" description="GraphQL endpoints and queries" />
+  <Card href="/docs/api-reference/authentication" title="Authentication" description="Auth patterns and security" />
+</CardGrid>
+
+## Base URLs
+
+| Environment | Site API | Dashboard API | Docs API |
+|-------------|----------|---------------|----------|
+| Development | `http://localhost:3000/api` | `http://localhost:3001/api` | `http://localhost:3002/api` |
+| Production | `https://yourdomain.com/api` | `https://dashboard.yourdomain.com/api` | `https://docs.yourdomain.com/api` |
+
+## Common Patterns
+
+### Error Handling
+
+All APIs follow consistent error format:
+
+```json
+{
+  "error": "Error message",
+  "code": "ERROR_CODE",
+  "details": {
+    "field": "Additional context"
+  },
+  "statusCode": 400
+}
+```
+
+### Response Format
+
+Standard success response:
+
+```json
+{
+  "data": { /* Response data */ },
+  "meta": {
+    "timestamp": "2025-10-08T12:00:00Z",
+    "requestId": "req_123"
+  }
+}
+```
+
+### Authentication
+
+API requests use standard authentication:
+
+```typescript
+// Client-side
+const response = await fetch('/api/endpoint', {
+  headers: {
+    'Authorization': 'Bearer <token>',
+    'Content-Type': 'application/json'
+  }
+})
+
+// Server-side
+import { auth } from '@/lib/auth'
+
+export async function GET(request: Request) {
+  const session = await auth(request)
+  if (!session) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  // Handle request
+}
+```
+
+## Rate Limiting
+
+APIs implement rate limiting to prevent abuse:
+
+| Endpoint | Rate Limit | Window |
+|----------|------------|--------|
+| `/api/contact` | 5 requests | 1 hour |
+| `/api/posts` | 100 requests | 15 minutes |
+| `/api/media/*` | 50 requests | 15 minutes |
+
+## Versioning
+
+APIs use URL-based versioning:
+
+```
+/api/v1/posts      # Version 1
+/api/v2/posts      # Version 2 (when available)
+```
+
+Current version: **v1** (default, no version prefix needed)
+
+## Next Steps
+
+Explore specific API documentation:
+
+- [REST API](/docs/api-reference/rest-api) - Next.js API routes
+- [Hashnode Integration](/docs/api-reference/hashnode) - Blog content API
+- [GraphQL](/docs/api-reference/graphql) - GraphQL endpoints
+- [Authentication](/docs/api-reference/authentication) - Auth implementation

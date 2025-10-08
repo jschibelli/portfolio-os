@@ -1,0 +1,164 @@
+---
+title: Performance Optimization
+description: Optimize Portfolio OS performance
+---
+
+# Performance Optimization
+
+Techniques to optimize Portfolio OS performance.
+
+## Caching
+
+### Enable Redis Caching
+
+```typescript
+import { getCached } from '@mindware-blog/lib/cache'
+
+// Cache expensive operations
+const posts = await getCached(
+  'blog:posts:all',
+  () => getAllPosts(),
+  3600 // 1 hour TTL
+)
+```
+
+### Next.js Caching
+
+```typescript
+// Revalidate every hour
+export const revalidate = 3600
+
+export default async function Page() {
+  const data = await getData()
+  return <div>{data}</div>
+}
+```
+
+## Image Optimization
+
+### Use Next.js Image
+
+```tsx
+import Image from 'next/image'
+
+<Image
+  src="/hero.jpg"
+  alt="Hero"
+  width={1200}
+  height={630}
+  priority // Above fold
+  placeholder="blur"
+/>
+```
+
+### Configure Domains
+
+```js
+// next.config.js
+module.exports = {
+  images: {
+    domains: ['cdn.hashnode.com'],
+  },
+}
+```
+
+## Code Splitting
+
+### Dynamic Imports
+
+```tsx
+import dynamic from 'next/dynamic'
+
+const HeavyComponent = dynamic(
+  () => import('./HeavyComponent'),
+  { ssr: false }
+)
+```
+
+### Lazy Load Routes
+
+```tsx
+const AdminPanel = dynamic(() => import('./AdminPanel'))
+```
+
+## Bundle Size
+
+### Analyze Bundle
+
+```bash
+pnpm build
+# Check .next/analyze output
+```
+
+### Optimize Imports
+
+```tsx
+// Bad
+import _ from 'lodash'
+
+// Good
+import debounce from 'lodash/debounce'
+```
+
+## Database Performance
+
+### Add Indexes
+
+```typescript
+model Post {
+  id    String @id
+  slug  String @unique // Indexed
+  title String
+  
+  @@index([createdAt])
+}
+```
+
+### Optimize Queries
+
+```typescript
+// Bad - N+1 query
+const posts = await prisma.post.findMany()
+for (const post of posts) {
+  const author = await prisma.user.findUnique({ where: { id: post.authorId }})
+}
+
+// Good - Single query with include
+const posts = await prisma.post.findMany({
+  include: { author: true }
+})
+```
+
+## Monitoring
+
+### Web Vitals
+
+```tsx
+// app/layout.tsx
+import { SpeedInsights } from '@vercel/speed-insights/next'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <SpeedInsights />
+      </body>
+    </html>
+  )
+}
+```
+
+### Lighthouse Scores
+
+Target metrics:
+- Performance: >90
+- Accessibility: >95
+- Best Practices: >90
+- SEO: >90
+
+## Next Steps
+
+- [Caching Configuration](/docs/setup/caching) - Setup Redis
+- [Deployment](/docs/setup/deployment) - Production deployment
+- [Common Issues](/docs/troubleshooting/common-issues) - Troubleshooting

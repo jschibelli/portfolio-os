@@ -17,6 +17,20 @@
 
 Portfolio OS is a Next.js 14 monorepo built with TypeScript, Tailwind CSS, and Turborepo. It includes a content site, a dashboard with admin tooling, and shared packages for UI, utilities, and integrations. Content is sourced from Hashnode via GraphQL with optional headless mode.
 
+## 📚 Documentation
+
+**Complete documentation is available at**: http://localhost:3000 (when running `pnpm dev`)
+
+For the full documentation map and navigation guide, see **[DOCS_MAP.md](./DOCS_MAP.md)**
+
+**Quick Links**:
+- [Getting Started](http://localhost:3000/docs/getting-started) - 10-minute setup guide
+- [Developer Guide](http://localhost:3000/docs/developer-guide) - Architecture and best practices
+- [Scripts Reference](http://localhost:3000/docs/scripts-reference) - PowerShell automation tools
+- [Multi-Agent System](http://localhost:3000/docs/multi-agent) - Parallel development setup
+- [API Reference](http://localhost:3000/docs/api-reference) - API documentation
+- [Troubleshooting](http://localhost:3000/docs/troubleshooting) - Common issues and solutions
+
 ### Apps
 
 - `apps/site`: Public portfolio, blog, projects, case studies, and API routes

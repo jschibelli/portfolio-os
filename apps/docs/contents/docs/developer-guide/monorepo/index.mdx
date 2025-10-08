@@ -1,0 +1,551 @@
+---
+title: Monorepo Structure
+description: Understanding Turborepo, PNPM workspaces, and workspace organization
+---
+
+# Monorepo Structure
+
+Portfolio OS uses a monorepo architecture powered by Turborepo and PNPM workspaces for efficient development and code sharing.
+
+## Why Monorepo?
+
+**Benefits:**
+- **Code Sharing**: Share components, utilities, and types across apps
+- **Atomic Changes**: Update multiple apps in a single commit
+- **Consistent Tooling**: Single ESLint, TypeScript, and Prettier config
+- **Faster Development**: Changes to packages immediately available
+- **Better Collaboration**: See the full system in one place
+
+## Workspace Configuration
+
+### PNPM Workspaces
+
+```yaml title="pnpm-workspace.yaml"
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+This tells PNPM to treat `apps/*` and `packages/*` as workspaces.
+
+### Root package.json
+
+```json title="package.json"
+{
+  "name": "portfolio-os",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.8",
+    "prettier": "^3.0.3",
+    "typescript": "^5.3.3"
+  }
+}
+```
+
+<Note>
+The root is marked `"private": true` to prevent accidental publishing to npm.
+</Note>
+
+## Complete Directory Structure
+
+<FileTree>
+  <Folder name="portfolio-os" defaultOpen>
+    <Folder name="apps" defaultOpen>
+      <Folder name="site">
+        <Folder name="app">
+          <File name="page.tsx" />
+          <File name="layout.tsx" />
+          <File name="blog/[slug]/page.tsx" />
+        </Folder>
+        <File name="package.json" />
+        <File name="next.config.js" />
+        <File name="tailwind.config.js" />
+      </Folder>
+      <Folder name="dashboard">
+        <Folder name="app">
+          <File name="dashboard/page.tsx" />
+        </Folder>
+        <Folder name="prisma">
+          <File name="schema.prisma" />
+        </Folder>
+        <File name="package.json" />
+      </Folder>
+      <Folder name="docs">
+        <Folder name="contents">
+          <File name="docs/**/*.mdx" />
+        </Folder>
+        <File name="package.json" />
+      </Folder>
+    </Folder>
+    <Folder name="packages" defaultOpen>
+      <Folder name="ui">
+        <Folder name="src">
+          <File name="button.tsx" />
+          <File name="card.tsx" />
+        </Folder>
+        <File name="package.json" />
+      </Folder>
+      <Folder name="lib">
+        <Folder name="src">
+          <File name="hashnode/client.ts" />
+        </Folder>
+        <File name="package.json" />
+      </Folder>
+      <Folder name="utils">
+        <File name="src/cn.ts" />
+        <File name="package.json" />
+      </Folder>
+      <Folder name="db">
+        <Folder name="prisma">
+          <File name="schema.prisma" />
+        </Folder>
+        <File name="package.json" />
+      </Folder>
+      <Folder name="tsconfig">
+        <File name="base.json" />
+        <File name="nextjs.json" />
+        <File name="react-library.json" />
+      </Folder>
+    </Folder>
+    <Folder name="scripts">
+      <File name="agent-management/**/*.ps1" />
+      <File name="pr-management/**/*.ps1" />
+    </Folder>
+    <File name="package.json" />
+    <File name="pnpm-workspace.yaml" />
+    <File name="turbo.json" />
+    <File name="tsconfig.json" />
+  </Folder>
+</FileTree>
+
+## Turborepo Configuration
+
+### turbo.json
+
+```json title="turbo.json"
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    }
+  }
+}
+```
+
+### Pipeline Explained
+
+| Task | dependsOn | Meaning |
+|------|-----------|---------|
+| `build` | `^build` | Build dependencies first |
+| `dev` | - | Run independently |
+| `lint` | `^lint` | Lint dependencies first |
+| `test` | `^build` | Build before testing |
+
+<Note>
+The `^` symbol means "run this task in dependencies first"
+</Note>
+
+## Package Dependencies
+
+### How Packages Reference Each Other
+
+<Tabs defaultValue="workspace">
+  <TabsList>
+    <TabsTrigger value="workspace">Workspace Protocol</TabsTrigger>
+    <TabsTrigger value="example">Example</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="workspace">
+    Use `workspace:*` to link to workspace packages:
+    
+    ```json title="apps/site/package.json"
+    {
+      "name": "@mindware-blog/site",
+      "dependencies": {
+        "@mindware-blog/ui": "workspace:*",
+        "@mindware-blog/lib": "workspace:*",
+        "@mindware-blog/utils": "workspace:*",
+        "next": "^14.2.32",
+        "react": "^18.3.1"
+      }
+    }
+    ```
+    
+    This links to the local package, not npm.
+  </TabsContent>
+  
+  <TabsContent value="example">
+    ```tsx title="apps/site/app/page.tsx"
+    // Import from workspace packages
+    import { Button } from "@mindware-blog/ui"
+    import { getAllPosts } from "@mindware-blog/lib"
+    import { formatDate } from "@mindware-blog/utils"
+    
+    export default async function HomePage() {
+      const posts = await getAllPosts()
+      
+      return (
+        <div>
+          {posts.map(post => (
+            <div key={post.id}>
+              <h2>{post.title}</h2>
+              <time>{formatDate(post.date)}</time>
+              <Button>Read More</Button>
+            </div>
+          ))}
+        </div>
+      )
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+### Dependency Graph
+
+<Mermaid chart={`graph TD
+    Site[Site App] --> UI[UI Package]
+    Site --> Lib[Lib Package]
+    Site --> Utils[Utils Package]
+    Site --> Hashnode[Hashnode Package]
+    
+    Dashboard[Dashboard App] --> UI
+    Dashboard --> Lib
+    Dashboard --> Utils
+    Dashboard --> DB[DB Package]
+    
+    Docs[Docs App] --> UI
+    
+    UI --> Utils
+    Lib --> Utils
+    Lib --> Hashnode
+    DB --> Utils`} />
+
+## Working with the Monorepo
+
+### Running Commands
+
+<Tabs defaultValue="all">
+  <TabsList>
+    <TabsTrigger value="all">All Workspaces</TabsTrigger>
+    <TabsTrigger value="filter">Specific Workspace</TabsTrigger>
+    <TabsTrigger value="scope">Scope Pattern</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="all">
+    ```bash
+    # Run in all workspaces
+    pnpm dev
+    pnpm build
+    pnpm lint
+    pnpm test
+    ```
+  </TabsContent>
+  
+  <TabsContent value="filter">
+    ```bash
+    # Run in specific workspace
+    pnpm dev --filter=@mindware-blog/site
+    pnpm build --filter=@mindware-blog/dashboard
+    pnpm test --filter=@mindware-blog/ui
+    
+    # Multiple filters
+    pnpm dev --filter=@mindware-blog/site --filter=@mindware-blog/dashboard
+    ```
+  </TabsContent>
+  
+  <TabsContent value="scope">
+    ```bash
+    # Run in all packages
+    pnpm build --filter="./packages/*"
+    
+    # Run in all apps
+    pnpm dev --filter="./apps/*"
+    
+    # Run with dependencies
+    pnpm build --filter=@mindware-blog/site...
+    ```
+  </TabsContent>
+</Tabs>
+
+### Adding Dependencies
+
+<Tabs defaultValue="workspace">
+  <TabsList>
+    <TabsTrigger value="workspace">To Specific Workspace</TabsTrigger>
+    <TabsTrigger value="root">To Root</TabsTrigger>
+    <TabsTrigger value="all">To All Workspaces</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="workspace">
+    ```bash
+    # Add to site app
+    pnpm add react-hook-form --filter=@mindware-blog/site
+    
+    # Add dev dependency
+    pnpm add -D @types/node --filter=@mindware-blog/dashboard
+    ```
+  </TabsContent>
+  
+  <TabsContent value="root">
+    ```bash
+    # Add to root (for tooling)
+    pnpm add -D -w prettier
+    pnpm add -D -w eslint
+    
+    # -w = --workspace-root
+    ```
+  </TabsContent>
+  
+  <TabsContent value="all">
+    ```bash
+    # Add to all workspaces (rare)
+    pnpm add -r typescript
+    
+    # -r = --recursive
+    ```
+  </TabsContent>
+</Tabs>
+
+### Creating New Workspaces
+
+<Tabs defaultValue="app">
+  <TabsList>
+    <TabsTrigger value="app">New App</TabsTrigger>
+    <TabsTrigger value="package">New Package</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="app">
+    ```bash
+    # Create new app directory
+    mkdir -p apps/admin
+    cd apps/admin
+    
+    # Initialize package
+    pnpm init
+    
+    # Edit package.json
+    ```
+    
+    ```json title="apps/admin/package.json"
+    {
+      "name": "@mindware-blog/admin",
+      "version": "0.1.0",
+      "private": true,
+      "scripts": {
+        "dev": "next dev -p 3003",
+        "build": "next build",
+        "start": "next start"
+      },
+      "dependencies": {
+        "@mindware-blog/ui": "workspace:*",
+        "next": "^14.2.32",
+        "react": "^18.3.1"
+      }
+    }
+    ```
+  </TabsContent>
+  
+  <TabsContent value="package">
+    ```bash
+    # Create new package directory
+    mkdir -p packages/analytics
+    cd packages/analytics
+    
+    # Initialize
+    pnpm init
+    ```
+    
+    ```json title="packages/analytics/package.json"
+    {
+      "name": "@mindware-blog/analytics",
+      "version": "0.1.0",
+      "main": "./src/index.ts",
+      "types": "./src/index.ts",
+      "exports": {
+        ".": "./src/index.ts"
+      },
+      "dependencies": {
+        "@mindware-blog/utils": "workspace:*"
+      }
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## Shared Configuration
+
+### TypeScript
+
+```json title="packages/tsconfig/base.json"
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
+```
+
+```json title="apps/site/tsconfig.json"
+{
+  "extends": "@mindware-blog/tsconfig/nextjs.json",
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+```
+
+### ESLint
+
+```js title="packages/eslint-config-custom/index.js"
+module.exports = {
+  extends: ["next", "prettier"],
+  rules: {
+    "@next/next/no-html-link-for-pages": "off",
+  },
+}
+```
+
+```js title="apps/site/.eslintrc.js"
+module.exports = {
+  root: true,
+  extends: ["@mindware-blog/eslint-config-custom"],
+}
+```
+
+## Cache Management
+
+### Turborepo Cache
+
+```bash
+# View cache info
+pnpm turbo run build --dry-run
+
+# Clear Turbo cache
+pnpm turbo run build --force
+
+# Disable cache for one run
+pnpm turbo run dev --no-cache
+```
+
+### PNPM Cache
+
+```bash
+# View store info
+pnpm store status
+
+# Prune store
+pnpm store prune
+
+# Clear cache
+rm -rf node_modules
+pnpm store prune
+pnpm install
+```
+
+## Performance Tips
+
+### 1. Use Filters Wisely
+
+```bash
+# Only build what you need
+pnpm build --filter=@mindware-blog/site
+
+# Build with dependencies
+pnpm build --filter=@mindware-blog/site...
+```
+
+### 2. Leverage Turbo Cache
+
+```bash
+# First run (slow)
+pnpm build
+
+# Second run (instant if no changes)
+pnpm build
+```
+
+### 3. Parallel Development
+
+```bash
+# Start multiple apps in parallel
+pnpm dev --parallel
+```
+
+## Troubleshooting
+
+### Dependency Not Found
+
+```bash
+# Reinstall dependencies
+rm -rf node_modules
+pnpm install
+```
+
+### Circular Dependencies
+
+```
+Error: Circular dependency detected
+```
+
+**Solution**: Refactor code to break the cycle or move shared code to a common package.
+
+### Build Failures
+
+```bash
+# Clean Turbo cache
+rm -rf .turbo
+
+# Clean Next.js cache
+rm -rf apps/site/.next
+rm -rf apps/dashboard/.next
+
+# Rebuild
+pnpm build
+```
+
+<Note type="warning">
+For persistent issues, see [Troubleshooting Guide](/docs/troubleshooting/common-issues)
+</Note>
+
+## Best Practices
+
+1. **Keep packages focused**: Each package should have a single responsibility
+2. **Avoid circular dependencies**: Structure packages in layers
+3. **Use workspace protocol**: Always use `workspace:*` for internal dependencies
+4. **Leverage caching**: Let Turborepo cache builds and tests
+5. **Filter commands**: Use `--filter` to work on specific workspaces
+
+## Next Steps
+
+- [Package System](/docs/developer-guide/packages) - Learn about individual packages
+- [Development Workflow](/docs/developer-guide/workflow) - Understand the process
+- [Scripts Reference](/docs/scripts-reference/overview) - Explore automation
+
+<Note>
+The monorepo structure provides powerful development benefits. Master it to work efficiently across the entire codebase.
+</Note>
+

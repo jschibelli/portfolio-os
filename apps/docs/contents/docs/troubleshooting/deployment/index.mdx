@@ -1,0 +1,102 @@
+---
+title: Deployment Issues
+description: Production deployment troubleshooting
+---
+
+# Deployment Issues
+
+Solutions to production deployment problems.
+
+## Vercel Deployment
+
+### Build Fails on Vercel
+
+**Problem:** Build succeeds locally but fails on Vercel
+
+**Solutions:**
+1. Check Node version matches
+2. Verify all env vars are set
+3. Check build logs for specific error
+4. Ensure monorepo build command is correct:
+```bash
+cd ../.. && pnpm build --filter=@mindware-blog/site
+```
+
+### Environment Variables Not Loading
+
+**Problem:** App can't access environment variables
+
+**Solution:**
+1. Verify variables are set in Vercel dashboard
+2. Redeploy after adding variables
+3. Check variable names match exactly
+4. For client-side vars, ensure `NEXT_PUBLIC_` prefix
+
+### Database Migration Fails
+
+**Problem:** Prisma migrations fail in production
+
+**Solution:**
+```bash
+# Run migrations manually
+DATABASE_URL="postgresql://..." pnpm prisma migrate deploy
+
+# Or set DATABASE_URL in Vercel env vars
+# Migrations run automatically on build
+```
+
+## Domain Issues
+
+### Custom Domain Not Working
+
+**Solution:**
+1. Check DNS settings in domain registrar
+2. Wait for DNS propagation (up to 48 hours)
+3. Verify domain is added in Vercel
+4. Check SSL certificate status
+
+### HTTPS Not Working
+
+**Solution:**
+- Vercel automatically provisions SSL
+- Wait a few minutes after adding domain
+- Check certificate status in Vercel dashboard
+
+## Performance Issues
+
+### Slow API Responses
+
+**Solutions:**
+1. Enable Redis caching
+2. Check database query performance
+3. Add indexes to database
+4. Use edge functions if available
+
+### High Memory Usage
+
+**Solution:**
+```js
+// next.config.js
+module.exports = {
+  experimental: {
+    optimizePackageImports: ['@mindware-blog/ui'],
+  },
+}
+```
+
+## Error Monitoring
+
+### Setup Sentry
+
+```bash
+pnpm add @sentry/nextjs
+
+# Follow Sentry setup wizard
+npx @sentry/wizard@latest -i nextjs
+```
+
+## Next Steps
+
+- [Common Issues](/docs/troubleshooting/common-issues) - Frequent problems
+- [Deployment Guide](/docs/setup/deployment) - Deployment runbook
+- [Performance](/docs/troubleshooting/performance) - Optimization

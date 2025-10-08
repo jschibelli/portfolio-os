@@ -1,0 +1,245 @@
+---
+title: REST API
+description: Next.js API routes documentation
+---
+
+# REST API
+
+Next.js API routes provide server-side functionality for Portfolio OS.
+
+## Available Endpoints
+
+### Contact Form
+
+**POST** `/api/contact`
+
+Submit contact form messages.
+
+**Request:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "subject": "Question about services",
+  "message": "I would like to know more..."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+**Implementation:**
+```typescript
+// apps/site/app/api/contact/route.ts
+import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function POST(request: Request) {
+  try {
+    const { name, email, subject, message } = await request.json()
+    
+    // Validation
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+    
+    // Send email
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL!,
+      to: process.env.RESEND_TO_EMAIL!,
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    })
+    
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to send message' },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### AI Image Generation
+
+**POST** `/api/ai/generate-image`
+
+Generate images using OpenAI DALL-E.
+
+**Request:**
+```json
+{
+  "prompt": "A futuristic cityscape at sunset",
+  "size": "1024x1024"
+}
+```
+
+**Response:**
+```json
+{
+  "imageUrl": "https://cdn.example.com/generated-image.png",
+  "prompt": "A futuristic cityscape at sunset"
+}
+```
+
+### Blog Posts
+
+**GET** `/api/posts`
+
+Retrieve blog posts (cached from Hashnode).
+
+**Query Parameters:**
+- `page` - Page number (default: 1)
+- `limit` - Posts per page (default: 10)
+
+**Response:**
+```json
+{
+  "posts": [
+    {
+      "id": "post_123",
+      "title": "Getting Started with Next.js",
+      "slug": "getting-started-nextjs",
+      "brief": "Learn the basics...",
+      "publishedAt": "2025-10-01T00:00:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 50,
+    "hasMore": true
+  }
+}
+```
+
+## Dashboard API Routes
+
+### Media Upload
+
+**POST** `/api/media/upload`
+
+Upload media files to Vercel Blob.
+
+**Request:** `multipart/form-data`
+```
+file: [File]
+```
+
+**Response:**
+```json
+{
+  "url": "https://blob.vercel-storage.com/file-abc123.jpg",
+  "filename": "image.jpg",
+  "size": 102400,
+  "contentType": "image/jpeg"
+}
+```
+
+### Posts CRUD
+
+**GET** `/api/posts/:id` - Get post
+**POST** `/api/posts` - Create post
+**PUT** `/api/posts/:id` - Update post
+**DELETE** `/api/posts/:id` - Delete post
+
+## Error Codes
+
+| Code | Status | Meaning |
+|------|--------|---------|
+| `VALIDATION_ERROR` | 400 | Invalid request data |
+| `UNAUTHORIZED` | 401 | Missing or invalid auth |
+| `FORBIDDEN` | 403 | Insufficient permissions |
+| `NOT_FOUND` | 404 | Resource not found |
+| `RATE_LIMITED` | 429 | Too many requests |
+| `SERVER_ERROR` | 500 | Internal server error |
+
+## Rate Limiting
+
+Implemented using Upstash Redis:
+
+```typescript
+import { Redis } from '@upstash/redis'
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+export async function rateLimit(identifier: string, limit: number = 5) {
+  const key = `rate-limit:${identifier}`
+  const count = await redis.incr(key)
+  
+  if (count === 1) {
+    await redis.expire(key, 3600) // 1 hour
+  }
+  
+  return count <= limit
+}
+```
+
+## Caching
+
+API responses are cached using Redis:
+
+```typescript
+import { getCached } from '@mindware-blog/lib/cache'
+
+export async function GET() {
+  const posts = await getCached(
+    'api:posts:all',
+    async () => await getAllPosts(),
+    3600 // 1 hour TTL
+  )
+  
+  return NextResponse.json({ posts })
+}
+```
+
+## Testing
+
+```typescript
+// __tests__/api/contact.test.ts
+import { POST } from '@/app/api/contact/route'
+
+describe('/api/contact', () => {
+  it('sends email successfully', async () => {
+    const request = new Request('http://localhost/api/contact', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com',
+        subject: 'Test',
+        message: 'Test message'
+      })
+    })
+    
+    const response = await POST(request)
+    const data = await response.json()
+    
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+  })
+})
+```
+
+## Next Steps
+
+- [Hashnode Integration](/docs/api-reference/hashnode) - Blog content API
+- [GraphQL](/docs/api-reference/graphql) - GraphQL queries
+- [Authentication](/docs/api-reference/authentication) - Auth patterns

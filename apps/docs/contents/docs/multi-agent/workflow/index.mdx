@@ -1,0 +1,397 @@
+---
+title: Workflow Automation
+description: Automated workflows for multi-agent development
+---
+
+# Workflow Automation
+
+Automate multi-agent workflows with PowerShell scripts and GitHub Actions.
+
+## End-to-End Workflow
+
+Complete automated workflow from task assignment to PR merge:
+
+<Mermaid chart={`sequenceDiagram
+    participant Human
+    participant Script
+    participant Agent1
+    participant Agent2
+    participant GitHub
+    
+    Human->>Script: Start workflow
+    Script->>Agent1: Create worktree
+    Script->>Agent2: Create worktree
+    Script->>Agent1: Assign task A
+    Script->>Agent2: Assign task B
+    
+    Agent1->>Agent1: Implement feature
+    Agent2->>Agent2: Implement feature
+    
+    Agent1->>GitHub: Create PR #123
+    Agent2->>GitHub: Create PR #124
+    
+    GitHub->>GitHub: Run CI tests
+    GitHub->>Human: Request review
+    
+    Human->>GitHub: Approve & merge
+    
+    Script->>Agent1: Clean up worktree
+    Script->>Agent2: Clean up worktree`} />
+
+## Automated Workflow Script
+
+### Complete E2E Automation
+
+```powershell
+.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+  -NumAgents 2 `
+  -Tasks "Implement auth", "Create dashboard" `
+  -BaseBranch "develop" `
+  -AutoCreatePR $true
+```
+
+This script:
+1. Creates agent worktrees
+2. Assigns tasks
+3. Monitors progress
+4. Auto-creates PRs when complete
+5. Runs quality checks
+6. Notifies on completion
+
+### Step-by-Step Workflow
+
+<Step>
+  <StepItem title="Initialize Agents">
+    ```powershell
+    # Create multiple agent worktrees
+    $agents = @("agent-1", "agent-2", "agent-3")
+    
+    foreach ($agent in $agents) {
+        .\scripts\agent-management\setup-agent-development.ps1 `
+          -AgentName $agent `
+          -BaseBranch "develop"
+    }
+    ```
+  </StepItem>
+
+  <StepItem title="Assign Tasks">
+    ```powershell
+    # Update configuration
+    $config = @{
+        agents = @(
+            @{
+                name = "agent-1"
+                tasks = @("Issue #266", "Issue #268")
+                role = "Frontend"
+            },
+            @{
+                name = "agent-2"
+                tasks = @("Issue #264", "Issue #265")
+                role = "Backend"
+            }
+        )
+    }
+    
+    $config | ConvertTo-Json | Set-Content `
+      scripts/configuration/agent-assignment-config.json
+    ```
+  </StepItem>
+
+  <StepItem title="Monitor Progress">
+    ```powershell
+    # Poll agent status
+    while ($true) {
+        .\scripts\agent-management\manage-multi-agent-system.ps1 `
+          -Action status
+        
+        Start-Sleep -Seconds 300  # Check every 5 minutes
+    }
+    ```
+  </StepItem>
+
+  <StepItem title="Auto-Create PRs">
+    ```powershell
+    # When agent completes work
+    .\scripts\pr-management\automate-pr-unified.ps1 `
+      -AgentName "agent-1" `
+      -Auto $true
+    ```
+  </StepItem>
+
+  <StepItem title="Quality Checks">
+    ```powershell
+    # Run automated quality checks
+    .\scripts\pr-management\pr-quality-checker.ps1 `
+      -PRNumber 123
+    
+    # Analyze PR content
+    .\scripts\pr-management\pr-analyzer.ps1 `
+      -PRNumber 123
+    ```
+  </StepItem>
+</Step>
+
+## Workflow Patterns
+
+### Pattern 1: Fire and Forget
+
+Start agents and let them work independently:
+
+```powershell
+# Launch all agents
+.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+  -NumAgents 3 `
+  -Tasks $tasks `
+  -MonitorMode "passive"
+
+# Script exits, agents continue working
+# Check back later for PRs
+```
+
+### Pattern 2: Continuous Monitoring
+
+Active monitoring with intervention:
+
+```powershell
+# Start with monitoring
+.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+  -NumAgents 3 `
+  -Tasks $tasks `
+  -MonitorMode "active" `
+  -AlertOnIssues $true
+
+# Script stays running, sends alerts
+# Human can intervene if needed
+```
+
+### Pattern 3: Phased Rollout
+
+Release agents in phases:
+
+```powershell
+# Phase 1: Critical features
+.\scripts\agent-management\deploy-agents.ps1 `
+  -Phase 1 `
+  -Agents "agent-1", "agent-2"
+
+# Wait for completion and validation
+
+# Phase 2: Secondary features
+.\scripts\agent-management\deploy-agents.ps1 `
+  -Phase 2 `
+  -Agents "agent-3", "agent-4"
+```
+
+## Integration with CI/CD
+
+### GitHub Actions Integration
+
+`.github/workflows/agent-ci.yml`:
+
+```yaml
+name: Multi-Agent CI
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  agent-quality-check:
+    runs-on: ubuntu-latest
+    if: contains(github.head_ref, 'agent-')
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Run tests
+        run: pnpm test
+      
+      - name: Type check
+        run: pnpm typecheck
+      
+      - name: Lint
+        run: pnpm lint
+      
+      - name: Agent quality check
+        run: |
+          pwsh scripts/pr-management/pr-quality-checker.ps1 `
+            -PRNumber ${{ github.event.number }}
+```
+
+### Automatic PR Management
+
+Automatically manage agent PRs:
+
+```yaml
+name: Agent PR Management
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [develop]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to project
+        run: |
+          pwsh scripts/project-management/manage-projects.ps1 `
+            -Action assign `
+            -PRNumber ${{ github.event.number }}
+      
+      - name: Add labels
+        run: |
+          gh pr edit ${{ github.event.number }} --add-label "multi-agent"
+```
+
+## Monitoring & Metrics
+
+### Real-time Dashboard
+
+```powershell
+# Start monitoring dashboard
+.\scripts\monitoring\real-time-dashboard.ps1 `
+  -Mode "multi-agent"
+```
+
+Displays:
+- Active agents
+- Current tasks
+- Progress percentage
+- Estimated completion
+- PR status
+
+### Metrics Collection
+
+Track multi-agent system performance:
+
+```powershell
+# Generate metrics
+.\scripts\monitoring\automation-metrics.ps1 `
+  -Type "multi-agent" `
+  -Period "last-30-days"
+```
+
+Metrics include:
+- Agent utilization
+- Average task completion time
+- Conflict rate
+- PR merge time
+- Code quality scores
+
+## Advanced Automation
+
+### Dynamic Agent Scaling
+
+Automatically scale agents based on workload:
+
+```powershell
+.\scripts\agent-management\auto-scale.ps1 `
+  -MinAgents 2 `
+  -MaxAgents 5 `
+  -ScaleTrigger "queue-depth"
+```
+
+### Intelligent Task Assignment
+
+AI-powered task assignment:
+
+```powershell
+.\scripts\agent-management\smart-assign.ps1 `
+  -Mode "ai-optimized" `
+  -Consider "agent-skills,task-complexity,dependencies"
+```
+
+### Conflict Prediction
+
+Predict and prevent conflicts:
+
+```powershell
+.\scripts\agent-management\conflict-predictor.ps1 `
+  -AnalyzeInterval 3600 `
+  -AlertThreshold 0.7
+```
+
+## Error Handling
+
+### Automatic Recovery
+
+```powershell
+# Setup error recovery
+.\scripts\agent-management\setup-recovery.ps1 `
+  -AutoRestart $true `
+  -MaxRetries 3 `
+  -NotifyOnFailure $true
+```
+
+### Rollback Procedures
+
+```powershell
+# Rollback failed agent work
+.\scripts\agent-management\rollback-agent.ps1 `
+  -AgentName "agent-1" `
+  -ToCommit "abc123"
+```
+
+## Best Practices
+
+<Note type="success">
+**Workflow Automation Tips:**
+
+1. **Start small**: Begin with 2 agents
+2. **Monitor closely**: Watch first few runs
+3. **Gradual automation**: Add automation incrementally
+4. **Error handling**: Plan for failures
+5. **Logging**: Comprehensive logs for debugging
+6. **Testing**: Test workflows in staging first
+</Note>
+
+## Troubleshooting
+
+### Workflow Stuck
+
+```powershell
+# Check agent status
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
+
+# View logs
+Get-Content logs/agent-workflow-*.log
+
+# Restart workflow
+.\scripts\agent-management\restart-workflow.ps1
+```
+
+### Agent Not Responding
+
+```powershell
+# Check agent health
+.\scripts\monitoring\agent-health-check.ps1 -AgentName "agent-1"
+
+# Force restart
+.\scripts\agent-management\restart-agent.ps1 -AgentName "agent-1" -Force
+```
+
+### PRs Not Created
+
+```powershell
+# Verify PR automation
+.\scripts\pr-management\test-pr-automation.ps1
+
+# Manually trigger
+.\scripts\pr-management\automate-pr-unified.ps1 -AgentName "agent-1"
+```
+
+## Next Steps
+
+- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate agents effectively
+- [Worktree Management](/docs/multi-agent/worktree) - Manage Git worktrees
+- [Scripts Reference](/docs/scripts-reference/agent-management) - Available scripts

@@ -1,0 +1,268 @@
+---
+title: Authentication
+description: Authentication and authorization patterns
+---
+
+# Authentication
+
+Authentication patterns and security implementation in Portfolio OS.
+
+## Authentication Strategy
+
+Portfolio OS uses different auth strategies depending on the app:
+
+| App | Strategy | Use Case |
+|-----|----------|----------|
+| Site | None (public) | Portfolio and blog |
+| Dashboard | Session-based | Admin access |
+| API Routes | Token-based | Programmatic access |
+
+## Dashboard Authentication
+
+### Session-Based Auth
+
+```typescript
+// apps/dashboard/lib/auth.ts
+import { cookies } from 'next/headers'
+
+export async function getCurrentUser() {
+  const sessionCookie = cookies().get('session')
+  
+  if (!sessionCookie) {
+    return null
+  }
+  
+  const session = await verifySession(sessionCookie.value)
+  return session.user
+}
+
+export async function requireAuth() {
+  const user = await getCurrentUser()
+  
+  if (!user) {
+    redirect('/login')
+  }
+  
+  return user
+}
+```
+
+### Protected Pages
+
+```typescript
+// apps/dashboard/app/dashboard/page.tsx
+import { requireAuth } from '@/lib/auth'
+
+export default async function DashboardPage() {
+  const user = await requireAuth()
+  
+  return <div>Welcome, {user.name}</div>
+}
+```
+
+### Login Flow
+
+```typescript
+// apps/dashboard/app/api/auth/login/route.ts
+import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import bcrypt from 'bcryptjs'
+
+export async function POST(request: Request) {
+  const { email, password } = await request.json()
+  
+  // Find user
+  const user = await db.user.findUnique({
+    where: { email }
+  })
+  
+  if (!user) {
+    return NextResponse.json(
+      { error: 'Invalid credentials' },
+      { status: 401 }
+    )
+  }
+  
+  // Verify password
+  const valid = await bcrypt.compare(password, user.passwordHash)
+  
+  if (!valid) {
+    return NextResponse.json(
+      { error: 'Invalid credentials' },
+      { status: 401 }
+    )
+  }
+  
+  // Create session
+  const session = await createSession(user.id)
+  
+  // Set cookie
+  cookies().set('session', session.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7 // 7 days
+  })
+  
+  return NextResponse.json({ success: true })
+}
+```
+
+## API Authentication
+
+### Token-Based Auth
+
+```typescript
+// Middleware for API routes
+export async function authenticateRequest(request: Request) {
+  const authHeader = request.headers.get('Authorization')
+  
+  if (!authHeader?.startsWith('Bearer ')) {
+    throw new Error('Missing or invalid authorization header')
+  }
+  
+  const token = authHeader.substring(7)
+  const payload = await verifyToken(token)
+  
+  return payload
+}
+
+// Usage in API route
+export async function GET(request: Request) {
+  try {
+    const user = await authenticateRequest(request)
+    
+    // User is authenticated
+    return NextResponse.json({ user })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+}
+```
+
+## Security Best Practices
+
+<Note type="danger">
+**Security Checklist:**
+
+1. **Password Hashing**: Use bcrypt with proper salt rounds
+2. **HTTPS Only**: Always use secure connections in production
+3. **CSRF Protection**: Implement CSRF tokens for state-changing operations
+4. **Rate Limiting**: Prevent brute force attacks
+5. **Session Expiry**: Implement reasonable session timeouts
+6. **Input Validation**: Validate all user input
+7. **SQL Injection**: Use parameterized queries (Prisma handles this)
+8. **XSS Protection**: React escapes by default, be careful with `dangerouslySetInnerHTML`
+</Note>
+
+## Middleware Protection
+
+```typescript
+// apps/dashboard/middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(request: NextRequest) {
+  const session = request.cookies.get('session')
+  
+  // Protect dashboard routes
+  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+  
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: '/dashboard/:path*'
+}
+```
+
+## Role-Based Access Control
+
+```typescript
+enum Role {
+  ADMIN = 'admin',
+  EDITOR = 'editor',
+  VIEWER = 'viewer'
+}
+
+export async function requireRole(role: Role) {
+  const user = await requireAuth()
+  
+  if (user.role !== role && user.role !== Role.ADMIN) {
+    throw new Error('Insufficient permissions')
+  }
+  
+  return user
+}
+
+// Usage
+export default async function AdminPage() {
+  await requireRole(Role.ADMIN)
+  return <div>Admin content</div>
+}
+```
+
+## OAuth Integration (Future)
+
+```typescript
+// Future OAuth implementation
+import { signIn } from 'next-auth'
+
+export async function loginWithGitHub() {
+  await signIn('github', {
+    callbackUrl: '/dashboard'
+  })
+}
+```
+
+## Testing Authentication
+
+```typescript
+// __tests__/auth.test.ts
+import { POST } from '@/app/api/auth/login/route'
+
+describe('Authentication', () => {
+  it('logs in with valid credentials', async () => {
+    const request = new Request('http://localhost/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: 'test@example.com',
+        password: 'password123'
+      })
+    })
+    
+    const response = await POST(request)
+    const data = await response.json()
+    
+    expect(response.status).toBe(200)
+    expect(data.success).toBe(true)
+  })
+  
+  it('rejects invalid credentials', async () => {
+    const request = new Request('http://localhost/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: 'test@example.com',
+        password: 'wrong'
+      })
+    })
+    
+    const response = await POST(request)
+    
+    expect(response.status).toBe(401)
+  })
+})
+```
+
+## Next Steps
+
+- [REST API](/docs/api-reference/rest-api) - API endpoints
+- [Dashboard App](/docs/apps-packages/dashboard) - Dashboard documentation
+- [Setup Guides](/docs/setup/deployment) - Production deployment
