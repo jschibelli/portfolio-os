@@ -103,7 +103,7 @@ export function ProjectContent({ project }: ProjectContentProps) {
           Project Overview
         </h2>
         
-        <div className="space-y-4 text-stone-600 dark:text-stone-400">
+        <div className="space-y-4 text-stone-600 dark:text-stone-400 mb-6">
           {sanitizedProject.client && (
             <div>
               <strong className="text-stone-900 dark:text-stone-100">Client:</strong> 
@@ -126,9 +126,75 @@ export function ProjectContent({ project }: ProjectContentProps) {
           )}
         </div>
 
-        <p className="text-lg leading-relaxed">
-          {sanitizedProject.description}
+        {/* Overview or Description */}
+        <p className="text-lg leading-relaxed mb-8">
+          {project.overview || sanitizedProject.description}
         </p>
+
+        {/* The Challenge */}
+        {project.challenge && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              The Challenge
+            </h3>
+            <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+              {project.challenge}
+            </p>
+          </div>
+        )}
+
+        {/* The Solution */}
+        {project.solution && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              The Solution
+            </h3>
+            <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+              {project.solution}
+            </p>
+          </div>
+        )}
+
+        {/* Key Features */}
+        {project.keyFeatures && project.keyFeatures.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              Key Features
+            </h3>
+            <ul className="space-y-2 text-stone-600 dark:text-stone-400">
+              {project.keyFeatures.map((feature, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-stone-400 dark:text-stone-500 mt-1">•</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Impact */}
+        {project.impact && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              Impact
+            </h3>
+            <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+              {project.impact}
+            </p>
+          </div>
+        )}
+
+        {/* Learnings (Optional) */}
+        {project.learnings && (
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              Key Learnings
+            </h3>
+            <p className="text-stone-600 dark:text-stone-400 leading-relaxed">
+              {project.learnings}
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

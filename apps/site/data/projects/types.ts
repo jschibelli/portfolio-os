@@ -20,4 +20,11 @@ export interface ProjectMeta {
   industry?: string;
   teamSize?: string;
   duration?: string;
+  // Rich content sections
+  overview?: string;
+  challenge?: string;
+  solution?: string;
+  keyFeatures?: string[];
+  impact?: string;
+  learnings?: string;
 }
