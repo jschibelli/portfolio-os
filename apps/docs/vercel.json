@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd ../.. && npx pnpm@10.14.0 build --filter=@portfolio/docs",
+  "installCommand": "npx pnpm@10.14.0 install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
+}
+
