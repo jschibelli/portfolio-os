@@ -29,12 +29,24 @@ interface BlogPostPageProps {
 /**
  * Generate static params for all blog posts at build time
  * This ensures all existing posts have pre-rendered pages
- * TEMPORARILY DISABLED to diagnose build hanging
+ * Uses timeout-based fetching to prevent build hanging
  */
 export async function generateStaticParams() {
-  // Return empty array to skip static generation during build
-  console.log('[Build] Skipping static generation for blog posts');
-  return [];
+  try {
+    console.log('[Build] Fetching blog post slugs for static generation');
+    const slugs = await getAllPostSlugs();
+    
+    if (slugs.length === 0) {
+      console.warn('[Build] No blog post slugs fetched, static generation will be skipped');
+      return [];
+    }
+    
+    console.log(`[Build] Generating static pages for ${slugs.length} blog posts`);
+    return slugs.map((slug: string) => ({ slug }));
+  } catch (error) {
+    console.error('[Build] Error fetching post slugs for static generation:', error);
+    return [];
+  }
 }
 
 // Default publication object for fallback

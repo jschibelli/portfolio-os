@@ -2,7 +2,7 @@ import { ProjectMeta } from './types';
 
 export const portfolioOS: ProjectMeta = {
   id: 'portfolio-os',
-  title: 'Portfolio OS: Development Platform',
+  title: 'Portfolio OS - Self-Documenting Development Platform',
   slug: 'portfolio-os',
   description: 'A monorepo portfolio that doubles as a development platform, combining enterprise automation with AI-assisted workflows to speed up development and maintain code quality.',
   image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
