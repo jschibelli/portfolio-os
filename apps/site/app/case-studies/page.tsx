@@ -79,7 +79,7 @@ export default function CaseStudiesPage() {
       <Layout>
         <main className="min-h-screen bg-background">
           {/* Hero Section */}
-          <section className="bg-stone-50 dark:bg-stone-900 py-16 lg:py-24">
+          <section className="bg-stone-50 dark:bg-stone-900 py-12 md:py-16">
             <Container className="px-4 sm:px-6">
               <div className="mx-auto max-w-4xl text-center">
                 <h1 className="text-4xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-6xl">
@@ -93,7 +93,7 @@ export default function CaseStudiesPage() {
           </section>
 
           {/* Case Studies Grid */}
-          <section className="py-16 lg:py-24">
+          <section className="py-12 md:py-16">
             <Container className="px-4 sm:px-6">
               <div className="grid gap-8 lg:grid-cols-2">
                 {caseStudies.map((caseStudy) => (
@@ -197,7 +197,7 @@ export default function CaseStudiesPage() {
           </section>
 
           {/* CTA Section */}
-          <section className="bg-stone-50 dark:bg-stone-900 py-16 lg:py-24">
+          <section className="bg-stone-50 dark:bg-stone-900 py-12 md:py-16">
             <Container className="px-4 sm:px-6">
               <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-4xl">
