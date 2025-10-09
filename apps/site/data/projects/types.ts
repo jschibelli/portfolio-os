@@ -27,4 +27,11 @@ export interface ProjectMeta {
   keyFeatures?: string[];
   impact?: string;
   learnings?: string;
+  // Version and development status
+  version?: string;
+  versionStatus?: 'alpha' | 'beta' | 'rc' | 'stable';
+  lastUpdated?: string;
+  recentUpdates?: string[];
+  upcomingFeatures?: string[];
+  changelogUrl?: string;
 }

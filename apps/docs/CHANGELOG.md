@@ -1,9 +1,15 @@
 ﻿# Changelog
 
-All notable changes to this project organized by release iteration.
+> **Note:** The comprehensive changelog has been moved to the documentation site.
+> 
+> **View the full changelog at:** [`apps/docs/CHANGELOG.md`](../apps/docs/CHANGELOG.md)
+>
+> This file contains a curated, high-level summary of major releases. For complete commit history, see the full changelog.
+
+---
 
 **Project Duration:** February 2025 - October 2025  
-**Total Commits:** 438 commits  
+**Total Commits:** 466 commits  
 **Current Version:** 1.0.0
 
 ---

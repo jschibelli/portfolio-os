@@ -96,28 +96,22 @@ export function ProjectLinks({ project }: ProjectLinksProps) {
 
   const links = [
     {
-      label: 'Live Site',
-      url: project.liveUrl,
-      icon: ExternalLink,
-      variant: 'default' as const,
-    },
-    {
-      label: 'GitHub Repository',
-      url: project.githubUrl,
-      icon: Github,
-      variant: 'outline' as const,
-    },
-    {
       label: 'Case Study',
       url: project.caseStudyUrl,
       icon: FileText,
-      variant: 'secondary' as const,
+      variant: 'default' as const,
     },
     {
       label: 'Documentation',
       url: project.documentationUrl,
       icon: BookOpen,
       variant: 'secondary' as const,
+    },
+    {
+      label: 'GitHub Repository',
+      url: project.githubUrl,
+      icon: Github,
+      variant: 'outline' as const,
     },
   ]
     .filter(link => {

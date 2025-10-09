@@ -47,6 +47,7 @@ export const portfolioOS: ProjectMeta = {
     'Intelligent caching and performance optimization',
     'GitHub integration for automated workflows'
   ],
-  impact: 'Development velocity increased significantly. PRs are created and managed automatically, tests catch issues before deployment, and documentation stays in sync with code. The portfolio itself demonstrates the engineering practices clients can expect.'
+  impact: 'Development velocity increased significantly. PRs are created and managed automatically, tests catch issues before deployment, and documentation stays in sync with code. The portfolio itself demonstrates the engineering practices clients can expect.',
+  changelogUrl: '/changelog'
 };
 

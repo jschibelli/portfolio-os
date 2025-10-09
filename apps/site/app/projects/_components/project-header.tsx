@@ -1,6 +1,7 @@
 import { ProjectMeta } from '../../../data/projects/types';
 import { Badge } from '../../../components/ui/badge';
 import { CalendarIcon, CodeIcon, ExternalLinkIcon, GithubIcon, UsersIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
+import { getCurrentVersion } from '../../../lib/changelog-parser';
 
 interface ContextualButton {
   label: string;
@@ -88,16 +89,46 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
     });
   };
 
+  // Get dynamic version for Portfolio OS
+  const isDynamic = project.id === 'portfolio-os';
+  const versionInfo = isDynamic ? getCurrentVersion() : null;
+  const version = project.version || versionInfo?.version;
+  const versionStatus = project.versionStatus || versionInfo?.status;
+
+  const getVersionBadgeStyle = (status?: string) => {
+    switch (status) {
+      case 'alpha':
+        return 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
+      case 'beta':
+        return 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+      case 'rc':
+        return 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
+      case 'stable':
+        return 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800';
+      default:
+        return 'bg-stone-50 dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-800';
+    }
+  };
+
   return (
     <header className="space-y-6">
-      {/* Status Badge */}
+      {/* Version/Status Badge */}
       <div className="flex items-center gap-3">
-        <Badge 
-          variant={project.status === 'completed' ? 'default' : 'secondary'}
-          className="text-sm font-medium"
-        >
-          {project.status.replace('-', ' ').toUpperCase()}
-        </Badge>
+        {version ? (
+          <Badge 
+            variant="outline"
+            className={`text-sm font-semibold ${getVersionBadgeStyle(versionStatus)}`}
+          >
+            v{version}
+          </Badge>
+        ) : (
+          <Badge 
+            variant={project.status === 'completed' ? 'default' : 'secondary'}
+            className="text-sm font-medium"
+          >
+            {project.status.replace('-', ' ').toUpperCase()}
+          </Badge>
+        )}
         {project.featured && (
           <Badge variant="outline" className="text-sm font-medium border-amber-200 text-amber-800 dark:border-amber-800 dark:text-amber-200">
             Featured
@@ -147,23 +178,6 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
         )}
       </div>
 
-      {/* Action Links - Context-Aware Selection */}
-      {getContextualHeaderButtons(project).length > 0 && (
-        <div className="flex flex-wrap gap-4 pt-4">
-          {getContextualHeaderButtons(project).map((button, index) => (
-            <a
-              key={index}
-              href={button.url}
-              target={button.external ? '_blank' : undefined}
-              rel={button.external ? 'noopener noreferrer' : undefined}
-              className={button.className}
-            >
-              {button.icon && <button.icon className="w-4 h-4" />}
-              {button.label}
-            </a>
-          ))}
-        </div>
-      )}
     </header>
   );
 }
