@@ -48,6 +48,16 @@ export const portfolioOS: ProjectMeta = {
     'GitHub integration for automated workflows'
   ],
   impact: 'Development velocity increased significantly. PRs are created and managed automatically, tests catch issues before deployment, and documentation stays in sync with code. The portfolio itself demonstrates the engineering practices clients can expect.',
+  version: '1.0.0',
+  versionStatus: 'stable',
+  lastUpdated: 'October 2025',
+  recentUpdates: [
+    'Complete multi-agent development system',
+    'Enhanced PR automation with AI workflows',
+    'Comprehensive issue management',
+    'Advanced media management system'
+  ],
+  upcomingFeatures: [],
   changelogUrl: '/changelog'
 };
 

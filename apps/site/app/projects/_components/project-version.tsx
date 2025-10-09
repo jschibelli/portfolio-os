@@ -1,22 +1,17 @@
 import { ProjectMeta } from '../../../data/projects/types';
 import { Activity, Calendar, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
-import { parseChangelog, getRecentUpdates, getUpcomingFeatures, getCurrentVersion } from '../../../lib/changelog-parser';
 
 interface ProjectVersionProps {
   project: ProjectMeta;
 }
 
 export function ProjectVersion({ project }: ProjectVersionProps) {
-  // Get dynamic changelog data (only for Portfolio OS)
-  const isDynamic = project.id === 'portfolio-os';
-  const versionInfo = isDynamic ? getCurrentVersion() : null;
-  const recentUpdates = isDynamic ? getRecentUpdates() : project.recentUpdates || [];
-  const upcomingFeatures = isDynamic ? getUpcomingFeatures() : project.upcomingFeatures || [];
-  
-  // Determine which version data to use
-  const version = project.version || versionInfo?.version;
-  const versionStatus = (project.versionStatus || versionInfo?.status) as 'alpha' | 'beta' | 'rc' | 'stable' | undefined;
-  const lastUpdated = project.lastUpdated || versionInfo?.date;
+  // Use project data directly (static at build time)
+  const version = project.version;
+  const versionStatus = project.versionStatus;
+  const lastUpdated = project.lastUpdated;
+  const recentUpdates = project.recentUpdates || [];
+  const upcomingFeatures = project.upcomingFeatures || [];
   
   // Only show if version data is available
   if (!version) {

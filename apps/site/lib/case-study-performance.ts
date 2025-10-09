@@ -2,8 +2,6 @@
  * Performance monitoring utilities for case study operations
  */
 
-import { getCacheStats } from './mdx-case-study-loader';
-
 interface PerformanceMetrics {
   operation: string;
   duration: number;
@@ -12,9 +10,22 @@ interface PerformanceMetrics {
   cacheSize?: number;
 }
 
+interface CacheStats {
+  caseStudyCacheSize: number;
+  caseStudyListCacheSize: number;
+}
+
 class CaseStudyPerformanceMonitor {
   private metrics: PerformanceMetrics[] = [];
   private readonly maxMetrics = 100; // Keep only last 100 metrics
+  private cacheStats: CacheStats = { caseStudyCacheSize: 0, caseStudyListCacheSize: 0 };
+
+  /**
+   * Update cache stats (called from the loader)
+   */
+  updateCacheStats(stats: CacheStats): void {
+    this.cacheStats = stats;
+  }
 
   /**
    * Record a performance metric
@@ -25,7 +36,7 @@ class CaseStudyPerformanceMonitor {
       duration,
       timestamp: Date.now(),
       cacheHit,
-      cacheSize: getCacheStats().caseStudyCacheSize,
+      cacheSize: this.cacheStats.caseStudyCacheSize,
     };
 
     this.metrics.push(metric);
@@ -92,7 +103,7 @@ class CaseStudyPerformanceMonitor {
    * Get cache statistics
    */
   getCacheStats() {
-    return getCacheStats();
+    return this.cacheStats;
   }
 }
 

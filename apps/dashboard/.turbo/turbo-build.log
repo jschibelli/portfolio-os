@@ -6,7 +6,7 @@
    - Environments: .env.local, .env
 
    Creating an optimized production build ...
- ⚠ Compiled with warnings in 27.2s
+ ⚠ Compiled with warnings in 113s
 
 ./app/admin/articles/[id]/edit/page.tsx
 Attempted import error: 'validateArticleId' is not exported from '@/lib/validation' (imported as 'validateArticleId').
@@ -56,64 +56,10 @@ Attempted import error: 'authOptions' is not exported from '../../auth/[...nexta
 Import trace for requested module:
 ./app/api/media/upload/route.ts
 
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/libvips.js
-Module not found: Can't resolve '@img/sharp-libvips-dev/include' in 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\node_modules\.pnpm\sharp@0.34.3\node_modules\sharp\lib'
-
-Import trace for requested module:
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/libvips.js
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/utility.js
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/index.js
-./app/api/media/upload/route.ts
-
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/libvips.js
-Module not found: Can't resolve '@img/sharp-libvips-dev/cplusplus' in 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\node_modules\.pnpm\sharp@0.34.3\node_modules\sharp\lib'
-
-Import trace for requested module:
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/libvips.js
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/utility.js
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/index.js
-./app/api/media/upload/route.ts
-
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/utility.js
-Module not found: Can't resolve '@img/sharp-wasm32/versions' in 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\node_modules\.pnpm\sharp@0.34.3\node_modules\sharp\lib'
-
-Import trace for requested module:
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/utility.js
-../../node_modules/.pnpm/sharp@0.34.3/node_modules/sharp/lib/index.js
-./app/api/media/upload/route.ts
-
-
-[1m[33mwarn[39m[22m - Your `content` configuration includes a pattern which looks like it's accidentally matching all of `node_modules` and can cause serious performance issues.
-[1m[33mwarn[39m[22m - Pattern: `..\..\packages\ui\**\*.ts`
-[1m[33mwarn[39m[22m - See our documentation for recommendations:
-[1m[33mwarn[39m[22m - https://tailwindcss.com/docs/content-configuration#pattern-recommendations
- ✓ Compiled successfully in 94s
-   Skipping validation of types
-   Skipping linting
-   Collecting page data ...
-Error: Could not load the "sharp" module using the win32-x64 runtime
-Possible solutions:
-- Ensure optional dependencies can be installed:
-    npm install --include=optional sharp
-- Ensure your package manager supports multi-platform installation:
-    See https://sharp.pixelplumbing.com/install#cross-platform
-- Add platform-specific dependencies:
-    npm install --os=win32 --cpu=x64 sharp
-- Consult the installation documentation:
-    See https://sharp.pixelplumbing.com/install
-    at 6994 (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\app\api\media\upload\route.js:1:17484)
-    at c (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\webpack-runtime.js:1:143)
-    at 70738 (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\app\api\media\upload\route.js:14:91)
-    at c (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\webpack-runtime.js:1:143)
-    at 18781 (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\app\api\media\upload\route.js:1:47065)
-    at c (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\webpack-runtime.js:1:143)
-    at 96746 (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\app\api\media\upload\route.js:34:22374)
-    at c (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\webpack-runtime.js:1:143)
-    at <unknown> (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\app\api\media\upload\route.js:34:42058)
-    at c.X (C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\server\webpack-runtime.js:1:1520)
-
-> Build error occurred
-[Error: Failed to collect page data for /api/media/upload] {
-  type: 'Error'
+uncaughtException [Error: EPERM: operation not permitted, open 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\trace'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'open',
+  path: 'C:\\Users\\jschi\\OneDrive\\Desktop\\2025_portfolio\\portfolio-os\\apps\\dashboard\\.next\\trace'
 }
  ELIFECYCLE  Command failed with exit code 1.

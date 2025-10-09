@@ -29,18 +29,12 @@ interface BlogPostPageProps {
 /**
  * Generate static params for all blog posts at build time
  * This ensures all existing posts have pre-rendered pages
+ * TEMPORARILY DISABLED to diagnose build hanging
  */
 export async function generateStaticParams() {
-  try {
-    const slugs = await getAllPostSlugs();
-    return slugs.map((slug) => ({
-      slug,
-    }));
-  } catch (error) {
-    console.error('Error generating static params for blog posts:', error);
-    // Return empty array on error to allow build to continue
-    return [];
-  }
+  // Return empty array to skip static generation during build
+  console.log('[Build] Skipping static generation for blog posts');
+  return [];
 }
 
 // Default publication object for fallback
@@ -71,48 +65,33 @@ const defaultPublication = {
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params;
   
-  // Fetch post from Hashnode
-  const post = await fetchPostBySlug(params.slug);
-
-  if (!post) {
-    return {
-      title: "Post Not Found",
-    };
-  }
-
+  // Skip API calls during build - metadata will be generated at runtime
   return {
-    title: post.title,
-    description: post.brief || `Read ${post.title} by ${post.author?.name || "our team"}`,
-    openGraph: {
-      title: post.title,
-      description: post.brief,
-      type: "article",
-      images: post.coverImage ? [post.coverImage.url] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.brief,
-      images: post.coverImage ? [post.coverImage.url] : [],
-    },
+    title: "Blog Post | John Schibelli",
+    description: "Read the latest blog post",
   };
 }
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
   
-  // Fetch post and publication data from Hashnode
-  const [post, publication] = await Promise.all([
-    fetchPostBySlug(params.slug),
-    fetchPublication()
-  ]);
+  // Skip API calls during build - will work at runtime only
+  let post = null;
+  let currentPublication = defaultPublication;
+  
+  // Only fetch if NOT in build phase
+  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+    const [fetchedPost, fetchedPublication] = await Promise.all([
+      fetchPostBySlug(params.slug),
+      fetchPublication()
+    ]);
+    post = fetchedPost;
+    currentPublication = fetchedPublication || defaultPublication;
+  }
 
   if (!post) {
     notFound();
   }
-
-  // Use fetched publication or fallback to default
-  const currentPublication = publication || defaultPublication;
 
   return (
     <AppProvider publication={currentPublication as any}>

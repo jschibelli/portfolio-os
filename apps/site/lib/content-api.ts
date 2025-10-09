@@ -105,25 +105,9 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
  * Always returns false during build to use Hashnode directly
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // Skip Dashboard API check during build - use Hashnode directly
-  if (!process.env.DASHBOARD_API_URL || process.env.NODE_ENV === 'production') {
-    return false;
-  }
-
-  // Only check Dashboard API in development
-  try {
-    // Simple check with no timeout to avoid hanging
-    const response = await Promise.race([
-      dashboardAPI.getPublication(),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Dashboard API timeout')), 1000)
-      )
-    ]);
-    return true;
-  } catch (error) {
-    // Dashboard API not available, will use Hashnode
-    return false;
-  }
+  // ALWAYS skip Dashboard API during build - use Hashnode directly
+  // This prevents hanging when localhost:3001 is not running
+  return false;
 }
 
 /**
@@ -239,22 +223,34 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
  * Get all post slugs for static generation
  */
 export async function getAllPostSlugs(): Promise<string[]> {
-  try {
-    // Try Dashboard API first
-    if (await isDashboardAvailable()) {
-      const response = await dashboardAPI.getPosts({ limit: 100 });
-      return response.posts.map(post => post.slug);
-    }
-  } catch (error) {
-    console.warn('Dashboard API failed for slugs, falling back to Hashnode:', error);
-  }
+  // Add 15 second hard timeout for build
+  const timeoutPromise = new Promise<string[]>((resolve) => {
+    setTimeout(() => {
+      console.warn('getAllPostSlugs timed out after 15 seconds, returning empty array');
+      resolve([]);
+    }, 15000);
+  });
 
-  // Fallback to Hashnode
-  try {
-    const hashnodePosts = await fetchHashnodePosts(100);
-    return hashnodePosts.map(post => post.slug);
-  } catch (error) {
-    console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);
-    return [];
-  }
+  const fetchPromise = (async () => {
+    try {
+      // Try Dashboard API first
+      if (await isDashboardAvailable()) {
+        const response = await dashboardAPI.getPosts({ limit: 100 });
+        return response.posts.map(post => post.slug);
+      }
+    } catch (error) {
+      console.warn('Dashboard API failed for slugs, falling back to Hashnode:', error);
+    }
+
+    // Fallback to Hashnode
+    try {
+      const hashnodePosts = await fetchHashnodePosts(100);
+      return hashnodePosts.map(post => post.slug);
+    } catch (error) {
+      console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);
+      return [];
+    }
+  })();
+
+  return Promise.race([fetchPromise, timeoutPromise]);
 }

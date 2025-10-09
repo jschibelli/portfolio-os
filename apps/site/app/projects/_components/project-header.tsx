@@ -1,7 +1,6 @@
 import { ProjectMeta } from '../../../data/projects/types';
 import { Badge } from '../../../components/ui/badge';
 import { CalendarIcon, CodeIcon, ExternalLinkIcon, GithubIcon, UsersIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
-import { getCurrentVersion } from '../../../lib/changelog-parser';
 
 interface ContextualButton {
   label: string;
@@ -89,11 +88,9 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
     });
   };
 
-  // Get dynamic version for Portfolio OS
-  const isDynamic = project.id === 'portfolio-os';
-  const versionInfo = isDynamic ? getCurrentVersion() : null;
-  const version = project.version || versionInfo?.version;
-  const versionStatus = project.versionStatus || versionInfo?.status;
+  // Get version from project data
+  const version = project.version;
+  const versionStatus = project.versionStatus;
 
   const getVersionBadgeStyle = (status?: string) => {
     switch (status) {
