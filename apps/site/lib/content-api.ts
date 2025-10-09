@@ -24,26 +24,43 @@ export interface UnifiedPost {
   featured?: boolean;
 }
 
+/**
+ * UnifiedPublication interface that is compatible with PublicationFragment
+ * This ensures type safety when passing to components expecting PublicationFragment
+ */
 export interface UnifiedPublication {
   id: string;
   title: string;
-  displayTitle: string | null;
-  descriptionSEO: string;
+  description: string;
   url: string;
-  posts: {
+  favicon: string;
+  logo: string;
+  isTeam: boolean;
+  preferences: {
+    logo: string;
+    darkMode: {
+      logo: string;
+    };
+    navbarItems: any[];
+    layout: {
+      navbarStyle: string;
+      footerStyle: string;
+      showBranding: boolean;
+    };
+    members: any[];
+  };
+  // Additional fields for extended functionality
+  displayTitle?: string | null;
+  descriptionSEO?: string;
+  posts?: {
     totalDocuments: number;
   };
-  preferences: {
-    logo: string | null;
-  };
-  author: {
+  author?: {
     name: string;
     profilePicture: string | null;
   };
-  followersCount: number;
-  isTeam: boolean;
-  favicon: string | null;
-  ogMetaData: {
+  followersCount?: number;
+  ogMetaData?: {
     image: string | null;
   };
 }
@@ -78,22 +95,34 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
   return {
     id: 'dashboard-publication',
     title: pub.name,
+    description: pub.description,
+    url: pub.url,
+    favicon: pub.favicon || '',
+    logo: pub.logo || '',
+    isTeam: false,
+    preferences: {
+      logo: pub.logo || '',
+      darkMode: {
+        logo: pub.logo || '',
+      },
+      navbarItems: [],
+      layout: {
+        navbarStyle: 'default',
+        footerStyle: 'default',
+        showBranding: true,
+      },
+      members: [],
+    },
     displayTitle: pub.name,
     descriptionSEO: pub.description,
-    url: pub.url,
     posts: {
       totalDocuments: pub.stats.totalPosts
-    },
-    preferences: {
-      logo: pub.logo
     },
     author: {
       name: 'John Schibelli',
       profilePicture: null
     },
     followersCount: 0,
-    isTeam: false,
-    favicon: pub.favicon,
     ogMetaData: {
       image: null
     }

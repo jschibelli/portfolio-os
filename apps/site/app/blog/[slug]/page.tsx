@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
-import { fetchPostBySlug, fetchPublication, getAllPostSlugs } from '../../../lib/content-api';
+import { fetchPostBySlug, fetchPublication, getAllPostSlugs, UnifiedPublication } from '../../../lib/content-api';
 
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
@@ -49,26 +49,38 @@ export async function generateStaticParams() {
   }
 }
 
-// Default publication object for fallback
-const defaultPublication = {
+// Default publication object for fallback - matches PublicationFragment
+const defaultPublication: UnifiedPublication = {
   id: 'fallback-blog-post',
   title: 'John Schibelli',
+  description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
+  url: 'https://johnschibelli.dev',
+  favicon: '',
+  logo: '',
+  isTeam: false,
+  preferences: {
+    logo: '',
+    darkMode: {
+      logo: '',
+    },
+    navbarItems: [],
+    layout: {
+      navbarStyle: 'default',
+      footerStyle: 'default',
+      showBranding: true,
+    },
+    members: [],
+  },
   displayTitle: 'John Schibelli',
   descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
-  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
-  },
-  preferences: {
-    logo: null,
   },
   author: {
     name: 'John Schibelli',
     profilePicture: null,
   },
   followersCount: 0,
-  isTeam: false,
-  favicon: null,
   ogMetaData: {
     image: null,
   },
@@ -118,7 +130,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
   }
 
   return (
-    <AppProvider publication={currentPublication as any}>
+    <AppProvider publication={currentPublication}>
       {/* Navigation */}
       <ModernHeader publication={currentPublication} />
 

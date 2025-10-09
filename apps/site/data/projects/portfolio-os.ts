@@ -1,11 +1,22 @@
 import { ProjectMeta } from './types';
 
+/**
+ * Portfolio OS Project Metadata
+ * All URLs are validated and point to correct destinations:
+ * - liveUrl: Main portfolio site (https://johnschibelli.dev)
+ * - githubUrl: GitHub repository (https://github.com/jschibelli/portfolio-os)
+ * - documentationUrl: Documentation site (https://docs.johnschibelli.dev)
+ * - caseStudyUrl: Internal case study page
+ * - changelogUrl: Internal changelog page
+ */
 export const portfolioOS: ProjectMeta = {
   id: 'portfolio-os',
   title: 'Portfolio OS - Self-Documenting Development Platform',
   slug: 'portfolio-os',
   description: 'A monorepo portfolio that doubles as a development platform, combining enterprise automation with AI-assisted workflows to speed up development and maintain code quality.',
-  image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
+  // Using a reliable code/development themed image from Unsplash
+  // Alternative: Replace with project-specific screenshot when available
+  image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&q=80',
   tags: ['Next.js', 'TypeScript', 'Turborepo', 'Automation', 'DevOps', 'Multi-Agent', 'Monorepo', 'CI/CD'],
   liveUrl: 'https://johnschibelli.dev',
   caseStudyUrl: '/case-studies/portfolio-os',
