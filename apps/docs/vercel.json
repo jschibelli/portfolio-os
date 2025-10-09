@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && pnpm build --filter=@portfolio/docs",
+  "buildCommand": "cd ../.. && corepack enable && corepack prepare pnpm@10.14.0 --activate && pnpm build --filter=@portfolio/docs",
   "installCommand": "corepack enable && corepack prepare pnpm@10.14.0 --activate && pnpm install",
   "framework": "nextjs",
   "outputDirectory": ".next"
