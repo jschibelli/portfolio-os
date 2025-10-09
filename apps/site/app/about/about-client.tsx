@@ -205,7 +205,7 @@ export function AboutPageClient() {
     <Layout>
       <main className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative min-h-[500px] overflow-hidden py-16 md:py-24">
+        <section className="relative min-h-[300px] overflow-hidden py-12 md:py-16">
           <div className="absolute inset-0 z-0">
             <div className="h-full w-full bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/assets/hero/hero-bg.png)' }} />
             <div className="absolute inset-0 bg-gradient-to-br from-stone-900/95 via-stone-900/85 to-stone-800/75" />
@@ -310,7 +310,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Personal Story Section */}
-        <section className="bg-muted py-20">
+        <section className="bg-muted py-12 md:py-16">
           <Container className="px-4">
             <div className="mx-auto max-w-6xl">
               <div className="mb-16 text-center">
@@ -489,7 +489,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Value Props + CTA */}
-        <section className="bg-background py-20">
+        <section className="bg-background py-12 md:py-16">
           <Container className="px-4">
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
@@ -542,7 +542,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Career Journey */}
-        <section className="bg-muted py-20">
+        <section className="bg-muted py-12 md:py-16">
           <Container className="px-4">
             <div className="mx-auto max-w-6xl">
               <div className="mb-16 text-center">
@@ -589,7 +589,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Who I Work With */}
-        <section className="bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 py-20">
+        <section className="bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 py-12 md:py-16">
           <Container className="px-4">
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
@@ -628,7 +628,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Let's Build Something Amazing */}
-        <section className="bg-gradient-to-br from-stone-50 via-white to-stone-100 py-20 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900">
+        <section className="bg-gradient-to-br from-stone-50 via-white to-stone-100 py-12 md:py-16 dark:from-stone-900 dark:via-stone-800 dark:to-stone-900">
           <Container className="px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

@@ -47,14 +47,19 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  // Fetch latest posts and publication data from Hashnode
-  const [posts, publication] = await Promise.all([
-    fetchPosts(10),
-    fetchPublication()
-  ]);
-
-  // Use fetched publication or fallback to default
-  const currentPublication = publication || defaultPublication;
+  // Skip API calls during build - will work at runtime only
+  let posts: any[] = [];
+  let currentPublication = defaultPublication;
+  
+  // Only fetch if NOT in build phase
+  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+    const [fetchedPosts, fetchedPublication] = await Promise.all([
+      fetchPosts(10),
+      fetchPublication()
+    ]);
+    posts = fetchedPosts;
+    currentPublication = fetchedPublication || defaultPublication;
+  }
 
   const featuredPost = posts[0];
   const morePosts = posts.slice(1, 4);

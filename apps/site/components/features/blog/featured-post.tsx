@@ -138,7 +138,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
 
             {/* Call to Action */}
             <Link
-              href={`/${post.slug}`}
+              href={`/blog/${post.slug}`}
               className="group inline-flex items-center gap-2 text-lg font-semibold text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
             >
               Read full article

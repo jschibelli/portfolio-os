@@ -23,7 +23,7 @@ const fadeInUpDelayed = (delay: number) => ({
 
 export default function Hero() {
 	return (
-		<header className={cn("relative flex min-h-[400px] items-center justify-center overflow-hidden", heroSpacingClasses.section.default)}>
+		<header className={cn("relative flex min-h-[300px] items-center justify-center overflow-hidden", heroSpacingClasses.section.compact)}>
 			{/* Background Image with optimized loading */}
 			<div className="absolute inset-0 z-0">
 				<Image

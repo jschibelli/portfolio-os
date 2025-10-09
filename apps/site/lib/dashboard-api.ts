@@ -75,11 +75,18 @@ class DashboardAPIClient {
     };
 
     try {
+      // Add 2 second timeout to prevent hanging during build
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2000);
+      
       const response = await fetch(url, {
         ...options,
         headers,
         next: { revalidate: 60 }, // Cache for 1 minute
+        signal: controller.signal,
       });
+
+      clearTimeout(timeout);
 
       if (!response.ok) {
         throw new Error(`Dashboard API error: ${response.status} ${response.statusText}`);
@@ -87,6 +94,10 @@ class DashboardAPIClient {
 
       return await response.json();
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error(`Dashboard API request to ${endpoint} timed out after 2 seconds`);
+        throw new Error('Dashboard API timeout');
+      }
       console.error(`Dashboard API request failed for ${endpoint}:`, error);
       throw error;
     }

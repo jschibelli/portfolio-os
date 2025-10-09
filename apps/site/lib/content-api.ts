@@ -24,26 +24,43 @@ export interface UnifiedPost {
   featured?: boolean;
 }
 
+/**
+ * UnifiedPublication interface that is compatible with PublicationFragment
+ * This ensures type safety when passing to components expecting PublicationFragment
+ */
 export interface UnifiedPublication {
   id: string;
   title: string;
-  displayTitle: string | null;
-  descriptionSEO: string;
+  description: string;
   url: string;
-  posts: {
+  favicon: string;
+  logo: string;
+  isTeam: boolean;
+  preferences: {
+    logo: string;
+    darkMode: {
+      logo: string;
+    };
+    navbarItems: any[];
+    layout: {
+      navbarStyle: string;
+      footerStyle: string;
+      showBranding: boolean;
+    };
+    members: any[];
+  };
+  // Additional fields for extended functionality
+  displayTitle?: string | null;
+  descriptionSEO?: string;
+  posts?: {
     totalDocuments: number;
   };
-  preferences: {
-    logo: string | null;
-  };
-  author: {
+  author?: {
     name: string;
     profilePicture: string | null;
   };
-  followersCount: number;
-  isTeam: boolean;
-  favicon: string | null;
-  ogMetaData: {
+  followersCount?: number;
+  ogMetaData?: {
     image: string | null;
   };
 }
@@ -78,22 +95,34 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
   return {
     id: 'dashboard-publication',
     title: pub.name,
+    description: pub.description,
+    url: pub.url,
+    favicon: pub.favicon || '',
+    logo: pub.logo || '',
+    isTeam: false,
+    preferences: {
+      logo: pub.logo || '',
+      darkMode: {
+        logo: pub.logo || '',
+      },
+      navbarItems: [],
+      layout: {
+        navbarStyle: 'default',
+        footerStyle: 'default',
+        showBranding: true,
+      },
+      members: [],
+    },
     displayTitle: pub.name,
     descriptionSEO: pub.description,
-    url: pub.url,
     posts: {
       totalDocuments: pub.stats.totalPosts
-    },
-    preferences: {
-      logo: pub.logo
     },
     author: {
       name: 'John Schibelli',
       profilePicture: null
     },
     followersCount: 0,
-    isTeam: false,
-    favicon: pub.favicon,
     ogMetaData: {
       image: null
     }
@@ -102,28 +131,13 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 
 /**
  * Check if Dashboard API is available
- * Always returns false during build to use Hashnode directly
+ * Always returns false during build and in production to use Hashnode directly
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // Skip Dashboard API check during build - use Hashnode directly
-  if (!process.env.DASHBOARD_API_URL || process.env.NODE_ENV === 'production') {
-    return false;
-  }
-
-  // Only check Dashboard API in development
-  try {
-    // Simple check with no timeout to avoid hanging
-    const response = await Promise.race([
-      dashboardAPI.getPublication(),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Dashboard API timeout')), 1000)
-      )
-    ]);
-    return true;
-  } catch (error) {
-    // Dashboard API not available, will use Hashnode
-    return false;
-  }
+  // Skip Dashboard API during build and in production
+  // This prevents hanging when localhost:3001 is not running
+  // Dashboard API is only useful during local development
+  return false;
 }
 
 /**
@@ -239,22 +253,34 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
  * Get all post slugs for static generation
  */
 export async function getAllPostSlugs(): Promise<string[]> {
-  try {
-    // Try Dashboard API first
-    if (await isDashboardAvailable()) {
-      const response = await dashboardAPI.getPosts({ limit: 100 });
-      return response.posts.map(post => post.slug);
-    }
-  } catch (error) {
-    console.warn('Dashboard API failed for slugs, falling back to Hashnode:', error);
-  }
+  // Add 15 second hard timeout for build
+  const timeoutPromise = new Promise<string[]>((resolve) => {
+    setTimeout(() => {
+      console.warn('getAllPostSlugs timed out after 15 seconds, returning empty array');
+      resolve([]);
+    }, 15000);
+  });
 
-  // Fallback to Hashnode
-  try {
-    const hashnodePosts = await fetchHashnodePosts(100);
-    return hashnodePosts.map(post => post.slug);
-  } catch (error) {
-    console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);
-    return [];
-  }
+  const fetchPromise = (async () => {
+    try {
+      // Try Dashboard API first
+      if (await isDashboardAvailable()) {
+        const response = await dashboardAPI.getPosts({ limit: 100 });
+        return response.posts.map(post => post.slug);
+      }
+    } catch (error) {
+      console.warn('Dashboard API failed for slugs, falling back to Hashnode:', error);
+    }
+
+    // Fallback to Hashnode
+    try {
+      const hashnodePosts = await fetchHashnodePosts(100);
+      return hashnodePosts.map(post => post.slug);
+    } catch (error) {
+      console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);
+      return [];
+    }
+  })();
+
+  return Promise.race([fetchPromise, timeoutPromise]);
 }

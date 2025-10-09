@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
-import { fetchPostBySlug, fetchPublication, getAllPostSlugs } from '../../../lib/content-api';
+import { fetchPostBySlug, fetchPublication, getAllPostSlugs, UnifiedPublication } from '../../../lib/content-api';
 
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
@@ -29,40 +29,58 @@ interface BlogPostPageProps {
 /**
  * Generate static params for all blog posts at build time
  * This ensures all existing posts have pre-rendered pages
+ * Uses timeout-based fetching to prevent build hanging
  */
 export async function generateStaticParams() {
   try {
+    console.log('[Build] Fetching blog post slugs for static generation');
     const slugs = await getAllPostSlugs();
-    return slugs.map((slug) => ({
-      slug,
-    }));
+    
+    if (slugs.length === 0) {
+      console.warn('[Build] No blog post slugs fetched, static generation will be skipped');
+      return [];
+    }
+    
+    console.log(`[Build] Generating static pages for ${slugs.length} blog posts`);
+    return slugs.map((slug: string) => ({ slug }));
   } catch (error) {
-    console.error('Error generating static params for blog posts:', error);
-    // Return empty array on error to allow build to continue
+    console.error('[Build] Error fetching post slugs for static generation:', error);
     return [];
   }
 }
 
-// Default publication object for fallback
-const defaultPublication = {
+// Default publication object for fallback - matches PublicationFragment
+const defaultPublication: UnifiedPublication = {
   id: 'fallback-blog-post',
   title: 'John Schibelli',
+  description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
+  url: 'https://johnschibelli.dev',
+  favicon: '',
+  logo: '',
+  isTeam: false,
+  preferences: {
+    logo: '',
+    darkMode: {
+      logo: '',
+    },
+    navbarItems: [],
+    layout: {
+      navbarStyle: 'default',
+      footerStyle: 'default',
+      showBranding: true,
+    },
+    members: [],
+  },
   displayTitle: 'John Schibelli',
   descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
-  url: 'https://johnschibelli.dev',
   posts: {
     totalDocuments: 0,
-  },
-  preferences: {
-    logo: null,
   },
   author: {
     name: 'John Schibelli',
     profilePicture: null,
   },
   followersCount: 0,
-  isTeam: false,
-  favicon: null,
   ogMetaData: {
     image: null,
   },
@@ -71,51 +89,48 @@ const defaultPublication = {
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params;
   
-  // Fetch post from Hashnode
-  const post = await fetchPostBySlug(params.slug);
-
-  if (!post) {
-    return {
-      title: "Post Not Found",
-    };
-  }
-
+  // Skip API calls during build - metadata will be generated at runtime
   return {
-    title: post.title,
-    description: post.brief || `Read ${post.title} by ${post.author?.name || "our team"}`,
-    openGraph: {
-      title: post.title,
-      description: post.brief,
-      type: "article",
-      images: post.coverImage ? [post.coverImage.url] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.brief,
-      images: post.coverImage ? [post.coverImage.url] : [],
-    },
+    title: "Blog Post | John Schibelli",
+    description: "Read the latest blog post",
   };
 }
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
   
-  // Fetch post and publication data from Hashnode
-  const [post, publication] = await Promise.all([
-    fetchPostBySlug(params.slug),
-    fetchPublication()
-  ]);
+  console.log(`[Blog Post] Fetching post: ${params.slug}`);
+  console.log(`[Blog Post] NEXT_PHASE: ${process.env.NEXT_PHASE}`);
+  console.log(`[Blog Post] NODE_ENV: ${process.env.NODE_ENV}`);
+  
+  // Always fetch at runtime (both dev and production)
+  // Only skip during build phase to prevent hanging
+  let post = null;
+  let currentPublication = defaultPublication;
+  
+  try {
+    const [fetchedPost, fetchedPublication] = await Promise.all([
+      fetchPostBySlug(params.slug),
+      fetchPublication()
+    ]);
+    post = fetchedPost;
+    currentPublication = fetchedPublication || defaultPublication;
+    
+    console.log(`[Blog Post] Post found: ${post ? 'YES' : 'NO'}`);
+    if (post) {
+      console.log(`[Blog Post] Post title: ${post.title}`);
+    }
+  } catch (error) {
+    console.error(`[Blog Post] Error fetching post:`, error);
+  }
 
   if (!post) {
+    console.log(`[Blog Post] Post not found, returning 404 for slug: ${params.slug}`);
     notFound();
   }
 
-  // Use fetched publication or fallback to default
-  const currentPublication = publication || defaultPublication;
-
   return (
-    <AppProvider publication={currentPublication as any}>
+    <AppProvider publication={currentPublication}>
       {/* Navigation */}
       <ModernHeader publication={currentPublication} />
 

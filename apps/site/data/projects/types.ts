@@ -20,4 +20,18 @@ export interface ProjectMeta {
   industry?: string;
   teamSize?: string;
   duration?: string;
+  // Rich content sections
+  overview?: string;
+  challenge?: string;
+  solution?: string;
+  keyFeatures?: string[];
+  impact?: string;
+  learnings?: string;
+  // Version and development status
+  version?: string;
+  versionStatus?: 'alpha' | 'beta' | 'rc' | 'stable';
+  lastUpdated?: string;
+  recentUpdates?: string[];
+  upcomingFeatures?: string[];
+  changelogUrl?: string;
 }

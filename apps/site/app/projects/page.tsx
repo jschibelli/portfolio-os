@@ -120,7 +120,7 @@ export default function ProjectsPage() {
       <main className="min-h-screen bg-white dark:bg-stone-950">
         {/* Hero Section - Server-side rendered */}
         <section
-          className="relative min-h-[300px] sm:min-h-[400px] md:min-h-[500px] overflow-hidden bg-stone-50 py-8 sm:py-12 md:py-16 lg:py-20 dark:bg-stone-900"
+          className="relative min-h-[300px] overflow-hidden bg-stone-50 py-12 md:py-16 dark:bg-stone-900"
           style={{ backgroundImage: 'url(/assets/hero/hero-bg2.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
         >
           <div className="absolute inset-0 z-0 bg-stone-50/80 dark:bg-stone-900/80"></div>
@@ -148,7 +148,7 @@ export default function ProjectsPage() {
         </section>
 
         {/* Server-side rendered project cards for SEO */}
-        <section className="bg-stone-50 py-12 sm:py-16 lg:py-20 dark:bg-stone-900">
+        <section className="bg-stone-50 py-12 md:py-16 dark:bg-stone-900">
           <Container className="px-4 sm:px-6">
             <div className="mb-12 sm:mb-16 text-center">
               <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">Projects</h2>
@@ -157,12 +157,20 @@ export default function ProjectsPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Dynamic grid layout based on project count */}
+            <div className={
+              projects.length === 1 
+                ? "max-w-5xl mx-auto" 
+                : projects.length === 2 
+                ? "grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto"
+                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            }>
               {projects.map((project, index) => (
                 <AnimatedProjectCard 
                   key={project.id}
                   project={project}
                   index={index}
+                  featured={projects.length === 1}
                 />
               ))}
             </div>
@@ -179,7 +187,7 @@ export default function ProjectsPage() {
         </Suspense> */}
 
         {/* Technologies & Skills */}
-        <section className="bg-white py-12 sm:py-16 lg:py-20 dark:bg-stone-950">
+        <section className="bg-white py-12 md:py-16 dark:bg-stone-950">
           <Container className="px-4 sm:px-6">
             <div className="mb-12 sm:mb-16 text-center">
               <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-stone-100">Technologies & Skills</h2>

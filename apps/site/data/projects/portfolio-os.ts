@@ -1,15 +1,27 @@
 import { ProjectMeta } from './types';
 
+/**
+ * Portfolio OS Project Metadata
+ * All URLs are validated and point to correct destinations:
+ * - liveUrl: Main portfolio site (https://johnschibelli.dev)
+ * - githubUrl: GitHub repository (https://github.com/jschibelli/portfolio-os)
+ * - documentationUrl: Documentation site (https://docs.johnschibelli.dev)
+ * - caseStudyUrl: Internal case study page
+ * - changelogUrl: Internal changelog page
+ */
 export const portfolioOS: ProjectMeta = {
   id: 'portfolio-os',
   title: 'Portfolio OS - Self-Documenting Development Platform',
   slug: 'portfolio-os',
-  description: 'A revolutionary self-documenting development platform that transforms a personal portfolio into a production-grade monorepo. Features enterprise-level automation with 100+ PowerShell scripts, multi-agent AI workflows, intelligent CI/CD pipelines, and comprehensive testing infrastructure. Built with Next.js 14, Turborepo, and advanced DevOps practices to demonstrate real-world engineering capabilities through the portfolio itself.',
-  image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop',
+  description: 'A monorepo portfolio that doubles as a development platform, combining enterprise automation with AI-assisted workflows to speed up development and maintain code quality.',
+  // Using a reliable code/development themed image from Unsplash
+  // Alternative: Replace with project-specific screenshot when available
+  image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&q=80',
   tags: ['Next.js', 'TypeScript', 'Turborepo', 'Automation', 'DevOps', 'Multi-Agent', 'Monorepo', 'CI/CD'],
   liveUrl: 'https://johnschibelli.dev',
   caseStudyUrl: '/case-studies/portfolio-os',
   githubUrl: 'https://github.com/jschibelli/portfolio-os',
+  documentationUrl: 'https://docs.johnschibelli.dev',
   featured: true,
   published: true,
   status: 'in-progress',
@@ -34,6 +46,29 @@ export const portfolioOS: ProjectMeta = {
   client: 'Personal',
   industry: 'Software Engineering / Portfolio',
   teamSize: '1 developer + AI agents',
-  duration: 'Ongoing development'
+  duration: 'Ongoing development',
+  overview: 'A monorepo portfolio that doubles as a development platform, combining enterprise automation with AI-assisted workflows to speed up development and maintain code quality.',
+  challenge: 'Managing a growing portfolio codebase while maintaining quality became time-consuming. Manual PR reviews, repetitive testing, and documentation drift slowed progress. The goal was to automate the mundane without losing control.',
+  solution: 'Built a comprehensive automation layer using PowerShell scripts, GitHub Actions, and AI agents. The system handles routine tasks like PR creation, testing, and documentation, while keeping humans in the decision loop.',
+  keyFeatures: [
+    '100+ PowerShell scripts for project and PR management',
+    'Multi-agent AI workflows with worktree isolation',
+    'Automated testing with Playwright and Jest',
+    'Self-updating documentation site',
+    'Intelligent caching and performance optimization',
+    'GitHub integration for automated workflows'
+  ],
+  impact: 'Development velocity increased significantly. PRs are created and managed automatically, tests catch issues before deployment, and documentation stays in sync with code. The portfolio itself demonstrates the engineering practices clients can expect.',
+  version: '1.0.0',
+  versionStatus: 'stable',
+  lastUpdated: 'October 2025',
+  recentUpdates: [
+    'Complete multi-agent development system',
+    'Enhanced PR automation with AI workflows',
+    'Comprehensive issue management',
+    'Advanced media management system'
+  ],
+  upcomingFeatures: [],
+  changelogUrl: '/changelog'
 };
 

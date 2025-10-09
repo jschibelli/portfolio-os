@@ -60,16 +60,30 @@ function getHost(): string {
 }
 
 /**
- * Make a GraphQL request to Hashnode API with error handling
+ * Make a GraphQL request to Hashnode API with error handling and timeout
  */
 async function makeGraphQLRequest(query: string, variables: Record<string, any>): Promise<any> {
+  // SKIP all API calls during build to prevent hanging
+  // BUT allow API calls at runtime (both dev and production)
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    console.log('[Hashnode API] Skipping API call during build');
+    throw new Error('API calls disabled during build');
+  }
+
   try {
+    // Add 3 second timeout to prevent hanging
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    
     const response = await fetch(GQL_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables }),
       next: { revalidate: CACHE_DURATION },
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -84,6 +98,10 @@ async function makeGraphQLRequest(query: string, variables: Record<string, any>)
 
     return data.data;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.error('Hashnode API request timed out after 3 seconds');
+      throw new Error('Hashnode API request timed out');
+    }
     console.error('Hashnode API request failed:', error);
     throw error;
   }

@@ -8,9 +8,8 @@ import { ProjectHeader } from '../_components/project-header';
 import { ProjectContent } from '../_components/project-content';
 import { ProjectTechnologies } from '../_components/project-technologies';
 import { ProjectLinks } from '../_components/project-links';
-import { ProjectTimeline } from '../_components/project-timeline';
+import { ProjectVersion } from '../_components/project-version';
 import { Container } from '../../../components/shared/container';
-import { Badge } from '../../../components/ui/badge';
 import { Layout } from '../../../components/shared/layout';
 import { Footer } from '../../../components/shared/footer';
 import { AppProvider } from '../../../components/contexts/appContext';
@@ -212,22 +211,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 
                 {/* Sidebar */}
                 <div className="space-y-8">
+                  <ProjectVersion project={project} />
                   <ProjectLinks project={project} />
-                  <ProjectTimeline project={project} />
-                  
-                  {/* Project Tags */}
-                  <div className="bg-stone-50 dark:bg-stone-900 rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
-                      Technologies & Tags
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-sm">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
             </article>
