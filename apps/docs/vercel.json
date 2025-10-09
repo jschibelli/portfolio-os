@@ -1,6 +1,6 @@
 {
   "buildCommand": "cd ../.. && pnpm build --filter=@portfolio/docs",
-  "installCommand": "npm install -g pnpm@10.14.0 && pnpm install",
+  "installCommand": "npm install -g pnpm@10.14.0 && ~/.npm-global/bin/pnpm install",
   "framework": "nextjs",
   "outputDirectory": ".next"
 }
