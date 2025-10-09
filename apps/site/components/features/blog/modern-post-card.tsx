@@ -61,7 +61,7 @@ export default function ModernPostCard({
 				isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
 			}`}
 		>
-			<Link href={`/${slug}`} className="group block">
+			<Link href={`/blog/${slug}`} className="group block">
 				<Card className="group overflow-hidden border border-border bg-card shadow-lg transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:shadow-xl">
 					<div className="relative overflow-hidden">
 						<div className="relative h-48 w-full">

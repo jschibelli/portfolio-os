@@ -102,11 +102,12 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 
 /**
  * Check if Dashboard API is available
- * Always returns false during build to use Hashnode directly
+ * Always returns false during build and in production to use Hashnode directly
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // ALWAYS skip Dashboard API during build - use Hashnode directly
+  // Skip Dashboard API during build and in production
   // This prevents hanging when localhost:3001 is not running
+  // Dashboard API is only useful during local development
   return false;
 }
 

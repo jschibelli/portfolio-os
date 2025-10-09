@@ -75,21 +75,33 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
   
-  // Skip API calls during build - will work at runtime only
+  console.log(`[Blog Post] Fetching post: ${params.slug}`);
+  console.log(`[Blog Post] NEXT_PHASE: ${process.env.NEXT_PHASE}`);
+  console.log(`[Blog Post] NODE_ENV: ${process.env.NODE_ENV}`);
+  
+  // Always fetch at runtime (both dev and production)
+  // Only skip during build phase to prevent hanging
   let post = null;
   let currentPublication = defaultPublication;
   
-  // Only fetch if NOT in build phase
-  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+  try {
     const [fetchedPost, fetchedPublication] = await Promise.all([
       fetchPostBySlug(params.slug),
       fetchPublication()
     ]);
     post = fetchedPost;
     currentPublication = fetchedPublication || defaultPublication;
+    
+    console.log(`[Blog Post] Post found: ${post ? 'YES' : 'NO'}`);
+    if (post) {
+      console.log(`[Blog Post] Post title: ${post.title}`);
+    }
+  } catch (error) {
+    console.error(`[Blog Post] Error fetching post:`, error);
   }
 
   if (!post) {
+    console.log(`[Blog Post] Post not found, returning 404 for slug: ${params.slug}`);
     notFound();
   }
 

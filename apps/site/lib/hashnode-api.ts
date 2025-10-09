@@ -64,7 +64,8 @@ function getHost(): string {
  */
 async function makeGraphQLRequest(query: string, variables: Record<string, any>): Promise<any> {
   // SKIP all API calls during build to prevent hanging
-  if (process.env.NEXT_PHASE === 'phase-production-build' || process.env.NODE_ENV === 'production') {
+  // BUT allow API calls at runtime (both dev and production)
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
     console.log('[Hashnode API] Skipping API call during build');
     throw new Error('API calls disabled during build');
   }
