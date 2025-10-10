@@ -8,6 +8,7 @@ import * as axe from 'axe-core'
 export const PERFORMANCE_THRESHOLDS = {
 	maxLoadMsCI: 15000,
 	maxLoadMsDev: 30000,
+	PAGE_LOAD_MAX: 30000, // Alias for backwards compatibility with existing tests
 }
 
 export const ANIMATION_TIMEOUTS = {
