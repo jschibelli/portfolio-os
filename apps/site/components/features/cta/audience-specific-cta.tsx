@@ -22,6 +22,8 @@ interface AudienceConfig {
 		text: string;
 		url: string;
 		icon: React.ReactNode;
+		download?: boolean;
+		downloadFilename?: string;
 	};
 	secondaryCTA: {
 		text: string;
@@ -41,8 +43,10 @@ const audienceData = {
 		description: "I'm actively seeking new opportunities and ready to bring my 15+ years of experience to your team. Let's discuss how I can contribute to your organization's success.",
 		primaryCTA: {
 			text: "View Resume",
-			url: "/resume",
-			icon: commonIcons.arrowRight
+			url: "/assets/John-Schibelli-Resume-2025.pdf",
+			icon: commonIcons.arrowRight,
+			download: true,
+			downloadFilename: "John-Schibelli-Resume-2025.pdf"
 		},
 		secondaryCTA: {
 			text: "Schedule Interview",
@@ -218,7 +222,14 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 													className={sharedStyles.button.primary}
 													asChild
 												>
-									<Link href={data.primaryCTA.url}>
+									<Link 
+										href={data.primaryCTA.url}
+										{...(data.primaryCTA.download && {
+											download: data.primaryCTA.downloadFilename,
+											target: "_blank",
+											rel: "noopener noreferrer"
+										})}
+									>
 										{data.primaryCTA.icon}
 										{data.primaryCTA.text}
 									</Link>
