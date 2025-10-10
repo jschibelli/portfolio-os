@@ -1,5 +1,5 @@
 import { AppProvider } from '../components/contexts/appContext';
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import Hero from '../components/features/homepage/hero';
 import Intro from '../components/features/homepage/intro';
 import CTABanner from '../components/features/marketing/cta-banner';
@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 60; // Revalidate every 60 seconds
 
 // Lazy load chatbot for better performance
-const Chatbot = dynamic(() => import('../components/features/chatbot/Chatbot'), {
+const Chatbot = dynamicImport(() => import('../components/features/chatbot/Chatbot'), {
   loading: () => null,
 });
 
