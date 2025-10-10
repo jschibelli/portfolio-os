@@ -8,6 +8,20 @@ import AxeBuilder from '@axe-core/playwright';
  * to ensure both user experience and performance standards are met.
  */
 
+// Extend Window interface for custom performance metrics
+declare global {
+  interface Window {
+    performanceMetrics: {
+      lcp: number | null;
+      fid: number | null;
+      cls: number;
+      fcp: number | null;
+      ttfb: number | null;
+      accessibilityScore: number | null;
+    };
+  }
+}
+
 test.describe('Accessibility-Performance Integration', () => {
   test('blog page should meet both accessibility and performance standards', async ({ page }) => {
     // Initialize performance monitoring

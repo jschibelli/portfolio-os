@@ -1,5 +1,18 @@
 import { test, expect } from '@playwright/test';
 
+// Extend Window interface for custom performance metrics
+declare global {
+  interface Window {
+    performanceMetrics: {
+      lcp: number | null;
+      fid: number | null;
+      cls: number;
+      fcp: number | null;
+      ttfb: number | null;
+    };
+  }
+}
+
 test.describe('Blog Page Performance', () => {
   test('blog page should meet Core Web Vitals', async ({ page }) => {
     // Start performance observer before navigation

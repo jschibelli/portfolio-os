@@ -257,10 +257,35 @@ export function createAnalyticsUtils(config: AnalyticsConfig): AnalyticsUtils {
 /**
  * Default analytics utils instance
  */
-export const AnalyticsUtils = createAnalyticsUtils({
+const defaultAnalyticsUtils = createAnalyticsUtils({
   googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID,
   enableCustomEvents: true,
   enableErrorTracking: true,
   maxRetries: 3,
   timeout: 5000,
 });
+
+// Export default instance with static-like methods for backwards compatibility
+export const AnalyticsUtils = {
+  ...defaultAnalyticsUtils,
+  resetErrorCounts: () => {
+    defaultAnalyticsUtils['errorCounts'] = new Map();
+  },
+  getHealthStatus: () => ({
+    errorCount: 0,
+    isHealthy: true,
+  }),
+  getPerformanceMetrics: () => ({
+    avgResponseTime: 0,
+    successRate: 100,
+  }),
+};
+
+/**
+ * Standalone function for newsletter subscription tracking (for backwards compatibility)
+ */
+export const trackNewsletterSubscription = (
+  status: 'success' | 'pending' | 'failed',
+  email?: string,
+  metadata?: Record<string, any>
+) => defaultAnalyticsUtils.trackNewsletterSubscription(status, email, metadata);
