@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Octokit } from '@octokit/rest';
-import { remark } from 'remark';
-import { html } from 'remark-html';
-import { remarkGfm } from 'remark-gfm';
+import remark from 'remark';
+import html from 'remark-html';
+import remarkGfm from 'remark-gfm';
 
 const prisma = new PrismaClient();
 
@@ -18,9 +18,9 @@ interface GitHubFile {
   sha: string;
   size: number;
   url: string;
-  html_url: string;
-  git_url: string;
-  download_url: string;
+  html_url: string | null;
+  git_url: string | null;
+  download_url: string | null;
   type: string;
   content?: string;
   encoding?: string;
