@@ -5,17 +5,33 @@
 </p>
 
 <h1 align="center">Portfolio OS</h1>
-<p align="center">A modern, production-grade monorepo powering <a href="https://johnschibelli.dev">johnschibelli.dev</a> — portfolio, blog, admin dashboard, and AI tools.</p>
+<p align="center">A self-documenting, AI-powered development platform — portfolio, blog, admin dashboard, and automation tools.</p>
 
 <p align="center">
-  <a href="https://github.com/johnschibelli/portfolio-os/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-black.svg"></a>
-  <a href="https://johnschibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-johnschibelli.dev-black"></a>
+  <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.0.0"><img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg"></a>
+  <a href="https://github.com/jschibelli/portfolio-os/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
+  <a href="https://johnschibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-johnschibelli.dev-blueviolet"></a>
+  <a href="https://docs.johnschibelli.dev"><img alt="Documentation" src="https://img.shields.io/badge/Docs-docs.johnschibelli.dev-orange"></a>
   <a href="https://vercel.com"><img alt="Deploys on Vercel" src="https://img.shields.io/badge/Deploy-Vercel-black"></a>
+</p>
+
+<p align="center">
+  <strong>🎉 v1.0.0 Released!</strong> | <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.0.0">Release Notes</a> | <a href="apps/docs/CHANGELOG.md">Full Changelog</a>
 </p>
 
 ## Overview
 
-Portfolio OS is a Next.js 14 monorepo built with TypeScript, Tailwind CSS, and Turborepo. It includes a content site, a dashboard with admin tooling, and shared packages for UI, utilities, and integrations. Content is sourced from Hashnode via GraphQL with optional headless mode.
+**Portfolio OS v1.0.0** is a production-ready, self-documenting development platform that showcases modern engineering practices through real automation and AI-assisted workflows.
+
+Built over **4 months** with **578 commits** (353 in September alone!), Portfolio OS demonstrates:
+
+- 🤖 **Multi-Agent AI Development** - Jason & Chris agents handle parallel development workflows
+- ⚡ **100+ PowerShell Scripts** - Comprehensive automation for PRs, issues, and project management
+- 📊 **Enterprise-Grade Tooling** - CI/CD pipelines, automated testing, and quality checks
+- 📝 **Self-Documenting** - Documentation that stays in sync with code
+- 🎨 **Modern Tech Stack** - Next.js 15, TypeScript, Tailwind CSS, Turborepo
+
+The platform includes a **content site**, **admin dashboard**, and **shared packages** for UI, utilities, and integrations. Content is sourced from Hashnode via GraphQL with optional headless mode.
 
 ## 📚 Documentation
 
@@ -49,11 +65,27 @@ For the full documentation map and navigation guide, see **[DOCS_MAP.md](./DOCS_
 
 ## Tech Stack
 
-- Next.js 14 App Router, React 18, TypeScript
+**Frontend:**
+- Next.js 15 App Router, React 18, TypeScript
 - Tailwind CSS, Radix UI, Lucide Icons
-- Prisma, Vercel Blob, Upstash Redis
-- OpenAI (image + text), Resend (email)
-- Turborepo monorepo, PNPM
+- Framer Motion for animations
+
+**Backend & Data:**
+- Prisma ORM, SQLite/PostgreSQL
+- Vercel Blob, Upstash Redis
+- Hashnode GraphQL API
+
+**AI & Integrations:**
+- OpenAI (GPT-4 for image + text generation)
+- Resend (transactional email)
+- Multi-agent automation (Jason/Chris)
+
+**DevOps & Quality:**
+- Turborepo monorepo, PNPM package manager
+- GitHub Actions CI/CD
+- Playwright (E2E), Jest (unit tests)
+- ESLint, Prettier, TypeScript strict mode
+- 100+ PowerShell automation scripts
 
 ## 📁 **Project Organization**
 
