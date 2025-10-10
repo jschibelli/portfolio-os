@@ -1,3 +1,6 @@
+// Re-export from test-helpers for convenience
+export { PERFORMANCE_THRESHOLDS } from '../utils/test-helpers'
+
 // =============================================================================
 // PAGE ROUTES & URLs
 // =============================================================================
