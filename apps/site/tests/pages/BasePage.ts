@@ -11,10 +11,10 @@ export abstract class BasePage {
   protected page: Page;
   
   // Common page elements
-  protected navigation: Locator;
-  protected main: Locator;
-  protected footer: Locator;
-  protected body: Locator;
+  protected navigation!: Locator;
+  protected main!: Locator;
+  protected footer!: Locator;
+  protected body!: Locator;
 
   constructor(page: Page) {
     this.page = page;
