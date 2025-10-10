@@ -14,23 +14,27 @@ export default async function LatestPosts() {
 	// Fetch the latest 3 posts
 	let posts: any[] = [];
 	
-	try {
-		const fetchedPosts = await fetchPosts(3);
-		posts = fetchedPosts.map((post) => ({
-			id: post.id,
-			title: post.title,
-			excerpt: post.brief || '',
-			date: post.publishedAt,
-			slug: post.slug,
-			readTime: `${post.readTimeInMinutes || 5} min read`,
-			image: post.coverImage?.url || '/images/placeholder-featured.jpg',
-			tags: post.tags?.map(tag => tag.name) || [],
-		}));
-	} catch (error) {
-		console.error('LatestPosts: Failed to fetch posts', {
-			error,
-			timestamp: new Date().toISOString()
-		});
+	// Only fetch if NOT in build phase - similar to blog/page.tsx
+	// This prevents API timeouts during build while allowing runtime fetching
+	if (process.env.NEXT_PHASE !== 'phase-production-build') {
+		try {
+			const fetchedPosts = await fetchPosts(3);
+			posts = fetchedPosts.map((post) => ({
+				id: post.id,
+				title: post.title,
+				excerpt: post.brief || '',
+				date: post.publishedAt,
+				slug: post.slug,
+				readTime: `${post.readTimeInMinutes || 5} min read`,
+				image: post.coverImage?.url || '/images/placeholder-featured.jpg',
+				tags: post.tags?.map(tag => tag.name) || [],
+			}));
+		} catch (error) {
+			console.error('LatestPosts: Failed to fetch posts', {
+				error,
+				timestamp: new Date().toISOString()
+			});
+		}
 	}
 
 	// Error handling for missing or invalid posts data
