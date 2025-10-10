@@ -151,7 +151,7 @@ export abstract class BasePage {
         return active ? {
           tagName: active.tagName,
           textContent: active.textContent?.slice(0, 30),
-          tabIndex: active.tabIndex
+          tabIndex: (active as HTMLElement).tabIndex
         } : null;
       });
       focusHistory.push(currentFocus);
