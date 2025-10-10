@@ -1,10 +1,35 @@
-﻿What do you recommend Automate end-to-end: Detect if it's an issue or PR; for issues, trigger analysis, set fields, assign Jason or Chris, create and track the PR; for PRs, monitor reviews, analyze CR‑GPT, post threaded replies, keep Status updated, run checks, and drive to merge.
+﻿# End-to-End Issue to Merge Workflow (Single Developer)
+
+**Purpose**: Streamlined automation for solo developers to process issues from creation to merge.
 
 **🆕 NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Backlog → In progress → In review → Ready → Ready for Merge → Done → Merged in sequence, then continues to the next available issues until no more work is available.
 
-**Agent Assignment:**
-- **Jason (Frontend Specialist)**: Frontend components, UI/UX, user workflows, analytics dashboards
-- **Chris (Backend Specialist)**: Backend infrastructure, AI services, queue management, PowerShell integration
+> **Note**: For multi-agent workflows with Jason and Chris assignments, see `multi-agent-e2e-workflow.md`
+
+## 🆕 **Enhanced Issue & Branch Creation**
+
+### **Create Issue with Auto Branch:**
+```powershell
+# Create issue and automatically generate branch
+.\scripts\issue-management\create-issue-enhanced.ps1 `
+  -Title "Add dark mode toggle" `
+  -Body "Implement dark mode toggle in settings" `
+  -Labels "enhancement,frontend" `
+  -Milestone "v1.0.0" `
+  -CreateBranch `
+  -PushBranch
+
+# Result: Issue created + branch created + pushed to remote
+# Branch name: issue-XXX-add-dark-mode-toggle
+```
+
+### **Manual Issue Creation:**
+```powershell
+# Traditional method (if you prefer manual control)
+gh issue create --title "Title" --body "Description" --label "enhancement"
+git branch issue-XXX-feature-name
+git push origin issue-XXX-feature-name
+```
 
 ## 🚀 **Continuous Pipeline (NEW - Primary Method)**
 
@@ -77,6 +102,101 @@
 8. **PR Automation**: Monitor and automate using `pr-automation-unified.ps1`
 9. **Status Update**: Set issue to **"Done"** after successful merge using `agent-status-update.ps1`
 10. **Continue**: Move to next issue in queue
+
+## 🎯 **Example: Multi-Agent Completed Work (Epic #291)**
+
+### **Jason (Infrastructure/Testing Specialist) - 7 Issues Completed:**
+
+| Issue | PR | Description | Status |
+|-------|-----|-------------|--------|
+| #292 | [#306](https://github.com/jschibelli/portfolio-os/pull/306) | Test Utils & Config Updates (Foundation) | ✅ Ready for Review |
+| #294 | [#307](https://github.com/jschibelli/portfolio-os/pull/307) | Projects & Portfolio Tests (~70 tests) | ✅ Ready for Review |
+| #297 | [#312](https://github.com/jschibelli/portfolio-os/pull/312) | Protected Routes & Session Tests (40+ tests) | ✅ Ready for Review |
+| #299 | [#308](https://github.com/jschibelli/portfolio-os/pull/308) | Newsletter Subscription Tests (50+ tests) | ✅ Ready for Review |
+| #301 | [#309](https://github.com/jschibelli/portfolio-os/pull/309) | Booking System Tests (50+ tests) | ✅ Ready for Review |
+| #303 | [#310](https://github.com/jschibelli/portfolio-os/pull/310) | Error Handling & Edge Cases (31 tests) | ✅ Ready for Review |
+| #305 | [#311](https://github.com/jschibelli/portfolio-os/pull/311) | Performance & Accessibility (28 tests) | ✅ Ready for Review |
+
+**Jason's Total Delivered:**
+- 7 PRs (100% completion)
+- 13 test files created
+- ~290+ comprehensive tests
+- ~5,700+ lines of code
+- Foundation utilities for entire team
+
+---
+
+### **Chris (Frontend/UI Specialist) - 7 Issues Completed:**
+
+| Issue | PR | Description | Status |
+|-------|-----|-------------|--------|
+| #293 | [#317](https://github.com/jschibelli/portfolio-os/pull/317) | Blog Post Detail Page Tests (23 tests) | ✅ Ready for Review |
+| #295 | [#315](https://github.com/jschibelli/portfolio-os/pull/315) | Homepage Interactive Tests (28 tests) | ✅ Ready for Review |
+| #296 | [#313](https://github.com/jschibelli/portfolio-os/pull/313) | Authentication Flow Tests (34 tests) | ✅ Ready for Review |
+| #298 | [#314](https://github.com/jschibelli/portfolio-os/pull/314) | Contact Form Flow Tests (32 tests) | ✅ Ready for Review |
+| #300 | [#316](https://github.com/jschibelli/portfolio-os/pull/316) | Chatbot Interaction Tests (21 tests) | ✅ Ready for Review |
+| #302 | [#318](https://github.com/jschibelli/portfolio-os/pull/318) | Interactive Component Tests (43 tests) | ✅ Ready for Review |
+| #304 | [#319](https://github.com/jschibelli/portfolio-os/pull/319) | Visual Regression Expansion (19 tests + baselines) | ✅ Ready for Review |
+
+**Chris's Total Delivered:**
+- 7 PRs (100% completion)
+- 14 test files created
+- ~200+ comprehensive tests (functional + visual)
+- 12 visual regression baselines
+- ~3,500+ lines of code
+- Complete frontend test coverage
+
+---
+
+### **Combined Epic #291 Achievements:**
+- ✅ **14 PRs total** (100% of planned work)
+- ✅ **27 test files** created
+- ✅ **490+ tests** implemented
+- ✅ **~9,200+ lines** of test code
+- ✅ **Complete E2E coverage** (frontend + backend + visual)
+- ✅ **Perfect parallel execution** - no conflicts between agents
+
+**Assign All PRs:**
+```powershell
+# Assign Jason's PRs
+gh pr edit 306 --add-assignee jschibelli
+gh pr edit 307 --add-assignee jschibelli
+gh pr edit 308 --add-assignee jschibelli
+gh pr edit 309 --add-assignee jschibelli
+gh pr edit 310 --add-assignee jschibelli
+gh pr edit 311 --add-assignee jschibelli
+gh pr edit 312 --add-assignee jschibelli
+
+# Assign Chris's PRs
+gh pr edit 313 --add-assignee jschibelli
+gh pr edit 314 --add-assignee jschibelli
+gh pr edit 315 --add-assignee jschibelli
+gh pr edit 316 --add-assignee jschibelli
+gh pr edit 317 --add-assignee jschibelli
+gh pr edit 318 --add-assignee jschibelli
+gh pr edit 319 --add-assignee jschibelli
+```
+
+**Update Project Status for All Issues:**
+```powershell
+# Mark Jason's issues as ready for review
+.\scripts\agent-status-update.ps1 -IssueNumber 292 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 294 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 297 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 299 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 301 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 303 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 305 -Action complete -AgentName jason
+
+# Mark Chris's issues as ready for review
+.\scripts\agent-status-update.ps1 -IssueNumber 293 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 295 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 296 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 298 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 300 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 302 -Action complete -AgentName chris
+.\scripts\agent-status-update.ps1 -IssueNumber 304 -Action complete -AgentName chris
+```
 
 **📊 Real-time Project Board Updates:**
 - **Backlog** → **In progress** (when work starts)
