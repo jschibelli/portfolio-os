@@ -53,8 +53,7 @@ test.describe('Blog Page Visual Regression', () => {
       await page.goto('/blog');
       
       // Wait for page to fully load
-      await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(2000);
       
       // Take full page screenshot
       await expect(page).toHaveScreenshot('blog-page-desktop.png', {
