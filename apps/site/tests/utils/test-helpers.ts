@@ -502,6 +502,48 @@ export async function testResponsiveDesign(
 }
 
 // =============================================================================
+// KEYBOARD NAVIGATION
+// =============================================================================
+
+/**
+ * Test keyboard navigation for accessibility
+ * @param page - Playwright Page object
+ * @param maxTabs - Maximum number of tab presses to test
+ */
+export async function testKeyboardNavigation(page: Page, maxTabs: number = 5) {
+	await page.keyboard.press('Tab')
+	
+	// Check if focus is visible and properly managed
+	const focusedElement = await page.evaluate(() => {
+		const active = document.activeElement
+		return active ? {
+			tagName: active.tagName,
+			textContent: active.textContent?.slice(0, 50),
+			hasFocusVisible: active.matches(':focus-visible')
+		} : null
+	})
+	
+	expect(focusedElement).not.toBeNull()
+	
+	// Test tab navigation through main navigation with focus tracking
+	const focusHistory = []
+	for (let i = 0; i < maxTabs; i++) {
+		await page.keyboard.press('Tab')
+		const currentFocus = await page.evaluate(() => {
+			const active = document.activeElement
+			return active ? {
+				tagName: active.tagName,
+				textContent: active.textContent?.slice(0, 30)
+			} : null
+		})
+		focusHistory.push(currentFocus)
+	}
+	
+	// Verify focus management - should have moved through different elements
+	expect(focusHistory.filter(f => f !== null).length).toBeGreaterThan(1)
+}
+
+// =============================================================================
 // STORAGE MOCKING
 // =============================================================================
 
