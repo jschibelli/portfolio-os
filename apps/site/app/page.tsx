@@ -8,6 +8,10 @@ import LatestPosts from '../components/features/blog/latest-posts';
 import ModernHeader from '../components/features/navigation/modern-header';
 import { Footer } from '../components/shared/footer';
 
+// Force dynamic rendering for this page to ensure blog posts are fetched at runtime
+export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Revalidate every 60 seconds
+
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../components/features/chatbot/Chatbot'), {
   loading: () => null,
