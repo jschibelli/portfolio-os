@@ -174,8 +174,16 @@ export async function POST(request: NextRequest) {
     ];
 
     // Add conversation history (validate and filter entries)
+    // Context window expanded to 15 exchanges (30 messages) for better conversation quality
+    // Token optimization: Only include the most recent history to stay within optimal token limits
     if (conversationHistory && conversationHistory.length > 0) {
-      conversationHistory.forEach(entry => {
+      // Limit to last 15 exchanges (30 messages) to optimize token usage
+      // Each exchange is 2 messages (user + assistant), so slice to last 30 if needed
+      const recentHistory = conversationHistory.length > 30 
+        ? conversationHistory.slice(-30) 
+        : conversationHistory;
+      
+      recentHistory.forEach(entry => {
         // Validate that the entry has required fields and valid role
         if (entry && entry.role && entry.content && 
             (entry.role === 'user' || entry.role === 'assistant')) {
