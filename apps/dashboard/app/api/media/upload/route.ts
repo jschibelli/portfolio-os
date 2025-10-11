@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import sharp from 'sharp';
+
+// Configure route to be dynamic (skip static generation)
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+// Lazy load sharp to avoid build-time dependency issues
+const getSharp = async () => {
+  const sharp = (await import('sharp')).default;
+  return sharp;
+};
 
 /**
  * Advanced Media Upload API
@@ -89,7 +98,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     // Get image metadata using sharp
-    const metadata = await sharp(buffer).metadata();
+    const metadata = await (await getSharp())(buffer).metadata();
     
     // Generate unique filename base
     const timestamp = Date.now();
@@ -124,7 +133,7 @@ export async function POST(request: NextRequest) {
     result.original.url = originalBlob.url;
 
     // Generate WebP version for better compression
-    const webpBuffer = await sharp(buffer)
+    const webpBuffer = await (await getSharp())(buffer)
       .webp({ quality: WEBP_QUALITY })
       .toBuffer();
     
@@ -144,7 +153,7 @@ export async function POST(request: NextRequest) {
 
     // Generate blur data URL for lazy loading
     if (generateBlur) {
-      const blurBuffer = await sharp(buffer)
+      const blurBuffer = await (await getSharp())(buffer)
         .resize(BLUR_SIZE, BLUR_SIZE, { fit: 'cover' })
         .webp({ quality: 20 })
         .toBuffer();
@@ -156,7 +165,7 @@ export async function POST(request: NextRequest) {
     if (generateVariants && metadata.width && metadata.height) {
       // Thumbnail
       if (metadata.width > THUMBNAIL_SIZE || metadata.height > THUMBNAIL_SIZE) {
-        const thumbnailBuffer = await sharp(buffer)
+        const thumbnailBuffer = await (await getSharp())(buffer)
           .resize(THUMBNAIL_SIZE, THUMBNAIL_SIZE, { fit: 'cover' })
           .webp({ quality: THUMBNAIL_QUALITY })
           .toBuffer();
@@ -178,11 +187,11 @@ export async function POST(request: NextRequest) {
 
       // Medium size
       if (metadata.width > MEDIUM_SIZE) {
-        const mediumMeta = await sharp(buffer).metadata();
+        const mediumMeta = await (await getSharp())(buffer).metadata();
         const aspectRatio = (mediumMeta.width || 1) / (mediumMeta.height || 1);
         const mediumHeight = Math.round(MEDIUM_SIZE / aspectRatio);
         
-        const mediumBuffer = await sharp(buffer)
+        const mediumBuffer = await (await getSharp())(buffer)
           .resize(MEDIUM_SIZE, mediumHeight, { fit: 'inside' })
           .webp({ quality: WEBP_QUALITY })
           .toBuffer();
@@ -204,11 +213,11 @@ export async function POST(request: NextRequest) {
 
       // Large size (for high-res displays)
       if (metadata.width > LARGE_SIZE) {
-        const largeMeta = await sharp(buffer).metadata();
+        const largeMeta = await (await getSharp())(buffer).metadata();
         const aspectRatio = (largeMeta.width || 1) / (largeMeta.height || 1);
         const largeHeight = Math.round(LARGE_SIZE / aspectRatio);
         
-        const largeBuffer = await sharp(buffer)
+        const largeBuffer = await (await getSharp())(buffer)
           .resize(LARGE_SIZE, largeHeight, { fit: 'inside' })
           .webp({ quality: WEBP_QUALITY })
           .toBuffer();
