@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
       }
     ];
 
-    // Generate response using OpenAI with function calling
+    // Generate response using OpenAI with streaming
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: validMessages,
@@ -262,53 +262,107 @@ export async function POST(request: NextRequest) {
       tool_choice: 'auto',
       max_tokens: 1000,
       temperature: 0.7,
+      stream: true, // Enable streaming
     });
 
-    const completionMessage = completion.choices[0]?.message;
-    let response = completionMessage?.content || '';
-    let uiActions: any[] = [];
-
-    // Handle tool calls
-    if (completionMessage?.tool_calls && completionMessage.tool_calls.length > 0) {
-      for (const toolCall of completionMessage.tool_calls) {
+    // Create a ReadableStream to handle SSE streaming
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      async start(controller) {
         try {
-          const toolResult = await executeTool(
-            toolCall.function.name,
-            JSON.parse(toolCall.function.arguments)
-          );
-          
-          // If it's a UI action, add it to the response
-          if (toolResult.type === 'ui_action') {
-            uiActions.push(toolResult);
+          let fullResponse = '';
+          let uiActions: any[] = [];
+          let toolCalls: any[] = [];
+          let currentToolCall: any = null;
+
+          for await (const chunk of completion) {
+            const delta = chunk.choices[0]?.delta;
+
+            // Handle content streaming
+            if (delta?.content) {
+              fullResponse += delta.content;
+              
+              // Send content chunk to client
+              const data = JSON.stringify({
+                type: 'content',
+                content: delta.content,
+              });
+              controller.enqueue(encoder.encode(`data: ${data}\n\n`));
+            }
+
+            // Handle tool calls
+            if (delta?.tool_calls) {
+              for (const toolCallDelta of delta.tool_calls) {
+                if (toolCallDelta.index !== undefined) {
+                  if (!toolCalls[toolCallDelta.index]) {
+                    toolCalls[toolCallDelta.index] = {
+                      id: toolCallDelta.id || '',
+                      type: 'function',
+                      function: {
+                        name: toolCallDelta.function?.name || '',
+                        arguments: toolCallDelta.function?.arguments || '',
+                      },
+                    };
+                  } else {
+                    if (toolCallDelta.function?.arguments) {
+                      toolCalls[toolCallDelta.index].function.arguments += toolCallDelta.function.arguments;
+                    }
+                  }
+                }
+              }
+            }
+
+            // Check if streaming is complete
+            if (chunk.choices[0]?.finish_reason) {
+              // Execute any tool calls
+              if (toolCalls.length > 0) {
+                for (const toolCall of toolCalls) {
+                  try {
+                    const toolResult = await executeTool(
+                      toolCall.function.name,
+                      JSON.parse(toolCall.function.arguments)
+                    );
+                    
+                    if (toolResult.type === 'ui_action') {
+                      uiActions.push(toolResult);
+                    }
+                  } catch (error) {
+                    console.error('🤖 Tool execution error:', error);
+                  }
+                }
+              }
+
+              // Send completion message with metadata
+              const completionData = JSON.stringify({
+                type: 'done',
+                uiActions: uiActions,
+                intent: 'general',
+                suggestedActions: [],
+              });
+              controller.enqueue(encoder.encode(`data: ${completionData}\n\n`));
+            }
           }
+
+          controller.close();
         } catch (error) {
-          console.error('🤖 Tool execution error:', error);
-          response = 'I encountered an error while accessing the calendar. Please try again.';
+          console.error('🤖 Streaming error:', error);
+          const errorData = JSON.stringify({
+            type: 'error',
+            error: 'Streaming error occurred',
+          });
+          controller.enqueue(encoder.encode(`data: ${errorData}\n\n`));
+          controller.close();
         }
-      }
-      
-      // Generate appropriate response based on tool results
-      if (uiActions.length > 0) {
-        const calendarAction = uiActions.find(action => action.action === 'show_booking_modal');
-        if (calendarAction) {
-          response = 'Perfect! I\'ve found available time slots for scheduling a meeting with John. Please select a time that works best for you from the calendar below.';
-        } else {
-          response = 'I\'ve processed your request. Please check the options below.';
-        }
-      } else if (!response) {
-        response = 'I\'ve processed your request. How else can I help you?';
-      }
-    } else if (!response) {
-      response = 'I apologize, but I was unable to generate a response.';
-    }
+      },
+    });
 
-
-    // Return the response
-    return NextResponse.json({
-      response: response,
-      intent: 'general',
-      suggestedActions: [],
-      uiActions: uiActions,
+    // Return SSE response with proper headers
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
     });
 
   } catch (error) {
