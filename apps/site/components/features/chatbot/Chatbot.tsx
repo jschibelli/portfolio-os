@@ -721,8 +721,10 @@ export default function Chatbot() {
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
-        if (conversationHistory.length >= 10) {
-				setConversationHistory((prev) => prev.slice(-5));
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
       }
       
       // Handle UI actions if present
@@ -1164,9 +1166,10 @@ export default function Chatbot() {
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
-      // Keep only last 5 exchanges to manage context size
-      if (conversationHistory.length >= 10) {
-				setConversationHistory((prev) => prev.slice(-5));
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
       }
       
       // Handle UI actions if present
