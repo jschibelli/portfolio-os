@@ -1,0 +1,221 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "John Schibelli - Home page" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "John Schibelli" [ref=e9] [cursor=pointer]
+      - navigation "Main navigation" [ref=e10]:
+        - generic [ref=e11]: Main navigation menu. Use Tab to move between links, Enter to activate.
+        - link "Home" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - link "Projects" [ref=e13] [cursor=pointer]:
+          - /url: /projects
+        - link "Blog" [ref=e14] [cursor=pointer]:
+          - /url: /blog
+        - link "About" [ref=e15] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=e16] [cursor=pointer]:
+          - /url: /contact
+      - search "Search and actions" [ref=e17]:
+        - button "Switch to light theme" [ref=e18] [cursor=pointer]:
+          - img
+          - generic [ref=e19] [cursor=pointer]: Toggle theme
+        - button "Subscribe to newsletter" [ref=e20] [cursor=pointer]: Subscribe
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - img "Professional background for John Schibelli's portfolio" [ref=e24]
+      - generic [ref=e27]:
+        - heading "Building Reliable, Scalable Web Applications" [level=1] [ref=e28]:
+          - text: Building Reliable, Scalable
+          - text: Web Applications
+        - region "John Schibelli" [ref=e29]:
+          - paragraph [ref=e30]: John Schibelli
+          - paragraph [ref=e31]: Senior Front-End Developer
+          - paragraph [ref=e32]: I work with React, Next.js, and TypeScript — helping teams build apps that are maintainable, scalable, and user-friendly.
+        - navigation "Primary navigation actions" [ref=e33]:
+          - button "Start a conversation about your project goals and business objectives" [ref=e34] [cursor=pointer]:
+            - generic [ref=e35] [cursor=pointer]:
+              - img
+              - text: Discuss Your Goals
+              - img
+          - button "View proven results and case studies of successful web applications" [ref=e36] [cursor=pointer]:
+            - generic [ref=e37] [cursor=pointer]:
+              - text: See My Results
+              - img
+        - paragraph [ref=e39]:
+          - text: Prefer email?
+          - link "Send email directly to discuss your project" [ref=e40] [cursor=pointer]:
+            - /url: mailto:john@schibelli.dev?subject=Project%20Discussion%20-%20Let's%20Talk
+            - text: Email me directly
+    - generic [ref=e44]:
+      - img "John Schibelli - Senior Frontend Developer" [ref=e47]
+      - article [ref=e48]:
+        - heading "Introduction" [level=2] [ref=e50]
+        - generic [ref=e51]:
+          - paragraph [ref=e52]: "My journey into development started in an unexpected place—teaching web development at Anthem Institute, where I discovered my passion for helping solve complex problems through thoughtful solutions. That experience shaped my approach: I believe good code should be teachable, maintainable, and built with the end user in mind."
+          - paragraph [ref=e53]: Today, I work as a senior front-end developer with over 15 years of experience, but I still approach every project with that educator's mindset. Whether I'm working on React applications, exploring AI-powered tools like SynaplyAI, or contributing to enterprise UIs for financial platforms, I believe in creating solutions that work well and can be understood and maintained by other developers.
+          - paragraph [ref=e54]: Based in Northern New Jersey, I work with React, Next.js, TypeScript, and Tailwind CSS, with a focus on accessibility and SEO. I work to combine technical quality with clear communication—believing that good code should be understandable and well-documented.
+    - region "Featured projects" [ref=e55]:
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - heading "Featured Project" [level=2] [ref=e58]
+          - paragraph [ref=e59]: An in-depth look at a comprehensive development project showcasing real-world engineering expertise
+        - article [ref=e61]:
+          - generic [ref=e62]:
+            - img "Portfolio OS - Self-Documenting Development Platform project screenshot" [ref=e64]
+            - generic [ref=e65]:
+              - generic [ref=e67]: Featured Project
+              - heading "Portfolio OS - Self-Documenting Development Platform" [level=3] [ref=e68]
+              - paragraph [ref=e69]: A monorepo portfolio that doubles as a development platform, combining enterprise automation with AI-assisted workflows to speed up development and maintain code quality.
+              - generic [ref=e70]:
+                - generic [ref=e71]: Next.js
+                - generic [ref=e72]: TypeScript
+                - generic [ref=e73]: Turborepo
+                - generic [ref=e74]: Automation
+                - generic [ref=e75]: DevOps
+                - generic [ref=e76]: Multi-Agent
+                - generic [ref=e77]: +2 more
+              - generic [ref=e78]:
+                - link "Case Study" [ref=e79] [cursor=pointer]:
+                  - /url: /case-studies/portfolio-os
+                  - text: Case Study
+                  - img [ref=e80] [cursor=pointer]
+                - link "View Details" [ref=e82] [cursor=pointer]:
+                  - /url: /projects/portfolio-os
+                  - text: View Details
+                  - img [ref=e83] [cursor=pointer]
+        - generic [ref=e85]:
+          - button "View all projects" [ref=e86] [cursor=pointer]:
+            - text: View All Projects
+            - img
+          - generic [ref=e87]: Navigate to the projects page to view all projects and case studies
+    - region "Latest blog posts section" [ref=e88]:
+      - generic [ref=e89]:
+        - generic [ref=e90]:
+          - heading "Latest from the Blog" [level=2] [ref=e91]
+          - paragraph [ref=e92]: Insights, tutorials, and thoughts on modern web development and technology
+        - generic [ref=e93]:
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - img [ref=e99]
+                  - generic [ref=e101]: January 14, 2024
+                - generic [ref=e102]:
+                  - img [ref=e103]
+                  - generic [ref=e106]: 8 min read
+              - heading "Building Scalable React Applications with TypeScript" [level=3] [ref=e107]
+            - generic [ref=e108]:
+              - paragraph [ref=e109]: Learn how to structure large React applications using TypeScript, proper state management, and performance optimization techniques.
+              - link "Read More" [ref=e110] [cursor=pointer]:
+                - /url: /blog/building-scalable-react-applications
+                - text: Read More
+                - img [ref=e111] [cursor=pointer]
+          - generic [ref=e114]:
+            - generic [ref=e115]:
+              - generic [ref=e116]:
+                - generic [ref=e117]:
+                  - img [ref=e118]
+                  - generic [ref=e120]: January 9, 2024
+                - generic [ref=e121]:
+                  - img [ref=e122]
+                  - generic [ref=e125]: 6 min read
+              - heading "The Future of AI-Driven Development" [level=3] [ref=e126]
+            - generic [ref=e127]:
+              - paragraph [ref=e128]: Exploring how AI tools are transforming the development workflow and what this means for developers in 2024.
+              - link "Read More" [ref=e129] [cursor=pointer]:
+                - /url: /blog/future-of-ai-driven-development
+                - text: Read More
+                - img [ref=e130] [cursor=pointer]
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]:
+                  - img [ref=e137]
+                  - generic [ref=e139]: January 4, 2024
+                - generic [ref=e140]:
+                  - img [ref=e141]
+                  - generic [ref=e144]: 10 min read
+              - heading "Optimizing Next.js Performance for Production" [level=3] [ref=e145]
+            - generic [ref=e146]:
+              - paragraph [ref=e147]: Deep dive into Next.js performance optimization strategies, from image optimization to bundle analysis.
+              - link "Read More" [ref=e148] [cursor=pointer]:
+                - /url: /blog/optimizing-nextjs-performance
+                - text: Read More
+                - img [ref=e149] [cursor=pointer]
+        - generic [ref=e151]:
+          - button "Read all blog posts and articles" [ref=e152] [cursor=pointer]:
+            - text: Read the Blog
+            - img
+          - generic [ref=e153]: Navigate to the blog page to read all available articles and posts
+    - generic [ref=e157]:
+      - generic [ref=e158]:
+        - heading "Let's Discuss Your Project Goals" [level=2] [ref=e159]
+        - paragraph [ref=e160]: Ready to discuss your ideas for digital experiences? Let's explore how we can work together to achieve your business objectives.
+      - generic [ref=e161]:
+        - button "Start a conversation about your project goals" [ref=e162] [cursor=pointer]:
+          - img
+          - text: Start Conversation
+        - button "Send email directly to discuss your project" [ref=e163] [cursor=pointer]:
+          - img
+          - text: Email Directly
+      - generic [ref=e164]:
+        - generic [ref=e165]:
+          - img [ref=e166]
+          - generic [ref=e169]: Quick response time and code samples available on request
+        - generic [ref=e170]:
+          - img [ref=e171]
+          - generic [ref=e173]: Available for remote work and local projects in Northern NJ
+      - generic [ref=e174]:
+        - generic [ref=e175]:
+          - generic [ref=e176]: 24h
+          - generic [ref=e177]: Response Time
+        - generic [ref=e178]:
+          - generic [ref=e179]: ✓
+          - generic [ref=e180]: Client Success Focus
+        - generic [ref=e181]:
+          - generic [ref=e182]: 15+
+          - generic [ref=e183]: Years Experience
+    - button "Open chatbot" [ref=e184] [cursor=pointer]:
+      - img [ref=e185] [cursor=pointer]
+  - contentinfo [ref=e187]:
+    - generic [ref=e189]:
+      - link "John Schibelli - Home page" [ref=e191] [cursor=pointer]:
+        - /url: /
+        - img "John Schibelli" [ref=e193] [cursor=pointer]
+      - navigation "Social media links" [ref=e194]:
+        - list [ref=e195]:
+          - link "Find us on Facebook, external website, opens in new tab" [ref=e196] [cursor=pointer]:
+            - /url: https://facebook.com
+            - img [ref=e197] [cursor=pointer]
+          - link "Find us on Github, external website, opens in new tab" [ref=e199] [cursor=pointer]:
+            - /url: https://github.com
+            - img [ref=e200] [cursor=pointer]
+          - link "Find us on Linkedin, external website, opens in new tab" [ref=e202] [cursor=pointer]:
+            - /url: https://linkedin.com
+            - img [ref=e203] [cursor=pointer]
+          - link "Find us on Bluesky, external website, opens in new tab" [ref=e205] [cursor=pointer]:
+            - /url: https://bsky.app
+            - img [ref=e206] [cursor=pointer]
+          - link "Open blog XML Feed, opens in new tab" [ref=e208] [cursor=pointer]:
+            - /url: /rss.xml
+            - img [ref=e209] [cursor=pointer]
+      - paragraph [ref=e212]: © 2025 John Schibelli. All rights reserved.
+  - generic [ref=e217] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e218] [cursor=pointer]:
+      - img [ref=e219] [cursor=pointer]
+    - generic [ref=e222] [cursor=pointer]:
+      - button "Open issues overlay" [ref=e223] [cursor=pointer]:
+        - generic [ref=e224] [cursor=pointer]:
+          - generic [ref=e225] [cursor=pointer]: "0"
+          - generic [ref=e226] [cursor=pointer]: "1"
+        - generic [ref=e227] [cursor=pointer]: Issue
+      - button "Collapse issues badge" [ref=e228] [cursor=pointer]:
+        - img [ref=e229] [cursor=pointer]
+  - alert [ref=e231]
+```
