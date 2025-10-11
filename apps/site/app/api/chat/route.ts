@@ -314,32 +314,92 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('🤖 Chat API Error:', error);
     
-    // Handle specific OpenAI API errors
+    // Handle specific OpenAI API errors with user-friendly messages
     if (error instanceof Error) {
+      // Authentication errors
       if (error.message.includes('401') || error.message.includes('Unauthorized')) {
         return NextResponse.json(
-          { error: 'OpenAI API key is invalid or expired' },
+          { 
+            error: 'Configuration Error',
+            userMessage: "I'm having trouble connecting to my AI service. This is a configuration issue on my end.",
+            suggestion: 'Please try again in a few moments, or contact John directly at jschibelli@gmail.com if the issue persists.',
+            retryable: false,
+            errorCode: 'AUTH_ERROR'
+          },
           { status: 401 }
         );
       }
+      
+      // Rate limiting errors
       if (error.message.includes('429') || error.message.includes('rate limit')) {
         return NextResponse.json(
-          { error: 'OpenAI API rate limit exceeded' },
+          { 
+            error: 'Too Many Requests',
+            userMessage: "I'm receiving a lot of requests right now and need a moment to catch up.",
+            suggestion: 'Please wait a moment and try again. Your message will be processed shortly.',
+            retryable: true,
+            retryAfter: 5000, // 5 seconds
+            errorCode: 'RATE_LIMIT'
+          },
           { status: 429 }
         );
       }
+      
+      // Quota exceeded errors
       if (error.message.includes('insufficient_quota')) {
         return NextResponse.json(
-          { error: 'OpenAI API quota exceeded' },
+          { 
+            error: 'Service Limit Reached',
+            userMessage: "I've reached my service capacity for now.",
+            suggestion: 'Please contact John directly at jschibelli@gmail.com for assistance.',
+            retryable: false,
+            errorCode: 'QUOTA_EXCEEDED'
+          },
           { status: 402 }
+        );
+      }
+      
+      // Timeout errors
+      if (error.message.includes('timeout') || error.message.includes('ETIMEDOUT')) {
+        return NextResponse.json(
+          { 
+            error: 'Request Timeout',
+            userMessage: "I'm taking longer than usual to respond.",
+            suggestion: 'Please try sending your message again. If this continues, try asking a simpler question.',
+            retryable: true,
+            retryAfter: 2000, // 2 seconds
+            errorCode: 'TIMEOUT'
+          },
+          { status: 504 }
+        );
+      }
+      
+      // Network errors
+      if (error.message.includes('ECONNREFUSED') || error.message.includes('ENOTFOUND')) {
+        return NextResponse.json(
+          { 
+            error: 'Connection Error',
+            userMessage: "I'm having trouble connecting to the AI service.",
+            suggestion: 'Please check your internet connection and try again.',
+            retryable: true,
+            retryAfter: 3000, // 3 seconds
+            errorCode: 'NETWORK_ERROR'
+          },
+          { status: 503 }
         );
       }
     }
     
+    // Generic error with helpful message
     return NextResponse.json(
       { 
-        error: 'Failed to process chat message',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: 'Processing Error',
+        userMessage: "I encountered an unexpected issue while processing your message.",
+        suggestion: 'Please try rephrasing your question or contact John at jschibelli@gmail.com if this continues.',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        retryable: true,
+        retryAfter: 2000,
+        errorCode: 'UNKNOWN_ERROR'
       },
       { status: 500 }
     );
