@@ -582,6 +582,104 @@ export default function Chatbot() {
     }
   }, []);
 
+  // Load conversation history from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedMessages = localStorage.getItem('chatbot-messages');
+        const savedHistory = localStorage.getItem('chatbot-conversation-history');
+        const savedConversationId = localStorage.getItem('chatbot-conversation-id');
+        
+        if (savedMessages) {
+          const parsedMessages = JSON.parse(savedMessages);
+          // Restore Date objects from ISO strings
+          const messagesWithDates = parsedMessages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }));
+          setMessages(messagesWithDates);
+        }
+        
+        if (savedHistory) {
+          const parsedHistory = JSON.parse(savedHistory);
+          setConversationHistory(parsedHistory);
+        }
+        
+        if (savedConversationId) {
+          setConversationId(savedConversationId);
+        }
+      } catch (error) {
+        console.error('Error loading conversation from localStorage:', error);
+        // If there's an error, clear corrupted data and start fresh
+        localStorage.removeItem('chatbot-messages');
+        localStorage.removeItem('chatbot-conversation-history');
+        localStorage.removeItem('chatbot-conversation-id');
+      }
+    }
+  }, []);
+
+  // Save conversation to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && messages.length > 0) {
+      try {
+        // Only save if we have more than just the initial welcome message
+        // or if the conversation has been loaded from storage
+        const savedMessages = localStorage.getItem('chatbot-messages');
+        if (messages.length > 1 || savedMessages) {
+          localStorage.setItem('chatbot-messages', JSON.stringify(messages));
+        }
+      } catch (error) {
+        console.error('Error saving messages to localStorage:', error);
+        // Handle quota exceeded or other localStorage errors
+        if (error instanceof Error && error.name === 'QuotaExceededError') {
+          console.warn('localStorage quota exceeded. Clearing old messages.');
+          // Keep only the last 20 messages to free up space
+          const recentMessages = messages.slice(-20);
+          try {
+            localStorage.setItem('chatbot-messages', JSON.stringify(recentMessages));
+            setMessages(recentMessages);
+          } catch (retryError) {
+            console.error('Failed to save even after cleanup:', retryError);
+          }
+        }
+      }
+    }
+  }, [messages]);
+
+  // Save conversation history to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && conversationHistory.length > 0) {
+      try {
+        localStorage.setItem('chatbot-conversation-history', JSON.stringify(conversationHistory));
+      } catch (error) {
+        console.error('Error saving conversation history to localStorage:', error);
+        // Handle quota exceeded
+        if (error instanceof Error && error.name === 'QuotaExceededError') {
+          console.warn('localStorage quota exceeded for conversation history.');
+          // Keep only the last 15 exchanges (matching context window)
+          const recentHistory = conversationHistory.slice(-15);
+          try {
+            localStorage.setItem('chatbot-conversation-history', JSON.stringify(recentHistory));
+            setConversationHistory(recentHistory);
+          } catch (retryError) {
+            console.error('Failed to save history even after cleanup:', retryError);
+          }
+        }
+      }
+    }
+  }, [conversationHistory]);
+
+  // Save conversation ID to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && conversationId) {
+      try {
+        localStorage.setItem('chatbot-conversation-id', conversationId);
+      } catch (error) {
+        console.error('Error saving conversation ID to localStorage:', error);
+      }
+    }
+  }, [conversationId]);
+
   // Speak initial message when voice is enabled and chatbot opens
   useEffect(() => {
     if (isOpen && isVoiceEnabled && audioRef && messages.length === 1) {
@@ -1558,6 +1656,34 @@ export default function Chatbot() {
     }
   };
 
+  const clearConversation = () => {
+    // Reset to initial welcome message
+    const welcomeMessage: Message = {
+      id: '1',
+      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    
+    setMessages([welcomeMessage]);
+    setConversationHistory([]);
+    setConversationId('');
+    
+    // Clear from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('chatbot-messages');
+      localStorage.removeItem('chatbot-conversation-history');
+      localStorage.removeItem('chatbot-conversation-id');
+    }
+    
+    // Optional: Announce the clear action
+    if (isVoiceEnabled && audioRef) {
+      setTimeout(() => {
+        speakMessage('Conversation cleared');
+      }, 100);
+    }
+  };
+
   const handleSuggestedAction = (action: { label: string; url: string; icon: string }) => {
     // Track action clicked
     trackActionClicked(action.label);
@@ -2188,6 +2314,52 @@ export default function Chatbot() {
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+              
+              {/* Conversation History Section */}
+							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
+								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
+									Conversation History
+								</h4>
+								<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
+                  Your conversations are automatically saved and will persist across sessions.
+                </p>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Messages Saved
+										</span>
+										<span className="rounded bg-stone-200 px-2 py-1 text-sm text-stone-800 dark:bg-stone-700 dark:text-stone-200">
+											{messages.length}
+										</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Exchanges
+										</span>
+										<span className="rounded bg-stone-200 px-2 py-1 text-sm text-stone-800 dark:bg-stone-700 dark:text-stone-200">
+											{conversationHistory.length}
+										</span>
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      if (confirm('Are you sure you want to clear your conversation history? This cannot be undone.')) {
+                        clearConversation();
+                        setShowSettings(false);
+                      }
+                    }}
+										className="w-full rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800 transition-colors hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
+                  >
+                    Clear Conversation
+                  </button>
+                  
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                    Clearing will reset the conversation and remove all saved history.
+                  </p>
                 </div>
               </div>
             </div>
