@@ -165,7 +165,7 @@ export type BlockCategory = typeof BLOCK_CATEGORIES[keyof typeof BLOCK_CATEGORIE
 export interface BlockRegistry {
   [key: string]: {
     component: React.ComponentType<any>;
-    icon: string;
+    icon: React.ComponentType<any> | string;
     name: string;
     description: string;
     category: BlockCategory;
