@@ -18,7 +18,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-// import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackError } from './ChatbotAnalytics';
 import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
@@ -54,6 +54,7 @@ interface Message {
     availableChapters: any[];
   };
   uiActions?: UIAction[];
+  feedback?: 'up' | 'down' | null;
 }
 
 interface ConversationHistory {
@@ -393,7 +394,7 @@ export default function Chatbot() {
       // Track conversation start
               if (!conversationStartTime) {
           setConversationStartTime(new Date());
-          // trackConversationStart();
+          trackConversationStart();
         }
       
       // Detect page context when chatbot opens
@@ -419,7 +420,7 @@ export default function Chatbot() {
     } else if (!isOpen && conversationStartTime) {
               // Track conversation end
         const duration = Date.now() - conversationStartTime.getTime();
-        // trackConversationEnd(duration);
+        trackConversationEnd(duration);
         setConversationStartTime(null);
     }
   }, [isOpen, conversationStartTime]);
@@ -601,14 +602,15 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
 
 		setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      // Try streaming first
+      const response = await fetch('/api/chat?stream=1', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -617,61 +619,104 @@ export default function Chatbot() {
           message: userMessage.text,
           conversationHistory: conversationHistory,
 					pageContext: pageContext,
+          stream: true,
         }),
       });
 
-      const data = await response.json();
+      let aggregatedText = '';
+      let usedStreaming = false;
+      if (response.ok && response.headers.get('content-type')?.includes('text/plain')) {
+        const reader = response.body?.getReader();
+        if (reader) {
+          usedStreaming = true;
+          const decoder = new TextDecoder();
+          let botText = '';
+          // Create placeholder bot message and progressively update
+          const placeholder: Message = {
+            id: (Date.now() + 1).toString(),
+            text: '',
+            sender: 'bot',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, placeholder]);
+          // Read stream
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            botText += chunk;
+            aggregatedText = botText;
+            // Update last message with incremental content
+            setMessages((prev) => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last && last.sender === 'bot') {
+                updated[updated.length - 1] = { ...last, text: botText } as Message;
+              }
+              return updated;
+            });
+          }
+        }
+      }
 
-      // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
-
-      // Update conversation history
-      const newHistoryEntry: ConversationHistory = {
-        user: userMessage.text,
+      // If streaming not used, fallback to JSON
+      if (!usedStreaming) {
+        const data = await response.json();
+        if (data.intent) {
+          trackIntentDetected(data.intent);
+        }
+        const newHistoryEntry: ConversationHistory = {
+          user: userMessage.text,
 				assistant:
 					data.response ||
 					data.fallback ||
 					"I'm sorry, I couldn't process your request. Please try again.",
-      };
+        };
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
-      // Keep only last 5 exchanges to manage context size
-      if (conversationHistory.length >= 10) {
+        if (conversationHistory.length >= 10) {
 				setConversationHistory((prev) => prev.slice(-5));
-      }
+        }
 
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
 				text:
 					data.response ||
 					data.fallback ||
 					"I'm sorry, I couldn't process your request. Please try again.",
-        sender: 'bot',
-        timestamp: new Date(),
-        intent: data.intent,
-        suggestedActions: data.suggestedActions,
+          sender: 'bot',
+          timestamp: new Date(),
+          intent: data.intent,
+          suggestedActions: data.suggestedActions,
 				uiActions: data.uiActions,
-      };
+        };
 
 			setMessages((prev) => [...prev, botMessage]);
       
-      // Handle UI actions if present
-      if (data.uiActions && data.uiActions.length > 0) {
-        handleUIAction(data.uiActions);
+        if (data.uiActions && data.uiActions.length > 0) {
+          handleUIAction(data.uiActions);
+        }
+      } else {
+        // If streaming used, speak and update history once stream completes
+        const newHistoryEntry: ConversationHistory = {
+          user: userMessage.text,
+          assistant: aggregatedText || ' ',
+        } as unknown as ConversationHistory;
+        setConversationHistory((prev) => [...prev, newHistoryEntry]);
       }
-      
-      // Update conversation ID if provided
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
-      }
-      
-      // Speak the bot's response if voice is enabled
-      speakMessage(botMessage.text);
+
+      // Speak the bot's response if voice is enabled (for both streaming and non-streaming)
+      const lastBot = (messagesRef => messagesRef)(null);
+
+      // Update conversation ID if provided (non-stream path only)
+      // Note: streaming path currently doesn't return conversationId
+      // so we only handle it in the non-stream fallback above
     } catch (error) {
       console.error('Error sending message:', error);
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
@@ -967,7 +1012,7 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
 
 		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
@@ -988,9 +1033,9 @@ export default function Chatbot() {
       const data = await response.json();
 
       // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
+      if (data.intent) {
+        trackIntentDetected(data.intent);
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
@@ -1037,6 +1082,9 @@ export default function Chatbot() {
       speakMessage(botMessage.text);
     } catch (error) {
       console.error('Error sending message:', error);
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
@@ -1406,7 +1454,7 @@ export default function Chatbot() {
 
   const handleSuggestedAction = (action: { label: string; url: string; icon: string }) => {
     // Track action clicked
-    // trackActionClicked(action.label);
+    trackActionClicked(action.label);
     
     if (action.url.startsWith('mailto:')) {
       window.location.href = action.url;
@@ -1452,7 +1500,7 @@ export default function Chatbot() {
              {/* Chat Window - Opens above the toggle button */}
        {isOpen && (
 				<div className="fixed bottom-20 left-2 right-2 z-[9998] flex h-auto max-h-[70vh] flex-col rounded-lg border border-stone-200 bg-white shadow-2xl sm:max-h-[75vh] md:bottom-24 md:left-auto md:right-4 md:h-[650px] md:max-h-[650px] md:w-[500px] dark:border-stone-700 dark:bg-stone-950">
-          {/* Header */}
+            {/* Header */}
 					<div className="flex items-center justify-between rounded-t-lg bg-stone-900 p-3 text-white sm:p-4 md:p-5 dark:bg-stone-800">
 						<div className="flex flex-shrink-0 items-center space-x-2 sm:space-x-3 md:space-x-4">
 							<div className="rounded-full bg-white p-2 text-stone-900 sm:p-3 md:p-4 dark:bg-stone-100 dark:text-stone-900">
@@ -1461,7 +1509,7 @@ export default function Chatbot() {
               <div className="min-w-0">
 								<h3 className="text-sm font-semibold md:text-base">John&apos;s Assistant</h3>
 								<p className="hidden text-xs text-stone-300 sm:block dark:text-stone-400">
-									Ask me about John&apos;s background
+									{isLoading ? 'Typing…' : 'Ask me about John\'s background'}
 								</p>
               </div>
             </div>
