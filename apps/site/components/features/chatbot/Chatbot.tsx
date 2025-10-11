@@ -18,7 +18,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackError } from '../analytics/ChatbotAnalytics';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackVoiceUsage, trackError, trackUIAction, trackQuickAction } from './ChatbotAnalytics';
 import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
@@ -703,6 +703,15 @@ export default function Chatbot() {
           }
         }
       }
+      
+      // Track intent detected  
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Get intent from the last done message
+        const lastIntent = messages.find(m => m.id === botMessageId)?.intent;
+        if (lastIntent) {
+          trackIntentDetected(lastIntent);
+        }
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
@@ -718,6 +727,10 @@ export default function Chatbot() {
       
       // Handle UI actions if present
       if (uiActionsData && uiActionsData.length > 0) {
+        // Track UI actions
+        uiActionsData.forEach(action => {
+          trackUIAction(action.action, action.data);
+        });
         handleUIAction(uiActionsData);
       }
       
@@ -894,6 +907,7 @@ export default function Chatbot() {
 
   const handleUIAction = (uiActions: UIAction[]) => {
     for (const action of uiActions) {
+      trackUIAction(action.action, action.data);
       const permission = checkUIPermission();
       
       if (permission === null) {
@@ -1044,6 +1058,7 @@ export default function Chatbot() {
 
           // Track message sent
       trackMessageSent(userMessage.text);
+      trackQuickAction(action);
 
 		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
@@ -1507,6 +1522,9 @@ export default function Chatbot() {
   const toggleVoice = () => {
     const newState = !isVoiceEnabled;
     setIsVoiceEnabled(newState);
+    
+    // Track voice usage
+    trackVoiceUsage(newState ? 'enable' : 'disable');
     
     // Save preference to localStorage
     localStorage.setItem('chatbot-voice-enabled', newState.toString());
