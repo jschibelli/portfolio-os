@@ -301,3 +301,23 @@ export function createThemedHeroSpacing(theme: HeroTheme) {
 export type HeroSpacingVariant = keyof typeof heroSpacing;
 export type HeroSpacingSize = 'small' | 'medium' | 'large';
 export type HeroSpacingVariantType = 'default' | 'compact' | 'large';
+
+// Typography presets (stub exports for backwards compatibility with UI components)
+export interface TypographyPreset {
+  fontSize: string;
+  lineHeight: string;
+  fontWeight: string | number;
+  letterSpacing?: string;
+}
+
+export const typographyPresets = {
+  'hero-xl': { fontSize: '4.5rem', lineHeight: '1.1', fontWeight: '800' },
+  'hero-lg': { fontSize: '3.75rem', lineHeight: '1.15', fontWeight: '700' },
+  'hero-md': { fontSize: '3rem', lineHeight: '1.2', fontWeight: '700' },
+  'section-title': { fontSize: '2.25rem', lineHeight: '1.25', fontWeight: '600' },
+  'card-title': { fontSize: '1.5rem', lineHeight: '1.3', fontWeight: '600' },
+} as const;
+
+export const heroTypography = typographyPresets;
+export const sectionTypography = typographyPresets;
+export const cardTypography = typographyPresets;

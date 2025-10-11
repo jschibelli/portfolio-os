@@ -1,7 +1,59 @@
 # Multi-Agent E2E Development Workflow
 
 ## 🎯 Overview
-This enhanced workflow combines multi-agent development with end-to-end automation for the **Launch Tuesday QA (2025-10-07)** milestone. Each agent works on assigned issues with full automation from issue analysis to merge.
+This enhanced workflow combines multi-agent development with end-to-end automation for parallel development by **Chris (Frontend/UI Specialist)** and **Jason (Infrastructure/Testing Specialist)**. Each agent works on assigned issues with full automation from issue creation to merge.
+
+> **Note**: For single-developer workflows without agent assignments, see `workflows/e2e-issue-to-merge.md`
+
+## 🆕 **Enhanced Automation Features**
+
+### **Auto Branch Creation on Issue Creation**
+Issues created with enhanced script automatically get branches:
+```powershell
+.\scripts\issue-management\create-issue-enhanced.ps1 `
+  -Title "Implement feature" `
+  -Body "Description" `
+  -CreateBranch `
+  -PushBranch
+```
+
+### **Auto Workflow Doc Updates on Agent Assignment**
+Agent assignments automatically update this workflow document:
+```powershell
+.\scripts\agent-management\assign-agent-enhanced.ps1 `
+  -IssueNumber 292 `
+  -AgentName jason `
+  -UpdateWorkflowDocs
+```
+
+### **Current Agent Specialties**
+- **Chris (agent-1-chris)**: Frontend components, UI/UX, React/Next.js, accessibility, performance optimization, visual testing
+- **Jason (agent-2-jason)**: Backend infrastructure, DevOps, SEO, testing frameworks, security, API integration, performance monitoring
+
+### **Current Active Projects:**
+
+**Playwright Test Coverage Integration (Epic #291 - Milestone #17)**
+- **Jason (agent-2-jason)**: 7 issues - Foundation (#292 - CRITICAL FIRST), backend integration tests, performance tests
+  - #292 - Test Utils & Config Updates ⚠️ **BLOCKS ALL OTHERS**
+  - #294 - Projects & Portfolio Tests
+  - #297 - Protected Routes & Session Tests
+  - #299 - Newsletter Subscription Tests
+  - #301 - Booking System Tests
+  - #303 - Error Handling & Edge Cases
+  - #305 - Performance & Advanced Accessibility
+
+- **Chris (agent-1-chris)**: 7 issues - Frontend UI tests, interactive components, visual regression
+  - #293 - Blog Post Detail Page Tests
+  - #295 - Homepage Interactive Tests
+  - #296 - Authentication Flow Tests
+  - #298 - Contact Form Flow Tests
+  - #300 - Chatbot Interaction Tests
+  - #302 - Interactive Component Tests
+  - #304 - Visual Regression Expansion
+
+**⚠️ Critical Dependency**: Jason's #292 (Test Utils) MUST be completed first - all other test issues depend on it.
+
+---
 
 ## 🤖 **Multi-Agent E2E Automation**
 

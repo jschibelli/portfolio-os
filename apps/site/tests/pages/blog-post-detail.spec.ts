@@ -204,8 +204,13 @@ test.describe('Blog Post Detail Page - Metadata & UI', () => {
     await page.goto(postUrl!, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000); // Wait for content to load
     
+<<<<<<< HEAD
+    // Check for read time indicator (more specific selector to avoid strict mode violation)
+    const readTimeElement = page.locator('article header div.flex:has-text("min read")').last();
+=======
     // Check for read time indicator (use last() to avoid strict mode violation)
     const readTimeElement = page.locator('article header div:has-text("min read")').last();
+>>>>>>> origin/develop
     const readTimeCount = await readTimeElement.count();
     
     if (readTimeCount > 0) {
@@ -619,4 +624,7 @@ test.describe('Blog Post Detail Page - Accessibility', () => {
   });
 });
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> origin/develop
