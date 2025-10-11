@@ -111,6 +111,7 @@ export default function Chatbot() {
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
   const [pageContext, setPageContext] = useState<PageContext | null>(null);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [quickReplies, setQuickReplies] = useState<string[]>([]);
   const [features, setFeatures] = useState({
 		scheduling:
 			process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' ||
@@ -596,6 +597,11 @@ export default function Chatbot() {
       return () => clearTimeout(timer);
     }
   }, [isOpen, isVoiceEnabled, audioRef, messages]);
+
+  // Generate context-aware quick replies when conversation changes
+  useEffect(() => {
+    generateQuickReplies(conversationHistory, messages);
+  }, [conversationHistory, messages]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -1572,6 +1578,134 @@ export default function Chatbot() {
     }
   };
 
+  const generateQuickReplies = (history: ConversationHistory[], msgs: Message[]) => {
+    // Base suggestions for new conversations
+    const defaultReplies = [
+      "Tell me about John's experience",
+      "What services does John offer?",
+      "Show me John's projects",
+      "Schedule a meeting"
+    ];
+
+    // If no conversation history, show default replies
+    if (history.length === 0) {
+      setQuickReplies(defaultReplies);
+      return;
+    }
+
+    // Get last few messages to understand context
+    const recentMessages = msgs.slice(-3);
+    const lastBotMessage = recentMessages.filter(m => m.sender === 'bot').pop();
+    
+    let contextAwareReplies: string[] = [];
+
+    // Analyze last bot message for context clues
+    if (lastBotMessage) {
+      const text = lastBotMessage.text.toLowerCase();
+      
+      // Project/Portfolio context
+      if (text.includes('project') || text.includes('portfolio') || text.includes('built') || text.includes('developed')) {
+        contextAwareReplies = [
+          "Tell me more about that project",
+          "What technologies were used?",
+          "Show me more projects",
+          "What were the key challenges?"
+        ];
+      }
+      // Experience/Skills context
+      else if (text.includes('experience') || text.includes('skill') || text.includes('expertise') || text.includes('worked')) {
+        contextAwareReplies = [
+          "What else has John worked on?",
+          "Tell me about his tech stack",
+          "What industries has he worked in?",
+          "Show me his full experience"
+        ];
+      }
+      // Services/Consulting context
+      else if (text.includes('service') || text.includes('consult') || text.includes('help') || text.includes('offer')) {
+        contextAwareReplies = [
+          "What are the pricing options?",
+          "How does the process work?",
+          "Schedule a consultation",
+          "Tell me about past clients"
+        ];
+      }
+      // Scheduling/Meeting context
+      else if (text.includes('schedul') || text.includes('meeting') || text.includes('calendar') || text.includes('available')) {
+        contextAwareReplies = [
+          "Show me available times",
+          "What's the meeting format?",
+          "I'd like to book a call",
+          "Tell me more first"
+        ];
+      }
+      // Case study/Detailed work context
+      else if (text.includes('case study') || text.includes('tendril') || text.includes('zeus') || text.includes('saas')) {
+        contextAwareReplies = [
+          "What were the results?",
+          "Show me technical details",
+          "Tell me about other projects",
+          "What was your role?"
+        ];
+      }
+      // Contact/Collaboration context
+      else if (text.includes('contact') || text.includes('reach') || text.includes('email') || text.includes('collaborate')) {
+        contextAwareReplies = [
+          "Schedule a meeting now",
+          "What's the best way to reach out?",
+          "Tell me about your availability",
+          "Learn more about services"
+        ];
+      }
+      // Default follow-up questions
+      else {
+        contextAwareReplies = [
+          "Tell me more about that",
+          "What other projects has John done?",
+          "How can John help me?",
+          "Schedule a consultation"
+        ];
+      }
+    }
+
+    // If we couldn't determine context, use smart defaults based on conversation length
+    if (contextAwareReplies.length === 0) {
+      if (history.length < 3) {
+        // Early conversation - exploratory
+        contextAwareReplies = [
+          "Tell me about John's experience",
+          "Show me his projects",
+          "What services are offered?",
+          "Schedule a meeting"
+        ];
+      } else if (history.length < 7) {
+        // Mid conversation - going deeper
+        contextAwareReplies = [
+          "Tell me more about that",
+          "Show me examples",
+          "What makes this unique?",
+          "How can I get started?"
+        ];
+      } else {
+        // Long conversation - action-oriented
+        contextAwareReplies = [
+          "Schedule a consultation",
+          "What's the next step?",
+          "How do we proceed?",
+          "Send me more information"
+        ];
+      }
+    }
+
+    setQuickReplies(contextAwareReplies);
+  };
+
+  const handleQuickReply = (reply: string) => {
+    setInputValue(reply);
+    // Optional: Auto-send the message
+    // setTimeout(() => sendMessage(), 100);
+  };
+
   return (
     <>
              {/* Chat Toggle Button - Always at bottom */}
@@ -1825,6 +1959,22 @@ export default function Chatbot() {
 
                      {/* Input and Close Button Row */}
 					<div className="border-t border-stone-200 p-2 sm:p-3 md:p-4 dark:border-stone-700">
+             {/* Context-Aware Quick Replies */}
+             {quickReplies.length > 0 && !isLoading && (
+               <div className="mb-3 flex flex-wrap gap-2">
+                 {quickReplies.map((reply, index) => (
+                   <button
+                     key={index}
+                     onClick={() => handleQuickReply(reply)}
+                     className="inline-flex items-center rounded-full bg-stone-100 px-3 py-1.5 text-xs text-stone-700 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+                   >
+                     <MessageCircle className="mr-1 h-3 w-3" />
+                     {reply}
+                   </button>
+                 ))}
+               </div>
+             )}
+             
              <div className="flex items-center gap-2 sm:gap-3">
               <input
                 ref={inputRef}
