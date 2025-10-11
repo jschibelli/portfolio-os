@@ -607,6 +607,16 @@ export default function Chatbot() {
     setInputValue('');
     setIsLoading(true);
 
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -620,7 +630,70 @@ export default function Chatbot() {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
 
       // Track intent detected
       // if (data.intent) {
@@ -630,10 +703,7 @@ export default function Chatbot() {
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-				assistant:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
       };
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
@@ -642,34 +712,16 @@ export default function Chatbot() {
       if (conversationHistory.length >= 10) {
 				setConversationHistory((prev) => prev.slice(-5));
       }
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-				text:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
-        sender: 'bot',
-        timestamp: new Date(),
-        intent: data.intent,
-        suggestedActions: data.suggestedActions,
-				uiActions: data.uiActions,
-      };
-
-			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
-      if (data.uiActions && data.uiActions.length > 0) {
-        handleUIAction(data.uiActions);
-      }
-      
-      // Update conversation ID if provided
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
+      if (uiActionsData && uiActionsData.length > 0) {
+        handleUIAction(uiActionsData);
       }
       
       // Speak the bot's response if voice is enabled
-      speakMessage(botMessage.text);
+      if (streamedText) {
+        speakMessage(streamedText);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -678,7 +730,12 @@ export default function Chatbot() {
         sender: 'bot',
         timestamp: new Date(),
       };
-			setMessages((prev) => [...prev, errorMessage]);
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -972,6 +1029,16 @@ export default function Chatbot() {
 		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
 
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -985,7 +1052,70 @@ export default function Chatbot() {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
 
       // Track intent detected
       // if (data.intent) {
@@ -995,10 +1125,7 @@ export default function Chatbot() {
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-				assistant:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
       };
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
@@ -1007,34 +1134,16 @@ export default function Chatbot() {
       if (conversationHistory.length >= 10) {
 				setConversationHistory((prev) => prev.slice(-5));
       }
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-				text:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
-        sender: 'bot',
-        timestamp: new Date(),
-        intent: data.intent,
-        suggestedActions: data.suggestedActions,
-				uiActions: data.uiActions,
-      };
-
-			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
-      if (data.uiActions && data.uiActions.length > 0) {
-        handleUIAction(data.uiActions);
-      }
-      
-      // Update conversation ID if provided
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
+      if (uiActionsData && uiActionsData.length > 0) {
+        handleUIAction(uiActionsData);
       }
       
       // Speak the bot's response if voice is enabled
-      speakMessage(botMessage.text);
+      if (streamedText) {
+        speakMessage(streamedText);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       const errorMessage: Message = {
@@ -1043,7 +1152,12 @@ export default function Chatbot() {
         sender: 'bot',
         timestamp: new Date(),
       };
-			setMessages((prev) => [...prev, errorMessage]);
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
