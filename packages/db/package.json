@@ -6,7 +6,8 @@
   "types": "./index.ts",
   "scripts": {
     "build": "echo 'No build step required for db package'",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",
