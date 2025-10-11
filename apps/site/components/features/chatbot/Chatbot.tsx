@@ -18,7 +18,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-// import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackVoiceUsage, trackError, trackUIAction, trackQuickAction } from './ChatbotAnalytics';
 import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
@@ -393,7 +393,7 @@ export default function Chatbot() {
       // Track conversation start
               if (!conversationStartTime) {
           setConversationStartTime(new Date());
-          // trackConversationStart();
+          trackConversationStart();
         }
       
       // Detect page context when chatbot opens
@@ -419,7 +419,7 @@ export default function Chatbot() {
     } else if (!isOpen && conversationStartTime) {
               // Track conversation end
         const duration = Date.now() - conversationStartTime.getTime();
-        // trackConversationEnd(duration);
+        trackConversationEnd(duration);
         setConversationStartTime(null);
     }
   }, [isOpen, conversationStartTime]);
@@ -601,7 +601,7 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
 
 		setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
@@ -623,9 +623,9 @@ export default function Chatbot() {
       const data = await response.json();
 
       // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
+      if (data.intent) {
+        trackIntentDetected(data.intent);
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
@@ -672,6 +672,7 @@ export default function Chatbot() {
       speakMessage(botMessage.text);
     } catch (error) {
       console.error('Error sending message:', error);
+      trackError('send_message_error', error instanceof Error ? error.message : 'Unknown error');
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
@@ -818,6 +819,7 @@ export default function Chatbot() {
 
   const handleUIAction = (uiActions: UIAction[]) => {
     for (const action of uiActions) {
+      trackUIAction(action.action, action.data);
       const permission = checkUIPermission();
       
       if (permission === null) {
@@ -967,7 +969,8 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
+      trackQuickAction(action);
 
 		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
@@ -988,9 +991,9 @@ export default function Chatbot() {
       const data = await response.json();
 
       // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
+      if (data.intent) {
+        trackIntentDetected(data.intent);
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
@@ -1037,6 +1040,7 @@ export default function Chatbot() {
       speakMessage(botMessage.text);
     } catch (error) {
       console.error('Error sending message:', error);
+      trackError('send_message_error', error instanceof Error ? error.message : 'Unknown error');
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
@@ -1372,6 +1376,9 @@ export default function Chatbot() {
     const newState = !isVoiceEnabled;
     setIsVoiceEnabled(newState);
     
+    // Track voice usage
+    trackVoiceUsage(newState ? 'enable' : 'disable');
+    
     // Save preference to localStorage
     localStorage.setItem('chatbot-voice-enabled', newState.toString());
     
@@ -1406,7 +1413,7 @@ export default function Chatbot() {
 
   const handleSuggestedAction = (action: { label: string; url: string; icon: string }) => {
     // Track action clicked
-    // trackActionClicked(action.label);
+    trackActionClicked(action.label);
     
     if (action.url.startsWith('mailto:')) {
       window.location.href = action.url;
