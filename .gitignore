@@ -131,29 +131,13 @@ next-env.d.ts
 # Agent Workspace and Task Management
 # =============================================================================
 # Local workspace directory for AI agent collaboration and task management
-# This hidden directory contains task files, status updates, and planning docs
+# This hidden directory contains temporary files, personal notes, and scratch work
 # that should remain local and not be committed to version control
 .workspace/
 
-# Agent-generated task and status files that may appear in root
-# These patterns prevent cluttering the repository with temporary task files
-AGENT_*.md
-*_TASKS.md
-*_SUMMARY.md
-*_STATUS.md
-*_PLAN.md
-*_REPORT.md
-*_ASSIGNMENT*.md
-*_CHECKLIST.md
+# Note: Project documentation and scripts should be committed to:
+# - docs/project-management/ (for planning docs accessible to all worktrees)
+# - scripts/project-management/ (for scripts accessible to all worktrees)
 
-# PR and issue management temp files
-pr-*.md
-issue-*.md
-cr-response*.md
-
-# Temporary automation scripts (use scripts/temp/ for needed temporary scripts)
-assign-*.ps1
-START_*.ps1
-
-# Temporary scripts directory
+# Temporary scripts directory (for truly temporary one-off scripts)
 scripts/temp/
