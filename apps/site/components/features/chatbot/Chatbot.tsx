@@ -702,12 +702,9 @@ export default function Chatbot() {
         const newHistoryEntry: ConversationHistory = {
           user: userMessage.text,
           assistant: aggregatedText || ' ',
-        } as unknown as ConversationHistory;
+        };
         setConversationHistory((prev) => [...prev, newHistoryEntry]);
       }
-
-      // Speak the bot's response if voice is enabled (for both streaming and non-streaming)
-      const lastBot = (messagesRef => messagesRef)(null);
 
       // Update conversation ID if provided (non-stream path only)
       // Note: streaming path currently doesn't return conversationId
@@ -1509,7 +1506,7 @@ export default function Chatbot() {
               <div className="min-w-0">
 								<h3 className="text-sm font-semibold md:text-base">John&apos;s Assistant</h3>
 								<p className="hidden text-xs text-stone-300 sm:block dark:text-stone-400">
-									{isLoading ? 'Typing…' : 'Ask me about John\'s background'}
+									{isLoading ? 'Typing…' : 'Ask me about John&apos;s background'}
 								</p>
               </div>
             </div>
