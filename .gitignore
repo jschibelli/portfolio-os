@@ -119,3 +119,41 @@ next-env.d.ts
 # and temporary files generated during the build process
 .turbo/cache/
 .turbo/daemon/
+
+# =============================================================================
+# Git Worktrees (Internal - Not Recommended)
+# =============================================================================
+# Ignore any worktrees created inside the main repository
+# Best practice is to create worktrees as siblings to the main repo, not inside it
+/worktrees/
+
+# =============================================================================
+# Agent Workspace and Task Management
+# =============================================================================
+# Local workspace directory for AI agent collaboration and task management
+# This hidden directory contains task files, status updates, and planning docs
+# that should remain local and not be committed to version control
+.workspace/
+
+# Agent-generated task and status files that may appear in root
+# These patterns prevent cluttering the repository with temporary task files
+AGENT_*.md
+*_TASKS.md
+*_SUMMARY.md
+*_STATUS.md
+*_PLAN.md
+*_REPORT.md
+*_ASSIGNMENT*.md
+*_CHECKLIST.md
+
+# PR and issue management temp files
+pr-*.md
+issue-*.md
+cr-response*.md
+
+# Temporary automation scripts (use scripts/temp/ for needed temporary scripts)
+assign-*.ps1
+START_*.ps1
+
+# Temporary scripts directory
+scripts/temp/

@@ -39,6 +39,7 @@ export default function AdminMedia() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const [filteredMedia, setFilteredMedia] = useState<MediaItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');

@@ -200,6 +200,96 @@ export function validateAndSanitizeInput(
 }
 
 /**
+ * Validates an article ID format
+ */
+export function validateArticleId(id: string): string | null {
+  if (!id || typeof id !== 'string') {
+    return null
+  }
+  
+  // Remove whitespace and check if it's a valid MongoDB ObjectID or UUID
+  const sanitized = id.trim()
+  
+  // MongoDB ObjectID format (24 hex characters)
+  const mongoIdPattern = /^[a-f\d]{24}$/i
+  // UUID format
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  // Simple alphanumeric ID
+  const simpleIdPattern = /^[a-zA-Z0-9_-]+$/
+  
+  if (mongoIdPattern.test(sanitized) || uuidPattern.test(sanitized) || simpleIdPattern.test(sanitized)) {
+    return sanitized
+  }
+  
+  return null
+}
+
+/**
+ * Sanitizes user input by removing potentially dangerous content
+ */
+export function sanitizeInput(input: string): string {
+  if (!input || typeof input !== 'string') {
+    return ''
+  }
+  
+  // Remove null bytes
+  let sanitized = input.replace(/\0/g, '')
+  
+  // Remove control characters except newline, tab, and carriage return
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+  
+  // Trim whitespace
+  sanitized = sanitized.trim()
+  
+  return sanitized
+}
+
+/**
+ * Validates an article ID format
+ */
+export function validateArticleId(id: string): string | null {
+  if (!id || typeof id !== 'string') {
+    return null
+  }
+  
+  // Remove whitespace and check if it's a valid MongoDB ObjectID or UUID
+  const sanitized = id.trim()
+  
+  // MongoDB ObjectID format (24 hex characters)
+  const mongoIdPattern = /^[a-f\d]{24}$/i
+  // UUID format
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  // Simple alphanumeric ID
+  const simpleIdPattern = /^[a-zA-Z0-9_-]+$/
+  
+  if (mongoIdPattern.test(sanitized) || uuidPattern.test(sanitized) || simpleIdPattern.test(sanitized)) {
+    return sanitized
+  }
+  
+  return null
+}
+
+/**
+ * Sanitizes user input by removing potentially dangerous content
+ */
+export function sanitizeInput(input: string): string {
+  if (!input || typeof input !== 'string') {
+    return ''
+  }
+  
+  // Remove null bytes
+  let sanitized = input.replace(/\0/g, '')
+  
+  // Remove control characters except newline, tab, and carriage return
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+  
+  // Trim whitespace
+  sanitized = sanitized.trim()
+  
+  return sanitized
+}
+
+/**
  * Rate limiting validation
  */
 export class RateLimiter {

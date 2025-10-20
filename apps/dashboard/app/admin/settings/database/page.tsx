@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Database, Download, Upload, Trash2, RefreshCw, CheckCircle, AlertCircle, HardDrive, Activity, Settings, Clock, BarChart3 } from "lucide-react";
+import { Database, Download, Upload, Trash2, RefreshCw, CheckCircle, AlertCircle, HardDrive, Activity, Settings, Clock, BarChart3, Eye, Pause } from "lucide-react";
 
 interface DatabaseInfo {
   type: string;
@@ -62,6 +62,8 @@ const mockBackups: BackupInfo[] = [
 ];
 
 export default function DatabasePage() {
+  const [databaseInfo, setDatabaseInfo] = useState<DatabaseInfo>(mockDatabaseInfo);
+  const [tables, setTables] = useState<TableInfo[]>(mockTables);
   const [backups, setBackups] = useState<BackupInfo[]>(mockBackups);
   const [activeTab, setActiveTab] = useState('overview');
   const [isOptimizing, setIsOptimizing] = useState(false);

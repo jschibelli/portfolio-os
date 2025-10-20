@@ -18,15 +18,15 @@ interface SessionUser {
 
 // Simple logging function to replace console statements
 const log = {
-  warn: () => {
+  warn: (..._args: any[]) => {
     // In production, this would use a proper logging service
     // For now, we'll just suppress console output
   },
-  info: () => {
+  info: (..._args: any[]) => {
     // In production, this would use a proper logging service
     // For now, we'll just suppress console output
   },
-  error: () => {
+  error: (..._args: any[]) => {
     // In production, this would use a proper logging service
     // For now, we'll just suppress console output
   }
