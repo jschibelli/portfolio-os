@@ -304,7 +304,8 @@ export async function POST(request: NextRequest) {
                       },
                     };
                   } else {
-                    if (toolCallDelta.function?.arguments) {
+                    // Add null check before accessing array index
+                    if (toolCalls[toolCallDelta.index] && toolCallDelta.function?.arguments) {
                       toolCalls[toolCallDelta.index].function.arguments += toolCallDelta.function.arguments;
                     }
                   }
@@ -328,6 +329,28 @@ export async function POST(request: NextRequest) {
                     }
                   } catch (error) {
                     console.error('🤖 Tool execution error:', error);
+                  }
+                }
+                
+                // Send explanatory text after tool execution
+                if (uiActions.length > 0) {
+                  const calendarAction = uiActions.find(action => action.action === 'show_booking_modal');
+                  let explanation = '';
+                  
+                  if (calendarAction) {
+                    explanation = 'Perfect! I\'ve found available time slots for scheduling a meeting with John. Please select a time that works best for you from the calendar below.';
+                  } else {
+                    explanation = 'I\'ve processed your request. Please check the options below.';
+                  }
+                  
+                  // Only send explanation if we have one and no response was streamed yet
+                  if (explanation && fullResponse.length === 0) {
+                    fullResponse = explanation;
+                    const contentData = JSON.stringify({
+                      type: 'content',
+                      content: explanation,
+                    });
+                    controller.enqueue(encoder.encode(`data: ${contentData}\n\n`));
                   }
                 }
               }
