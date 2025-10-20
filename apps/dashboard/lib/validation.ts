@@ -179,6 +179,44 @@ export function sanitizeHtml(html: string): string {
 }
 
 /**
+ * Sanitizes generic input to prevent XSS
+ */
+export function sanitizeInput(input: string): string {
+  if (!input || typeof input !== 'string') return ''
+  
+  // Basic XSS prevention - strip HTML tags and dangerous characters
+  return input
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+\s*=/gi, '') // Remove event handlers
+    .trim()
+}
+
+/**
+ * Validates article ID format
+ */
+export function validateArticleId(id: string): ValidationResult {
+  const errors: string[] = []
+  
+  if (!id || typeof id !== 'string') {
+    errors.push('Article ID is required')
+  } else if (id.trim() === '') {
+    errors.push('Article ID cannot be empty')
+  } else if (id.length < 3) {
+    errors.push('Article ID must be at least 3 characters')
+  } else if (id.length > 100) {
+    errors.push('Article ID is too long')
+  } else if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+    errors.push('Article ID can only contain letters, numbers, hyphens, and underscores')
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors
+  }
+}
+
+/**
  * Validates and sanitizes user input
  */
 export function validateAndSanitizeInput(

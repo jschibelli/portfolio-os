@@ -1,6 +1,5 @@
 'use client'
 
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,10 +25,6 @@ import {
   Shield,
   Zap
 } from 'lucide-react'
-=======
-import { useState } from "react";
-import { Search, Globe, BarChart3, Settings, Save, Eye, Code, Zap, Edit } from "lucide-react";
->>>>>>> origin/develop
 
 interface SEOSettings {
   meta: {
@@ -117,17 +112,11 @@ interface SEOSettings {
 }
 
 export default function SEOSettingsPage() {
-<<<<<<< HEAD
   const [settings, setSettings] = useState<SEOSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-=======
-  const [settings, setSettings] = useState<SEOSettings>(defaultSEOSettings);
-  const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('general');
->>>>>>> origin/develop
 
   // Load SEO settings
   useEffect(() => {
