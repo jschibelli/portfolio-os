@@ -18,7 +18,8 @@ interface AnalyticsEvent {
 		| 'message_sent'
 		| 'intent_detected'
 		| 'action_clicked'
-		| 'conversation_end';
+		| 'conversation_end'
+		| 'error';
 	data: any;
 	timestamp: string;
 }
@@ -225,6 +226,16 @@ export const trackConversationEnd = (duration: number) => {
 		(window as any).trackChatbotEvent({
 			type: 'conversation_end',
 			data: { duration },
+			timestamp: new Date().toISOString(),
+		});
+	}
+};
+
+export const trackError = (errorType: string, errorMessage: string) => {
+	if ((window as any).trackChatbotEvent) {
+		(window as any).trackChatbotEvent({
+			type: 'error',
+			data: { errorType, errorMessage },
 			timestamp: new Date().toISOString(),
 		});
 	}
