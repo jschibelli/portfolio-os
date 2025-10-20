@@ -18,7 +18,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackError } from './ChatbotAnalytics';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackError } from '../analytics/ChatbotAnalytics';
 import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
