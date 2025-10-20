@@ -55,6 +55,12 @@ interface Message {
   };
   uiActions?: UIAction[];
   feedback?: 'up' | 'down' | null;
+  error?: {
+    type: string;
+    retryable: boolean;
+    suggestion?: string;
+    originalMessage?: string;
+  };
 }
 
 interface ConversationHistory {
@@ -711,19 +717,75 @@ export default function Chatbot() {
       // so we only handle it in the non-stream fallback above
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Track error for analytics
       try {
         trackError('api_error', error instanceof Error ? error.message : String(error));
       } catch {}
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
-        sender: 'bot',
-        timestamp: new Date(),
-      };
+      
+      // Try to parse error response for user-friendly messages
+      let errorMessage: Message;
+      
+      if (error instanceof Response || (error && typeof error === 'object' && 'status' in error)) {
+        try {
+          const errorData = await (error as Response).json();
+          errorMessage = {
+            id: (Date.now() + 1).toString(),
+            text: errorData.userMessage || errorData.error || "I'm sorry, I'm experiencing technical difficulties.",
+            sender: 'bot',
+            timestamp: new Date(),
+            error: {
+              type: errorData.errorCode || 'UNKNOWN_ERROR',
+              retryable: errorData.retryable !== false,
+              suggestion: errorData.suggestion,
+              originalMessage: userMessage.text,
+            },
+          };
+        } catch {
+          // Fallback if JSON parsing fails
+          errorMessage = {
+            id: (Date.now() + 1).toString(),
+            text: "I'm sorry, I'm having trouble connecting. Please check your internet connection and try again.",
+            sender: 'bot',
+            timestamp: new Date(),
+            error: {
+              type: 'NETWORK_ERROR',
+              retryable: true,
+              suggestion: 'Please check your connection and try again.',
+              originalMessage: userMessage.text,
+            },
+          };
+        }
+      } else {
+        // Network or other errors
+        errorMessage = {
+          id: (Date.now() + 1).toString(),
+          text: "I'm sorry, I couldn't connect to send your message. Please check your internet connection and try again.",
+          sender: 'bot',
+          timestamp: new Date(),
+          error: {
+            type: 'NETWORK_ERROR',
+            retryable: true,
+            suggestion: 'Check your internet connection and try sending again.',
+            originalMessage: userMessage.text,
+          },
+        };
+      }
+      
 			setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const retryMessage = async (originalMessage: string) => {
+    if (isLoading) return;
+    
+    setInputValue(originalMessage);
+    // Small delay to show the input value before sending
+    setTimeout(() => {
+      sendMessage();
+    }, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -1574,6 +1636,34 @@ export default function Chatbot() {
                   </div>
                 </div>
                 
+                {/* Error Message with Retry */}
+								{message.sender === 'bot' && message.error && (
+										<div className="mt-2 flex justify-start">
+										<div className="max-w-full rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+											{message.error.suggestion && (
+												<p className="mb-2 text-sm text-red-700 dark:text-red-300">
+													💡 {message.error.suggestion}
+												</p>
+											)}
+											{message.error.retryable && message.error.originalMessage && (
+												<button
+													onClick={() => retryMessage(message.error!.originalMessage!)}
+													disabled={isLoading}
+													className="inline-flex items-center space-x-2 rounded-md bg-red-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-red-700 disabled:bg-red-400 dark:bg-red-700 dark:hover:bg-red-600"
+												>
+													<span>🔄</span>
+													<span>Try Again</span>
+												</button>
+											)}
+											{!message.error.retryable && (
+												<p className="text-xs text-red-600 dark:text-red-400">
+													Please contact John at jschibelli@gmail.com for assistance.
+												</p>
+											)}
+										</div>
+									</div>
+                )}
+
                 {/* Suggested Actions */}
 								{message.sender === 'bot' &&
 									message.suggestedActions &&
