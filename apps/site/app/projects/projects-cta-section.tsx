@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AudienceSpecificCTA from '../../components/features/cta/audience-specific-cta';
 import EnhancedCTASection from '../../components/features/cta/enhanced-cta-section';
 import { BookingModal } from '../../components/features/booking/BookingModal';
+import { BookingSuccessModal } from '../../components/features/booking/BookingSuccessModal';
 
 interface TimeSlot {
   start: string;
@@ -20,6 +21,8 @@ interface Message {
 
 export function ProjectsCTASection() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [bookingResult, setBookingResult] = useState<any>(null);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
@@ -86,13 +89,22 @@ export function ProjectsCTASection() {
 
       const result = await response.json();
       
-      // Close the modal
+      // Close the booking modal
       setIsBookingModalOpen(false);
       
-      // Show success message (you could add a toast notification here)
-      alert(`✅ Interview confirmed!\n\nMeet Link: ${result?.booking?.googleMeetLink || 'Check your email'}`);
+      // Store result and show success modal
+      setBookingResult({
+        meetLink: result?.booking?.googleMeetLink,
+        calendarLink: result?.booking?.googleEventLink,
+        startTime: bookingData.slot.start,
+        duration: bookingData.slot.duration,
+        eventId: result?.booking?.eventId,
+      });
+      setIsSuccessModalOpen(true);
     } catch (error) {
       console.error('Error booking interview:', error);
+      // For errors, we could create an error modal too, but for now let's use alert
+      // as it's less common and the user should see it
       alert('❌ Sorry, there was an error booking the interview. Please try again or contact John directly.');
     }
   };
@@ -123,6 +135,16 @@ export function ProjectsCTASection() {
         message="Schedule a consultation to discuss your project or opportunity. Select your preferred date and time below."
         onBookingComplete={handleBookingComplete}
         isLoadingSlots={isLoadingSlots}
+      />
+
+      {/* Success Modal */}
+      <BookingSuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => {
+          setIsSuccessModalOpen(false);
+          setBookingResult(null);
+        }}
+        bookingDetails={bookingResult}
       />
     </>
   );
