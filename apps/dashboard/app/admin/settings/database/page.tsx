@@ -62,8 +62,8 @@ const mockBackups: BackupInfo[] = [
 ];
 
 export default function DatabasePage() {
-  const [databaseInfo, setDatabaseInfo] = useState<DatabaseInfo>(mockDatabaseInfo);
-  const [tables, setTables] = useState<TableInfo[]>(mockTables);
+  const [databaseInfo] = useState<DatabaseInfo>(mockDatabaseInfo);
+  const [tables] = useState<TableInfo[]>(mockTables);
   const [backups, setBackups] = useState<BackupInfo[]>(mockBackups);
   const [activeTab, setActiveTab] = useState('overview');
   const [isOptimizing, setIsOptimizing] = useState(false);
