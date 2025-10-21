@@ -38,6 +38,7 @@ export const portfolioOS: ProjectMeta = {
     'Playwright',
     'Jest',
     'OpenAI',
+    'Google Calendar API',
     'Vercel',
     'Tailwind CSS',
     'Framer Motion'
@@ -51,6 +52,8 @@ export const portfolioOS: ProjectMeta = {
   challenge: 'Managing a growing portfolio codebase while maintaining quality became time-consuming. Manual PR reviews, repetitive testing, and documentation drift slowed progress. The goal was to automate the mundane without losing control.',
   solution: 'Built a comprehensive automation layer using PowerShell scripts, GitHub Actions, and AI agents. The system handles routine tasks like PR creation, testing, and documentation, while keeping humans in the decision loop.',
   keyFeatures: [
+    'AI Chatbot with streaming responses and conversation analytics',
+    'Booking & Scheduling System with Google Calendar integration',
     '100+ PowerShell scripts for project and PR management',
     'Multi-agent AI workflows with worktree isolation',
     'Automated testing with Playwright and Jest',
@@ -59,16 +62,18 @@ export const portfolioOS: ProjectMeta = {
     'GitHub integration for automated workflows'
   ],
   impact: 'Development velocity increased significantly. PRs are created and managed automatically, tests catch issues before deployment, and documentation stays in sync with code. The portfolio itself demonstrates the engineering practices clients can expect.',
-  version: '1.0.0',
+  version: '1.1.0',
   versionStatus: 'stable',
   lastUpdated: 'October 2025',
   recentUpdates: [
-    'Complete multi-agent development system',
+    'AI Chatbot v1.1.0 with streaming responses and analytics',
+    'Booking & Scheduling System with Google Calendar integration',
     'Enhanced PR automation with AI workflows',
-    'Comprehensive issue management',
-    'Advanced media management system'
+    'Comprehensive issue management and technical debt tracking',
+    'Advanced media management system',
+    'Multi-agent development workflows with worktree isolation'
   ],
   upcomingFeatures: [],
-  changelogUrl: '/changelog'
+  changelogUrl: 'https://github.com/jschibelli/portfolio-os/blob/main/CHANGELOG.md'
 };
 
