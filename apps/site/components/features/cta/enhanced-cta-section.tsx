@@ -23,6 +23,8 @@ interface AudienceConfig {
 		text: string;
 		url: string;
 		icon: React.ReactNode;
+		download?: boolean;
+		downloadFilename?: string;
 	};
 	secondaryCTA: {
 		text: string;
@@ -42,8 +44,10 @@ const audienceConfig = {
 		description: "With 15+ years of experience building scalable web applications, I have experience working with React, Next.js, TypeScript, and modern development practices. Available for full-time positions and ready to contribute.",
 		primaryCTA: {
 			text: "View Resume",
-			url: "/resume",
-			icon: commonIcons.arrowRight
+			url: "/assets/John-Schibelli-Resume-2025.pdf",
+			icon: commonIcons.arrowRight,
+			download: true,
+			downloadFilename: "John-Schibelli-Resume-2025.pdf"
 		},
 		secondaryCTA: {
 			text: "Schedule Interview",
@@ -207,7 +211,14 @@ export default function EnhancedCTASection({ audience, className = '' }: Enhance
 								className={sharedStyles.button.enhanced}
 								asChild
 							>
-								<Link href={config.primaryCTA.url}>
+								<Link 
+									href={config.primaryCTA.url}
+									{...(config.primaryCTA.download && {
+										download: config.primaryCTA.downloadFilename,
+										target: "_blank",
+										rel: "noopener noreferrer"
+									})}
+								>
 									{config.primaryCTA.icon}
 									{config.primaryCTA.text}
 								</Link>
