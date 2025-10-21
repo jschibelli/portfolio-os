@@ -32,7 +32,7 @@ import { cn } from '@/lib/utils'
 interface PublishingOptions {
   status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'ARCHIVED'
   visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'MEMBERS_ONLY'
-  scheduledAt?: Date
+  scheduledAt?: Date | null
   featured: boolean
   allowComments: boolean
   allowReactions: boolean
