@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackVoiceUsage, trackError, trackUIAction, trackQuickAction } from './ChatbotAnalytics';
-import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
 import { ContactForm } from '../contact/ContactForm';
@@ -158,20 +157,6 @@ export default function Chatbot() {
     initialStep?: 'contact' | 'calendar' | 'confirmation';
   } | null>(null);
   
-  // Booking confirmation modal state
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [confirmationModalData, setConfirmationModalData] = useState<{
-    bookingDetails: {
-      name: string;
-      email: string;
-      timezone: string;
-      startTime: string;
-      endTime: string;
-      duration: number;
-      meetingType?: string;
-    };
-    message?: string;
-  } | null>(null);
   
   // Existing booking display state
   const [existingBooking, setExistingBooking] = useState<{
@@ -681,25 +666,167 @@ export default function Chatbot() {
     }
   }, [conversationId]);
 
-  // Speak initial message when voice is enabled and chatbot opens
-  useEffect(() => {
-    if (isOpen && isVoiceEnabled && audioRef && messages.length === 1) {
-      // Small delay to ensure everything is initialized
-      const timer = setTimeout(() => {
-        const initialMessage = messages[0];
-        if (initialMessage && initialMessage.sender === 'bot') {
-          speakMessage(initialMessage.text);
-        }
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, isVoiceEnabled, audioRef, messages]);
+  // Auto-play disabled - users can click speaker button to play audio
 
   // Generate context-aware quick replies when conversation changes
   useEffect(() => {
     generateQuickReplies(conversationHistory, messages);
   }, [conversationHistory, messages]);
+
+  // Helper function to send a message with specific text
+  const sendMessageWithText = async (messageText: string) => {
+    if (!messageText.trim() || isLoading) return;
+
+    // Track message sent
+    trackMessageSent(messageText);
+
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+
+    try {
+      // Try streaming first
+      const response = await fetch('/api/chat?stream=1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationHistory: conversationHistory,
+					pageContext: pageContext,
+          stream: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // TTS is now manual - users click speaker button to play audio
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
+      
+      // Track intent detected  
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Get intent from the last done message
+        const lastIntent = messages.find(m => m.id === botMessageId)?.intent;
+        if (lastIntent) {
+          trackIntentDetected(lastIntent);
+        }
+      }
+
+      // Update conversation history
+      const newHistoryEntry: ConversationHistory = {
+        user: messageText,
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+      };
+      
+			setConversationHistory((prev) => [...prev, newHistoryEntry]);
+      
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
+      }
+      
+      // Handle UI actions if present
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Track UI actions
+        uiActionsData.forEach(action => {
+          trackUIAction(action.action, action.data);
+        });
+        handleUIAction(uiActionsData);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Track error for analytics
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -783,6 +910,8 @@ export default function Chatbot() {
                   // Handle completion
                   uiActionsData = data.uiActions || [];
                   
+                  // TTS is now manual - users click speaker button to play audio
+                  
                   // Update final message with metadata
                   setMessages((prev) =>
                     prev.map((msg) =>
@@ -838,11 +967,6 @@ export default function Chatbot() {
           trackUIAction(action.action, action.data);
         });
         handleUIAction(uiActionsData);
-      }
-      
-      // Speak the bot's response if voice is enabled
-      if (streamedText) {
-        speakMessage(streamedText);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -1020,9 +1144,29 @@ export default function Chatbot() {
   };
 
   const handleCalendarSlotSelect = (slot: TimeSlot) => {
-    // You could also trigger a booking flow here
+    console.log('📅 handleCalendarSlotSelect called with:', slot);
+    
+    // Close the calendar modal
+    setIsCalendarModalOpen(false);
+    
+    // Automatically send a booking request
     const bookingMessage = `I'd like to book the ${slot.duration}-minute meeting at ${new Date(slot.start).toLocaleString()}.`;
-    setInputValue(bookingMessage);
+    console.log('💬 Booking message:', bookingMessage);
+    
+    // Create user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: bookingMessage,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+    
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
+    
+    // Send the booking request automatically
+    console.log('🚀 Sending booking message...');
+    sendMessageWithText(bookingMessage);
   };
 
 	const handleContactFormSubmit = (contactData: {
@@ -1048,19 +1192,19 @@ export default function Chatbot() {
     timezone: string;
     slot: TimeSlot;
   }) => {
-    // Add a success message placeholder; real confirmation will follow from /api/schedule/book
-    const successMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      text: `⌛ Booking your ${bookingData.slot.duration}-minute meeting for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}...`,
-      sender: 'bot',
-      timestamp: new Date(),
-    };
-		setMessages((prev) => [...prev, successMessage]);
+    console.log('🎯 handleBookingComplete called with:', bookingData);
+    
+    // Since confirmation is now handled in the BookingModal itself,
+    // we just need to trigger the actual booking API call
+    handleConfirmationConfirm(bookingData);
   };
 
-  const handleConfirmationConfirm = async () => {
-    if (!confirmationModalData) return;
-    
+  const handleConfirmationConfirm = async (bookingData: {
+    name: string;
+    email: string;
+    timezone: string;
+    slot: TimeSlot;
+  }) => {
     try {
       // Call the booking API to actually create the calendar event
       const response = await fetch('/api/schedule/book', {
@@ -1069,13 +1213,13 @@ export default function Chatbot() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          startISO: confirmationModalData.bookingDetails.startTime,
-          durationMinutes: confirmationModalData.bookingDetails.duration,
-          timeZone: confirmationModalData.bookingDetails.timezone,
-          attendeeEmail: confirmationModalData.bookingDetails.email,
-          attendeeName: confirmationModalData.bookingDetails.name,
+          startISO: bookingData.slot.start,
+          durationMinutes: bookingData.slot.duration,
+          timeZone: bookingData.timezone,
+          attendeeEmail: bookingData.email,
+          attendeeName: bookingData.name,
           summary: 'Meeting with John',
-          description: 'Booked via chatbot confirmation modal',
+          description: 'Booked via chatbot',
 					sendUpdates: 'all',
         }),
       });
@@ -1087,15 +1231,11 @@ export default function Chatbot() {
 
       const result = await response.json();
       
-      // Close the confirmation modal
-      setIsConfirmationModalOpen(false);
-      setConfirmationModalData(null);
-      
       // Add a success message to the chat with Meet link and Add to Calendar
       const confirmMsg: string[] = [];
       confirmMsg.push(`✅ Meeting confirmed and booked!`);
 			confirmMsg.push(
-				`• When: ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}`,
+				`• When: ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}`,
 			);
       if (result?.booking?.googleMeetLink) {
         confirmMsg.push(`• Meet: ${result.booking.googleMeetLink}`);
@@ -1224,6 +1364,8 @@ export default function Chatbot() {
                   // Handle completion
                   uiActionsData = data.uiActions || [];
                   
+                  // TTS is now manual - users click speaker button to play audio
+                  
                   // Update final message with metadata
                   setMessages((prev) =>
                     prev.map((msg) =>
@@ -1249,11 +1391,6 @@ export default function Chatbot() {
         }
       }
 
-      // Track intent detected
-      if (data.intent) {
-        trackIntentDetected(data.intent);
-      }
-
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
@@ -1271,11 +1408,6 @@ export default function Chatbot() {
       // Handle UI actions if present
       if (uiActionsData && uiActionsData.length > 0) {
         handleUIAction(uiActionsData);
-      }
-      
-      // Speak the bot's response if voice is enabled
-      if (streamedText) {
-        speakMessage(streamedText);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -1929,7 +2061,18 @@ export default function Chatbot() {
 														{message.text}
 													</p>
 												)}
-												<p className="mt-1 text-xs opacity-60">{formatTime(message.timestamp)}</p>
+												<div className="mt-1 flex items-center justify-between">
+													<p className="text-xs opacity-60">{formatTime(message.timestamp)}</p>
+													{message.sender === 'bot' && isVoiceEnabled && (
+														<button
+															onClick={() => speakMessage(message.text)}
+															className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-stone-200 text-stone-600 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+															title="Play audio"
+														>
+															<Volume2 className="h-3 w-3" />
+														</button>
+													)}
+												</div>
                       </div>
                       {message.sender === 'user' && (
 												<User className="mt-0.5 h-3 w-3 flex-shrink-0 text-stone-300 md:h-4 md:w-4 dark:text-stone-600" />
@@ -1986,6 +2129,27 @@ export default function Chatbot() {
                     </div>
                   </div>
                 )}
+
+                {/* UI Actions - Reopen Calendar */}
+								{message.sender === 'bot' &&
+									message.uiActions &&
+									message.uiActions.some((action: UIAction) => action.action === 'show_booking_modal') && (
+										<div className="mt-2 flex justify-start">
+											<button
+												onClick={() => {
+													const calendarAction = message.uiActions?.find((action: UIAction) => action.action === 'show_booking_modal');
+													if (calendarAction) {
+														setCalendarData(calendarAction.data);
+														setIsCalendarModalOpen(true);
+													}
+												}}
+												className="inline-flex items-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+											>
+												<Calendar className="h-4 w-4" />
+												<span>View Calendar</span>
+											</button>
+										</div>
+									)}
 
                 {/* Case Study Content */}
                 {message.sender === 'bot' && message.caseStudyContent && (
@@ -2206,17 +2370,6 @@ export default function Chatbot() {
           message={bookingModalData.message}
           initialStep={bookingModalData.initialStep}
           onBookingComplete={handleBookingComplete}
-        />
-      )}
-      
-      {/* Booking Confirmation Modal */}
-      {confirmationModalData && (
-        <BookingConfirmationModal
-          isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
-          onConfirm={handleConfirmationConfirm}
-          bookingDetails={confirmationModalData.bookingDetails}
-          isLoading={false}
         />
       )}
       

@@ -44,7 +44,6 @@ interface BookingConfirmationModalProps {
 		date: string;
 		time: string;
 		duration: string;
-		price: string;
 	};
 }
 
@@ -55,6 +54,26 @@ export function BookingConfirmationModal({
 }: BookingConfirmationModalProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<BookingError | null>(null);
+
+	// Format date and time properly
+	const formatDateTime = (dateString: string) => {
+		const date = new Date(dateString);
+		return {
+			date: date.toLocaleDateString('en-US', { 
+				weekday: 'long', 
+				year: 'numeric', 
+				month: 'long', 
+				day: 'numeric' 
+			}),
+			time: date.toLocaleTimeString('en-US', { 
+				hour: 'numeric', 
+				minute: '2-digit',
+				hour12: true 
+			})
+		};
+	};
+
+	const formattedDateTime = formatDateTime(bookingDetails.time);
 
 	const handleConfirm = async () => {
 		setIsLoading(true);
@@ -94,43 +113,42 @@ export function BookingConfirmationModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-md">
+			<DialogContent 
+				className="sm:max-w-md z-[10000] bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700" 
+				aria-describedby="booking-confirmation-description"
+				style={{ zIndex: 10000 }}
+			>
 				<DialogHeader>
-					<DialogTitle className="flex items-center gap-2">
+					<DialogTitle className="flex items-center gap-2 text-stone-900 dark:text-stone-100">
 						<CheckCircle className="h-5 w-5 text-green-500" />
-						Booking Confirmation
+						Confirm Your Meeting
 					</DialogTitle>
+					<div id="booking-confirmation-description" className="sr-only">
+						Confirm your booking details before proceeding
+					</div>
 				</DialogHeader>
 
 				<div className="space-y-4">
-					<div className="rounded-lg border p-4">
-						<h3 className="font-semibold mb-3">Booking Details</h3>
-						<div className="space-y-2 text-sm">
-							<div className="flex justify-between">
-								<span className="text-muted-foreground">Service:</span>
-								<span className="font-medium">{bookingDetails.service}</span>
+					<div className="rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 p-4">
+						<h3 className="font-semibold mb-3 text-stone-900 dark:text-stone-100">Meeting Details</h3>
+						<div className="space-y-3 text-sm">
+							<div className="flex justify-between items-start">
+								<span className="text-stone-600 dark:text-stone-400">Date:</span>
+								<span className="font-medium text-stone-900 dark:text-stone-100 text-right">{formattedDateTime.date}</span>
 							</div>
 							<div className="flex justify-between">
-								<span className="text-muted-foreground">Date:</span>
-								<span className="font-medium">{bookingDetails.date}</span>
+								<span className="text-stone-600 dark:text-stone-400">Time:</span>
+								<span className="font-medium text-stone-900 dark:text-stone-100">{formattedDateTime.time}</span>
 							</div>
 							<div className="flex justify-between">
-								<span className="text-muted-foreground">Time:</span>
-								<span className="font-medium">{bookingDetails.time}</span>
-							</div>
-							<div className="flex justify-between">
-								<span className="text-muted-foreground">Duration:</span>
-								<span className="font-medium">{bookingDetails.duration}</span>
-							</div>
-							<div className="flex justify-between">
-								<span className="text-muted-foreground">Price:</span>
-								<span className="font-medium text-green-600">{bookingDetails.price}</span>
+								<span className="text-stone-600 dark:text-stone-400">Duration:</span>
+								<span className="font-medium text-stone-900 dark:text-stone-100">{bookingDetails.duration}</span>
 							</div>
 						</div>
 					</div>
 
 					{error && (
-						<div className="bg-red-50 dark:bg-red-950/20 rounded-lg p-4" role="alert" aria-live="polite">
+						<div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4" role="alert" aria-live="polite">
 							<h4 className="font-medium text-red-900 dark:text-red-100 mb-2">
 								Booking Error
 							</h4>
@@ -150,14 +168,14 @@ export function BookingConfirmationModal({
 						</div>
 					)}
 
-					<div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-4">
-						<h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+					<div className="bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 rounded-lg p-4">
+						<h4 className="font-medium text-stone-900 dark:text-stone-100 mb-2">
 							What happens next?
 						</h4>
-						<ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+						<ul className="text-sm text-stone-700 dark:text-stone-300 space-y-1.5">
+							<li>• Calendar event will be created with Google Meet link</li>
 							<li>• You&apos;ll receive a confirmation email</li>
-							<li>• We&apos;ll send you a calendar invite</li>
-							<li>• We&apos;ll reach out to discuss your project</li>
+							<li>• Meeting details will be sent to your inbox</li>
 						</ul>
 					</div>
 
@@ -165,7 +183,7 @@ export function BookingConfirmationModal({
 						<Button
 							onClick={handleConfirm}
 							disabled={isLoading}
-							className="flex-1"
+							className="flex-1 bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-stone-200 text-white dark:text-stone-900"
 						>
 							{isLoading ? 'Confirming...' : error ? 'Retry Booking' : 'Confirm Booking'}
 						</Button>
@@ -173,8 +191,9 @@ export function BookingConfirmationModal({
 							variant="outline"
 							onClick={onClose}
 							disabled={isLoading}
+							className="border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
 						>
-							<X className="h-4 w-4" />
+							Cancel
 						</Button>
 					</div>
 				</div>
