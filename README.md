@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <strong>🎉 v1.0.0 Released!</strong> | <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.0.0">Release Notes</a> | <a href="apps/docs/CHANGELOG.md">Full Changelog</a>
+  <strong>🎉 v1.1.0 Released!</strong> | <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.1.0">Release Notes</a> | <a href="apps/docs/CHANGELOG.md">Full Changelog</a>
 </p>
 
 ## Overview
