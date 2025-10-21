@@ -2,14 +2,13 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { Container } from '../../components/shared/container';
 import dynamic from 'next/dynamic';
-import AudienceSpecificCTA from '../../components/features/cta/audience-specific-cta';
-import EnhancedCTASection from '../../components/features/cta/enhanced-cta-section';
 import { Layout } from '../../components/shared/layout';
 
 import { allProjects as projectMetaList } from '../../data/projects';
 import { ArrowRight, Calendar, Code, Users, MapPin, CheckCircle, Search, Award } from 'lucide-react';
 import { ProjectsPageClient } from './projects-client';
 import { AnimatedProjectCard } from '../../components/features/projects/animated-project-card';
+import { ProjectsCTASection } from './projects-cta-section';
 
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
@@ -214,10 +213,7 @@ export default function ProjectsPage() {
         </section>
 
         {/* Audience-specific CTAs */}
-        <AudienceSpecificCTA audience="recruiters" className="bg-stone-50 dark:bg-stone-900" />
-        <AudienceSpecificCTA audience="startup-founders" className="bg-white dark:bg-stone-950" />
-        <AudienceSpecificCTA audience="clients" className="bg-stone-50 dark:bg-stone-900" />
-        <EnhancedCTASection audience="general" />
+        <ProjectsCTASection />
       </main>
       <Chatbot />
     </Layout>

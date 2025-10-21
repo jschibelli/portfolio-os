@@ -11,6 +11,7 @@ import {
   Mail, 
   Shield,
   Save,
+  Eye,
   EyeOff
 } from "lucide-react";
 

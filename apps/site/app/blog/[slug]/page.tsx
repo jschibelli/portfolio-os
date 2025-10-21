@@ -89,112 +89,11 @@ const defaultPublication: UnifiedPublication = {
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params;
   
-  // Fetch post data for proper metadata generation
-  try {
-    const post = await fetchPostBySlug(params.slug);
-    
-    if (!post) {
-      return {
-        title: "Blog Post Not Found | John Schibelli",
-        description: "The requested blog post could not be found.",
-      };
-    }
-
-    const title = `${post.title} | John Schibelli`;
-    const description = post.brief || post.subtitle || 'Read the latest blog post from John Schibelli';
-    const canonical = `https://johnschibelli.dev/blog/${params.slug}`;
-    const ogImage = post.coverImage?.url || '/assets/og.png';
-    const publishedTime = post.publishedAt ? new Date(post.publishedAt).toISOString() : undefined;
-    const tags = post.tags?.map((tag: any) => tag.name) || [];
-
-    return {
-      metadataBase: new URL('https://johnschibelli.dev'),
-      title,
-      description,
-      authors: [{ name: post.author?.name || 'John Schibelli' }],
-      creator: 'John Schibelli',
-      publisher: 'John Schibelli',
-      keywords: tags,
-      robots: {
-        index: true,
-        follow: true,
-        nocache: false,
-        googleBot: {
-          index: true,
-          follow: true,
-          noimageindex: false,
-          'max-video-preview': -1,
-          'max-image-preview': 'large',
-          'max-snippet': -1,
-        },
-      },
-      openGraph: {
-        type: 'article',
-        locale: 'en_US',
-        url: canonical,
-        title,
-        description,
-        siteName: 'John Schibelli Portfolio',
-        images: [
-          {
-            url: ogImage,
-            width: 1200,
-            height: 630,
-            alt: post.title,
-          },
-        ],
-        publishedTime,
-        authors: [post.author?.name || 'John Schibelli'],
-        tags,
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        creator: '@johnschibelli',
-        site: '@johnschibelli',
-        images: [ogImage],
-      },
-      alternates: {
-        canonical,
-      },
-      other: {
-        'article:author': post.author?.name || 'John Schibelli',
-        'article:section': 'Blog',
-        'article:tag': tags.join(', '),
-      },
-    };
-  } catch (error) {
-    console.error('[Blog Metadata] Error generating metadata:', error);
-    // Fallback metadata if API call fails
-    return {
-      title: "Blog Post | John Schibelli",
-      description: "Read the latest blog post from John Schibelli",
-      openGraph: {
-        type: 'article',
-        locale: 'en_US',
-        url: `https://johnschibelli.dev/blog/${params.slug}`,
-        title: "Blog Post | John Schibelli",
-        description: "Read the latest blog post from John Schibelli",
-        siteName: 'John Schibelli Portfolio',
-        images: [
-          {
-            url: '/assets/og.png',
-            width: 1200,
-            height: 630,
-            alt: 'John Schibelli - Senior Front-End Engineer',
-          },
-        ],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: "Blog Post | John Schibelli",
-        description: "Read the latest blog post from John Schibelli",
-        creator: '@johnschibelli',
-        images: ['/assets/og.png'],
-      },
-    };
-  }
+  // Skip API calls during build - metadata will be generated at runtime
+  return {
+    title: "Blog Post | John Schibelli",
+    description: "Read the latest blog post",
+  };
 }
 
 export default async function BlogPostPage(props: BlogPostPageProps) {

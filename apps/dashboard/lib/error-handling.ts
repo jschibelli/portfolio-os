@@ -5,6 +5,8 @@
  * error boundaries, retry mechanisms, and user-friendly error messages.
  */
 
+import React from 'react'
+
 export interface ErrorContext {
   component?: string
   action?: string
@@ -111,7 +113,7 @@ export const RETRY_CONFIG = {
  */
 export function createUserFriendlyError(error: Error | DashboardError): string {
   if (error instanceof DashboardError) {
-    return ERROR_MESSAGES[error.code] || ERROR_MESSAGES[ERROR_CODES.INTERNAL_ERROR]
+    return ERROR_MESSAGES[error.code as keyof typeof ERROR_MESSAGES] || ERROR_MESSAGES[ERROR_CODES.INTERNAL_ERROR]
   }
   
   // Handle common error patterns
@@ -131,7 +133,7 @@ export function createUserFriendlyError(error: Error | DashboardError): string {
  */
 export function shouldRetry(error: Error | DashboardError): boolean {
   if (error instanceof DashboardError) {
-    return error.isRetryable && RETRY_CONFIG[error.code] !== undefined
+    return error.isRetryable && RETRY_CONFIG[error.code as keyof typeof RETRY_CONFIG] !== undefined
   }
   
   // Check for retryable error patterns
@@ -152,8 +154,8 @@ export function shouldRetry(error: Error | DashboardError): boolean {
  * Gets retry configuration for an error
  */
 export function getRetryConfig(error: Error | DashboardError) {
-  if (error instanceof DashboardError && RETRY_CONFIG[error.code]) {
-    return RETRY_CONFIG[error.code]
+  if (error instanceof DashboardError && RETRY_CONFIG[error.code as keyof typeof RETRY_CONFIG]) {
+    return RETRY_CONFIG[error.code as keyof typeof RETRY_CONFIG]
   }
   
   // Default retry configuration

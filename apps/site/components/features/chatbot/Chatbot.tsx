@@ -18,8 +18,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-// import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd } from './ChatbotAnalytics';
-import { BookingConfirmationModal } from '../booking/BookingConfirmationModal';
+import { trackConversationStart, trackMessageSent, trackIntentDetected, trackActionClicked, trackConversationEnd, trackVoiceUsage, trackError, trackUIAction, trackQuickAction } from './ChatbotAnalytics';
 import { BookingModal } from '../booking/BookingModal';
 import { CalendarModal } from '../booking/CalendarModal';
 import { ContactForm } from '../contact/ContactForm';
@@ -54,6 +53,13 @@ interface Message {
     availableChapters: any[];
   };
   uiActions?: UIAction[];
+  feedback?: 'up' | 'down' | null;
+  error?: {
+    type: string;
+    retryable: boolean;
+    suggestion?: string;
+    originalMessage?: string;
+  };
 }
 
 interface ConversationHistory {
@@ -87,7 +93,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I'm John's AI assistant. How can I help you today?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -104,6 +110,7 @@ export default function Chatbot() {
   const [conversationStartTime, setConversationStartTime] = useState<Date | null>(null);
   const [pageContext, setPageContext] = useState<PageContext | null>(null);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [quickReplies, setQuickReplies] = useState<string[]>([]);
   const [features, setFeatures] = useState({
 		scheduling:
 			process.env.NEXT_PUBLIC_FEATURE_SCHEDULING === 'true' ||
@@ -150,20 +157,6 @@ export default function Chatbot() {
     initialStep?: 'contact' | 'calendar' | 'confirmation';
   } | null>(null);
   
-  // Booking confirmation modal state
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-  const [confirmationModalData, setConfirmationModalData] = useState<{
-    bookingDetails: {
-      name: string;
-      email: string;
-      timezone: string;
-      startTime: string;
-      endTime: string;
-      duration: number;
-      meetingType?: string;
-    };
-    message?: string;
-  } | null>(null);
   
   // Existing booking display state
   const [existingBooking, setExistingBooking] = useState<{
@@ -197,20 +190,20 @@ export default function Chatbot() {
 
     switch (context.type) {
       case 'home':
-        return "Welcome to John's portfolio! I'm his AI assistant, and I'm excited to help you explore his work and background. I can tell you about his experience as a Senior Front-End Developer, show you his latest projects, help you schedule a consultation, or answer any questions about his skills and expertise. What interests you most?";
+        return "Hi! I'm John's AI assistant. I can tell you about his work, schedule a consultation, or answer questions about his expertise. What can I help you with?";
       
       case 'about':
-        return "Hi! I see you're learning about John's background. I'm his AI assistant and can provide deeper insights into his professional journey, technical skills, and experience. I can also help you understand his approach to development, his specializations in React and Next.js, or connect you for a consultation. What would you like to know more about?";
+        return "Hi! I'm John's AI assistant. I can provide insights into his professional journey, technical skills, or help schedule a consultation. What would you like to know?";
       
       case 'work':
       case 'portfolio':
-        return "Great choice exploring John's work! I'm his AI assistant and can provide detailed insights about any of the projects you see here. I can explain the technologies used, development challenges overcome, or help you understand how John's expertise might apply to your own project needs. I can also help you schedule a consultation to discuss your project. What catches your eye?";
+        return "Hi! I'm John's AI assistant. I can explain project details, technologies used, or help schedule a consultation. What interests you?";
       
       case 'contact':
-        return "Perfect timing! I'm John's AI assistant and I can help make connecting with John even easier. I can schedule a consultation for you, help you prepare questions about your project, provide more details about John's services, or gather some initial project information to make your conversation more productive. How would you like to get started?";
+        return "Hi! I'm John's AI assistant. I can schedule a consultation, answer questions about his services, or help prepare for your conversation. How can I help?";
       
       case 'blog':
-        return "Welcome to John's blog! I'm his AI assistant and can help you navigate his latest articles about front-end development, React, Next.js, and industry insights. I can summarize articles, explain technical concepts, or help you find content on specific topics. I can also tell you more about John's expertise behind these articles. What interests you?";
+        return "Hi! I'm John's AI assistant. I can help you navigate articles, summarize content, or explain technical concepts. What are you interested in?";
       
       case 'services':
         const serviceMessages: { [key: string]: string } = {
@@ -393,7 +386,7 @@ export default function Chatbot() {
       // Track conversation start
               if (!conversationStartTime) {
           setConversationStartTime(new Date());
-          // trackConversationStart();
+          trackConversationStart();
         }
       
       // Detect page context when chatbot opens
@@ -419,7 +412,7 @@ export default function Chatbot() {
     } else if (!isOpen && conversationStartTime) {
               // Track conversation end
         const duration = Date.now() - conversationStartTime.getTime();
-        // trackConversationEnd(duration);
+        trackConversationEnd(duration);
         setConversationStartTime(null);
     }
   }, [isOpen, conversationStartTime]);
@@ -575,20 +568,265 @@ export default function Chatbot() {
     }
   }, []);
 
-  // Speak initial message when voice is enabled and chatbot opens
+  // Load conversation history from localStorage on mount
   useEffect(() => {
-    if (isOpen && isVoiceEnabled && audioRef && messages.length === 1) {
-      // Small delay to ensure everything is initialized
-      const timer = setTimeout(() => {
-        const initialMessage = messages[0];
-        if (initialMessage && initialMessage.sender === 'bot') {
-          speakMessage(initialMessage.text);
+    if (typeof window !== 'undefined') {
+      try {
+        const savedMessages = localStorage.getItem('chatbot-messages');
+        const savedHistory = localStorage.getItem('chatbot-conversation-history');
+        const savedConversationId = localStorage.getItem('chatbot-conversation-id');
+        
+        if (savedMessages) {
+          const parsedMessages = JSON.parse(savedMessages);
+          // Restore Date objects from ISO strings
+          const messagesWithDates = parsedMessages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }));
+          setMessages(messagesWithDates);
         }
-      }, 500);
-      
-      return () => clearTimeout(timer);
+        
+        if (savedHistory) {
+          const parsedHistory = JSON.parse(savedHistory);
+          setConversationHistory(parsedHistory);
+        }
+        
+        if (savedConversationId) {
+          setConversationId(savedConversationId);
+        }
+      } catch (error) {
+        console.error('Error loading conversation from localStorage:', error);
+        // If there's an error, clear corrupted data and start fresh
+        localStorage.removeItem('chatbot-messages');
+        localStorage.removeItem('chatbot-conversation-history');
+        localStorage.removeItem('chatbot-conversation-id');
+      }
     }
-  }, [isOpen, isVoiceEnabled, audioRef, messages]);
+  }, []);
+
+  // Save conversation to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && messages.length > 0) {
+      try {
+        // Only save if we have more than just the initial welcome message
+        // or if the conversation has been loaded from storage
+        const savedMessages = localStorage.getItem('chatbot-messages');
+        if (messages.length > 1 || savedMessages) {
+          localStorage.setItem('chatbot-messages', JSON.stringify(messages));
+        }
+      } catch (error) {
+        console.error('Error saving messages to localStorage:', error);
+        // Handle quota exceeded or other localStorage errors
+        if (error instanceof Error && error.name === 'QuotaExceededError') {
+          console.warn('localStorage quota exceeded. Clearing old messages.');
+          // Keep only the last 20 messages to free up space
+          const recentMessages = messages.slice(-20);
+          try {
+            localStorage.setItem('chatbot-messages', JSON.stringify(recentMessages));
+            setMessages(recentMessages);
+          } catch (retryError) {
+            console.error('Failed to save even after cleanup:', retryError);
+          }
+        }
+      }
+    }
+  }, [messages]);
+
+  // Save conversation history to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && conversationHistory.length > 0) {
+      try {
+        localStorage.setItem('chatbot-conversation-history', JSON.stringify(conversationHistory));
+      } catch (error) {
+        console.error('Error saving conversation history to localStorage:', error);
+        // Handle quota exceeded
+        if (error instanceof Error && error.name === 'QuotaExceededError') {
+          console.warn('localStorage quota exceeded for conversation history.');
+          // Keep only the last 15 exchanges (matching context window)
+          const recentHistory = conversationHistory.slice(-15);
+          try {
+            localStorage.setItem('chatbot-conversation-history', JSON.stringify(recentHistory));
+            setConversationHistory(recentHistory);
+          } catch (retryError) {
+            console.error('Failed to save history even after cleanup:', retryError);
+          }
+        }
+      }
+    }
+  }, [conversationHistory]);
+
+  // Save conversation ID to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && conversationId) {
+      try {
+        localStorage.setItem('chatbot-conversation-id', conversationId);
+      } catch (error) {
+        console.error('Error saving conversation ID to localStorage:', error);
+      }
+    }
+  }, [conversationId]);
+
+  // Auto-play disabled - users can click speaker button to play audio
+
+  // Generate context-aware quick replies when conversation changes
+  useEffect(() => {
+    generateQuickReplies(conversationHistory, messages);
+  }, [conversationHistory, messages]);
+
+  // Helper function to send a message with specific text
+  const sendMessageWithText = async (messageText: string) => {
+    if (!messageText.trim() || isLoading) return;
+
+    // Track message sent
+    trackMessageSent(messageText);
+
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+
+    try {
+      // Try streaming first
+      const response = await fetch('/api/chat?stream=1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationHistory: conversationHistory,
+					pageContext: pageContext,
+          stream: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // TTS is now manual - users click speaker button to play audio
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
+      
+      // Track intent detected  
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Get intent from the last done message
+        const lastIntent = messages.find(m => m.id === botMessageId)?.intent;
+        if (lastIntent) {
+          trackIntentDetected(lastIntent);
+        }
+      }
+
+      // Update conversation history
+      const newHistoryEntry: ConversationHistory = {
+        user: messageText,
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+      };
+      
+			setConversationHistory((prev) => [...prev, newHistoryEntry]);
+      
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
+      }
+      
+      // Handle UI actions if present
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Track UI actions
+        uiActionsData.forEach(action => {
+          trackUIAction(action.action, action.data);
+        });
+        handleUIAction(uiActionsData);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Track error for analytics
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -601,14 +839,25 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
 
 		setMessages((prev) => [...prev, userMessage]);
     setInputValue('');
     setIsLoading(true);
 
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
+
     try {
-      const response = await fetch('/api/chat', {
+      // Try streaming first
+      const response = await fetch('/api/chat?stream=1', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -617,71 +866,141 @@ export default function Chatbot() {
           message: userMessage.text,
           conversationHistory: conversationHistory,
 					pageContext: pageContext,
+          stream: true,
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // TTS is now manual - users click speaker button to play audio
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
+      
+      // Track intent detected  
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Get intent from the last done message
+        const lastIntent = messages.find(m => m.id === botMessageId)?.intent;
+        if (lastIntent) {
+          trackIntentDetected(lastIntent);
+        }
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-				assistant:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
       };
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
-      // Keep only last 5 exchanges to manage context size
-      if (conversationHistory.length >= 10) {
-				setConversationHistory((prev) => prev.slice(-5));
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
       }
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-				text:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
-        sender: 'bot',
-        timestamp: new Date(),
-        intent: data.intent,
-        suggestedActions: data.suggestedActions,
-				uiActions: data.uiActions,
-      };
-
-			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
-      if (data.uiActions && data.uiActions.length > 0) {
-        handleUIAction(data.uiActions);
+      if (uiActionsData && uiActionsData.length > 0) {
+        // Track UI actions
+        uiActionsData.forEach(action => {
+          trackUIAction(action.action, action.data);
+        });
+        handleUIAction(uiActionsData);
       }
-      
-      // Update conversation ID if provided
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
-      }
-      
-      // Speak the bot's response if voice is enabled
-      speakMessage(botMessage.text);
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Track error for analytics
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
+      
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
         sender: 'bot',
         timestamp: new Date(),
       };
-			setMessages((prev) => [...prev, errorMessage]);
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const retryMessage = async (originalMessage: string) => {
+    if (isLoading) return;
+    
+    setInputValue(originalMessage);
+    // Small delay to show the input value before sending
+    setTimeout(() => {
+      sendMessage();
+    }, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -818,23 +1137,36 @@ export default function Chatbot() {
 
   const handleUIAction = (uiActions: UIAction[]) => {
     for (const action of uiActions) {
-      const permission = checkUIPermission();
-      
-      if (permission === null) {
-        // First time - ask for permission
-        requestUIPermission(action);
-      } else if (permission === true) {
-        // Permission granted - execute immediately
-        executeUIAction(action);
-      }
-      // Permission denied - ignore the action
+      trackUIAction(action.action, action.data);
+      // Execute UI actions directly without permission check
+      executeUIAction(action);
     }
   };
 
   const handleCalendarSlotSelect = (slot: TimeSlot) => {
-    // You could also trigger a booking flow here
+    console.log('📅 handleCalendarSlotSelect called with:', slot);
+    
+    // Close the calendar modal
+    setIsCalendarModalOpen(false);
+    
+    // Automatically send a booking request
     const bookingMessage = `I'd like to book the ${slot.duration}-minute meeting at ${new Date(slot.start).toLocaleString()}.`;
-    setInputValue(bookingMessage);
+    console.log('💬 Booking message:', bookingMessage);
+    
+    // Create user message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: bookingMessage,
+      sender: 'user',
+      timestamp: new Date(),
+    };
+    
+    setMessages((prev) => [...prev, userMessage]);
+    setIsLoading(true);
+    
+    // Send the booking request automatically
+    console.log('🚀 Sending booking message...');
+    sendMessageWithText(bookingMessage);
   };
 
 	const handleContactFormSubmit = (contactData: {
@@ -860,19 +1192,19 @@ export default function Chatbot() {
     timezone: string;
     slot: TimeSlot;
   }) => {
-    // Add a success message placeholder; real confirmation will follow from /api/schedule/book
-    const successMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      text: `⌛ Booking your ${bookingData.slot.duration}-minute meeting for ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}...`,
-      sender: 'bot',
-      timestamp: new Date(),
-    };
-		setMessages((prev) => [...prev, successMessage]);
+    console.log('🎯 handleBookingComplete called with:', bookingData);
+    
+    // Since confirmation is now handled in the BookingModal itself,
+    // we just need to trigger the actual booking API call
+    handleConfirmationConfirm(bookingData);
   };
 
-  const handleConfirmationConfirm = async () => {
-    if (!confirmationModalData) return;
-    
+  const handleConfirmationConfirm = async (bookingData: {
+    name: string;
+    email: string;
+    timezone: string;
+    slot: TimeSlot;
+  }) => {
     try {
       // Call the booking API to actually create the calendar event
       const response = await fetch('/api/schedule/book', {
@@ -881,13 +1213,13 @@ export default function Chatbot() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          startISO: confirmationModalData.bookingDetails.startTime,
-          durationMinutes: confirmationModalData.bookingDetails.duration,
-          timeZone: confirmationModalData.bookingDetails.timezone,
-          attendeeEmail: confirmationModalData.bookingDetails.email,
-          attendeeName: confirmationModalData.bookingDetails.name,
+          startISO: bookingData.slot.start,
+          durationMinutes: bookingData.slot.duration,
+          timeZone: bookingData.timezone,
+          attendeeEmail: bookingData.email,
+          attendeeName: bookingData.name,
           summary: 'Meeting with John',
-          description: 'Booked via chatbot confirmation modal',
+          description: 'Booked via chatbot',
 					sendUpdates: 'all',
         }),
       });
@@ -899,15 +1231,11 @@ export default function Chatbot() {
 
       const result = await response.json();
       
-      // Close the confirmation modal
-      setIsConfirmationModalOpen(false);
-      setConfirmationModalData(null);
-      
       // Add a success message to the chat with Meet link and Add to Calendar
       const confirmMsg: string[] = [];
       confirmMsg.push(`✅ Meeting confirmed and booked!`);
 			confirmMsg.push(
-				`• When: ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleDateString()} at ${new Date(confirmationModalData.bookingDetails.startTime).toLocaleTimeString()}`,
+				`• When: ${new Date(bookingData.slot.start).toLocaleDateString()} at ${new Date(bookingData.slot.start).toLocaleTimeString()}`,
 			);
       if (result?.booking?.googleMeetLink) {
         confirmMsg.push(`• Meet: ${result.booking.googleMeetLink}`);
@@ -967,10 +1295,21 @@ export default function Chatbot() {
     };
 
           // Track message sent
-      // trackMessageSent(userMessage.text);
+      trackMessageSent(userMessage.text);
+      trackQuickAction(action);
 
 		setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
+
+    // Create a placeholder bot message for streaming
+    const botMessageId = (Date.now() + 1).toString();
+    const botMessage: Message = {
+      id: botMessageId,
+      text: '',
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, botMessage]);
 
     try {
       const response = await fetch('/api/chat', {
@@ -985,65 +1324,108 @@ export default function Chatbot() {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // Track intent detected
-      // if (data.intent) {
-      //   trackIntentDetected(data.intent);
-      // }
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let streamedText = '';
+      let uiActionsData: any[] = [];
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+
+                if (data.type === 'content') {
+                  // Append content to the streamed text
+                  streamedText += data.content;
+                  
+                  // Update the bot message with streamed content
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, text: streamedText }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'done') {
+                  // Handle completion
+                  uiActionsData = data.uiActions || [];
+                  
+                  // TTS is now manual - users click speaker button to play audio
+                  
+                  // Update final message with metadata
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? {
+                            ...msg,
+                            text: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
+                            intent: data.intent,
+                            suggestedActions: data.suggestedActions,
+                            uiActions: data.uiActions,
+                          }
+                        : msg
+                    )
+                  );
+                } else if (data.type === 'error') {
+                  throw new Error(data.error || 'Streaming error');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError);
+              }
+            }
+          }
+        }
+      }
 
       // Update conversation history
       const newHistoryEntry: ConversationHistory = {
         user: userMessage.text,
-				assistant:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
+				assistant: streamedText || "I'm sorry, I couldn't process your request. Please try again.",
       };
       
 			setConversationHistory((prev) => [...prev, newHistoryEntry]);
       
-      // Keep only last 5 exchanges to manage context size
-      if (conversationHistory.length >= 10) {
-				setConversationHistory((prev) => prev.slice(-5));
+      // Keep only last 15 exchanges to manage context size (expanded from 5 for better conversation quality)
+      // This allows for more contextual awareness while managing token usage efficiently
+      if (conversationHistory.length >= 30) {
+				setConversationHistory((prev) => prev.slice(-15));
       }
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-				text:
-					data.response ||
-					data.fallback ||
-					"I'm sorry, I couldn't process your request. Please try again.",
-        sender: 'bot',
-        timestamp: new Date(),
-        intent: data.intent,
-        suggestedActions: data.suggestedActions,
-				uiActions: data.uiActions,
-      };
-
-			setMessages((prev) => [...prev, botMessage]);
       
       // Handle UI actions if present
-      if (data.uiActions && data.uiActions.length > 0) {
-        handleUIAction(data.uiActions);
+      if (uiActionsData && uiActionsData.length > 0) {
+        handleUIAction(uiActionsData);
       }
-      
-      // Update conversation ID if provided
-      if (data.conversationId) {
-        setConversationId(data.conversationId);
-      }
-      
-      // Speak the bot's response if voice is enabled
-      speakMessage(botMessage.text);
     } catch (error) {
       console.error('Error sending message:', error);
+      try {
+        trackError('api_error', error instanceof Error ? error.message : String(error));
+      } catch {}
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "I'm sorry, I'm experiencing technical difficulties. Please try again later or contact John directly at jschibelli@gmail.com.",
         sender: 'bot',
         timestamp: new Date(),
       };
-			setMessages((prev) => [...prev, errorMessage]);
+			// Replace the placeholder message with error message
+      setMessages((prev) => 
+        prev.map((msg) =>
+          msg.id === botMessageId ? errorMessage : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -1372,6 +1754,9 @@ export default function Chatbot() {
     const newState = !isVoiceEnabled;
     setIsVoiceEnabled(newState);
     
+    // Track voice usage
+    trackVoiceUsage(newState ? 'enable' : 'disable');
+    
     // Save preference to localStorage
     localStorage.setItem('chatbot-voice-enabled', newState.toString());
     
@@ -1404,9 +1789,37 @@ export default function Chatbot() {
     }
   };
 
+  const clearConversation = () => {
+    // Reset to initial welcome message
+    const welcomeMessage: Message = {
+      id: '1',
+      text: "Hi! I'm John's AI assistant. How can I help you today?",
+      sender: 'bot',
+      timestamp: new Date(),
+    };
+    
+    setMessages([welcomeMessage]);
+    setConversationHistory([]);
+    setConversationId('');
+    
+    // Clear from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('chatbot-messages');
+      localStorage.removeItem('chatbot-conversation-history');
+      localStorage.removeItem('chatbot-conversation-id');
+    }
+    
+    // Optional: Announce the clear action
+    if (isVoiceEnabled && audioRef) {
+      setTimeout(() => {
+        speakMessage('Conversation cleared');
+      }, 100);
+    }
+  };
+
   const handleSuggestedAction = (action: { label: string; url: string; icon: string }) => {
     // Track action clicked
-    // trackActionClicked(action.label);
+    trackActionClicked(action.label);
     
     if (action.url.startsWith('mailto:')) {
       window.location.href = action.url;
@@ -1416,6 +1829,134 @@ export default function Chatbot() {
       // Internal navigation
       window.location.href = action.url;
     }
+  };
+
+  const generateQuickReplies = (history: ConversationHistory[], msgs: Message[]) => {
+    // Base suggestions for new conversations
+    const defaultReplies = [
+      "Tell me about John's experience",
+      "What services does John offer?",
+      "Show me John's projects",
+      "Schedule a meeting"
+    ];
+
+    // If no conversation history, show default replies
+    if (history.length === 0) {
+      setQuickReplies(defaultReplies);
+      return;
+    }
+
+    // Get last few messages to understand context
+    const recentMessages = msgs.slice(-3);
+    const lastBotMessage = recentMessages.filter(m => m.sender === 'bot').pop();
+    
+    let contextAwareReplies: string[] = [];
+
+    // Analyze last bot message for context clues
+    if (lastBotMessage) {
+      const text = lastBotMessage.text.toLowerCase();
+      
+      // Project/Portfolio context
+      if (text.includes('project') || text.includes('portfolio') || text.includes('built') || text.includes('developed')) {
+        contextAwareReplies = [
+          "Tell me more about that project",
+          "What technologies were used?",
+          "Show me more projects",
+          "What were the key challenges?"
+        ];
+      }
+      // Experience/Skills context
+      else if (text.includes('experience') || text.includes('skill') || text.includes('expertise') || text.includes('worked')) {
+        contextAwareReplies = [
+          "What else has John worked on?",
+          "Tell me about his tech stack",
+          "What industries has he worked in?",
+          "Show me his full experience"
+        ];
+      }
+      // Services/Consulting context
+      else if (text.includes('service') || text.includes('consult') || text.includes('help') || text.includes('offer')) {
+        contextAwareReplies = [
+          "What are the pricing options?",
+          "How does the process work?",
+          "Schedule a consultation",
+          "Tell me about past clients"
+        ];
+      }
+      // Scheduling/Meeting context
+      else if (text.includes('schedul') || text.includes('meeting') || text.includes('calendar') || text.includes('available')) {
+        contextAwareReplies = [
+          "Show me available times",
+          "What's the meeting format?",
+          "I'd like to book a call",
+          "Tell me more first"
+        ];
+      }
+      // Case study/Detailed work context
+      else if (text.includes('case study') || text.includes('tendril') || text.includes('zeus') || text.includes('saas')) {
+        contextAwareReplies = [
+          "What were the results?",
+          "Show me technical details",
+          "Tell me about other projects",
+          "What was your role?"
+        ];
+      }
+      // Contact/Collaboration context
+      else if (text.includes('contact') || text.includes('reach') || text.includes('email') || text.includes('collaborate')) {
+        contextAwareReplies = [
+          "Schedule a meeting now",
+          "What's the best way to reach out?",
+          "Tell me about your availability",
+          "Learn more about services"
+        ];
+      }
+      // Default follow-up questions
+      else {
+        contextAwareReplies = [
+          "Tell me more about that",
+          "What other projects has John done?",
+          "How can John help me?",
+          "Schedule a consultation"
+        ];
+      }
+    }
+
+    // If we couldn't determine context, use smart defaults based on conversation length
+    if (contextAwareReplies.length === 0) {
+      if (history.length < 3) {
+        // Early conversation - exploratory
+        contextAwareReplies = [
+          "Tell me about John's experience",
+          "Show me his projects",
+          "What services are offered?",
+          "Schedule a meeting"
+        ];
+      } else if (history.length < 7) {
+        // Mid conversation - going deeper
+        contextAwareReplies = [
+          "Tell me more about that",
+          "Show me examples",
+          "What makes this unique?",
+          "How can I get started?"
+        ];
+      } else {
+        // Long conversation - action-oriented
+        contextAwareReplies = [
+          "Schedule a consultation",
+          "What's the next step?",
+          "How do we proceed?",
+          "Send me more information"
+        ];
+      }
+    }
+
+    setQuickReplies(contextAwareReplies);
+  };
+
+  const handleQuickReply = (reply: string) => {
+    setInputValue(reply);
+    // Optional: Auto-send the message
+    // setTimeout(() => sendMessage(), 100);
   };
 
   return (
@@ -1452,7 +1993,7 @@ export default function Chatbot() {
              {/* Chat Window - Opens above the toggle button */}
        {isOpen && (
 				<div className="fixed bottom-20 left-2 right-2 z-[9998] flex h-auto max-h-[70vh] flex-col rounded-lg border border-stone-200 bg-white shadow-2xl sm:max-h-[75vh] md:bottom-24 md:left-auto md:right-4 md:h-[650px] md:max-h-[650px] md:w-[500px] dark:border-stone-700 dark:bg-stone-950">
-          {/* Header */}
+            {/* Header */}
 					<div className="flex items-center justify-between rounded-t-lg bg-stone-900 p-3 text-white sm:p-4 md:p-5 dark:bg-stone-800">
 						<div className="flex flex-shrink-0 items-center space-x-2 sm:space-x-3 md:space-x-4">
 							<div className="rounded-full bg-white p-2 text-stone-900 sm:p-3 md:p-4 dark:bg-stone-100 dark:text-stone-900">
@@ -1461,7 +2002,7 @@ export default function Chatbot() {
               <div className="min-w-0">
 								<h3 className="text-sm font-semibold md:text-base">John&apos;s Assistant</h3>
 								<p className="hidden text-xs text-stone-300 sm:block dark:text-stone-400">
-									Ask me about John&apos;s background
+									{isLoading ? 'Typing…' : 'Ask me about John&apos;s background'}
 								</p>
               </div>
             </div>
@@ -1520,7 +2061,18 @@ export default function Chatbot() {
 														{message.text}
 													</p>
 												)}
-												<p className="mt-1 text-xs opacity-60">{formatTime(message.timestamp)}</p>
+												<div className="mt-1 flex items-center justify-between">
+													<p className="text-xs opacity-60">{formatTime(message.timestamp)}</p>
+													{message.sender === 'bot' && isVoiceEnabled && (
+														<button
+															onClick={() => speakMessage(message.text)}
+															className="ml-2 flex h-6 w-6 items-center justify-center rounded-full bg-stone-200 text-stone-600 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+															title="Play audio"
+														>
+															<Volume2 className="h-3 w-3" />
+														</button>
+													)}
+												</div>
                       </div>
                       {message.sender === 'user' && (
 												<User className="mt-0.5 h-3 w-3 flex-shrink-0 text-stone-300 md:h-4 md:w-4 dark:text-stone-600" />
@@ -1529,6 +2081,34 @@ export default function Chatbot() {
                   </div>
                 </div>
                 
+                {/* Error Message with Retry */}
+								{message.sender === 'bot' && message.error && (
+										<div className="mt-2 flex justify-start">
+										<div className="max-w-full rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-950">
+											{message.error.suggestion && (
+												<p className="mb-2 text-sm text-red-700 dark:text-red-300">
+													💡 {message.error.suggestion}
+												</p>
+											)}
+											{message.error.retryable && message.error.originalMessage && (
+												<button
+													onClick={() => retryMessage(message.error!.originalMessage!)}
+													disabled={isLoading}
+													className="inline-flex items-center space-x-2 rounded-md bg-red-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-red-700 disabled:bg-red-400 dark:bg-red-700 dark:hover:bg-red-600"
+												>
+													<span>🔄</span>
+													<span>Try Again</span>
+												</button>
+											)}
+											{!message.error.retryable && (
+												<p className="text-xs text-red-600 dark:text-red-400">
+													Please contact John at jschibelli@gmail.com for assistance.
+												</p>
+											)}
+										</div>
+									</div>
+                )}
+
                 {/* Suggested Actions */}
 								{message.sender === 'bot' &&
 									message.suggestedActions &&
@@ -1549,6 +2129,27 @@ export default function Chatbot() {
                     </div>
                   </div>
                 )}
+
+                {/* UI Actions - Reopen Calendar */}
+								{message.sender === 'bot' &&
+									message.uiActions &&
+									message.uiActions.some((action: UIAction) => action.action === 'show_booking_modal') && (
+										<div className="mt-2 flex justify-start">
+											<button
+												onClick={() => {
+													const calendarAction = message.uiActions?.find((action: UIAction) => action.action === 'show_booking_modal');
+													if (calendarAction) {
+														setCalendarData(calendarAction.data);
+														setIsCalendarModalOpen(true);
+													}
+												}}
+												className="inline-flex items-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+											>
+												<Calendar className="h-4 w-4" />
+												<span>View Calendar</span>
+											</button>
+										</div>
+									)}
 
                 {/* Case Study Content */}
                 {message.sender === 'bot' && message.caseStudyContent && (
@@ -1643,6 +2244,22 @@ export default function Chatbot() {
 
                      {/* Input and Close Button Row */}
 					<div className="border-t border-stone-200 p-2 sm:p-3 md:p-4 dark:border-stone-700">
+             {/* Context-Aware Quick Replies */}
+             {quickReplies.length > 0 && !isLoading && (
+               <div className="mb-3 flex flex-wrap gap-2">
+                 {quickReplies.map((reply, index) => (
+                   <button
+                     key={index}
+                     onClick={() => handleQuickReply(reply)}
+                     className="inline-flex items-center rounded-full bg-stone-100 px-3 py-1.5 text-xs text-stone-700 transition-colors hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
+                   >
+                     <MessageCircle className="mr-1 h-3 w-3" />
+                     {reply}
+                   </button>
+                 ))}
+               </div>
+             )}
+             
              <div className="flex items-center gap-2 sm:gap-3">
               <input
                 ref={inputRef}
@@ -1756,17 +2373,6 @@ export default function Chatbot() {
         />
       )}
       
-      {/* Booking Confirmation Modal */}
-      {confirmationModalData && (
-        <BookingConfirmationModal
-          isOpen={isConfirmationModalOpen}
-          onClose={() => setIsConfirmationModalOpen(false)}
-          onConfirm={handleConfirmationConfirm}
-          bookingDetails={confirmationModalData.bookingDetails}
-          isLoading={false}
-        />
-      )}
-      
       {/* Existing Booking Display */}
       {existingBooking && (
 				<div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-2 duration-300 sm:p-4">
@@ -1844,63 +2450,6 @@ export default function Chatbot() {
         </div>
       )}
       
-      {/* Permission Request Modal */}
-      {showPermissionRequest && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-					<div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-						<div className="mb-4 flex items-center space-x-3">
-							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                <Bot className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Permission Request</h3>
-                <p className="text-sm text-gray-500">AI Assistant wants to show you something</p>
-              </div>
-            </div>
-            
-            <div className="mb-6">
-							<p className="mb-3 text-gray-700">
-								I&apos;d like to show you a calendar with available meeting times. This will open a
-								modal window to help you schedule a meeting.
-                </p>
-              
-							<div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-                <div className="flex items-start space-x-2">
-									<div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                    <Calendar className="h-3 w-3 text-blue-600" />
-                  </div>
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium">Calendar Modal</p>
-										<p className="text-blue-600">
-											Shows available meeting times from Google Calendar
-										</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={denyUIPermission}
-								className="flex-1 rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200"
-              >
-                Not Now
-              </button>
-              <button
-                onClick={grantUIPermission}
-								className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-              >
-                Allow
-              </button>
-            </div>
-            
-						<p className="mt-3 text-center text-xs text-gray-500">
-              You can change this setting anytime in your browser settings
-            </p>
-          </div>
-        </div>
-      )}
-      
       {/* Settings Modal */}
       {showSettings && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -1922,46 +2471,6 @@ export default function Chatbot() {
             </div>
             
             <div className="space-y-4">
-              {/* UI Permissions Section */}
-							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
-								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
-									UI Permissions
-								</h4>
-								<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
-                  Control whether the AI assistant can show you modals and interactive elements.
-                </p>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-										<span className="text-sm text-stone-700 dark:text-stone-300">
-											Calendar Modals
-										</span>
-										<span
-											className={`rounded px-2 py-1 text-sm ${
-                      uiPermissionGranted === true 
-													? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : uiPermissionGranted === false 
-														? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-														: 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200'
-											}`}
-										>
-											{uiPermissionGranted === true
-												? 'Allowed'
-												: uiPermissionGranted === false
-													? 'Denied'
-													: 'Not Set'}
-                    </span>
-                  </div>
-                  
-                  <button
-                    onClick={resetUIPermission}
-										className="w-full rounded-lg bg-stone-200 px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
-                  >
-                    Reset Permission
-                  </button>
-                </div>
-              </div>
-              
               {/* Voice Settings Section */}
 							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
 								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
@@ -2006,6 +2515,52 @@ export default function Chatbot() {
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+              
+              {/* Conversation History Section */}
+							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
+								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
+									Conversation History
+								</h4>
+								<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
+                  Your conversations are automatically saved and will persist across sessions.
+                </p>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Messages Saved
+										</span>
+										<span className="rounded bg-stone-200 px-2 py-1 text-sm text-stone-800 dark:bg-stone-700 dark:text-stone-200">
+											{messages.length}
+										</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+										<span className="text-sm text-stone-700 dark:text-stone-300">
+											Exchanges
+										</span>
+										<span className="rounded bg-stone-200 px-2 py-1 text-sm text-stone-800 dark:bg-stone-700 dark:text-stone-200">
+											{conversationHistory.length}
+										</span>
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      if (confirm('Are you sure you want to clear your conversation history? This cannot be undone.')) {
+                        clearConversation();
+                        setShowSettings(false);
+                      }
+                    }}
+										className="w-full rounded-lg bg-red-100 px-3 py-2 text-sm text-red-800 transition-colors hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800"
+                  >
+                    Clear Conversation
+                  </button>
+                  
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                    Clearing will reset the conversation and remove all saved history.
+                  </p>
                 </div>
               </div>
             </div>

@@ -7,43 +7,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Badge } from '../../ui/badge';
 
 interface TimeSlot {
-	id: string;
 	start: string;
 	end: string;
-	available: boolean;
+	duration: number;
 }
 
 interface CalendarModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onTimeSlotSelect: (slot: TimeSlot) => void;
-	selectedDate?: string;
+	onSlotSelect: (slot: TimeSlot) => void;
+	availableSlots: TimeSlot[];
+	timezone: string;
+	businessHours?: {
+		start: number;
+		end: number;
+		timezone: string;
+	};
+	meetingDurations?: number[];
+	message?: string;
 }
 
-export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate }: CalendarModalProps) {
+export function CalendarModal({ 
+	isOpen, 
+	onClose, 
+	onSlotSelect, 
+	availableSlots,
+	timezone,
+	message 
+}: CalendarModalProps) {
 	const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
 
-	// Mock time slots - in a real app, these would come from an API
-	const timeSlots: TimeSlot[] = [
-		{ id: '1', start: '09:00', end: '10:00', available: true },
-		{ id: '2', start: '10:00', end: '11:00', available: true },
-		{ id: '3', start: '11:00', end: '12:00', available: false },
-		{ id: '4', start: '13:00', end: '14:00', available: true },
-		{ id: '5', start: '14:00', end: '15:00', available: true },
-		{ id: '6', start: '15:00', end: '16:00', available: false },
-		{ id: '7', start: '16:00', end: '17:00', available: true },
-	];
-
 	const handleTimeSlotClick = (slot: TimeSlot) => {
-		if (slot.available) {
-			setSelectedTimeSlot(slot);
-		}
+		console.log('🗓️ Time slot clicked:', slot);
+		setSelectedTimeSlot(slot);
 	};
 
 	const handleConfirm = () => {
+		console.log('✅ Confirm clicked, selected slot:', selectedTimeSlot);
 		if (selectedTimeSlot) {
-			onTimeSlotSelect(selectedTimeSlot);
+			console.log('📞 Calling onSlotSelect with:', selectedTimeSlot);
+			onSlotSelect(selectedTimeSlot);
 			onClose();
+		} else {
+			console.warn('⚠️ No time slot selected');
 		}
 	};
 
@@ -63,44 +69,53 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 							<X className="h-4 w-4" />
 						</Button>
 					</div>
-					<div className="flex items-center space-x-2 text-sm text-muted-foreground">
-						<Calendar className="h-4 w-4" />
-						<span>{selectedDate || 'Select a date'}</span>
+					<div className="flex flex-col gap-2">
+						{message && (
+							<p className="text-sm text-muted-foreground">{message}</p>
+						)}
+						<div className="flex items-center space-x-2 text-sm text-muted-foreground">
+							<Calendar className="h-4 w-4" />
+							<span>Timezone: {timezone}</span>
+						</div>
 					</div>
 				</CardHeader>
 
 				<CardContent>
 					<div className="space-y-4">
-						<div className="grid grid-cols-1 gap-2">
-							{timeSlots.map((slot) => (
-								<Button
-									key={slot.id}
-									variant={selectedTimeSlot?.id === slot.id ? 'default' : 'outline'}
-									className={`h-auto justify-start p-3 ${
-										!slot.available ? 'opacity-50 cursor-not-allowed' : ''
-									}`}
-									onClick={() => handleTimeSlotClick(slot)}
-									disabled={!slot.available}
-								>
-									<div className="flex w-full items-center space-x-2">
-										<Clock className="h-4 w-4 flex-shrink-0" />
-										<div className="flex-1 text-left">
-											<div className="font-medium">
-												{slot.start} - {slot.end}
+						{availableSlots.length === 0 ? (
+							<p className="text-center text-muted-foreground py-8">
+								No available time slots found. Please try a different date range.
+							</p>
+						) : (
+							<div className="grid grid-cols-1 gap-2 max-h-96 overflow-y-auto">
+								{availableSlots.map((slot, index) => {
+									const startDate = new Date(slot.start);
+									const endDate = new Date(slot.end);
+									const isSelected = selectedTimeSlot?.start === slot.start;
+									
+									return (
+										<Button
+											key={index}
+											variant={isSelected ? 'default' : 'outline'}
+											className="h-auto justify-start p-3"
+											onClick={() => handleTimeSlotClick(slot)}
+										>
+											<div className="flex w-full items-center space-x-2">
+												<Clock className="h-4 w-4 flex-shrink-0" />
+												<div className="flex-1 text-left">
+													<div className="font-medium">
+														{startDate.toLocaleDateString()} at {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+													</div>
+													<div className="text-xs text-muted-foreground">
+														{slot.duration} minutes
+													</div>
+												</div>
 											</div>
-											<div className="text-xs text-muted-foreground">
-												60 minutes
-											</div>
-										</div>
-										{!slot.available && (
-											<Badge variant="secondary" className="text-xs">
-												Booked
-											</Badge>
-										)}
-									</div>
-								</Button>
-							))}
-						</div>
+										</Button>
+									);
+								})}
+							</div>
+						)}
 
 						<div className="flex space-x-3 pt-4">
 							<Button variant="outline" onClick={onClose} className="flex-1">
@@ -111,7 +126,7 @@ export function CalendarModal({ isOpen, onClose, onTimeSlotSelect, selectedDate 
 								disabled={!selectedTimeSlot}
 								className="flex-1"
 							>
-								Confirm Time
+								Schedule Meeting
 							</Button>
 						</div>
 					</div>

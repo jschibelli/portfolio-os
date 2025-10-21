@@ -245,6 +245,13 @@ export async function getFreeSlots(opts: {
 
 		// Build candidate free intervals within workday bounds.
 		const dayIntervals: Interval[] = [];
+		console.log('🗓️ [DEBUG] Day iteration:', {
+			windowStart: windowStart.toISO(),
+			windowEnd: windowEnd.toISO(),
+			windowStartDay: windowStart.startOf('day').toISO(),
+			windowEndDay: windowEnd.startOf('day').toISO()
+		});
+		
 		for (let d = windowStart.startOf('day'); d < windowEnd; d = d.plus({ days: 1 })) {
 			const start = d.set({ hour: dayStartHour, minute: 0 });
 			const end = d.set({ hour: dayEndHour, minute: 0 });
@@ -252,8 +259,19 @@ export async function getFreeSlots(opts: {
 				start < windowStart ? windowStart : start,
 				end > windowEnd ? windowEnd : end,
 			);
+			console.log('📅 [DEBUG] Processing day:', {
+				date: d.toISODate(),
+				start: start.toISO(),
+				end: end.toISO(),
+				dayInterval: dayI.isValid ? `${dayI.start?.toISO()} to ${dayI.end?.toISO()}` : 'invalid'
+			});
 			if (dayI.isValid) dayIntervals.push(dayI);
 		}
+		
+		console.log('📊 [DEBUG] Generated day intervals:', {
+			count: dayIntervals.length,
+			dates: dayIntervals.map(d => d.start?.toISODate())
+		});
 
 		// Subtract busy from each day interval.
 		const free: Interval[] = [];
@@ -279,17 +297,61 @@ export async function getFreeSlots(opts: {
 		// Expand free intervals into concrete slots by duration, with buffers.
 		const slots: Slot[] = [];
 		const dur = { minutes: durationMinutes };
+		
+		// Group free intervals by day to distribute slots evenly
+		const freeByDay = new Map<string, Interval[]>();
 		for (const f of free) {
-			let s = f.start!.plus({ minutes: minBufferMinutes });
-			const latestStart = f.end!.minus(dur).minus({ minutes: minBufferMinutes });
-			while (s <= latestStart) {
-				// Round to 5-min grid for nicer UX
-				const rounded = s.set({ minute: Math.floor(s.minute / 5) * 5, second: 0, millisecond: 0 });
-				const e = rounded.plus(dur);
-				if (Interval.fromDateTimes(rounded, e).isValid) {
-					slots.push({ startISO: rounded.toISO(), endISO: e.toISO() });
+			const dayKey = f.start!.toISODate();
+			if (!freeByDay.has(dayKey)) {
+				freeByDay.set(dayKey, []);
+			}
+			freeByDay.get(dayKey)!.push(f);
+		}
+		
+		console.log('📊 [DEBUG] Free intervals by day:', {
+			dayCount: freeByDay.size,
+			days: Array.from(freeByDay.keys()),
+			intervalsPerDay: Array.from(freeByDay.entries()).map(([day, intervals]) => ({
+				day,
+				count: intervals.length
+			}))
+		});
+		
+		// Calculate slots per day to distribute evenly, but be much more generous
+		const days = Array.from(freeByDay.keys());
+		const slotsPerDay = Math.max(8, Math.floor(maxCandidates / days.length)); // Increased from 2 to 8
+		console.log('📊 [DEBUG] Slot distribution:', {
+			totalDays: days.length,
+			slotsPerDay,
+			maxCandidates
+		});
+		
+		for (const [dayKey, dayIntervals] of freeByDay) {
+			let daySlotCount = 0;
+			for (const f of dayIntervals) {
+				let s = f.start!.plus({ minutes: minBufferMinutes });
+				const latestStart = f.end!.minus(dur).minus({ minutes: minBufferMinutes });
+				
+				// Round start time to nearest 30-minute mark (top or bottom of hour)
+				const startMinute = s.minute;
+				const roundedMinute = startMinute <= 30 ? 0 : 30;
+				s = s.set({ minute: roundedMinute, second: 0, millisecond: 0 });
+				
+				// If rounding backward puts us before the interval start, move forward to next 30-min mark
+				if (s < f.start!) {
+					s = s.plus({ minutes: 30 });
 				}
-				s = s.plus({ minutes: 5 });
+				
+				// Generate slots at 30-minute intervals (9:00, 9:30, 10:00, 10:30, etc.)
+				while (s <= latestStart && daySlotCount < slotsPerDay && slots.length < maxCandidates) {
+					const e = s.plus(dur);
+					if (Interval.fromDateTimes(s, e).isValid) {
+						slots.push({ startISO: s.toISO(), endISO: e.toISO() });
+						daySlotCount++;
+					}
+					// Move to next 30-minute slot
+					s = s.plus({ minutes: 30 });
+				}
 				if (slots.length >= maxCandidates) break;
 			}
 			if (slots.length >= maxCandidates) break;
