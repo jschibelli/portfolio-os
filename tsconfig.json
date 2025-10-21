@@ -22,7 +22,17 @@
 
 		"lib": ["es2022", "dom", "dom.iterable"]
 	},
-	"exclude": ["node_modules"]
+	"exclude": [
+		"node_modules",
+		"**/node_modules",
+		"**/.next",
+		"**/dist",
+		"**/build",
+		"worktrees",
+		"test-results",
+		"**/.turbo",
+		"**/coverage"
+	]
 }
 
 

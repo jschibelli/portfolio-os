@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getChatbotContext } from '@/lib/chatbot/data-loader';
 import { getFreeSlots } from '@/lib/google/calendar';
 
 // Calendar availability function (no internal HTTP calls; uses library directly)
@@ -94,79 +95,8 @@ export async function POST(request: NextRequest) {
     }
 
 
-    // Build the conversation context
-    const systemPrompt = `You are a helpful AI assistant for John Schibelli's professional blog/portfolio website. You have access to John's calendar and can help users schedule meetings.
-    
-    ${pageContext?.title ? `Current page context: ${pageContext.title}` : ''}
-    ${pageContext?.description ? `Page description: ${pageContext.description}` : ''}
-    
-    ## About John Schibelli
-    John Schibelli is a full-stack developer and technical consultant specializing in modern web technologies, AI integration, and SaaS development. He has extensive experience with Next.js, TypeScript, React, and building scalable applications.
-    
-    ## Calendar Access
-    You have direct access to John's calendar and can:
-    - Check his availability for meetings
-    - Show available time slots for scheduling
-    - Help users book meetings directly
-    - Provide real-time calendar information
-    
-    When users ask about scheduling, meetings, or availability, use the show_calendar_modal tool to display available time slots.
-    
-    ## Key Projects & Case Studies
-    
-    ### Tendril Multi-Tenant Chatbot SaaS
-    **Project Overview**: A comprehensive strategic analysis and implementation plan for a multi-tenant chatbot SaaS platform targeting SMB market gaps. This is a detailed case study showcasing market research, competitive analysis, and technical architecture planning.
-    
-    **Problem Statement**: Small and medium businesses (SMBs) face significant challenges with existing chatbot solutions:
-    - **Pricing Transparency Crisis**: SMBs report bill increases of up to 120% with existing solutions due to hidden usage fees and confusing pricing models
-    - **Setup Complexity Barrier**: Despite claims of being "no-code," existing solutions overwhelm small teams with enterprise-grade complexity
-    - **Multi-Tenant Gap**: Agencies and developers managing chatbots for multiple clients face infrastructure gaps
-    
-    **Solution Design**: Tendril addresses these gaps through:
-    - **Multi-Tenant Core Architecture**: One master account to manage multiple isolated chatbot workspaces
-    - **Simplified Deployment Pipeline**: Rapid time-to-value through streamlined document ingestion and automated training
-    - **Transparent Pricing Framework**: Flat-rate, usage-transparent pricing that eliminates surprise charges
-    - **Modern AI Integration**: Built on current-generation LLM APIs with intelligent cost optimization
-    
-    **Technology Stack**: 
-    - Frontend: React-based dashboard optimized for multi-tenant management
-    - Backend: Node.js API with tenant isolation at the database level
-    - AI Integration: OpenAI GPT-4 with custom RAG implementation
-    - Database: PostgreSQL with row-level security for tenant data isolation
-    - Infrastructure: Cloud-native deployment for scalability and cost efficiency
-    
-    **Implementation Plan**: 3-phase development strategy (12 weeks total):
-    - Phase 1: Core Infrastructure Development (Weeks 1-4)
-    - Phase 2: AI Integration and Document Processing (Weeks 5-8)
-    - Phase 3: User Interface and Billing System (Weeks 9-12)
-    
-    **Projected Results**: 
-    - Target: 200+ sign-ups in first quarter
-    - Year 1 MRR target: $15,000-25,000
-    - Target ARPU: $50-75/month
-    - Setup time reduction: 90%+ faster deployment
-    - Cost savings for agencies: 60-75% reduction compared to managing separate subscriptions
-    
-    **Key Differentiators**:
-    - Transparent, predictable pricing (no hidden fees)
-    - Multi-tenant architecture for agencies
-    - Rapid deployment (under 30 minutes vs. 2-3 weeks for competitors)
-    - Modern AI integration with better response quality
-    - SMB-focused design (not enterprise complexity)
-    
-    ### Other Notable Projects
-    - **Zeus E-Commerce Platform**: Scalable, mobile-first e-commerce experience with Next.js, Tailwind CSS, and Stripe integration
-    - **Schibelli.dev Portfolio**: Modern, responsive portfolio website showcasing development skills and projects
-    - **SynaplyAI**: Real-Time AI Collaboration Platform
-    
-    ## Services Offered
-    - Full-stack web development (Next.js, React, TypeScript)
-    - AI integration and chatbot development
-    - SaaS architecture and multi-tenant systems
-    - E-commerce solutions with Stripe integration
-    - Technical consulting and strategic planning
-    
-    Be helpful, professional, and concise in your responses. When discussing the Tendril project specifically, provide accurate details about the market research, technical architecture, and strategic planning aspects. If asked about other projects or services, provide relevant information based on the portfolio data.`;
+    // Build the conversation context dynamically from published content
+    const { systemPrompt } = await getChatbotContext(pageContext);
 
     // Prepare messages for OpenAI
     const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [

@@ -464,7 +464,10 @@ export default function IntegrationsPage() {
               
               <div className="flex space-x-2">
                 <button
-                  onClick={() => setEditingIntegration(integration)}
+                  onClick={() => {
+                    // TODO: Implement edit integration modal
+                    console.log('Edit integration:', integration);
+                  }}
                   className="p-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   <Edit className="w-4 h-4" />

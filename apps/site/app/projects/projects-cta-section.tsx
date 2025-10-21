@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import AudienceSpecificCTA from '../../components/features/cta/audience-specific-cta';
 import EnhancedCTASection from '../../components/features/cta/enhanced-cta-section';
 import { BookingModal } from '../../components/features/booking/BookingModal';
-import { BookingSuccessModal } from '../../components/features/booking/BookingSuccessModal';
 
 interface TimeSlot {
   start: string;
@@ -23,12 +22,6 @@ export function ProjectsCTASection() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [successDetails, setSuccessDetails] = useState<{
-    startTime: string;
-    googleMeetLink?: string;
-    googleEventLink?: string;
-  } | undefined>(undefined);
 
   const fetchAvailableSlots = async () => {
     setIsLoadingSlots(true);
@@ -93,20 +86,13 @@ export function ProjectsCTASection() {
 
       const result = await response.json();
       
-      // Close the booking modal
+      // Close the modal
       setIsBookingModalOpen(false);
       
-      // Show success modal with meeting details
-      setSuccessDetails({
-        startTime: bookingData.slot.start,
-        googleMeetLink: result?.booking?.googleMeetLink,
-        googleEventLink: result?.booking?.googleEventLink,
-      });
-      setIsSuccessModalOpen(true);
+      // Show success message (you could add a toast notification here)
+      alert(`✅ Interview confirmed!\n\nMeet Link: ${result?.booking?.googleMeetLink || 'Check your email'}`);
     } catch (error) {
       console.error('Error booking interview:', error);
-      // Keep the booking modal open and show error there
-      // You could also add a state for error message to display in the modal
       alert('❌ Sorry, there was an error booking the interview. Please try again or contact John directly.');
     }
   };
@@ -137,13 +123,6 @@ export function ProjectsCTASection() {
         message="Schedule a consultation to discuss your project or opportunity. Select your preferred date and time below."
         onBookingComplete={handleBookingComplete}
         isLoadingSlots={isLoadingSlots}
-      />
-
-      {/* Success Modal */}
-      <BookingSuccessModal
-        isOpen={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-        meetingDetails={successDetails}
       />
     </>
   );

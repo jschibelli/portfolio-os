@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { Editor } from '@tiptap/core'
 import { EditorToolbar } from '../app/admin/articles/_components/EditorToolbar'
 
 // Mock TipTap extensions

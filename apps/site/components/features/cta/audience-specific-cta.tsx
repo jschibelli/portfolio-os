@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent } from '../../ui/card';
@@ -10,6 +11,7 @@ import { commonIcons, handleInvalidAudience, sharedStyles, validateAudience, typ
 interface AudienceSpecificCTAProps {
 	audience: AudienceType;
 	className?: string;
+	onScheduleClick?: () => void;
 }
 
 // Shared configuration interface for better maintainability
@@ -111,7 +113,7 @@ const audienceData = {
 	}
 };
 
-export default function AudienceSpecificCTA({ audience, className = '' }: AudienceSpecificCTAProps) {
+export default function AudienceSpecificCTA({ audience, className = '', onScheduleClick }: AudienceSpecificCTAProps) {
 	// Validate audience and provide fallback
 	const validAudience = validateAudience(audience, 'clients');
 	const data = audienceData[validAudience];
@@ -119,8 +121,11 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 	// Error handling for invalid audience values
 	if (!data) {
 		handleInvalidAudience(audience, 'clients');
-		return <AudienceSpecificCTA audience="clients" className={className} />;
+		return <AudienceSpecificCTA audience="clients" className={className} onScheduleClick={onScheduleClick} />;
 	}
+
+	// Check if this is the recruiters or startup-founders audience with schedule button
+	const isScheduleButton = (validAudience === 'recruiters' || validAudience === 'startup-founders') && onScheduleClick;
 	
 	return (
 		<section className={`py-16 ${className}`}>
@@ -223,17 +228,29 @@ export default function AudienceSpecificCTA({ audience, className = '' }: Audien
 										{data.primaryCTA.text}
 									</Link>
 								</Button>
-												<Button
-													size="lg"
-													variant="outline"
-													className={sharedStyles.button.secondary}
-													asChild
-												>
-									<Link href={data.secondaryCTA.url}>
-										{data.secondaryCTA.icon}
-										{data.secondaryCTA.text}
-									</Link>
-								</Button>
+												{isScheduleButton ? (
+													<Button
+														size="lg"
+														variant="outline"
+														className={sharedStyles.button.secondary}
+														onClick={onScheduleClick}
+													>
+														{data.secondaryCTA.icon}
+														{data.secondaryCTA.text}
+													</Button>
+												) : (
+													<Button
+														size="lg"
+														variant="outline"
+														className={sharedStyles.button.secondary}
+														asChild
+													>
+														<Link href={data.secondaryCTA.url}>
+															{data.secondaryCTA.icon}
+															{data.secondaryCTA.text}
+														</Link>
+													</Button>
+												)}
 							</motion.div>
 						</CardContent>
 					</Card>
