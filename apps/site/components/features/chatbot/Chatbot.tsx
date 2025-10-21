@@ -94,7 +94,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I'm John's AI assistant. How can I help you today?",
       sender: 'bot',
       timestamp: new Date(),
     },
@@ -205,20 +205,20 @@ export default function Chatbot() {
 
     switch (context.type) {
       case 'home':
-        return "Welcome to John's portfolio! I'm his AI assistant, and I'm excited to help you explore his work and background. I can tell you about his experience as a Senior Front-End Developer, show you his latest projects, help you schedule a consultation, or answer any questions about his skills and expertise. What interests you most?";
+        return "Hi! I'm John's AI assistant. I can tell you about his work, schedule a consultation, or answer questions about his expertise. What can I help you with?";
       
       case 'about':
-        return "Hi! I see you're learning about John's background. I'm his AI assistant and can provide deeper insights into his professional journey, technical skills, and experience. I can also help you understand his approach to development, his specializations in React and Next.js, or connect you for a consultation. What would you like to know more about?";
+        return "Hi! I'm John's AI assistant. I can provide insights into his professional journey, technical skills, or help schedule a consultation. What would you like to know?";
       
       case 'work':
       case 'portfolio':
-        return "Great choice exploring John's work! I'm his AI assistant and can provide detailed insights about any of the projects you see here. I can explain the technologies used, development challenges overcome, or help you understand how John's expertise might apply to your own project needs. I can also help you schedule a consultation to discuss your project. What catches your eye?";
+        return "Hi! I'm John's AI assistant. I can explain project details, technologies used, or help schedule a consultation. What interests you?";
       
       case 'contact':
-        return "Perfect timing! I'm John's AI assistant and I can help make connecting with John even easier. I can schedule a consultation for you, help you prepare questions about your project, provide more details about John's services, or gather some initial project information to make your conversation more productive. How would you like to get started?";
+        return "Hi! I'm John's AI assistant. I can schedule a consultation, answer questions about his services, or help prepare for your conversation. How can I help?";
       
       case 'blog':
-        return "Welcome to John's blog! I'm his AI assistant and can help you navigate his latest articles about front-end development, React, Next.js, and industry insights. I can summarize articles, explain technical concepts, or help you find content on specific topics. I can also tell you more about John's expertise behind these articles. What interests you?";
+        return "Hi! I'm John's AI assistant. I can help you navigate articles, summarize content, or explain technical concepts. What are you interested in?";
       
       case 'services':
         const serviceMessages: { [key: string]: string } = {
@@ -1014,16 +1014,8 @@ export default function Chatbot() {
   const handleUIAction = (uiActions: UIAction[]) => {
     for (const action of uiActions) {
       trackUIAction(action.action, action.data);
-      const permission = checkUIPermission();
-      
-      if (permission === null) {
-        // First time - ask for permission
-        requestUIPermission(action);
-      } else if (permission === true) {
-        // Permission granted - execute immediately
-        executeUIAction(action);
-      }
-      // Permission denied - ignore the action
+      // Execute UI actions directly without permission check
+      executeUIAction(action);
     }
   };
 
@@ -1669,7 +1661,7 @@ export default function Chatbot() {
     // Reset to initial welcome message
     const welcomeMessage: Message = {
       id: '1',
-      text: "Hi! I'm John's AI assistant. I can help you learn about his background, skills, and experience. What would you like to know?",
+      text: "Hi! I'm John's AI assistant. How can I help you today?",
       sender: 'bot',
       timestamp: new Date(),
     };
@@ -2305,63 +2297,6 @@ export default function Chatbot() {
         </div>
       )}
       
-      {/* Permission Request Modal */}
-      {showPermissionRequest && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-					<div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-						<div className="mb-4 flex items-center space-x-3">
-							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                <Bot className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Permission Request</h3>
-                <p className="text-sm text-gray-500">AI Assistant wants to show you something</p>
-              </div>
-            </div>
-            
-            <div className="mb-6">
-							<p className="mb-3 text-gray-700">
-								I&apos;d like to show you a calendar with available meeting times. This will open a
-								modal window to help you schedule a meeting.
-                </p>
-              
-							<div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-                <div className="flex items-start space-x-2">
-									<div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                    <Calendar className="h-3 w-3 text-blue-600" />
-                  </div>
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium">Calendar Modal</p>
-										<p className="text-blue-600">
-											Shows available meeting times from Google Calendar
-										</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                onClick={denyUIPermission}
-								className="flex-1 rounded-lg bg-gray-100 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-200"
-              >
-                Not Now
-              </button>
-              <button
-                onClick={grantUIPermission}
-								className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
-              >
-                Allow
-              </button>
-            </div>
-            
-						<p className="mt-3 text-center text-xs text-gray-500">
-              You can change this setting anytime in your browser settings
-            </p>
-          </div>
-        </div>
-      )}
-      
       {/* Settings Modal */}
       {showSettings && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -2383,46 +2318,6 @@ export default function Chatbot() {
             </div>
             
             <div className="space-y-4">
-              {/* UI Permissions Section */}
-							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
-								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
-									UI Permissions
-								</h4>
-								<p className="mb-3 text-sm text-stone-600 dark:text-stone-400">
-                  Control whether the AI assistant can show you modals and interactive elements.
-                </p>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-										<span className="text-sm text-stone-700 dark:text-stone-300">
-											Calendar Modals
-										</span>
-										<span
-											className={`rounded px-2 py-1 text-sm ${
-                      uiPermissionGranted === true 
-													? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                        : uiPermissionGranted === false 
-														? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-														: 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-200'
-											}`}
-										>
-											{uiPermissionGranted === true
-												? 'Allowed'
-												: uiPermissionGranted === false
-													? 'Denied'
-													: 'Not Set'}
-                    </span>
-                  </div>
-                  
-                  <button
-                    onClick={resetUIPermission}
-										className="w-full rounded-lg bg-stone-200 px-3 py-2 text-sm text-stone-700 transition-colors hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
-                  >
-                    Reset Permission
-                  </button>
-                </div>
-              </div>
-              
               {/* Voice Settings Section */}
 							<div className="rounded-lg border border-stone-200 bg-stone-50 p-4 dark:border-stone-700 dark:bg-stone-900">
 								<h4 className="mb-2 font-medium text-stone-900 dark:text-stone-100">
