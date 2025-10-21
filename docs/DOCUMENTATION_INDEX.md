@@ -30,6 +30,7 @@ This index provides a comprehensive overview of all documentation available for 
 - [System Architecture](automation/SYSTEM_ARCHITECTURE.md) - Technical architecture overview
 - [Developer Guide](developer/DEVELOPER_GUIDE.md) - Development workflows and standards
 - [API Documentation](api/API_DOCUMENTATION.md) - Integration and customization
+- [Technical Debt](TECHNICAL_DEBT.md) - Known issues and tracking
 
 ### **🤖 Automation & Scripts**
 - [Automation System Manual](automation/AUTOMATION_SYSTEM_MANUAL.md) - Complete automation guide
@@ -49,6 +50,7 @@ This index provides a comprehensive overview of all documentation available for 
 
 ### **🔧 Troubleshooting & Support**
 - [Troubleshooting Guide](troubleshooting/TROUBLESHOOTING_GUIDE.md) - Problem resolution
+- [Technical Debt](TECHNICAL_DEBT.md) - Known issues and CI/CD failures tracking
 - [Stale Issues Recommendations](STALE_ISSUES_RECOMMENDATIONS.md) - Issue management
 
 ### **📖 Legal & Compliance**
@@ -83,6 +85,7 @@ docs/
 │   ├── CHATBOT_SETUP.md
 │   ├── DASHBOARD_SITE_INTEGRATION.md
 │   └── DEPLOYMENT_RUNBOOK.md
+├── TECHNICAL_DEBT.md     # Known issues and CI/CD failure tracking
 ├── README.md             # Main documentation index
 └── DOCUMENTATION_INDEX.md # This file
 ```
