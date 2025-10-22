@@ -287,5 +287,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login"
   },
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development"
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development",
+  debug: process.env.NODE_ENV === "development"
 }
