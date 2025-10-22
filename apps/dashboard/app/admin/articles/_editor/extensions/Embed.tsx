@@ -11,23 +11,6 @@ export interface EmbedOptions {
 }
 
 /**
- * Supported embed providers for Phase 1
- * - youtube: YouTube videos
- * - twitter: Twitter/X posts
- * - github-gist: GitHub Gists with syntax highlighting
- * - codepen: CodePen demos
- * - codesandbox: CodeSandbox projects
- * - generic: Generic oEmbed protocol support
- */
-export type ExtendedEmbedProvider = 
-  | 'youtube' 
-  | 'twitter' 
-  | 'github-gist' 
-  | 'codepen' 
-  | 'codesandbox' 
-  | 'generic'
-
-/**
  * Constants for URL validation
  */
 const GIST_ID_LENGTH_SHORT = 20 // Shortened Gist IDs
@@ -162,44 +145,33 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
     let newId = ''
     let metadata: any = {}
     
-    switch (node.attrs.provider) {
-      case 'youtube': {
-        const videoId = extractYouTubeId(newUrl)
-        if (videoId) newId = videoId
-        break
+    const provider: string = node.attrs.provider || 'youtube'
+    
+    if (provider === 'youtube') {
+      const videoId = extractYouTubeId(newUrl)
+      if (videoId) newId = videoId
+    } else if (provider === 'tweet' || provider === 'twitter') {
+      const tweetId = extractTweetId(newUrl)
+      if (tweetId) newId = tweetId
+    } else if (provider === 'github-gist') {
+      const gistData = extractGitHubGistId(newUrl)
+      if (gistData) {
+        newId = gistData.id
+        if (gistData.file) metadata.file = gistData.file
       }
-      case 'tweet': {
-        const tweetId = extractTweetId(newUrl)
-        if (tweetId) newId = tweetId
-        break
+    } else if (provider === 'codepen') {
+      const codepenData = extractCodePenId(newUrl)
+      if (codepenData) {
+        newId = codepenData.id
+        if (codepenData.user) metadata.user = codepenData.user
+        if (codepenData.tab) metadata.tab = codepenData.tab
       }
-      case 'github-gist' as string: {
-        const gistData = extractGitHubGistId(newUrl)
-        if (gistData) {
-          newId = gistData.id
-          if (gistData.file) metadata.file = gistData.file
-        }
-        break
-      }
-      case 'codepen' as string: {
-        const codepenData = extractCodePenId(newUrl)
-        if (codepenData) {
-          newId = codepenData.id
-          if (codepenData.user) metadata.user = codepenData.user
-          if (codepenData.tab) metadata.tab = codepenData.tab
-        }
-        break
-      }
-      case 'codesandbox' as string: {
-        const sandboxId = extractCodeSandboxId(newUrl)
-        if (sandboxId) newId = sandboxId
-        break
-      }
-      case 'generic' as string: {
-        // For generic embeds, use the full URL as ID
-        newId = newUrl
-        break
-      }
+    } else if (provider === 'codesandbox') {
+      const sandboxId = extractCodeSandboxId(newUrl)
+      if (sandboxId) newId = sandboxId
+    } else if (provider === 'generic') {
+      // For generic embeds, use the full URL as ID
+      newId = newUrl
     }
     
     updateAttributes({ url: newUrl, id: newId, ...metadata })
@@ -218,7 +190,8 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
    * Includes timeout handling and proper cleanup
    */
   useEffect(() => {
-    if (node.attrs.provider === ('generic' as EmbedProvider) && node.attrs.url && !isEditing) {
+    const provider: string = node.attrs.provider || 'youtube'
+    if (provider === 'generic' && node.attrs.url && !isEditing) {
       // Abort any pending requests
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
@@ -277,26 +250,26 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
    * Comprehensive renderer for all supported platforms with responsive design
    */
   const renderEmbed = () => {
-    const provider = node.attrs.provider || 'youtube'
+    const provider: string = node.attrs.provider || 'youtube'
     const attrs = node.attrs
     
-    switch (provider) {
-      case 'youtube':
-        return (
-          <div className="relative w-full h-0 pb-[56.25%] my-6 bg-black rounded-lg overflow-hidden">
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src={`https://www.youtube.com/embed/${attrs.id}?rel=0`}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              loading="lazy"
-            />
-          </div>
-        )
-        
-      case 'tweet':
+    if (provider === 'youtube') {
+      return (
+        <div className="relative w-full h-0 pb-[56.25%] my-6 bg-black rounded-lg overflow-hidden">
+          <iframe
+            className="absolute top-0 left-0 w-full h-full"
+            src={`https://www.youtube.com/embed/${attrs.id}?rel=0`}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            loading="lazy"
+          />
+        </div>
+      )
+    }
+    
+    if (provider === 'tweet' || provider === 'twitter') {
         // Load Twitter widget script only once
         if (!twitterScriptLoadedRef.current && typeof window !== 'undefined') {
           const script = document.createElement('script')
@@ -310,172 +283,176 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
             twitterScriptLoadedRef.current = true
           }
         }
-        
-        return (
-          <div className="my-6 flex justify-center">
-            <blockquote className="twitter-tweet" data-theme="light">
-              <a href={`https://twitter.com/x/status/${attrs.id}`}>
-                Loading tweet...
-              </a>
-            </blockquote>
-          </div>
-        )
-        
-      case 'github-gist' as string:
-        return (
-          <div className="my-6">
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
-              <script src={`https://gist.github.com/${attrs.id}.js${attrs.file ? `?file=${attrs.file}` : ''}`}></script>
-              <noscript>
-                <div className="p-4 bg-gray-50">
-                  <a 
-                    href={`https://gist.github.com/${attrs.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    View this gist on GitHub
-                  </a>
-                </div>
-              </noscript>
-            </div>
-          </div>
-        )
-        
-      case 'codepen' as string:
-        return (
-          <div className="my-6">
-            <div className="relative w-full h-0 pb-[60%] bg-gray-100 rounded-lg overflow-hidden">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                scrolling="no"
-                title="CodePen Embed"
-                src={`https://codepen.io/${attrs.user || 'team'}/embed/${attrs.id}?default-tab=${attrs.tab || 'result'}&theme-id=dark`}
-                frameBorder="0"
-                loading="lazy"
-                allowFullScreen
-              />
-            </div>
-            <div className="text-center mt-2">
-              <a 
-                href={`https://codepen.io/${attrs.user || 'team'}/pen/${attrs.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                See the Pen on CodePen
-              </a>
-            </div>
-          </div>
-        )
-        
-      case 'codesandbox' as string:
-        return (
-          <div className="my-6">
-            <div className="relative w-full h-0 pb-[75%] bg-black rounded-lg overflow-hidden">
-              <iframe
-                className="absolute top-0 left-0 w-full h-full"
-                src={`https://codesandbox.io/embed/${attrs.id}?fontsize=14&hidenavigation=1&theme=dark&view=preview`}
-                title="CodeSandbox Embed"
-                allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-                sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-                loading="lazy"
-              />
-            </div>
-            <div className="text-center mt-2">
-              <a 
-                href={`https://codesandbox.io/s/${attrs.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                Open in CodeSandbox
-              </a>
-            </div>
-          </div>
-        )
-        
-      case 'generic' as string:
-        // Render oEmbed content if available
-        if (isLoading) {
-          return (
-            <div className="my-6 p-8 border border-gray-300 rounded-lg bg-white flex items-center justify-center">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                <span className="text-gray-600">Loading embed preview...</span>
-              </div>
-            </div>
-          )
-        }
-        
-        if (error) {
-          return (
-            <div className="my-6 p-4 border border-red-300 rounded-lg bg-red-50">
-              <p className="text-sm text-red-700 font-medium">Failed to load embed</p>
-              <p className="text-xs text-red-600 mt-1">{error}</p>
-              <a 
-                href={attrs.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm break-all mt-2 block"
-              >
-                {attrs.url}
-              </a>
-            </div>
-          )
-        }
-        
-        if (oembedData?.html) {
-          // Sanitize oEmbed HTML to prevent XSS attacks
-          const sanitizedHtml = DOMPurify.sanitize(oembedData.html, {
-            ALLOWED_TAGS: ['iframe', 'blockquote', 'a', 'p', 'div', 'span', 'img'],
-            ALLOWED_ATTR: ['src', 'href', 'title', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'class', 'id', 'data-*'],
-            ALLOW_DATA_ATTR: true
-          })
-          
-          return (
-            <div className="my-6">
-              <div 
-                className="border border-gray-300 rounded-lg overflow-hidden"
-                dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-              />
-              {oembedData.title && (
-                <p className="text-sm text-gray-600 mt-2 text-center">
-                  {oembedData.title}
-                  {oembedData.author && ` by ${oembedData.author}`}
-                </p>
-              )}
-            </div>
-          )
-        }
-        
-        return (
-          <div className="my-6">
-            <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-              <p className="text-sm text-gray-700 mb-2 font-medium">🌐 Generic Embed</p>
-              <a 
-                href={attrs.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm break-all"
-              >
-                {attrs.url}
-              </a>
-              <p className="text-xs text-gray-500 mt-2">
-                oEmbed preview will load when published
-              </p>
-            </div>
-          </div>
-        )
-        
-      default:
-        return (
-          <div className="bg-stone-100 border border-stone-200 rounded-lg p-4 my-6">
-            <p className="text-stone-600">Unknown embed type: {provider}</p>
-            <p className="text-xs text-stone-500 mt-1">URL: {attrs.url}</p>
-          </div>
-        )
+      
+      return (
+        <div className="my-6 flex justify-center">
+          <blockquote className="twitter-tweet" data-theme="light">
+            <a href={`https://twitter.com/x/status/${attrs.id}`}>
+              Loading tweet...
+            </a>
+          </blockquote>
+        </div>
+      )
     }
+    
+    if (provider === 'github-gist') {
+      return (
+        <div className="my-6">
+          <div className="border border-gray-300 rounded-lg overflow-hidden">
+            <script src={`https://gist.github.com/${attrs.id}.js${attrs.file ? `?file=${attrs.file}` : ''}`}></script>
+            <noscript>
+              <div className="p-4 bg-gray-50">
+                <a 
+                  href={`https://gist.github.com/${attrs.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View this gist on GitHub
+                </a>
+              </div>
+            </noscript>
+          </div>
+        </div>
+      )
+    }
+    
+    if (provider === 'codepen') {
+      return (
+        <div className="my-6">
+          <div className="relative w-full h-0 pb-[60%] bg-gray-100 rounded-lg overflow-hidden">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              scrolling="no"
+              title="CodePen Embed"
+              src={`https://codepen.io/${attrs.user || 'team'}/embed/${attrs.id}?default-tab=${attrs.tab || 'result'}&theme-id=dark`}
+              frameBorder="0"
+              loading="lazy"
+              allowFullScreen
+            />
+          </div>
+          <div className="text-center mt-2">
+            <a 
+              href={`https://codepen.io/${attrs.user || 'team'}/pen/${attrs.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              See the Pen on CodePen
+            </a>
+          </div>
+        </div>
+      )
+    }
+    
+    if (provider === 'codesandbox') {
+      return (
+        <div className="my-6">
+          <div className="relative w-full h-0 pb-[75%] bg-black rounded-lg overflow-hidden">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://codesandbox.io/embed/${attrs.id}?fontsize=14&hidenavigation=1&theme=dark&view=preview`}
+              title="CodeSandbox Embed"
+              allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+              sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+              loading="lazy"
+            />
+          </div>
+          <div className="text-center mt-2">
+            <a 
+              href={`https://codesandbox.io/s/${attrs.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              Open in CodeSandbox
+            </a>
+          </div>
+        </div>
+      )
+    }
+    
+    if (provider === 'generic') {
+      // Render oEmbed content if available
+      if (isLoading) {
+        return (
+          <div className="my-6 p-8 border border-gray-300 rounded-lg bg-white flex items-center justify-center">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              <span className="text-gray-600">Loading embed preview...</span>
+            </div>
+          </div>
+        )
+      }
+      
+      if (error) {
+        return (
+          <div className="my-6 p-4 border border-red-300 rounded-lg bg-red-50">
+            <p className="text-sm text-red-700 font-medium">Failed to load embed</p>
+            <p className="text-xs text-red-600 mt-1">{error}</p>
+            <a 
+              href={attrs.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline text-sm break-all mt-2 block"
+            >
+              {attrs.url}
+            </a>
+          </div>
+        )
+      }
+      
+      if (oembedData?.html) {
+        // Sanitize oEmbed HTML to prevent XSS attacks
+        const sanitizedHtml = DOMPurify.sanitize(oembedData.html, {
+          ALLOWED_TAGS: ['iframe', 'blockquote', 'a', 'p', 'div', 'span', 'img'],
+          ALLOWED_ATTR: ['src', 'href', 'title', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'class', 'id', 'data-*'],
+          ALLOW_DATA_ATTR: true
+        })
+        
+        return (
+          <div className="my-6">
+            <div 
+              className="border border-gray-300 rounded-lg overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+            />
+            {oembedData.title && (
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                {oembedData.title}
+                {oembedData.author && ` by ${oembedData.author}`}
+              </p>
+            )}
+          </div>
+        )
+      }
+      
+      return (
+        <div className="my-6">
+          <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+            <p className="text-sm text-gray-700 mb-2 font-medium">🌐 Generic Embed</p>
+            <a 
+              href={attrs.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline text-sm break-all"
+            >
+              {attrs.url}
+            </a>
+            <p className="text-xs text-gray-500 mt-2">
+              oEmbed preview will load when published
+            </p>
+          </div>
+        </div>
+      )
+    }
+    
+    // Default case for unknown provider
+    return (
+      <div className="bg-stone-100 border border-stone-200 rounded-lg p-4 my-6">
+        <p className="text-stone-600">Unknown embed type: {provider}</p>
+        <p className="text-xs text-stone-500 mt-1">URL: {attrs.url}</p>
+      </div>
+    )
   }
 
   return (

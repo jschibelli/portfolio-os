@@ -5,6 +5,19 @@
  */
 
 /**
+ * Supported embed providers for the article editor
+ * Includes video platforms, social media, and code sharing services
+ */
+export type EmbedProvider = 
+  | 'youtube' 
+  | 'twitter' 
+  | 'tweet'
+  | 'github-gist' 
+  | 'codepen' 
+  | 'codesandbox' 
+  | 'generic'
+
+/**
  * Block content structure for the block editor
  * Represents a single content block with type and content
  */

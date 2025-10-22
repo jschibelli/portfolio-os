@@ -70,6 +70,53 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
   const fileInputRef = useRef<HTMLInputElement>(null)
   const dropZoneRef = useRef<HTMLDivElement>(null)
 
+  /**
+   * Bulk delete selected items
+   */
+  const handleBulkDelete = useCallback(async () => {
+    if (selectedItems.size === 0) return
+    
+    if (!confirm(`Delete ${selectedItems.size} selected item(s)?`)) return
+
+    setIsDeleting(true)
+    setError(null)
+    setSuccessMessage(null)
+
+    try {
+      const ids = Array.from(selectedItems).join(',')
+      const response = await fetch(`/api/admin/media?ids=${ids}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to delete items')
+      }
+
+      const result = await response.json()
+      
+      // Update local state
+      setMedia(prev => prev.filter(item => !selectedItems.has(item.id)))
+      setSelectedItems(new Set())
+      
+      // Show success message
+      setSuccessMessage(result.message || `Successfully deleted ${result.deletedCount} item(s)`)
+      setError(null)
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000)
+    } catch (error) {
+      console.error('Delete error:', error)
+      setError(error instanceof Error ? error.message : 'Failed to delete items')
+      setSuccessMessage(null)
+    } finally {
+      setIsDeleting(false)
+    }
+  }, [selectedItems])
+
   // Load media on mount
   useEffect(() => {
     loadMedia()
@@ -98,7 +145,7 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedItems, filteredMedia])
+  }, [selectedItems, filteredMedia, handleBulkDelete])
 
   // Filter media based on search and tags
   useEffect(() => {
@@ -267,53 +314,6 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
       }
       return next
     })
-  }
-
-  /**
-   * Bulk delete selected items
-   */
-  const handleBulkDelete = async () => {
-    if (selectedItems.size === 0) return
-    
-    if (!confirm(`Delete ${selectedItems.size} selected item(s)?`)) return
-
-    setIsDeleting(true)
-    setError(null)
-    setSuccessMessage(null)
-
-    try {
-      const ids = Array.from(selectedItems).join(',')
-      const response = await fetch(`/api/admin/media?ids=${ids}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to delete items')
-      }
-
-      const result = await response.json()
-      
-      // Update local state
-      setMedia(prev => prev.filter(item => !selectedItems.has(item.id)))
-      setSelectedItems(new Set())
-      
-      // Show success message
-      setSuccessMessage(result.message || `Successfully deleted ${result.deletedCount} item(s)`)
-      setError(null)
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(null), 3000)
-    } catch (error) {
-      console.error('Delete error:', error)
-      setError(error instanceof Error ? error.message : 'Failed to delete items')
-      setSuccessMessage(null)
-    } finally {
-      setIsDeleting(false)
-    }
   }
 
   /**

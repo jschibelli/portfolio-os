@@ -1,6 +1,17 @@
 import '@testing-library/jest-dom'
 
-// Extend Jest matchers
+/**
+ * Test Setup File
+ * 
+ * This file extends Jest matchers with @testing-library/jest-dom custom matchers.
+ * It provides additional assertions like toBeInTheDocument(), toBeVisible(), etc.
+ * 
+ * The type declarations below ensure TypeScript recognizes these custom matchers.
+ * Actual test mocks and setup logic should be configured in individual test files
+ * or in a separate jest.config.js/jest.setup.js file.
+ */
+
+// Extend Jest matchers type definitions for TypeScript support
 declare global {
   namespace jest {
     interface Matchers<R> {
