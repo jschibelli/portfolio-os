@@ -10,7 +10,7 @@
  */
 export interface BlockContent {
   id: string
-  type: string
+  type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'bulletList' | 'orderedList' | 'taskList' | 'quote' | 'code' | 'image' | 'callout' | 'calloutInfo' | 'calloutWarning' | 'calloutSuccess' | 'calloutError' | 'horizontalRule' | 'details' | 'table' | 'mention' | 'widget' | 'reactComponent' | 'infoCard' | 'statBadge' | 'youtube' | 'twitter' | 'githubGist' | 'codepen' | 'codesandbox' | 'embed' | string
   content: string
   placeholder?: string
   calloutType?: 'info' | 'warning' | 'success' | 'error'
@@ -42,16 +42,16 @@ export interface SaveDraftRequest {
   slug: string
   
   /** Array of tag IDs associated with the article */
-  tags: string[]
+  tags?: string[]
   
   /** Cover image URL (optional, must be valid URL) */
   coverUrl?: string
   
   /** Structured article content (block editor format) */
-  contentJson: ArticleContentJson
+  contentJson?: ArticleContentJson | any
   
   /** Markdown/MDX representation of content */
-  contentMdx: string
+  contentMdx?: string
   
   /** Article excerpt/summary (optional, max 500 characters) */
   excerpt?: string

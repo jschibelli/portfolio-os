@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse and extract request body
-    const body: SaveDraftRequest = await request.json();
+    const body = await request.json();
     const {
       id,
       title,
@@ -269,7 +269,7 @@ export async function POST(request: NextRequest) {
             title: sanitizedData.title,
             subtitle: sanitizedData.subtitle,
             slug,
-            contentJson: contentJson as unknown,
+            contentJson: contentJson as any,
             contentMdx,
             excerpt: sanitizedData.excerpt,
             // SEO fields
@@ -340,7 +340,7 @@ export async function POST(request: NextRequest) {
           title: sanitizedData.title,
           subtitle: sanitizedData.subtitle,
           slug,
-          contentJson: contentJson as unknown,
+          contentJson: contentJson as any,
           contentMdx,
           excerpt: sanitizedData.excerpt,
           status: 'DRAFT',

@@ -137,6 +137,9 @@ interface EmbedNodeViewProps {
       provider?: EmbedProvider
       url?: string
       id?: string
+      file?: string
+      user?: string
+      tab?: string
     }
   }
   updateAttributes: (attrs: any) => void
@@ -170,7 +173,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         if (tweetId) newId = tweetId
         break
       }
-      case 'github-gist': {
+      case 'github-gist' as string: {
         const gistData = extractGitHubGistId(newUrl)
         if (gistData) {
           newId = gistData.id
@@ -178,7 +181,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         }
         break
       }
-      case 'codepen': {
+      case 'codepen' as string: {
         const codepenData = extractCodePenId(newUrl)
         if (codepenData) {
           newId = codepenData.id
@@ -187,12 +190,12 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         }
         break
       }
-      case 'codesandbox': {
+      case 'codesandbox' as string: {
         const sandboxId = extractCodeSandboxId(newUrl)
         if (sandboxId) newId = sandboxId
         break
       }
-      case 'generic': {
+      case 'generic' as string: {
         // For generic embeds, use the full URL as ID
         newId = newUrl
         break
@@ -215,7 +218,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
    * Includes timeout handling and proper cleanup
    */
   useEffect(() => {
-    if (node.attrs.provider === 'generic' && node.attrs.url && !isEditing) {
+    if (node.attrs.provider === ('generic' as EmbedProvider) && node.attrs.url && !isEditing) {
       // Abort any pending requests
       if (abortControllerRef.current) {
         abortControllerRef.current.abort()
@@ -235,7 +238,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
         
         try {
           const response = await fetch(
-            `/api/embed/oembed?url=${encodeURIComponent(node.attrs.url)}`,
+            `/api/embed/oembed?url=${encodeURIComponent(node.attrs.url || '')}`,
             { signal: controller.signal }
           )
           const data = await response.json()
@@ -318,7 +321,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
           </div>
         )
         
-      case 'github-gist':
+      case 'github-gist' as string:
         return (
           <div className="my-6">
             <div className="border border-gray-300 rounded-lg overflow-hidden">
@@ -339,7 +342,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
           </div>
         )
         
-      case 'codepen':
+      case 'codepen' as string:
         return (
           <div className="my-6">
             <div className="relative w-full h-0 pb-[60%] bg-gray-100 rounded-lg overflow-hidden">
@@ -366,7 +369,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
           </div>
         )
         
-      case 'codesandbox':
+      case 'codesandbox' as string:
         return (
           <div className="my-6">
             <div className="relative w-full h-0 pb-[75%] bg-black rounded-lg overflow-hidden">
@@ -392,7 +395,7 @@ function EmbedNodeView({ node, updateAttributes, deleteNode }: EmbedNodeViewProp
           </div>
         )
         
-      case 'generic':
+      case 'generic' as string:
         // Render oEmbed content if available
         if (isLoading) {
           return (

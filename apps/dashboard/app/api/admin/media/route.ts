@@ -170,7 +170,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const mediaIds = ids.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+    const mediaIds = ids.split(',').map(id => id.trim()).filter(id => id.length > 0);
     
     if (mediaIds.length === 0) {
       return NextResponse.json(

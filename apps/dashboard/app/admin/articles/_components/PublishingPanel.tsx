@@ -126,7 +126,7 @@ export function PublishingPanel({
   })
 
   const [isSaving, setIsSaving] = useState(false)
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(options.scheduledAt)
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(options.scheduledAt || undefined)
   const [scheduledTime, setScheduledTime] = useState<string>('12:00')
   const [series, setSeries] = useState<Series[]>(propSeries)
   const [selectedSeries, setSelectedSeries] = useState<Series | null>(

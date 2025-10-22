@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 // Public API endpoint for individual post by slug
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
 
     const post = await prisma.article.findFirst({
       where: {
@@ -22,8 +22,7 @@ export async function GET(
           select: {
             name: true,
             email: true,
-            bio: true,
-            avatar: true
+            image: true
           }
         },
         cover: {
@@ -69,14 +68,12 @@ export async function GET(
       publishedAt: post.publishedAt?.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
       readingMinutes: post.readingMinutes || 5,
-      wordCount: post.wordCount || 0,
       views: (post.views || 0) + 1, // Include the increment
       featured: post.featured || false,
       author: {
         name: post.author?.name || 'Unknown',
         email: post.author?.email || '',
-        bio: post.author?.bio || '',
-        avatar: post.author?.avatar || ''
+        image: post.author?.image || ''
       },
       cover: post.cover ? {
         url: post.cover.url,

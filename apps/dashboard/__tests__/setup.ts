@@ -1,29 +1,33 @@
 import '@testing-library/jest-dom'
-import React from 'react'
-import { installBrowserMocks, silenceConsoleNoise, NextImageMock } from './test-mocks/browserMocks'
 
-// Mock Next.js router/navigation
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-    prefetch: jest.fn(),
-    back: jest.fn(),
-    forward: jest.fn(),
-    refresh: jest.fn(),
-  }),
-  usePathname: () => '/',
-  useSearchParams: () => new URLSearchParams(),
-}))
-
-// Mock Next.js image component
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: NextImageMock,
-}))
-
-// Install shared browser API mocks
-installBrowserMocks()
-
-// Reduce console noise while preserving relevant logs
-silenceConsoleNoise()
+// Extend Jest matchers
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toBeInTheDocument(): R
+      toBeVisible(): R
+      toBeDisabled(): R
+      toBeEnabled(): R
+      toBeEmpty(): R
+      toBeEmptyDOMElement(): R
+      toBeInvalid(): R
+      toBeRequired(): R
+      toBeValid(): R
+      toContainElement(element: HTMLElement | null): R
+      toContainHTML(html: string): R
+      toHaveAccessibleDescription(expectedDescription?: string): R
+      toHaveAccessibleName(expectedName?: string): R
+      toHaveAttribute(attr: string, value?: string): R
+      toHaveClass(...classNames: string[]): R
+      toHaveFocus(): R
+      toHaveFormValues(values: Record<string, any>): R
+      toHaveStyle(css: string | Record<string, any>): R
+      toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): R
+      toHaveValue(value: string | string[] | number): R
+      toHaveDisplayValue(value: string | string[]): R
+      toBeChecked(): R
+      toBePartiallyChecked(): R
+      toHaveErrorMessage(message: string | RegExp): R
+    }
+  }
+}

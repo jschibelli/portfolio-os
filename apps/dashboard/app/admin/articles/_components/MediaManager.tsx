@@ -98,7 +98,7 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedItems, filteredMedia, handleBulkDelete])
+  }, [selectedItems, filteredMedia])
 
   // Filter media based on search and tags
   useEffect(() => {
