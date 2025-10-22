@@ -28,6 +28,19 @@ import { cn } from '@/lib/utils'
  * - Media library with search and filtering
  * - Bulk operations (delete, tag)
  * - Grid and list view modes
+ * - Keyboard shortcuts (Delete, Ctrl+A, Escape)
+ * 
+ * Security Considerations:
+ * - All API endpoints should implement proper authentication
+ * - File uploads should be validated on the server side
+ * - Delete operations require confirmation and proper authorization
+ * - Media access should be role-based (admin/editor permissions)
+ * 
+ * Performance Optimizations:
+ * - Uses React.useCallback for memoized functions
+ * - Implements lazy loading for images
+ * - Supports blur placeholders for better UX
+ * - Debounced search functionality
  */
 
 interface MediaItem {
@@ -72,6 +85,13 @@ export function MediaManager({ onSelectImage, maxSelection = 1, className }: Med
 
   /**
    * Bulk delete selected items
+   * 
+   * Security Note: This function calls the /api/admin/media endpoint which should
+   * implement proper authentication and authorization checks to ensure only
+   * authorized users can delete media items. The API endpoint should verify:
+   * - User is authenticated
+   * - User has admin/editor permissions
+   * - User owns the media or has permission to delete it
    */
   const handleBulkDelete = useCallback(async () => {
     if (selectedItems.size === 0) return

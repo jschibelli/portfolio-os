@@ -61,7 +61,7 @@ export interface SaveDraftRequest {
   coverUrl?: string
   
   /** Structured article content (block editor format) */
-  contentJson?: ArticleContentJson | any
+  contentJson?: ArticleContentJson | null
   
   /** Markdown/MDX representation of content */
   contentMdx?: string
