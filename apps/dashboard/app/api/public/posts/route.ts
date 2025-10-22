@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
             select: {
               name: true,
               email: true,
-              bio: true,
-              avatar: true
+              image: true
             }
           },
           cover: {
@@ -92,14 +91,12 @@ export async function GET(request: NextRequest) {
       publishedAt: post.publishedAt?.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
       readingMinutes: post.readingMinutes || 5,
-      wordCount: post.wordCount || 0,
       views: post.views || 0,
       featured: post.featured || false,
       author: {
         name: post.author?.name || 'Unknown',
         email: post.author?.email || '',
-        bio: post.author?.bio || '',
-        avatar: post.author?.avatar || ''
+        image: post.author?.image || ''
       },
       cover: post.cover ? {
         url: post.cover.url,

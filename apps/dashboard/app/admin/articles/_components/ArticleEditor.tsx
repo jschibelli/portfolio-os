@@ -250,8 +250,8 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         slug: articleData.slug.trim(),
         tags: articleData.tags,
         coverUrl: articleData.coverUrl.trim() || undefined,
-        content_json: contentJson,
-        content_mdx: contentMdx,
+        contentJson,
+        contentMdx,
         // SEO fields
         metaTitle: seoData.metaTitle,
         metaDescription: seoData.metaDescription,
@@ -317,8 +317,8 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         slug: articleData.slug.trim(),
         tags: articleData.tags,
         coverUrl: articleData.coverUrl.trim() || undefined,
-        content_json: contentJson,
-        content_mdx: contentMdx,
+        contentJson,
+        contentMdx,
         // SEO fields
         metaTitle: seoData.metaTitle,
         metaDescription: seoData.metaDescription,
@@ -828,7 +828,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                             throw new Error('Articles in a series must have a position')
                           }
 
-                          setPublishingOptions(options)
+                          setPublishingOptions({...publishingOptions, ...options})
                           
                           // Save to API if article exists
                           if (initialData?.id) {
