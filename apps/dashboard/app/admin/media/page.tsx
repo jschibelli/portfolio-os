@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { 
   Upload, 
   Search, 
@@ -15,20 +16,19 @@ import {
   FileText,
   Video,
   Music,
-  Archive
+  Archive,
+  Loader2
 } from "lucide-react";
 
 interface MediaItem {
   id: string;
-  name: string;
-  type: 'image' | 'document' | 'video' | 'audio' | 'archive';
   url: string;
-  thumbnail?: string;
-  size: number;
-  uploadedAt: string;
-  uploadedBy: string;
-  dimensions?: { width: number; height: number };
-  tags: string[];
+  alt: string | null;
+  width: number | null;
+  height: number | null;
+  blurData: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function AdminMedia() {
@@ -39,7 +39,7 @@ export default function AdminMedia() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [media, setMedia] = useState<MediaItem[]>([]);
-  const [filteredMedia, setFilteredMedia] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -47,47 +47,39 @@ export default function AdminMedia() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // Mock data
-  useState(() => {
-    const mockMedia: MediaItem[] = [
-      {
-        id: "1",
-        name: "blog-header-image.jpg",
-        type: "image",
-        url: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=600&fit=crop",
-        thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=200&h=150&fit=crop",
-        size: 245760,
-        uploadedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        uploadedBy: "John Schibelli",
-        dimensions: { width: 800, height: 600 },
-        tags: ["header", "blog", "design"]
-      },
-      {
-        id: "2",
-        name: "case-study-diagram.png",
-        type: "image",
-        url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop",
-        thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&h=150&fit=crop",
-        size: 512000,
-        uploadedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        uploadedBy: "John Schibelli",
-        dimensions: { width: 1200, height: 800 },
-        tags: ["diagram", "case-study", "technical"]
-      },
-      {
-        id: "3",
-        name: "project-presentation.pdf",
-        type: "document",
-        url: "#",
-        size: 2048000,
-        uploadedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        uploadedBy: "John Schibelli",
-        tags: ["presentation", "project", "pdf"]
+  // Fetch media from API
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+      router.push("/login");
+      return;
+    }
+
+    fetchMedia();
+  }, [session, status, router, searchTerm]);
+
+  const fetchMedia = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      
+      const response = await fetch(`/api/admin/media?${params}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch media');
       }
-    ];
-    setMedia(mockMedia);
-    setFilteredMedia(mockMedia);
-  });
+      
+      const data = await response.json();
+      setMedia(data.mediaItems || []);
+    } catch (error) {
+      console.error('Error fetching media:', error);
+      toast.error('Failed to load media');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -96,56 +88,42 @@ export default function AdminMedia() {
     setIsUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
+    try {
+      // Upload files one by one
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('generateVariants', 'true');
+        formData.append('generateBlur', 'true');
+
+        setUploadProgress(Math.floor(((i + 0.5) / files.length) * 100));
+
+        const response = await fetch('/api/media/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to upload ${file.name}`);
         }
-        return prev + 10;
-      });
-    }, 200);
 
-    // Simulate upload delay
-    setTimeout(() => {
-      const newMedia: MediaItem[] = Array.from(files).map((file, index) => ({
-        id: `new-${Date.now()}-${index}`,
-        name: file.name,
-        type: getFileType(file.type),
-        url: URL.createObjectURL(file),
-        thumbnail: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined,
-        size: file.size,
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: session?.user?.name || "Unknown",
-        tags: []
-      }));
+        setUploadProgress(Math.floor(((i + 1) / files.length) * 100));
+      }
 
-      setMedia(prev => [...newMedia, ...prev]);
-      setFilteredMedia(prev => [...newMedia, ...prev]);
+      toast.success(`Successfully uploaded ${files.length} file(s)`);
+      fetchMedia(); // Reload media list
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      toast.error('Failed to upload some files');
+    } finally {
       setIsUploading(false);
       setUploadProgress(0);
       
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    }, 2000);
-  };
-
-  const getFileType = (mimeType: string): MediaItem['type'] => {
-    if (mimeType.startsWith('image/')) return 'image';
-    if (mimeType.startsWith('video/')) return 'video';
-    if (mimeType.startsWith('audio/')) return 'audio';
-    if (mimeType.includes('pdf') || mimeType.includes('document')) return 'document';
-    return 'archive';
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
   };
 
   const formatDate = (dateString: string): string => {
@@ -158,47 +136,56 @@ export default function AdminMedia() {
     });
   };
 
-  const getFileIcon = (type: MediaItem['type']) => {
-    switch (type) {
-      case 'image':
-        return <ImageIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />;
-      case 'document':
-        return <FileText className="h-8 w-8 text-red-600 dark:text-red-400" />;
-      case 'video':
-        return <Video className="h-8 w-8 text-purple-600 dark:text-purple-400" />;
-      case 'audio':
-        return <Music className="h-8 w-8 text-green-600 dark:text-green-400" />;
-      case 'archive':
-        return <Archive className="h-8 w-8 text-orange-600 dark:text-orange-400" />;
-      default:
-        return <FileText className="h-8 w-8 text-slate-600 dark:text-slate-400" />;
-    }
-  };
-
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this file?")) {
-      setMedia(prev => prev.filter(item => item.id !== id));
-      setFilteredMedia(prev => prev.filter(item => item.id !== id));
-      setSelectedItems(prev => prev.filter(itemId => itemId !== id));
+      try {
+        const response = await fetch(`/api/admin/media/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete media');
+        }
+        
+        toast.success('Media deleted successfully');
+        fetchMedia();
+      } catch (error) {
+        console.error('Error deleting media:', error);
+        toast.error('Failed to delete media');
+      }
     }
   };
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (selectedItems.length === 0) return;
     
     if (confirm(`Are you sure you want to delete ${selectedItems.length} files?`)) {
-      setMedia(prev => prev.filter(item => !selectedItems.includes(item.id)));
-      setFilteredMedia(prev => prev.filter(item => !selectedItems.includes(item.id)));
-      setSelectedItems([]);
+      try {
+        await Promise.all(
+          selectedItems.map(id =>
+            fetch(`/api/admin/media/${id}`, { method: 'DELETE' })
+          )
+        );
+        toast.success('Media files deleted successfully');
+        setSelectedItems([]);
+        fetchMedia();
+      } catch (error) {
+        console.error('Error deleting media:', error);
+        toast.error('Failed to delete some files');
+      }
     }
   };
 
   const copyToClipboard = (url: string) => {
     navigator.clipboard.writeText(url);
-    // You could add a toast notification here
+    toast.success('URL copied to clipboard');
   };
 
-  if (status === "loading") {
+  const getFileName = (url: string) => {
+    return url.split('/').pop() || 'Unknown';
+  };
+
+  if (status === "loading" || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-lg">Loading...</div>
@@ -332,7 +319,7 @@ export default function AdminMedia() {
           <p className="text-slate-400 mt-2">Upload your first file to get started</p>
         </div>
       ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
           {media.map((item) => (
             <div key={item.id} className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors hover:shadow-md">
               <div className="p-4">
@@ -368,53 +355,34 @@ export default function AdminMedia() {
                 </div>
                 
                 <div className="text-center mb-3">
-                  {item.thumbnail ? (
-                    <img 
-                      src={item.thumbnail} 
-                      alt={item.name}
-                      className="w-full h-32 object-cover rounded-lg mb-3"
-                    />
-                  ) : (
-                    <div className="w-full h-32 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mb-3">
-                      {getFileIcon(item.type)}
-                    </div>
-                  )}
+                  <img 
+                    src={item.url} 
+                    alt={item.alt || 'Media item'}
+                    className="w-full h-32 object-cover rounded-lg mb-3"
+                    loading="lazy"
+                  />
                   
                   <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
-                    {item.name}
+                    {item.alt || getFileName(item.url)}
                   </h3>
                 </div>
                 
                 <div className="space-y-2 text-xs text-slate-500 dark:text-slate-500">
-                  <div className="flex justify-between">
-                    <span>Size:</span>
-                    <span>{formatFileSize(item.size)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Type:</span>
-                    <span className="capitalize">{item.type}</span>
-                  </div>
-                  {item.dimensions && (
+                  {item.width && item.height && (
                     <div className="flex justify-between">
                       <span>Dimensions:</span>
-                      <span>{item.dimensions.width}×{item.dimensions.height}</span>
+                      <span>{item.width}×{item.height}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span>Uploaded:</span>
-                    <span>{formatDate(item.uploadedAt)}</span>
+                    <span>{formatDate(item.createdAt)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Updated:</span>
+                    <span>{formatDate(item.updatedAt)}</span>
                   </div>
                 </div>
-                
-                {item.tags.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {item.tags.slice(0, 3).map((tag, index) => (
-                      <span key={index} className="px-2 py-1 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           ))}
@@ -446,10 +414,10 @@ export default function AdminMedia() {
                     Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Size
+                    Created
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Uploaded
+                    Updated
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     Actions
@@ -475,37 +443,34 @@ export default function AdminMedia() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-3">
-                        {item.thumbnail ? (
-                          <img 
-                            src={item.thumbnail} 
-                            alt={item.name}
-                            className="w-10 h-10 object-cover rounded"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded flex items-center justify-center">
-                            {getFileIcon(item.type)}
-                          </div>
-                        )}
+                        <img 
+                          src={item.url} 
+                          alt={item.alt || 'Media item'}
+                          className="w-10 h-10 object-cover rounded"
+                          loading="lazy"
+                        />
                         <div>
                           <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                            {item.name}
+                            {item.alt || getFileName(item.url)}
                           </div>
-                          <div className="text-sm text-slate-500 dark:text-slate-400">
-                            {item.uploadedBy}
-                          </div>
+                          {item.width && item.height && (
+                            <div className="text-sm text-slate-500 dark:text-slate-400">
+                              {item.width}×{item.height}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="capitalize text-sm text-slate-900 dark:text-slate-100">
-                        {item.type}
+                        Image
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                      {formatFileSize(item.size)}
+                      {formatDate(item.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                      {formatDate(item.uploadedAt)}
+                      {formatDate(item.updatedAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">

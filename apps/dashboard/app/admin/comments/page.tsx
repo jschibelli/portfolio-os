@@ -1,95 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import { MessageSquare, Check, X, Trash2, Search, Filter, Eye, Reply, Flag, User, Clock, ThumbsUp, ThumbsDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { MessageSquare, Check, X, Trash2, Search, Filter, Eye, Reply, Flag, User, Clock, ThumbsUp, ThumbsDown, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Comment {
   id: string;
   author: string;
-  authorEmail: string;
+  email: string;
   content: string;
-  status: 'pending' | 'approved' | 'rejected' | 'spam';
+  status: string;
   createdAt: string;
-  articleTitle: string;
-  articleSlug: string;
-  parentComment?: string;
+  article: {
+    id: string;
+    title: string;
+    slug: string;
+  };
+  parentId: string | null;
   likes: number;
-  dislikes: number;
-  isFlagged: boolean;
-  flaggedReason?: string;
 }
 
-const mockComments: Comment[] = [
+const mockCommentsForFallback: Comment[] = [
   {
     id: "1",
     author: "John Doe",
-    authorEmail: "john.doe@email.com",
-    content: "Great article! This really helped me understand the concept better. Looking forward to more content like this.",
+    email: "john.doe@email.com",
+    content: "Great article! This really helped me understand the concept better.",
     status: "approved",
-    createdAt: "2024-01-20 14:30",
-    articleTitle: "The Future of AI in Content Creation",
-    articleSlug: "future-ai-content-creation",
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    article: {
+      id: "demo1",
+      title: "The Future of AI in Content Creation",
+      slug: "future-ai-content-creation",
+    },
     likes: 5,
-    dislikes: 0,
-    isFlagged: false
+    parentId: null,
   },
-  {
-    id: "2",
-    author: "Sarah Wilson",
-    authorEmail: "sarah.w@email.com",
-    content: "I have a question about the implementation. Could you provide more details about the specific steps?",
-    status: "pending",
-    createdAt: "2024-01-20 15:45",
-    articleTitle: "Building Scalable Web Applications",
-    articleSlug: "building-scalable-web-apps",
-    likes: 2,
-    dislikes: 0,
-    isFlagged: false
-  },
-  {
-    id: "3",
-    author: "Mike Johnson",
-    authorEmail: "mike.j@email.com",
-    content: "This is exactly what I was looking for. The examples are very clear and practical.",
-    status: "approved",
-    createdAt: "2024-01-20 16:20",
-    articleTitle: "Design Systems: From Theory to Practice",
-    articleSlug: "design-systems-theory-practice",
-    likes: 8,
-    dislikes: 1,
-    isFlagged: false
-  },
-  {
-    id: "4",
-    author: "Anonymous User",
-    authorEmail: "user123@temp.com",
-    content: "SPAM: Check out my website for the best deals on everything!",
-    status: "spam",
-    createdAt: "2024-01-20 17:10",
-    articleTitle: "SEO Strategies for 2024",
-    articleSlug: "seo-strategies-2024",
-    likes: 0,
-    dislikes: 3,
-    isFlagged: true,
-    flaggedReason: "Spam content"
-  },
-  {
-    id: "5",
-    author: "Emma Davis",
-    authorEmail: "emma.d@email.com",
-    content: "I disagree with some of the points made here. The approach seems outdated.",
-    status: "rejected",
-    createdAt: "2024-01-20 18:00",
-    articleTitle: "Modern JavaScript Best Practices",
-    articleSlug: "modern-javascript-best-practices",
-    likes: 1,
-    dislikes: 4,
-    isFlagged: false
-  }
 ];
 
 export default function CommentsPage() {
-  const [comments, setComments] = useState<Comment[]>(mockComments);
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
+  const status = sessionResult?.status;
+  const router = useRouter();
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedComments, setSelectedComments] = useState<string[]>([]);
@@ -97,13 +54,44 @@ export default function CommentsPage() {
   const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
   const [replyContent, setReplyContent] = useState("");
 
-  const filteredComments = comments.filter(comment => {
-    const matchesSearch = comment.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         comment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         comment.articleTitle.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || comment.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  // Fetch comments from API
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+      router.push("/login");
+      return;
+    }
+
+    fetchComments();
+  }, [session, status, router, searchTerm, statusFilter]);
+
+  const fetchComments = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (statusFilter !== 'all') params.append('status', statusFilter);
+      
+      const response = await fetch(`/api/admin/comments?${params}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
+      
+      const data = await response.json();
+      setComments(data.comments || []);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      toast.error('Failed to load comments. Showing demo data.');
+      setComments(mockCommentsForFallback);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filtering is already done server-side, but we can do client-side filtering too
+  const filteredComments = comments;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -115,26 +103,64 @@ export default function CommentsPage() {
     }
   };
 
-  const handleStatusChange = (commentId: string, newStatus: Comment['status']) => {
-    setComments(comments.map(comment => 
-      comment.id === commentId ? { ...comment, status: newStatus } : comment
-    ));
+  const handleStatusChange = async (commentId: string, newStatus: string) => {
+    try {
+      const response = await fetch(`/api/admin/comments/${commentId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update comment');
+      }
+      
+      toast.success('Comment updated successfully');
+      fetchComments(); // Reload comments
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      toast.error('Failed to update comment');
+    }
   };
 
-  const handleBulkAction = (action: 'approve' | 'reject' | 'delete') => {
+  const handleBulkAction = async (action: 'approve' | 'reject' | 'delete') => {
     if (selectedComments.length === 0) return;
     
     if (action === 'delete') {
       if (confirm(`Are you sure you want to delete ${selectedComments.length} comment(s)? This action cannot be undone.`)) {
-        setComments(comments.filter(comment => !selectedComments.includes(comment.id)));
-        setSelectedComments([]);
+        try {
+          await Promise.all(
+            selectedComments.map(id =>
+              fetch(`/api/admin/comments/${id}`, { method: 'DELETE' })
+            )
+          );
+          toast.success('Comments deleted successfully');
+          setSelectedComments([]);
+          fetchComments();
+        } catch (error) {
+          console.error('Error deleting comments:', error);
+          toast.error('Failed to delete some comments');
+        }
       }
     } else {
       const newStatus = action === 'approve' ? 'approved' : 'rejected';
-      setComments(comments.map(comment => 
-        selectedComments.includes(comment.id) ? { ...comment, status: newStatus } : comment
-      ));
-      setSelectedComments([]);
+      try {
+        await Promise.all(
+          selectedComments.map(id =>
+            fetch(`/api/admin/comments/${id}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            })
+          )
+        );
+        toast.success('Comments updated successfully');
+        setSelectedComments([]);
+        fetchComments();
+      } catch (error) {
+        console.error('Error updating comments:', error);
+        toast.error('Failed to update some comments');
+      }
     }
   };
 
@@ -143,33 +169,63 @@ export default function CommentsPage() {
     setShowReplyModal(true);
   };
 
-  const submitReply = () => {
+  const submitReply = async () => {
     if (!replyingTo || !replyContent.trim()) return;
     
-    const newReply: Comment = {
-      id: Date.now().toString(),
-      author: "Admin",
-      authorEmail: "admin@site.com",
-      content: replyContent,
-      status: "approved",
-      createdAt: new Date().toLocaleString(),
-      articleTitle: replyingTo.articleTitle,
-      articleSlug: replyingTo.articleSlug,
-      parentComment: replyingTo.id,
-      likes: 0,
-      dislikes: 0,
-      isFlagged: false
-    };
-    
-    setComments([...comments, newReply]);
-    setShowReplyModal(false);
-    setReplyingTo(null);
-    setReplyContent("");
+    try {
+      const response = await fetch('/api/admin/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          articleId: replyingTo.article.id,
+          author: session?.user?.name || "Admin",
+          email: session?.user?.email || "admin@site.com",
+          content: replyContent,
+          status: "approved",
+          parentId: replyingTo.id
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to post reply');
+      }
+      
+      toast.success('Reply posted successfully');
+      setShowReplyModal(false);
+      setReplyingTo(null);
+      setReplyContent("");
+      fetchComments();
+    } catch (error) {
+      console.error('Error posting reply:', error);
+      toast.error('Failed to post reply');
+    }
+  };
+
+  const formatDate = (isoString: string) => {
+    return new Date(isoString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   const pendingComments = comments.filter(c => c.status === 'pending');
   const approvedComments = comments.filter(c => c.status === 'approved');
-  const flaggedComments = comments.filter(c => c.isFlagged);
+  const flaggedComments = comments.filter(c => c.status === 'spam');
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+      </div>
+    );
+  }
+
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -266,21 +322,24 @@ export default function CommentsPage() {
             <div className="flex space-x-2">
               <button
                 onClick={() => handleBulkAction('approve')}
-                className="px-3 py-1 text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
+                className="px-3 py-1 text-sm bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded hover:bg-green-200 dark:hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
+                aria-label={`Approve ${selectedComments.length} selected comments`}
               >
                 <Check className="w-4 h-4 inline mr-1" />
                 Approve
               </button>
               <button
                 onClick={() => handleBulkAction('reject')}
-                className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                aria-label={`Reject ${selectedComments.length} selected comments`}
               >
                 <X className="w-4 h-4 inline mr-1" />
                 Reject
               </button>
               <button
                 onClick={() => handleBulkAction('delete')}
-                className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+                aria-label={`Delete ${selectedComments.length} selected comments`}
               >
                 <Trash2 className="w-4 h-4 inline mr-1" />
                 Delete
@@ -319,7 +378,7 @@ export default function CommentsPage() {
                         {comment.author}
                       </div>
                       <div className="text-sm text-slate-500 dark:text-slate-400">
-                        {comment.authorEmail}
+                        {comment.email}
                       </div>
                     </div>
                   </div>
@@ -328,10 +387,10 @@ export default function CommentsPage() {
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(comment.status)}`}>
                       {comment.status}
                     </span>
-                    {comment.isFlagged && (
+                    {comment.status === 'spam' && (
                       <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-full">
                         <Flag className="w-3 h-3 inline mr-1" />
-                        Flagged
+                        Spam
                       </span>
                     )}
                   </div>
@@ -345,30 +404,18 @@ export default function CommentsPage() {
                   <div className="flex items-center space-x-4">
                     <span className="flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
-                      {comment.createdAt}
+                      {formatDate(comment.createdAt)}
                     </span>
                     <span className="flex items-center">
                       <ThumbsUp className="w-4 h-4 mr-1" />
                       {comment.likes}
                     </span>
-                    <span className="flex items-center">
-                      <ThumbsDown className="w-4 h-4 mr-1" />
-                      {comment.dislikes}
-                    </span>
                   </div>
                   
                   <div className="text-slate-600 dark:text-slate-400">
-                    On: <span className="font-medium">{comment.articleTitle}</span>
+                    On: <span className="font-medium">{comment.article.title}</span>
                   </div>
                 </div>
-                
-                {comment.flaggedReason && (
-                  <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
-                    <p className="text-sm text-red-700 dark:text-red-300">
-                      <strong>Flagged Reason:</strong> {comment.flaggedReason}
-                    </p>
-                  </div>
-                )}
                 
                 <div className="flex items-center space-x-2">
                   {comment.status === 'pending' && (
@@ -399,9 +446,19 @@ export default function CommentsPage() {
                   </button>
                   
                   <button
-                    onClick={() => {
+                        onClick={async () => {
                       if (confirm("Are you sure you want to delete this comment?")) {
-                        setComments(comments.filter(c => c.id !== comment.id));
+                        try {
+                          const response = await fetch(`/api/admin/comments/${comment.id}`, { method: 'DELETE' });
+                          if (response.ok) {
+                            toast.success('Comment deleted successfully');
+                            fetchComments();
+                          } else {
+                            throw new Error('Failed to delete');
+                          }
+                        } catch (error) {
+                          toast.error('Failed to delete comment');
+                        }
                       }
                     }}
                     className="px-3 py-1 text-sm bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
@@ -458,7 +515,7 @@ export default function CommentsPage() {
               <button
                 onClick={submitReply}
                 disabled={!replyContent.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-slate-100 text-slate-900 dark:text-slate-100 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Submit Reply
               </button>
@@ -469,4 +526,5 @@ export default function CommentsPage() {
     </div>
   );
 }
+
 
