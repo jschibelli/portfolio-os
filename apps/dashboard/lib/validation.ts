@@ -247,21 +247,42 @@ export function validateArticleId(id: string): string | null {
  * Sanitizes user input by removing potentially dangerous content
  * while preserving safe formatting characters
  * 
- * @param input - The user input string to sanitize
- * @returns The sanitized string with dangerous characters removed
+ * @param input - The user input to sanitize (should be a string)
+ * @returns The sanitized string with dangerous characters removed, or empty string if input is invalid
  * 
  * @example
  * sanitizeInput('Hello\x00World') // returns 'HelloWorld' (null byte removed)
  * sanitizeInput('  Test\n\t ') // returns 'Test\n\t' (preserves newlines/tabs, trims whitespace)
+ * sanitizeInput(null) // returns '' (invalid input)
+ * sanitizeInput(123) // returns '' (invalid input, logs warning)
  * 
  * Security features:
  * - Removes null bytes (\0) that can cause string termination issues
  * - Removes control characters that can cause rendering/security issues
  * - Preserves newline (\n), tab (\t), and carriage return (\r) for legitimate formatting
  * - Trims leading/trailing whitespace
+ * - Handles non-string inputs gracefully with error logging
  */
-export function sanitizeInput(input: string): string {
-  if (!input || typeof input !== 'string') {
+export function sanitizeInput(input: any): string {
+  // Enhanced error handling: Check for null/undefined first
+  if (input === null || input === undefined) {
+    return ''
+  }
+  
+  // Enhanced error handling: Validate input type and log warning for debugging
+  if (typeof input !== 'string') {
+    console.warn(`[VALIDATION] sanitizeInput received non-string input of type: ${typeof input}`)
+    // Attempt to convert to string safely
+    try {
+      input = String(input)
+    } catch (error) {
+      console.error('[VALIDATION] Failed to convert input to string:', error)
+      return ''
+    }
+  }
+  
+  // Handle empty strings
+  if (input === '') {
     return ''
   }
   

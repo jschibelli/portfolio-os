@@ -46,17 +46,27 @@ export async function GET(request: NextRequest) {
       where.type = type;
     }
 
-    const [mediaItems, total] = await Promise.all([
-      prisma.imageAsset.findMany({
-        where,
-        orderBy: [
-          { createdAt: 'desc' }
-        ],
-        skip,
-        take: limit
-      }),
-      prisma.imageAsset.count({ where })
-    ]);
+    // Fetch media items and total count with error handling
+    let mediaItems, total;
+    try {
+      [mediaItems, total] = await Promise.all([
+        prisma.imageAsset.findMany({
+          where,
+          orderBy: [
+            { createdAt: 'desc' }
+          ],
+          skip,
+          take: limit
+        }),
+        prisma.imageAsset.count({ where })
+      ]);
+    } catch (error) {
+      console.error("[ERROR] Failed to fetch media items:", error);
+      return NextResponse.json(
+        { error: "Failed to fetch media items. Please try again." },
+        { status: 500 }
+      );
+    }
 
     // Transform the data to match the expected format
     const transformedMedia = mediaItems.map(item => ({
@@ -179,16 +189,29 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    // Log deletion attempt for audit trail
+    console.log(`[AUDIT] User ${(session.user as any)?.email} attempting to delete ${mediaIds.length} media items`);
+
     // Check if any of the media items are being used by articles
-    const usedMedia = await prisma.imageAsset.findMany({
-      where: {
-        id: { in: mediaIds },
-        usedBy: { some: {} }
-      },
-      select: { id: true, url: true }
-    });
+    let usedMedia;
+    try {
+      usedMedia = await prisma.imageAsset.findMany({
+        where: {
+          id: { in: mediaIds },
+          usedBy: { some: {} }
+        },
+        select: { id: true, url: true }
+      });
+    } catch (error) {
+      console.error("[ERROR] Failed to check media usage:", error);
+      return NextResponse.json(
+        { error: "Failed to verify media usage. Please try again." },
+        { status: 500 }
+      );
+    }
 
     if (usedMedia.length > 0) {
+      console.warn(`[AUDIT] Blocked deletion of ${usedMedia.length} media items in use`);
       return NextResponse.json(
         { 
           error: "Cannot delete media items that are being used by articles",
@@ -198,12 +221,24 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Delete the media items
-    const deletedCount = await prisma.imageAsset.deleteMany({
-      where: {
-        id: { in: mediaIds }
-      }
-    });
+    // Delete the media items with error handling
+    let deletedCount;
+    try {
+      deletedCount = await prisma.imageAsset.deleteMany({
+        where: {
+          id: { in: mediaIds }
+        }
+      });
+      
+      // Log successful deletion for audit trail
+      console.log(`[AUDIT] Successfully deleted ${deletedCount.count} media items by ${(session.user as any)?.email}`);
+    } catch (error) {
+      console.error("[ERROR] Failed to delete media items:", error);
+      return NextResponse.json(
+        { error: "Failed to delete media items. Please try again." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       message: `Successfully deleted ${deletedCount.count} media item(s)`,
