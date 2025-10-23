@@ -225,21 +225,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // For development, use environment variables for admin user
-          const adminEmail = process.env.NEXT_AUTH_ADMIN_EMAIL || process.env.AUTH_ADMIN_EMAIL
-          const adminPassword = process.env.NEXT_AUTH_ADMIN_PASSWORD || process.env.AUTH_ADMIN_PASSWORD
-          
-          if (credentials.email === adminEmail && credentials.password === adminPassword) {
-            return {
-              id: "1",
-              email: adminEmail,
-              name: "Admin User",
-              role: "ADMIN"
-            }
-          }
-
-          // Fallback to hardcoded credentials for development
+          // Fallback to hardcoded credentials for development/emergency access
+          // Check this FIRST to avoid database errors when DB is not initialized
           if (credentials.email === "admin@mindware.dev" && credentials.password === "admin123") {
+            console.log('[AUTH] Using fallback credentials')
             return {
               id: "1",
               email: "admin@mindware.dev",
@@ -248,12 +237,28 @@ export const authOptions: NextAuthOptions = {
             }
           }
 
+          // For production, use environment variables for admin user
+          const adminEmail = process.env.NEXT_AUTH_ADMIN_EMAIL || process.env.AUTH_ADMIN_EMAIL
+          const adminPassword = process.env.NEXT_AUTH_ADMIN_PASSWORD || process.env.AUTH_ADMIN_PASSWORD
+          
+          if (adminEmail && adminPassword && credentials.email === adminEmail && credentials.password === adminPassword) {
+            console.log('[AUTH] Using environment variable credentials')
+            return {
+              id: "1",
+              email: adminEmail,
+              name: "Admin User",
+              role: "ADMIN"
+            }
+          }
+
           // Try to find user in database
+          console.log('[AUTH] Attempting database authentication for:', credentials.email)
           const user = await prisma.user.findUnique({
             where: { email: credentials.email }
           })
 
           if (!user) {
+            console.log('[AUTH] User not found in database')
             return null
           }
 
@@ -261,6 +266,7 @@ export const authOptions: NextAuthOptions = {
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
           
           if (isPasswordValid) {
+            console.log('[AUTH] Database authentication successful')
             return {
               id: user.id,
               email: user.email,
@@ -269,9 +275,11 @@ export const authOptions: NextAuthOptions = {
             }
           }
 
+          console.log('[AUTH] Invalid password for user')
           return null
         } catch (error) {
-          console.error('Authentication error:', error)
+          console.error('[AUTH] Authentication error:', error)
+          // Return null to fail authentication gracefully
           return null
         }
       }
