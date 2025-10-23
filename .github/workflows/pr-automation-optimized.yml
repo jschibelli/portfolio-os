@@ -89,7 +89,7 @@ jobs:
         if: env.PR_NUMBER != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action analyze -ExportTo analysis.md"
+        run: pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ env.PR_NUMBER }} -Analysis comprehensive -ExportTo analysis.md"
 
       - name: Universal PR Automation (monitoring, responses, merge guidance)
         if: env.PR_NUMBER != ''

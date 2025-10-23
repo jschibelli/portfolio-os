@@ -113,7 +113,7 @@ jobs:
       - name: Analyze created PR (CR-GPT) and upload report
         if: steps.create-pr.outputs.pr_number != ''
         run: |
-          pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -Action analyze -ExportTo analysis.md" || true
+          pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -Analysis comprehensive -ExportTo analysis.md" || true
         continue-on-error: true
 
       - name: Upload analysis artifacts (issue path)
