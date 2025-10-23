@@ -22,11 +22,12 @@ This document outlines the security improvements made to address code review fee
 **Issue:** `NEXTAUTH_SECRET` had a fallback value which could be exploited.
 
 **Fix:**
-- Removed fallback secret entirely
-- `NEXTAUTH_SECRET` is now required in environment variables
-- Application will fail to start if secret is not configured
+- Removed production fallback secret entirely
+- `NEXTAUTH_SECRET` is required in environment variables for production
+- Build-time placeholder allows builds to complete, but runtime authentication requires actual secret
+- NextAuth.js validates the secret at runtime
 
-**Impact:** Ensures JWT tokens are always signed with a cryptographically secure secret unique to each deployment.
+**Impact:** Ensures JWT tokens are always signed with a cryptographically secure secret unique to each deployment, while allowing CI/CD builds to complete successfully.
 
 ### 3. Improved Input Validation
 

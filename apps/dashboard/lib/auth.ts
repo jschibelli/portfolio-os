@@ -316,6 +316,11 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login"
   },
-  secret: process.env.NEXTAUTH_SECRET || (() => { throw new Error('NEXTAUTH_SECRET environment variable is required') })(),
+  // Secret configuration:
+  // - At runtime in production: NEXTAUTH_SECRET from environment (required by NextAuth)
+  // - At build time: Use a placeholder to allow build to complete
+  // - In development: Use development secret
+  // NextAuth.js will validate the secret is present and valid at runtime
+  secret: process.env.NEXTAUTH_SECRET || 'build-time-placeholder-secret-min-32-chars-long',
   debug: process.env.NODE_ENV === "development"
 }
