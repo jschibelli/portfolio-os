@@ -37,7 +37,7 @@ param(
 )
 
 # Import shared utilities
-$sharedPath = Join-Path $PSScriptRoot "..\core-utilities\github-utils.ps1"
+$sharedPath = Join-Path $PSScriptRoot "..\core-utilities\get-github-utilities.ps1"
 if (Test-Path $sharedPath) {
     . $sharedPath
 } else {
