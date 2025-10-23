@@ -16,14 +16,14 @@
 </p>
 
 <p align="center">
-  <strong>🎉 v1.0.0 Released!</strong> | <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.0.0">Release Notes</a> | <a href="apps/docs/CHANGELOG.md">Full Changelog</a>
+  <strong>🎉 v1.1.0 Released!</strong> | <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.1.0">Release Notes</a> | <a href="apps/docs/CHANGELOG.md">Full Changelog</a>
 </p>
 
 ## Overview
 
-**Portfolio OS v1.0.0** is a production-ready, self-documenting development platform that showcases modern engineering practices through real automation and AI-assisted workflows.
+**Portfolio OS v1.1.0** is a production-ready, self-documenting development platform that showcases modern engineering practices through real automation and AI-assisted workflows.
 
-Built over **4 months** with **578 commits** (353 in September alone!), Portfolio OS demonstrates:
+Built over **4 months**, Portfolio OS demonstrates:
 
 - 🤖 **Multi-Agent AI Development** - Jason & Chris agents handle parallel development workflows
 - ⚡ **100+ PowerShell Scripts** - Comprehensive automation for PRs, issues, and project management

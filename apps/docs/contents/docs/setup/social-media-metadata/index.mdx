@@ -1,0 +1,373 @@
+---
+title: Social Media Metadata
+description: Configure Open Graph and Twitter Card metadata for optimal sharing on LinkedIn, Facebook, and Twitter
+---
+
+# Social Media Metadata Configuration
+
+Configure Open Graph and Twitter Card metadata across your portfolio site for optimal sharing on LinkedIn, Facebook, Twitter, and other social platforms.
+
+## Overview
+
+Social media platforms use Open Graph (OG) tags to generate rich preview cards when links are shared. This guide covers the metadata configuration for all page types in the site app.
+
+## Metadata by Page Type
+
+### Homepage
+
+**Location**: `apps/site/app/layout.tsx`  
+**Status**: ✅ Fully Configured
+
+```tsx
+export const metadata: Metadata = {
+  title: "John Schibelli - Senior Front-End Engineer",
+  description: "Senior Front-End Engineer | React · Next.js · TypeScript...",
+  openGraph: {
+    type: 'website',
+    url: 'https://johnschibelli.dev',
+    siteName: 'John Schibelli Portfolio',
+    images: [{
+      url: '/assets/og.png',
+      width: 1200,
+      height: 630,
+      alt: 'John Schibelli - Senior Front-End Engineer',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@johnschibelli',
+    images: ['/assets/og.png'],
+  },
+}
+```
+
+### Blog Posts (Dynamic)
+
+**Location**: `apps/site/app/blog/[slug]/page.tsx`  
+**Status**: ✅ Configured
+
+Dynamic metadata generation for each blog post:
+
+```tsx
+export async function generateMetadata({ 
+  params 
+}: BlogPostPageProps): Promise<Metadata> {
+  const post = await fetchPostBySlug(params.slug)
+  
+  const title = `${post.title} | John Schibelli`
+  const description = post.brief || post.subtitle
+  const ogImage = post.coverImage?.url || '/assets/og.png'
+  
+  return {
+    title,
+    description,
+    openGraph: {
+      type: 'article',
+      url: `https://johnschibelli.dev/blog/${params.slug}`,
+      title,
+      description,
+      images: [{
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: post.title,
+      }],
+      publishedTime: post.publishedAt,
+      authors: [post.author?.name || 'John Schibelli'],
+      tags: post.tags?.map(tag => tag.name) || [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      creator: '@johnschibelli',
+      images: [ogImage],
+    },
+  }
+}
+```
+
+### Project Pages (Dynamic)
+
+**Location**: `apps/site/app/projects/[slug]/page.tsx`  
+**Status**: ✅ Configured
+
+Each project generates custom metadata with project-specific images:
+
+```tsx
+export async function generateMetadata({ 
+  params 
+}: ProjectPageProps): Promise<Metadata> {
+  const project = await getProjectBySlug(params.slug)
+  
+  return {
+    title: `${project.title} | John Schibelli Portfolio`,
+    description: project.description,
+    openGraph: {
+      type: 'website',
+      images: [{
+        url: `/projects/${project.slug}/opengraph-image`,
+        width: 1200,
+        height: 630,
+      }],
+    },
+  }
+}
+```
+
+## Open Graph Image Requirements
+
+### LinkedIn Specifications
+
+| Property | Requirement | Current Implementation |
+|----------|-------------|----------------------|
+| **Minimum Size** | 1200 x 627 pixels | ✅ 1200 x 630 pixels |
+| **Aspect Ratio** | 1.91:1 | ✅ 1.91:1 |
+| **Max File Size** | 5MB | ✅ < 1MB |
+| **Format** | JPG, PNG, GIF | ✅ PNG |
+
+### Image Locations
+
+- **Default/Fallback**: `/assets/og.png` (1200x630px)
+- **Blog Posts**: Dynamic from post cover image or fallback
+- **Projects**: Generated per project at `/projects/[slug]/opengraph-image`
+
+## Robots Configuration
+
+**Location**: `apps/site/app/robots.ts`
+
+The robots configuration properly allows social media crawlers:
+
+```ts
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{
+      userAgent: '*',
+      allow: [
+        '/',
+        '/blog',
+        '/blog/*',
+        '/projects',
+        '/projects/*',
+        '/case-studies',
+        '/case-studies/*',
+      ],
+    }],
+    sitemap: 'https://johnschibelli.dev/sitemap.xml',
+  }
+}
+```
+
+<Note type="success">
+LinkedIn, Facebook, and Twitter crawlers are **allowed** and can access all public content.
+</Note>
+
+## Testing Your Metadata
+
+### LinkedIn Post Inspector
+
+Test how your links appear on LinkedIn:
+
+<Steps>
+
+### Visit LinkedIn Post Inspector
+
+Go to [https://www.linkedin.com/post-inspector/](https://www.linkedin.com/post-inspector/)
+
+### Enter Your URL
+
+Input the full URL you want to test:
+```
+https://johnschibelli.dev/blog/your-post-slug
+```
+
+### Click Inspect
+
+LinkedIn will fetch and display the preview card.
+
+### Verify Display
+
+Check that title, description, and image appear correctly.
+
+</Steps>
+
+### Facebook Sharing Debugger
+
+[https://developers.facebook.com/tools/debug/](https://developers.facebook.com/tools/debug/)
+
+Use "Scrape Again" to clear Facebook's cache if needed.
+
+### Twitter Card Validator
+
+[https://cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
+
+### Manual Browser Inspection
+
+<Tabs items={['Chrome DevTools', 'View Source']}>
+<Tab value="Chrome DevTools">
+
+```bash
+1. Right-click on page → Inspect
+2. Go to Elements tab
+3. Search for <meta property="og:
+4. Verify all tags present
+```
+
+</Tab>
+<Tab value="View Source">
+
+```bash
+1. Right-click → View Page Source
+2. Search for: <meta property="og:
+3. Confirm values are correct
+```
+
+Expected output:
+```html
+<meta property="og:title" content="Your Post Title | John Schibelli">
+<meta property="og:description" content="Post description...">
+<meta property="og:image" content="https://johnschibelli.dev/image.jpg">
+<meta property="og:url" content="https://johnschibelli.dev/blog/slug">
+<meta property="og:type" content="article">
+```
+
+</Tab>
+</Tabs>
+
+## Troubleshooting
+
+### Issue: LinkedIn Shows Old/Incorrect Preview
+
+<Note type="warning">
+LinkedIn caches metadata for up to 7 days.
+</Note>
+
+**Solutions:**
+
+1. **Force Refresh**: Use LinkedIn Post Inspector to force re-fetch
+2. **Add Query Parameter**: Append `?v=2` to bypass cache temporarily
+3. **Wait**: Natural cache expiry after 7 days
+
+### Issue: Image Not Displaying
+
+**Checklist:**
+
+- [ ] Image URL is absolute (includes full domain)
+- [ ] Image is publicly accessible (not behind authentication)
+- [ ] Image meets size requirements (min 1200x627px)
+- [ ] Image file size under 5MB
+- [ ] Image server allows social media crawler access
+
+### Issue: Meta Tags Not in HTML
+
+**Common Causes:**
+
+1. Using client components (`"use client"`) - metadata only works in server components
+2. Metadata export not at page level
+3. Build not completed successfully
+4. Changes not deployed
+
+## Best Practices
+
+### ✅ Do
+
+- Use 1200x630px images for maximum compatibility
+- Write titles between 50-60 characters
+- Keep descriptions to 150-160 characters
+- Use absolute URLs for all images
+- Test on multiple platforms before major launches
+- Keep a fallback OG image ready
+
+### ❌ Don't
+
+- Use images smaller than LinkedIn's minimum (1200x627px)
+- Exceed 5MB image file size
+- Use relative image URLs
+- Forget to test after deploying changes
+- Skip Open Graph tags on important pages
+
+## Required Tags Summary
+
+### Minimum for LinkedIn
+
+```typescript
+{
+  openGraph: {
+    title: string,        // Required
+    description: string,  // Required  
+    image: string,        // Required (1200x630px)
+    url: string,          // Required
+    type: 'website' | 'article', // Required
+    siteName: string,     // Recommended
+  }
+}
+```
+
+### Enhanced for Blog Posts
+
+```typescript
+{
+  openGraph: {
+    type: 'article',
+    publishedTime: string,  // ISO 8601 date
+    authors: string[],
+    tags: string[],
+  }
+}
+```
+
+## Maintenance Checklist
+
+### When Adding New Pages
+
+- [ ] Add metadata export with Open Graph tags
+- [ ] Include proper title and description
+- [ ] Specify OG image (use fallback if needed)
+- [ ] Set correct `og:type` (website/article)
+- [ ] Test with LinkedIn Post Inspector
+
+### Monthly Review
+
+- [ ] Verify all OG images still accessible
+- [ ] Test random sampling of pages
+- [ ] Review analytics for social referrals
+- [ ] Update images if visual refresh needed
+
+## Resources
+
+<Cards>
+  <Card 
+    title="LinkedIn Post Inspector" 
+    href="https://www.linkedin.com/post-inspector/"
+  >
+    Test LinkedIn previews
+  </Card>
+  
+  <Card 
+    title="Facebook Debugger" 
+    href="https://developers.facebook.com/tools/debug/"
+  >
+    Debug Facebook sharing
+  </Card>
+  
+  <Card 
+    title="Twitter Card Validator" 
+    href="https://cards-dev.twitter.com/validator"
+  >
+    Validate Twitter cards
+  </Card>
+  
+  <Card 
+    title="Open Graph Protocol" 
+    href="https://ogp.me/"
+  >
+    Official OG documentation
+  </Card>
+</Cards>
+
+## Next Steps
+
+- [Deployment Guide](/docs/setup/deployment) - Deploy your changes
+- [Caching Strategy](/docs/setup/caching) - Configure caching
+- [Site App Documentation](/docs/apps-packages/site) - More about the site app
+

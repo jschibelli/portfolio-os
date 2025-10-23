@@ -43,7 +43,6 @@ export function CalendarModal({
 	};
 
 	const handleConfirm = () => {
-		alert('Schedule Meeting button clicked!');
 		console.log('✅ Confirm clicked, selected slot:', selectedTimeSlot);
 		if (selectedTimeSlot) {
 			console.log('📞 Calling onSlotSelect with:', selectedTimeSlot);
@@ -51,7 +50,6 @@ export function CalendarModal({
 			onClose();
 		} else {
 			console.warn('⚠️ No time slot selected');
-			alert('Please select a time slot first!');
 		}
 	};
 

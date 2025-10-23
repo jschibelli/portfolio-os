@@ -13,6 +13,7 @@ import FeaturedPost from '../../components/features/blog/featured-post';
 import ModernPostCard from '../../components/features/blog/modern-post-card';
 import NewsletterCTA from '../../components/features/newsletter/newsletter-cta';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
+import { Metadata } from 'next';
 
 // Lazy load chatbot for better performance
 const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'), {
@@ -20,6 +21,53 @@ const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'
 });
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  title: 'Blog | John Schibelli',
+  description: 'Unfiltered perspectives on code, creativity, and the constant evolution of technology. Articles on React, Next.js, TypeScript, AI workflows, and modern web development.',
+  keywords: ['blog', 'technology', 'web development', 'React', 'Next.js', 'TypeScript', 'AI', 'automation'],
+  authors: [{ name: 'John Schibelli' }],
+  creator: 'John Schibelli',
+  publisher: 'John Schibelli',
+  metadataBase: new URL('https://johnschibelli.dev'),
+  alternates: {
+    canonical: '/blog',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://johnschibelli.dev/blog',
+    title: 'Blog | John Schibelli',
+    description: 'Unfiltered perspectives on code, creativity, and the constant evolution of technology. Articles on React, Next.js, TypeScript, AI workflows, and modern web development.',
+    siteName: 'John Schibelli Portfolio',
+    images: [
+      {
+        url: '/assets/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'John Schibelli - Blog',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | John Schibelli',
+    description: 'Unfiltered perspectives on code, creativity, and the constant evolution of technology.',
+    creator: '@johnschibelli',
+    images: ['/assets/og.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
 
 // Default publication object for fallback
 const defaultPublication = {

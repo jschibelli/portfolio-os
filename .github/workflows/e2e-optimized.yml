@@ -56,17 +56,66 @@ jobs:
         run: pnpm --filter @mindware-blog/site exec playwright install --with-deps
 
       - name: Run Playwright chromium fast suite
+        id: e2e
         continue-on-error: true
-        run: pnpm --filter @mindware-blog/site exec playwright test tests/ci-integration.spec.ts --project=chromium --reporter=line || {
-          echo "⚠️  Playwright E2E tests have selector issues (pre-existing test problems)"
-          echo "Not blocking PR merge - will address in separate issue"
-        }
+        run: |
+          echo "🎭 Running Playwright E2E tests..."
+          echo "   Test suite: CI Integration (Chromium)"
+          echo "   Spec: tests/ci-integration.spec.ts"
+          echo ""
+          
+          if ! pnpm --filter @mindware-blog/site exec playwright test tests/ci-integration.spec.ts --project=chromium --reporter=line; then
+            echo ""
+            echo "⚠️  Playwright E2E tests failed:"
+            echo "   - Common issues:"
+            echo "     • Selector changes (component refactoring broke test selectors)"
+            echo "     • Timing issues (elements not visible when expected)"
+            echo "     • Navigation failures (page routing changed)"
+            echo "     • Environment differences (CI vs local)"
+            echo ""
+            echo "   - Debugging steps:"
+            echo "     1. Run locally: pnpm --filter @mindware-blog/site exec playwright test"
+            echo "     2. Use UI mode: pnpm --filter @mindware-blog/site exec playwright test --ui"
+            echo "     3. Check test report artifact for screenshots and traces"
+            echo "     4. Update selectors in tests/ci-integration.spec.ts"
+            echo ""
+            echo "   - Status: Non-blocking for PR merge"
+            echo "   - Priority: Medium - should be fixed to maintain test coverage"
+            echo "   - Tracking: See docs/TECHNICAL_DEBT.md#playwright-test-failures"
+            echo "e2e_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ E2E tests passed successfully"
+          fi
       
       - name: Run accessibility tests
+        id: accessibility
         continue-on-error: true
-        run: pnpm --filter @mindware-blog/site run test:accessibility --if-present || {
-          echo "⚠️  Accessibility tests have issues (non-blocking)"
-        }
+        run: |
+          echo "♿ Running accessibility tests..."
+          echo ""
+          
+          if ! pnpm --filter @mindware-blog/site run test:accessibility --if-present; then
+            echo ""
+            echo "⚠️  Accessibility tests failed:"
+            echo "   - Common issues:"
+            echo "     • Missing alt text on images"
+            echo "     • Insufficient color contrast"
+            echo "     • Missing ARIA labels"
+            echo "     • Keyboard navigation problems"
+            echo "     • Heading hierarchy issues"
+            echo ""
+            echo "   - Fix locally:"
+            echo "     Run: pnpm --filter @mindware-blog/site run test:accessibility"
+            echo "     Review axe-core violations in the output"
+            echo ""
+            echo "   - Status: Non-blocking but should be addressed"
+            echo "   - Priority: High - accessibility is important for all users"
+            echo "   - Tracking: See docs/TECHNICAL_DEBT.md#accessibility-issues"
+            echo "   - Resources: https://www.w3.org/WAI/WCAG21/quickref/"
+            echo "accessibility_failed=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Accessibility tests passed"
+          fi
 
       - name: Upload Playwright report (always)
         if: always()
@@ -75,5 +124,76 @@ jobs:
           name: playwright-report
           path: apps/site/playwright-report
           if-no-files-found: ignore
+      
+      # Summary report
+      - name: E2E Workflow summary
+        if: always()
+        run: |
+          echo "## 🎭 E2E Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Test results table
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status | Priority |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|----------|" >> $GITHUB_STEP_SUMMARY
+          
+          # E2E tests status
+          E2E_FAILED="${{ steps.e2e.outputs.e2e_failed }}"
+          E2E_STATUS=$([ -z "$E2E_FAILED" ] && echo "✅ Passed" || echo "⚠️ Failed")
+          echo "| **Playwright E2E Tests** | $E2E_STATUS | Medium |" >> $GITHUB_STEP_SUMMARY
+          
+          # Accessibility tests status
+          A11Y_FAILED="${{ steps.accessibility.outputs.accessibility_failed }}"
+          A11Y_STATUS=$([ -z "$A11Y_FAILED" ] && echo "✅ Passed" || echo "⚠️ Failed")
+          echo "| **Accessibility Tests** | $A11Y_STATUS | High |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Detailed notes section
+          if [ -n "$E2E_FAILED" ] || [ -n "$A11Y_FAILED" ]; then
+            echo "### ⚠️ Issues Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            if [ -n "$E2E_FAILED" ]; then
+              echo "#### E2E Test Failures" >> $GITHUB_STEP_SUMMARY
+              echo "- Playwright tests encountered failures" >> $GITHUB_STEP_SUMMARY
+              echo "- Check the Playwright report artifact for details" >> $GITHUB_STEP_SUMMARY
+              echo "- Review screenshots and traces for failed tests" >> $GITHUB_STEP_SUMMARY
+              echo "- Update test selectors if components changed" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ -n "$A11Y_FAILED" ]; then
+              echo "#### Accessibility Issues" >> $GITHUB_STEP_SUMMARY
+              echo "- Accessibility violations detected" >> $GITHUB_STEP_SUMMARY
+              echo "- Review axe-core output for specific violations" >> $GITHUB_STEP_SUMMARY
+              echo "- Address WCAG compliance issues" >> $GITHUB_STEP_SUMMARY
+              echo "- Ensure keyboard navigation and screen reader support" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "### ✅ All Tests Passed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Great job! All E2E and accessibility tests are passing." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "### 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -n "$E2E_FAILED" ] || [ -n "$A11Y_FAILED" ]; then
+            echo "1. Download and review the Playwright report artifact" >> $GITHUB_STEP_SUMMARY
+            echo "2. Run tests locally to reproduce failures" >> $GITHUB_STEP_SUMMARY
+            echo "3. Fix identified issues before next release" >> $GITHUB_STEP_SUMMARY
+            echo "4. See [Technical Debt Document](../docs/TECHNICAL_DEBT.md) for tracking" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "1. Review test coverage and consider adding more tests" >> $GITHUB_STEP_SUMMARY
+            echo "2. Keep tests updated as features evolve" >> $GITHUB_STEP_SUMMARY
+            echo "3. Monitor for regressions in future PRs" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "_Note: E2E test failures are tracked in docs/TECHNICAL_DEBT.md and are non-blocking for PR merges._" >> $GITHUB_STEP_SUMMARY
 
 

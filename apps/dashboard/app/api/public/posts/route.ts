@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
             select: {
               name: true,
               email: true,
-              bio: true,
-              avatar: true
+              image: true
             }
           },
           cover: {
@@ -97,8 +96,7 @@ export async function GET(request: NextRequest) {
       author: {
         name: post.author?.name || 'Unknown',
         email: post.author?.email || '',
-        bio: '', // User model doesn't have bio field
-        avatar: post.author?.image || '' // Use 'image' field from User model
+        image: post.author?.image || ''
       },
       cover: post.cover ? {
         url: post.cover.url,

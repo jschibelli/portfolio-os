@@ -24,6 +24,8 @@ interface AudienceConfig {
 		text: string;
 		url: string;
 		icon: React.ReactNode;
+		download?: boolean;
+		downloadFilename?: string;
 	};
 	secondaryCTA: {
 		text: string;
@@ -43,8 +45,10 @@ const audienceData = {
 		description: "I'm actively seeking new opportunities and ready to bring my 15+ years of experience to your team. Let's discuss how I can contribute to your organization's success.",
 		primaryCTA: {
 			text: "View Resume",
-			url: "/resume",
-			icon: commonIcons.arrowRight
+			url: "/assets/John-Schibelli-Resume-2025.pdf",
+			icon: commonIcons.arrowRight,
+			download: true,
+			downloadFilename: "John-Schibelli-Resume-2025.pdf"
 		},
 		secondaryCTA: {
 			text: "Schedule Interview",
@@ -118,14 +122,37 @@ export default function AudienceSpecificCTA({ audience, className = '', onSchedu
 	const validAudience = validateAudience(audience, 'clients');
 	const data = audienceData[validAudience];
 	
-	// Error handling for invalid audience values
+	// Enhanced error handling for invalid audience values
 	if (!data) {
+		console.error(`AudienceSpecificCTA: Invalid audience "${audience}" provided. Falling back to "clients".`);
 		handleInvalidAudience(audience, 'clients');
 		return <AudienceSpecificCTA audience="clients" className={className} onScheduleClick={onScheduleClick} />;
 	}
 
 	// Check if this is the recruiters or startup-founders audience with schedule button
 	const isScheduleButton = (validAudience === 'recruiters' || validAudience === 'startup-founders') && onScheduleClick;
+	
+	/**
+	 * Renders the schedule button for recruiters and startup founders
+	 * Only displays when onScheduleClick callback is provided
+	 * @returns JSX element or null
+	 */
+	const renderScheduleButton = () => {
+		if (!isScheduleButton) return null;
+		
+		return (
+			<Button
+				size="lg"
+				variant="outline"
+				className={sharedStyles.button.secondary}
+				onClick={onScheduleClick}
+				aria-label={`${data.secondaryCTA.text} for ${data.title}`}
+			>
+				{data.secondaryCTA.icon}
+				{data.secondaryCTA.text}
+			</Button>
+		);
+	};
 	
 	return (
 		<section className={`py-16 ${className}`}>
@@ -215,35 +242,35 @@ export default function AudienceSpecificCTA({ audience, className = '', onSchedu
 							initial={{ opacity: 0, scale: 0.9 }}
 							whileInView={{ opacity: 1, scale: 1 }}
 							transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
-								viewport={{ once: true }}
-								className="flex flex-col justify-center gap-4 sm:flex-row"
+							viewport={{ once: true }}
+							className="flex flex-col justify-center gap-4 sm:flex-row"
+						>
+							<Button
+								size="lg"
+								className={sharedStyles.button.primary}
+								asChild
 							>
-												<Button
-													size="lg"
-													className={sharedStyles.button.primary}
-													asChild
-												>
-									<Link href={data.primaryCTA.url}>
-										{data.primaryCTA.icon}
-										{data.primaryCTA.text}
-									</Link>
+								<Link href={data.primaryCTA.url}>
+									{data.primaryCTA.icon}
+									{data.primaryCTA.text}
+								</Link>
+							</Button>
+							{isScheduleButton ? (
+								<Button
+									size="lg"
+									variant="outline"
+									className={sharedStyles.button.secondary}
+									onClick={onScheduleClick}
+								>
+									{data.secondaryCTA.icon}
+									{data.secondaryCTA.text}
 								</Button>
-												{isScheduleButton ? (
-													<Button
-														size="lg"
-														variant="outline"
-														className={sharedStyles.button.secondary}
-														onClick={onScheduleClick}
-													>
-														{data.secondaryCTA.icon}
-														{data.secondaryCTA.text}
-													</Button>
-												) : (
-													<Button
-														size="lg"
-														variant="outline"
-														className={sharedStyles.button.secondary}
-														asChild
+							) : (
+								<Button
+									size="lg"
+									variant="outline"
+									className={sharedStyles.button.secondary}
+									asChild
 													>
 														<Link href={data.secondaryCTA.url}>
 															{data.secondaryCTA.icon}

@@ -168,7 +168,7 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
       },
       author: {
         id: article.author.id,
-        name: sanitizeInput(article.author.name) || '',
+        name: sanitizeInput(article.author.name || '') || '',
         email: article.author.email
       },
       meta: {
