@@ -1,5 +1,5 @@
 {
-  "buildCommand": "turbo run build --filter=@mindware-blog/dashboard...",
+  "buildCommand": "cd ../.. && pnpm --filter @mindware-blog/db prisma generate && pnpm turbo run build --filter=@mindware-blog/dashboard...",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "functions": {
