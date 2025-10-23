@@ -1,6 +1,5 @@
 {
   "buildCommand": "turbo run build --filter=@mindware-blog/site...",
   "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/site"
+  "framework": "nextjs"
 }
