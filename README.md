@@ -8,7 +8,7 @@
 <p align="center">A self-documenting, AI-powered development platform — portfolio, blog, admin dashboard, and automation tools.</p>
 
 <p align="center">
-  <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.0.0"><img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg"></a>
+  <a href="https://github.com/jschibelli/portfolio-os/releases/tag/v1.1.0"><img alt="Version" src="https://img.shields.io/badge/version-1.1.0-blue.svg"></a>
   <a href="https://github.com/jschibelli/portfolio-os/blob/main/LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
   <a href="https://johnschibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-johnschibelli.dev-blueviolet"></a>
   <a href="https://docs.johnschibelli.dev"><img alt="Documentation" src="https://img.shields.io/badge/Docs-docs.johnschibelli.dev-orange"></a>
