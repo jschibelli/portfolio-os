@@ -75,6 +75,33 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
     }
   }, [isOpen])
 
+  // Adjust position if menu would be cut off by viewport
+  useEffect(() => {
+    if (isOpen && menuRef.current) {
+      const menu = menuRef.current
+      const rect = menu.getBoundingClientRect()
+      const viewportHeight = window.innerHeight
+      const viewportWidth = window.innerWidth
+      
+      // Check if menu extends beyond viewport
+      if (rect.top < 20) {
+        // Menu is too high, adjust position
+        const newTop = Math.max(20, position.y + 50)
+        menu.style.top = `${newTop}px`
+      }
+      
+      if (rect.right > viewportWidth - 20) {
+        // Menu extends beyond right edge
+        menu.style.left = `${viewportWidth - rect.width - 20}px`
+      }
+      
+      if (rect.left < 20) {
+        // Menu extends beyond left edge
+        menu.style.left = '20px'
+      }
+    }
+  }, [isOpen, position])
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -94,6 +121,7 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
         case 'Enter':
           e.preventDefault()
           if (commands[selectedIndex]) {
+            console.log('Keyboard Enter pressed:', { command: commands[selectedIndex].command, blockType: commands[selectedIndex].blockType })
             handleCommandSelect(commands[selectedIndex].command, commands[selectedIndex].blockType)
           }
           break
@@ -108,7 +136,7 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, selectedIndex])
 
-  if (!isOpen) return null
+  // Early return moved after all hooks to prevent hooks order issues
 
   // Enhanced command definitions with all block types
   const basicCommands: CommandItem[] = [
@@ -203,24 +231,30 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
   }, [searchQuery, activeTab])
 
   const handleCommandSelect = (command: string, blockType?: string) => {
+    console.log('SlashCommandMenu: handleCommandSelect called', { command, blockType })
     onSelect(command, blockType)
     onClose()
   }
 
   const filteredCommands = getFilteredCommands()
 
+  if (!isOpen) return null
+
   return (
     <div 
       ref={menuRef}
-      className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-xl max-w-md w-80"
+      className="fixed z-50 bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-w-md w-80"
       style={{ 
         left: position.x, 
         top: position.y,
-        transform: 'translateY(-100%)'
+        transform: 'translateY(-100%)',
+        // Ensure menu is always visible within viewport
+        maxHeight: 'calc(100vh - 20px)',
+        overflow: 'hidden'
       }}
     >
       {/* Search Bar */}
-      <div className="p-3 border-b border-gray-200">
+      <div className="p-3 border-b border-gray-700">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -229,21 +263,21 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
             placeholder="Search commands..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            className="w-full pl-10 pr-4 py-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm bg-gray-800 text-white placeholder-gray-400"
           />
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto">
+      <div className="flex border-b border-gray-700 overflow-x-auto">
         {(['Basic', 'Advanced', 'Media', 'Interactive', 'Custom', 'AI', 'Embeds'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === tab
-                ? 'text-gray-900 bg-gray-50 border-b-2 border-blue-500'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-white bg-gray-700 border-b-2 border-blue-500'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
             }`}
           >
             {tab}
@@ -254,35 +288,40 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
       {/* Commands */}
       <div className="p-2 max-h-80 overflow-y-auto">
         {filteredCommands.length === 0 ? (
-          <div className="p-4 text-center text-gray-500 text-sm">
+          <div className="p-4 text-center text-gray-400 text-sm">
             No commands found for "{searchQuery}"
           </div>
         ) : (
           filteredCommands.map((cmd, index) => (
             <button
               key={`${cmd.command}-${index}`}
-              onClick={() => handleCommandSelect(cmd.command, cmd.blockType)}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                console.log('Button clicked:', { command: cmd.command, blockType: cmd.blockType })
+                handleCommandSelect(cmd.command, cmd.blockType)
+              }}
               className={`w-full flex items-center gap-3 p-2 rounded transition-colors text-left ${
                 index === selectedIndex
-                  ? 'bg-blue-50 border border-blue-200'
-                  : 'hover:bg-gray-50'
+                  ? 'bg-blue-600 border border-blue-500'
+                  : 'hover:bg-gray-700'
               }`}
             >
               <div className={`w-8 h-8 flex items-center justify-center rounded ${
-                index === selectedIndex ? 'bg-blue-100' : 'bg-gray-100'
+                index === selectedIndex ? 'bg-blue-500' : 'bg-gray-600'
               }`}>
                 <cmd.icon className={`w-4 h-4 ${
-                  index === selectedIndex ? 'text-blue-600' : 'text-gray-600'
+                  index === selectedIndex ? 'text-white' : 'text-gray-300'
                 }`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className={`font-medium ${
-                  index === selectedIndex ? 'text-blue-900' : 'text-gray-900'
+                  index === selectedIndex ? 'text-white' : 'text-white'
                 }`}>
                   {cmd.label}
                 </div>
                 <div className={`text-sm ${
-                  index === selectedIndex ? 'text-blue-700' : 'text-gray-600'
+                  index === selectedIndex ? 'text-blue-100' : 'text-gray-400'
                 }`}>
                   {cmd.description}
                 </div>
@@ -293,7 +332,7 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
       </div>
 
       {/* Footer with keyboard shortcuts */}
-      <div className="px-3 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+      <div className="px-3 py-2 bg-gray-700 border-t border-gray-600 text-xs text-gray-400">
         <div className="flex justify-between">
           <span>↑↓ Navigate</span>
           <span>Enter Select</span>

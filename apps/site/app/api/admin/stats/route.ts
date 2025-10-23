@@ -170,18 +170,30 @@ export async function GET(request: NextRequest) {
       scheduledArticlesCount = 0;
     }
 
-    // Calculate average time on page (this would need real analytics data)
-    const avgTimeOnPage = "4m 32s";
+    // Try to get real analytics data from Google Analytics first
+    let analyticsData = null;
+    try {
+      const analyticsResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/analytics/overview?period=7d`);
+      if (analyticsResponse.ok) {
+        const analyticsResult = await analyticsResponse.json();
+        analyticsData = analyticsResult.overview;
+      }
+    } catch (error) {
+      console.warn('Failed to fetch Google Analytics data for stats:', error);
+    }
 
-    // Calculate social shares (this would need real analytics data)
-    const socialShares = Math.floor((currentViews || 0) * 0.006);
-
-    // Calculate bounce rate (this would need real analytics data)
-    const bounceRate = 42;
+    // Use Google Analytics data if available, otherwise fall back to article data
+    const totalViews = analyticsData?.pageviews || totalStats._sum.views || 0;
+    const uniqueVisitors = analyticsData?.visitors || Math.floor((totalStats._sum.views || 0) * 0.35);
+    const avgTimeOnPage = analyticsData?.visit_duration 
+      ? `${Math.round(analyticsData.visit_duration / 60)}m ${Math.round(analyticsData.visit_duration % 60)}s`
+      : "4m 32s";
+    const socialShares = Math.floor(totalViews * 0.006);
+    const bounceRate = analyticsData?.bounce_rate || 42;
 
     const stats = {
-      totalViews: totalStats._sum.views || 0,
-      uniqueVisitors: Math.floor((totalStats._sum.views || 0) * 0.35), // Estimate unique visitors
+      totalViews,
+      uniqueVisitors,
       publishedArticles: totalStats._count.id || 0,
       avgTimeOnPage,
       socialShares,

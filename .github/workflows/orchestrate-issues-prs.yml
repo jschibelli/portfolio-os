@@ -76,7 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./scripts/issue-config-unified.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Preset blog -AddToProject
+          ./scripts/issue-management/configure-issues-unified.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Preset blog -AddToProject
 
       - name: Assign default owner and comment analysis start
         run: |
@@ -108,12 +108,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
         run: |
-          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+          ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
       - name: Analyze created PR (CR-GPT) and upload report
         if: steps.create-pr.outputs.pr_number != ''
         run: |
-          pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -Action analyze -ExportTo analysis.md" || true
+          pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ steps.create-pr.outputs.pr_number }} -Analysis comprehensive -ExportTo analysis.md" || true
         continue-on-error: true
 
       - name: Upload analysis artifacts (issue path)
@@ -150,7 +150,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
         run: |
-          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+          ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
       - name: Set up Node (for mono-repo checks)
         if: success()
@@ -178,14 +178,14 @@ jobs:
       - name: CR-GPT analyze and upload report
         if: success()
         run: |
-          pwsh -c "./scripts/cr-gpt-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport -ExportTo analysis.md"
+          pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport -ExportTo analysis.md"
           echo "analysis.md" > artifact_list.txt
         continue-on-error: true
 
       - name: Universal PR Automation (CR-GPT monitoring, merge guidance)
         if: success()
         run: |
-          pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action all"
+          pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action all"
         continue-on-error: true
 
       - name: Upload artifacts
@@ -199,7 +199,7 @@ jobs:
       - name: Optional auto-respond to CR-GPT thread (dry-run controlled)
         if: success()
         run: |
-          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action respond"; else echo "Dry run: skipping responses"; fi
+          if [ "${DRY_RUN_RESPONSES}" = "false" ]; then pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action respond"; else echo "Dry run: skipping responses"; fi
 
       - name: Update project Status to In review if reviews submitted
         if: github.event_name == 'pull_request_review' && success() && needs.detect-and-route.outputs.review_state != ''
@@ -211,7 +211,7 @@ jobs:
         run: |
           $state = $env:REVIEW_STATE.ToUpperInvariant()
           if ($state -eq 'APPROVED' -or $state -eq 'CHANGES_REQUESTED' -or $state -eq 'COMMENTED' -or $state -eq 'SUBMITTED') {
-            ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "In review" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+            ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In review" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
           } else {
             Write-Host "Review state '$($env:REVIEW_STATE)' not triggering status update"
           }
@@ -273,7 +273,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
           COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
-        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID -DryRun"
+        run: pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond -DryRun"
 
       - name: Post threaded reply (CR-GPT only)
         if: ${{ (steps.meta.outputs.author || '') == 'cr-gpt[bot]' && env.DRY_RUN_RESPONSES != 'true' }}
@@ -281,7 +281,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
           COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
-        run: pwsh -c "./scripts/auto-response-generator.ps1 -PRNumber $env:PR_NUMBER -CommentId $env:COMMENT_ID"
+        run: pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond"
 
   pr-merged-status:
     name: Update Status on merge (Done)
@@ -296,6 +296,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ needs.detect-and-route.outputs.pr_number }}
         run: |
-          ./scripts/auto-configure-pr.ps1 -PRNumber $env:PR_NUMBER -Status "Done" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
+          ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "Done" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
 

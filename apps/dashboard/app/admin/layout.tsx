@@ -1,9 +1,24 @@
 "use client";
 
+// React imports
+import { useEffect } from "react";
+
+// Third-party imports
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+
+// Local component imports
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Sidebar } from "@/components/admin/Sidebar";
+
+// Style constants for consistency and maintainability
+const LAYOUT_STYLES = {
+  container: "min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors",
+  skipLink: "sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+  mainContent: "min-h-screen p-4 md:p-6 md:pl-8 md:ml-64 bg-slate-50 dark:bg-slate-900 transition-colors",
+  loadingContainer: "min-h-screen flex items-center justify-center bg-slate-900 text-slate-100",
+  loadingText: "text-lg"
+} as const;
 
 export default function AdminLayout({
   children,
@@ -93,8 +108,8 @@ export default function AdminLayout({
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-100">
-        <div className="text-lg">Loading...</div>
+      <div className={LAYOUT_STYLES.loadingContainer}>
+        <div className={LAYOUT_STYLES.loadingText}>Loading...</div>
       </div>
     );
   }
@@ -104,9 +119,26 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors">
-      <Sidebar />
-      <main className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-900 overflow-auto transition-colors md:ml-0">{children}</main>
-    </div>
+    <ErrorBoundary>
+      <div className={LAYOUT_STYLES.container}>
+        {/* Skip navigation link for keyboard accessibility (WCAG 2.1 AA) */}
+        <a 
+          href="#main-content" 
+          className={LAYOUT_STYLES.skipLink}
+        >
+          Skip to main content
+        </a>
+        <Sidebar />
+        {/* Main content with proper left margin to account for fixed sidebar */}
+        <main 
+          id="main-content"
+          className={LAYOUT_STYLES.mainContent}
+          role="main"
+          aria-label="Admin dashboard main content"
+        >
+          {children}
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }

@@ -136,7 +136,6 @@ export function ProjectsCTASection() {
         onBookingComplete={handleBookingComplete}
         isLoadingSlots={isLoadingSlots}
       />
-
       {/* Success Modal */}
       <BookingSuccessModal
         isOpen={isSuccessModalOpen}

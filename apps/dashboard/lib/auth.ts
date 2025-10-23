@@ -7,6 +7,7 @@
 
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import bcrypt from 'bcrypt'
 import { prisma } from './prisma'
 
 export interface User {
@@ -224,8 +225,20 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // For development, use a simple hardcoded admin user
-          // In production, this should query the database
+          // For development, use environment variables for admin user
+          const adminEmail = process.env.NEXT_AUTH_ADMIN_EMAIL || process.env.AUTH_ADMIN_EMAIL
+          const adminPassword = process.env.NEXT_AUTH_ADMIN_PASSWORD || process.env.AUTH_ADMIN_PASSWORD
+          
+          if (credentials.email === adminEmail && credentials.password === adminPassword) {
+            return {
+              id: "1",
+              email: adminEmail,
+              name: "Admin User",
+              role: "ADMIN"
+            }
+          }
+
+          // Fallback to hardcoded credentials for development
           if (credentials.email === "admin@mindware.dev" && credentials.password === "admin123") {
             return {
               id: "1",
@@ -244,13 +257,14 @@ export const authOptions: NextAuthOptions = {
             return null
           }
 
-          // In production, you should hash and compare passwords properly
-          // For now, we'll use a simple comparison
-          if (user.password === credentials.password) {
+          // Compare the provided password with the hashed password in the database
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+          
+          if (isPasswordValid) {
             return {
               id: user.id,
               email: user.email,
-              name: user.name,
+              name: user.name || null,
               role: user.role
             }
           }
@@ -285,5 +299,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login"
   },
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development"
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-development",
+  debug: process.env.NODE_ENV === "development"
 }

@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, Search, Clock, User, FileText, Image, Settings, BarChart3 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Activity, Search, Clock, User, FileText, Image, Settings, BarChart3, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+// Import types only to avoid circular dependencies
+import type { AdminActivity as ImportedAdminActivity } from "@/lib/admin-data-service";
 
 interface ActivityLog {
   id: string;
@@ -18,7 +23,7 @@ interface ActivityLog {
   changes?: string[];
 }
 
-const mockActivityLogs: ActivityLog[] = [
+const mockActivityLogsForFallback: ActivityLog[] = [
   {
     id: "1",
     action: "Article Published",
@@ -132,12 +137,78 @@ const mockActivityLogs: ActivityLog[] = [
 ];
 
 export default function ActivityPage() {
-  const [activityLogs] = useState<ActivityLog[]>(mockActivityLogs);
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
+  const status = sessionResult?.status;
+  const router = useRouter();
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [severityFilter, setSeverityFilter] = useState("all");
   const [userFilter, setUserFilter] = useState("all");
   const [timeRange, setTimeRange] = useState("24h");
+
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+      router.push("/login");
+      return;
+    }
+
+    fetchActivity();
+  }, [session, status, router]);
+
+  const fetchActivity = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/activity?limit=100');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch activity');
+      }
+      
+      const data = await response.json();
+      const activities = data.activities || [];
+      
+      // Transform to ActivityLog format
+      const transformedLogs: ActivityLog[] = activities.map((act: any) => ({
+        id: act.id,
+        action: act.kind || 'Activity',
+        description: (act.kind || 'Activity').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (l: string) => l.toUpperCase()),
+        user: act.meta?.user || 'System',
+        userRole: act.meta?.role || 'SYSTEM',
+        timestamp: new Date(act.createdAt).toLocaleString(),
+        category: (act.channel === 'articles' ? 'content' : act.channel === 'media' ? 'media' : 'system') as any,
+        severity: 'info' as any,
+        ipAddress: act.meta?.ip,
+        userAgent: act.meta?.userAgent,
+        affectedResource: act.externalId || undefined,
+        changes: act.meta?.changes
+      }));
+      
+      setActivityLogs(transformedLogs);
+    } catch (error) {
+      console.error('Error fetching activity:', error);
+      toast.error('Failed to load activity logs. Showing demo data.');
+      setActivityLogs(mockActivityLogsForFallback);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+      </div>
+    );
+  }
+
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    return null;
+  }
 
   const filteredLogs = activityLogs.filter(log => {
     const matchesSearch = log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||

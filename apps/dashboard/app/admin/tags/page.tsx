@@ -1,100 +1,151 @@
 "use client";
 
-import { useState } from "react";
-import { Tag, Plus, Edit, Trash2, Search, Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Tag, Plus, Edit, Trash2, Search, Filter, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface TagData {
   id: string;
   name: string;
   slug: string;
-  description: string;
+  description?: string;
   articleCount: number;
-  color: string;
+  color?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-const mockTags: TagData[] = [
-  {
-    id: "1",
-    name: "Technology",
-    slug: "technology",
-    description: "Articles about technology trends and innovations",
-    articleCount: 24,
-    color: "bg-blue-500",
-    createdAt: "2024-01-15",
-    updatedAt: "2024-01-20"
-  },
-  {
-    id: "2",
-    name: "Design",
-    slug: "design",
-    description: "Design principles and creative inspiration",
-    articleCount: 18,
-    color: "bg-purple-500",
-    createdAt: "2024-01-10",
-    updatedAt: "2024-01-18"
-  },
-  {
-    id: "3",
-    name: "Business",
-    slug: "business",
-    description: "Business strategies and entrepreneurship",
-    articleCount: 15,
-    color: "bg-green-500",
-    createdAt: "2024-01-05",
-    updatedAt: "2024-01-15"
-  },
-  {
-    id: "4",
-    name: "Marketing",
-    slug: "marketing",
-    description: "Digital marketing and growth strategies",
-    articleCount: 12,
-    color: "bg-orange-500",
-    createdAt: "2024-01-01",
-    updatedAt: "2024-01-12"
-  }
-];
-
 export default function TagsPage() {
-  const [tags, setTags] = useState<TagData[]>(mockTags);
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
+  const status = sessionResult?.status;
+  const router = useRouter();
+  const [tags, setTags] = useState<TagData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTag, setEditingTag] = useState<TagData | null>(null);
   const [filterColor, setFilterColor] = useState("all");
 
-  const filteredTags = tags.filter(tag => {
-    const matchesSearch = tag.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         tag.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesColor = filterColor === "all" || tag.color.includes(filterColor);
-    return matchesSearch && matchesColor;
-  });
-
-  const handleCreateTag = (tagData: Omit<TagData, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newTag: TagData = {
-      ...tagData,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString().split('T')[0],
-      updatedAt: new Date().toISOString().split('T')[0]
-    };
-    setTags([...tags, newTag]);
-    setShowCreateModal(false);
-  };
-
-  const handleUpdateTag = (id: string, tagData: Partial<TagData>) => {
-    setTags(tags.map(tag => 
-      tag.id === id 
-        ? { ...tag, ...tagData, updatedAt: new Date().toISOString().split('T')[0] }
-        : tag
-    ));
-    setEditingTag(null);
-  };
-
-  const handleDeleteTag = (id: string) => {
-    if (confirm("Are you sure you want to delete this tag? This action cannot be undone.")) {
-      setTags(tags.filter(tag => tag.id !== id));
+  // Fetch tags from API
+  useEffect(() => {
+    if (status === "loading") return;
+    
+    if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+      router.push("/login");
+      return;
     }
+
+    fetchTags();
+  }, [session, status, router, searchTerm]);
+
+  const fetchTags = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      
+      const response = await fetch(`/api/admin/tags?${params}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch tags');
+      }
+      
+      const data = await response.json();
+      setTags(data.tags || []);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      toast.error('Failed to load tags');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredTags = tags;
+
+  const handleCreateTag = async (tagData: { name: string; slug: string }) => {
+    try {
+      const response = await fetch('/api/admin/tags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tagData)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create tag');
+      }
+      
+      toast.success('Tag created successfully');
+      setShowCreateModal(false);
+      fetchTags();
+    } catch (error) {
+      console.error('Error creating tag:', error);
+      toast.error('Failed to create tag');
+    }
+  };
+
+  const handleUpdateTag = async (id: string, tagData: { name: string; slug: string }) => {
+    try {
+      const response = await fetch(`/api/admin/tags/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tagData)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update tag');
+      }
+      
+      toast.success('Tag updated successfully');
+      setEditingTag(null);
+      fetchTags();
+    } catch (error) {
+      console.error('Error updating tag:', error);
+      toast.error('Failed to update tag');
+    }
+  };
+
+  const handleDeleteTag = async (id: string) => {
+    if (confirm("Are you sure you want to delete this tag? This action cannot be undone.")) {
+      try {
+        const response = await fetch(`/api/admin/tags/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to delete tag');
+        }
+        
+        toast.success('Tag deleted successfully');
+        fetchTags();
+      } catch (error) {
+        console.error('Error deleting tag:', error);
+        toast.error(error instanceof Error ? error.message : 'Failed to delete tag');
+      }
+    }
+  };
+
+  const formatDate = (isoString: string) => {
+    return new Date(isoString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+      </div>
+    );
+  }
+
+  if (!session || !["ADMIN", "EDITOR", "AUTHOR"].includes((session.user as any)?.role)) {
+    return null;
   };
 
   return (
@@ -107,9 +158,10 @@ export default function TagsPage() {
             Organize your content with tags and categories
           </p>
         </div>
-        <button
+          <button
           onClick={() => setShowCreateModal(true)}
-          className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-100 text-slate-100 dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+          className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-slate-900 dark:bg-slate-100 text-slate-100 dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+          aria-label="Create new tag"
         >
           <Plus className="w-4 h-4 mr-2" />
           Create Tag
@@ -222,7 +274,7 @@ export default function TagsPage() {
                 <tr key={tag.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className={`w-4 h-4 rounded-full ${tag.color} mr-3`}></div>
+                      <div className={`w-4 h-4 rounded-full ${tag.color || 'bg-blue-500'} mr-3`}></div>
                       <div>
                         <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
                           {tag.name}
@@ -235,7 +287,7 @@ export default function TagsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-slate-900 dark:text-slate-100 max-w-xs truncate">
-                      {tag.description}
+                      {tag.description || 'No description'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -244,7 +296,7 @@ export default function TagsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                    {tag.createdAt}
+                    {formatDate(tag.createdAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -281,10 +333,7 @@ export default function TagsPage() {
               const formData = new FormData(e.currentTarget);
               const tagData = {
                 name: formData.get('name') as string,
-                slug: formData.get('slug') as string,
-                description: formData.get('description') as string,
-                color: formData.get('color') as string,
-                articleCount: editingTag?.articleCount || 0
+                slug: formData.get('slug') as string
               };
               
               if (editingTag) {
@@ -360,7 +409,7 @@ export default function TagsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-slate-100 text-slate-900 dark:text-slate-100 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+                  className="px-4 py-2 text-sm font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
                 >
                   {editingTag ? 'Update' : 'Create'}
                 </button>

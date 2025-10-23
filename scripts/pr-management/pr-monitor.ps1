@@ -24,7 +24,7 @@ param(
 
 # Import shared utilities
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$utilsPath = Join-Path (Split-Path -Parent $scriptPath) "core-utilities\github-utils.ps1"
+$utilsPath = Join-Path (Split-Path -Parent $scriptPath) "core-utilities\get-github-utilities.ps1"
 
 if (Test-Path $utilsPath) {
     . $utilsPath

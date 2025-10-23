@@ -134,6 +134,7 @@ export default function AdminAnalytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMockData, setIsMockData] = useState(false);
+  const [dataSource, setDataSource] = useState<'google-analytics' | 'database' | 'unknown'>('unknown');
 
 
   // Fetch analytics data with robust error handling
@@ -161,8 +162,9 @@ export default function AdminAnalytics() {
         const data = await response.json();
         setAnalyticsData(data);
         
-        // Check if we're using mock data by looking for specific mock values
-        setIsMockData(data.overview?.visitors === 1250 && data.overview?.pageviews === 3200);
+        // Check data source
+        setDataSource(data.source || 'unknown');
+        setIsMockData(data.isFallback === true);
       } else {
         // Network error or fetch rejection
         throw new Error(
@@ -252,38 +254,79 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-6">
-      {/* Mock Data Notice */}
-      {isMockData && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+      {/* Data Source Notice */}
+      {dataSource !== 'google-analytics' && (
+        <div className={`border rounded-lg p-4 ${
+          dataSource === 'database' 
+            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+            : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+        }`}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <svg className={`h-5 w-5 ${dataSource === 'database' ? 'text-green-400' : 'text-blue-400'}`} viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                Demo Mode - Mock Data
+              <h3 className={`text-sm font-medium ${
+                dataSource === 'database' 
+                  ? 'text-green-800 dark:text-green-200'
+                  : 'text-blue-800 dark:text-blue-200'
+              }`}>
+                {dataSource === 'database' 
+                  ? 'Database Analytics Mode' 
+                  : 'Demo Mode - Mock Data'
+                }
               </h3>
-              <div className="mt-2 text-sm text-blue-700 dark:text-blue-300">
-                <p>
-                  You&apos;re currently viewing mock analytics data. To see real data, configure Google Analytics by setting up the required environment variables:
-                  <code className="ml-1 px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs">
-                    GOOGLE_ANALYTICS_PROPERTY_ID
-                  </code>
-                  <code className="ml-1 px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs">
-                    GOOGLE_ANALYTICS_CLIENT_EMAIL
-                  </code>
-                  <code className="ml-1 px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs">
-                    GOOGLE_ANALYTICS_PRIVATE_KEY
-                  </code>
-                </p>
-                <p className="mt-1">
-                  <Link href="/docs/analytics-seo/google-analytics-setup" className="underline hover:no-underline">
-                    View setup guide →
-                  </Link>
-                </p>
+              <div className={`mt-2 text-sm ${
+                dataSource === 'database' 
+                  ? 'text-green-700 dark:text-green-300'
+                  : 'text-blue-700 dark:text-blue-300'
+              }`}>
+                {dataSource === 'database' ? (
+                  <p>
+                    You&apos;re viewing analytics based on your article views and database metrics. 
+                    For more detailed insights, configure Google Analytics with:
+                    <code className="ml-1 px-1 py-0.5 bg-green-100 dark:bg-green-800 rounded text-xs">
+                      GOOGLE_ANALYTICS_PROPERTY_ID
+                    </code>
+                    <code className="ml-1 px-1 py-0.5 bg-green-100 dark:bg-green-800 rounded text-xs">
+                      GOOGLE_ANALYTICS_ACCESS_TOKEN
+                    </code>
+                  </p>
+                ) : (
+                  <p>
+                    You&apos;re currently viewing demo analytics data. To see real data, configure Google Analytics by setting up the required environment variables:
+                    <code className="ml-1 px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs">
+                      GOOGLE_ANALYTICS_PROPERTY_ID
+                    </code>
+                    <code className="ml-1 px-1 py-0.5 bg-blue-100 dark:bg-blue-800 rounded text-xs">
+                      GOOGLE_ANALYTICS_ACCESS_TOKEN
+                    </code>
+                  </p>
+                )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Success Notice for Real GA Data */}
+      {dataSource === 'google-analytics' && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-green-800 dark:text-green-200">
+                Connected to Google Analytics
+              </h3>
+              <p className="text-sm text-green-700 dark:text-green-300 mt-1">
+                You&apos;re viewing real-time data from your Google Analytics account.
+              </p>
             </div>
           </div>
         </div>
@@ -444,7 +487,7 @@ export default function AdminAnalytics() {
               </p>
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center mt-1">
                 <TrendingUp className="h-4 w-4 mr-1" />
-                {isMockData ? 'Demo data' : 'Real-time data'}
+                {dataSource === 'google-analytics' ? 'Real-time data' : dataSource === 'database' ? 'Database metrics' : 'Demo data'}
               </p>
             </div>
             <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
@@ -462,7 +505,7 @@ export default function AdminAnalytics() {
               </p>
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center mt-1">
                 <TrendingUp className="h-4 w-4 mr-1" />
-                {isMockData ? 'Demo data' : 'Real-time data'}
+                {dataSource === 'google-analytics' ? 'Real-time data' : dataSource === 'database' ? 'Database metrics' : 'Demo data'}
               </p>
             </div>
             <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
@@ -480,7 +523,7 @@ export default function AdminAnalytics() {
               </p>
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center mt-1">
                 <TrendingUp className="h-4 w-4 mr-1" />
-                {isMockData ? 'Demo data' : 'Real-time data'}
+                {dataSource === 'google-analytics' ? 'Real-time data' : dataSource === 'database' ? 'Database metrics' : 'Demo data'}
               </p>
             </div>
             <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
@@ -498,7 +541,7 @@ export default function AdminAnalytics() {
               </p>
               <p className="text-sm text-green-600 dark:text-green-400 flex items-center mt-1">
                 <TrendingDown className="h-4 w-4 mr-1" />
-                {isMockData ? 'Demo data' : 'Real-time data'}
+                {dataSource === 'google-analytics' ? 'Real-time data' : dataSource === 'database' ? 'Database metrics' : 'Demo data'}
               </p>
             </div>
             <div className="p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">

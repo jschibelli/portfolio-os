@@ -21,7 +21,7 @@ param(
 
 # Import shared utilities
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$utilsPath = Join-Path (Split-Path -Parent $scriptPath) "core-utilities\github-utils.ps1"
+$utilsPath = Join-Path (Split-Path -Parent $scriptPath) "core-utilities\get-github-utilities.ps1"
 
 if (Test-Path $utilsPath) {
     . $utilsPath
@@ -45,7 +45,7 @@ function Get-PRData {
         Write-Host "📊 Fetching PR data..." -ForegroundColor Yellow
         
         # Get comprehensive PR information
-        $prData = gh pr view $PRNumber --json number,title,body,headRefName,baseRefName,author,createdAt,updatedAt,mergedAt,closedAt,state,isDraft,additions,deletions,changedFiles,commits,reviews,comments,files,labels,assignees,reviewDecision,mergeable,mergeableState
+        $prData = gh pr view $PRNumber --json number,title,body,headRefName,baseRefName,author,createdAt,updatedAt,mergedAt,closedAt,state,isDraft,additions,deletions,changedFiles,commits,reviews,comments,files,labels,assignees,reviewDecision,mergeable,mergeStateStatus
         
         if (-not $prData) {
             throw "Failed to fetch PR data"

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRealAnalyticsData } from '@/lib/analytics-tracker';
 import { 
   getPersonalOverview, 
   getPersonalTopReferrers, 
@@ -57,32 +58,49 @@ export async function GET(request: NextRequest) {
     // Check if Google Analytics is configured (Property ID and Access Token required for personal account)
     const hasGAConfig = propertyId && process.env.GOOGLE_ANALYTICS_ACCESS_TOKEN;
 
-    if (!hasGAConfig) {
-      console.log('Google Analytics not configured, returning mock data');
-      return NextResponse.json(mockAnalyticsData);
+    // Primary: Try Google Analytics API first (this is the main data source)
+    if (hasGAConfig) {
+      try {
+        console.log('[ANALYTICS] Fetching data from Google Analytics API...');
+        const [overviewData, referrersData, pagesData, deviceData, timeSeriesData] = await Promise.all([
+          getPersonalOverview({ propertyId, period }),
+          getPersonalTopReferrers({ propertyId, period, limit: 5 }),
+          getPersonalTopPages({ propertyId, period, limit: 5 }),
+          getPersonalDeviceData({ propertyId, period }),
+          getPersonalTimeSeriesData({ propertyId, period, metric }),
+        ]);
+
+        console.log('[ANALYTICS] Successfully fetched from Google Analytics');
+        return NextResponse.json({
+          overview: overviewData,
+          topReferrers: referrersData,
+          topPages: pagesData,
+          deviceData,
+          timeSeriesData,
+        });
+      } catch (gaError) {
+        console.error('Google Analytics API error:', gaError);
+        console.warn('Google Analytics unavailable, trying database fallback...');
+      }
+    } else {
+      console.warn('[ANALYTICS] Google Analytics not configured (missing GOOGLE_ANALYTICS_PROPERTY_ID or GOOGLE_ANALYTICS_ACCESS_TOKEN)');
     }
 
+    // Fallback: Try database if Google Analytics fails or isn't configured
     try {
-      // Use personal Google Analytics integration
-      const [overviewData, referrersData, pagesData, deviceData, timeSeriesData] = await Promise.all([
-        getPersonalOverview({ propertyId, period }),
-        getPersonalTopReferrers({ propertyId, period, limit: 5 }),
-        getPersonalTopPages({ propertyId, period, limit: 5 }),
-        getPersonalDeviceData({ propertyId, period }),
-        getPersonalTimeSeriesData({ propertyId, period, metric }),
-      ]);
-
-      return NextResponse.json({
-        overview: overviewData,
-        topReferrers: referrersData,
-        topPages: pagesData,
-        deviceData,
-        timeSeriesData,
-      });
-    } catch (gaError) {
-      console.error('Google Analytics error, falling back to mock data:', gaError);
-      return NextResponse.json(mockAnalyticsData);
+      console.log('[ANALYTICS] Fetching fallback data from database...');
+      const realData = await getRealAnalyticsData(period);
+      
+      console.log('[ANALYTICS] Returning database data - Pageviews:', realData.overview.pageviews, 'Visitors:', realData.overview.visitors);
+      return NextResponse.json(realData);
+    } catch (dbError) {
+      console.error('Database analytics error:', dbError);
+      console.warn('Database also unavailable, using mock data');
     }
+
+    // Final fallback: Mock data
+    console.log('[ANALYTICS] Using mock analytics data');
+    return NextResponse.json(mockAnalyticsData);
   } catch (error: any) {
     console.error('Analytics overview error:', error);
     return NextResponse.json(

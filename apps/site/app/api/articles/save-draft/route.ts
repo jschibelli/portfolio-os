@@ -2,12 +2,45 @@
 // API route for saving article drafts with autosave functionality
 
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../../auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
 import { SaveDraftRequest, SaveDraftResponse } from '@/lib/types/article'
 import { ensureUniqueSlug } from '@/lib/slugify'
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    
+    if (!session || !session.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check if user has permission to create/edit articles
+    const userRole = (session.user as any)?.role
+    if (!userRole || !['ADMIN', 'EDITOR', 'AUTHOR'].includes(userRole)) {
+      return NextResponse.json(
+        { error: 'Insufficient permissions' },
+        { status: 403 }
+      )
+    }
+
     const body: SaveDraftRequest = await request.json()
     
     // Validate required fields
@@ -21,9 +54,8 @@ export async function POST(request: NextRequest) {
     // Ensure slug is unique
     const uniqueSlug = await ensureUniqueSlug(body.slug, body.id)
 
-    // Get current user (you'll need to implement auth)
-    // For now, we'll use a default author ID
-    const authorId = 'default-author-id' // Replace with actual auth
+    // Use authenticated user's ID
+    const authorId = user.id
 
     const articleData = {
       title: body.title,

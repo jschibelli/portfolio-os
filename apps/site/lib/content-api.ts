@@ -131,13 +131,38 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 
 /**
  * Check if Dashboard API is available
- * Always returns false during build and in production to use Hashnode directly
+ * Performs a health check to the Dashboard API
+ * Returns false during build phase to prevent hanging
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // Skip Dashboard API during build and in production
-  // This prevents hanging when localhost:3001 is not running
-  // Dashboard API is only useful during local development
-  return false;
+  // Skip Dashboard API during build phase
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return false;
+  }
+
+  // Check if Dashboard API URL is configured
+  const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_API_URL || process.env.DASHBOARD_API_URL;
+  if (!dashboardUrl) {
+    return false;
+  }
+
+  try {
+    // Quick health check with 1 second timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1000);
+    
+    const response = await fetch(`${dashboardUrl}/api/health`, {
+      signal: controller.signal,
+      method: 'GET',
+      cache: 'no-store',
+    });
+    
+    clearTimeout(timeout);
+    return response.ok;
+  } catch (error) {
+    // Dashboard not available, will fall back to Hashnode
+    return false;
+  }
 }
 
 /**

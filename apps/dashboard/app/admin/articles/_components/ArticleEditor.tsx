@@ -56,6 +56,8 @@ import { SEOPanel, SEOData } from './SEOPanel'
 import { CompleteTipTapEditor } from './CompleteTipTapEditor'
 import { DualModeEditor } from './DualModeEditor'
 import { PublishingPanel } from './PublishingPanel'
+import { CoverImageModal } from './CoverImageModal'
+import { DraftSettingsPanel } from './DraftSettingsPanel'
 import { 
   Save,
   Eye,
@@ -68,7 +70,8 @@ import {
   ChevronDown,
   ChevronUp,
   Search as SearchIcon,
-  Send as SendIcon
+  Send as SendIcon,
+  Settings
 } from 'lucide-react'
 
 interface ArticleEditorProps {
@@ -104,21 +107,45 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   const [slug, setSlug] = useState(initialData?.slug || '')
   const [tags, setTags] = useState<string[]>(initialData?.tags || [])
   const [coverUrl, setCoverUrl] = useState(initialData?.coverUrl || '')
+  const [newTag, setNewTag] = useState('')
   const [isPreview, setIsPreview] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
 
   // TipTap editor is managed by CompleteTipTapEditor in TipTap mode
   const [isAIAssistantOpen, setIsAIAssistantOpen] = useState(false)
-  const [newTag, setNewTag] = useState('')
   const [isMarkdownMode, setIsMarkdownMode] = useState(false)
   const [isTipTapMode, setIsTipTapMode] = useState(false)
   const [isDualMode, setIsDualMode] = useState(false)
   const [slashCommandOpen, setSlashCommandOpen] = useState(false)
   const [slashCommandPosition, setSlashCommandPosition] = useState({ x: 0, y: 0 })
   const [markdownContent, setMarkdownContent] = useState('')
+  const [showCoverModal, setShowCoverModal] = useState(false)
+  const [showDraftSettings, setShowDraftSettings] = useState(false)
+  
+  const [draftSettings, setDraftSettings] = useState({
+    author: {
+      id: '1',
+      name: 'John Schibelli',
+      email: 'john@example.com',
+      image: '',
+      role: 'owner' as const
+    },
+    coAuthors: [],
+    tableOfContents: false,
+    sendToNewsletter: true,
+    articleSlug: '',
+    tags: [],
+    customOGImage: undefined as string | undefined,
+    visibility: 'public' as const,
+    allowComments: true,
+    allowReactions: true
+  })
   const [seoExpanded, setSeoExpanded] = useState(false)
   const [tiptapContent, setTiptapContent] = useState('')
+  const [isUploadingCover, setIsUploadingCover] = useState(false)
+  const coverInputRef = React.useRef<HTMLInputElement>(null)
+
   const [blocks, setBlocks] = useState<Array<{
     id: string
     type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'heading4' | 'heading5' | 'heading6' | 'bulletList' | 'orderedList' | 'taskList' | 'quote' | 'code' | 'image' | 'callout' | 'calloutInfo' | 'calloutWarning' | 'calloutSuccess' | 'calloutError' | 'horizontalRule' | 'details' | 'table' | 'mention' | 'widget' | 'reactComponent' | 'infoCard' | 'statBadge' | 'youtube' | 'twitter' | 'githubGist' | 'codepen' | 'codesandbox' | 'embed'
@@ -191,12 +218,12 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   
   // Article data state for the new structure
   const [articleData, setArticleData] = useState({
-    title: initialData?.title || '',
-    subtitle: initialData?.subtitle || '',
-    content: initialData?.content || '',
-    slug: initialData?.slug || '',
-    tags: initialData?.tags || [],
-    coverUrl: initialData?.coverUrl || ''
+    title: initialData?.title ?? '',
+    subtitle: initialData?.subtitle ?? '',
+    content: initialData?.content ?? '',
+    slug: initialData?.slug ?? '',
+    tags: initialData?.tags ?? [],
+    coverUrl: initialData?.coverUrl ?? ''
   })
 
   // Block editor doesn't need TipTap editor instance in this component
@@ -250,8 +277,8 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         slug: articleData.slug.trim(),
         tags: articleData.tags,
         coverUrl: articleData.coverUrl.trim() || undefined,
-        content_json: contentJson,
-        content_mdx: contentMdx,
+        contentJson,
+        contentMdx,
         // SEO fields
         metaTitle: seoData.metaTitle,
         metaDescription: seoData.metaDescription,
@@ -317,8 +344,8 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         slug: articleData.slug.trim(),
         tags: articleData.tags,
         coverUrl: articleData.coverUrl.trim() || undefined,
-        content_json: contentJson,
-        content_mdx: contentMdx,
+        contentJson,
+        contentMdx,
         // SEO fields
         metaTitle: seoData.metaTitle,
         metaDescription: seoData.metaDescription,
@@ -381,13 +408,13 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     formData.append('file', file)
 
     try {
-      const response = await fetch('/api/upload', {
+      const response = await fetch('/api/media/upload', {
         method: 'POST',
         body: formData,
       })
 
       if (response.ok) {
-        const result: UploadResponse = await response.json()
+        const result = await response.json()
         return result.url
       } else {
         throw new Error('Upload failed')
@@ -395,6 +422,39 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
     } catch (error) {
       console.error('Error uploading image:', error)
       throw error
+    }
+  }
+
+  const handleCoverImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be less than 5MB')
+      return
+    }
+
+    setIsUploadingCover(true)
+    try {
+      const url = await uploadImage(file)
+      setCoverUrl(url)
+      setArticleData({ ...articleData, coverUrl: url })
+    } catch (error) {
+      console.error('Failed to upload cover image:', error)
+      alert('Failed to upload image. Please try again.')
+    } finally {
+      setIsUploadingCover(false)
+      // Reset input so the same file can be selected again if needed
+      if (event.target) {
+        event.target.value = ''
+      }
     }
   }
 
@@ -454,7 +514,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
       case 'calloutSuccess': return 'Success callout text'
       case 'calloutError': return 'Error callout text'
       case 'horizontalRule': return '---'
-      case 'details': return 'Details summary'
+      case 'details': return 'Details content...'
       case 'table': return 'Table content'
       case 'mention': return '@username'
       case 'widget': return 'Widget content'
@@ -478,16 +538,16 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-900">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-white">
                 {initialData?.id ? 'Edit Article' : 'New Article'}
               </h1>
               {lastSaved && (
-                <div className="flex items-center gap-1 text-sm text-gray-600">
+                <div className="flex items-center gap-1 text-sm text-gray-300">
                   <Clock className="w-3 h-3" />
                   Saved {lastSaved.toLocaleTimeString()}
                 </div>
@@ -510,7 +570,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                     setIsTipTapMode(false)
                     setIsDualMode(false)
                   }}
-                  className={!isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={!isMarkdownMode && !isTipTapMode && !isDualMode ? "bg-gray-700 text-white shadow-sm" : "text-gray-400 hover:text-gray-200"}
                 >
                   Block Editor
                 </Button>
@@ -522,7 +582,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                     setIsTipTapMode(false)
                     setIsMarkdownMode(false)
                   }}
-                  className={isDualMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={isDualMode ? "bg-gray-700 text-white shadow-sm" : "text-gray-400 hover:text-gray-200"}
                 >
                   Dual Mode
                 </Button>
@@ -534,7 +594,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                     setIsMarkdownMode(false)
                     setIsDualMode(false)
                   }}
-                  className={isTipTapMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={isTipTapMode ? "bg-gray-700 text-white shadow-sm" : "text-gray-400 hover:text-gray-200"}
                 >
                   TipTap Editor
                 </Button>
@@ -546,7 +606,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                     setIsTipTapMode(false)
                     setIsDualMode(false)
                   }}
-                  className={isMarkdownMode ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}
+                  className={isMarkdownMode ? "bg-gray-700 text-white shadow-sm" : "text-gray-400 hover:text-gray-200"}
                 >
                   Markdown
                 </Button>
@@ -594,11 +654,11 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className={`grid gap-6 ${isPreview ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {/* Editor */}
-            <div className="space-y-6 bg-white p-6 rounded-lg">
+            <div className="space-y-6 bg-gray-800 p-6 rounded-lg">
               {/* Title */}
               <div>
                 <Input
-                  value={title}
+                  value={title ?? ''}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Write a great title..."
                   className="text-2xl font-bold border-none shadow-none p-0 focus-visible:ring-0"
@@ -611,10 +671,10 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                   Slug
                 </label>
                 <Input
-                  value={slug}
+                  value={slug ?? ''}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="article-slug"
-                  className="font-mono"
+                  className="font-mono border-gray-600 focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                 />
               </div>
 
@@ -632,9 +692,10 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 </div>
                 <div className="flex gap-2">
                   <Input
-                    value={newTag}
+                    value={newTag ?? ''}
                     onChange={(e) => setNewTag(e.target.value)}
                     placeholder="Add tag..."
+                    className="border-gray-600 focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault()
@@ -648,51 +709,67 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 </div>
               </div>
 
+              {/* Hidden file input for cover upload */}
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleCoverImageUpload}
+                className="hidden"
+              />
+
               {/* Article Title and Subtitle */}
               <div className="space-y-4">
                 <div className="flex gap-4">
-                  <Button variant="outline" size="sm" className="text-gray-400 border-gray-600 hover:bg-gray-800">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-gray-200 border-gray-600 hover:bg-gray-800 hover:text-white border"
+                    onClick={() => setShowCoverModal(true)}
+                    disabled={isUploadingCover}
+                  >
                     <ImageIcon className="w-4 h-4 mr-2" />
-                    Add Cover
+                    {isUploadingCover ? 'Uploading...' : 'Add Cover'}
                   </Button>
-                  <Button variant="outline" size="sm" className="text-gray-400 border-gray-600 hover:bg-gray-800">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-gray-200 border-gray-600 hover:bg-gray-800 hover:text-white border"
+                    onClick={() => {
+                      // Focus subtitle input
+                      const subtitleInput = document.querySelector('input[placeholder*="Article Subtitle"]') as HTMLInputElement
+                      if (subtitleInput) {
+                        subtitleInput.focus()
+                      }
+                    }}
+                  >
                     <Type className="w-4 h-4 mr-2" />
                     Add Subtitle
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-gray-200 border-gray-600 hover:bg-gray-800 hover:text-white border"
+                    onClick={() => setShowDraftSettings(true)}
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    Draft Settings
                   </Button>
                 </div>
                 
                 <div className="space-y-2">
                   <input
                     type="text"
-                    placeholder="Article Title..."
-                    value={articleData.title}
-                    onChange={(e) => setArticleData({ ...articleData, title: e.target.value })}
-                    className="w-full text-4xl font-bold bg-transparent border-none outline-none text-gray-100 placeholder-gray-500"
-                  />
-                  <input
-                    type="text"
                     placeholder="Article Subtitle..."
-                    value={articleData.subtitle || ''}
+                    value={articleData.subtitle ?? ''}
                     onChange={(e) => setArticleData({ ...articleData, subtitle: e.target.value })}
-                    className="w-full text-xl bg-transparent border-none outline-none text-gray-300 placeholder-gray-500"
+                    className="w-full text-xl bg-transparent border-none outline-none text-white placeholder-gray-400"
                   />
                 </div>
               </div>
 
               <Separator />
 
-              {/* Cover Image */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Cover Image URL
-                </label>
-                <Input
-                  value={coverUrl}
-                  onChange={(e) => setCoverUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  className="bg-gray-800 border-gray-600 text-gray-100"
-                />
-              </div>
 
               <Separator />
 
@@ -725,15 +802,62 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="text-sm text-gray-600 mb-4">
-                    🎯 Alternative Block Editor - Type &quot;/&quot; for commands or press Enter to add blocks
-                  </div>
+                  {/* Cover Image at Top of Article */}
+                  {coverUrl && (
+                    <div className="relative group mb-8">
+                      <img 
+                        src={coverUrl} 
+                        alt="Article cover" 
+                        className="w-full h-auto object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => coverInputRef.current?.click()}
+                          disabled={isUploadingCover}
+                          className="bg-gray-700 text-white hover:bg-gray-600 border"
+                        >
+                          <ImageIcon className="w-4 h-4 mr-2" />
+                          Change Image
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setCoverUrl('')
+                            setArticleData({ ...articleData, coverUrl: '' })
+                          }}
+                          className="bg-red-600 text-white hover:bg-red-700 border-red-600 border"
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <BlockEditor
                     blocks={blocks}
                     onChange={setBlocks}
                     onSlashCommand={() => {
+                      // Position slash command menu near the editor, accounting for browser UI
+                      const editorElement = document.querySelector('.block-editor-container')
+                      if (editorElement) {
+                        const rect = editorElement.getBoundingClientRect()
+                        // Add extra padding to account for browser URL bar and ensure menu is fully visible
+                        const safeTop = Math.max(120, rect.top + 50) // Increased minimum from 100 to 120
+                        setSlashCommandPosition({ 
+                          x: Math.max(50, rect.left + 50), 
+                          y: Math.min(window.innerHeight - 450, safeTop) // Increased bottom margin
+                        })
+                      } else {
+                        // Fallback to center of screen with better positioning
+                        setSlashCommandPosition({ 
+                          x: window.innerWidth / 2 - 160, 
+                          y: Math.max(150, window.innerHeight / 2 - 200) // Increased minimum from 100 to 150
+                        })
+                      }
                       setSlashCommandOpen(true)
-                      setSlashCommandPosition({ x: 300, y: 300 })
                     }}
                   />
                 </div>
@@ -828,7 +952,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                             throw new Error('Articles in a series must have a position')
                           }
 
-                          setPublishingOptions(options)
+                          setPublishingOptions({...publishingOptions, ...options})
                           
                           // Save to API if article exists
                           if (initialData?.id) {
@@ -866,7 +990,7 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
             {isPreview && (
               <div className="space-y-6">
                 <h2 className="text-lg font-semibold text-stone-900">Preview</h2>
-                <div className="bg-white border border-stone-200 rounded-lg p-6 min-h-[500px]">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 min-h-[500px]">
                   <p>Preview functionality temporarily disabled for debugging</p>
                 </div>
               </div>
@@ -886,17 +1010,92 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         isOpen={slashCommandOpen}
         onClose={() => setSlashCommandOpen(false)}
         onSelect={(command, blockType) => {
+          console.log('Slash command selected:', { command, blockType, editorMode: isTipTapMode ? 'TipTap' : 'Block' })
+          
           if (blockType) {
-            const newBlock = {
-              id: Math.random().toString(36).substr(2, 9),
-              type: blockType as any,
-              content: '',
-              placeholder: getBlockPlaceholder(blockType)
+            // Handle based on editor mode
+            if (isTipTapMode) {
+              // TipTap editor - handle advanced blocks
+              console.log('TipTap editor selected - advanced blocks not yet implemented')
+              alert(`Advanced block "${blockType}" is not yet implemented in TipTap editor. This feature is coming soon!`)
+            } else {
+              // BlockEditor - now supports details blocks!
+              const basicSupportedTypes = ['text', 'heading1', 'heading2', 'heading3', 'bulletList', 'orderedList', 'quote', 'code', 'image', 'callout', 'details']
+              
+              // Map block types to supported ones
+              let mappedType: any = blockType
+              
+              // Map advanced callout types to basic callout
+              if (blockType === 'calloutInfo' || blockType === 'calloutWarning' || blockType === 'calloutSuccess' || blockType === 'calloutError') {
+                mappedType = 'callout'
+              }
+              // Map heading shortcuts
+              if (blockType === 'heading4') mappedType = 'heading3'
+              if (blockType === 'heading5') mappedType = 'heading3'
+              if (blockType === 'heading6') mappedType = 'heading3'
+              
+              // Map unsupported block types to supported alternatives
+              if (blockType === 'taskList') {
+                mappedType = 'bulletList' // Task list not supported, use bullet list instead
+              }
+              if (blockType === 'horizontalRule') {
+                mappedType = 'text' // Horizontal rule not supported, use text instead
+              }
+              
+              if (basicSupportedTypes.includes(mappedType)) {
+                const newBlock = {
+                  id: Math.random().toString(36).substr(2, 9),
+                  type: mappedType,
+                  content: '',
+                  placeholder: getBlockPlaceholder(mappedType)
+                }
+                console.log('Creating new block:', newBlock)
+                setBlocks(prev => {
+                  const newBlocks = [...prev, newBlock]
+                  console.log('Updated blocks:', newBlocks)
+                  return newBlocks
+                })
+              } else {
+                // For unsupported block types, create a text block with a note
+                console.log(`Block type "${blockType}" is not yet supported in Block Editor. Creating text block instead.`)
+                const fallbackBlock = {
+                  id: Math.random().toString(36).substr(2, 9),
+                  type: 'text' as const,
+                  content: `[${blockType} block - not supported in basic editor]`,
+                  placeholder: `This ${blockType} block is not supported in the basic editor. Switch to TipTap editor for advanced blocks.`
+                }
+                setBlocks(prev => [...prev, fallbackBlock])
+              }
             }
-            setBlocks(prev => [...prev, newBlock])
           }
+          setSlashCommandOpen(false)
         }}
         position={slashCommandPosition}
+      />
+
+      {/* Cover Image Modal */}
+      <CoverImageModal
+        isOpen={showCoverModal}
+        onClose={() => setShowCoverModal(false)}
+        onSelect={(imageUrl) => {
+          setCoverUrl(imageUrl)
+          setArticleData({ ...articleData, coverUrl: imageUrl })
+          setShowCoverModal(false)
+        }}
+        currentImage={coverUrl}
+      />
+
+      {/* Draft Settings Panel */}
+      <DraftSettingsPanel
+        isOpen={showDraftSettings}
+        onClose={() => setShowDraftSettings(false)}
+        data={draftSettings}
+        onChange={setDraftSettings}
+        onSave={() => {
+          // Save draft settings
+          console.log('Saving draft settings:', draftSettings)
+          setShowDraftSettings(false)
+        }}
       />
     </TooltipProvider>
   )

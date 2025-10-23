@@ -39,7 +39,7 @@ jobs:
         run: |
           if (-not $env:GITHUB_TOKEN) { throw "GITHUB_TOKEN is required" }
           if (-not $env:PR_NUMBER) { throw "PR_NUMBER is required for configure-pr" }
-          ./scripts/auto-configure-pr.ps1 `
+          ./scripts/pr-management/configure-pr-auto.ps1 `
             -PRNumber $env:PR_NUMBER `
             -Status "In progress" `
             -Priority "P1" `
@@ -89,26 +89,26 @@ jobs:
         if: env.PR_NUMBER != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action analyze -ExportTo analysis.md"
+        run: pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ env.PR_NUMBER }} -Analysis comprehensive -ExportTo analysis.md"
 
       - name: Universal PR Automation (monitoring, responses, merge guidance)
         if: env.PR_NUMBER != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action all"
+        run: pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action all"
 
       - name: Code Quality Checker
-        if: env.PR_NUMBER != '' && hashFiles('scripts/code-quality-checker.ps1') != ''
+        if: env.PR_NUMBER != '' && hashFiles('scripts/code-quality/check-code-quality.ps1') != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/code-quality-checker.ps1 -PRNumber ${{ env.PR_NUMBER }} -FixIssues -RunTests -GenerateReport"
+        run: pwsh -c "./scripts/code-quality/check-code-quality.ps1 -PRNumber ${{ env.PR_NUMBER }} -FixIssues -RunTests -GenerateReport"
         continue-on-error: true
 
       - name: Docs Updater
-        if: env.PR_NUMBER != '' && hashFiles('scripts/docs-updater.ps1') != ''
+        if: env.PR_NUMBER != '' && hashFiles('scripts/core-utilities/docs-updater.ps1') != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/docs-updater.ps1 -PRNumber ${{ env.PR_NUMBER }} -UpdateChangelog -UpdateReadme -GenerateDocs"
+        run: pwsh -c "./scripts/core-utilities/docs-updater.ps1 -PRNumber ${{ env.PR_NUMBER }} -UpdateChangelog -UpdateReadme -GenerateDocs"
         continue-on-error: true
 
       - name: Upload Reports
@@ -157,7 +157,7 @@ jobs:
           echo "Detected cr-gpt comment."
           if [ -z "${PR_NUMBER}" ]; then echo "PR_NUMBER missing; skipping auto response." && exit 0; fi
           if [ "${DRY_RUN_RESPONSES}" = "false" ]; then
-            pwsh -c "./scripts/pr-automation-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond"
+            pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond"
           else
             echo "DRY_RUN_RESPONSES=true; skipping auto post."
           fi

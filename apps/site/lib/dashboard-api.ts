@@ -61,7 +61,7 @@ class DashboardAPIClient {
   private apiSecret: string;
 
   constructor() {
-    this.baseUrl = process.env.DASHBOARD_API_URL || 'http://localhost:3001';
+    this.baseUrl = process.env.NEXT_PUBLIC_DASHBOARD_API_URL || process.env.DASHBOARD_API_URL || 'http://localhost:3003';
     this.apiSecret = process.env.DASHBOARD_API_SECRET || '';
   }
 

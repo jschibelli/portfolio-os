@@ -1,6 +1,3 @@
-// Prisma schema for chatbot data and blog system
-// Uses PostgreSQL for production. You can switch to SQLite in development.
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,214 +7,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ArticleStatus {
-  DRAFT
-  SCHEDULED
-  PUBLISHED
-  ARCHIVED
-}
-
-enum Visibility {
-  PUBLIC
-  UNLISTED
-  PRIVATE
-  MEMBERS
-}
-
-enum Role {
-  ADMIN
-  EDITOR
-  AUTHOR
-}
-
-enum ReactionKind {
-  LIKE
-  CLAP
-  HEART
-  ROCKET
-}
-
-enum NewsletterStatus {
-  ACTIVE
-  UNSUBSCRIBED
-  PENDING
-}
-
-enum CampaignStatus {
-  DRAFT
-  SCHEDULED
-  SENT
-}
-
-model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  role      Role     @default(AUTHOR)
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  articles  Article[] @relation("AuthorArticles")
-  caseStudies CaseStudy[] @relation("AuthorCaseStudies")
-}
-
-model Tag {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  articles  ArticleTag[]
-}
-
-model Series {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  description String?
-  coverUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  articles    Article[]
-}
-
-model ImageAsset {
-  id        String   @id @default(cuid())
-  url       String
-  width     Int?
-  height    Int?
-  alt       String?
-  blurData  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  usedBy    Article[] @relation("CoverImage")
+model Activity {
+  id         String   @id
+  kind       String
+  channel    String?
+  externalId String?
+  meta       Json?
+  createdAt  DateTime @default(now())
 }
 
 model Article {
-  id              String        @id @default(cuid())
-  title           String
-  subtitle        String?
-  slug            String        @unique
-  status          ArticleStatus @default(DRAFT)
-  visibility      Visibility    @default(PUBLIC)
-  excerpt         String?
-  authorId        String
-  author          User          @relation("AuthorArticles", fields: [authorId], references: [id])
-  seriesId        String?
-  series          Series?       @relation(fields: [seriesId], references: [id])
-  contentJson     Json?
-  contentMdx      String?
-  coverId         String?
-  cover           ImageAsset?   @relation("CoverImage", fields: [coverId], references: [id])
-  ogImageUrl      String?
-  canonicalUrl    String?
-  canonicalSource String?
-  noindex         Boolean       @default(false)
-  publishedAt     DateTime?
-  scheduledAt     DateTime?
-  featured        Boolean       @default(false)
-  allowComments   Boolean       @default(true)
-  paywalled       Boolean       @default(false)
-  readingMinutes  Int?
-  views           Int           @default(0)
-  tags            ArticleTag[]
-  versions        ArticleVersion[]
-  reactions       Reaction[]
-  comments        Comment[]
-  category        Category?     @relation(fields: [categoryId], references: [id])
-  categoryId      String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-}
-
-model CaseStudy {
-  id              String        @id @default(cuid())
-  title           String
-  slug            String        @unique
-  excerpt         String?
-  content         String?
-  status          ArticleStatus @default(DRAFT)
-  visibility      Visibility    @default(PUBLIC)
-  publishedAt     DateTime?
-  featured        Boolean       @default(false)
-  
-  // Project details
-  client          String?
-  industry        String?
-  duration        String?
-  teamSize        String?
-  technologies    String[]
-  challenges      String?
-  solution        String?
-  results         String?
-  metrics         Json?
-  lessonsLearned  String?
-  nextSteps       String?
-  
-  // Media and SEO
-  coverImage      String?
-  seoTitle        String?
-  seoDescription  String?
-  canonicalUrl    String?
-  ogImage         String?
-  
-  // Engagement
-  allowComments   Boolean       @default(true)
-  allowReactions  Boolean       @default(true)
-  views           Int           @default(0)
-  
-  // Tags and categories
-  tags            String[]
-  category        String?
-  
-  // Author and metadata
-  authorId        String?
-  author          User?         @relation("AuthorCaseStudies", fields: [authorId], references: [id])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                 String           @id
+  title              String
+  subtitle           String?
+  slug               String           @unique
+  status             ArticleStatus    @default(DRAFT)
+  visibility         Visibility       @default(PUBLIC)
+  excerpt            String?
+  authorId           String
+  seriesId           String?
+  contentJson        Json?
+  contentMdx         String?
+  coverId            String?
+  ogImageUrl         String?
+  canonicalUrl       String?
+  canonicalSource    String?
+  noindex            Boolean          @default(false)
+  publishedAt        DateTime?
+  scheduledAt        DateTime?
+  featured           Boolean          @default(false)
+  allowComments      Boolean          @default(true)
+  paywalled          Boolean          @default(false)
+  readingMinutes     Int?
+  views              Int              @default(0)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime
+  allowReactions     Boolean          @default(true)
+  focusKeyword       String?
+  hashnodeId         String?
+  metaDescription    String?
+  metaTitle          String?
+  ogDescription      String?
+  ogTitle            String?
+  seoScore           Int?
+  seriesPosition     Int?
+  twitterCard        String?          @default("summary_large_image")
+  twitterDescription String?
+  twitterImage       String?
+  twitterTitle       String?
+  User               User             @relation(fields: [authorId], references: [id])
+  ImageAsset         ImageAsset?      @relation(fields: [coverId], references: [id])
+  Series             Series?          @relation(fields: [seriesId], references: [id])
+  ArticleTag         ArticleTag[]
+  ArticleVersion     ArticleVersion[]
+  Comment            Comment[]
+  Reaction           Reaction[]
 }
 
 model ArticleTag {
   articleId  String
   tagId      String
   assignedAt DateTime @default(now())
-  article    Article @relation(fields: [articleId], references: [id])
-  tag        Tag     @relation(fields: [tagId], references: [id])
+  Article    Article  @relation(fields: [articleId], references: [id])
+  Tag        Tag      @relation(fields: [tagId], references: [id])
 
   @@id([articleId, tagId])
 }
 
 model ArticleVersion {
-  id          String   @id @default(cuid())
+  id          String   @id
   articleId   String
-  article     Article  @relation(fields: [articleId], references: [id])
   label       String?
   contentJson Json?
   contentMdx  String?
   note        String?
   createdAt   DateTime @default(now())
+  Article     Article  @relation(fields: [articleId], references: [id])
 }
 
-model Reaction {
-  id        String       @id @default(cuid())
-  articleId String
-  kind      ReactionKind
-  count     Int          @default(0)
-  updatedAt DateTime     @updatedAt
-  article   Article      @relation(fields: [articleId], references: [id])
-}
-
-model Redirect {
-  id        String   @id @default(cuid())
-  fromPath  String   @unique
-  toPath    String
-  createdAt DateTime @default(now())
-}
-
-// Existing models
 model Booking {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
   email           String
   timezone        String
@@ -227,15 +96,116 @@ model Booking {
   notes           String?
   status          String
   googleEventId   String?
-  reminder24hSent Boolean   @default(false)
-  reminder10mSent Boolean   @default(false)
-  followupSent    Boolean   @default(false)
+  reminder24hSent Boolean  @default(false)
+  reminder10mSent Boolean  @default(false)
+  followupSent    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+}
+
+model CaseStudy {
+  id             String        @id
+  title          String
+  slug           String        @unique
+  excerpt        String?
+  content        String?
+  status         ArticleStatus @default(DRAFT)
+  visibility     Visibility    @default(PUBLIC)
+  publishedAt    DateTime?
+  featured       Boolean       @default(false)
+  client         String?
+  industry       String?
+  duration       String?
+  teamSize       String?
+  technologies   String[]
+  challenges     String?
+  solution       String?
+  results        String?
+  metrics        Json?
+  lessonsLearned String?
+  nextSteps      String?
+  coverImage     String?
+  seoTitle       String?
+  seoDescription String?
+  canonicalUrl   String?
+  ogImage        String?
+  allowComments  Boolean       @default(true)
+  allowReactions Boolean       @default(true)
+  views          Int           @default(0)
+  tags           String[]
+  category       String?
+  authorId       String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime
+  User           User?         @relation(fields: [authorId], references: [id])
+}
+
+model CaseStudyView {
+  id          Int      @id @default(autoincrement())
+  caseStudyId String
+  chapterId   String
+  visitorId   String?
+  viewedAt    DateTime
+}
+
+model Comment {
+  id            String    @id
+  articleId     String
+  author        String
+  email         String
+  content       String
+  status        String    @default("pending")
+  parentId      String?
+  likes         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime
+  Article       Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  Comment       Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
+  other_Comment Comment[] @relation("CommentToComment")
+
+  @@index([articleId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model ConnectedAccount {
+  id              String    @id
+  provider        String
+  scopes          String
+  accessTokenEnc  String
+  refreshTokenEnc String?
+  expiresAt       DateTime?
   createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  updatedAt       DateTime
+  userId          String
+}
+
+model ImageAsset {
+  id        String    @id
+  url       String
+  width     Int?
+  height    Int?
+  alt       String?
+  blurData  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  Article   Article[]
+}
+
+model Job {
+  id          String   @id
+  type        String
+  payloadJson Json
+  runAt       DateTime
+  status      String
+  attempts    Int      @default(0)
+  lastError   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
 }
 
 model Lead {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
   email     String
   company   String?
@@ -246,216 +216,191 @@ model Lead {
   links     String?
   notes     String?
   status    String
-  createdAt DateTime  @default(now())
-}
-
-model ContactSubmission {
-  id           String    @id @default(cuid())
-  name         String
-  email        String
-  company      String?
-  projectType  String?
-  message      String    @db.Text
-  status       String    @default("pending") // pending, sent, failed
-  emailSentAt  DateTime?
-  emailError   String?   @db.Text
-  retryCount   Int       @default(0)
-  lastRetryAt  DateTime?
-  ipAddress    String?
-  userAgent    String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  
-  @@index([status])
-  @@index([createdAt])
-  @@index([email])
-}
-
-model CaseStudyView {
-  id          Int       @id @default(autoincrement())
-  caseStudyId String
-  chapterId   String
-  visitorId   String?
-  viewedAt    DateTime
-}
-
-model ConnectedAccount {
-  id           String @id @default(cuid())
-  provider     String
-  scopes       String
-  accessTokenEnc   String
-  refreshTokenEnc  String?
-  expiresAt    DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       String
-}
-
-model OutboundItem {
-  id          String   @id @default(cuid())
-  userId      String
-  type        String   // 'email' | 'social' | 'calendar'
-  channel     String   // 'gmail' | 'linkedin' | 'facebook' | 'threads'
-  status      String   // 'SCHEDULED' | 'SENT' | 'FAILED'
-  externalId  String?
-  scheduledAt DateTime?
-  payloadJson Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Note {
-  id        String   @id @default(cuid())
-  userId    String
-  title     String
-  content   String   // markdown
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Job {
-  id          String   @id @default(cuid())
-  type        String   // 'email' | 'social'
-  payloadJson Json
-  runAt       DateTime
-  status      String   // 'QUEUED' | 'RUNNING' | 'SUCCESS' | 'FAILED'
-  attempts    Int      @default(0)
-  lastError   String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Activity {
-  id          String   @id @default(cuid())
-  kind        String   // 'EMAIL_SENT' | 'POST_PUBLISHED' | 'EVENT_CREATED' | 'DEPLOY_COMPLETE' | etc.
-  channel     String?  // 'gmail' | 'linkedin' | 'facebook' | 'threads' | 'calendar' | ...
-  externalId  String?
-  meta        Json?
-  createdAt   DateTime @default(now())
-}
-
-model NewsletterSubscriber {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  name          String?
-  status        NewsletterStatus @default(ACTIVE)
-  tags          String[]
-  source        String?         @default("website")
-  engagement    String?         @default("medium") // 'high' | 'medium' | 'low'
-  lastEmailSent DateTime?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
 }
 
 model NewsletterCampaign {
-  id              String        @id @default(cuid())
-  title           String
-  subject         String
-  content         String
-  status          CampaignStatus @default(DRAFT)
-  scheduledAt     DateTime?
-  sentAt          DateTime?
-  recipientCount  Int           @default(0)
-  openRate        Float         @default(0)
-  clickRate       Float         @default(0)
-  tags            String[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id             String         @id
+  title          String
+  subject        String
+  content        String
+  status         CampaignStatus @default(DRAFT)
+  scheduledAt    DateTime?
+  sentAt         DateTime?
+  recipientCount Int            @default(0)
+  openRate       Float          @default(0)
+  clickRate      Float          @default(0)
+  tags           String[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime
 }
 
-// Admin Settings Models
-model AppearanceSettings {
-  id        String   @id @default(cuid())
-  theme     String   @default("light")
-  primaryColor String @default("#3b82f6")
-  fontFamily String   @default("Inter")
-  logo      String?
-  favicon   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model NewsletterSubscriber {
+  id            String           @id
+  email         String           @unique
+  name          String?
+  status        NewsletterStatus @default(ACTIVE)
+  tags          String[]
+  source        String?          @default("website")
+  engagement    String?          @default("medium")
+  lastEmailSent DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime
 }
 
-model EmailSettings {
-  id              String   @id @default(cuid())
-  smtpHost        String?
-  smtpPort        Int?
-  smtpUser        String?
-  smtpPassword    String?
-  fromEmail       String?
-  fromName        String?
-  replyToEmail    String?
-  replyToName     String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model SeoSettings {
-  id              String   @id @default(cuid())
-  siteName        String?
-  siteDescription String?
-  siteUrl         String?
-  ogImage         String?
-  twitterHandle   String?
-  facebookAppId   String?
-  googleAnalyticsId String?
-  googleTagManagerId String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model DatabaseSettings {
-  id              String   @id @default(cuid())
-  backupEnabled   Boolean  @default(false)
-  backupFrequency String   @default("daily")
-  retentionDays   Int      @default(30)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model Integration {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   // 'email' | 'calendar' | 'social' | 'analytics'
-  config      Json?
-  isActive    Boolean  @default(false)
-  lastSync    DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Comment {
-  id        String   @id @default(cuid())
+model Note {
+  id        String   @id
+  userId    String
+  title     String
   content   String
-  author    String?
-  email     String?
-  website   String?
-  isApproved Boolean @default(false)
-  articleId String?
-  article   Article? @relation(fields: [articleId], references: [id])
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime
 }
 
-model Media {
-  id        String   @id @default(cuid())
-  filename  String
-  url       String
-  mimeType  String
-  size      Int
-  alt       String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model OutboundItem {
+  id          String    @id
+  userId      String
+  type        String
+  channel     String
+  status      String
+  externalId  String?
+  scheduledAt DateTime?
+  payloadJson Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
 }
 
-model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
+model Reaction {
+  id        String       @id
+  articleId String
+  kind      ReactionKind
+  count     Int          @default(0)
+  updatedAt DateTime
+  Article   Article      @relation(fields: [articleId], references: [id])
+}
+
+model Redirect {
+  id        String   @id
+  fromPath  String   @unique
+  toPath    String
+  createdAt DateTime @default(now())
+}
+
+model Series {
+  id          String    @id
+  title       String
+  slug        String    @unique
   description String?
-  color       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  articles    Article[]
+  coverUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  Article     Article[]
 }
 
+model Tag {
+  id         String       @id
+  name       String       @unique
+  slug       String       @unique
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime
+  ArticleTag ArticleTag[]
+}
 
+model User {
+  id        String      @id
+  name      String?
+  email     String      @unique
+  password  String
+  role      Role        @default(AUTHOR)
+  image     String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  Article   Article[]
+  CaseStudy CaseStudy[]
+}
+
+enum ArticleStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+}
+
+enum NewsletterStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  PENDING
+}
+
+enum ReactionKind {
+  LIKE
+  CLAP
+  HEART
+  ROCKET
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  AUTHOR
+}
+
+enum Visibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+  MEMBERS_ONLY
+}
+
+// Analytics tracking models
+model PageView {
+  id        String   @id @default(cuid())
+  url       String
+  title     String
+  referrer  String?
+  userAgent String?
+  timestamp DateTime @default(now())
+  sessionId String?
+  userId    String?
+  
+  @@index([timestamp])
+  @@index([sessionId])
+  @@index([userId])
+}
+
+model UserInteraction {
+  id        String   @id @default(cuid())
+  type      String   // click, scroll, time_on_page, form_submit, download
+  element   String?
+  value     Json?
+  timestamp DateTime @default(now())
+  sessionId String?
+  userId    String?
+  pageUrl   String
+  
+  @@index([timestamp])
+  @@index([sessionId])
+  @@index([userId])
+}
+
+model AnalyticsSession {
+  id        String    @id @default(cuid())
+  sessionId String    @unique
+  userId    String?
+  startTime DateTime  @default(now())
+  endTime   DateTime?
+  pageViews Int       @default(0)
+  duration  Int?      // in seconds
+  referrer  String?
+  userAgent String?
+  ipAddress String?
+  
+  @@index([startTime])
+  @@index([userId])
+}
