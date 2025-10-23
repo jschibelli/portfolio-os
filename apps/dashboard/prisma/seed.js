@@ -20,10 +20,12 @@ async function main() {
     where: { email },
     update: { role: "ADMIN" },
     create: {
+      id: require('crypto').randomBytes(12).toString('base64url'),
       email,
       password: hash,
       role: "ADMIN",
-      name: "Admin"
+      name: "Admin",
+      updatedAt: new Date()
     },
   });
 
