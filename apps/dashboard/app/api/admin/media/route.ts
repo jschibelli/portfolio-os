@@ -171,6 +171,14 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    // Prevent DoS attacks by limiting the number of items that can be deleted at once
+    if (mediaIds.length > 100) {
+      return NextResponse.json(
+        { error: "Cannot delete more than 100 items at once" },
+        { status: 400 }
+      );
+    }
+
     // Check if any of the media items are being used by articles
     const usedMedia = await prisma.imageAsset.findMany({
       where: {

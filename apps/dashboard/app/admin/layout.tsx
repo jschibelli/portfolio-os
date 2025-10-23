@@ -107,9 +107,19 @@ export default function AdminLayout({
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+        {/* Skip navigation link for keyboard accessibility */}
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Skip to main content
+        </a>
         <Sidebar />
         {/* Main content with proper left margin to account for fixed sidebar */}
-        <main className="min-h-screen p-4 md:p-6 md:pl-8 md:ml-64 bg-slate-50 dark:bg-slate-900 transition-colors">
+        <main 
+          id="main-content"
+          className="min-h-screen p-4 md:p-6 md:pl-8 md:ml-64 bg-slate-50 dark:bg-slate-900 transition-colors"
+        >
           {children}
         </main>
       </div>

@@ -233,7 +233,8 @@ export function validateArticleId(id: string): string | null {
   
   // Pattern 3: Simple alphanumeric ID with optional hyphens and underscores
   // Example: article-123, post_456, item789
-  const simpleIdPattern = /^[a-zA-Z0-9_-]+$/
+  // Limited to 255 characters to prevent DoS attacks via extremely long IDs
+  const simpleIdPattern = /^[a-zA-Z0-9_-]{1,255}$/
   
   if (mongoIdPattern.test(sanitized) || uuidPattern.test(sanitized) || simpleIdPattern.test(sanitized)) {
     return sanitized
