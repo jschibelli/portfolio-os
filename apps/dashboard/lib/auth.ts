@@ -234,20 +234,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         // Validate input
         if (!credentials?.email || !credentials?.password) {
-          console.warn('[AUTH] Missing credentials in login attempt')
+          // Use generic warning without revealing which validation failed
+          console.warn('[AUTH] Authentication failed - invalid credentials')
           return null
         }
 
-        // Sanitize email input (basic validation)
+        // Sanitize email input with stricter validation
+        // Ensures proper TLD structure and valid domain format
         const email = credentials.email.trim().toLowerCase()
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          console.warn('[AUTH] Invalid email format')
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/
+        if (!email || !emailRegex.test(email)) {
+          console.warn('[AUTH] Authentication failed - invalid credentials')
           return null
         }
 
-        // Validate password length (basic security check)
-        if (credentials.password.length < 6 || credentials.password.length > 100) {
-          console.warn('[AUTH] Invalid password length')
+        // Validate password length (OWASP/NIST guidelines: minimum 8 characters)
+        if (credentials.password.length < 8 || credentials.password.length > 100) {
+          console.warn('[AUTH] Authentication failed - invalid credentials')
           return null
         }
 
@@ -312,6 +315,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login"
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || (() => { throw new Error('NEXTAUTH_SECRET environment variable is required') })(),
   debug: process.env.NODE_ENV === "development"
 }

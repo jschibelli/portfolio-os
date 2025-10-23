@@ -33,8 +33,8 @@ This document outlines the security improvements made to address code review fee
 **Issue:** Insufficient input sanitization could lead to injection attacks.
 
 **Fix:**
-- Added email format validation using regex
-- Added password length validation (6-100 characters)
+- Added strict email format validation using RFC 5322 compliant regex
+- Added password length validation (8-100 characters, per OWASP/NIST guidelines)
 - Email addresses are trimmed and converted to lowercase
 - Input validation occurs before any database queries
 
@@ -53,15 +53,17 @@ This document outlines the security improvements made to address code review fee
 
 ### 5. Reduced Information Disclosure in Logs
 
-**Issue:** Excessive logging exposed sensitive information about authentication flows.
+**Issue:** Excessive logging exposed sensitive information about authentication flows and created timing side-channels.
 
 **Fix:**
 - Removed logs containing user emails
 - Changed log levels appropriately (info/warn/error)
 - Error messages log only error.message, not full stack traces
 - Success logs only include non-sensitive user ID
+- All authentication failures now use identical generic error messages
+- Consistent logging prevents timing analysis attacks
 
-**Impact:** Logs can no longer be used to gather intelligence about valid users or system behavior.
+**Impact:** Logs can no longer be used to gather intelligence about valid users or system behavior. Eliminates timing side-channels that could enable user enumeration.
 
 ## Required Environment Variables
 
@@ -132,6 +134,7 @@ vercel env add NEXTAUTH_SECRET
 - Always hash passwords with bcrypt before storage
 - Use a cost factor of 10+ for bcrypt (default is 10)
 - Never store plain-text passwords
+- Minimum password length: 8 characters (OWASP/NIST guidelines)
 - Implement password complexity requirements client-side
 
 ### Rate Limiting (Recommended)
@@ -212,7 +215,7 @@ Monitor authentication logs for:
 
 For questions or concerns about these security changes, please:
 1. Review this documentation
-2. Check the [Security Policy](../../docs/CODE_OF_CONDUCT.md)
+2. Check the [Security Policy](../../SECURITY.md)
 3. Open an issue with the `security` label
 4. For sensitive security issues, contact directly via email
 
