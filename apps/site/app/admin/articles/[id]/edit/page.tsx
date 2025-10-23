@@ -20,7 +20,9 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
         include: {
           tag: true
         }
-      }
+      },
+      author: true,
+      cover: true,
     }
   })
 
@@ -29,6 +31,7 @@ export default async function EditArticlePage(props: EditArticlePageProps) {
   }
 
   // Transform the article data for the editor
+  // Only include fields that the ArticleEditor expects
   const editorData = {
     id: article.id,
     title: article.title,

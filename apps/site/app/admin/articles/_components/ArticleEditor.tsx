@@ -151,7 +151,11 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
   }, [blocks, debouncedSave])
 
   const saveDraft = async () => {
-    if (!articleData.title.trim()) return
+    if (!articleData.title.trim()) {
+      // Show user feedback for missing title
+      alert('Please enter a title before saving the draft.')
+      return
+    }
 
     setIsSaving(true)
     try {
@@ -192,8 +196,12 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
         const result: SaveDraftResponse = await response.json()
         setLastSaved(new Date())
         console.log('Draft saved:', result)
+        // Show success feedback
+        alert('Draft saved successfully!')
       } else {
-        console.error('Failed to save draft')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('Failed to save draft:', errorData)
+        alert(`Failed to save draft: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Error saving draft:', error)
@@ -418,10 +426,11 @@ export function ArticleEditor({ initialData }: ArticleEditorProps) {
                 variant="outline"
                 size="sm"
                 onClick={saveDraft}
-                disabled={isSaving}
+                disabled={isSaving || !articleData.title.trim()}
+                title={!articleData.title.trim() ? "Enter a title to save the draft" : "Save draft"}
               >
                 <Save className="w-4 h-4" />
-                Save Draft
+                {isSaving ? 'Saving...' : 'Save Draft'}
               </Button>
               <Button
                 size="sm"

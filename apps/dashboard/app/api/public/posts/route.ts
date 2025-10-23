@@ -87,19 +87,18 @@ export async function GET(request: NextRequest) {
       id: post.id,
       title: post.title,
       slug: post.slug,
-      excerpt: post.excerpt,
-      content: post.contentMdx,
+      excerpt: post.excerpt || '',
+      content: post.contentMdx || '',
       publishedAt: post.publishedAt?.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
       readingMinutes: post.readingMinutes || 5,
-      wordCount: post.wordCount || 0,
       views: post.views || 0,
       featured: post.featured || false,
       author: {
         name: post.author?.name || 'Unknown',
         email: post.author?.email || '',
-        bio: post.author?.bio || '',
-        avatar: post.author?.avatar || ''
+        bio: '', // User model doesn't have bio field
+        avatar: post.author?.image || '' // Use 'image' field from User model
       },
       cover: post.cover ? {
         url: post.cover.url,

@@ -28,23 +28,29 @@ import {
 
 interface Block {
   id: string
-  type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
+  type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout' | 'details'
   content: string
   placeholder?: string
+  summary?: string
+  isOpen?: boolean
 }
 
 interface BlockEditorProps {
   blocks: Array<{
     id: string
-    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
+    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout' | 'details'
     content: string
     placeholder?: string
+    summary?: string
+    isOpen?: boolean
   }>
   onChange: (blocks: Array<{
     id: string
-    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout'
+    type: 'text' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'orderedList' | 'quote' | 'code' | 'image' | 'callout' | 'details'
     content: string
     placeholder?: string
+    summary?: string
+    isOpen?: boolean
   }>) => void
   onSlashCommand: () => void
 }
@@ -106,6 +112,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
       case 'code': return 'Enter code...'
       case 'image': return 'Image URL'
       case 'callout': return 'Callout text'
+      case 'details': return 'Details content...'
       default: return 'Type something...'
     }
   }
@@ -136,7 +143,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
             onChange={(e) => updateBlock(block.id, e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, block.id)}
             placeholder={block.placeholder}
-            className="w-full text-3xl font-bold bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none"
+            className="w-full text-3xl font-bold bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
           />
         )
       case 'heading2':
@@ -147,7 +154,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
             onChange={(e) => updateBlock(block.id, e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, block.id)}
             placeholder={block.placeholder}
-            className="w-full text-2xl font-semibold bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none"
+            className="w-full text-2xl font-semibold bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
           />
         )
       case 'heading3':
@@ -158,7 +165,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
             onChange={(e) => updateBlock(block.id, e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, block.id)}
             placeholder={block.placeholder}
-            className="w-full text-xl font-medium bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none"
+            className="w-full text-xl font-medium bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
           />
         )
       case 'quote':
@@ -169,7 +176,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
               onChange={(e) => updateBlock(block.id, e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, block.id)}
               placeholder={block.placeholder}
-              className="w-full bg-transparent border-none outline-none text-gray-700 placeholder-gray-400 resize-none italic"
+              className="w-full bg-transparent border-none outline-none text-gray-300 placeholder-gray-400 resize-none italic"
               rows={2}
             />
           </div>
@@ -182,7 +189,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
               onChange={(e) => updateBlock(block.id, e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, block.id)}
               placeholder={block.placeholder}
-              className="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none font-mono text-sm"
+              className="w-full bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none font-mono text-sm"
               rows={4}
             />
           </div>
@@ -196,7 +203,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
               onChange={(e) => updateBlock(block.id, e.target.value)}
               onKeyDown={(e) => handleKeyDown(e, block.id)}
               placeholder={block.placeholder}
-              className="w-full bg-transparent border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-400"
+              className="w-full bg-transparent border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-400"
             />
             {block.content && (
               <img 
@@ -220,11 +227,51 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
                 onChange={(e) => updateBlock(block.id, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(e, block.id)}
                 placeholder={block.placeholder}
-                className="flex-1 bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none"
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
                 rows={2}
               />
             </div>
           </div>
+        )
+      case 'details':
+        return (
+          <details className="bg-gray-800 border border-gray-600 rounded-lg p-4" open={block.isOpen}>
+            <summary 
+              className="cursor-pointer font-medium text-white mb-2 flex items-center gap-2"
+              onClick={(e) => {
+                e.preventDefault()
+                const newBlocks = blocks.map(b => 
+                  b.id === block.id ? { ...b, isOpen: !b.isOpen } : b
+                )
+                onChange(newBlocks)
+              }}
+            >
+              <span className="text-gray-400">{block.isOpen ? '▼' : '▶'}</span>
+              <input
+                type="text"
+                value={block.summary || ''}
+                onChange={(e) => {
+                  const newBlocks = blocks.map(b => 
+                    b.id === block.id ? { ...b, summary: e.target.value } : b
+                  )
+                  onChange(newBlocks)
+                }}
+                placeholder="Summary text..."
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-400"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </summary>
+            <div className="mt-2">
+              <textarea
+                value={block.content}
+                onChange={(e) => updateBlock(block.id, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, block.id)}
+                placeholder={block.placeholder}
+                className="w-full bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
+                rows={3}
+              />
+            </div>
+          </details>
         )
       default:
         return (
@@ -233,7 +280,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
             onChange={(e) => updateBlock(block.id, e.target.value)}
             onKeyDown={(e) => handleKeyDown(e, block.id)}
             placeholder={block.placeholder}
-            className="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 resize-none"
+            className="w-full bg-transparent border-none outline-none text-white placeholder-gray-400 resize-none"
             rows={1}
           />
         )
@@ -241,7 +288,7 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 block-editor-container">
       {blocks.map((block, index) => {
         const isFocused = focusedBlockId === block.id
         return (
@@ -286,11 +333,11 @@ export function BlockEditor({ blocks, onChange, onSlashCommand }: BlockEditorPro
       {/* Add First Block */}
       {blocks.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">Start writing your article...</div>
+          <div className="text-gray-300 mb-4">Start writing your article...</div>
           <Button
             variant="outline"
             onClick={() => addBlock('text')}
-            className="text-gray-600 border-gray-300 hover:bg-gray-50"
+            className="text-gray-300 border-gray-600 hover:bg-gray-800"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add your first block

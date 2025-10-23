@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "../styles/index.css";
 import { Providers } from "../components/providers/Providers";
+import AnalyticsTracker from "../components/analytics/AnalyticsTracker";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -87,6 +88,7 @@ export default function RootLayout({
         
         <Providers>
           {children}
+          <AnalyticsTracker />
         </Providers>
       </body>
     </html>
