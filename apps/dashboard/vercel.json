@@ -1,0 +1,11 @@
+{
+  "buildCommand": "turbo run build --filter=@mindware-blog/dashboard...",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+

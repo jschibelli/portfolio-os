@@ -5,8 +5,18 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
+export const dynamic = 'force-dynamic';
+
+interface RouteParams {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: RouteParams
+) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -17,6 +27,58 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
       );
     }
 
+    const { id } = await params;
+
+    const tag = await prisma.tag.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            articles: true
+          }
+        }
+      }
+    });
+
+    if (!tag) {
+      return NextResponse.json(
+        { error: "Tag not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      id: tag.id,
+      name: tag.name,
+      slug: tag.slug,
+      createdAt: tag.createdAt.toISOString(),
+      updatedAt: tag.updatedAt.toISOString(),
+      articleCount: tag._count.articles
+    });
+  } catch (error) {
+    console.error("Error fetching tag:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch tag" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: RouteParams
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Check if user has admin role
     const userRole = (session.user as any)?.role;
     if (!userRole || !["ADMIN", "EDITOR"].includes(userRole)) {
       return NextResponse.json(
@@ -25,16 +87,17 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
       );
     }
 
+    const { id } = await params;
     const body = await request.json();
-    const { name, description, color } = body;
+    const { name, slug } = body;
 
-    // Update the tag
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (slug) updateData.slug = slug;
+
     const tag = await prisma.tag.update({
-      where: { id: params.id },
-      data: {
-        name,
-        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      }
+      where: { id },
+      data: updateData
     });
 
     return NextResponse.json(tag);
@@ -47,8 +110,10 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
   }
 }
 
-export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteParams
+) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -59,29 +124,45 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
       );
     }
 
+    // Check if user has admin role
     const userRole = (session.user as any)?.role;
-    if (!userRole || !["ADMIN"].includes(userRole)) {
+    if (!userRole || !["ADMIN", "EDITOR"].includes(userRole)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       );
     }
 
-    // Check if tag is used by any articles
-    const articleCount = await prisma.articleTag.count({
-      where: { tagId: params.id }
+    const { id } = await params;
+
+    // Check if tag is in use
+    const tagWithArticles = await prisma.tag.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            articles: true
+          }
+        }
+      }
     });
 
-    if (articleCount > 0) {
+    if (!tagWithArticles) {
       return NextResponse.json(
-        { error: "Cannot delete tag that is used by articles" },
+        { error: "Tag not found" },
+        { status: 404 }
+      );
+    }
+
+    if (tagWithArticles._count.articles > 0) {
+      return NextResponse.json(
+        { error: "Cannot delete tag that is in use by articles" },
         { status: 400 }
       );
     }
 
-    // Delete the tag
     await prisma.tag.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return NextResponse.json({ success: true });
@@ -93,4 +174,3 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
     );
   }
 }
-

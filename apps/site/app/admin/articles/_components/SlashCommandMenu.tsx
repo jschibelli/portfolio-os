@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { 
   Type, 
@@ -34,8 +35,73 @@ interface SlashCommandMenuProps {
 
 export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashCommandMenuProps) {
   const [activeTab, setActiveTab] = useState<'Basic' | 'Advanced' | 'Media' | 'AI' | 'Embeds'>('Basic')
+  const [menuPosition, setMenuPosition] = useState({ top: position.y, left: position.x })
+
+  // Update position when position prop changes or window resizes
+  useEffect(() => {
+    if (isOpen) {
+      const updatePosition = () => {
+        const optimalPos = getOptimalPosition()
+        setMenuPosition(optimalPos)
+      }
+      
+      updatePosition()
+      
+      // Listen for window resize
+      window.addEventListener('resize', updatePosition)
+      window.addEventListener('scroll', updatePosition)
+      
+      return () => {
+        window.removeEventListener('resize', updatePosition)
+        window.removeEventListener('scroll', updatePosition)
+      }
+    }
+  }, [isOpen, position])
 
   if (!isOpen) return null
+
+  // Calculate optimal positioning to avoid viewport cutoff
+  const getOptimalPosition = () => {
+    const menuHeight = 400 // Approximate menu height
+    const menuWidth = 400 // Approximate menu width
+    
+    // Fallback for SSR or when window is not available
+    if (typeof window === 'undefined') {
+      return { top: position.y - menuHeight, left: position.x }
+    }
+    
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+    
+    let top = position.y
+    let left = position.x
+    
+    // Check if menu would be cut off at the top
+    if (position.y - menuHeight < 0) {
+      // Position below the cursor instead
+      top = position.y + 20
+    } else {
+      // Position above the cursor
+      top = position.y - menuHeight
+    }
+    
+    // Check if menu would be cut off at the bottom
+    if (top + menuHeight > viewportHeight) {
+      top = viewportHeight - menuHeight - 10
+    }
+    
+    // Check if menu would be cut off at the right
+    if (left + menuWidth > viewportWidth) {
+      left = viewportWidth - menuWidth - 10
+    }
+    
+    // Ensure menu doesn't go off the left edge
+    if (left < 10) {
+      left = 10
+    }
+    
+    return { top, left }
+  }
 
   const basicCommands = [
     { icon: Type, label: 'Text', description: 'Start writing with plain text', command: 'text', blockType: 'text' },
@@ -91,13 +157,12 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
     onClose()
   }
 
-  return (
+  const menuContent = (
     <div 
       className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-xl max-w-md"
       style={{ 
-        left: position.x, 
-        top: position.y,
-        transform: 'translateY(-100%)'
+        left: menuPosition.left, 
+        top: menuPosition.top
       }}
     >
       {/* Tabs */}
@@ -137,4 +202,11 @@ export function SlashCommandMenu({ isOpen, onClose, onSelect, position }: SlashC
       </div>
     </div>
   )
+
+  // Use portal to render at document body level to avoid z-index issues
+  if (typeof window !== 'undefined') {
+    return createPortal(menuContent, document.body)
+  }
+  
+  return menuContent
 }

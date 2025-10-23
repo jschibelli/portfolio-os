@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/admin/Sidebar";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function AdminLayout({
   children,
@@ -104,9 +105,14 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-slate-900 transition-colors">
-      <Sidebar />
-      <main className="flex-1 p-4 md:p-6 bg-slate-50 dark:bg-slate-900 overflow-auto transition-colors md:ml-0">{children}</main>
-    </div>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+        <Sidebar />
+        {/* Main content with proper left margin to account for fixed sidebar */}
+        <main className="min-h-screen p-4 md:p-6 md:pl-8 md:ml-64 bg-slate-50 dark:bg-slate-900 transition-colors">
+          {children}
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }

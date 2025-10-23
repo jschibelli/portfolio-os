@@ -18,9 +18,27 @@ export async function ensureUniqueSlug(
   slug: string,
   excludeId?: string
 ): Promise<string> {
-  // This would typically check against your database
-  // For now, we'll return the slug as-is
-  // In a real implementation, you'd query your database here
-  return slug
+  // Import prisma here to avoid circular dependencies
+  const { prisma } = await import('@/lib/prisma')
+  
+  let uniqueSlug = slug
+  let counter = 1
+  
+  while (true) {
+    const existingArticle = await prisma.article.findUnique({
+      where: { slug: uniqueSlug }
+    })
+    
+    // If no existing article, or if it's the same article we're updating
+    if (!existingArticle || (excludeId && existingArticle.id === excludeId)) {
+      break
+    }
+    
+    // Generate a new slug with a counter
+    uniqueSlug = `${slug}-${counter}`
+    counter++
+  }
+  
+  return uniqueSlug
 }
 

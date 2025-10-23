@@ -200,21 +200,39 @@ export function validateAndSanitizeInput(
 }
 
 /**
- * Validates an article ID format
+ * Validates an article ID format and returns sanitized ID or null
+ * Supports multiple ID formats commonly used in web applications
+ * 
+ * @param id - The article ID to validate
+ * @returns The sanitized ID if valid, null otherwise
+ * 
+ * @example
+ * // MongoDB ObjectID (24 hex characters representing 12 bytes)
+ * validateArticleId('507f1f77bcf86cd799439011') // returns '507f1f77bcf86cd799439011'
+ * 
+ * // UUID v4 format
+ * validateArticleId('550e8400-e29b-41d4-a716-446655440000') // returns '550e8400-e29b-41d4-a716-446655440000'
+ * 
+ * // Simple alphanumeric ID with hyphens/underscores
+ * validateArticleId('article-123') // returns 'article-123'
  */
 export function validateArticleId(id: string): string | null {
   if (!id || typeof id !== 'string') {
     return null
   }
   
-  // Remove whitespace and check if it's a valid MongoDB ObjectID or UUID
   const sanitized = id.trim()
   
-  // MongoDB ObjectID format (24 hex characters)
+  // Pattern 1: MongoDB ObjectID format (24 hexadecimal characters = 12 bytes)
+  // Example: 507f1f77bcf86cd799439011
   const mongoIdPattern = /^[a-f\d]{24}$/i
-  // UUID format
+  
+  // Pattern 2: UUID format (8-4-4-4-12 hexadecimal characters with hyphens)
+  // Example: 550e8400-e29b-41d4-a716-446655440000
   const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  // Simple alphanumeric ID
+  
+  // Pattern 3: Simple alphanumeric ID with optional hyphens and underscores
+  // Example: article-123, post_456, item789
   const simpleIdPattern = /^[a-zA-Z0-9_-]+$/
   
   if (mongoIdPattern.test(sanitized) || uuidPattern.test(sanitized) || simpleIdPattern.test(sanitized)) {
@@ -226,19 +244,35 @@ export function validateArticleId(id: string): string | null {
 
 /**
  * Sanitizes user input by removing potentially dangerous content
+ * while preserving safe formatting characters
+ * 
+ * @param input - The user input string to sanitize
+ * @returns The sanitized string with dangerous characters removed
+ * 
+ * @example
+ * sanitizeInput('Hello\x00World') // returns 'HelloWorld' (null byte removed)
+ * sanitizeInput('  Test\n\t ') // returns 'Test\n\t' (preserves newlines/tabs, trims whitespace)
+ * 
+ * Security features:
+ * - Removes null bytes (\0) that can cause string termination issues
+ * - Removes control characters that can cause rendering/security issues
+ * - Preserves newline (\n), tab (\t), and carriage return (\r) for legitimate formatting
+ * - Trims leading/trailing whitespace
  */
 export function sanitizeInput(input: string): string {
   if (!input || typeof input !== 'string') {
     return ''
   }
   
-  // Remove null bytes
+  // Step 1: Remove null bytes (\0) - can cause string termination vulnerabilities
   let sanitized = input.replace(/\0/g, '')
   
-  // Remove control characters except newline, tab, and carriage return
+  // Step 2: Remove control characters (0x00-0x1F, 0x7F) except:
+  // - 0x09 (tab), 0x0A (newline), 0x0D (carriage return)
+  // This prevents injection of dangerous control sequences
   sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
   
-  // Trim whitespace
+  // Step 3: Trim leading and trailing whitespace
   sanitized = sanitized.trim()
   
   return sanitized

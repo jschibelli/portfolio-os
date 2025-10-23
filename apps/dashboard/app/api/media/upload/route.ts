@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { PrismaClient } from '@prisma/client';
 import sharp from 'sharp';
+
+const prisma = new PrismaClient();
 
 /**
  * Advanced Media Upload API
@@ -231,7 +234,30 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Media Upload] Success: ${file.name} → ${result.webp?.url}`);
 
-    return NextResponse.json(result);
+    // Save to database
+    try {
+      const imageAsset = await prisma.imageAsset.create({
+        data: {
+          url: result.webp?.url || result.original.url,
+          width: metadata.width || null,
+          height: metadata.height || null,
+          alt: file.name.replace(/\.[^/.]+$/, '').replace(/-/g, ' '),
+          blurData: result.blurDataURL || null
+        }
+      });
+
+      console.log(`[Media Upload] Saved to database: ${imageAsset.id}`);
+
+      // Return result with database ID
+      return NextResponse.json({
+        ...result,
+        id: imageAsset.id
+      });
+    } catch (dbError) {
+      console.error('[Media Upload] Database save error:', dbError);
+      // Still return success since file was uploaded
+      return NextResponse.json(result);
+    }
 
   } catch (error) {
     console.error('[Media Upload] Error:', {

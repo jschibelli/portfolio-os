@@ -188,6 +188,7 @@ model Article {
   tags            ArticleTag[]
   versions        ArticleVersion[]
   reactions       Reaction[]
+  comments        Comment[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
@@ -267,6 +268,26 @@ model Reaction {
   count     Int          @default(0)
   updatedAt DateTime     @updatedAt
   article   Article      @relation(fields: [articleId], references: [id])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  articleId String
+  article   Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  author    String
+  email     String
+  content   String
+  status    String    @default("pending") // pending, approved, rejected, spam
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies   Comment[] @relation("CommentReplies")
+  likes     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([articleId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model Redirect {

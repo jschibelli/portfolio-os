@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Button } from '../../ui';
 import { Badge } from '../../ui/badge';
 import { Card, CardContent } from '../../ui/card';
@@ -249,36 +250,35 @@ export default function AudienceSpecificCTA({ audience, className = '', onSchedu
 								className={sharedStyles.button.primary}
 								asChild
 							>
-								<Link 
-									href={data.primaryCTA.url}
-									aria-label={`${data.primaryCTA.text} - ${data.title}`}
-									{...(data.primaryCTA.download && {
-										download: data.primaryCTA.downloadFilename,
-										target: "_blank",
-										rel: "noopener noreferrer"
-									})}
-								>
+								<Link href={data.primaryCTA.url}>
 									{data.primaryCTA.icon}
 									{data.primaryCTA.text}
 								</Link>
 							</Button>
-							{renderScheduleButton() || (
+							{isScheduleButton ? (
+								<Button
+									size="lg"
+									variant="outline"
+									className={sharedStyles.button.secondary}
+									onClick={onScheduleClick}
+								>
+									{data.secondaryCTA.icon}
+									{data.secondaryCTA.text}
+								</Button>
+							) : (
 								<Button
 									size="lg"
 									variant="outline"
 									className={sharedStyles.button.secondary}
 									asChild
-								>
-									<Link 
-										href={data.secondaryCTA.url}
-										aria-label={`${data.secondaryCTA.text} - ${data.title}`}
-									>
-										{data.secondaryCTA.icon}
-										{data.secondaryCTA.text}
-									</Link>
-								</Button>
-							)}
-						</motion.div>
+													>
+														<Link href={data.secondaryCTA.url}>
+															{data.secondaryCTA.icon}
+															{data.secondaryCTA.text}
+														</Link>
+													</Button>
+												)}
+							</motion.div>
 						</CardContent>
 					</Card>
 				</motion.div>

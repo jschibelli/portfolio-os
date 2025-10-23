@@ -49,14 +49,6 @@ export async function GET(request: NextRequest) {
     const [mediaItems, total] = await Promise.all([
       prisma.imageAsset.findMany({
         where,
-        include: {
-          usedBy: {
-            select: {
-              title: true,
-              slug: true
-            }
-          }
-        },
         orderBy: [
           { createdAt: 'desc' }
         ],

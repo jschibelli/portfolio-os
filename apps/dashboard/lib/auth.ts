@@ -225,8 +225,20 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          // For development, use a simple hardcoded admin user
-          // In production, this should query the database
+          // For development, use environment variables for admin user
+          const adminEmail = process.env.NEXT_AUTH_ADMIN_EMAIL || process.env.AUTH_ADMIN_EMAIL
+          const adminPassword = process.env.NEXT_AUTH_ADMIN_PASSWORD || process.env.AUTH_ADMIN_PASSWORD
+          
+          if (credentials.email === adminEmail && credentials.password === adminPassword) {
+            return {
+              id: "1",
+              email: adminEmail,
+              name: "Admin User",
+              role: "ADMIN"
+            }
+          }
+
+          // Fallback to hardcoded credentials for development
           if (credentials.email === "admin@mindware.dev" && credentials.password === "admin123") {
             return {
               id: "1",

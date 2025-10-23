@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import {
   Eye,
   Upload,
@@ -15,7 +17,12 @@ import {
   TrendingUp,
   Search,
   Globe,
-  Twitter
+  Twitter,
+  Link,
+  Calendar,
+  Clock,
+  MessageSquare,
+  MessageSquareOff
 } from 'lucide-react'
 
 export interface SEOData {
@@ -32,6 +39,12 @@ export interface SEOData {
   twitterImage?: string
   focusKeyword?: string
   seoScore?: number
+  // New fields for enhanced SEO panel
+  isRepublishing?: boolean
+  originalUrl?: string
+  scheduledPublishDate?: Date
+  backdatePublishDate?: Date
+  disableComments?: boolean
 }
 
 interface SEOPanelProps {
@@ -226,10 +239,10 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="text-lg font-semibold text-white">
                 SEO Score: {seoScore}/100
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-400">
                 {getSEOScoreLabel(seoScore)}
               </p>
             </div>
@@ -257,7 +270,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
           {seoAnalysis.map((item, index) => (
             <div
               key={index}
-              className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300"
+              className="flex items-start gap-2 text-sm text-gray-200"
             >
               <span className="shrink-0">{item.split(' ')[0]}</span>
               <span>{item.substring(item.indexOf(' ') + 1)}</span>
@@ -273,7 +286,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'general'
               ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <Search className="w-4 h-4 inline mr-2" />
@@ -284,7 +297,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'social'
               ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <Globe className="w-4 h-4 inline mr-2" />
@@ -295,7 +308,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
           className={`px-4 py-2 font-medium transition-colors ${
             activeTab === 'advanced'
               ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+              : 'text-gray-400 hover:text-gray-200'
           }`}
         >
           <Info className="w-4 h-4 inline mr-2" />
@@ -308,7 +321,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
         <div className="space-y-6">
           {/* Meta Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Meta Title
               <span className={`ml-2 ${getCounterColor(metaTitleLength, META_TITLE_MIN, META_TITLE_MAX)}`}>
                 {metaTitleLength}/{META_TITLE_MAX}
@@ -321,14 +334,14 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               maxLength={80}
               className="w-full"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Optimal length: {META_TITLE_MIN}-{META_TITLE_MAX} characters. Defaults to article title if empty.
             </p>
           </div>
 
           {/* Meta Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Meta Description
               <span className={`ml-2 ${getCounterColor(metaDescLength, META_DESC_MIN, META_DESC_MAX)}`}>
                 {metaDescLength}/{META_DESC_MAX}
@@ -340,16 +353,16 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               placeholder="Write a compelling meta description..."
               maxLength={200}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-white"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Optimal length: {META_DESC_MIN}-{META_DESC_MAX} characters. Appears in search results.
             </p>
           </div>
 
           {/* Focus Keyword */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Focus Keyword
             </label>
             <Input
@@ -358,7 +371,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               placeholder="e.g., react performance optimization"
               className="w-full"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               Main keyword or phrase for this article. Used for SEO analysis.
             </p>
           </div>
@@ -366,7 +379,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
           {/* URL Slug Preview */}
           {articleSlug && (
             <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 URL Preview
               </label>
               <div className="flex items-center gap-2 text-sm">
@@ -385,14 +398,14 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
         <div className="space-y-6">
           {/* Open Graph Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
               <Globe className="w-5 h-5" />
               Open Graph (Facebook, LinkedIn)
             </h3>
 
             {/* OG Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 OG Title Override
                 <span className={`ml-2 ${getCounterColor(ogTitleLength, 0, OG_TITLE_MAX)}`}>
                   {ogTitleLength}/{OG_TITLE_MAX}
@@ -408,7 +421,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
 
             {/* OG Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 OG Description Override
                 <span className={`ml-2 ${getCounterColor(ogDescLength, 0, OG_DESC_MAX)}`}>
                   {ogDescLength}/{OG_DESC_MAX}
@@ -420,13 +433,13 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
                 placeholder={data.metaDescription || 'Defaults to meta description'}
                 maxLength={250}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-white"
               />
             </div>
 
             {/* OG Image */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 OG Image
               </label>
               {data.ogImage ? (
@@ -477,7 +490,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
                   </label>
                 </div>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 Recommended: 1200x630px. Defaults to cover image.
               </p>
             </div>
@@ -487,20 +500,20 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
 
           {/* Twitter Card Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
               <Twitter className="w-5 h-5" />
               Twitter Card
             </h3>
 
             {/* Twitter Card Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 Card Type
               </label>
               <select
                 value={data.twitterCard || 'summary_large_image'}
                 onChange={(e) => onChange({ ...data, twitterCard: e.target.value as 'summary' | 'summary_large_image' })}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-white"
               >
                 <option value="summary">Summary (small image)</option>
                 <option value="summary_large_image">Summary with Large Image</option>
@@ -509,7 +522,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
 
             {/* Twitter Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 Twitter Title Override
                 <span className={`ml-2 ${getCounterColor(twitterTitleLength, 0, TWITTER_TITLE_MAX)}`}>
                   {twitterTitleLength}/{TWITTER_TITLE_MAX}
@@ -525,7 +538,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
 
             {/* Twitter Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 Twitter Description Override
                 <span className={`ml-2 ${getCounterColor(twitterDescLength, 0, TWITTER_DESC_MAX)}`}>
                   {twitterDescLength}/{TWITTER_DESC_MAX}
@@ -537,13 +550,13 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
                 placeholder={data.ogDescription || data.metaDescription || 'Defaults to OG description'}
                 maxLength={250}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-white"
               />
             </div>
 
             {/* Twitter Image */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-200 mb-2">
                 Twitter Image
               </label>
               {data.twitterImage ? (
@@ -594,7 +607,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
                   </label>
                 </div>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 Recommended: 1200x675px. Defaults to OG image.
               </p>
             </div>
@@ -605,9 +618,127 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
       {/* Advanced Tab */}
       {activeTab === 'advanced' && (
         <div className="space-y-6">
+          {/* Republishing Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Link className="w-5 h-5" />
+              Are you republishing?
+            </h3>
+            <p className="text-sm text-gray-400">
+              Change the canonical URL of this article to the original article.
+            </p>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={data.isRepublishing || false}
+                onCheckedChange={(checked) => onChange({ ...data, isRepublishing: checked })}
+              />
+              <Label className="text-sm font-medium text-gray-200">
+                This is a republished article
+              </Label>
+            </div>
+            {data.isRepublishing && (
+              <div>
+                <Label className="block text-sm font-medium text-gray-200 mb-2">
+                  Original URL
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    value={data.originalUrl || ''}
+                    onChange={(e) => onChange({ ...data, originalUrl: e.target.value })}
+                    placeholder="https://example.com/original-article"
+                    type="url"
+                    className="flex-1"
+                  />
+                  <Button variant="outline" size="sm">
+                    <Link className="w-4 h-4 mr-2" />
+                    Add Original URL
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Separator />
+
+          {/* Schedule Publishing */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              Schedule your article
+            </h3>
+            <p className="text-sm text-gray-400">
+              Optional - Schedule when this article should be published.
+            </p>
+            <div>
+              <Label className="block text-sm font-medium text-gray-200 mb-2">
+                Publish Date & Time
+              </Label>
+              <Input
+                type="datetime-local"
+                value={data.scheduledPublishDate ? new Date(data.scheduledPublishDate).toISOString().slice(0, 16) : ''}
+                onChange={(e) => {
+                  const date = e.target.value ? new Date(e.target.value) : undefined
+                  onChange({ ...data, scheduledPublishDate: date })
+                }}
+                min={new Date().toISOString().slice(0, 16)}
+                placeholder="Tomorrow at 6pm, 04/02..."
+                className="w-full"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Backdate Publishing */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              Publish on a backdate
+            </h3>
+            <div>
+              <Label className="block text-sm font-medium text-gray-200 mb-2">
+                Backdate
+              </Label>
+              <Input
+                type="date"
+                value={data.backdatePublishDate ? new Date(data.backdatePublishDate).toISOString().slice(0, 10) : ''}
+                onChange={(e) => {
+                  const date = e.target.value ? new Date(e.target.value) : undefined
+                  onChange({ ...data, backdatePublishDate: date })
+                }}
+                placeholder="Yesterday, 07/02/2021..."
+                className="w-full"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Disable Comments */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              Disable comments
+            </h3>
+            <p className="text-sm text-gray-400">
+              This will hide the comments section below your article.
+            </p>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={data.disableComments || false}
+                onCheckedChange={(checked) => onChange({ ...data, disableComments: checked })}
+              />
+              <Label className="text-sm font-medium text-gray-200">
+                Disable comments on this article
+              </Label>
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Canonical URL */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-200 mb-2">
               Canonical URL
             </label>
             <Input
@@ -616,7 +747,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               placeholder="https://example.com/original-article"
               type="url"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               If this content was originally published elsewhere, specify the original URL to avoid duplicate content issues.
             </p>
           </div>
@@ -631,10 +762,10 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               className="mt-1"
             />
             <div>
-              <label htmlFor="noindex" className="block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+              <label htmlFor="noindex" className="block text-sm font-medium text-gray-200 cursor-pointer">
                 Prevent Search Engine Indexing (noindex)
               </label>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 When enabled, search engines will not index this page. Useful for private or test content.
               </p>
             </div>
@@ -642,10 +773,10 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
 
           {/* Structured Data Preview */}
           <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-medium text-gray-200 mb-2">
               Structured Data Preview
             </h4>
-            <pre className="text-xs text-gray-600 dark:text-gray-400 overflow-x-auto">
+            <pre className="text-xs text-gray-400 overflow-x-auto">
 {JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -674,7 +805,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
       {/* Search Preview */}
       {showPreview && (
         <div className="mt-6 p-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          <h3 className="text-lg font-semibold text-white mb-4">
             Search Engine Preview
           </h3>
           
@@ -688,7 +819,7 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
               <div className="text-xl text-blue-600 dark:text-blue-400 mb-2">
                 {data.metaTitle || articleTitle || 'Article Title'}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-gray-400">
                 {data.metaDescription || 'Article description will appear here...'}
               </div>
             </div>
@@ -710,10 +841,10 @@ export function SEOPanel({ data, articleTitle, articleSlug, onChange }: SEOPanel
                 </div>
               )}
               <div className="p-4">
-                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                <div className="text-sm font-semibold text-white mb-1">
                   {data.ogTitle || data.metaTitle || articleTitle || 'Article Title'}
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
+                <div className="text-xs text-gray-400">
                   {data.ogDescription || data.metaDescription || 'Article description...'}
                 </div>
               </div>
