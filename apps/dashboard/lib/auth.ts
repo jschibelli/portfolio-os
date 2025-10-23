@@ -256,6 +256,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           // Try to find user in database
+          console.log('[AUTH] Attempting database authentication for:', credentials.email)
           const user = await prisma.user.findUnique({
             where: { email }
           })
