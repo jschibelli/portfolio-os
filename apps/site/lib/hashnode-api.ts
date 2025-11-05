@@ -237,7 +237,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
   const query = `
     query AllPostSlugs($host: String!) {
       publication(host: $host) {
-        posts(first: 100) {
+        posts(first: 50) {
           edges {
             node {
               slug

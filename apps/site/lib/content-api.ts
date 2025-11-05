@@ -284,7 +284,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
     try {
       // Try Dashboard API first
       if (await isDashboardAvailable()) {
-        const response = await dashboardAPI.getPosts({ limit: 100 });
+        const response = await dashboardAPI.getPosts({ limit: 50 });
         return response.posts.map(post => post.slug);
       }
     } catch (error) {
@@ -293,7 +293,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
 
     // Fallback to Hashnode
     try {
-      const hashnodePosts = await fetchHashnodePosts(100);
+      const hashnodePosts = await fetchHashnodePosts(50);
       return hashnodePosts.map(post => post.slug);
     } catch (error) {
       console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);
