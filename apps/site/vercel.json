@@ -1,5 +1,4 @@
 {
-  "$comment": "✅ ACTIVE DEPLOYMENT - Portfolio OS Main Site. This is deployed via the root vercel.json. If deploying as standalone, this config will be used.",
   "buildCommand": "pnpm turbo build --filter=@mindware-blog/site",
   "installCommand": "pnpm install",
   "framework": "nextjs",
