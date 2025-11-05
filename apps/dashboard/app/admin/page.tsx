@@ -207,8 +207,10 @@ export default function AdminDashboard() {
                   : 'text-blue-800 dark:text-blue-200'
               }`}>
                 {dataSource === 'database' 
-                  ? 'Database Analytics Mode' 
-                  : 'Demo Mode'}
+                  ? 'Real Database Analytics' 
+                  : dataSource === 'google-analytics'
+                  ? 'Google Analytics (Real Data)'
+                  : 'Loading...'}
               </h3>
               <div className={`mt-2 text-sm ${
                 dataSource === 'database' 
@@ -246,7 +248,7 @@ export default function AdminDashboard() {
                     {analyticsData.pageviews.toLocaleString()}
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    {dataSource === 'google-analytics' ? 'Live' : dataSource === 'database' ? 'DB metrics' : 'Demo'}
+                    {dataSource === 'google-analytics' ? 'Live Data' : dataSource === 'database' ? 'Real DB Data' : 'No Data'}
                   </p>
                 </div>
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">

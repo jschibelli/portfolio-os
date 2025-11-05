@@ -170,18 +170,78 @@ export async function GET(request: NextRequest) {
       scheduledArticlesCount = 0;
     }
 
-    // Calculate average time on page (this would need real analytics data)
-    const avgTimeOnPage = "4m 32s";
+    // Get REAL average time on page from analytics session data
+    let avgTimeOnPage = "0m 0s";
+    try {
+      const sessionsData = await prisma.analyticsSession.findMany({
+        where: {
+          startTime: {
+            gte: currentMonthStart
+          },
+          duration: {
+            not: null
+          }
+        },
+        select: {
+          duration: true
+        }
+      });
+      
+      if (sessionsData.length > 0) {
+        const totalDuration = sessionsData.reduce((sum, s) => sum + (s.duration || 0), 0);
+        const avgSeconds = Math.floor(totalDuration / sessionsData.length);
+        const minutes = Math.floor(avgSeconds / 60);
+        const seconds = avgSeconds % 60;
+        avgTimeOnPage = `${minutes}m ${seconds}s`;
+      }
+    } catch (error) {
+      console.log('AnalyticsSession table not available');
+    }
 
-    // Calculate social shares (this would need real analytics data)
-    const socialShares = Math.floor((currentViews || 0) * 0.006);
+    // Get REAL social shares count - NO ESTIMATION
+    const socialShares = 0; // Set to 0 until you have real social share tracking
 
-    // Calculate bounce rate (this would need real analytics data)
-    const bounceRate = 42;
+    // Get REAL bounce rate from analytics session data
+    let bounceRate = 0;
+    try {
+      const sessionsData = await prisma.analyticsSession.findMany({
+        where: {
+          startTime: {
+            gte: currentMonthStart
+          }
+        },
+        select: {
+          pageViews: true
+        }
+      });
+      
+      if (sessionsData.length > 0) {
+        const bouncedSessions = sessionsData.filter(s => s.pageViews === 1).length;
+        bounceRate = Math.round((bouncedSessions / sessionsData.length) * 100);
+      }
+    } catch (error) {
+      console.log('AnalyticsSession table not available');
+    }
+
+    // Get REAL unique visitors from PageView data
+    let uniqueVisitors = 0;
+    try {
+      const uniqueUserIds = await prisma.pageView.groupBy({
+        by: ['userId'],
+        where: {
+          userId: {
+            not: null
+          }
+        }
+      });
+      uniqueVisitors = uniqueUserIds.length;
+    } catch (error) {
+      console.log('PageView table not available');
+    }
 
     const stats = {
       totalViews: totalStats._sum.views || 0,
-      uniqueVisitors: Math.floor((totalStats._sum.views || 0) * 0.35), // Estimate unique visitors
+      uniqueVisitors: uniqueVisitors, // REAL unique visitors, not estimated
       publishedArticles: totalStats._count.id || 0,
       avgTimeOnPage,
       socialShares,

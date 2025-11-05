@@ -80,30 +80,7 @@ interface DashboardStats {
   scheduledArticlesCount: number;
 }
 
-// Mock data fallback
-const pageViewsData = [
-  { date: "Jan 1", views: 1200, visitors: 800, bounceRate: 42 },
-  { date: "Jan 2", views: 1350, visitors: 920, bounceRate: 38 },
-  { date: "Jan 3", views: 1100, visitors: 750, bounceRate: 45 },
-  { date: "Jan 4", views: 1600, visitors: 1100, bounceRate: 35 },
-  { date: "Jan 5", views: 1400, visitors: 950, bounceRate: 40 },
-  { date: "Jan 6", views: 1800, visitors: 1250, bounceRate: 32 },
-  { date: "Jan 7", views: 2000, visitors: 1400, bounceRate: 30 },
-  { date: "Jan 8", views: 1750, visitors: 1200, bounceRate: 35 },
-  { date: "Jan 9", views: 1900, visitors: 1300, bounceRate: 33 },
-  { date: "Jan 10", views: 2200, visitors: 1500, bounceRate: 28 },
-  { date: "Jan 11", views: 2100, visitors: 1450, bounceRate: 31 },
-  { date: "Jan 12", views: 2400, visitors: 1650, bounceRate: 27 },
-  { date: "Jan 13", views: 2300, visitors: 1600, bounceRate: 29 },
-  { date: "Jan 14", views: 2600, visitors: 1800, bounceRate: 25 },
-];
-
-// Mock data for future analytics features
-const deviceData = [
-  { device: "Desktop", users: 65, color: "#3b82f6" },
-  { device: "Mobile", users: 30, color: "#10b981" },
-  { device: "Tablet", users: 5, color: "#f59e0b" },
-];
+// NO MOCK DATA - All data comes from real database queries or Google Analytics
 
 export default function AdminAnalytics() {
   const sessionResult = useSession();
@@ -228,13 +205,12 @@ export default function AdminAnalytics() {
   const metricData = getMetricData();
 
   // Format time series data for charts
+  // Use REAL data only from the time series
   const chartData = analyticsData.timeSeriesData.map(item => ({
     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     value: item.value,
-    // Add mock data for other metrics if needed
-    views: item.value * 1.5, // Approximate pageviews
-    visitors: item.value * 0.8, // Approximate visitors
-    bounceRate: 35 + Math.random() * 20, // Mock bounce rate
+    views: item.value, // Real pageviews
+    visitors: item.value, // Real visitors (same as value in our current tracking)
   }));
 
   // Format device data for display
@@ -274,8 +250,10 @@ export default function AdminAnalytics() {
                   : 'text-blue-800 dark:text-blue-200'
               }`}>
                 {dataSource === 'database' 
-                  ? 'Database Analytics Mode' 
-                  : 'Demo Mode - Mock Data'
+                  ? 'Real Database Analytics' 
+                  : dataSource === 'google-analytics'
+                  ? 'Google Analytics (Real Data)'
+                  : 'Loading...'
                 }
               </h3>
               <div className={`mt-2 text-sm ${
@@ -348,7 +326,7 @@ export default function AdminAnalytics() {
                     {dashboardStats.totalViews.toLocaleString()}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    {dashboardStats.viewsChange > 0 ? '+' : ''}{dashboardStats.viewsChange}% from last month
+                    {dashboardStats.viewsChange !== 0 ? `${dashboardStats.viewsChange > 0 ? '+' : ''}${dashboardStats.viewsChange}% from last month` : 'Real-time data'}
                   </p>
                 </div>
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
@@ -366,7 +344,7 @@ export default function AdminAnalytics() {
                     {dashboardStats.uniqueVisitors.toLocaleString()}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    {Math.round(dashboardStats.viewsChange * 0.8) > 0 ? '+' : ''}{Math.round(dashboardStats.viewsChange * 0.8)}% from last month
+                    {dashboardStats.articlesChange !== 0 ? `${dashboardStats.articlesChange > 0 ? '+' : ''}${dashboardStats.articlesChange}% from last month` : 'Real-time data'}
                   </p>
                 </div>
                 <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
@@ -402,7 +380,7 @@ export default function AdminAnalytics() {
                     {dashboardStats.avgTimeOnPage}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    +18s from last month
+                    Real-time data
                   </p>
                 </div>
                 <div className="p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
@@ -420,7 +398,7 @@ export default function AdminAnalytics() {
                     {dashboardStats.socialShares.toLocaleString()}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    +23% from last month
+                    Real-time data
                   </p>
                 </div>
                 <div className="p-3 bg-pink-100 dark:bg-pink-900/20 rounded-lg">
@@ -438,7 +416,7 @@ export default function AdminAnalytics() {
                     {dashboardStats.bounceRate}%
                   </p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    -5% from last month
+                    Real-time data
                   </p>
                 </div>
                 <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-lg">

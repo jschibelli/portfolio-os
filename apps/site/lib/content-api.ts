@@ -132,14 +132,8 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 /**
  * Check if Dashboard API is available
  * Performs a health check to the Dashboard API
- * Returns false during build phase to prevent hanging
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // Skip Dashboard API during build phase
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return false;
-  }
-
   // Check if Dashboard API URL is configured
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_API_URL || process.env.DASHBOARD_API_URL;
   if (!dashboardUrl) {
@@ -147,9 +141,9 @@ async function isDashboardAvailable(): Promise<boolean> {
   }
 
   try {
-    // Quick health check with 1 second timeout
+    // Quick health check with 2 second timeout
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1000);
+    const timeout = setTimeout(() => controller.abort(), 2000);
     
     const response = await fetch(`${dashboardUrl}/api/health`, {
       signal: controller.signal,
@@ -290,7 +284,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
     try {
       // Try Dashboard API first
       if (await isDashboardAvailable()) {
-        const response = await dashboardAPI.getPosts({ limit: 100 });
+        const response = await dashboardAPI.getPosts({ limit: 50 });
         return response.posts.map(post => post.slug);
       }
     } catch (error) {
@@ -299,7 +293,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
 
     // Fallback to Hashnode
     try {
-      const hashnodePosts = await fetchHashnodePosts(100);
+      const hashnodePosts = await fetchHashnodePosts(50);
       return hashnodePosts.map(post => post.slug);
     } catch (error) {
       console.error('Both Dashboard and Hashnode APIs failed for slugs:', error);

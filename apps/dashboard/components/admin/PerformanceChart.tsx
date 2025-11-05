@@ -28,35 +28,56 @@ export function PerformanceChart() {
       try {
         setLoading(true);
         
-        // Try to fetch from analytics API
+        // Fetch REAL data only from analytics API
         const response = await fetch('/api/analytics/overview?period=7d');
         
         if (response.ok) {
           const analyticsData = await response.json();
           
-          // If we have time series data, use it
+          console.log('📊 Analytics Data Received:', analyticsData);
+          console.log('📊 Time Series Data:', analyticsData.timeSeriesData);
+          
+          // Use real time series data if available
           if (analyticsData.timeSeriesData && analyticsData.timeSeriesData.length > 0) {
-            const chartData = analyticsData.timeSeriesData.map((item: any) => ({
-              date: new Date(item.date).toLocaleDateString('en-US', { 
+            const chartData = analyticsData.timeSeriesData.map((item: any, index: number) => {
+              const itemDate = new Date(item.date);
+              const formattedDate = itemDate.toLocaleDateString('en-US', { 
                 month: 'short', 
                 day: 'numeric' 
-              }),
-              views: item.value || 0,
-              visitors: Math.floor((item.value || 0) * 0.7), // Approximate
-            }));
+              });
+              
+              console.log(`📅 Day ${index + 1}:`, {
+                rawDate: item.date,
+                formattedDate,
+                value: item.value
+              });
+              
+              return {
+                date: formattedDate,
+                views: item.value || 0,
+                visitors: item.value || 0, // Use same value for visitors (real data)
+              };
+            });
+            
+            console.log('📊 Chart Data Array Length:', chartData.length);
+            console.log('📊 Chart Data:', chartData);
             setData(chartData);
           } else {
-            // Use fallback mock data for demo
-            setData(generateFallbackData());
+            // NO MOCK DATA - Show empty chart with zeros
+            console.warn('⚠️ No time series data available, generating empty data');
+            setData(generateEmptyData());
           }
         } else {
-          // Use fallback data if analytics not available
-          setData(generateFallbackData());
+          // Show empty data if API fails - NO MOCK DATA
+          console.error('❌ API Response not OK:', response.status);
+          setData(generateEmptyData());
+          setError('Unable to load analytics data');
         }
       } catch (err) {
-        console.error('Error fetching chart data:', err);
-        // Use fallback data on error
-        setData(generateFallbackData());
+        console.error('❌ Error fetching chart data:', err);
+        // Show empty data on error - NO MOCK DATA
+        setData(generateEmptyData());
+        setError('Failed to fetch analytics data');
       } finally {
         setLoading(false);
       }
@@ -65,7 +86,8 @@ export function PerformanceChart() {
     fetchChartData();
   }, []);
 
-  const generateFallbackData = (): ChartData[] => {
+  // Generate empty data structure with zeros - NO MOCK DATA
+  const generateEmptyData = (): ChartData[] => {
     const data: ChartData[] = [];
     const now = new Date();
     
@@ -75,8 +97,8 @@ export function PerformanceChart() {
       
       data.push({
         date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        views: Math.floor(Math.random() * 100) + 50,
-        visitors: Math.floor(Math.random() * 70) + 30,
+        views: 0,
+        visitors: 0,
       });
     }
     
@@ -91,16 +113,25 @@ export function PerformanceChart() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-64 text-slate-500 dark:text-slate-400">
-        <p className="text-sm">{error}</p>
-      </div>
-    );
-  }
-
+  // Show chart even if there's an error, but with zero data
+  // This makes it clear there's no data rather than hiding the chart
+  const hasData = data.some(d => d.views > 0 || d.visitors > 0);
+  
+  console.log('📊 Chart Rendering - Data Points:', data.length);
+  console.log('📊 Has Data:', hasData);
+  
   return (
     <div className="h-64">
+      {error && (
+        <div className="mb-2 text-xs text-amber-600 dark:text-amber-400">
+          {error} - Showing empty chart
+        </div>
+      )}
+      {!hasData && !loading && (
+        <div className="mb-2 text-xs text-slate-500 dark:text-slate-400">
+          No analytics data available yet - Showing {data.length} days with 0 values
+        </div>
+      )}
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}

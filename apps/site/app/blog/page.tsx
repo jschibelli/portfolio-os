@@ -95,18 +95,20 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  // Skip API calls during build - will work at runtime only
+  // Fetch posts at build time AND runtime for up-to-date content
   let posts: any[] = [];
   let currentPublication = defaultPublication;
   
-  // Only fetch if NOT in build phase
-  if (process.env.NEXT_PHASE !== 'phase-production-build') {
+  try {
     const [fetchedPosts, fetchedPublication] = await Promise.all([
       fetchPosts(10),
       fetchPublication()
     ]);
     posts = fetchedPosts;
     currentPublication = fetchedPublication || defaultPublication;
+  } catch (error) {
+    console.error('[Blog Page] Error fetching posts:', error);
+    // Fall back to empty posts and default publication
   }
 
   const featuredPost = posts[0];
