@@ -1,5 +1,26 @@
 {
-  "buildCommand": "turbo run build --filter=@mindware-blog/site...",
+  "$schema": "https://vercel.com/schema.json",
+  "buildCommand": "cd . && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/site...",
   "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "outputDirectory": "apps/site/.next",
+  "github": {
+    "silent": true
+  },
+  "headers": [
+    {
+      "source": "/maintenance",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, s-maxage=300, stale-while-revalidate=600"
+        }
+      ]
+    }
+  ]
 }

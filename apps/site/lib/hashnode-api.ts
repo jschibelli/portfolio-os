@@ -63,17 +63,10 @@ function getHost(): string {
  * Make a GraphQL request to Hashnode API with error handling and timeout
  */
 async function makeGraphQLRequest(query: string, variables: Record<string, any>): Promise<any> {
-  // SKIP all API calls during build to prevent hanging
-  // BUT allow API calls at runtime (both dev and production)
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    console.log('[Hashnode API] Skipping API call during build');
-    throw new Error('API calls disabled during build');
-  }
-
   try {
-    // Add 3 second timeout to prevent hanging
+    // Add 10 second timeout to prevent hanging (increased for build time)
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    const timeout = setTimeout(() => controller.abort(), 10000);
     
     const response = await fetch(GQL_ENDPOINT, {
       method: 'POST',
@@ -99,7 +92,7 @@ async function makeGraphQLRequest(query: string, variables: Record<string, any>)
     return data.data;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
-      console.error('Hashnode API request timed out after 3 seconds');
+      console.error('Hashnode API request timed out after 10 seconds');
       throw new Error('Hashnode API request timed out');
     }
     console.error('Hashnode API request failed:', error);
