@@ -97,20 +97,21 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  // Fetch posts dynamically at runtime
-  let posts: any[] = [];
-  let currentPublication = defaultPublication;
-  
   console.log('[Blog Page] Starting fetch...');
   console.log('[Blog Page] Environment:', process.env.NODE_ENV);
   console.log('[Blog Page] Hashnode Host:', process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST);
   
+  // Initialize variables
+  let posts: any[] = [];
+  let currentPublication = defaultPublication;
+  
+  // Fetch posts dynamically at runtime
   try {
     const [fetchedPosts, fetchedPublication] = await Promise.all([
       fetchPosts(10),
       fetchPublication()
     ]);
-    posts = fetchedPosts;
+    posts = fetchedPosts || [];
     currentPublication = fetchedPublication || defaultPublication;
     
     console.log('[Blog Page] Fetched posts count:', posts.length);
@@ -121,11 +122,12 @@ export default async function BlogPage() {
     console.error('[Blog Page] Error fetching posts:', error);
     console.error('[Blog Page] Error details:', error instanceof Error ? error.message : 'Unknown error');
     console.error('[Blog Page] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-    // Fall back to empty posts and default publication
+    posts = [];
   }
 
-  const featuredPost = posts[0];
-  const morePosts = posts.slice(1, 4);
+  // Safely extract posts
+  const featuredPost = posts.length > 0 ? posts[0] : null;
+  const morePosts = posts.length > 1 ? posts.slice(1, 4) : [];
 
   return (
     <AppProvider publication={currentPublication as any}>
@@ -225,7 +227,7 @@ export default async function BlogPage() {
         )}
 
         {/* Featured Post Section */}
-        {posts.length > 0 && (
+        {posts.length > 0 && featuredPost && (
           <div id="featured-section" data-animate-section className="duration-900 space-y-12 transition-all ease-out">
             <FeaturedPost
               post={featuredPost}
