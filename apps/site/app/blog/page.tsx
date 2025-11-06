@@ -20,9 +20,8 @@ const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'
   loading: () => null,
 });
 
-// Force dynamic rendering to bypass static generation issues
-export const dynamic = 'force-dynamic';
-export const revalidate = 0; // Disable ISR temporarily for debugging
+// ISR with 60 second revalidation
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog | John Schibelli',
@@ -97,15 +96,10 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  console.log('[Blog Page] Starting fetch...');
-  console.log('[Blog Page] Environment:', process.env.NODE_ENV);
-  console.log('[Blog Page] Hashnode Host:', process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST);
-  
-  // Initialize variables
+  // Fetch posts with fallback
   let posts: any[] = [];
   let currentPublication = defaultPublication;
   
-  // Fetch posts dynamically at runtime
   try {
     const [fetchedPosts, fetchedPublication] = await Promise.all([
       fetchPosts(10),
@@ -113,19 +107,11 @@ export default async function BlogPage() {
     ]);
     posts = fetchedPosts || [];
     currentPublication = fetchedPublication || defaultPublication;
-    
-    console.log('[Blog Page] Fetched posts count:', posts.length);
-    if (posts.length > 0) {
-      console.log('[Blog Page] First post:', posts[0]?.title);
-    }
   } catch (error) {
     console.error('[Blog Page] Error fetching posts:', error);
-    console.error('[Blog Page] Error details:', error instanceof Error ? error.message : 'Unknown error');
-    console.error('[Blog Page] Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     posts = [];
   }
 
-  // Safely extract posts
   const featuredPost = posts.length > 0 ? posts[0] : null;
   const morePosts = posts.length > 1 ? posts.slice(1, 4) : [];
 
