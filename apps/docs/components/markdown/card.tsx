@@ -32,15 +32,24 @@ export function Card({
   const IconComponent = icon ? iconMap[icon] : null
   const ExternalIcon = iconMap["arrowUpRight"]
 
+	const iconClasses = clsx(
+		"shrink-0 transition-colors",
+		variant === "small" ? "h-4 w-4" : "h-7 w-7",
+		href
+			? "text-blue-600 dark:text-blue-400"
+			: "text-gray-600 dark:text-gray-400"
+	)
+
   const content = (
     <div
       className={clsx(
-        "group relative flex overflow-hidden rounded-lg border bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900 hover:dark:shadow-md",
+				"group relative overflow-hidden rounded-lg border bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-neutral-800 dark:bg-neutral-900",
+				href && "hover:shadow-lg hover:border-gray-300 dark:hover:border-neutral-700",
         variant === "small"
-          ? "items-center space-x-2 p-3"
+					? "flex items-center gap-3 px-4 py-3"
           : variant === "image"
-            ? "h-full flex-col justify-between p-0"
-            : "h-full flex-col justify-between p-4",
+					? "flex h-full flex-col p-0"
+					: "flex h-full flex-col p-4",
         className
       )}
     >
@@ -48,21 +57,27 @@ export function Card({
         <div
           className={clsx(
             "absolute top-2 transform text-gray-500 transition-transform duration-300 ease-in-out group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-black dark:text-gray-400 dark:group-hover:text-white",
-            variant === "small" ? "right-0" : "right-2"
+            variant === "small" ? "right-2" : "right-3"
           )}
         >
           <ExternalIcon className="h-4 w-4" />
         </div>
       )}
-      {IconComponent && (
-        <IconComponent className="text-gray-500 dark:text-gray-300" />
-      )}
-      <div>
+      
+			{/* Icon - only for small variant or when href is present */}
+			{IconComponent && (variant === "small" || href) && (
+				<div>
+					<IconComponent className={iconClasses} />
+				</div>
+			)}
+			
+			<div className="flex-1">
         {subtitle && variant === "normal" && (
-          <p className="!my-1 text-xs font-semibold text-gray-500 dark:text-gray-400">
+          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {subtitle}
           </p>
         )}
+        
         {image && variant === "image" && (
           <Image
             src={image}
@@ -72,28 +87,44 @@ export function Card({
             className="!m-0 h-[180px] w-full !rounded-none border-0 object-cover object-center"
           />
         )}
-        <div
+        
+				<h3
           className={clsx(
-            "font-semibold transition-all duration-300 group-hover:font-bold",
+						"font-semibold leading-snug",
             variant === "small"
-              ? "text-sm"
+              ? "text-sm text-gray-900 dark:text-gray-100"
               : variant === "image"
-                ? "p-4 text-sm"
-                : "text-lg",
-            className
+							? "p-4 text-base text-gray-900 dark:text-gray-100"
+							: href
+							? "text-lg text-gray-900 group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400 transition-colors"
+							: "text-lg text-gray-900 dark:text-gray-100"
           )}
         >
-          {title}
-        </div>
-        {description && variant === "normal" && (
-          <p className="!my-2 text-sm font-normal text-gray-600 dark:text-gray-400">
+					{title}
+        </h3>
+        
+				{description && variant === "normal" && (
+					<p className="mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
             {description}
           </p>
         )}
-      </div>
-      {children as any}
-    </div>
-  )
+
+			{children && variant !== "small" && (
+				<div
+					className={clsx(
+						"mt-3 space-y-3 [&>*]:mt-0",
+						variant === "normal" &&
+							"text-sm leading-relaxed text-gray-600 dark:text-gray-400",
+						variant === "image" && "px-4 pb-4 pt-0"
+					)}
+				>
+					{children as any}
+				</div>
+			)}
+		</div>
+		{variant === "small" && children}
+  </div>
+)
 
   return href ? (
     <Link
@@ -109,10 +140,21 @@ export function Card({
   )
 }
 
-export function CardGrid({ children }: { children?: ReactNode }) {
-  return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
-      {children as any}
-    </div>
-  )
+export function CardGrid({
+	children,
+	className,
+}: {
+	children?: ReactNode
+	className?: string
+}) {
+	return (
+		<div
+			className={clsx(
+				"grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-7 2xl:grid-cols-4",
+				className
+			)}
+		>
+			{children as any}
+		</div>
+	)
 }

@@ -1,0 +1,679 @@
+---
+title: Infrastructure & Supporting Systems
+description: Content management, APIs, database architecture, and operational systems powering the platform
+---
+
+## Overview
+
+Beyond the headline features (chatbot and booking system), Portfolio OS includes comprehensive supporting infrastructure that makes it a complete platform rather than just a collection of features. This infrastructure demonstrates understanding of what it takes to build and operate a production system: content management, API design, data persistence, monitoring, and operational tooling.
+
+This document covers the supporting systems that make the platform functional, maintainable, and scalable.
+
+---
+
+## Content Management System
+
+### Dashboard Application
+
+The dashboard is a separate Next.js application within the monorepo, providing admin-only functionality for managing content. It shares authentication, database access, and UI components with the public site while maintaining independent deployment.
+
+**Key Capabilities**:
+
+**Article Editor** - Rich markdown editor with live preview
+- Split-pane interface: markdown input on left, rendered preview on right
+- Real-time preview updates as you type
+- MDX support for embedding React components in content
+- Syntax highlighting for code blocks
+- Auto-save drafts every 30 seconds
+- Full-screen mode for distraction-free writing
+
+**Image Management** - Upload, optimize, and organize media
+- Drag-and-drop upload interface
+- Automatic image optimization (resize, compress, format conversion)
+- WebP generation with PNG/JPG fallbacks
+- Responsive image generation (multiple sizes)
+- Image library with search and filtering
+- Direct insertion into articles
+
+**Publishing Workflow** - Draft, review, and publish process
+- Save as draft (not visible publicly)
+- Preview exactly as it will appear
+- Schedule publication for specific date/time
+- Edit published articles (preserves original publication date)
+- Unpublish without deletion (temporarily hide)
+- Version history for rollback capability
+
+**SEO Tools** - Optimize content for search engines
+- Meta description editing
+- Open Graph image generation (auto-generated from title)
+- Twitter Card metadata
+- Schema.org structured data generation
+- Canonical URL management
+- Sitemap automatic updates
+
+**Analytics Dashboard** - Track content performance
+- Page views per article
+- Reading time analytics
+- Popular pages report
+- Traffic sources
+- Search queries leading to content
+- Engagement metrics (scroll depth, time on page)
+
+### Why Custom CMS vs WordPress/Strapi?
+
+**WordPress Drawbacks**:
+- PHP rather than modern JavaScript
+- Plugin dependencies and compatibility issues
+- Security vulnerabilities requiring constant updates
+- Performance overhead
+- Overkill for single-author blog
+
+**Strapi/Contentful Drawbacks**:
+- External service dependency
+- Monthly costs ($29-99+)
+- API-only (must build all UI)
+- Vendor lock-in for content storage
+
+**Custom Dashboard Advantages**:
+- Complete control over features and UI
+- Zero monthly costs
+- Same technology stack as rest of platform
+- Type-safe content models
+- Direct database access for complex queries
+- Demonstrates full-stack capability
+
+---
+
+## Blog & Content Display
+
+### Article Rendering
+
+**MDX Processing** - Markdown with React components
+- Standard markdown (headings, lists, links, images, code blocks)
+- React components embedded in content (interactive demos, charts, forms)
+- Syntax highlighting via Prism.js with theme support
+- Automatic heading ID generation for anchor links
+- Auto-generated table of contents from headings
+- Reading time calculation from word count
+
+**Performance Optimization**:
+- Server-side rendering for instant content display
+- Incremental static regeneration (ISR) for published articles
+- Image lazy loading and responsive sizing
+- Code splitting for per-page JavaScript
+- CDN caching at edge for static content
+
+**Reader Experience**:
+- Clean, readable typography optimized for long-form content
+- Responsive design works perfectly on mobile
+- Dark mode support
+- Estimated reading time displayed
+- Progress indicator shows scroll position
+- "Back to top" button on long articles
+- Share buttons for social distribution
+
+### Content Organization
+
+**Tagging System** - Organize content by topic
+- Articles associated with multiple tags
+- Tag pages show all articles with that tag
+- Most popular tags displayed in sidebar
+- Tag cloud with frequency weighting
+- Helps visitors find related content
+
+**Categories** - Broader content grouping
+- Tutorials, Case Studies, Technical Deep-Dives, etc.
+- Category pages list all articles in category
+- Helps visitors understand content types available
+
+**Search Functionality** - Find content quickly
+- Full-text search across all published articles
+- Search titles, excerpts, and full content
+- Results ranked by relevance
+- Highlights matching text snippets
+- Fast client-side search using Flexsearch
+
+---
+
+## API Architecture
+
+### REST API Design
+
+The platform exposes REST APIs following standard conventions and best practices.
+
+**Endpoint Structure**:
+```
+/api/articles           GET: List articles    POST: Create article
+/api/articles/[id]      GET: Get article      PUT: Update          DELETE: Delete
+/api/auth/session       GET: Check auth status
+/api/chatbot/stream     POST: Stream chatbot response
+/api/schedule/available POST: Get available time slots
+/api/schedule/book      POST: Create booking
+```
+
+**Request/Response Patterns**:
+
+**Successful GET Response**:
+```json
+{
+  "data": {
+    "id": "abc123",
+    "title": "Platform Architecture",
+    "content": "...",
+    "publishedAt": "2024-11-08T12:00:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-11-08T14:30:00Z"
+  }
+}
+```
+
+**Successful POST Response**:
+```json
+{
+  "data": {
+    "id": "xyz789",
+    "status": "created"
+  },
+  "meta": {
+    "timestamp": "2024-11-08T14:30:00Z"
+  }
+}
+```
+
+**Error Response**:
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Title is required",
+    "details": {
+      "field": "title",
+      "constraint": "required"
+    }
+  },
+  "meta": {
+    "timestamp": "2024-11-08T14:30:00Z"
+  }
+}
+```
+
+**Design Principles**:
+- **Consistent Structure**: All responses follow same shape
+- **Appropriate Status Codes**: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Server Error
+- **Helpful Error Messages**: Clear description of what went wrong and how to fix
+- **Metadata**: Timestamps and pagination info in meta object
+- **Versioning**: URL-based versioning when breaking changes needed (/api/v2/...)
+
+### GraphQL Endpoint
+
+GraphQL provides flexible querying for complex data requirements.
+
+**Example Queries**:
+
+**Get Article with Author and Tags**:
+```graphql
+query GetArticle($slug: String!) {
+  article(slug: $slug) {
+    id
+    title
+    content
+    publishedAt
+    author {
+      name
+      avatar
+      bio
+    }
+    tags {
+      name
+      slug
+      articleCount
+    }
+  }
+}
+```
+
+**Get Recent Articles with Pagination**:
+```graphql
+query GetRecentArticles($limit: Int!, $offset: Int!) {
+  articles(limit: $limit, offset: $offset, orderBy: PUBLISHED_DESC) {
+    id
+    title
+    excerpt
+    publishedAt
+    tags {
+      name
+    }
+  }
+  articlesCount
+}
+```
+
+**Benefits Over REST**:
+- Single request for complex data requirements (no multiple API calls)
+- Client specifies exactly what fields it needs (no over-fetching)
+- Strong typing with GraphQL schema
+- Built-in documentation through introspection
+- Easier to evolve (add fields without breaking changes)
+
+**Implementation**:
+- Apollo Server for GraphQL endpoint
+- Resolvers map to Prisma database queries
+- DataLoader for N+1 query prevention
+- Query complexity limits prevent abuse
+
+### API Security & Rate Limiting
+
+**Authentication**:
+- Public endpoints (read articles, chatbot) - no auth required
+- Protected endpoints (create/edit content) - JWT token required
+- API key support for programmatic access
+- Session validation on every request
+
+**Rate Limiting**:
+```typescript
+// Anonymous users
+- 100 requests per 15 minutes
+- 1000 requests per day
+
+// Authenticated users  
+- 1000 requests per 15 minutes
+- 10000 requests per day
+
+// Per-endpoint limits
+- Chatbot: 10 messages per session, 50 per day per IP
+- Booking: 3 bookings per day per IP
+- Search: 50 queries per minute
+```
+
+**Implementation**:
+- Token bucket algorithm for smooth rate limiting
+- Redis for distributed rate limit tracking
+- Clear rate limit headers in responses:
+  - `X-RateLimit-Limit`: Total allowed
+  - `X-RateLimit-Remaining`: Remaining in window
+  - `X-RateLimit-Reset`: When limit resets
+
+**Security Headers**:
+```typescript
+Content-Security-Policy: default-src 'self'
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000
+Referrer-Policy: strict-origin-when-cross-origin
+```
+
+---
+
+## Database Architecture
+
+### Schema Design Philosophy
+
+The database schema balances several concerns:
+
+**Normalization**: Eliminate data duplication while maintaining query performance  
+**Type Safety**: Prisma generates TypeScript types ensuring compile-time correctness  
+**Query Performance**: Strategic indexes on frequently-queried columns  
+**Audit Trail**: Created/updated timestamps on all tables  
+**Soft Deletes**: Mark records as deleted rather than physical deletion  
+
+### Core Tables
+
+**Users** - Authentication and authorization
+```typescript
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatar        String?
+  role          Role      @default(VIEWER)
+  articles      Article[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  VIEWER   // Read-only
+  EDITOR   // Can create/edit content
+  ADMIN    // Full access
+}
+```
+
+**Articles** - Blog posts and content
+```typescript
+model Article {
+  id            String     @id @default(cuid())
+  title         String
+  slug          String     @unique
+  content       String     @db.Text
+  excerpt       String?
+  published     Boolean    @default(false)
+  publishedAt   DateTime?
+  views         Int        @default(0)
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id])
+  tags          Tag[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([slug])
+  @@index([published, publishedAt])
+  @@index([authorId])
+}
+```
+
+**Bookings** - Scheduled meetings
+```typescript
+model Booking {
+  id                String    @id @default(cuid())
+  name              String
+  email             String
+  date              DateTime
+  duration          Int       @default(30)
+  timezone          String
+  notes             String?   @db.Text
+  status            String    @default("confirmed")
+  googleEventId     String?   @unique
+  googleMeetLink    String?
+  confirmationSent  Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([email, date])
+  @@index([date, status])
+}
+```
+
+**ChatAnalytics** - Chatbot usage metrics
+```typescript
+model ChatAnalytics {
+  id              String    @id @default(cuid())
+  sessionId       String
+  messageCount    Int
+  avgResponseTime Float
+  userSatisfaction Float?
+  topics          String[]
+  createdAt       DateTime  @default(now())
+  
+  @@index([sessionId])
+  @@index([createdAt])
+}
+```
+
+### Migration Management
+
+**Prisma Migrations** handle schema changes:
+
+```bash
+# Create migration from schema changes
+pnpm prisma migrate dev --name add_booking_status
+
+# Apply migrations in production
+pnpm prisma migrate deploy
+
+# Generate TypeScript types
+pnpm prisma generate
+```
+
+**Benefits**:
+- Version-controlled schema changes
+- Automatic rollback on failure
+- Type generation ensures code stays in sync
+- Safe production deployments
+
+### Database Performance
+
+**Connection Pooling**:
+- Prisma manages connection pool automatically
+- Reuses connections instead of creating new ones
+- Configurable pool size based on load
+- Prevents connection exhaustion
+
+**Query Optimization**:
+```typescript
+// BAD: N+1 query problem
+const articles = await prisma.article.findMany();
+for (const article of articles) {
+  const author = await prisma.user.findUnique({ where: { id: article.authorId }});
+  // This runs N queries!
+}
+
+// GOOD: Single query with include
+const articles = await prisma.article.findMany({
+  include: {
+    author: true,
+    tags: true
+  }
+});
+// Single query fetches everything
+```
+
+**Indexes for Common Queries**:
+- `articles(slug)` - Fast article lookup by URL
+- `articles(published, publishedAt)` - Fast published article queries
+- `bookings(email, date)` - Fast booking lookups
+- `chatAnalytics(sessionId)` - Fast session analytics
+
+---
+
+## External Service Integrations
+
+### OpenAI API
+
+**Purpose**: Powers the AI chatbot
+
+**Integration Points**:
+- `/api/chatbot/stream` - Streaming chat responses
+- GPT-4 Turbo model for intelligence
+- Server-Sent Events for streaming
+- Context window management
+- Cost tracking and limits
+
+**Error Handling**:
+- Retry with exponential backoff
+- Circuit breaker for sustained failures
+- Graceful degradation (show error, offer email)
+- Cost limit checks before requests
+
+### Google Calendar API
+
+**Purpose**: Powers booking system availability and calendar events
+
+**Integration Points**:
+- Check free/busy information for availability
+- Create calendar events for bookings
+- Generate Google Meet links automatically
+- Update/cancel events when bookings change
+
+**Authentication**:
+- Service account with domain-wide delegation
+- OAuth 2.0 with JWT tokens
+- Secure credential storage in environment variables
+- Automatic token refresh
+
+### Google Meet API
+
+**Purpose**: Automatic video conferencing links
+
+**Integration**:
+- Integrated with Calendar API
+- Automatic link generation when creating events
+- Included in calendar invites
+- No separate authentication needed
+
+### Email Service (SendGrid/Resend)
+
+**Purpose**: Transactional emails
+
+**Use Cases**:
+- Booking confirmations with .ics attachments
+- Newsletter subscriptions (future)
+- Password reset emails
+- Admin notifications
+
+**Features**:
+- HTML email templates
+- Delivery tracking
+- Bounce handling
+- Unsubscribe management
+
+---
+
+## Monitoring & Observability
+
+### Error Tracking (Sentry)
+
+**Captures**:
+- Frontend errors with component stack traces
+- Backend API errors with request context
+- Performance transaction tracing
+- User session replays (privacy-safe)
+
+**Benefits**:
+- Alerted immediately when new errors occur
+- Full context for debugging (breadcrumbs, user actions)
+- Error grouping reveals patterns
+- Performance bottleneck identification
+
+### Performance Monitoring (Vercel Analytics)
+
+**Tracks**:
+- Core Web Vitals (LCP, FID, CLS, TTFB)
+- Page load times
+- API response times
+- Build and deployment metrics
+
+**Segmentation**:
+- By device type (desktop/mobile/tablet)
+- By geography (user location)
+- By page/route
+- Over time (trends)
+
+### Custom Analytics
+
+**Business Metrics**:
+- Chatbot: conversations, satisfaction, topics
+- Booking: conversion rate, popular times, no-show rate
+- Content: views, engagement, popular articles
+- Forms: submission rate, abandonment points
+
+**Implementation**:
+- PostHog for event tracking
+- Custom events for business-specific metrics
+- Privacy-focused (no PII tracking)
+- Dashboard for visualization
+
+### Logging Infrastructure
+
+**Structured Logging**:
+```typescript
+logger.info('Booking created', {
+  bookingId: 'abc123',
+  email: 'user@example.com',
+  date: '2024-11-10T14:00:00Z',
+  duration: 30,
+  timezone: 'America/New_York'
+});
+```
+
+**Log Levels**:
+- `DEBUG`: Detailed diagnostic info (dev only)
+- `INFO`: General informational messages
+- `WARN`: Warning messages (recovered errors)
+- `ERROR`: Error messages (requires attention)
+
+**Log Aggregation**:
+- Vercel Logs for platform logs
+- External service (Datadog/LogRocket) for long-term retention
+- Searchable and filterable
+- Alerting on error patterns
+
+---
+
+## Operational Tools
+
+### Deployment Pipeline
+
+**GitHub Actions Workflow**:
+```yaml
+1. Lint code (ESLint)
+2. Type check (TypeScript)
+3. Run unit tests (Jest)
+4. Run integration tests (Playwright)
+5. Build applications (Turborepo)
+6. Deploy to Vercel
+7. Run smoke tests
+8. Notify on failure
+```
+
+**Vercel Deployment**:
+- Automatic on push to main
+- Preview deployments for pull requests
+- Rollback capability (redeploy previous version)
+- Environment variable management
+- Build caching for speed
+
+### Database Management
+
+**Migration Scripts**:
+```bash
+# Apply pending migrations
+pnpm db:migrate
+
+# Seed database with sample data
+pnpm db:seed
+
+# Reset database (dev only)
+pnpm db:reset
+```
+
+**Backup Strategy**:
+- Automated daily backups
+- Point-in-time recovery (30 days)
+- Test restoration monthly
+- Encrypted backup storage
+
+### Automation Scripts
+
+**PR Management** (`scripts/project-management/`):
+- Create PRs with templates
+- Auto-label based on file changes
+- Request reviews from relevant team members
+- Track PR status and merge readiness
+
+**Housekeeping** (`scripts/housekeeping/`):
+- Clean temporary files
+- Archive old logs
+- Update dependencies
+- Generate documentation
+
+**Utilities** (`scripts/utilities/`):
+- Database migration helpers
+- Content import/export
+- Analytics report generation
+- Health checks
+
+---
+
+## Conclusion
+
+The supporting infrastructure demonstrates understanding that production systems require more than just headline features. Content management, API design, database architecture, monitoring, and operational tooling are essential for maintainability, reliability, and scalability.
+
+This infrastructure shows:
+- **Systems Thinking**: Understanding how components fit together
+- **Production Operations**: Monitoring, logging, error handling
+- **Developer Experience**: Tools that make development efficient
+- **Maintainability**: Clean architecture that evolves gracefully
+
+These supporting systems may not be glamorous, but they're what separates a demo project from a production platform. They demonstrate the breadth of knowledge required for professional software development.
+
+---
+
+## Related Documentation
+
+- [Platform Architecture](/docs/features/platform-architecture) - Technical foundation
+- [Development Practices](/docs/features/development-practices) - Code quality and testing
+- [API Reference](/docs/api-reference) - Complete API documentation
+- [Setup Guides](/docs/setup) - Deployment and configuration
+
+

@@ -1,183 +1,99 @@
 # Portfolio OS Documentation
 
-> **📚 New Documentation Site Available!**
-> 
-> Complete, searchable documentation is now available at the documentation site:
-> - **URL**: http://localhost:3000 (when running `pnpm dev`)
-> - **Location**: `apps/docs/`
-> - **Map**: See `DOCS_MAP.md` in repository root for complete navigation
->
-> This folder contains legacy and technical documentation that complements the main docs site.
+## 📚 Documentation Location
 
----
+**All documentation has been moved to the documentation website:**
 
-# Portfolio OS Documentation
+👉 **[apps/docs](../apps/docs/)** - Interactive documentation site
 
-This directory contains comprehensive documentation for the Portfolio OS system, organized by audience and use case for easy navigation and maintenance.
+### Quick Links
 
-## 📁 **Directory Structure**
+- **Local Development**: `http://localhost:3001/docs`
+- **Getting Started**: [apps/docs/contents/docs/getting-started](../apps/docs/contents/docs/getting-started)
+- **Developer Guide**: [apps/docs/contents/docs/developer-guide](../apps/docs/contents/docs/developer-guide)
+- **API Reference**: [apps/docs/contents/docs/api-reference](../apps/docs/contents/docs/api-reference)
+- **Setup Guides**: [apps/docs/contents/docs/setup](../apps/docs/contents/docs/setup)
 
-### **`developer/`** - Developer Documentation
-Complete documentation for developers working on the Portfolio OS project:
+## 🚀 Running the Documentation Site
 
-- **`DEVELOPER_GUIDE.md`** - Comprehensive developer guide with architecture, workflows, and best practices
+```bash
+# Install dependencies
+pnpm install
 
-### **`user-guides/`** - End User Documentation
-Documentation for users of the Portfolio OS system:
+# Start the docs site
+cd apps/docs
+pnpm dev
 
-- **`USER_GUIDE.md`** - Complete user guide for portfolio site and admin dashboard
-
-### **`api/`** - API Documentation
-Complete API reference and integration guides:
-
-- **`API_DOCUMENTATION.md`** - Comprehensive REST API documentation with examples and SDKs
-
-### **`troubleshooting/`** - Problem Resolution
-Troubleshooting guides for common issues:
-
-- **`TROUBLESHOOTING_GUIDE.md`** - Comprehensive troubleshooting guide for development, deployment, and automation issues
-
-### **`automation/`** - Automation System Documentation
-Complete documentation for the multi-agent automation system:
-
-- **`AUTOMATION_SYSTEM_MANUAL.md`** - Complete user manual explaining how to understand and use the automation system
-- **`QUICK_START_GUIDE.md`** - Get up and running in 10 minutes with the automation system
-- **`SYSTEM_ARCHITECTURE.md`** - Detailed technical architecture and component relationships
-- **`COMPLETE_AUTOMATION_SYSTEM.md`** - Comprehensive overview of all automation components
-- **`GITHUB_ACTIONS_WORKFLOWS.md`** - Complete documentation of GitHub Actions workflows
-- **`POWERSHELL_AUTOMATION_SCRIPTS.md`** - Detailed PowerShell automation scripts documentation
-- **`integrated-automation-system.md`** - Integration documentation for existing automation
-
-### **`setup/`** - Setup and Configuration Documentation
-Contains setup guides, configuration documentation, and deployment information:
-
-- **`MULTI_AGENT_WORKTREE_SETUP.md`** - Complete setup guide for multi-agent work tree system
-- **`BLOG_MILESTONE_ROADMAP.md`** - Blog milestone roadmap and planning
-- **`CACHING_SETUP.md`** - Caching configuration and optimization setup
-- **`CHATBOT_SETUP.md`** - Chatbot integration and configuration
-- **`DEPLOYMENT_RUNBOOK.md`** - Production deployment procedures and runbook
-
-## 🎯 **Documentation Purpose**
-
-This organized structure provides:
-
-- **Complete System Understanding** - From high-level concepts to detailed implementation
-- **User-Friendly Guides** - Step-by-step instructions for all system operations
-- **Technical Reference** - Detailed technical documentation for developers
-- **Troubleshooting Support** - Comprehensive troubleshooting and maintenance guides
-- **Architecture Documentation** - System design and component relationships
-
-## 📚 **Getting Started**
-
-### **For New Users**
-1. Start with **`automation/QUICK_START_GUIDE.md`** for a 10-minute overview
-2. Read **`automation/AUTOMATION_SYSTEM_MANUAL.md`** for complete understanding
-3. Follow **`setup/MULTI_AGENT_WORKTREE_SETUP.md`** for system setup
-
-### **For Developers**
-1. Review **`automation/SYSTEM_ARCHITECTURE.md`** for technical architecture
-2. Study **`automation/POWERSHELL_AUTOMATION_SCRIPTS.md`** for script details
-3. Understand **`automation/GITHUB_ACTIONS_WORKFLOWS.md`** for workflow integration
-
-### **For System Administrators**
-1. Follow **`setup/DEPLOYMENT_RUNBOOK.md`** for deployment procedures
-2. Configure **`setup/CACHING_SETUP.md`** for performance optimization
-3. Set up **`setup/CHATBOT_SETUP.md`** for AI integration
-
-## 🔧 **System Components**
-
-### **Multi-Agent Work Tree System**
-- **Purpose**: Enables parallel development through isolated agent workspaces
-- **Key Features**: Conflict prevention, intelligent assignment, workload balancing
-- **Documentation**: `automation/AUTOMATION_SYSTEM_MANUAL.md`, `setup/MULTI_AGENT_WORKTREE_SETUP.md`
-
-### **GitHub Actions Integration**
-- **Purpose**: Automated workflow execution and event handling
-- **Key Features**: Issue processing, PR automation, CI/CD integration
-- **Documentation**: `automation/GITHUB_ACTIONS_WORKFLOWS.md`
-
-### **PowerShell Automation Scripts**
-- **Purpose**: Local execution and coordination of automation tasks
-- **Key Features**: Agent coordination, issue management, project integration
-- **Documentation**: `automation/POWERSHELL_AUTOMATION_SCRIPTS.md`
-
-### **Project Board Integration**
-- **Purpose**: GitHub project management and status tracking
-- **Key Features**: Automatic field configuration, status updates, progress tracking
-- **Documentation**: `automation/COMPLETE_AUTOMATION_SYSTEM.md`
-
-## 🚀 **Quick Reference**
-
-### **Essential Commands**
-```powershell
-# System status check
-.\scripts\master-automation.ps1 -Mode status
-
-# Start continuous processing
-.\scripts\multi-agent-automation.ps1 -Mode continuous -MaxIssues 10
-
-# Monitor agents in real-time
-.\scripts\multi-agent-automation.ps1 -Mode monitor
-
-# Check system health
-.\scripts\integrate-multi-agent.ps1 -Operation validate
+# Opens at http://localhost:3001
 ```
 
-### **Key Concepts**
-- **Agents**: Specialized AI workers (Frontend, Content, Infrastructure, Documentation, Backend)
-- **Work Trees**: Isolated development environments for each agent
-- **State Management**: Central coordination and conflict prevention
-- **Quality Gates**: Automated testing and code review processes
+## 📖 Documentation Structure
 
-### **Common Workflows**
-1. **Issue Creation** → Automatic analysis → Agent assignment → Implementation → Review → Merge
-2. **PR Processing** → Code analysis → Quality checks → Review → Merge → Deployment
-3. **Agent Coordination** → Workload balancing → Conflict resolution → State synchronization
+The documentation is now organized in a searchable, interactive website with:
 
-## 📋 **Usage Guidelines**
+- **Getting Started**: Installation and quick start guides
+- **Developer Guide**: Architecture, coding standards, and workflows
+- **API Reference**: Complete API documentation with examples
+- **Setup Guides**: Configuration and deployment guides
+- **Scripts Reference**: Automation scripts and utilities
+- **Features**: Feature documentation (booking system, chatbot, etc.)
+- **Troubleshooting**: Common issues and solutions
+- **Releases**: Release notes and workflows
 
-### **Adding New Documentation**
-- **Automation documentation** → `docs/automation/`
-- **Setup guides** → `docs/setup/`
-- **Architecture documentation** → `docs/automation/`
+## 📝 Essential Files (Root Level)
 
-### **Naming Conventions**
-- Use descriptive, consistent naming
-- Use UPPERCASE for important setup documents
-- Use descriptive names that indicate content purpose
-- Include version numbers for major updates
+The following essential files remain at the repository root for GitHub visibility:
 
-### **Maintenance**
-- Keep documentation up to date with system changes
-- Archive outdated documents when superseded
-- Remove obsolete files and references
-- Update this README when adding new categories
+- **[CHANGELOG.md](./CHANGELOG.md)** - Project changelog
+- **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - Community guidelines
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines
+- **[license.md](./license.md)** - MIT License
 
-## 🔍 **Troubleshooting**
+## 🔍 Finding Documentation
 
-### **Common Issues**
-- **System not responding**: Check system health with `.\scripts\integrate-multi-agent.ps1 -Operation validate`
-- **Agents not working**: Monitor agent status with `.\scripts\multi-agent-automation.ps1 -Mode monitor`
-- **Work not assigned**: Check agent workload with `.\scripts\agent-coordinator.ps1 -Operation status`
+### For Developers
 
-### **Getting Help**
-- Review troubleshooting sections in each documentation file
-- Check system logs and error messages
-- Use diagnostic commands for system health checks
-- Consult the complete manual for detailed procedures
+Start with the [Getting Started Guide](../apps/docs/contents/docs/getting-started) to set up your development environment.
 
-## 📊 **System Overview**
+### For Contributors
 
-The Portfolio OS automation system transforms software development by:
+Review the [Contributing Guidelines](./CONTRIBUTING.md) and [Code of Conduct](./CODE_OF_CONDUCT.md).
 
-- **Parallel Development**: Multiple AI agents work simultaneously on different aspects
-- **Intelligent Assignment**: Issues are automatically assigned to the most suitable agent
-- **Conflict Prevention**: Central coordination prevents conflicts and ensures smooth integration
-- **Quality Assurance**: Automated testing, code review, and quality checks
-- **Seamless Integration**: Works with existing GitHub workflows and project management
+### For Users
 
-This comprehensive documentation system provides everything needed to understand, operate, and maintain the Portfolio OS automation system effectively.
+Check the [User Guide](../apps/docs/contents/docs/getting-started/user-guide) for information on using the platform.
+
+## 📱 Documentation Features
+
+The new documentation site includes:
+
+- ✅ **Full-Text Search**: Find any topic instantly
+- ✅ **Syntax Highlighting**: Code examples with proper highlighting
+- ✅ **Interactive Components**: Cards, tabs, steps, and more
+- ✅ **Mobile Responsive**: Works on all devices
+- ✅ **Dark Mode**: Easy on the eyes
+- ✅ **Table of Contents**: Quick navigation within pages
+- ✅ **Breadcrumbs**: Know where you are at all times
+- ✅ **Copy Code**: One-click code copying
+
+## 🤝 Contributing to Documentation
+
+To update documentation:
+
+1. Edit MDX files in `apps/docs/contents/docs/`
+2. Test locally with `cd apps/docs && pnpm dev`
+3. Submit a pull request
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+
+## 🔗 External Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs)
+- [Turborepo Documentation](https://turbo.build/repo/docs)
 
 ---
 
-**This organized documentation structure makes the Portfolio OS automation system accessible, maintainable, and easy to navigate!** 📚
+**Last Updated**: 2025-11-08  
+**Documentation Site**: [apps/docs](../apps/docs/)

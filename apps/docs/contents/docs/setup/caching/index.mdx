@@ -1,144 +1,204 @@
+﻿---
+title: Caching Setup
+description: Configure caching for optimal performance
 ---
-title: Caching Configuration
-description: Redis caching setup for Portfolio OS
----
+# Enhanced Caching Setup Guide
 
-# Caching Configuration
+This guide explains how to set up and optimize caching for the Mindware Blog project to achieve faster builds and better CI/CD performance.
 
-Configure Redis caching for optimal performance.
+## ðŸš€ Quick Start
 
-## Upstash Redis Setup
+### 1. Local Development Caching
 
-<Step>
-  <StepItem title="Create Redis Database">
-    1. Go to [upstash.com](https://upstash.com)
-    2. Click "Create Database"
-    3. Choose region closest to your deployment
-  </StepItem>
+The project is already configured with Turbo caching. Simply run:
 
-  <StepItem title="Get Credentials">
-    Copy REST URL and Token from database details
-  </StepItem>
+```bash
+# Build with local caching
+pnpm turbo build --filter=@mindware-blog/site
 
-  <StepItem title="Configure Environment">
-    ```bash
-    # apps/site/.env.local
-    UPSTASH_REDIS_REST_URL=https://your-redis.upstash.io
-    UPSTASH_REDIS_REST_TOKEN=your-token-here
-    ```
-  </StepItem>
-</Step>
-
-## Cache Implementation
-
-```typescript
-// packages/lib/src/cache/redis.ts
-import { Redis } from '@upstash/redis'
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
-
-export async function getCached<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl: number = 3600
-): Promise<T> {
-  // Try cache
-  const cached = await redis.get<T>(key)
-  if (cached) return cached
-  
-  // Fetch and cache
-  const data = await fetcher()
-  await redis.setex(key, ttl, JSON.stringify(data))
-  
-  return data
-}
-
-export async function invalidateCache(pattern: string) {
-  const keys = await redis.keys(pattern)
-  if (keys.length > 0) {
-    await redis.del(...keys)
-  }
-}
+# Or build all packages
+pnpm turbo build
 ```
 
-## Usage
+### 2. Remote Caching Setup (Recommended)
 
-```typescript
-import { getCached } from '@mindware-blog/lib/cache'
+For the best performance, especially in CI/CD, set up remote caching:
 
-// Cache blog posts for 1 hour
-const posts = await getCached(
-  'blog:posts:all',
-  () => getAllPosts(),
-  3600
-)
+#### Option A: Vercel Remote Cache (Recommended)
 
-// Cache single post for 2 hours
-const post = await getCached(
-  `blog:post:${slug}`,
-  () => getPostBySlug(slug),
-  7200
-)
+1. **Install Turbo CLI globally:**
+   ```bash
+   npm install -g turbo
+   ```
+
+2. **Login to Vercel:**
+   ```bash
+   npx turbo login
+   ```
+
+3. **Link your project:**
+   ```bash
+   npx turbo link
+   ```
+
+4. **Add secrets to GitHub repository:**
+   - Go to your repository settings
+   - Navigate to "Secrets and variables" â†’ "Actions"
+   - Add these secrets:
+     - `TURBO_TOKEN`: Your Turbo token (from `npx turbo login`)
+     - `TURBO_TEAM`: Your Vercel team ID (optional)
+
+#### Option B: Self-Hosted Remote Cache
+
+1. **Set up a remote cache server** (using Redis, S3, or similar)
+2. **Configure environment variables:**
+   ```bash
+   export TURBO_REMOTE_CACHE_URL="your-cache-url"
+   export TURBO_REMOTE_CACHE_TOKEN="your-token"
+   ```
+
+## ðŸ“Š Cache Configuration
+
+### Enhanced turbo.json
+
+The project now includes optimized caching configuration:
+
+- **Global Dependencies**: Files that affect all tasks
+- **Task-Specific Inputs**: Only relevant files for each task
+- **Output Caching**: Build artifacts are cached and reused
+
+### GitHub Actions Caching
+
+The workflow now includes multiple cache layers:
+
+1. **pnpm Cache**: Dependencies and package store
+2. **Turbo Cache**: Build outputs and task results
+3. **Node Modules Cache**: Installed packages
+4. **Build Artifacts Cache**: Compiled outputs
+
+## ðŸ”§ Cache Verification
+
+### Local Cache Status
+
+```bash
+# Check cache status
+pnpm turbo build --filter=@mindware-blog/site --dry-run
+
+# Clear cache if needed
+pnpm turbo build --filter=@mindware-blog/site --force
 ```
 
-## Cache Strategies
+### CI/CD Cache Monitoring
 
-| Content | TTL | Strategy |
-|---------|-----|----------|
-| Blog posts list | 1 hour | Time-based |
-| Single post | 2 hours | Time-based |
-| Static pages | 24 hours | Time-based |
-| API responses | 15 min | Time-based |
+The workflow now includes cache statistics in the build logs:
 
-## Cache Invalidation
+- Turbo cache size
+- pnpm cache size
+- Node modules size
+- Build output sizes
 
-### Manual Invalidation
+## ðŸŽ¯ Performance Optimizations
 
-```typescript
-import { invalidateCache } from '@mindware-blog/lib/cache'
+### 1. Input Patterns
 
-// Invalidate all blog posts
-await invalidateCache('blog:*')
+The enhanced `turbo.json` includes specific input patterns for each task:
 
-// Invalidate specific post
-await invalidateCache(`blog:post:${slug}`)
-```
+- **Build**: Only watches source files, assets, and configuration
+- **Lint**: Only watches source files and ESLint config
+- **Test**: Only watches test files and test configuration
+- **TypeCheck**: Only watches TypeScript files and config
 
-### Webhook Invalidation
+### 2. Cache Invalidation
 
-```typescript
-// apps/site/app/api/webhooks/invalidate/route.ts
-import { invalidateCache } from '@mindware-blog/lib/cache'
-import { revalidatePath } from 'next/cache'
+Caches are invalidated when:
+- Source files change (for build tasks)
+- Configuration files change (global dependencies)
+- Lock files change (for dependency caches)
 
-export async function POST(request: Request) {
-  const { pattern } = await request.json()
-  
-  await invalidateCache(pattern)
-  revalidatePath('/blog')
-  
-  return new Response('OK')
-}
-```
+### 3. Parallel Execution
 
-## Monitoring
+Tasks run in parallel when possible:
+- Lint and typecheck can run simultaneously
+- Tests can run in parallel with visual regression
+- Build tasks respect dependencies but cache results
 
-Check cache performance:
+## ðŸš¨ Troubleshooting
 
-```typescript
-// Get cache stats
-const stats = {
-  hits: await redis.get('stats:cache:hits'),
-  misses: await redis.get('stats:cache:misses'),
-  hitRate: hits / (hits + misses)
-}
-```
+### Cache Not Working
 
-## Next Steps
+1. **Check cache configuration:**
+   ```bash
+   pnpm turbo build --filter=@mindware-blog/site --dry-run
+   ```
 
-- [Environment Configuration](/docs/getting-started/environment) - Environment setup
-- [Deployment](/docs/setup/deployment) - Production deployment
-- [Performance](/docs/troubleshooting/performance) - Performance optimization
+2. **Clear and rebuild:**
+   ```bash
+   pnpm turbo build --filter=@mindware-blog/site --force
+   ```
+
+3. **Verify file patterns in turbo.json**
+
+### Remote Cache Issues
+
+1. **Check authentication:**
+   ```bash
+   npx turbo login
+   ```
+
+2. **Verify team access:**
+   ```bash
+   npx turbo link
+   ```
+
+3. **Check environment variables in CI**
+
+### Performance Issues
+
+1. **Monitor cache hit rates** in CI logs
+2. **Check cache sizes** in build statistics
+3. **Verify input patterns** are not too broad
+
+## ðŸ“ˆ Expected Performance Gains
+
+With proper caching setup:
+
+- **First build**: Normal speed
+- **Subsequent builds**: 50-80% faster
+- **CI/CD builds**: 60-90% faster with remote cache
+- **Dependency installation**: 70-90% faster with pnpm cache
+
+## ðŸ”„ Cache Maintenance
+
+### Regular Maintenance
+
+1. **Clear old caches** periodically:
+   ```bash
+   pnpm turbo build --filter=@mindware-blog/site --force
+   ```
+
+2. **Update cache keys** when configuration changes significantly
+
+3. **Monitor cache sizes** to avoid storage issues
+
+### CI/CD Cache Management
+
+- Caches are automatically managed by GitHub Actions
+- Old caches are automatically cleaned up
+- Cache keys include file hashes for automatic invalidation
+
+## ðŸ“š Additional Resources
+
+- [Turbo Documentation](https://turbo.build/repo/docs)
+- [Vercel Remote Cache](https://vercel.com/docs/concepts/monorepos/remote-caching)
+- [GitHub Actions Caching](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
+
+## ðŸ†˜ Support
+
+If you encounter issues with caching:
+
+1. Check the build logs for cache statistics
+2. Verify your turbo.json configuration
+3. Ensure all required secrets are set in GitHub
+4. Check the troubleshooting section above
+
+For additional help, refer to the project documentation or create an issue in the repository.
