@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
-import { importArticlesWithoutDisconnect } from "../../../../../scripts/import-hashnode-articles";
+import { importArticlesWithoutDisconnect } from "@/lib/hashnode-article-importer";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     try {
       console.log("Import API: Starting Hashnode import...");
       // Run the import
-      await importArticlesWithoutDisconnect();
+      await importArticlesWithoutDisconnect(prisma);
 
       // Get the count of imported articles
       const articleCount = await prisma.article.count();
