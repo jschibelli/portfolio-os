@@ -1,7 +1,6 @@
 {
-  "$comment": "⚠️ Deployment remains disabled for this standalone dashboard Vercel project. Use the root vercel.json for production traffic and only enable this project when intentionally testing dashboard builds.",
-  "buildCommand": "cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm exec prisma generate --schema=apps/dashboard/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/dashboard...",
-  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "echo \"⚠️ dashboard project is disabled; enable intentionally before deploying.\" && cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm exec prisma generate --schema=apps/dashboard/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/dashboard...",
+  "installCommand": "echo \"Using workspace PNPM; keep root deploy active.\" && pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "functions": {
     "app/api/**/*.ts": {
