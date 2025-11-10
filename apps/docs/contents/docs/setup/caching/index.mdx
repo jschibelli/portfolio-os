@@ -1,6 +1,6 @@
-﻿---
-title: Caching Setup
-description: Configure caching for optimal performance
+---
+title: "Caching Setup"
+description: "Configure caching for optimal performance"
 ---
 
 This guide explains how to set up and optimize caching for the Mindware Blog project to achieve faster builds and better CI/CD performance.
@@ -42,7 +42,7 @@ For the best performance, especially in CI/CD, set up remote caching:
 
 4. **Add secrets to GitHub repository:**
    - Go to your repository settings
-   - Navigate to "Secrets and variables" â†’ "Actions"
+   - Navigate to "Secrets and variables" → "Actions"
    - Add these secrets:
      - `TURBO_TOKEN`: Your Turbo token (from `npx turbo login`)
      - `TURBO_TEAM`: Your Vercel team ID (optional)
@@ -121,7 +121,7 @@ Tasks run in parallel when possible:
 - Tests can run in parallel with visual regression
 - Build tasks respect dependencies but cache results
 
-## ðŸš¨ Troubleshooting
+## 🚨 Troubleshooting
 
 ### Cache Not Working
 
@@ -157,7 +157,7 @@ Tasks run in parallel when possible:
 2. **Check cache sizes** in build statistics
 3. **Verify input patterns** are not too broad
 
-## ðŸ“ˆ Expected Performance Gains
+## 📈 Expected Performance Gains
 
 With proper caching setup:
 
@@ -166,7 +166,7 @@ With proper caching setup:
 - **CI/CD builds**: 60-90% faster with remote cache
 - **Dependency installation**: 70-90% faster with pnpm cache
 
-## ðŸ”„ Cache Maintenance
+## 🔄 Cache Maintenance
 
 ### Regular Maintenance
 
@@ -185,13 +185,13 @@ With proper caching setup:
 - Old caches are automatically cleaned up
 - Cache keys include file hashes for automatic invalidation
 
-## ðŸ“š Additional Resources
+## 📚 Additional Resources
 
 - [Turbo Documentation](https://turbo.build/repo/docs)
 - [Vercel Remote Cache](https://vercel.com/docs/concepts/monorepos/remote-caching)
 - [GitHub Actions Caching](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
 
-## ðŸ†˜ Support
+## 🆘 Support
 
 If you encounter issues with caching:
 
@@ -201,3 +201,4 @@ If you encounter issues with caching:
 4. Check the troubleshooting section above
 
 For additional help, refer to the project documentation or create an issue in the repository.
+

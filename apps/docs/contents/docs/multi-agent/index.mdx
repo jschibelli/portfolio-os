@@ -15,7 +15,7 @@ The multi-agent system uses Git worktrees to create isolated development environ
 - **Zero Conflicts**: Each agent has its own isolated workspace
 - **Easy Integration**: Merge completed work through standard PR process
 - **State Management**: Track agent status and task assignments
-- **Coordination**: PowerShell scripts orchestrate agent workflows
+- **Coordination**: Automated orchestration manages agent workflows
 
 ## How It Works
 
@@ -40,94 +40,78 @@ The multi-agent system uses Git worktrees to create isolated development environ
 
 ### 1. Git Worktrees
 
-Git worktrees create separate working directories that share the same repository:
+Git worktrees create separate working directories that share the same repository. The system organizes agent workspaces in a structured hierarchy where each agent has a dedicated, isolated working copy with its own feature branch, while all workspaces share a common Git database.
 
-```bash
-# Main repo
-portfolio-os/
+### 2. Coordination Layer
 
-# Agent worktrees
-worktrees/agent-1-chris/
-worktrees/agent-2-jason/
-worktrees/agent-3-alex/
-```
+Automated orchestration manages the multi-agent system:
 
-Each worktree is a full working copy with its own branch.
-
-### 2. Agent Coordination Scripts
-
-PowerShell scripts in `scripts/agent-management/`:
-
-- **setup-agent-development.ps1** - Create new agent worktree
-- **manage-multi-agent-system.ps1** - Coordinate multiple agents
-- **start-multi-agent-e2e-unified.ps1** - Run complete workflows
-- **update-agent-status.ps1** - Track agent progress
+- **Workspace Management** - Create and configure isolated agent environments
+- **System Coordination** - Orchestrate multiple agents working in parallel
+- **Workflow Automation** - Execute complete development workflows end-to-end
+- **Progress Tracking** - Monitor agent status and task completion
 
 ### 3. Task Assignment
 
-Agents are assigned specific tasks with clear boundaries:
+Agents are assigned specific tasks based on their specialization:
 
-```json
-{
-  "agent-1": {
-    "name": "Chris",
-    "role": "Frontend Specialist",
-    "tasks": ["Issue #266", "Issue #268"],
-    "branch": "chris-automation-frontend"
-  },
-  "agent-2": {
-    "name": "Jason", 
-    "role": "Backend Specialist",
-    "tasks": ["Issue #264", "Issue #265"],
-    "branch": "jason-automation-backend"
-  }
-}
-```
+**Assignment Criteria**
+- **Role Matching**: Frontend tasks → Frontend specialists, Backend → Backend specialists
+- **Clear Boundaries**: Each agent has distinct, non-overlapping responsibilities
+- **Tracked Status**: All assignments are monitored and tracked
+- **Branch Isolation**: Each agent works on a dedicated feature branch
 
 ### 4. State Synchronization
 
-Configuration file tracks agent state:
+The system maintains comprehensive state tracking:
 
-- Current branch
-- Assigned tasks
-- Work status (pending, in-progress, review, completed)
-- Dependencies
+**Tracked Information**
+- Current branch and workspace location
+- Assigned tasks and priorities
+- Work status progression (pending → in-progress → review → completed)
+- Dependencies and blockers
 
 ## Typical Workflow
 
 <Step>
   <StepItem title="Create Agent Worktrees">
-    ```powershell
-    .\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
-    .\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-2"
-    ```
+    The system initializes isolated workspaces for each agent:
+    - Each agent receives a dedicated worktree
+    - Workspaces are configured with proper isolation
+    - Dependencies are installed automatically
+    - Agents are ready to begin work
   </StepItem>
 
   <StepItem title="Assign Tasks to Agents">
-    Each agent receives specific issues or features to implement.
-    
-    Tasks are tracked in `scripts/configuration/agent-assignment-config.json`
+    Each agent receives specific issues or features to implement:
+    - Tasks are assigned based on agent specialization
+    - Assignments are tracked in system configuration
+    - Clear boundaries prevent overlap
+    - Dependencies are identified upfront
   </StepItem>
 
   <StepItem title="Agents Work in Parallel">
-    Each agent:
-    - Works in their isolated worktree
-    - Makes commits on their feature branch
-    - Has no conflicts with other agents
+    Each agent works independently in their isolated workspace:
+    - Work proceeds in isolated worktrees
+    - Commits are made to dedicated feature branches
+    - No conflicts occur during development
+    - Progress is monitored continuously
   </StepItem>
 
   <StepItem title="Create Pull Requests">
-    ```powershell
-    # Agent 1 completes work
-    .\scripts\pr-management\automate-pr-unified.ps1 -Title "feat: implement feature A"
-    
-    # Agent 2 completes work
-    .\scripts\pr-management\automate-pr-unified.ps1 -Title "feat: implement feature B"
-    ```
+    Pull requests are generated automatically when work completes:
+    - PRs include comprehensive descriptions
+    - Testing and validation are triggered
+    - Reviewers are assigned appropriately
+    - Integration process begins
   </StepItem>
 
   <StepItem title="Review and Merge">
-    PRs are reviewed and merged to `develop` branch independently.
+    PRs flow through the standard review process:
+    - Code review ensures quality
+    - Tests validate functionality
+    - PRs merge to develop branch independently
+    - Agents sync and become available for new work
   </StepItem>
 </Step>
 

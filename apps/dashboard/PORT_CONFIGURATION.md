@@ -7,8 +7,8 @@ The dashboard application is configured to run on port 3003 to avoid conflicts w
 ### Port Allocation Strategy
 
 - **Site App**: Port 3000 (default Next.js port)
-- **Docs App**: Port 3001 
-- **Dashboard App**: Port 3003
+- **Docs App**: Port 3001 (documentation site)
+- **Dashboard App**: Port 3003 (admin dashboard)
 
 ### Configuration
 

@@ -5,7 +5,7 @@ description: Automated workflows for multi-agent development
 
 # Workflow Automation
 
-Automate multi-agent workflows with PowerShell scripts and GitHub Actions.
+Orchestrate multi-agent workflows through automated systems and CI/CD integration.
 
 ## End-to-End Workflow
 
@@ -38,309 +38,201 @@ Complete automated workflow from task assignment to PR merge:
     Script->>Agent1: Clean up worktree
     Script->>Agent2: Clean up worktree`} />
 
-## Automated Workflow Script
+## Automated Workflow System
 
 ### Complete E2E Automation
 
-```powershell
-.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
-  -NumAgents 2 `
-  -Tasks "Implement auth", "Create dashboard" `
-  -BaseBranch "develop" `
-  -AutoCreatePR $true
-```
+The workflow automation system provides end-to-end orchestration that:
 
-This script:
-1. Creates agent worktrees
-2. Assigns tasks
-3. Monitors progress
-4. Auto-creates PRs when complete
-5. Runs quality checks
-6. Notifies on completion
+1. **Initializes** agent worktrees with proper isolation
+2. **Assigns** tasks based on agent specialization
+3. **Monitors** progress and health continuously
+4. **Generates** pull requests when work completes
+5. **Validates** quality through automated checks
+6. **Notifies** stakeholders of completion and status
 
 ### Step-by-Step Workflow
 
 <Step>
   <StepItem title="Initialize Agents">
-    ```powershell
-    # Create multiple agent worktrees
-    $agents = @("agent-1", "agent-2", "agent-3")
-    
-    foreach ($agent in $agents) {
-        .\scripts\agent-management\setup-agent-development.ps1 `
-          -AgentName $agent `
-          -BaseBranch "develop"
-    }
-    ```
+    The system creates multiple isolated agent worktrees:
+    - Each agent receives a dedicated workspace
+    - Workspaces are initialized from the main development branch
+    - Dependencies and configurations are set up automatically
+    - Agents are ready to begin work independently
   </StepItem>
 
   <StepItem title="Assign Tasks">
-    ```powershell
-    # Update configuration
-    $config = @{
-        agents = @(
-            @{
-                name = "agent-1"
-                tasks = @("Issue #266", "Issue #268")
-                role = "Frontend"
-            },
-            @{
-                name = "agent-2"
-                tasks = @("Issue #264", "Issue #265")
-                role = "Backend"
-            }
-        )
-    }
-    
-    $config | ConvertTo-Json | Set-Content `
-      scripts/configuration/agent-assignment-config.json
-    ```
+    Tasks are distributed based on agent specialization:
+    - Frontend tasks go to frontend-specialized agents
+    - Backend work is assigned to backend-specialized agents
+    - Task assignments are tracked in configuration
+    - Dependencies and priorities are established
   </StepItem>
 
   <StepItem title="Monitor Progress">
-    ```powershell
-    # Poll agent status
-    while ($true) {
-        .\scripts\agent-management\manage-multi-agent-system.ps1 `
-          -Action status
-        
-        Start-Sleep -Seconds 300  # Check every 5 minutes
-    }
-    ```
+    The coordination layer continuously monitors agent activity:
+    - Regular status checks track work progress
+    - Health monitoring ensures agents are functioning
+    - Blockers and issues are identified proactively
+    - Stakeholders receive progress updates
   </StepItem>
 
   <StepItem title="Auto-Create PRs">
-    ```powershell
-    # When agent completes work
-    .\scripts\pr-management\automate-pr-unified.ps1 `
-      -AgentName "agent-1" `
-      -Auto $true
-    ```
+    Pull requests are automatically generated when work completes:
+    - Changes are packaged with appropriate metadata
+    - PR descriptions include context and testing notes
+    - Reviewers are assigned based on expertise
+    - CI/CD pipelines are triggered automatically
   </StepItem>
 
   <StepItem title="Quality Checks">
-    ```powershell
-    # Run automated quality checks
-    .\scripts\pr-management\pr-quality-checker.ps1 `
-      -PRNumber 123
-    
-    # Analyze PR content
-    .\scripts\pr-management\pr-analyzer.ps1 `
-      -PRNumber 123
-    ```
+    Automated quality validation ensures standards are met:
+    - Code quality metrics are evaluated
+    - Test coverage is verified
+    - Security scans are performed
+    - Performance implications are assessed
   </StepItem>
 </Step>
 
 ## Workflow Patterns
 
-### Pattern 1: Fire and Forget
+### Pattern 1: Autonomous Operation
 
-Start agents and let them work independently:
-
-```powershell
-# Launch all agents
-.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
-  -NumAgents 3 `
-  -Tasks $tasks `
-  -MonitorMode "passive"
-
-# Script exits, agents continue working
-# Check back later for PRs
-```
+The system can operate autonomously with minimal oversight:
+- Agents are initialized and begin work independently
+- Progress is tracked automatically
+- Pull requests are created when work completes
+- Stakeholders review at their convenience
+- Ideal for well-defined, independent features
 
 ### Pattern 2: Continuous Monitoring
 
-Active monitoring with intervention:
-
-```powershell
-# Start with monitoring
-.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
-  -NumAgents 3 `
-  -Tasks $tasks `
-  -MonitorMode "active" `
-  -AlertOnIssues $true
-
-# Script stays running, sends alerts
-# Human can intervene if needed
-```
+Active monitoring enables real-time oversight:
+- Continuous status tracking and reporting
+- Proactive alerts for issues or blockers
+- Real-time intervention capability when needed
+- Progress dashboards and metrics
+- Best for complex or high-priority work
 
 ### Pattern 3: Phased Rollout
 
-Release agents in phases:
-
-```powershell
-# Phase 1: Critical features
-.\scripts\agent-management\deploy-agents.ps1 `
-  -Phase 1 `
-  -Agents "agent-1", "agent-2"
-
-# Wait for completion and validation
-
-# Phase 2: Secondary features
-.\scripts\agent-management\deploy-agents.ps1 `
-  -Phase 2 `
-  -Agents "agent-3", "agent-4"
-```
+Staged deployment reduces risk:
+- Critical features are tackled first
+- Completion and validation before next phase
+- Incremental capacity addition
+- Learning from each phase
+- Optimal for large initiatives
 
 ## Integration with CI/CD
 
-### GitHub Actions Integration
+### Continuous Integration
 
-`.github/workflows/agent-ci.yml`:
+The multi-agent system integrates seamlessly with CI/CD pipelines:
 
-```yaml
-name: Multi-Agent CI
+**Automated Quality Checks**
+- Pull requests trigger automated test suites
+- Type checking validates code correctness
+- Linting ensures code quality standards
+- Security scans identify vulnerabilities
+- Performance tests validate efficiency
 
-on:
-  pull_request:
-    branches: [develop]
+**Agent-Specific Validation**
+- Agent work is identified and tracked
+- Specialized quality checks are applied
+- Integration tests verify cross-agent compatibility
+- Results are reported to coordination layer
 
-jobs:
-  agent-quality-check:
-    runs-on: ubuntu-latest
-    if: contains(github.head_ref, 'agent-')
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
-      - name: Install dependencies
-        run: pnpm install
-      
-      - name: Run tests
-        run: pnpm test
-      
-      - name: Type check
-        run: pnpm typecheck
-      
-      - name: Lint
-        run: pnpm lint
-      
-      - name: Agent quality check
-        run: |
-          pwsh scripts/pr-management/pr-quality-checker.ps1 `
-            -PRNumber ${{ github.event.number }}
-```
+### Pull Request Automation
 
-### Automatic PR Management
+PR management is streamlined through automation:
 
-Automatically manage agent PRs:
+**Automatic Processing**
+- PRs are automatically created when agents complete work
+- Project boards are updated with PR status
+- Appropriate labels and metadata are applied
+- Reviewers are assigned based on expertise
+- Status updates flow to stakeholders
 
-```yaml
-name: Agent PR Management
-
-on:
-  pull_request:
-    types: [opened]
-    branches: [develop]
-
-jobs:
-  auto-assign:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Auto-assign to project
-        run: |
-          pwsh scripts/project-management/manage-projects.ps1 `
-            -Action assign `
-            -PRNumber ${{ github.event.number }}
-      
-      - name: Add labels
-        run: |
-          gh pr edit ${{ github.event.number }} --add-label "multi-agent"
-```
+**Quality Gates**
+- All tests must pass before merge
+- Code coverage thresholds are enforced
+- Security requirements are validated
+- Performance criteria are met
 
 ## Monitoring & Metrics
 
 ### Real-time Dashboard
 
-```powershell
-# Start monitoring dashboard
-.\scripts\monitoring\real-time-dashboard.ps1 `
-  -Mode "multi-agent"
-```
+The system provides comprehensive visibility through monitoring dashboards:
 
-Displays:
-- Active agents
-- Current tasks
-- Progress percentage
-- Estimated completion
-- PR status
+**Active Status Display**
+- Currently active agents and their assignments
+- Real-time progress indicators
+- Task completion percentages
+- Estimated completion times
+- Pull request status and review progress
 
-### Metrics Collection
+### Performance Metrics
 
-Track multi-agent system performance:
+The system tracks key performance indicators:
 
-```powershell
-# Generate metrics
-.\scripts\monitoring\automation-metrics.ps1 `
-  -Type "multi-agent" `
-  -Period "last-30-days"
-```
-
-Metrics include:
-- Agent utilization
+**Operational Metrics**
+- Agent utilization rates
 - Average task completion time
-- Conflict rate
-- PR merge time
+- Conflict and resolution rates
+- PR creation to merge time
 - Code quality scores
 
-## Advanced Automation
+**Trend Analysis**
+- Historical performance tracking
+- Capacity planning insights
+- Efficiency improvements over time
+- Bottleneck identification
+
+## Advanced Capabilities
 
 ### Dynamic Agent Scaling
 
-Automatically scale agents based on workload:
-
-```powershell
-.\scripts\agent-management\auto-scale.ps1 `
-  -MinAgents 2 `
-  -MaxAgents 5 `
-  -ScaleTrigger "queue-depth"
-```
+The system adapts to changing workload demands:
+- Automatic capacity adjustment based on queue depth
+- Configurable minimum and maximum agent counts
+- Workload-triggered scaling decisions
+- Resource optimization and efficiency
 
 ### Intelligent Task Assignment
 
-AI-powered task assignment:
-
-```powershell
-.\scripts\agent-management\smart-assign.ps1 `
-  -Mode "ai-optimized" `
-  -Consider "agent-skills,task-complexity,dependencies"
-```
+Task distribution leverages multiple factors:
+- Agent specialization and demonstrated skills
+- Current workload and capacity
+- Task complexity assessment
+- Dependency analysis and sequencing
 
 ### Conflict Prediction
 
-Predict and prevent conflicts:
+Proactive conflict prevention through:
+- Pattern analysis of agent work
+- File and module overlap detection
+- Early warning alerts for potential conflicts
+- Preventive coordination recommendations
 
-```powershell
-.\scripts\agent-management\conflict-predictor.ps1 `
-  -AnalyzeInterval 3600 `
-  -AlertThreshold 0.7
-```
-
-## Error Handling
+## Reliability & Recovery
 
 ### Automatic Recovery
 
-```powershell
-# Setup error recovery
-.\scripts\agent-management\setup-recovery.ps1 `
-  -AutoRestart $true `
-  -MaxRetries 3 `
-  -NotifyOnFailure $true
-```
+The system includes resilience mechanisms:
+- Automatic restart capabilities for failed operations
+- Configurable retry policies
+- Failure notifications to stakeholders
+- Graceful degradation strategies
 
-### Rollback Procedures
+### State Management
 
-```powershell
-# Rollback failed agent work
-.\scripts\agent-management\rollback-agent.ps1 `
-  -AgentName "agent-1" `
-  -ToCommit "abc123"
-```
+Work preservation and rollback capabilities:
+- Checkpoint and state preservation
+- Rollback to known good states when needed
+- Change history tracking
+- Recovery from interruptions
 
 ## Best Practices
 
@@ -355,40 +247,6 @@ Predict and prevent conflicts:
 6. **Testing**: Test workflows in staging first
 </Note>
 
-## Troubleshooting
-
-### Workflow Stuck
-
-```powershell
-# Check agent status
-.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
-
-# View logs
-Get-Content logs/agent-workflow-*.log
-
-# Restart workflow
-.\scripts\agent-management\restart-workflow.ps1
-```
-
-### Agent Not Responding
-
-```powershell
-# Check agent health
-.\scripts\monitoring\agent-health-check.ps1 -AgentName "agent-1"
-
-# Force restart
-.\scripts\agent-management\restart-agent.ps1 -AgentName "agent-1" -Force
-```
-
-### PRs Not Created
-
-```powershell
-# Verify PR automation
-.\scripts\pr-management\test-pr-automation.ps1
-
-# Manually trigger
-.\scripts\pr-management\automate-pr-unified.ps1 -AgentName "agent-1"
-```
 
 ## Next Steps
 

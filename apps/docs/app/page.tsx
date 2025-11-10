@@ -199,30 +199,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-t px-4 py-16 dark:border-neutral-800">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <div className="text-center">
-              <div className="mb-2 text-4xl font-bold">42+</div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">Documentation Pages</div>
-            </div>
-            <div className="text-center">
-              <div className="mb-2 text-4xl font-bold">8</div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">Major Sections</div>
-            </div>
-            <div className="text-center">
-              <div className="mb-2 text-4xl font-bold">3</div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">Applications</div>
-            </div>
-            <div className="text-center">
-              <div className="mb-2 text-4xl font-bold">8</div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">Shared Packages</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="px-4 py-20">
         <div className="mx-auto max-w-4xl text-center">

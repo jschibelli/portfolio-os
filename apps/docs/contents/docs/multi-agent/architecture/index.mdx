@@ -24,7 +24,7 @@ Deep dive into the technical architecture of Portfolio OS's multi-agent developm
     end
     
     subgraph "Coordination Layer"
-        Scripts[PowerShell Scripts]
+        Automation[Automation System]
         Config[Agent Config]
         State[Worktree State]
     end
@@ -42,10 +42,10 @@ Deep dive into the technical architecture of Portfolio OS's multi-agent developm
     Worktree1 --> Branch1
     Worktree2 --> Branch2
     
-    Scripts --> Config
-    Scripts --> State
-    Scripts --> Worktree1
-    Scripts --> Worktree2
+    Automation --> Config
+    Automation --> State
+    Automation --> Worktree1
+    Automation --> Worktree2
     
     Branch1 --> PR1
     Branch2 --> PR2
@@ -57,21 +57,7 @@ Deep dive into the technical architecture of Portfolio OS's multi-agent developm
 
 ### 1. Git Worktrees
 
-Git worktrees are the foundation of the multi-agent system:
-
-```bash
-# Worktree structure
-portfolio-os/.git/                  # Shared Git database
-portfolio-os/worktrees/
-  ├── agent-1-chris/               # Agent 1 workspace
-  │   ├── apps/
-  │   ├── packages/
-  │   └── scripts/
-  └── agent-2-jason/               # Agent 2 workspace
-      ├── apps/
-      ├── packages/
-      └── scripts/
-```
+Git worktrees are the foundation of the multi-agent system, providing isolated workspaces that share a common Git repository. Each agent operates in their own complete working directory with dedicated branches, while all workspaces reference the same underlying Git database.
 
 **Key Features:**
 - All worktrees share the same `.git` database
@@ -79,55 +65,39 @@ portfolio-os/worktrees/
 - Each worktree tracks a different branch
 - No duplication of Git history
 
-### 2. Coordination Scripts
+### 2. Coordination Layer
 
-PowerShell scripts orchestrate agent workflows:
+The coordination layer orchestrates agent workflows through automated tooling:
 
-#### Agent Management Scripts
+#### Core Capabilities
 
-| Script | Purpose |
-|--------|---------|
-| `setup-agent-development.ps1` | Initialize new agent worktree |
-| `manage-multi-agent-system.ps1` | Start/stop/status of agents |
-| `start-multi-agent-e2e-unified.ps1` | Complete workflow automation |
-| `update-agent-status.ps1` | Update agent work status |
+**Agent Lifecycle Management**
+- Initialize new agent workspaces with proper isolation
+- Monitor agent status and health in real-time
+- Coordinate task assignment and workload distribution
+- Track progress and completion status
 
-#### Configuration Files
+**State Synchronization**
+- Maintain consistency across agent workspaces
+- Track branch relationships and dependencies
+- Monitor synchronization with main development line
+- Detect and flag potential integration issues
 
-**agent-assignment-config.json**
-```json
-{
-  "agents": [
-    {
-      "name": "agent-1",
-      "displayName": "Chris",
-      "role": "Frontend Specialist",
-      "worktreePath": "worktrees/agent-1-chris",
-      "branch": "chris-automation-frontend",
-      "tasks": [
-        {"id": 266, "title": "Create Issue Implementation System"},
-        {"id": 268, "title": "Create Advanced Analytics"}
-      ],
-      "status": "in-progress"
-    }
-  ]
-}
-```
+#### Configuration Management
 
-**worktree-state.json**
-```json
-{
-  "worktrees": [
-    {
-      "path": "worktrees/agent-1-chris",
-      "branch": "chris-automation-frontend",
-      "lastSync": "2025-10-08T10:30:00Z",
-      "uncommittedChanges": false,
-      "behindDevelop": 2
-    }
-  ]
-}
-```
+The system uses structured configuration to track agent assignments and state:
+
+**Agent Configuration** includes:
+- Agent identity and specialization
+- Assigned tasks and priorities
+- Current work status
+- Branch and workspace location
+
+**State Tracking** monitors:
+- Last synchronization timestamps
+- Change detection and validation
+- Branch relationships
+- Integration readiness
 
 ### 3. Task Assignment System
 
@@ -186,43 +156,43 @@ The system tracks multiple state dimensions:
 
 <Step>
   <StepItem title="Initialization">
-    ```powershell
-    .\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
-      -NumAgents 2 `
-      -Tasks "Feature A", "Feature B"
-    ```
-    
-    Creates worktrees, assigns tasks, sets up branches.
+    The system initializes the multi-agent environment by:
+    - Creating isolated worktrees for each agent
+    - Assigning specific tasks based on agent specialization
+    - Setting up feature branches from the main development line
+    - Preparing the workspace with necessary dependencies
   </StepItem>
 
   <StepItem title="Development">
-    Agents work in parallel in their isolated worktrees.
-    
-    State is tracked in configuration files.
+    Agents work in parallel in their isolated worktrees:
+    - Each agent implements their assigned features independently
+    - Progress is tracked through configuration management
+    - State synchronization ensures consistency
+    - Changes remain isolated until ready for integration
   </StepItem>
 
   <StepItem title="Status Updates">
-    ```powershell
-    .\scripts\agent-management\update-agent-status.ps1 `
-      -AgentName "agent-1" `
-      -Status "in-progress"
-    ```
+    The coordination layer continuously monitors:
+    - Agent work progress and completion status
+    - Potential conflicts or blockers
+    - Integration readiness
+    - Quality metrics and validation status
   </StepItem>
 
   <StepItem title="PR Creation">
-    Automated PR creation when agent completes work:
-    
-    ```powershell
-    .\scripts\pr-management\automate-pr-unified.ps1 `
-      -Title "feat(agent-1): implement feature A" `
-      -AgentName "agent-1"
-    ```
+    When an agent completes their work:
+    - Pull requests are automatically generated
+    - Changes are validated against quality standards
+    - Integration tests are triggered
+    - Review process is initiated
   </StepItem>
 
   <StepItem title="Integration">
-    PRs are reviewed, approved, and merged to develop.
-    
-    Agent worktree can then be synced or reassigned.
+    Completed work flows through the standard review process:
+    - PRs are reviewed and approved
+    - Changes merge to the main development branch
+    - Agent workspace syncs with latest changes
+    - Agent becomes available for new assignments
   </StepItem>
 </Step>
 
@@ -230,41 +200,28 @@ The system tracks multiple state dimensions:
 
 ### Worktree Creation
 
-```powershell
-# Create worktree
-git worktree add -b $BranchName $WorktreePath develop
-
-# Configure worktree
-cd $WorktreePath
-git config --local user.name "Agent Name"
-git config --local user.email "agent@example.com"
-
-# Install dependencies
-pnpm install
-```
+The system automates workspace creation through:
+- Branch creation from the main development line
+- Workspace isolation and configuration
+- Dependency installation and environment setup
+- Identity and permission configuration
 
 ### State Synchronization
 
-```powershell
-# Sync worktree with develop
-cd $WorktreePath
-git fetch origin develop
-git rebase develop
-
-# Update state file
-$state = Get-Content worktree-state.json | ConvertFrom-Json
-$state.lastSync = Get-Date
-$state | ConvertTo-Json | Set-Content worktree-state.json
-```
+Continuous synchronization maintains consistency:
+- Regular sync with main development branch
+- Automatic conflict detection
+- State tracking and validation
+- Change verification and testing
 
 ### Conflict Resolution
 
-When conflicts occur:
+The system handles conflicts through a defined process:
 
-1. **Detection**: Script detects uncommitted changes
-2. **Notification**: Alert agent or human operator
-3. **Resolution**: Manual intervention or automated strategies
-4. **Verification**: Tests pass before proceeding
+1. **Detection**: Automated scanning identifies potential conflicts
+2. **Notification**: Stakeholders are alerted to conflict situations
+3. **Resolution**: Conflicts are resolved through defined strategies
+4. **Verification**: Comprehensive testing validates the resolution
 
 ## Performance Considerations
 
@@ -303,18 +260,19 @@ Each worktree requires:
 
 ## Monitoring & Observability
 
-Track agent system health:
+The system provides comprehensive observability:
 
-```powershell
-# View all agent status
-.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
+**Health Monitoring**
+- Real-time agent status tracking
+- Workspace health validation
+- Performance metrics collection
+- Resource utilization monitoring
 
-# Check worktree health
-.\scripts\monitoring\performance-analyzer.ps1 -Target worktrees
-
-# Generate metrics
-.\scripts\monitoring\automation-metrics.ps1
-```
+**Metrics & Analytics**
+- Task completion rates
+- Agent productivity metrics
+- Integration success rates
+- Quality and performance indicators
 
 ## Limitations & Constraints
 

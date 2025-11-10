@@ -20,6 +20,10 @@ import {
   LuPackage,
   LuGlobe,
   LuCpu,
+  LuRocket,
+  LuUsers,
+  LuTerminal,
+  LuBug,
 } from "react-icons/lu"
 
 export const iconMap = {
@@ -69,4 +73,9 @@ export const iconMap = {
   save: LuDatabase,
   "git-pull-request": LuCode,
   tool: LuServer,
+  rocket: LuRocket,
+  users: LuUsers,
+  terminal: LuTerminal,
+  api: LuServer, // Using server icon for API
+  bug: LuBug,
 }
