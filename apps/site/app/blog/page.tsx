@@ -20,6 +20,7 @@ const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'
   loading: () => null,
 });
 
+// ISR with 60 second revalidation
 export const revalidate = 60;
 
 export const metadata: Metadata = {
@@ -95,7 +96,7 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  // Fetch posts at build time AND runtime for up-to-date content
+  // Fetch posts during build and runtime with graceful fallback
   let posts: any[] = [];
   let currentPublication = defaultPublication;
   
@@ -104,15 +105,17 @@ export default async function BlogPage() {
       fetchPosts(10),
       fetchPublication()
     ]);
-    posts = fetchedPosts;
+    posts = fetchedPosts || [];
     currentPublication = fetchedPublication || defaultPublication;
   } catch (error) {
-    console.error('[Blog Page] Error fetching posts:', error);
+    console.error('[Blog Page] Error fetching posts or publication:', error);
     // Fall back to empty posts and default publication
+    posts = [];
+    currentPublication = defaultPublication;
   }
 
-  const featuredPost = posts[0];
-  const morePosts = posts.slice(1, 4);
+  const featuredPost = posts.length > 0 ? posts[0] : null;
+  const morePosts = posts.length > 1 ? posts.slice(1, 4) : [];
 
   return (
     <AppProvider publication={currentPublication as any}>
@@ -212,7 +215,7 @@ export default async function BlogPage() {
         )}
 
         {/* Featured Post Section */}
-        {posts.length > 0 && (
+        {posts.length > 0 && featuredPost && (
           <div id="featured-section" data-animate-section className="duration-900 space-y-12 transition-all ease-out">
             <FeaturedPost
               post={featuredPost}

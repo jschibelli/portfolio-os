@@ -1,20 +1,70 @@
 #!/usr/bin/env tsx
 /**
- * Trigger a Vercel redeployment to update blog content
- * 
+ * Trigger a Vercel redeployment to update blog content.
+ *
  * Usage:
- *   VERCEL_API_TOKEN=your_token npx tsx scripts/trigger-vercel-redeploy.ts
- * 
+ *   1. Save VERCEL_API_TOKEN to .env.local (recommended)
+ *   2. Run: npx tsx scripts/trigger-vercel-redeploy.ts
+ *
  * Get your Vercel token from: https://vercel.com/account/tokens
  */
 
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+function loadEnvFile(fileName: string) {
+  const filePath = resolve(process.cwd(), fileName);
+  if (!existsSync(filePath)) {
+    return;
+  }
+
+  const fileContents = readFileSync(filePath, 'utf8');
+  for (const line of fileContents.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) {
+      continue;
+    }
+
+    const delimiterIndex = trimmed.indexOf('=');
+    if (delimiterIndex === -1) {
+      continue;
+    }
+
+    const key = trimmed.slice(0, delimiterIndex).trim();
+    if (!key || process.env[key]) {
+      continue;
+    }
+
+    let value = trimmed.slice(delimiterIndex + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    process.env[key] = value;
+  }
+}
+
+function ensureEnvLoaded() {
+  // Load from .env.local first (project-specific), then fallback to .env
+  loadEnvFile('.env.local');
+  loadEnvFile('.env');
+}
+
 async function triggerRedeploy() {
+  ensureEnvLoaded();
+
   const token = process.env.VERCEL_API_TOKEN;
   
   if (!token) {
     console.error('❌ VERCEL_API_TOKEN environment variable is required');
     console.log('\n💡 Get your token from: https://vercel.com/account/tokens');
-    console.log('\nUsage:');
+    console.log('\nRecommended:');
+    console.log('  echo VERCEL_API_TOKEN=your_token >> .env.local');
+    console.log('  npx tsx scripts/trigger-vercel-redeploy.ts\n');
+    console.log('Alternative (one-off):');
     console.log('  VERCEL_API_TOKEN=your_token npx tsx scripts/trigger-vercel-redeploy.ts\n');
     process.exit(1);
   }

@@ -3,8 +3,6 @@ title: Developer Guide
 description: Comprehensive guide for developers working on Portfolio OS
 ---
 
-# Developer Guide
-
 Welcome to the Portfolio OS Developer Guide. This comprehensive resource covers everything you need to know to contribute effectively to the project.
 
 ## Overview
@@ -175,6 +173,18 @@ The `workspace:*` protocol links to the local package.
 4. Review TypeScript errors - don't ignore them
 5. Test both site and dashboard apps when changing shared packages
 </Note>
+
+## Testing & Quality Gates
+
+- Run `pnpm lint`, `pnpm typecheck`, and any relevant `pnpm test --filter=<package>` commands before opening a PR.
+- Follow the [Testing Strategy](/docs/testing/overview) to understand which suites cover API routes, UI flows, and end-to-end scenarios.
+- Capture manual testing notes in the PR description, including environment variables or feature flags used.
+
+## Version Control & Reviews
+
+- Use the conventional commit format described in [Development Workflow](/docs/developer-guide/workflow#commit-conventions).
+- Reference related issues in PR descriptions and docs updates to maintain traceability.
+- Respond to code review feedback promptly; push follow-up commits that directly address reviewer comments and note the resolution in the PR thread.
 
 ## Getting Help
 

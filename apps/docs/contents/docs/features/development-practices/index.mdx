@@ -1,0 +1,769 @@
+---
+title: Development Practices
+description: Code quality standards, testing strategy, CI/CD pipeline, and development workflows
+---
+
+## Overview
+
+Building features is only part of professional software development. Equally important are the practices that ensure code quality, catch bugs before production, enable confident refactoring, and allow multiple contributors to work effectively. This document covers the development practices, tooling, and workflows that keep Portfolio OS maintainable and reliable.
+
+These practices demonstrate understanding that software development is a team sport (even when solo) and that code is read far more often than it's written.
+
+---
+
+## Code Quality Standards
+
+### TypeScript Strict Mode
+
+The project uses TypeScript in strict mode, catching entire classes of bugs at compile time rather than runtime.
+
+**Strict Mode Configuration**:
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
+  }
+}
+```
+
+**What This Prevents**:
+
+```typescript
+// BAD: Would compile without strict mode
+function getUser(id) {  // Implicitly 'any' type
+  return users.find(u => u.id === id);
+}
+const user = getUser("123");
+console.log(user.name);  // Runtime error if user undefined!
+
+// GOOD: Strict mode requires explicit types
+function getUser(id: string): User | undefined {
+  return users.find(u => u.id === id);
+}
+const user = getUser("123");
+if (user) {
+  console.log(user.name);  // Type-safe!
+} else {
+  console.log("User not found");
+}
+```
+
+**Benefits**:
+- **Fewer Bugs**: Null reference errors caught at compile time
+- **Better IDE Support**: Accurate autocomplete and error highlighting
+- **Self-Documenting**: Types serve as inline documentation
+- **Confident Refactoring**: Type errors flag all affected code
+
+### ESLint Configuration
+
+Comprehensive linting rules enforce consistent style and catch common mistakes.
+
+**Configured Rules**:
+- **React Hooks Rules**: Prevent incorrect hook usage
+- **Import Organization**: Consistent import order
+- **Unused Variables**: Flag variables that aren't used
+- **Console Logs**: Warn about forgotten console.logs
+- **Async/Await**: Catch missing awaits
+- **Type Imports**: Require `type` keyword for type-only imports
+
+**Example Violations**:
+```typescript
+// ERROR: React Hook dependency missing
+useEffect(() => {
+  fetchData(userId);
+}, []);  // Missing userId in dependency array!
+
+// ERROR: Unused variable
+const unusedVar = "oops";
+
+// WARNING: Console log in production code
+console.log("Debug info");
+
+// ERROR: Missing await
+async function getData() {
+  fetchData();  // Should be: await fetchData()
+}
+```
+
+**Custom Rules**:
+```typescript
+// Require explicit return types on exported functions
+export function calculateTotal(items) { }  // ERROR
+
+export function calculateTotal(items: Item[]): number { }  // OK
+```
+
+### Prettier Code Formatting
+
+Automated code formatting eliminates style debates and ensures consistency.
+
+**Configuration**:
+```json
+{
+  "semi": false,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "arrowParens": "always"
+}
+```
+
+**Benefits**:
+- Zero time spent on formatting discussions
+- Consistent style across entire codebase
+- Automatic formatting on save (IDE integration)
+- Clean git diffs (no formatting noise)
+
+---
+
+## Testing Strategy
+
+<Note type="note" title="Need Regression Details?">
+  This page summarizes the philosophy. For the full automated regression playbook—including Jest, Playwright, and release gates—see the [Testing & Regression Strategy](/docs/features/testing).
+</Note>
+
+### Test Pyramid
+
+The project follows the test pyramid philosophy: many unit tests, some integration tests, few end-to-end tests.
+
+```
+        /\
+       /E2E\        Few: Critical user flows
+      /------\
+     /  Int   \     Some: API routes, interactions
+    /----------\
+   /   Unit     \   Many: Functions, utilities
+  /--------------\
+```
+
+**Current Coverage**: 85% of code covered by tests
+
+### Unit Tests (Jest + React Testing Library)
+
+**What We Test**:
+- Utility functions and business logic
+- React component rendering and behavior
+- State management logic
+- Data transformation functions
+
+**Example Test**:
+```typescript
+// utils/timezone.test.ts
+describe('convertTimezone', () => {
+  it('converts UTC to local timezone correctly', () => {
+    const utc = '2024-11-08T14:00:00Z';
+    const local = convertTimezone(utc, 'America/New_York');
+    expect(local).toBe('2024-11-08T09:00:00-05:00');
+  });
+  
+  it('handles daylight saving time transitions', () => {
+    // Tests edge case around DST change
+  });
+  
+  it('throws error for invalid timezone', () => {
+    expect(() => convertTimezone(utc, 'Invalid/Timezone'))
+      .toThrow('Invalid timezone');
+  });
+});
+```
+
+**Component Tests**:
+```typescript
+// components/BookingModal.test.tsx
+describe('BookingModal', () => {
+  it('renders date selection step initially', () => {
+    render(<BookingModal isOpen={true} />);
+    expect(screen.getByText('Select Date')).toBeInTheDocument();
+  });
+  
+  it('progresses through booking flow', async () => {
+    render(<BookingModal isOpen={true} />);
+    
+    // Select date
+    await userEvent.click(screen.getByTestId('date-nov-10'));
+    
+    // Select time
+    await userEvent.click(screen.getByText('2:00 PM'));
+    
+    // Enter contact info
+    await userEvent.type(screen.getByLabelText('Name'), 'John Doe');
+    await userEvent.type(screen.getByLabelText('Email'), 'john@example.com');
+    
+    // Submit
+    await userEvent.click(screen.getByText('Confirm Booking'));
+    
+    // Verify success message
+    expect(screen.getByText('Booking Confirmed!')).toBeInTheDocument();
+  });
+});
+```
+
+### Integration Tests
+
+**What We Test**:
+- API routes with database interactions
+- Authentication flows
+- External API integrations (mocked)
+
+**Example Test**:
+```typescript
+// app/api/schedule/book/route.test.ts
+describe('POST /api/schedule/book', () => {
+  it('creates booking and calendar event', async () => {
+    const response = await POST(new Request({
+      method: 'POST',
+      body: JSON.stringify({
+        name: 'John Doe',
+        email: 'john@example.com',
+        date: '2024-11-10T14:00:00Z',
+        duration: 30,
+        timezone: 'America/New_York'
+      })
+    }));
+    
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data.booking.id).toBeDefined();
+    expect(data.booking.googleMeetLink).toMatch(/meet.google.com/);
+    
+    // Verify database record created
+    const booking = await prisma.booking.findUnique({
+      where: { id: data.booking.id }
+    });
+    expect(booking).toBeDefined();
+    expect(booking.status).toBe('confirmed');
+  });
+  
+  it('prevents double-booking same slot', async () => {
+    // Create first booking
+    await createBooking({ date: '2024-11-10T14:00:00Z' });
+    
+    // Attempt second booking same time
+    const response = await POST(/* same date */);
+    
+    expect(response.status).toBe(409);
+    const data = await response.json();
+    expect(data.error.code).toBe('SLOT_UNAVAILABLE');
+  });
+});
+```
+
+### End-to-End Tests (Playwright)
+
+**What We Test**:
+- Critical user flows across multiple pages
+- Real browser interactions
+- JavaScript-heavy features
+
+**Example Test**:
+```typescript
+// e2e/booking-flow.spec.ts
+test('complete booking flow', async ({ page }) => {
+  await page.goto('/');
+  
+  // Open booking modal
+  await page.click('text=Book a Meeting');
+  
+  // Select date
+  await page.click('[data-testid="calendar-nov-10"]');
+  
+  // Select time
+  await page.click('text=2:00 PM');
+  
+  // Fill contact form
+  await page.fill('input[name="name"]', 'John Doe');
+  await page.fill('input[name="email"]', 'john@example.com');
+  
+  // Submit
+  await page.click('text=Confirm Booking');
+  
+  // Verify success
+  await expect(page.locator('text=Booking Confirmed!')).toBeVisible();
+  await expect(page.locator('text=meet.google.com')).toBeVisible();
+});
+
+test('chatbot conversation', async ({ page }) => {
+  await page.goto('/');
+  
+  // Open chatbot
+  await page.click('[data-testid="chatbot-button"]');
+  
+  // Send message
+  await page.fill('[data-testid="chat-input"]', 'What projects have you worked on?');
+  await page.press('[data-testid="chat-input"]', 'Enter');
+  
+  // Wait for response
+  await expect(page.locator('.chat-message:last-child')).toContainText('project', {
+    timeout: 10000
+  });
+  
+  // Rate response
+  await page.click('[data-testid="thumbs-up"]');
+});
+```
+
+**Test Execution**:
+```bash
+# Run all e2e tests
+pnpm test:e2e
+
+# Run in UI mode for debugging
+pnpm test:e2e:ui
+
+# Run specific test file
+pnpm test:e2e booking-flow.spec.ts
+```
+
+---
+
+## Continuous Integration / Continuous Deployment
+
+### GitHub Actions Workflow
+
+Every pull request triggers automated quality checks before merging:
+
+```yaml
+name: CI
+
+on: [pull_request]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      
+      # Install dependencies
+      - run: pnpm install --frozen-lockfile
+      
+      # Linting
+      - run: pnpm lint
+      
+      # Type checking
+      - run: pnpm type-check
+      
+      # Unit tests
+      - run: pnpm test
+      
+      # Build all apps
+      - run: pnpm build
+      
+      # E2E tests
+      - run: pnpm test:e2e
+```
+
+**Quality Gate**: All checks must pass before PR can merge. This prevents:
+- Broken builds reaching main branch
+- Type errors in production
+- Regressions from affecting users
+- Styling inconsistencies
+
+### Deployment Pipeline
+
+**Preview Deployments** (Vercel):
+Every PR gets a unique preview URL:
+```
+pr-123-portfolio-os.vercel.app
+```
+
+Benefits:
+- Stakeholders can review changes before merge
+- Test features in production-like environment
+- Share work-in-progress easily
+- No risk to production site
+
+**Production Deployment**:
+Merging to `main` triggers automatic production deployment:
+
+1. Build with Turborepo (uses cache for speed)
+2. Run database migrations
+3. Deploy to Vercel edge network
+4. Run smoke tests
+5. Send deployment notification
+
+**Rollback Capability**:
+If issues discovered post-deployment:
+```bash
+# Instant rollback to previous deployment
+vercel rollback
+
+# Or redeploy specific version
+vercel deploy --prod --force previous-deployment-url
+```
+
+---
+
+## Code Review Process
+
+### Pull Request Guidelines
+
+Every change goes through pull requests with review, even for solo development. This:
+- Forces clear explanation of changes
+- Creates audit trail of decisions
+- Enables easy rollback if needed
+- Practices professional workflows
+
+**PR Template**:
+```markdown
+## Description
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] E2E tests added/updated
+- [ ] Manual testing performed
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Self-review completed
+- [ ] Comments added for complex logic
+- [ ] Documentation updated
+- [ ] No console.logs left
+```
+
+### Review Checklist
+
+**Functionality**:
+- Does it solve the stated problem?
+- Are edge cases handled?
+- Is error handling comprehensive?
+
+**Code Quality**:
+- Is it readable and maintainable?
+- Are functions/components focused (single responsibility)?
+- Are names descriptive?
+- Is there appropriate commenting?
+
+**Testing**:
+- Are new features tested?
+- Do tests cover edge cases?
+- Are tests understandable?
+
+**Performance**:
+- Are there obvious performance issues?
+- Are database queries optimized?
+- Is lazy loading used appropriately?
+
+**Security**:
+- Are inputs validated?
+- Are outputs sanitized?
+- Are API keys/secrets protected?
+
+---
+
+## Documentation Practices
+
+### Code Documentation
+
+**Function Documentation**:
+```typescript
+/**
+ * Converts a date from one timezone to another
+ * 
+ * @param date - ISO 8601 date string
+ * @param fromTimezone - IANA timezone name (e.g. "America/New_York")
+ * @param toTimezone - Target IANA timezone name
+ * @returns ISO 8601 date string in target timezone
+ * @throws {Error} If timezone names are invalid
+ * 
+ * @example
+ * convertTimezone('2024-11-08T14:00:00Z', 'UTC', 'America/New_York')
+ * // Returns: '2024-11-08T09:00:00-05:00'
+ */
+function convertTimezone(
+  date: string,
+  fromTimezone: string,
+  toTimezone: string
+): string {
+  // Implementation
+}
+```
+
+**Component Documentation**:
+```typescript
+/**
+ * Booking modal for scheduling meetings
+ * 
+ * Provides a 4-step flow:
+ * 1. Select date from calendar
+ * 2. Choose available time slot
+ * 3. Enter contact information
+ * 4. Review and confirm booking
+ * 
+ * Handles timezone detection, availability checking,
+ * and Google Calendar integration automatically.
+ * 
+ * @param isOpen - Controls modal visibility
+ * @param onClose - Callback when modal closed
+ * @param onSuccess - Callback when booking confirmed
+ */
+export function BookingModal({
+  isOpen,
+  onClose,
+  onSuccess
+}: BookingModalProps) {
+  // Component implementation
+}
+```
+
+### Architecture Documentation
+
+**Architecture Decision Records** (ADRs):
+Document significant architectural decisions:
+
+```markdown
+# ADR 001: Use Monorepo with Turborepo
+
+## Status
+Accepted
+
+## Context
+We need to manage multiple applications (site, dashboard, docs)
+that share code but deploy independently.
+
+## Decision
+Use Turborepo monorepo with shared packages.
+
+## Consequences
+Positive:
+- Code sharing without npm publishing
+- Atomic changes across multiple apps
+- Faster builds with caching
+- Unified tooling
+
+Negative:
+- More complex initial setup
+- Learning curve for monorepo patterns
+- Requires Turborepo-specific configuration
+
+## Alternatives Considered
+- Multiple separate repositories (too much duplication)
+- Monorepo with Nx (more complex than needed)
+- Lerna (less actively maintained)
+```
+
+### API Documentation
+
+**OpenAPI/Swagger Specification**:
+```yaml
+/api/schedule/book:
+  post:
+    summary: Create a booking
+    description: Books a meeting slot and creates Google Calendar event
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [name, email, date, duration, timezone]
+            properties:
+              name:
+                type: string
+                example: "John Doe"
+              email:
+                type: string
+                format: email
+              date:
+                type: string
+                format: date-time
+                example: "2024-11-10T14:00:00Z"
+              duration:
+                type: integer
+                enum: [15, 30, 45, 60]
+                default: 30
+              timezone:
+                type: string
+                example: "America/New_York"
+    responses:
+      201:
+        description: Booking created successfully
+      400:
+        description: Invalid input
+      409:
+        description: Time slot unavailable
+```
+
+---
+
+## Performance Monitoring
+
+### Lighthouse CI
+
+Automated Lighthouse testing on every deployment:
+
+```yaml
+# .github/workflows/lighthouse.yml
+- name: Run Lighthouse CI
+  run: |
+    npm install -g @lhci/cli
+    lhci autorun
+```
+
+**Score Targets**:
+- Performance: 90+
+- Accessibility: 95+
+- Best Practices: 95+
+- SEO: 95+
+
+Deployments that significantly regress scores trigger warnings.
+
+### Bundle Size Monitoring
+
+Track JavaScript bundle size over time:
+
+```bash
+# Generate bundle analysis
+pnpm build --analyze
+
+# Compare to previous build
+pnpm bundle-size:compare
+```
+
+**Size Budgets**:
+- Initial page bundle: < 100KB gzipped
+- Per-route bundles: < 50KB gzipped
+- Shared chunks: < 30KB gzipped
+
+### Performance Profiling
+
+**React DevTools Profiler**:
+- Identify slow component renders
+- Find unnecessary re-renders
+- Optimize render performance
+
+**Chrome DevTools Performance**:
+- Record page load
+- Identify JavaScript bottlenecks
+- Analyze memory usage
+
+---
+
+## Development Workflow
+
+### Branch Strategy
+
+**Main Branch**: Always deployable production code  
+**Feature Branches**: `feature/booking-system`, `feature/chatbot-streaming`  
+**Bug Fix Branches**: `fix/timezone-handling`, `fix/double-booking`  
+**Chore Branches**: `chore/update-dependencies`, `chore/refactor-api`
+
+**Branch Protection**:
+- Require PR reviews before merging
+- Require status checks to pass
+- Require up-to-date branch
+- Prevent force pushes
+
+### Commit Convention
+
+**Conventional Commits** for clear history:
+
+```bash
+feat: Add booking cancellation endpoint
+fix: Prevent double-booking race condition
+docs: Update API documentation
+style: Format code with prettier
+refactor: Extract timezone utilities
+test: Add timezone edge case tests
+chore: Update dependencies
+```
+
+Benefits:
+- Clear changelog generation
+- Semantic versioning automation
+- Easy to find specific changes
+
+### Local Development
+
+**Setup**:
+```bash
+git clone repo
+pnpm install
+cp .env.example .env  # Configure environment
+pnpm db:migrate      # Setup database
+pnpm dev             # Start development servers
+```
+
+**Development Commands**:
+```bash
+pnpm dev           # Start all apps in development
+pnpm build         # Build for production
+pnpm test          # Run unit tests
+pnpm test:watch    # Run tests in watch mode
+pnpm test:e2e      # Run E2E tests
+pnpm lint          # Lint all code
+pnpm format        # Format all code
+pnpm type-check    # TypeScript type checking
+```
+
+---
+
+## Dependency Management
+
+### Regular Updates
+
+**Dependabot Configuration**:
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+```
+
+Automatically creates PRs for dependency updates, which:
+- Keep dependencies current
+- Get security patches quickly
+- Avoid big upgrade efforts later
+
+### Security Scanning
+
+**npm audit**: Check for known vulnerabilities
+```bash
+pnpm audit
+pnpm audit fix  # Auto-fix where possible
+```
+
+**Snyk Integration**: Continuous security monitoring
+- Alerts for new vulnerabilities
+- Automatic PR for fixes
+- License compliance checking
+
+---
+
+## Conclusion
+
+These development practices demonstrate professional software engineering discipline. They show understanding that:
+
+- **Quality is built in, not tested in** - Linting, type checking, and automated tests catch issues early
+- **Documentation is code** - Clear docs make code maintainable
+- **Automation reduces friction** - CI/CD and tooling let you focus on features
+- **Standards enable collaboration** - Consistent practices make code readable
+
+The practices described here are what you'd find at well-run software companies. They represent industry best practices that translate directly to professional development roles.
+
+---
+
+## Related Documentation
+
+- [Platform Architecture](/docs/features/platform-architecture) - Technical foundation
+- [Infrastructure](/docs/features/infrastructure) - Supporting systems
+- [Setup Guides](/docs/setup) - Getting started
+- [API Reference](/docs/api-reference) - API documentation
+

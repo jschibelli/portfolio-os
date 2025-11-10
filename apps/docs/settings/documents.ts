@@ -1,6 +1,9 @@
 import { Paths } from "@/lib/pageroutes"
 
 export const Documents: Paths[] = [
+  // ============================================
+  // GETTING STARTED
+  // ============================================
   {
     heading: "Getting Started",
     title: "Quick Start",
@@ -23,14 +26,134 @@ export const Documents: Paths[] = [
   {
     spacer: true,
   },
+
+  // ============================================
+  // FEATURES
+  // ============================================
+  {
+    heading: "Features",
+    title: "Features Overview",
+    href: "/features",
+    items: [
+      {
+        title: "Platform Architecture",
+        href: "/platform-architecture",
+      },
+      {
+        title: "AI Chatbot",
+        href: "/chatbot",
+      },
+      {
+        title: "Booking & Scheduling",
+        href: "/booking-system",
+      },
+      {
+        title: "Infrastructure & APIs",
+        href: "/infrastructure",
+      },
+      {
+        title: "Development Practices",
+        href: "/development-practices",
+      },
+      {
+        title: "Testing & Regression",
+        href: "/testing",
+      },
+    ],
+  },
+  {
+    spacer: true,
+  },
+
+  // ============================================
+  // SETUP & CONFIGURATION
+  // ============================================
+  {
+    heading: "Setup & Configuration",
+    title: "Setup Guides",
+    href: "/setup",
+    items: [
+      {
+        title: "Database Setup",
+        href: "/database",
+      },
+      {
+        title: "Caching Configuration",
+        href: "/caching",
+      },
+      {
+        title: "Deployment Runbook",
+        href: "/deployment",
+      },
+      {
+        title: "Deployment Configuration",
+        href: "/deployment-config",
+      },
+    ],
+  },
+  {
+    title: "Integrations",
+    href: "/integrations",
+    items: [
+      {
+        title: "Chatbot Setup",
+        href: "/chatbot-setup",
+      },
+      {
+        title: "Dashboard Integration",
+        href: "/dashboard-integration",
+      },
+      {
+        title: "Hashnode Integration",
+        href: "/hashnode",
+      },
+      {
+        title: "Hashnode Quick Start",
+        href: "/hashnode-quickstart",
+      },
+      {
+        title: "Update Blog on Production",
+        href: "/update-blog",
+      },
+    ],
+  },
+  {
+    title: "Worktree Management",
+    href: "/setup",
+    items: [
+      {
+        title: "Basic Worktree Setup",
+        href: "/worktree-setup",
+      },
+      {
+        title: "Multi-Agent Worktree Setup",
+        href: "/worktree-multi-agent",
+      },
+    ],
+  },
+  {
+    spacer: true,
+  },
+
+  // ============================================
+  // DEVELOPMENT
+  // ============================================
   {
     heading: "Development",
     title: "Developer Guide",
     href: "/developer-guide",
     items: [
       {
+        title: "Developer Overview",
+        href: "/overview",
+      },
+      {
         title: "Architecture Overview",
         href: "/architecture",
+      },
+      {
+        title: "Monorepo Structure",
+        href: "/monorepo",
       },
       {
         title: "Development Workflow",
@@ -41,22 +164,62 @@ export const Documents: Paths[] = [
         href: "/standards",
       },
       {
-        title: "Monorepo Structure",
-        href: "/monorepo",
-      },
-      {
         title: "Package System",
         href: "/packages",
       },
     ],
   },
   {
+    title: "API Reference",
+    href: "/api-reference",
+    items: [
+      {
+        title: "API Overview",
+        href: "/overview",
+      },
+      {
+        title: "Authentication",
+        href: "/authentication",
+      },
+      {
+        title: "REST API",
+        href: "/rest-api",
+      },
+      {
+        title: "GraphQL Endpoints",
+        href: "/graphql",
+      },
+      {
+        title: "Hashnode Integration",
+        href: "/hashnode",
+        items: [
+          {
+            title: "Implementation Guide",
+            href: "/implementation",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    spacer: true,
+  },
+
+  // ============================================
+  // AUTOMATION & SCRIPTS
+  // ============================================
+  {
+    heading: "Automation & Scripts",
     title: "Scripts Reference",
     href: "/scripts-reference",
     items: [
       {
         title: "Overview",
         href: "/overview",
+      },
+      {
+        title: "Core Utilities",
+        href: "/core-utilities",
       },
       {
         title: "Agent Management",
@@ -70,31 +233,61 @@ export const Documents: Paths[] = [
         title: "Issue Management",
         href: "/issue-management",
       },
+    ],
+  },
+  {
+    title: "Automation System",
+    href: "/scripts-reference/automation",
+    items: [
       {
-        title: "Core Utilities",
-        href: "/core-utilities",
+        title: "Quick Start Guide",
+        href: "/quick-start-guide",
       },
       {
-        title: "Automation Scripts",
-        href: "/automation",
+        title: "System Architecture",
+        href: "/system-architecture",
+      },
+      {
+        title: "Complete Automation System",
+        href: "/complete-automation-system",
+      },
+      {
+        title: "Integrated Automation System",
+        href: "/integrated-automation-system",
+      },
+      {
+        title: "Automation System Manual",
+        href: "/automation-system-manual",
+      },
+      {
+        title: "GitHub Actions Workflows",
+        href: "/github-actions-workflows",
+      },
+      {
+        title: "PowerShell Automation Scripts",
+        href: "/powershell-automation-scripts",
       },
     ],
   },
   {
     spacer: true,
   },
+
+  // ============================================
+  // ADVANCED TOPICS
+  // ============================================
   {
-    heading: "Advanced",
+    heading: "Advanced Topics",
     title: "Multi-Agent System",
     href: "/multi-agent",
     items: [
       {
-        title: "System Architecture",
-        href: "/architecture",
-      },
-      {
         title: "Quick Start Guide",
         href: "/quick-start",
+      },
+      {
+        title: "System Architecture",
+        href: "/architecture",
       },
       {
         title: "Agent Coordination",
@@ -111,30 +304,12 @@ export const Documents: Paths[] = [
     ],
   },
   {
-    title: "API Reference",
-    href: "/api-reference",
-    items: [
-      {
-        title: "REST API",
-        href: "/rest-api",
-      },
-      {
-        title: "Hashnode Integration",
-        href: "/hashnode",
-      },
-      {
-        title: "GraphQL Endpoints",
-        href: "/graphql",
-      },
-      {
-        title: "Authentication",
-        href: "/authentication",
-      },
-    ],
-  },
-  {
     spacer: true,
   },
+
+  // ============================================
+  // REFERENCE
+  // ============================================
   {
     heading: "Reference",
     title: "Apps & Packages",
@@ -159,24 +334,24 @@ export const Documents: Paths[] = [
     ],
   },
   {
-    title: "Setup Guides",
-    href: "/setup",
+    title: "Releases & Security",
+    href: "/releases",
     items: [
       {
-        title: "Worktree Setup",
-        href: "/worktree-setup",
+        title: "Release Guide",
+        href: "/release-guide",
       },
       {
-        title: "Database Setup",
-        href: "/database",
+        title: "Release Workflow",
+        href: "/workflow",
       },
       {
-        title: "Deployment Runbook",
-        href: "/deployment",
+        title: "Security Overview",
+        href: "/security",
       },
       {
-        title: "Caching Configuration",
-        href: "/caching",
+        title: "Authentication Fixes",
+        href: "/auth-fixes",
       },
     ],
   },
@@ -184,6 +359,10 @@ export const Documents: Paths[] = [
     title: "Troubleshooting",
     href: "/troubleshooting",
     items: [
+      {
+        title: "General Troubleshooting",
+        href: "/general",
+      },
       {
         title: "Common Issues",
         href: "/common-issues",
