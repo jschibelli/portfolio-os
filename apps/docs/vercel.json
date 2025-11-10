@@ -1,4 +1,5 @@
 {
+  "$comment": "⚠️ Deployment for the docs Vercel project is intentionally disabled. Manage production deploys through the root vercel.json; only enable this project when running an isolated docs build. PNPM is pinned to 10.14.0 to match the current Vercel runtime—update both the install/build commands and this note when bumping.",
   "buildCommand": "cd ../.. && npx pnpm@10.14.0 build --filter=@portfolio/docs",
   "installCommand": "npx pnpm@10.14.0 install",
   "framework": "nextjs",
