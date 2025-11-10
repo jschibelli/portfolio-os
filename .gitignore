@@ -134,4 +134,5 @@ next-env.d.ts
 /scripts/
 # App-specific scripts used for local tooling under apps/site
 /apps/site/scripts/
+/apps/docs/scripts/
 
