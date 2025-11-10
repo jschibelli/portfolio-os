@@ -95,19 +95,29 @@ HASHNODE_WEBHOOK_SECRET="your-webhook-secret-here"  # Optional
 
 ## API Endpoints
 
+All Dashboard routes require an authenticated session and the `manage:articles` permission. Requests must include `Content-Type: application/json`.
+
+| Method | Path | Purpose | Auth |
+|--------|------|---------|------|
+| `POST` | `/api/hashnode/publish` | Publish an article to Hashnode | Session |
+| `POST` | `/api/hashnode/unpublish` | Convert a Hashnode article back to draft | Session |
+| `DELETE` | `/api/hashnode/delete` | Permanently delete the Hashnode article | Session |
+| `POST` | `/api/hashnode/webhook` | Receive outbound events from Hashnode | Secret header |
+
 ### Publishing Endpoints
 
 #### POST `/api/hashnode/publish`
-Publishes an article to Hashnode.
 
-**Request Body:**
+Publishes an article to Hashnode and stores the resulting post ID for future sync.
+
+**Request Body**
 ```json
 {
   "articleId": "article-id-here"
 }
 ```
 
-**Response:**
+**Successful Response**
 ```json
 {
   "success": true,
@@ -116,19 +126,97 @@ Publishes an article to Hashnode.
 }
 ```
 
+**Error Responses**
+
+- `400` – Missing or invalid `articleId`
+- `403` – User lacks required permissions
+- `502` – Upstream Hashnode failure (see [Error Handling](#error-handling))
+
 #### POST `/api/hashnode/unpublish`
-Unpublishes an article from Hashnode (converts to draft).
+
+Converts a published Hashnode article back into a draft.
+
+**Request Body**
+```json
+{
+  "articleId": "article-id-here"
+}
+```
+
+**Successful Response**
+```json
+{
+  "success": true,
+  "message": "Article marked as draft on Hashnode"
+}
+```
+
+**Error Responses**
+
+- `400` – Article missing a `hashnodeId`
+- `404` – Post not found on Hashnode
+- `503` – Hashnode API temporarily unavailable
 
 #### DELETE `/api/hashnode/delete`
-Deletes an article from Hashnode permanently.
+
+Removes the Hashnode post entirely and clears the stored `hashnodeId`.
+
+**Request Body**
+```json
+{
+  "articleId": "article-id-here"
+}
+```
+
+**Successful Response**
+```json
+{
+  "success": true,
+  "message": "Article deleted from Hashnode"
+}
+```
+
+**Error Responses**
+
+- `400` – Validation error (missing IDs)
+- `409` – Hashnode returned a conflict
+- `500` – Unexpected server error
+
+### Webhook Endpoint
 
 #### POST `/api/hashnode/webhook`
-Webhook endpoint for receiving Hashnode events.
 
-**Events Handled:**
-- `POST_PUBLISHED`: Article was published on Hashnode
-- `POST_UPDATED`: Article was updated on Hashnode
-- `POST_DELETED`: Article was deleted on Hashnode
+Handles incoming Hashnode events to keep the Dashboard in sync.
+
+**Expected Headers**
+
+- `x-hashnode-signature`: HMAC signature used for verification when `HASHNODE_WEBHOOK_SECRET` is set
+- `content-type`: `application/json`
+
+**Sample Payload**
+```json
+{
+  "event": "POST_UPDATED",
+  "data": {
+    "postId": "hashnode-post-id",
+    "slug": "article-slug",
+    "title": "Updated title",
+    "publishedAt": "2025-10-17T18:03:21.000Z"
+  }
+}
+```
+
+**Events Handled**
+
+- `POST_PUBLISHED` – Inserts or updates local metadata
+- `POST_UPDATED` – Refreshes article content in the dashboard
+- `POST_DELETED` – Clears `hashnodeId` and archives dashboard record
+
+**Responses**
+
+- `204` – Event processed successfully
+- `400` – Invalid payload or signature
+- `401` – Signature verification failed
 
 ## Usage Examples
 
