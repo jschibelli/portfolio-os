@@ -129,34 +129,54 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
   };
 }
 
+const DASHBOARD_HEALTH_CHECK_TIMEOUT_MS = 2000;
+const DASHBOARD_HEALTH_CHECK_CACHE_MS = 5 * 60 * 1000;
+
+let dashboardAvailabilityCache: { value: boolean; checkedAt: number } | null = null;
+let dashboardAvailabilityCheckPromise: Promise<boolean> | null = null;
+
 /**
  * Check if Dashboard API is available
  * Performs a health check to the Dashboard API
+ * Result is cached to avoid repeated network calls during builds
  */
 async function isDashboardAvailable(): Promise<boolean> {
-  // Check if Dashboard API URL is configured
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_API_URL || process.env.DASHBOARD_API_URL;
   if (!dashboardUrl) {
     return false;
   }
 
-  try {
-    // Quick health check with 2 second timeout
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000);
-    
-    const response = await fetch(`${dashboardUrl}/api/health`, {
-      signal: controller.signal,
-      method: 'GET',
-      cache: 'no-store',
-    });
-    
-    clearTimeout(timeout);
-    return response.ok;
-  } catch (error) {
-    // Dashboard not available, will fall back to Hashnode
-    return false;
+  const now = Date.now();
+  if (dashboardAvailabilityCache && now - dashboardAvailabilityCache.checkedAt < DASHBOARD_HEALTH_CHECK_CACHE_MS) {
+    return dashboardAvailabilityCache.value;
   }
+
+  if (!dashboardAvailabilityCheckPromise) {
+    dashboardAvailabilityCheckPromise = (async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), DASHBOARD_HEALTH_CHECK_TIMEOUT_MS);
+
+      try {
+        const response = await fetch(`${dashboardUrl}/api/health`, {
+          signal: controller.signal,
+          method: 'GET',
+          cache: 'no-store',
+        });
+
+        return response.ok;
+      } catch {
+        return false;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    })();
+  }
+
+  const available = await dashboardAvailabilityCheckPromise;
+  dashboardAvailabilityCache = { value: available, checkedAt: Date.now() };
+  dashboardAvailabilityCheckPromise = null;
+
+  return available;
 }
 
 /**
@@ -273,8 +293,9 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
  */
 export async function getAllPostSlugs(): Promise<string[]> {
   // Add 15 second hard timeout for build
+  let timeoutId: ReturnType<typeof setTimeout>;
   const timeoutPromise = new Promise<string[]>((resolve) => {
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       console.warn('getAllPostSlugs timed out after 15 seconds, returning empty array');
       resolve([]);
     }, 15000);
@@ -301,5 +322,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
     }
   })();
 
-  return Promise.race([fetchPromise, timeoutPromise]);
+  const result = await Promise.race([fetchPromise, timeoutPromise]);
+  clearTimeout(timeoutId!);
+  return result;
 }
