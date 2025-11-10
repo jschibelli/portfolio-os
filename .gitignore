@@ -127,5 +127,4 @@ next-env.d.ts
 # proprietary development methodologies and should remain private
 /prompts/
 /scripts/*
-!/scripts/revalidate-blog.ts
-!/scripts/trigger-vercel-redeploy.ts
+
