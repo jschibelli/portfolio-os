@@ -1,5 +1,4 @@
 {
-  "$comment": "WARNING: Deployment disabled for this Vercel project to prevent duplicate builds. Only the root Portfolio OS project should be deployed. Remove this project from the Vercel dashboard if still present.",
   "buildCommand": "cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm exec prisma generate --schema=apps/dashboard/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/dashboard...",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
