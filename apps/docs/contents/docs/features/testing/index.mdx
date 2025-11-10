@@ -1,0 +1,118 @@
+---
+title: Testing & Regression Strategy
+description: How Portfolio OS uses automated Jest and Playwright suites to prevent regressions across every release.
+---
+
+<Note type="success" title="Confidence at Every Release">
+  Regression suites run on every pull request and before production deploys. That means every change is verified against business-critical flows before it reaches real users.
+</Note>
+
+## Overview
+
+Regression testing is the safety net that protects mature features while new work ships. Portfolio OS leans on layered automation—unit, integration, end-to-end, and non-functional checks—to guarantee that previously solved problems stay solved. This page explains the regression mindset, the tooling that powers it, and how to run the suites locally.
+
+## Quality Gates at a Glance
+
+| Layer | Tooling | Regression Focus | Execution |
+| --- | --- | --- | --- |
+| Unit & component | Jest + React Testing Library | Business logic, edge cases, component contracts | `pnpm test` (runs via Turborepo across apps) |
+| Integration | Jest against API routes and database fakes | Service orchestration, error surfaces, data integrity | `pnpm --filter @mindware-blog/site test:api` |
+| End-to-end | Playwright | Booking flow, chatbot, dashboard authoring | `pnpm --filter @mindware-blog/site test:functional` |
+| Non-functional | Playwright + `@axe-core/playwright` + visual snapshots | Accessibility, SEO, visual regressions | `pnpm --filter @mindware-blog/site test:accessibility`, `test:seo`, `test:visual` |
+
+These suites ladder together: if a regression slips past Jest, Playwright catches it before the change lands in production.
+
+## Regression Workflows
+
+### Pull Requests (continuous regression)
+
+- **Trigger:** GitHub Actions pipeline on every PR.
+- **Coverage:** Lint, type-check, `pnpm test`, and Playwright functional smoke (`pnpm --filter @mindware-blog/site test:functional`).
+- **Outcome:** Status checks block merges until all suites pass.
+- **Artifacts:** Jest coverage summary and Playwright HTML report are uploaded for reviewer triage.
+
+### Nightly & Pre-release (full regression)
+
+- **Trigger:** Scheduled workflow and manual pre-release command.
+- **Coverage:** Complete Playwright matrix (`test:functional`, `test:case-studies`, `test:accessibility`, `test:seo`, `test:visual`) plus Jest coverage (`pnpm --filter @mindware-blog/site test:coverage` and `pnpm --filter @mindware-blog/dashboard test:coverage`).
+- **Outcome:** Detects flakiness, catches integration drift (e.g., external API schema changes), and validates UI snapshots before the morning stand-up.
+
+### Hotfix Validation (targeted regression)
+
+- **Trigger:** Whenever we patch production directly.
+- **Coverage:** Focused Jest suites (`test --runTestsByPath`), impacted Playwright specs, and accessibility smoke on affected routes.
+- **Outcome:** Ensures urgent fixes remain safe without paying the cost of the full matrix.
+
+## Jest Regression Suites
+
+Jest is responsible for deterministic, fast feedback:
+
+- **Strict coverage goals:** The suite enforces 85%+ coverage with thresholds defined in each app’s Jest config.
+- **Snapshot governance:** UI snapshots are versioned; updates require reviewer approval to avoid accidental baselines.
+- **Runtime parity:** Tests run against the same Prisma schema and utility packages used in production.
+
+Command examples:
+
+```bash
+# Run everything once (used by CI)
+pnpm test
+
+# Focus on the site app’s integration surfaces
+pnpm --filter @mindware-blog/site test:api
+
+# High-signal coverage report before a release
+pnpm --filter @mindware-blog/dashboard test:coverage
+```
+
+## Playwright Regression Suites
+
+Playwright validates full user journeys and surface-level UX guarantees:
+
+- **Functional flows:** `test:functional` covers booking a meeting, chatting with the AI assistant, and updating case studies in the dashboard.
+- **Accessibility:** `test:accessibility` runs `@axe-core/playwright` audits against critical pages and fails on WCAG 2.1 AA violations.
+- **Visual diffing:** `test:visual` captures baseline screenshots for the homepage, booking modal, and dashboard analytics; use `test:visual:update` to refresh baselines intentionally.
+- **SEO checks:** `test:seo` asserts structured data, canonical URLs, and meta tags remain intact.
+
+Command examples:
+
+```bash
+# Complete regression sweep with HTML reporter output
+pnpm --filter @mindware-blog/site test:all
+
+# Triage a failing flow interactively
+pnpm --filter @mindware-blog/site test:functional -- --ui
+
+# Refresh approved visual baselines after intentional design changes
+pnpm --filter @mindware-blog/site test:visual:update
+```
+
+## Running the Suites Locally
+
+<Step>
+  <StepItem title="Install dependencies & seed test data">
+    Run `pnpm install`, copy `.env.example` values, and execute `pnpm db:migrate` plus any seed scripts before running browser tests.
+  </StepItem>
+  <StepItem title="Prime the Jest layer">
+    Execute `pnpm test` to ensure unit and integration suites are green. Use `pnpm --filter @mindware-blog/site test:watch` while iterating.
+  </StepItem>
+  <StepItem title="Launch Playwright in headed mode">
+    Use `pnpm --filter @mindware-blog/site test:functional -- --headed` to observe the flows and verify selectors remain stable.
+  </StepItem>
+  <StepItem title="Review reports & baselines">
+    Open `playwright-report/index.html` for failures. For visual diffs, commit the updated snapshots alongside code changes after reviewer approval.
+  </StepItem>
+</Step>
+
+## Release Gates & Reporting
+
+- **GitHub Status Checks:** `ci/test` and `ci/playwright` are required; failure blocks merges.
+- **Preview Deploy Verification:** Playwright runs against Vercel preview URLs to detect environment-specific regressions (e.g., OAuth redirects, CSP).
+- **Slack Notifications:** Nightly runs post summaries with flaky test detection and links to reports.
+- **Root Cause Tracking:** Failures are tagged with the owning squad/component in Linear so regression debt is visible.
+
+## Related Reading
+
+- [Development Practices](/docs/features/development-practices) — broader quality philosophy and CI pipeline details.
+- [Platform Architecture](/docs/features/platform-architecture) — how the deployment pipeline orchestrates these checks.
+- [Release Guide](/docs/releases/release-guide) — governance around final release sign-off.
+

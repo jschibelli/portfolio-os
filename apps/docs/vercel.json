@@ -1,5 +1,4 @@
 {
-  "$comment": "⚠️ DEPLOYMENT DISABLED - This Vercel project is currently disabled to prevent multiple simultaneous builds. Only the dashboard (root vercel.json) should be deployed. Do not link this project to Vercel unless you want to deploy it separately.",
   "buildCommand": "cd ../.. && npx pnpm@10.14.0 build --filter=@portfolio/docs",
   "installCommand": "npx pnpm@10.14.0 install",
   "framework": "nextjs",

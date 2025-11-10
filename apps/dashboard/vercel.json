@@ -1,5 +1,4 @@
 {
-  "$comment": "⚠️ DEPLOYMENT DISABLED - This Vercel project is currently disabled to prevent multiple simultaneous builds. Only Portfolio OS (root vercel.json) should be deployed. Delete this project from Vercel dashboard.",
   "buildCommand": "cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm exec prisma generate --schema=apps/dashboard/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/dashboard...",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",

@@ -119,3 +119,11 @@ next-env.d.ts
 # and temporary files generated during the build process
 .turbo/cache/
 .turbo/daemon/
+
+# =============================================================================
+# AI Prompts and Automation Strategies (Private)
+# =============================================================================
+# Custom AI prompts, agent strategies, and automation workflows that contain
+# proprietary development methodologies and should remain private
+/prompts/
+/scripts/

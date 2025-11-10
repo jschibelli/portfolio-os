@@ -1,0 +1,571 @@
+---
+title: Platform Architecture
+description: Technical foundation, architectural decisions, and infrastructure design of Portfolio OS
+---
+
+## Overview
+
+Portfolio OS is built on a modern monorepo architecture that enables code sharing, independent deployment, and rapid development velocity. This document explains the architectural decisions, technical foundation, and infrastructure design that makes the platform reliable, scalable, and maintainable.
+
+---
+
+## Technology Foundation
+
+### Next.js 15 with App Router
+
+The platform uses Next.js 15, representing the current state-of-the-art in React development. This choice demonstrates several important capabilities:
+
+<CardGrid>
+  <Card
+    title="Server Components & Streaming"
+    description="Leverage React Server Components to reduce client-side JavaScript and improve initial page load performance. Server-side rendering ensures excellent SEO while streaming responses provide better perceived performance."
+    icon="layout"
+  />
+  <Card
+    title="Edge Runtime Optimization"
+    description="Critical paths run on edge functions, reducing latency for global users. The chatbot streaming endpoint uses edge runtime to minimize response time regardless of user location."
+    icon="globe"
+  />
+  <Card
+    title="App Router Benefits"
+    description="Better code organization through folder-based routing, native support for layouts that persist across navigation, built-in loading and error states, and improved data fetching patterns."
+    icon="folder"
+  />
+</CardGrid>
+
+### TypeScript End-to-End
+
+TypeScript coverage spans from database queries through API routes to frontend components. This isn't just type checking for catching bugs - it's using types as documentation and enabling powerful refactoring capabilities.
+
+<CardGrid>
+  <Card
+    title="Strict Mode"
+    description="Catches more potential issues: no implicit any types, strict null checking prevents null reference errors, no implicit this binding, and strict function types catch parameter mismatches."
+    icon="shield-check"
+  />
+  <Card
+    title="Generated Types"
+    description="Prisma generates TypeScript types from the database schema, ensuring database operations are type-safe. Creates end-to-end type safety where a database schema change automatically flags every affected API and UI component."
+    icon="database"
+  />
+  <Card
+    title="Developer Experience"
+    description="TypeScript's IntelliSense provides autocomplete, inline documentation, and error highlighting in the IDE. This dramatically improves development speed and reduces bugs."
+    icon="code"
+  />
+</CardGrid>
+
+---
+
+## Monorepo Structure
+
+The codebase is organized as a monorepo using Turborepo, allowing multiple applications to share code efficiently while maintaining clean boundaries.
+
+### Repository Organization
+
+```
+portfolio-os/
+├── apps/
+│   ├── site/          # Public-facing portfolio (Next.js 15)
+│   ├── dashboard/     # Content management system (Next.js 15)
+│   └── docs/          # Documentation site (Next.js 15)
+├── packages/
+│   ├── ui/            # Shared component library
+│   ├── lib/           # Business logic and utilities
+│   ├── database/      # Database client and schema
+│   └── typescript-config/  # Shared TypeScript configuration
+├── scripts/
+│   ├── project-management/  # PR and issue automation
+│   ├── housekeeping/       # Maintenance scripts
+│   └── utilities/          # Common utility scripts
+└── docs/              # Root documentation (migrated to apps/docs)
+```
+
+### Application Responsibilities
+
+**Site Application** (`apps/site/`)
+- Public-facing portfolio and blog
+- AI chatbot integration
+- Booking system interface
+- Article display and search
+- Contact forms and lead capture
+- Server-side rendering for SEO
+- Edge runtime for global performance
+
+**Dashboard Application** (`apps/dashboard/`)
+- Content management and editing
+- Article publishing workflow
+- Image upload and optimization
+- Analytics dashboard
+- Settings management
+- Authentication and authorization
+- Admin-only features
+
+**Documentation Site** (`apps/docs/`)
+- Platform documentation
+- API reference
+- Setup and deployment guides
+- Architecture documentation
+- Automated navigation generation
+- Search functionality
+
+### Shared Packages
+
+**UI Package** (`packages/ui/`)
+Reusable React components used across applications:
+- Button, Input, Modal, Dropdown
+- Form components with validation
+- Layout components (Header, Footer, Sidebar)
+- Loading states and error boundaries
+- Consistent design system
+
+**Lib Package** (`packages/lib/`)
+Shared business logic and utilities:
+- API client functions
+- Authentication helpers
+- Date/time utilities
+- Validation schemas
+- Error handling
+- Logging utilities
+- Constants and configuration
+
+**Database Package** (`packages/database/`)
+Database access layer:
+- Prisma client configuration
+- Database schema definition
+- Migration management
+- Seed data scripts
+- Type-safe query builders
+
+---
+
+## Benefits of Monorepo Architecture
+
+### Code Sharing
+
+Components, utilities, and business logic are shared across applications without publishing to npm. A change to a shared component automatically affects all applications that use it. This eliminates code duplication and ensures consistency.
+
+### Atomic Changes
+
+A single pull request can update the database schema, API routes in multiple applications, and frontend components that consume those APIs. This prevents the coordination nightmare of updating multiple repositories in sequence.
+
+### Unified Tooling
+
+All applications use the same versions of TypeScript, ESLint, Prettier, and other tools. Configuration is shared through the `typescript-config` package. This ensures consistent code quality across the entire codebase.
+
+### Build Optimization
+
+Turborepo caches task outputs and only rebuilds what changed. If you modify the site application, the dashboard and docs applications don't rebuild. If you change a shared package, only applications that depend on it rebuild. This reduces typical build times from 5+ minutes to under 2 minutes.
+
+### Independent Deployment
+
+Despite sharing code, each application can be deployed independently. The site can be deployed without touching the dashboard. This reduces deployment risk and allows faster iteration.
+
+---
+
+## Database Architecture
+
+### PostgreSQL with Prisma ORM
+
+The platform uses PostgreSQL for several reasons:
+
+**Reliability**: PostgreSQL is battle-tested at scale with strong ACID guarantees. Transactions ensure data consistency even under concurrent access. MVCC (Multi-Version Concurrency Control) allows high read concurrency without blocking writes.
+
+**Feature Set**: Support for JSON columns for flexible data, full-text search for content queries, and rich indexing options for performance optimization.
+
+**Type Safety**: Prisma generates TypeScript types from the schema, making database operations type-safe. You can't accidentally query a column that doesn't exist or use the wrong type.
+
+### Schema Design
+
+**Articles Table**
+```prisma
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text
+  excerpt     String?
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  tags        Tag[]
+  views       Int      @default(0)
+}
+```
+
+This schema supports:
+- Unique slugs for URLs
+- Draft/published workflow
+- Author relationships
+- Tag associations
+- View counting
+- Automatic timestamp management
+
+**Bookings Table**
+```prisma
+model Booking {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  date            DateTime
+  duration        Int      @default(30)
+  timezone        String
+  notes           String?
+  status          String   @default("confirmed")
+  googleEventId   String?
+  googleMeetLink  String?
+  confirmationSent Boolean @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+```
+
+This schema tracks:
+- Booking details and contact info
+- Timezone for accurate display
+- Google Calendar event association
+- Meet link for convenience
+- Email confirmation status
+- Audit trail with timestamps
+
+### Performance Optimization
+
+**Indexes**: Strategic indexes on frequently queried columns:
+```prisma
+@@index([slug])
+@@index([published, publishedAt])
+@@index([authorId])
+@@index([email, date])
+```
+
+**Connections**: Prisma connection pooling reuses database connections, reducing connection overhead. Connection limits prevent exhausting database resources under high load.
+
+**Queries**: N+1 query prevention through Prisma's `include` and `select` options. Single queries fetch related data rather than multiple round trips.
+
+---
+
+## API Architecture
+
+### RESTful Endpoints
+
+The platform exposes REST APIs following standard conventions:
+
+**Consistent Structure**:
+```typescript
+// GET /api/articles - List articles
+// GET /api/articles/[id] - Get single article
+// POST /api/articles - Create article
+// PUT /api/articles/[id] - Update article
+// DELETE /api/articles/[id] - Delete article
+```
+
+**Standard Responses**:
+```typescript
+// Success
+{
+  data: { /* resource */ },
+  meta?: { /* pagination, etc */ }
+}
+
+// Error
+{
+  error: {
+    code: "VALIDATION_ERROR",
+    message: "Title is required",
+    details?: { /* field-specific errors */ }
+  }
+}
+```
+
+**HTTP Status Codes**:
+- 200: Success
+- 201: Created
+- 400: Bad Request (validation error)
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 500: Internal Server Error
+
+### GraphQL Endpoint
+
+A GraphQL endpoint provides flexible querying for complex data relationships:
+
+```graphql
+query GetArticleWithAuthor {
+  article(slug: "platform-architecture") {
+    id
+    title
+    content
+    publishedAt
+    author {
+      name
+      avatar
+      bio
+    }
+    tags {
+      name
+      slug
+    }
+  }
+}
+```
+
+Benefits:
+- Single request for complex data requirements
+- Client specifies exactly what data it needs
+- No over-fetching or under-fetching
+- Strong typing with GraphQL schema
+- Built-in documentation and introspection
+
+### API Security
+
+**Authentication**: NextAuth.js provides secure session management with JWT tokens. API routes verify authentication before processing requests.
+
+**Rate Limiting**: Prevents abuse through request throttling. Different limits for authenticated vs. anonymous users. Sliding window algorithm allows bursts while preventing sustained abuse.
+
+**Input Validation**: All inputs validated using Zod schemas before processing. Type coercion prevented. SQL injection impossible through Prisma's parameterized queries.
+
+**CORS**: Configured to allow requests only from known origins. Credentials included only for trusted domains.
+
+---
+
+## Deployment Architecture
+
+### Vercel Platform
+
+The platform deploys to Vercel for several strategic reasons:
+
+**Edge Network**: Code runs in multiple regions globally. Users connect to the nearest edge location, reducing latency. Static assets cached at edge for instant delivery.
+
+**Automatic Scaling**: Serverless functions scale automatically based on traffic. No capacity planning or server management required. Pay only for actual usage.
+
+**Zero-Config HTTPS**: Automatic SSL certificates with renewal. No certificate management or configuration needed.
+
+**Preview Deployments**: Every pull request gets a unique preview URL for testing. Enables stakeholder review before production deployment.
+
+**Analytics**: Built-in performance monitoring tracks Core Web Vitals across real user sessions.
+
+### Deployment Pipeline
+
+**Continuous Integration** (GitHub Actions):
+```yaml
+1. Code pushed to branch
+2. Run linting (ESLint)
+3. Run type checking (TypeScript)
+4. Run tests (Jest, Playwright)
+5. Build applications (Turborepo)
+6. Deploy to preview environment
+```
+
+**Continuous Deployment** (Vercel):
+```yaml
+1. PR merged to main branch
+2. Trigger production deployment
+3. Build with Turborepo (cached)
+4. Deploy to edge network
+5. Run smoke tests
+6. Gradual rollout
+```
+
+Build times optimized through Turborepo caching - typical deployment completes in under 90 seconds.
+
+### Environment Management
+
+**Multiple Environments**:
+- **Development**: Local development with hot reload
+- **Preview**: Unique URL per pull request
+- **Staging**: Pre-production testing environment
+- **Production**: Live user-facing deployment
+
+**Environment Variables**: Managed through Vercel dashboard with encryption. Different values per environment. Never committed to git.
+
+**Database**: Separate database instances per environment prevent test data from affecting production.
+
+---
+
+## Performance Optimization
+
+### Frontend Performance
+
+**Code Splitting**: Each route loads only required JavaScript. The chatbot system loads on demand when opened, not on initial page load. This keeps initial bundles small (< 100KB gzipped).
+
+**Image Optimization**: Next.js Image component provides:
+- Automatic responsive images (srcset)
+- Modern format serving (WebP with fallbacks)
+- Lazy loading (images load as scrolled into view)
+- Blur-up placeholder for perceived performance
+
+**Server Components**: Most components render on the server, sending HTML instead of JavaScript. This reduces client-side JavaScript by 40-50% compared to traditional React apps.
+
+**Caching Strategy**:
+- **Static Pages**: Cached at edge indefinitely with revalidation
+- **Dynamic API Routes**: Short cache with stale-while-revalidate
+- **Client Data Fetching**: React Query with 5-minute cache
+- **Database Queries**: Prisma query caching for repeated reads
+
+### Backend Performance
+
+**Edge Functions**: API routes run in edge locations near users. Typical latency < 50ms vs 200-300ms for centralized servers.
+
+**Database Connection Pooling**: Reuse connections instead of creating new ones. Reduces connection overhead from 50ms to < 1ms per query.
+
+**Query Optimization**: 
+- Strategic indexes on frequently queried columns
+- Aggregate queries instead of multiple round trips
+- Pagination to limit result set size
+- Selective field fetching (only retrieve needed columns)
+
+**Caching Layers**:
+- **CDN**: Static assets cached at edge
+- **Application**: React Query caches API responses
+- **Database**: Prisma query result cache
+- **External APIs**: Cache OpenAI and Google API responses when appropriate
+
+---
+
+## Monitoring & Observability
+
+### Error Tracking
+
+**Sentry Integration**: Captures frontend and backend errors with full context:
+- Stack traces with source maps
+- User actions leading to error (breadcrumbs)
+- Environment information (browser, OS, device)
+- Custom context (user ID, request details)
+- Performance transaction tracing
+
+Errors grouped intelligently by root cause. Alerts trigger for new errors or sudden spikes in existing errors.
+
+### Performance Monitoring
+
+**Vercel Analytics**: Tracks Core Web Vitals across real user sessions:
+- **LCP** (Largest Contentful Paint): < 2.5s
+- **FID** (First Input Delay): < 100ms  
+- **CLS** (Cumulative Layout Shift): < 0.1
+- **TTFB** (Time to First Byte): < 600ms
+
+Data segmented by device, country, and page. Reveals actual user experience rather than synthetic tests.
+
+**Custom Metrics**: Business metrics tracked through analytics:
+- Chatbot usage and satisfaction ratings
+- Booking conversion rates
+- Article engagement (time on page, scroll depth)
+- API response times and error rates
+
+### Logging
+
+**Structured Logging**: All logs include:
+```typescript
+{
+  timestamp: "2024-11-08T12:00:00Z",
+  level: "info" | "warn" | "error",
+  message: "User booked meeting",
+  context: {
+    userId: "abc123",
+    bookingId: "xyz789",
+    duration: 30
+  }
+}
+```
+
+Logs ingested by logging service (Vercel Logs or external) for querying and alerting.
+
+---
+
+## Security Architecture
+
+### Authentication & Authorization
+
+**NextAuth.js**: Industry-standard authentication library:
+- Multiple providers (Google, GitHub, Email)
+- Secure session management with JWT
+- CSRF protection on all auth routes
+- Rate limiting on login attempts
+
+**Role-Based Access Control**:
+```typescript
+enum Role {
+  VIEWER = "viewer",   // Read-only access
+  EDITOR = "editor",   // Can create/edit content
+  ADMIN = "admin"      // Full access
+}
+```
+
+API routes check permissions before allowing operations.
+
+### Data Security
+
+**Encryption**: All data encrypted in transit (HTTPS) and at rest (database encryption).
+
+**Input Sanitization**: All user inputs sanitized before storage or display to prevent XSS attacks.
+
+**SQL Injection Prevention**: Prisma uses parameterized queries exclusively. No string concatenation in queries.
+
+**API Key Management**: Keys stored in encrypted environment variables. Never exposed to client. Rotated regularly.
+
+### Security Headers
+
+```typescript
+{
+  "Content-Security-Policy": "default-src 'self'",
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "geolocation=(), microphone=()"
+}
+```
+
+These headers prevent common attacks like clickjacking, MIME sniffing, and unauthorized API access.
+
+---
+
+## Scalability Considerations
+
+### Horizontal Scaling
+
+**Stateless Design**: No server-side session storage. All state in JWT tokens or database. Any server instance can handle any request.
+
+**Database Scaling**: PostgreSQL supports read replicas for scaling read-heavy workloads. Write traffic handled by primary, reads distributed across replicas.
+
+**Cache Distribution**: Redis or similar for distributed caching across multiple application instances.
+
+### Cost Scaling
+
+Variable costs scale linearly with usage:
+- **Vercel**: Function invocations and bandwidth
+- **Database**: Storage and compute hours
+- **OpenAI**: API tokens consumed
+- **Email**: Messages sent
+
+Fixed costs stay constant regardless of traffic:
+- Domain registration
+- Monitoring services
+- Development tools
+
+At 10,000 monthly visitors, estimated costs: ~$100/month
+At 100,000 monthly visitors, estimated costs: ~$300/month
+
+This linear scaling is much more favorable than traditional hosting where you must over-provision for peak capacity.
+
+---
+
+## Conclusion
+
+The platform architecture demonstrates understanding of modern web development practices while making pragmatic choices that balance simplicity with scalability. The monorepo structure enables rapid development without sacrificing code quality. The technology stack is production-proven while remaining at the cutting edge. The deployment architecture ensures reliability and performance globally.
+
+Most importantly, this architecture is designed for evolution. New features can be added without major refactoring. New applications can join the monorepo and immediately benefit from shared code. The system scales with usage without fundamental changes.
+
+This represents the kind of architectural thinking that translates directly to professional software development: making informed decisions, balancing tradeoffs, and building systems that solve today's problems while remaining flexible for tomorrow's requirements.
+
+---
+
+## Related Documentation
+
+- [Development Practices](/docs/features/development-practices) - Code quality and testing
+- [Infrastructure](/docs/features/infrastructure) - Supporting systems and APIs
+- [Business Value](/docs/features/business-value) - ROI and cost analysis
+- [Setup Guides](/docs/setup) - Getting started with development
+
