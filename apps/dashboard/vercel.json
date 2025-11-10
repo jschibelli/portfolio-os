@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm exec prisma generate --schema=apps/dashboard/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/dashboard...",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
