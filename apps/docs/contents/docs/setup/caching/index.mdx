@@ -42,7 +42,11 @@ For the best performance, especially in CI/CD, set up remote caching:
 
 4. **Add secrets to GitHub repository:**
    - Go to your repository settings
+<<<<<<< HEAD
    - Navigate to "Secrets and variables" → "Actions"
+=======
+   - Navigate to "Secrets and variables" â†’ "Actions"
+>>>>>>> 991357ede8eaa8dc8532ba5ac4cb5c55e3f63ff4
    - Add these secrets:
      - `TURBO_TOKEN`: Your Turbo token (from `npx turbo login`)
      - `TURBO_TEAM`: Your Vercel team ID (optional)
@@ -121,7 +125,11 @@ Tasks run in parallel when possible:
 - Tests can run in parallel with visual regression
 - Build tasks respect dependencies but cache results
 
+<<<<<<< HEAD
 ## 🚨 Troubleshooting
+=======
+## ðŸš¨ Troubleshooting
+>>>>>>> 991357ede8eaa8dc8532ba5ac4cb5c55e3f63ff4
 
 ### Cache Not Working
 
@@ -129,6 +137,7 @@ Tasks run in parallel when possible:
    ```bash
    pnpm turbo build --filter=@mindware-blog/site --dry-run
    ```
+<<<<<<< HEAD
 
 2. **Clear and rebuild:**
    ```bash
@@ -202,3 +211,77 @@ If you encounter issues with caching:
 
 For additional help, refer to the project documentation or create an issue in the repository.
 
+=======
+
+2. **Clear and rebuild:**
+   ```bash
+   pnpm turbo build --filter=@mindware-blog/site --force
+   ```
+
+3. **Verify file patterns in turbo.json**
+
+### Remote Cache Issues
+
+1. **Check authentication:**
+   ```bash
+   npx turbo login
+   ```
+
+2. **Verify team access:**
+   ```bash
+   npx turbo link
+   ```
+
+3. **Check environment variables in CI**
+
+### Performance Issues
+
+1. **Monitor cache hit rates** in CI logs
+2. **Check cache sizes** in build statistics
+3. **Verify input patterns** are not too broad
+
+## ðŸ“ˆ Expected Performance Gains
+
+With proper caching setup:
+
+- **First build**: Normal speed
+- **Subsequent builds**: 50-80% faster
+- **CI/CD builds**: 60-90% faster with remote cache
+- **Dependency installation**: 70-90% faster with pnpm cache
+
+## ðŸ”„ Cache Maintenance
+
+### Regular Maintenance
+
+1. **Clear old caches** periodically:
+   ```bash
+   pnpm turbo build --filter=@mindware-blog/site --force
+   ```
+
+2. **Update cache keys** when configuration changes significantly
+
+3. **Monitor cache sizes** to avoid storage issues
+
+### CI/CD Cache Management
+
+- Caches are automatically managed by GitHub Actions
+- Old caches are automatically cleaned up
+- Cache keys include file hashes for automatic invalidation
+
+## ðŸ“š Additional Resources
+
+- [Turbo Documentation](https://turbo.build/repo/docs)
+- [Vercel Remote Cache](https://vercel.com/docs/concepts/monorepos/remote-caching)
+- [GitHub Actions Caching](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
+
+## ðŸ†˜ Support
+
+If you encounter issues with caching:
+
+1. Check the build logs for cache statistics
+2. Verify your turbo.json configuration
+3. Ensure all required secrets are set in GitHub
+4. Check the troubleshooting section above
+
+For additional help, refer to the project documentation or create an issue in the repository.
+>>>>>>> 991357ede8eaa8dc8532ba5ac4cb5c55e3f63ff4
