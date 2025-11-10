@@ -6,7 +6,7 @@ description: Guide for creating and managing releases
 
 Complete guide for creating and managing releases in Portfolio OS.
 
-## ðŸ“‹ Table of Contents
+## 📋 Table of Contents
 
 - [Release Process Overview](#release-process-overview)
 - [Semantic Versioning](#semantic-versioning)
@@ -17,7 +17,7 @@ Complete guide for creating and managing releases in Portfolio OS.
 
 ---
 
-## ðŸŽ¯ Release Process Overview
+## 🎯 Release Process Overview
 
 Portfolio OS uses an automated release system that:
 
@@ -40,7 +40,7 @@ graph LR
 
 ---
 
-## ðŸ”¢ Semantic Versioning
+## 📢 Semantic Versioning
 
 We follow [Semantic Versioning 2.0.0](https://semver.org/):
 
@@ -75,7 +75,7 @@ Examples:
 
 ---
 
-## ðŸš€ Creating a Release
+## 🚀 Creating a Release
 
 ### Method 1: Using the Release Script (Recommended)
 
@@ -130,7 +130,7 @@ git push origin v1.0.0
 ```powershell
 # Create release directly
 gh release create v1.0.0 \
-  --title "ðŸš€ Portfolio OS v1.0.0" \
+  --title "🚀 Portfolio OS v1.0.0" \
   --notes-file CHANGELOG.md \
   --latest
 ```
@@ -144,7 +144,7 @@ gh release create v1.0.0 \
 - ðŸ§ª Test new features before stable release
 - ðŸ“Š Gather feedback from early users
 - ðŸ› Catch bugs before production
-- ðŸŽ¯ Staged rollout for risk mitigation
+- 🎯 Staged rollout for risk mitigation
 
 ### Pre-Release Workflow
 
@@ -200,10 +200,10 @@ on:
 
 ### Release Title Format
 
-- ðŸš€ Stable: `Portfolio OS v1.0.0`
+- 🚀 Stable: `Portfolio OS v1.0.0`
 - ðŸ”¬ Alpha: `Portfolio OS v1.0.0-alpha.1 (Alpha)`
 - ðŸ§ª Beta: `Portfolio OS v1.0.0-beta.1 (Beta)`
-- ðŸŽ¯ RC: `Portfolio OS v1.0.0-rc.1 (Release Candidate)`
+- 🎯 RC: `Portfolio OS v1.0.0-rc.1 (Release Candidate)`
 
 ### Monitoring Releases
 
@@ -395,7 +395,7 @@ gh run view <run-id> --log
 
 ---
 
-## ðŸŽ¯ Quick Reference
+## 🎯 Quick Reference
 
 ### Release Script Options
 

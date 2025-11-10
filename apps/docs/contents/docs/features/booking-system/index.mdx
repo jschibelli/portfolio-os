@@ -1,157 +1,129 @@
-﻿---
-title: Booking & Scheduling System
+---
+title: Booking & Scheduling
 description: Complete booking and scheduling system with Google Calendar integration
 ---
 
-**Release Date:** 2025-10-21  
-**Version:** 1.1.0  
-**Status:** âœ… Completed
+<Note type="success" title="Production Feature">
+**Release Date:** October 21, 2025 | **Version:** 1.1.0 | **Status:** ✅ Completed
+</Note>
 
----
+## Overview
 
-## ðŸŽ¯ Overview
+The Booking & Scheduling System lets visitors book meetings directly from the portfolio site. It integrates with Google Calendar for real-time availability, automatically creates calendar events with Google Meet links, and sends confirmation emails.
 
-The Booking & Scheduling System allows visitors to book meetings with John Schibelli directly from the portfolio site. The system integrates with Google Calendar for real-time availability checking, automatically creates calendar events with Google Meet links, and sends confirmation emails to both parties.
+## Key Features
 
----
+### Calendar Integration
+- Direct Google Calendar API integration
+- Real-time availability checking
+- Multi-calendar support
+- Privacy-preserving free/busy lookup
 
-## âœ¨ Key Features
+### Video Conferencing
+- Automatic Google Meet link generation
+- Links included in calendar invites
+- Instant availability after booking
+- Zero additional configuration needed
 
-### 1. Calendar Integration
-- **Google Calendar API**: Direct integration for availability
-- **Real-time Sync**: Immediate availability updates
-- **Multi-calendar Support**: Check across multiple calendars
-- **Free/Busy Lookup**: Privacy-preserving availability check
+### Timezone Handling
+- Automatic timezone detection
+- Manual timezone selection
+- DST transition handling
+- Support for all IANA timezones
+- Accurate conversion between zones
 
-### 2. Video Meeting Integration
-- **Google Meet**: Automatic video link generation
-- **Instant Links**: Meet link available immediately after booking
-- **Calendar Invites**: Links included in calendar events
-- **No Additional Setup**: Works out of the box
+### Conflict Prevention
+- Real-time availability verification
+- Race condition protection
+- Multiple validation layers
+- Clear user feedback
 
-### 3. Timezone Support
-- **Auto-Detection**: Automatically detect user's timezone
-- **Manual Selection**: Users can choose their timezone
-- **Accurate Conversion**: All times converted correctly
-- **DST Handling**: Daylight saving time transitions handled
-- **IANA Timezones**: Support for all standard timezones
+### Email Notifications
+- Automatic booking confirmations
+- Calendar invite (.ics) attachments
+- Complete meeting details
+- Timezone information included
 
-### 4. Conflict Prevention
-- **Real-time Checks**: Availability verified before booking
-- **Race Condition Protection**: Final check right before creating event
-- **Multiple Layers**: Several validation steps prevent conflicts
-- **Clear Feedback**: Users informed if slot becomes unavailable
+### User Experience
+- Simple 4-step booking process
+- Visual calendar interface
+- Only available slots shown
+- Real-time validation
 
-### 5. Email Notifications
-- **Automatic Confirmations**: Both parties receive confirmation
-- **Calendar Invites**: .ics file attached to emails
-- **Meeting Details**: Time, date, duration, and Meet link included
-- **Timezone Information**: Clear timezone details in emails
+## Architecture
 
-### 6. User Experience
-- **4-Step Process**: Simple, intuitive booking flow
-- **Visual Calendar**: Easy-to-use calendar picker
-- **Available Slots**: Only show available times
-- **Instant Feedback**: Real-time validation and confirmation
-
----
-
-## ðŸ—ï¸ Architecture
-
-### Component Structure
+### Components
 
 ```
 components/features/booking/
-â”œâ”€â”€ BookingModal.tsx         # Main booking modal
-â”œâ”€â”€ CalendarView.tsx         # Calendar date picker
-â”œâ”€â”€ TimeSlotPicker.tsx       # Time slot selection
-â”œâ”€â”€ ContactForm.tsx          # User information form
-â”œâ”€â”€ ConfirmationStep.tsx     # Booking confirmation
-â””â”€â”€ SuccessModal.tsx         # Success message
+├── BookingModal.tsx         # Main booking interface
+├── CalendarView.tsx         # Date picker
+├── TimeSlotPicker.tsx       # Time selection
+├── ContactForm.tsx          # User information
+├── ConfirmationStep.tsx     # Review and confirm
+└── SuccessModal.tsx         # Completion message
 ```
 
-### API Routes
+### API Endpoints
 
 ```
-app/api/schedule/
-â”œâ”€â”€ available/route.ts       # Get available slots
-â”œâ”€â”€ book/route.ts           # Book a meeting
-â”œâ”€â”€ check-conflict/route.ts  # Check for conflicts
-â””â”€â”€ cancel/route.ts         # Cancel booking (future)
+/api/schedule/available      # GET: Available time slots
+/api/schedule/book          # POST: Create booking
+/api/schedule/check-conflict # POST: Verify availability
 ```
 
-### Integration Files
+### Integration Layer
 
 ```
 lib/google/
-â”œâ”€â”€ calendar.ts              # Google Calendar API
-â”œâ”€â”€ meet.ts                 # Google Meet integration
-â””â”€â”€ auth.ts                 # Service account auth
+├── calendar.ts              # Calendar API client
+├── meet.ts                 # Meet integration
+└── auth.ts                 # Service account auth
 ```
 
----
+## Booking Flow
 
-## ðŸ“‹ Booking Flow
+<Step>
+  <StepItem title="Enter Contact Information">
+    User provides name, email, and timezone (auto-detected but adjustable).
+  </StepItem>
 
-### Step-by-Step Process
+  <StepItem title="Select Date & Time">
+    - Choose date from calendar
+    - Pick from available time slots
+    - Select duration (30 or 60 minutes)
+  </StepItem>
 
-```
-1. User clicks "Book a Meeting"
-   â†“
-2. Enter Contact Information
-   - Name
-   - Email
-   - Timezone (auto-detected)
-   â†“
-3. Select Date & Time
-   - Choose date from calendar
-   - Select available time slot
-   - Pick duration (30 or 60 min)
-   â†“
-4. Review & Confirm
-   - Review all details
-   - Confirm booking
-   â†“
-5. System Processing
-   - Check for conflicts (final check)
-   - Create Google Calendar event
-   - Generate Google Meet link
-   - Send email confirmations
-   â†“
-6. Success!
-   - Show confirmation
-   - Display meeting details
-   - Provide Meet link
-   - Send calendar invite
-```
+  <StepItem title="Review & Confirm">
+    Review all details and confirm the booking.
+  </StepItem>
 
----
+  <StepItem title="Booking Created">
+    - Final conflict check
+    - Google Calendar event created
+    - Google Meet link generated
+    - Email confirmations sent
+  </StepItem>
+</Step>
 
-## ðŸ› ï¸ Technical Implementation
+## Technical Implementation
 
 ### Google Calendar API
 
 **Authentication:**
-- Service account credentials
+- Service account with OAuth 2.0
 - Domain-wide delegation
-- OAuth 2.0
+- Secure credential management
 
-**API Methods Used:**
-- `freebusy.query`: Check availability
-- `events.insert`: Create calendar event
-- `events.update`: Update event details
-- `events.delete`: Cancel event (future)
+**API Methods:**
+- `freebusy.query` - Check availability
+- `events.insert` - Create calendar event
+- `events.update` - Update event details
 
-### Google Meet Integration
+### Timezone Management
 
-**Link Generation:**
-- Automatically created with calendar event
-- `conferenceData.createRequest` parameter
-- Meet link included in event response
+Uses Luxon for reliable timezone handling:
 
-### Timezone Handling
-
-**Library: Luxon**
 ```javascript
 import { DateTime } from 'luxon';
 
@@ -166,15 +138,15 @@ const ownerTime = userTime.setZone(ownerTimezone);
 
 ### Conflict Detection
 
-**Multiple Validation Layers:**
+Multiple validation layers prevent double-booking:
 
-1. **Initial Filter**: Only show available slots
-2. **Pre-booking Check**: Verify slot before confirmation
-3. **Final Check**: Race condition protection
-4. **Overlap Detection**: Check for any time overlap
+1. **Initial Filter** - Only show available slots
+2. **Pre-booking Check** - Verify before confirmation
+3. **Final Check** - Race condition protection
+4. **Overlap Detection** - Interval comparison
 
 ```javascript
-// Check if two time intervals overlap
+// Check for time interval overlaps
 const conflicts = busy.some((busySlot) => {
   const interval = Interval.fromDateTimes(
     DateTime.fromISO(busySlot.start),
@@ -184,189 +156,209 @@ const conflicts = busy.some((busySlot) => {
 });
 ```
 
----
-
-## ðŸ“Š Configuration
+## Configuration
 
 ### Environment Variables
 
+Required configuration:
+
 ```bash
-# Required - Google Calendar API
+# Google Calendar API
 GOOGLE_CALENDAR_ID=your-calendar-id@gmail.com
 GOOGLE_SERVICE_ACCOUNT_EMAIL=service@project.iam.gserviceaccount.com
 GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
 
-# Optional - Booking Settings
+# Booking Settings
 BOOKING_DURATION_OPTIONS=30,60           # Available durations (minutes)
 BOOKING_BUSINESS_HOURS_START=9           # Start hour (0-23)
 BOOKING_BUSINESS_HOURS_END=18            # End hour (0-23)
 BOOKING_BUSINESS_DAYS=1,2,3,4,5          # Days of week (0=Sun, 6=Sat)
 BOOKING_TIMEZONE=America/New_York        # Owner's timezone
-BOOKING_ADVANCE_DAYS=60                  # How far ahead can book
-BOOKING_MIN_NOTICE_HOURS=24              # Minimum notice required
+BOOKING_ADVANCE_DAYS=60                  # How far ahead bookings allowed
+BOOKING_MIN_NOTICE_HOURS=24              # Minimum advance notice
 ```
 
-### Business Hours Configuration
+### Default Settings
 
-**Default Settings:**
-- **Hours**: 9 AM - 6 PM
-- **Days**: Monday - Friday
-- **Timezone**: America/New_York
-- **Durations**: 30 or 60 minutes
-- **Advance Booking**: Up to 60 days
-- **Minimum Notice**: 24 hours
+- **Business Hours:** 9 AM - 6 PM
+- **Business Days:** Monday - Friday
+- **Timezone:** America/New_York
+- **Durations:** 30 or 60 minutes
+- **Advance Booking:** Up to 60 days
+- **Minimum Notice:** 24 hours
 
-**Customization:**
-Edit `lib/booking/config.ts` to change:
-- Business hours
-- Available days
-- Meeting durations
-- Buffer time between meetings
-- Advance booking limit
+Customize these in `lib/booking/config.ts`.
 
----
+## User Interface
 
-## ðŸŽ¨ User Interface
+### Desktop
+- Modal overlay interface
+- Full calendar grid view
+- Available time slots list
+- Responsive layout
 
-### Desktop Experience
-
-- **Modal-Based**: Overlay on current page
-- **Calendar Grid**: Full calendar view
-- **Time Slots**: List of available times
-- **Responsive**: Adapts to screen size
-
-### Mobile Experience
-
-- **Full-Screen**: Takes over full screen
-- **Touch-Optimized**: Large touch targets
-- **Swipe Gestures**: Navigate calendar
-- **Native Feel**: Feels like native app
+### Mobile
+- Full-screen experience
+- Touch-optimized controls
+- Swipe gesture navigation
+- Native app feel
 
 ### Accessibility
+- Full keyboard navigation
+- Screen reader support with ARIA labels
+- Logical focus management
+- WCAG AA compliant contrast
+- 44x44px minimum touch targets
 
-- âœ… **Keyboard Navigation**: Full keyboard support
-- âœ… **Screen Readers**: Proper ARIA labels
-- âœ… **Focus Management**: Logical tab order
-- âœ… **High Contrast**: WCAG AA compliant
-- âœ… **Touch Targets**: Minimum 44x44px
-
----
-
-## ðŸ”’ Privacy & Security
+## Privacy & Security
 
 ### Data Handling
-
-- **Minimal Data**: Only collect what's necessary
-- **No Storage**: Meeting details stored in Google Calendar only
-- **Transient Processing**: Data processed and discarded
-- **GDPR Compliant**: Privacy-first approach
+- Minimal data collection
+- No local storage - all data in Google Calendar
+- Transient processing only
+- GDPR compliant
 
 ### Security Measures
+- Server-side API key storage
+- Rate limiting
+- HTTPS only
+- Input sanitization
+- Built-in CSRF protection
 
-- **API Key Protection**: Keys stored server-side only
-- **Rate Limiting**: Prevent abuse
-- **HTTPS Only**: All communication encrypted
-- **Input Validation**: Sanitize all inputs
-- **CSRF Protection**: Built-in Next.js protection
+### Calendar Permissions
 
-### Google Calendar Permissions
+Required scopes:
+- `calendar.events` - Create/read events
+- `calendar.freebusy` - Check availability
 
-**Scopes Required:**
-- `calendar.events`: Create/read events
-- `calendar.freebusy`: Check availability
+The system only accesses free/busy information and creates events. No other calendar data is accessed.
 
-**What We Access:**
-- Free/busy information only
-- Event creation only
-- No calendar reading beyond availability
+## Testing
 
----
+### Successful Booking
+- ✅ Valid information accepted
+- ✅ Available time slot selection
+- ✅ Booking confirmation
+- ✅ Calendar event created
+- ✅ Email confirmation sent
+- ✅ Google Meet link generated
 
-## ðŸ§ª Testing
+### Conflict Handling
+- ✅ Unavailable slot detection
+- ✅ Clear error messaging
+- ✅ Return to calendar selection
+- ✅ No partial bookings
 
-### Test Scenarios
+### Timezone Testing
+- ✅ Accurate time conversion
+- ✅ DST transition handling
+- ✅ Multiple timezone support
+- ✅ Correct time display
 
-#### Successful Booking
-- âœ… User enters valid information
-- âœ… Selects available time slot
-- âœ… Confirms booking
-- âœ… Event created in Google Calendar
-- âœ… Email confirmation sent
-- âœ… Google Meet link generated
+### Error Scenarios
+- ✅ API failure recovery
+- ✅ Network error handling
+- ✅ Input validation
+- ✅ Rate limit response
 
-#### Conflict Handling
-- âœ… Slot becomes unavailable during booking
-- âœ… Clear error message shown
-- âœ… User returned to calendar selection
-- âœ… No event created
-- âœ… No email sent
+## Analytics
 
-#### Timezone Testing
-- âœ… Correct time conversion
-- âœ… DST transitions handled
-- âœ… Multiple timezones work
-- âœ… Display times correctly
+### Booking Funnel
+- Modal opened
+- Contact info submitted
+- Date selected
+- Time selected
+- Booking confirmed
+- Booking completed
 
-#### Error Scenarios
-- âœ… API failure handling
-- âœ… Network error recovery
-- âœ… Invalid input validation
-- âœ… Rate limiting response
+### Metrics
+- Booking completion rate
+- Average time to book
+- Popular time slots
+- Peak booking days
+- Conversion rate
 
----
+### Error Tracking
+- Conflict errors
+- API failures
+- Validation errors
+- Abandonment points
 
-## ðŸ“ˆ Analytics & Metrics
+## API Reference
 
-### Tracked Events
+### Get Available Slots
 
-1. **Booking Funnel**
-   - Modal opened
-   - Contact info submitted
-   - Date selected
-   - Time selected
-   - Booking confirmed
-   - Booking completed
+```http
+GET /api/schedule/available?date=2025-10-22&duration=30&timezone=America/New_York
+```
 
-2. **Success Metrics**
-   - Booking completion rate
-   - Average time to book
-   - Most popular time slots
-   - Peak booking days
-   - Conversion rate
+**Response:**
+```json
+{
+  "slots": [
+    {
+      "start": "2025-10-22T14:00:00-04:00",
+      "end": "2025-10-22T14:30:00-04:00",
+      "duration": 30
+    }
+  ]
+}
+```
 
-3. **Error Tracking**
-   - Conflict errors
-   - API failures
-   - Validation errors
-   - User abandonment points
+### Book a Meeting
 
----
+```http
+POST /api/schedule/book
+Content-Type: application/json
 
-## ðŸš€ Usage Examples
+{
+  "startISO": "2025-10-22T14:00:00-04:00",
+  "durationMinutes": 30,
+  "timeZone": "America/New_York",
+  "attendeeEmail": "user@example.com",
+  "attendeeName": "John Doe",
+  "summary": "Consultation with John Schibelli",
+  "description": "Project discussion"
+}
+```
 
-### For Visitors
+**Response:**
+```json
+{
+  "ok": true,
+  "eventId": "abc123",
+  "googleMeetLink": "https://meet.google.com/xxx-yyyy-zzz",
+  "googleEventLink": "https://calendar.google.com/event?eid=..."
+}
+```
 
-**Quick Consultation:**
-1. Click "Schedule a Consultation"
-2. Enter your name and email
-3. Select a convenient time
-4. Choose 30-minute duration
-5. Confirm and receive Meet link
+### Check Conflicts
 
-**Project Discussion:**
-1. Choose "Book a Meeting" from project page
-2. Provide contact details
-3. Pick a time that works
-4. Select 60-minute duration
-5. Join via Google Meet link at scheduled time
+```http
+POST /api/schedule/check-conflict
+Content-Type: application/json
 
-### For Developers
+{
+  "startISO": "2025-10-22T14:00:00-04:00",
+  "durationMinutes": 30,
+  "timeZone": "America/New_York"
+}
+```
+
+**Response:**
+```json
+{
+  "hasConflict": false
+}
+```
+
+## Developer Usage
+
+### Basic Integration
 
 ```typescript
-// Import booking components
 import { BookingModal } from '@/components/features/booking';
 
-// Use in your component
 function ProjectPage() {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   
@@ -388,177 +380,80 @@ function ProjectPage() {
 }
 ```
 
----
+## Troubleshooting
 
-## ðŸ”§ API Reference
+### No Available Slots
 
-### Get Available Slots
+Check these settings:
+- Business hours configuration
+- Advance booking limits
+- Calendar API permissions
+- Service account authentication
 
-```http
-GET /api/schedule/available
-```
+### Booking Conflicts
 
-**Query Parameters:**
-- `date`: Date to check (YYYY-MM-DD)
-- `duration`: Meeting duration in minutes
-- `timezone`: User's timezone
+If bookings fail with conflict errors:
+- Slot may have become unavailable
+- Choose a different time
+- Final conflict check is working as designed
 
-**Response:**
-```json
-{
-  "slots": [
-    {
-      "start": "2025-10-22T14:00:00-04:00",
-      "end": "2025-10-22T14:30:00-04:00",
-      "duration": 30
-    }
-  ]
-}
-```
+### Missing Google Meet Links
 
-### Book a Meeting
+Verify:
+- Calendar API permissions include conference creation
+- Service account has proper scopes
+- Conference creation is enabled in Google Calendar settings
 
-```http
-POST /api/schedule/book
-```
+### Timezone Issues
 
-**Request Body:**
-```json
-{
-  "startISO": "2025-10-22T14:00:00-04:00",
-  "durationMinutes": 30,
-  "timeZone": "America/New_York",
-  "attendeeEmail": "user@example.com",
-  "attendeeName": "John Doe",
-  "summary": "Consultation with John Schibelli",
-  "description": "Project discussion",
-  "sendUpdates": "all"
-}
-```
+Ensure:
+- User timezone is detected correctly
+- Owner timezone is properly configured
+- Using valid IANA timezone names (e.g., `America/New_York`)
 
-**Response:**
-```json
-{
-  "ok": true,
-  "eventId": "abc123",
-  "googleMeetLink": "https://meet.google.com/xxx-yyyy-zzz",
-  "googleEventLink": "https://calendar.google.com/event?eid=..."
-}
-```
+## Future Enhancements
 
-### Check Conflicts
+### Booking Management
+- Cancel bookings
+- Reschedule meetings
+- View upcoming meetings
 
-```http
-POST /api/schedule/check-conflict
-```
+### Advanced Features
+- Multiple meeting types
+- Buffer time between meetings
+- Recurring meeting support
+- Team calendar integration
 
-**Request Body:**
-```json
-{
-  "startISO": "2025-10-22T14:00:00-04:00",
-  "durationMinutes": 30,
-  "timeZone": "America/New_York"
-}
-```
+### User Experience
+- Calendar sync (iCal export)
+- Reminder notifications
+- Pre-meeting reminders
+- Follow-up scheduling
 
-**Response:**
-```json
-{
-  "hasConflict": false
-}
-```
+### Integrations
+- Zoom integration
+- Microsoft Teams support
+- Payment processing for paid consultations
 
 ---
 
-## ðŸ› Troubleshooting
+## Technical Stack
 
-### Common Issues
+- **Google Calendar API** - Calendar integration
+- **Google Meet** - Video conferencing
+- **Luxon** - Timezone handling
+- **Next.js 15** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
 
-#### No Available Slots Shown
-- **Check**: Business hours configuration
-- **Check**: Advance booking settings
-- **Check**: Calendar permissions
+## Statistics
 
-#### Booking Fails with Conflict Error
-- **Reason**: Slot became unavailable
-- **Solution**: Choose a different time
-- **Prevention**: Final conflict check in place
-
-#### Google Meet Link Not Generated
-- **Check**: Calendar API permissions
-- **Check**: Conference creation enabled
-- **Solution**: Re-authenticate service account
-
-#### Timezone Issues
-- **Check**: User timezone detected correctly
-- **Check**: Owner timezone configured
-- **Solution**: Use IANA timezone names
+- **Components:** 6
+- **API Routes:** 3
+- **Integration Points:** 2 (Calendar + Meet)
+- **Lines of Code:** ~1,800
+- **Test Coverage:** 80%
 
 ---
 
-## ðŸš€ Future Enhancements
-
-Planned improvements:
-
-1. **Booking Management**
-   - Cancel bookings
-   - Reschedule meetings
-   - View upcoming meetings
-
-2. **Advanced Features**
-   - Multiple calendar support
-   - Buffer time between meetings
-   - Different meeting types
-   - Recurring meetings
-   - Team calendar integration
-
-3. **User Experience**
-   - Calendar sync (iCal export)
-   - Reminder notifications
-   - Pre-meeting notifications
-   - Follow-up scheduling
-
-4. **Integrations**
-   - Zoom integration option
-   - Microsoft Teams support
-   - Calendly alternative
-   - Payment integration (for paid consultations)
-
----
-
-## ðŸ“ Related Documentation
-
-- [Google Calendar API Setup](../setup/google-calendar-setup.md)
-- [API Reference](../api/booking-api.md)
-- [Timezone Handling](../developer/timezone-guide.md)
-- [Troubleshooting](../troubleshooting/booking-issues.md)
-
----
-
-## ðŸ™ Acknowledgments
-
-Built with:
-- **Google Calendar API**: Calendar integration
-- **Google Meet**: Video conferencing
-- **Luxon**: Timezone handling
-- **Next.js**: React framework
-- **React**: UI library
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling
-
----
-
-## ðŸ“Š Release Statistics
-
-- **Components Created**: 6
-- **API Routes**: 3
-- **Integration Points**: 2 (Calendar + Meet)
-- **Lines of Code**: ~1,800
-- **Test Coverage**: 80%
-- **Development Time**: 2 weeks
-
----
-
-*Documentation last updated: 2025-10-21*
-*Version: 1.1.0*
-
+*Last updated: October 21, 2025 • Version 1.1.0*

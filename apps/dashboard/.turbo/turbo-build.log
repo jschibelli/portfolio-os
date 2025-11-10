@@ -6,60 +6,108 @@
    - Environments: .env.local, .env
 
    Creating an optimized production build ...
- ⚠ Compiled with warnings in 113s
+ ✓ Compiled successfully in 117s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-08T16:54:38.449Z', service: 'google-calendar' }
+   Generating static pages (0/65) ...
+   Generating static pages (16/65) 
+   Generating static pages (32/65) 
+   Generating static pages (48/65) 
+ ✓ Generating static pages (65/65)
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-08T16:54:49.163Z', service: 'google-calendar' }
+   Finalizing page optimization ...
+   Collecting build traces ...
 
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'validateArticleId' is not exported from '@/lib/validation' (imported as 'validateArticleId').
+Route (app)                                    Size  First Load JS
+┌ ○ /                                         264 B         102 kB
+├ ○ /_not-found                               999 B         103 kB
+├ ○ /admin                                   5.3 kB         230 kB
+├ ○ /admin/activity                         5.71 kB         121 kB
+├ ○ /admin/analytics                        12.3 kB         229 kB
+├ ○ /admin/articles                         4.62 kB         124 kB
+├ ƒ /admin/articles/[id]/edit                257 kB         543 kB
+├ ○ /admin/articles/new                      3.2 kB         160 kB
+├ ○ /admin/articles/scheduled               1.25 kB         103 kB
+├ ○ /admin/articles/test-tiptap                3 kB         270 kB
+├ ○ /admin/case-studies                     3.32 kB         117 kB
+├ ○ /admin/case-studies/new                 5.64 kB         119 kB
+├ ○ /admin/comments                         4.89 kB         120 kB
+├ ○ /admin/control-center                   4.12 kB         119 kB
+├ ○ /admin/control-center/analytics           264 B         102 kB
+├ ○ /admin/control-center/calendar            264 B         102 kB
+├ ○ /admin/control-center/composer          8.64 kB         123 kB
+├ ○ /admin/control-center/devops              264 B         102 kB
+├ ○ /admin/control-center/email               12 kB         134 kB
+├ ○ /admin/control-center/finance             264 B         102 kB
+├ ○ /admin/control-center/notes               264 B         102 kB
+├ ○ /admin/control-center/social              264 B         102 kB
+├ ○ /admin/media                            4.55 kB         120 kB
+├ ○ /admin/media/upload                     5.15 kB         107 kB
+├ ○ /admin/newsletter                       5.47 kB         108 kB
+├ ○ /admin/settings                         4.72 kB         116 kB
+├ ○ /admin/settings/appearance              6.37 kB         108 kB
+├ ○ /admin/settings/database                5.67 kB         108 kB
+├ ○ /admin/settings/email                   5.17 kB         107 kB
+├ ○ /admin/settings/integrations            5.87 kB         108 kB
+├ ○ /admin/settings/roles                   4.23 kB         106 kB
+├ ○ /admin/settings/seo                        5 kB         107 kB
+├ ○ /admin/settings/users                   4.94 kB         107 kB
+├ ○ /admin/tags                             4.26 kB         120 kB
+├ ƒ /api/admin/activity                       264 B         102 kB
+├ ƒ /api/admin/analytics                      264 B         102 kB
+├ ƒ /api/admin/articles                       264 B         102 kB
+├ ƒ /api/admin/articles/[id]                  264 B         102 kB
+├ ƒ /api/admin/articles/import-hashnode       264 B         102 kB
+├ ƒ /api/admin/articles/scheduled             264 B         102 kB
+├ ƒ /api/admin/case-studies                   264 B         102 kB
+├ ƒ /api/admin/case-studies/[id]              264 B         102 kB
+├ ƒ /api/admin/comments                       264 B         102 kB
+├ ƒ /api/admin/comments/[id]                  264 B         102 kB
+├ ƒ /api/admin/media                          264 B         102 kB
+├ ƒ /api/admin/media/[id]                     264 B         102 kB
+├ ƒ /api/admin/newsletter                     264 B         102 kB
+├ ƒ /api/admin/newsletter/campaigns/[id]      264 B         102 kB
+├ ƒ /api/admin/newsletter/subscribers/[id]    264 B         102 kB
+├ ƒ /api/admin/roles                          264 B         102 kB
+├ ƒ /api/admin/settings/appearance            264 B         102 kB
+├ ƒ /api/admin/settings/database              264 B         102 kB
+├ ƒ /api/admin/settings/email                 264 B         102 kB
+├ ƒ /api/admin/settings/integrations          264 B         102 kB
+├ ƒ /api/admin/settings/seo                   264 B         102 kB
+├ ƒ /api/admin/stats                          264 B         102 kB
+├ ƒ /api/admin/tags                           264 B         102 kB
+├ ƒ /api/admin/tags/[id]                      264 B         102 kB
+├ ƒ /api/admin/users                          264 B         102 kB
+├ ƒ /api/admin/users/[id]                     264 B         102 kB
+├ ƒ /api/analytics/overview                   264 B         102 kB
+├ ƒ /api/articles/publish                     264 B         102 kB
+├ ƒ /api/articles/publishing-options          264 B         102 kB
+├ ƒ /api/articles/save-draft                  264 B         102 kB
+├ ƒ /api/auth/[...nextauth]                   264 B         102 kB
+├ ƒ /api/embed/oembed                         264 B         102 kB
+├ ƒ /api/hashnode/delete                      264 B         102 kB
+├ ƒ /api/hashnode/publish                     264 B         102 kB
+├ ƒ /api/hashnode/unpublish                   264 B         102 kB
+├ ƒ /api/hashnode/webhook                     264 B         102 kB
+├ ƒ /api/health                               264 B         102 kB
+├ ƒ /api/media/upload                         264 B         102 kB
+├ ƒ /api/public/posts                         264 B         102 kB
+├ ƒ /api/public/posts/[slug]                  264 B         102 kB
+├ ƒ /api/public/publication                   264 B         102 kB
+├ ƒ /api/publishing/publish                   264 B         102 kB
+├ ƒ /api/publishing/status/[id]               264 B         102 kB
+├ ƒ /api/schedule/book                        264 B         102 kB
+├ ƒ /api/series                               264 B         102 kB
+├ ƒ /api/webhooks/stripe                      264 B         102 kB
+└ ○ /login                                  1.91 kB         113 kB
++ First Load JS shared by all                102 kB
+  ├ chunks/9863-914e0dc62e60f827.js         45.7 kB
+  ├ chunks/f3c972f3-0e0de4aa1fcd26e9.js     54.2 kB
+  └ other shared chunks (total)             2.06 kB
 
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
 
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'sanitizeInput' is not exported from '@/lib/validation' (imported as 'sanitizeInput').
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
 
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'validateArticleId' is not exported from '@/lib/validation' (imported as 'validateArticleId').
-
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'sanitizeInput' is not exported from '@/lib/validation' (imported as 'sanitizeInput').
-
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'sanitizeInput' is not exported from '@/lib/validation' (imported as 'sanitizeInput').
-
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'sanitizeInput' is not exported from '@/lib/validation' (imported as 'sanitizeInput').
-
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/admin/articles/[id]/edit/page.tsx
-Attempted import error: 'sanitizeInput' is not exported from '@/lib/validation' (imported as 'sanitizeInput').
-
-Import trace for requested module:
-./app/admin/articles/[id]/edit/page.tsx
-
-./app/api/media/upload/route.ts
-Attempted import error: 'authOptions' is not exported from '../../auth/[...nextauth]/route' (imported as 'authOptions').
-
-Import trace for requested module:
-./app/api/media/upload/route.ts
-
-uncaughtException [Error: EPERM: operation not permitted, open 'C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os\apps\dashboard\.next\trace'] {
-  errno: -4048,
-  code: 'EPERM',
-  syscall: 'open',
-  path: 'C:\\Users\\jschi\\OneDrive\\Desktop\\2025_portfolio\\portfolio-os\\apps\\dashboard\\.next\\trace'
-}
- ELIFECYCLE  Command failed with exit code 1.

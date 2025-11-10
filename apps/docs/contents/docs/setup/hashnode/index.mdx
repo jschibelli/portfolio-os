@@ -2,7 +2,6 @@
 title: Hashnode Blog Integration
 description: Integrate Hashnode for blogging
 ---
-# Hashnode Blog Integration Guide
 
 ## Overview
 
@@ -91,7 +90,7 @@ export const revalidate = 60;
 
 **Benefits:**
 - ðŸ“° Fresh content without rebuilding
-- ðŸš€ Fast performance maintained
+- 🚀 Fast performance maintained
 - âš™ï¸ Automatic updates
 
 ### 3. Dynamic Rendering for New Posts
@@ -103,7 +102,7 @@ export const dynamicParams = true;
 ```
 
 **Benefits:**
-- âœ… No 404s for new posts
+- ✅ No 404s for new posts
 - ðŸ”„ Seamless content updates
 - ðŸ“± Works with Hashnode webhooks
 
@@ -128,7 +127,7 @@ The integration supports both Hashnode and a Dashboard API:
 1. **User visits `/blog/my-post-slug`**
 
 2. **Next.js checks if page is pre-rendered**
-   - âœ… Yes â†’ Serve cached HTML instantly
+   - ✅ Yes â†’ Serve cached HTML instantly
    - âŒ No â†’ Dynamic render (if `dynamicParams = true`)
 
 3. **Content API fetches post**
@@ -137,7 +136,7 @@ The integration supports both Hashnode and a Dashboard API:
    ```
 
 4. **Fast-fail Dashboard check (2s timeout)**
-   - âœ… Dashboard available â†’ Use Dashboard API
+   - ✅ Dashboard available â†’ Use Dashboard API
    - âŒ Dashboard unavailable â†’ Use Hashnode API
 
 5. **Hashnode GraphQL query**
@@ -280,11 +279,11 @@ npx tsx scripts/test-hashnode-connection.ts
 
 **Expected Output:**
 ```
-âœ… Publication found!
+✅ Publication found!
    Title: John Schibelli
    Total Posts: 20
 
-âœ… Found 10 posts!
+✅ Found 10 posts!
    1. My First Post
       Slug: my-first-post
       URL: https://johnschibelli.dev/blog/my-first-post

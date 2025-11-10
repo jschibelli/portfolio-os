@@ -21,10 +21,6 @@ export const Documents: Paths[] = [
         title: "First Steps Tutorial",
         href: "/first-steps",
       },
-      {
-        title: "User Guide",
-        href: "/user-guide",
-      },
     ],
   },
   {
@@ -46,22 +42,10 @@ export const Documents: Paths[] = [
       {
         title: "AI Chatbot",
         href: "/chatbot",
-        items: [
-          {
-            title: "Business Case & ROI",
-            href: "/business-case",
-          },
-        ],
       },
       {
         title: "Booking & Scheduling",
         href: "/booking-system",
-        items: [
-          {
-            title: "Business Case & ROI",
-            href: "/business-case",
-          },
-        ],
       },
       {
         title: "Infrastructure & APIs",
@@ -72,8 +56,8 @@ export const Documents: Paths[] = [
         href: "/development-practices",
       },
       {
-        title: "Business Value & Economics",
-        href: "/business-value",
+        title: "Testing & Regression",
+        href: "/testing",
       },
     ],
   },
@@ -135,7 +119,7 @@ export const Documents: Paths[] = [
   },
   {
     title: "Worktree Management",
-    href: "/worktree",
+    href: "/setup",
     items: [
       {
         title: "Basic Worktree Setup",
@@ -253,7 +237,7 @@ export const Documents: Paths[] = [
   },
   {
     title: "Automation System",
-    href: "/automation",
+    href: "/scripts-reference/automation",
     items: [
       {
         title: "Quick Start Guide",

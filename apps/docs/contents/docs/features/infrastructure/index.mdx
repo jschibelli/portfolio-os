@@ -3,6 +3,10 @@ title: Infrastructure & Supporting Systems
 description: Content management, APIs, database architecture, and operational systems powering the platform
 ---
 
+<Note type="success" title="Production Infrastructure">
+**Status:** ✅ Active | **Coverage:** Full-Stack | **Monitoring:** Real-time
+</Note>
+
 ## Overview
 
 Beyond the headline features (chatbot and booking system), Portfolio OS includes comprehensive supporting infrastructure that makes it a complete platform rather than just a collection of features. This infrastructure demonstrates understanding of what it takes to build and operate a production system: content management, API design, data persistence, monitoring, and operational tooling.
@@ -17,70 +21,61 @@ This document covers the supporting systems that make the platform functional, m
 
 The dashboard is a separate Next.js application within the monorepo, providing admin-only functionality for managing content. It shares authentication, database access, and UI components with the public site while maintaining independent deployment.
 
-**Key Capabilities**:
+### Key Capabilities
 
-**Article Editor** - Rich markdown editor with live preview
-- Split-pane interface: markdown input on left, rendered preview on right
-- Real-time preview updates as you type
-- MDX support for embedding React components in content
-- Syntax highlighting for code blocks
-- Auto-save drafts every 30 seconds
-- Full-screen mode for distraction-free writing
+<CardGrid>
+  <Card
+    title="Article Editor"
+    description="Rich markdown editor with live preview, MDX support, and syntax highlighting. Split-pane interface with real-time preview, auto-save drafts every 30 seconds, full-screen mode for distraction-free writing, and syntax highlighting for code blocks."
+    icon="edit"
+  />
 
-**Image Management** - Upload, optimize, and organize media
-- Drag-and-drop upload interface
-- Automatic image optimization (resize, compress, format conversion)
-- WebP generation with PNG/JPG fallbacks
-- Responsive image generation (multiple sizes)
-- Image library with search and filtering
-- Direct insertion into articles
+  <Card
+    title="Image Management"
+    description="Upload, optimize, and organize media with automatic processing. Drag-and-drop upload interface, automatic optimization and format conversion, WebP generation with fallbacks, and responsive image generation."
+    icon="image"
+  />
 
-**Publishing Workflow** - Draft, review, and publish process
-- Save as draft (not visible publicly)
-- Preview exactly as it will appear
-- Schedule publication for specific date/time
-- Edit published articles (preserves original publication date)
-- Unpublish without deletion (temporarily hide)
-- Version history for rollback capability
+  <Card
+    title="Publishing Workflow"
+    description="Complete draft, review, and publish process with scheduling. Save as draft or publish immediately, schedule publication for specific date/time, preview before publishing, and version history for rollback."
+    icon="calendar"
+  />
 
-**SEO Tools** - Optimize content for search engines
-- Meta description editing
-- Open Graph image generation (auto-generated from title)
-- Twitter Card metadata
-- Schema.org structured data generation
-- Canonical URL management
-- Sitemap automatic updates
+  <Card
+    title="SEO Tools"
+    description="Optimize content for search engines with automated metadata. Meta description editing, Open Graph image generation, Schema.org structured data, and automatic sitemap updates."
+    icon="search"
+  />
 
-**Analytics Dashboard** - Track content performance
-- Page views per article
-- Reading time analytics
-- Popular pages report
-- Traffic sources
-- Search queries leading to content
-- Engagement metrics (scroll depth, time on page)
+  <Card
+    title="Analytics Dashboard"
+    description="Track content performance and engagement metrics. Page views per article, reading time analytics, popular pages report, and traffic sources and engagement data."
+    icon="bar-chart"
+  />
+</CardGrid>
 
 ### Why Custom CMS vs WordPress/Strapi?
 
-**WordPress Drawbacks**:
-- PHP rather than modern JavaScript
-- Plugin dependencies and compatibility issues
-- Security vulnerabilities requiring constant updates
-- Performance overhead
-- Overkill for single-author blog
+<CardGrid>
+  <Card
+    title="WordPress Drawbacks"
+    description="PHP rather than modern JavaScript, plugin dependencies and compatibility issues, security vulnerabilities requiring constant updates, performance overhead, and overkill for single-author blog."
+    icon="x-circle"
+  />
 
-**Strapi/Contentful Drawbacks**:
-- External service dependency
-- Monthly costs ($29-99+)
-- API-only (must build all UI)
-- Vendor lock-in for content storage
+  <Card
+    title="Strapi/Contentful Drawbacks"
+    description="External service dependency, monthly costs ($29-99+), API-only (must build all UI), and vendor lock-in for content storage."
+    icon="alert-triangle"
+  />
 
-**Custom Dashboard Advantages**:
-- Complete control over features and UI
-- Zero monthly costs
-- Same technology stack as rest of platform
-- Type-safe content models
-- Direct database access for complex queries
-- Demonstrates full-stack capability
+  <Card
+    title="Custom Dashboard Advantages"
+    description="Complete control over features and UI, zero monthly costs, same technology stack as rest of platform, type-safe content models, direct database access for complex queries, and demonstrates full-stack capability."
+    icon="check-circle"
+  />
+</CardGrid>
 
 ---
 
@@ -88,58 +83,73 @@ The dashboard is a separate Next.js application within the monorepo, providing a
 
 ### Article Rendering
 
-**MDX Processing** - Markdown with React components
-- Standard markdown (headings, lists, links, images, code blocks)
-- React components embedded in content (interactive demos, charts, forms)
-- Syntax highlighting via Prism.js with theme support
-- Automatic heading ID generation for anchor links
-- Auto-generated table of contents from headings
-- Reading time calculation from word count
+<CardGrid>
+  <Card
+    title="MDX Processing"
+    description="Markdown with React components. Standard markdown support (headings, lists, links, images), React components embedded in content, syntax highlighting via Prism.js, auto-generated table of contents, and reading time calculation."
+    icon="file-text"
+  />
 
-**Performance Optimization**:
-- Server-side rendering for instant content display
-- Incremental static regeneration (ISR) for published articles
-- Image lazy loading and responsive sizing
-- Code splitting for per-page JavaScript
-- CDN caching at edge for static content
+  <Card
+    title="Performance Optimization"
+    description="Fast content delivery and rendering. Server-side rendering for instant display, incremental static regeneration (ISR), image lazy loading and responsive sizing, code splitting per page, and CDN caching at edge."
+    icon="zap"
+  />
 
-**Reader Experience**:
-- Clean, readable typography optimized for long-form content
-- Responsive design works perfectly on mobile
-- Dark mode support
-- Estimated reading time displayed
-- Progress indicator shows scroll position
-- "Back to top" button on long articles
-- Share buttons for social distribution
+  <Card
+    title="Reader Experience"
+    description="Optimized for long-form content. Clean, readable typography, responsive design for all devices, dark mode support, progress indicator and scroll position tracking, and share buttons for social distribution."
+    icon="book-open"
+  />
+</CardGrid>
 
 ### Content Organization
 
-**Tagging System** - Organize content by topic
-- Articles associated with multiple tags
-- Tag pages show all articles with that tag
-- Most popular tags displayed in sidebar
-- Tag cloud with frequency weighting
-- Helps visitors find related content
+<CardGrid>
+  <Card
+    title="Tagging System"
+    description="Organize content by topic. Articles associated with multiple tags, tag pages show all related articles, most popular tags in sidebar, and tag cloud with frequency weighting."
+    icon="tag"
+  />
 
-**Categories** - Broader content grouping
-- Tutorials, Case Studies, Technical Deep-Dives, etc.
-- Category pages list all articles in category
-- Helps visitors understand content types available
+  <Card
+    title="Categories"
+    description="Broader content grouping. Tutorials, Case Studies, Technical Deep-Dives. Category pages list all articles and help visitors navigate content types."
+    icon="folder"
+  />
 
-**Search Functionality** - Find content quickly
-- Full-text search across all published articles
-- Search titles, excerpts, and full content
-- Results ranked by relevance
-- Highlights matching text snippets
-- Fast client-side search using Flexsearch
+  <Card
+    title="Search Functionality"
+    description="Find content quickly. Full-text search across all articles, results ranked by relevance, highlights matching text snippets, and fast client-side search using Flexsearch."
+    icon="search"
+  />
+</CardGrid>
 
 ---
 
 ## API Architecture
 
+The platform exposes REST and GraphQL APIs following standard conventions and best practices.
+
 ### REST API Design
 
-The platform exposes REST APIs following standard conventions and best practices.
+<CardGrid>
+  <Card
+    title="Consistent Structure"
+    description="All responses follow same shape with data, error, and meta objects"
+    icon="layout"
+  />
+  <Card
+    title="Appropriate Status Codes"
+    description="200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Server Error"
+    icon="check-circle"
+  />
+  <Card
+    title="Helpful Error Messages"
+    description="Clear description of what went wrong and how to fix it"
+    icon="alert-circle"
+  />
+</CardGrid>
 
 **Endpoint Structure**:
 ```
@@ -198,16 +208,32 @@ The platform exposes REST APIs following standard conventions and best practices
 }
 ```
 
-**Design Principles**:
-- **Consistent Structure**: All responses follow same shape
-- **Appropriate Status Codes**: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Server Error
-- **Helpful Error Messages**: Clear description of what went wrong and how to fix
-- **Metadata**: Timestamps and pagination info in meta object
-- **Versioning**: URL-based versioning when breaking changes needed (/api/v2/...)
-
 ### GraphQL Endpoint
 
 GraphQL provides flexible querying for complex data requirements.
+
+<CardGrid>
+  <Card
+    title="Single Request"
+    description="Fetch complex data requirements without multiple API calls"
+    icon="zap"
+  />
+  <Card
+    title="Client-Specified Fields"
+    description="Request exactly what you need, preventing over-fetching"
+    icon="settings"
+  />
+  <Card
+    title="Strong Typing"
+    description="GraphQL schema provides built-in type safety and documentation"
+    icon="shield"
+  />
+  <Card
+    title="Easy Evolution"
+    description="Add fields without breaking changes, deprecate gradually"
+    icon="trending-up"
+  />
+</CardGrid>
 
 **Example Queries**:
 
@@ -249,13 +275,6 @@ query GetRecentArticles($limit: Int!, $offset: Int!) {
 }
 ```
 
-**Benefits Over REST**:
-- Single request for complex data requirements (no multiple API calls)
-- Client specifies exactly what fields it needs (no over-fetching)
-- Strong typing with GraphQL schema
-- Built-in documentation through introspection
-- Easier to evolve (add fields without breaking changes)
-
 **Implementation**:
 - Apollo Server for GraphQL endpoint
 - Resolvers map to Prisma database queries
@@ -264,44 +283,25 @@ query GetRecentArticles($limit: Int!, $offset: Int!) {
 
 ### API Security & Rate Limiting
 
-**Authentication**:
-- Public endpoints (read articles, chatbot) - no auth required
-- Protected endpoints (create/edit content) - JWT token required
-- API key support for programmatic access
-- Session validation on every request
+<CardGrid>
+  <Card
+    title="Authentication"
+    description="JWT tokens for protected endpoints, API keys for programmatic access. Public endpoints (read articles, chatbot) require no auth, protected endpoints (create/edit) require JWT token, and session validation on every request."
+    icon="key"
+  />
 
-**Rate Limiting**:
-```typescript
-// Anonymous users
-- 100 requests per 15 minutes
-- 1000 requests per day
+  <Card
+    title="Rate Limiting"
+    description="Token bucket algorithm with Redis tracking. Anonymous: 100 req/15min and 1000 req/day. Authenticated: 1000 req/15min and 10k req/day. Per-endpoint limits for chatbot, booking, and search."
+    icon="shield"
+  />
 
-// Authenticated users  
-- 1000 requests per 15 minutes
-- 10000 requests per day
-
-// Per-endpoint limits
-- Chatbot: 10 messages per session, 50 per day per IP
-- Booking: 3 bookings per day per IP
-- Search: 50 queries per minute
-```
-
-**Implementation**:
-- Token bucket algorithm for smooth rate limiting
-- Redis for distributed rate limit tracking
-- Clear rate limit headers in responses:
-  - `X-RateLimit-Limit`: Total allowed
-  - `X-RateLimit-Remaining`: Remaining in window
-  - `X-RateLimit-Reset`: When limit resets
-
-**Security Headers**:
-```typescript
-Content-Security-Policy: default-src 'self'
-X-Frame-Options: DENY
-X-Content-Type-Options: nosniff
-Strict-Transport-Security: max-age=31536000
-Referrer-Policy: strict-origin-when-cross-origin
-```
+  <Card
+    title="Security Headers"
+    description="Comprehensive security headers for all responses. Content-Security-Policy, X-Frame-Options: DENY, Strict-Transport-Security, and X-Content-Type-Options: nosniff."
+    icon="lock"
+  />
+</CardGrid>
 
 ---
 
@@ -309,13 +309,35 @@ Referrer-Policy: strict-origin-when-cross-origin
 
 ### Schema Design Philosophy
 
-The database schema balances several concerns:
+The database schema balances several concerns to ensure reliability, performance, and maintainability.
 
-**Normalization**: Eliminate data duplication while maintaining query performance  
-**Type Safety**: Prisma generates TypeScript types ensuring compile-time correctness  
-**Query Performance**: Strategic indexes on frequently-queried columns  
-**Audit Trail**: Created/updated timestamps on all tables  
-**Soft Deletes**: Mark records as deleted rather than physical deletion  
+<CardGrid>
+  <Card
+    title="Normalization"
+    description="Eliminate data duplication while maintaining query performance"
+    icon="database"
+  />
+  <Card
+    title="Type Safety"
+    description="Prisma generates TypeScript types ensuring compile-time correctness"
+    icon="shield-check"
+  />
+  <Card
+    title="Query Performance"
+    description="Strategic indexes on frequently-queried columns"
+    icon="zap"
+  />
+  <Card
+    title="Audit Trail"
+    description="Created/updated timestamps on all tables for tracking"
+    icon="clock"
+  />
+  <Card
+    title="Soft Deletes"
+    description="Mark records as deleted rather than physical deletion"
+    icon="archive"
+  />
+</CardGrid>
 
 ### Core Tables
 
@@ -415,19 +437,44 @@ pnpm prisma migrate deploy
 pnpm prisma generate
 ```
 
-**Benefits**:
-- Version-controlled schema changes
-- Automatic rollback on failure
-- Type generation ensures code stays in sync
-- Safe production deployments
+<CardGrid>
+  <Card
+    title="Version Control"
+    description="All schema changes tracked in version control"
+    icon="git-branch"
+  />
+  <Card
+    title="Automatic Rollback"
+    description="Failed migrations roll back automatically"
+    icon="rotate-ccw"
+  />
+  <Card
+    title="Type Generation"
+    description="TypeScript types stay in sync with schema"
+    icon="code"
+  />
+  <Card
+    title="Safe Deployments"
+    description="Tested migrations before production"
+    icon="shield-check"
+  />
+</CardGrid>
 
 ### Database Performance
 
-**Connection Pooling**:
-- Prisma manages connection pool automatically
-- Reuses connections instead of creating new ones
-- Configurable pool size based on load
-- Prevents connection exhaustion
+<CardGrid>
+  <Card
+    title="Connection Pooling"
+    description="Prisma manages connection pool automatically. Reuses connections instead of creating new ones, configurable pool size based on load, and prevents connection exhaustion."
+    icon="database"
+  />
+
+  <Card
+    title="Strategic Indexes"
+    description="Fast lookups for common queries. articles(slug) for fast article lookup by URL, articles(published, publishedAt) for published articles, bookings(email, date) for fast booking lookups, and chatAnalytics(sessionId) for session analytics."
+    icon="zap"
+  />
+</CardGrid>
 
 **Query Optimization**:
 ```typescript
@@ -448,124 +495,61 @@ const articles = await prisma.article.findMany({
 // Single query fetches everything
 ```
 
-**Indexes for Common Queries**:
-- `articles(slug)` - Fast article lookup by URL
-- `articles(published, publishedAt)` - Fast published article queries
-- `bookings(email, date)` - Fast booking lookups
-- `chatAnalytics(sessionId)` - Fast session analytics
-
 ---
 
 ## External Service Integrations
 
-### OpenAI API
+<CardGrid>
+  <Card
+    title="OpenAI API"
+    description="Powers the AI chatbot with GPT-4 Turbo. Streaming chat responses via SSE, context window management, cost tracking and limits, retry with exponential backoff, and circuit breaker for failures."
+    icon="message-circle"
+  />
 
-**Purpose**: Powers the AI chatbot
+  <Card
+    title="Google Calendar API"
+    description="Real-time availability checking and event creation. Check free/busy information, create calendar events for bookings, generate Google Meet links automatically, and service account with OAuth 2.0."
+    icon="calendar"
+  />
 
-**Integration Points**:
-- `/api/chatbot/stream` - Streaming chat responses
-- GPT-4 Turbo model for intelligence
-- Server-Sent Events for streaming
-- Context window management
-- Cost tracking and limits
-
-**Error Handling**:
-- Retry with exponential backoff
-- Circuit breaker for sustained failures
-- Graceful degradation (show error, offer email)
-- Cost limit checks before requests
-
-### Google Calendar API
-
-**Purpose**: Powers booking system availability and calendar events
-
-**Integration Points**:
-- Check free/busy information for availability
-- Create calendar events for bookings
-- Generate Google Meet links automatically
-- Update/cancel events when bookings change
-
-**Authentication**:
-- Service account with domain-wide delegation
-- OAuth 2.0 with JWT tokens
-- Secure credential storage in environment variables
-- Automatic token refresh
-
-### Google Meet API
-
-**Purpose**: Automatic video conferencing links
-
-**Integration**:
-- Integrated with Calendar API
-- Automatic link generation when creating events
-- Included in calendar invites
-- No separate authentication needed
-
-### Email Service (SendGrid/Resend)
-
-**Purpose**: Transactional emails
-
-**Use Cases**:
-- Booking confirmations with .ics attachments
-- Newsletter subscriptions (future)
-- Password reset emails
-- Admin notifications
-
-**Features**:
-- HTML email templates
-- Delivery tracking
-- Bounce handling
-- Unsubscribe management
+  <Card
+    title="Email Service"
+    description="Transactional emails via SendGrid/Resend. Booking confirmations with .ics attachments, HTML email templates, delivery tracking, and bounce handling."
+    icon="mail"
+  />
+</CardGrid>
 
 ---
 
 ## Monitoring & Observability
 
-### Error Tracking (Sentry)
+<CardGrid>
+  <Card
+    title="Error Tracking (Sentry)"
+    description="Comprehensive error monitoring with full context. Frontend errors with component stack traces, backend API errors with request context, performance transaction tracing, user session replays (privacy-safe), and immediate alerts for new errors."
+    icon="alert-circle"
+  />
 
-**Captures**:
-- Frontend errors with component stack traces
-- Backend API errors with request context
-- Performance transaction tracing
-- User session replays (privacy-safe)
+  <Card
+    title="Performance Monitoring"
+    description="Track Core Web Vitals and API response times. Core Web Vitals (LCP, FID, CLS, TTFB), page load times and API response times, segmentation by device, geography, and route, and build and deployment metrics."
+    icon="activity"
+  />
 
-**Benefits**:
-- Alerted immediately when new errors occur
-- Full context for debugging (breadcrumbs, user actions)
-- Error grouping reveals patterns
-- Performance bottleneck identification
+  <Card
+    title="Custom Analytics"
+    description="Business-specific metrics and insights. Chatbot: conversations, satisfaction, topics. Booking: conversion rate, popular times. Content: views, engagement, popular articles. PostHog for privacy-focused event tracking."
+    icon="bar-chart"
+  />
 
-### Performance Monitoring (Vercel Analytics)
+  <Card
+    title="Logging Infrastructure"
+    description="Structured logging with aggregation. Structured logs with context, multiple log levels (DEBUG, INFO, WARN, ERROR), Vercel Logs with external retention, and searchable, filterable, alerting capabilities."
+    icon="file-text"
+  />
+</CardGrid>
 
-**Tracks**:
-- Core Web Vitals (LCP, FID, CLS, TTFB)
-- Page load times
-- API response times
-- Build and deployment metrics
-
-**Segmentation**:
-- By device type (desktop/mobile/tablet)
-- By geography (user location)
-- By page/route
-- Over time (trends)
-
-### Custom Analytics
-
-**Business Metrics**:
-- Chatbot: conversations, satisfaction, topics
-- Booking: conversion rate, popular times, no-show rate
-- Content: views, engagement, popular articles
-- Forms: submission rate, abandonment points
-
-**Implementation**:
-- PostHog for event tracking
-- Custom events for business-specific metrics
-- Privacy-focused (no PII tracking)
-- Dashboard for visualization
-
-### Logging Infrastructure
-
-**Structured Logging**:
+**Structured Logging Example**:
 ```typescript
 logger.info('Booking created', {
   bookingId: 'abc123',
@@ -576,82 +560,63 @@ logger.info('Booking created', {
 });
 ```
 
-**Log Levels**:
-- `DEBUG`: Detailed diagnostic info (dev only)
-- `INFO`: General informational messages
-- `WARN`: Warning messages (recovered errors)
-- `ERROR`: Error messages (requires attention)
-
-**Log Aggregation**:
-- Vercel Logs for platform logs
-- External service (Datadog/LogRocket) for long-term retention
-- Searchable and filterable
-- Alerting on error patterns
-
 ---
 
 ## Operational Tools
 
 ### Deployment Pipeline
 
-**GitHub Actions Workflow**:
-```yaml
-1. Lint code (ESLint)
-2. Type check (TypeScript)
-3. Run unit tests (Jest)
-4. Run integration tests (Playwright)
-5. Build applications (Turborepo)
-6. Deploy to Vercel
-7. Run smoke tests
-8. Notify on failure
-```
+<CardGrid>
+  <Card
+    title="GitHub Actions Workflow"
+    description="Automated CI/CD pipeline for quality assurance. Lint code (ESLint), type check (TypeScript), run unit tests (Jest), run integration tests (Playwright), build applications (Turborepo), deploy to Vercel, run smoke tests, and notify on failure."
+    icon="git-branch"
+  />
 
-**Vercel Deployment**:
-- Automatic on push to main
-- Preview deployments for pull requests
-- Rollback capability (redeploy previous version)
-- Environment variable management
-- Build caching for speed
+  <Card
+    title="Vercel Deployment"
+    description="Automatic deployments with preview environments. Automatic on push to main, preview deployments for pull requests, rollback capability (redeploy previous version), environment variable management, and build caching for speed."
+    icon="cloud"
+  />
+</CardGrid>
 
 ### Database Management
 
-**Migration Scripts**:
-```bash
-# Apply pending migrations
-pnpm db:migrate
+<CardGrid>
+  <Card
+    title="Migration Scripts"
+    description="Safe schema changes and data management. pnpm db:migrate to apply pending migrations, pnpm db:seed to seed database with sample data, and pnpm db:reset to reset database (dev only)."
+    icon="database"
+  />
 
-# Seed database with sample data
-pnpm db:seed
-
-# Reset database (dev only)
-pnpm db:reset
-```
-
-**Backup Strategy**:
-- Automated daily backups
-- Point-in-time recovery (30 days)
-- Test restoration monthly
-- Encrypted backup storage
+  <Card
+    title="Backup Strategy"
+    description="Comprehensive backup and recovery. Automated daily backups, point-in-time recovery (30 days), test restoration monthly, and encrypted backup storage."
+    icon="save"
+  />
+</CardGrid>
 
 ### Automation Scripts
 
-**PR Management** (`scripts/project-management/`):
-- Create PRs with templates
-- Auto-label based on file changes
-- Request reviews from relevant team members
-- Track PR status and merge readiness
+<CardGrid>
+  <Card
+    title="PR Management"
+    description="Automated pull request workflows. Create PRs with templates, auto-label based on file changes, request reviews from relevant team members, and track PR status and merge readiness."
+    icon="git-pull-request"
+  />
 
-**Housekeeping** (`scripts/housekeeping/`):
-- Clean temporary files
-- Archive old logs
-- Update dependencies
-- Generate documentation
+  <Card
+    title="Housekeeping"
+    description="Maintenance and cleanup automation. Clean temporary files, archive old logs, update dependencies, and generate documentation."
+    icon="settings"
+  />
 
-**Utilities** (`scripts/utilities/`):
-- Database migration helpers
-- Content import/export
-- Analytics report generation
-- Health checks
+  <Card
+    title="Utilities"
+    description="Helper scripts for common tasks. Database migration helpers, content import/export, analytics report generation, and health checks."
+    icon="tool"
+  />
+</CardGrid>
 
 ---
 
@@ -659,21 +624,50 @@ pnpm db:reset
 
 The supporting infrastructure demonstrates understanding that production systems require more than just headline features. Content management, API design, database architecture, monitoring, and operational tooling are essential for maintainability, reliability, and scalability.
 
-This infrastructure shows:
-- **Systems Thinking**: Understanding how components fit together
-- **Production Operations**: Monitoring, logging, error handling
-- **Developer Experience**: Tools that make development efficient
-- **Maintainability**: Clean architecture that evolves gracefully
+<CardGrid>
+  <Card
+    title="Systems Thinking"
+    description="Understanding how components fit together to create a cohesive platform"
+    icon="layers"
+  />
+  <Card
+    title="Production Operations"
+    description="Monitoring, logging, and error handling for reliable service"
+    icon="activity"
+  />
+  <Card
+    title="Developer Experience"
+    description="Tools and automation that make development efficient"
+    icon="code"
+  />
+  <Card
+    title="Maintainability"
+    description="Clean architecture that evolves gracefully over time"
+    icon="trending-up"
+  />
+</CardGrid>
 
+<Note type="note" title="Key Takeaway">
 These supporting systems may not be glamorous, but they're what separates a demo project from a production platform. They demonstrate the breadth of knowledge required for professional software development.
+</Note>
 
 ---
 
 ## Related Documentation
 
-- [Platform Architecture](/docs/features/platform-architecture) - Technical foundation
-- [Development Practices](/docs/features/development-practices) - Code quality and testing
-- [API Reference](/docs/api-reference) - Complete API documentation
-- [Setup Guides](/docs/setup) - Deployment and configuration
+<CardGrid>
+  <Card
+    title="Platform Architecture"
+    description="Technical foundation and architectural decisions"
+    href="/docs/features/platform-architecture"
+    icon="layout"
+  />
+  <Card
+    title="Development Practices"
+    description="Code quality, testing, and best practices"
+    href="/docs/features/development-practices"
+    icon="code"
+  />
+</CardGrid>
 
 

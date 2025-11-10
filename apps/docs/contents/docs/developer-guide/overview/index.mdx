@@ -2,13 +2,12 @@
 title: Developer Guide
 description: Complete developer guide for Portfolio OS
 ---
-# Portfolio OS Developer Guide
 
 ## Overview
 
 This guide provides comprehensive information for developers working on the Portfolio OS project. It covers architecture, development workflows, coding standards, and best practices.
 
-## ðŸ“‹ **Table of Contents**
+## 📋 **Table of Contents**
 
 1. [Getting Started](#getting-started)
 2. [Project Architecture](#project-architecture)
@@ -19,7 +18,7 @@ This guide provides comprehensive information for developers working on the Port
 7. [Contributing](#contributing)
 8. [Troubleshooting](#troubleshooting)
 
-## ðŸš€ **Getting Started**
+## 🚀 **Getting Started**
 
 ### **Prerequisites**
 
@@ -74,18 +73,18 @@ pnpm lint
 
 ```
 portfolio-os/
-â”œâ”€â”€ apps/
-â”‚   â”œâ”€â”€ site/           # Public portfolio site
-â”‚   â””â”€â”€ dashboard/      # Admin dashboard
-â”œâ”€â”€ packages/
-â”‚   â”œâ”€â”€ ui/             # Shared UI components
-â”‚   â”œâ”€â”€ lib/            # Shared libraries
-â”‚   â”œâ”€â”€ utils/          # Utility functions
-â”‚   â”œâ”€â”€ db/             # Database schema
-â”‚   â””â”€â”€ hashnode/       # Hashnode integration
-â”œâ”€â”€ scripts/            # Automation scripts
-â”œâ”€â”€ docs/              # Documentation
-â””â”€â”€ prompts/           # AI prompts
+├── apps/
+â”‚   ├── site/           # Public portfolio site
+â”‚   └── dashboard/      # Admin dashboard
+├── packages/
+â”‚   ├── ui/             # Shared UI components
+â”‚   ├── lib/            # Shared libraries
+â”‚   ├── utils/          # Utility functions
+â”‚   ├── db/             # Database schema
+â”‚   └── hashnode/       # Hashnode integration
+├── scripts/            # Automation scripts
+├── docs/              # Documentation
+└── prompts/           # AI prompts
 ```
 
 ### **Technology Stack**
@@ -229,10 +228,10 @@ export const Button: React.FC<ButtonProps> = ({ variant, onClick, children }) =>
 
 ```
 __tests__/
-â”œâ”€â”€ components/        # Component tests
-â”œâ”€â”€ utils/            # Utility function tests
-â”œâ”€â”€ api/              # API route tests
-â””â”€â”€ e2e/              # End-to-end tests
+├── components/        # Component tests
+├── utils/            # Utility function tests
+├── api/              # API route tests
+└── e2e/              # End-to-end tests
 ```
 
 ### **Writing Tests**
@@ -257,7 +256,7 @@ describe('Button', () => {
 });
 ```
 
-## ðŸš€ **Deployment Process**
+## 🚀 **Deployment Process**
 
 ### **Staging Deployment**
 
@@ -312,7 +311,7 @@ DATABASE_URL=postgresql://production-db-url
 - Include environment information
 - Use appropriate labels and milestones
 
-## ðŸ”§ **Troubleshooting**
+## 🔧 **Troubleshooting**
 
 ### **Common Issues**
 
@@ -361,4 +360,4 @@ npx tsc --noEmit
 
 ---
 
-**This developer guide ensures consistent, high-quality development practices across the Portfolio OS project!** ðŸš€
+**This developer guide ensures consistent, high-quality development practices across the Portfolio OS project!** 🚀
