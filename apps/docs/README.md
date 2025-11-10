@@ -204,6 +204,42 @@ export const Navigations = [
 
 ---
 
+## Testing & Quality Assurance
+
+Portfolio OS includes comprehensive testing automation:
+
+### Test Frameworks
+- **Jest** - Unit and integration tests
+- **Playwright** - End-to-end and accessibility tests
+- **React Testing Library** - Component testing
+- **@axe-core/playwright** - WCAG 2.1 AA compliance
+
+### Test Coverage
+- ✅ 23 Jest test files (unit/integration)
+- ✅ 29 Playwright specs (E2E/accessibility)
+- ✅ 85%+ code coverage target
+- ✅ Visual regression testing
+- ✅ Performance monitoring
+- ✅ SEO validation
+
+### Quick Test Commands
+
+```bash
+# Run all tests
+pnpm test
+
+# Specific test suites
+pnpm test:accessibility    # WCAG compliance
+pnpm test:functional       # Core user flows
+pnpm test:visual           # Visual regression
+pnpm test:seo              # SEO validation
+pnpm test:coverage         # With coverage report
+```
+
+For complete testing documentation, see: [Testing & Regression Strategy](http://localhost:3001/docs/features/testing)
+
+---
+
 ## Technology Stack
 
 - **Framework**: Next.js 14 (App Router)
@@ -215,6 +251,7 @@ export const Navigations = [
 - **Syntax Highlighting**: Shiki
 - **Diagrams**: Mermaid.js
 - **Search**: Custom fuzzy search
+- **Testing**: Jest, Playwright, React Testing Library
 
 ---
 
