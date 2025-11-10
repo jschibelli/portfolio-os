@@ -96,7 +96,7 @@ const defaultPublication = {
 };
 
 export default async function BlogPage() {
-  // Fetch posts with fallback
+  // Fetch posts during build and runtime with graceful fallback
   let posts: any[] = [];
   let currentPublication = defaultPublication;
   
@@ -108,8 +108,10 @@ export default async function BlogPage() {
     posts = fetchedPosts || [];
     currentPublication = fetchedPublication || defaultPublication;
   } catch (error) {
-    console.error('[Blog Page] Error fetching posts:', error);
+    console.error('[Blog Page] Error fetching posts or publication:', error);
+    // Fall back to empty posts and default publication
     posts = [];
+    currentPublication = defaultPublication;
   }
 
   const featuredPost = posts.length > 0 ? posts[0] : null;

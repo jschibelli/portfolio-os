@@ -1,16 +1,13 @@
-﻿---
-title: Update Blog on Production
-description: How to update blog content in production
----
+# How to Update Blog Content on Production
 
 When you publish a new article on Hashnode, it won't automatically appear on your production site due to build-time caching. Here's how to make it appear.
 
-## ðŸŽ¯ The Problem
+## 🎯 The Problem
 
 Your blog page is built at **deploy time** and cached. When you publish a new Hashnode article:
 - ✅ The article is immediately available via Hashnode API
-- âŒ Your production site shows cached/old content
-- â³ ISR (60-second revalidation) helps, but only after users visit the page
+- ❌ Your production site shows cached/old content
+- ⏳ ISR (60-second revalidation) helps, but only after users visit the page
 
 ## 🚀 Solutions (Choose One)
 
@@ -20,12 +17,12 @@ Your blog page is built at **deploy time** and cached. When you publish a new Ha
 2. Select your Portfolio OS project
 3. Click on the **Deployments** tab
 4. Find the latest production deployment
-5. Click the **â‹¯** (three dots) menu
+5. Click the **⋯** (three dots) menu
 6. Select **"Redeploy"**
 7. Check **"Use existing Build Cache"** (optional, for faster deploy)
 8. Click **"Redeploy"**
 
-â³ **Wait 2-3 minutes** for deployment to complete.
+⏳ **Wait 2-3 minutes** for deployment to complete.
 
 ---
 
@@ -36,14 +33,8 @@ Your blog page is built at **deploy time** and cached. When you publish a new Ha
 # Visit: https://vercel.com/account/tokens
 # Create a new token with "Full Account" access
 
-# 2. Store the token securely (never commit this file)
-echo "VERCEL_API_TOKEN=your_token_here" >> .env.local
-
-# 3. Run the redeploy script (reads from .env.local automatically)
-npx tsx scripts/trigger-vercel-redeploy.ts
-
-# Optional: one-off execution without writing to disk
-# VERCEL_API_TOKEN=your_token_here npx tsx scripts/trigger-vercel-redeploy.ts
+# 2. Run the redeploy script
+VERCEL_API_TOKEN=your_token_here npx tsx scripts/trigger-vercel-redeploy.ts
 ```
 
 ---
@@ -78,7 +69,7 @@ This triggers a fresh deployment automatically.
 
 ---
 
-## ðŸ”§ Permanent Solution: Disable Build-Time Skipping
+## 🔧 Permanent Solution: Disable Build-Time Skipping
 
 Currently, your blog page skips API calls during build to prevent hanging:
 
@@ -101,14 +92,14 @@ const [fetchedPosts, fetchedPublication] = await Promise.all([
 ]);
 ```
 
-âš ï¸ **Tradeoff:** 
+⚠️ **Tradeoff:** 
 - ✅ New articles appear on next deployment
-- âŒ Slower builds (adds ~3-5 seconds)
-- âŒ Build fails if Hashnode is down
+- ❌ Slower builds (adds ~3-5 seconds)
+- ❌ Build fails if Hashnode is down
 
 ---
 
-## ðŸ“Š How ISR Works
+## 📊 How ISR Works
 
 Your blog uses **Incremental Static Regeneration (ISR)** with 60-second revalidation:
 
@@ -144,7 +135,7 @@ When you publish a new article on Hashnode:
 
 ---
 
-## ðŸ› Troubleshooting
+## 🐛 Troubleshooting
 
 ### "I redeployed but still don't see my article"
 
@@ -171,12 +162,12 @@ Consider using build cache:
 
 ---
 
-## ðŸ“ Summary
+## 📝 Summary
 
 **For new Hashnode articles:**
 1. ✅ Use Vercel Dashboard "Redeploy" button (easiest)
 2. ✅ Or use CLI script with Vercel API token
-3. âŒ Don't rely on ISR alone - it won't pick up new articles
+3. ❌ Don't rely on ISR alone - it won't pick up new articles
 
 **For updated content on existing articles:**
 1. ✅ Use revalidation API (`/api/revalidate`)
@@ -185,7 +176,7 @@ Consider using build cache:
 
 ---
 
-## ðŸ”— Related Files
+## 🔗 Related Files
 
 - `apps/site/app/blog/page.tsx` - Blog page component
 - `apps/site/lib/content-api.ts` - Content fetching logic

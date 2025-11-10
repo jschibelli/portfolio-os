@@ -1,0 +1,137 @@
+# Deployment Configuration
+
+## Current Setup (Updated: October 23, 2025)
+
+### ✅ Active Deployments
+
+**Portfolio OS (Main Site)** - The ONLY active deployment
+- **Project:** Main Vercel project (root level)
+- **Configuration:** `vercel.json` (root)
+- **Build Command:** Builds `@mindware-blog/site` only
+- **Cost Impact:** Single build per deployment
+
+### 🚫 Disabled Deployments
+
+The following projects are **DISABLED** to prevent multiple simultaneous builds and reduce costs:
+
+1. **Portfolio OS Dashboard** (`apps/dashboard`)
+   - Status: ⛔ Disabled
+   - Config: `apps/dashboard/vercel.json` (marked as disabled)
+   - Action Required: DELETE this project from Vercel dashboard
+
+2. **Portfolio OS Docs** (`apps/docs`)
+   - Status: ⛔ Disabled
+   - Config: `apps/docs/vercel.json` (marked as disabled)
+   - Action Required: DELETE this project from Vercel dashboard
+
+## Vercel Dashboard Checklist
+
+To ensure you're only deploying the dashboard, verify the following in your Vercel dashboard:
+
+### 1. Check Active Projects
+
+Visit: https://vercel.com/dashboard
+
+**Expected Setup:**
+- ✅ 1 active project: `portfolio-os` or `portfolio-os-site`
+- ❌ Remove/disable: Any projects named `portfolio-os-dashboard`, `portfolio-os-docs`, or similar
+
+### 2. Disable Extra Projects
+
+For each extra project found:
+1. Go to Project Settings → General
+2. Scroll to "Delete Project" or use "Pause Deployments"
+3. Either delete or pause the project
+
+### 3. Verify Build Settings
+
+For your main Portfolio OS project:
+- **Root Directory:** Leave empty (monorepo root)
+- **Build Command:** Uses `vercel.json` configuration
+- **Output Directory:** `apps/site/.next`
+- **Install Command:** `pnpm install --frozen-lockfile`
+
+### 4. Git Integration
+
+Make sure only ONE branch triggers deployments:
+- **Production Branch:** `main` or `master`
+- **Preview Branches:** `develop` (optional)
+- All other branches: Disabled
+
+## Cost Optimization
+
+**Before:** 3 simultaneous builds per push = 3× cost
+**After:** 1 build per push = ✅ Cost savings achieved!
+
+### Estimated Savings
+- Build time reduction: ~60-70% (depends on app sizes)
+- Build minutes saved: ~2× per deployment
+- Cost reduction: ~66% on build costs
+
+## Future Deployments
+
+If you need to re-enable the site or docs deployments:
+
+1. **Option A: Separate Vercel Projects**
+   - Create a new Vercel project for that app
+   - Point it to the specific `apps/site` or `apps/docs` directory
+   - Configure custom domain if needed
+
+2. **Option B: Monorepo Multi-Project**
+   - Use Vercel's monorepo feature
+   - Configure each app as a separate project
+   - This will still cost money for each deployment
+
+## Troubleshooting
+
+### Issue: Still seeing multiple builds
+
+**Solution:**
+1. Check Vercel dashboard for multiple linked projects
+2. Remove the extra projects
+3. Verify only one project is linked to your GitHub repo
+
+### Issue: Site build failing
+
+**Solution:**
+1. Check build logs in Vercel
+2. Verify Prisma generation is working (it's in the build command)
+3. Ensure all environment variables are set in Vercel project settings
+
+### Issue: Need to deploy the dashboard again
+
+**Solution:**
+1. Temporarily update root `vercel.json` to build `@mindware-blog/dashboard`
+2. Deploy manually: `vercel --prod`
+3. Revert `vercel.json` back to site configuration
+
+## Commands
+
+### Deploy Portfolio OS Manually
+```bash
+vercel --prod
+```
+
+### Test Build Locally
+```bash
+pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma
+pnpm turbo run build --filter=@mindware-blog/site...
+```
+
+### Build All Apps (Local Testing Only)
+```bash
+pnpm turbo run build
+```
+
+## Notes
+
+- The site requires the main Prisma schema to be generated before building
+- Environment variables must be configured in Vercel dashboard
+- The build uses Turborepo for efficient caching
+- Only push to `develop` or `main` when ready to deploy
+
+---
+
+**Last Updated:** October 23, 2025  
+**Configuration Version:** v2.0 (Portfolio OS Site Only)
+

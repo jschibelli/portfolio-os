@@ -64,7 +64,7 @@ function getHost(): string {
  */
 async function makeGraphQLRequest(query: string, variables: Record<string, any>): Promise<any> {
   try {
-    // Add 10 second timeout to prevent hanging (increased for build time)
+    // Add 10 second timeout to prevent hanging during slower production builds (previously 3 seconds)
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     
