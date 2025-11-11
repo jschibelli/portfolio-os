@@ -126,4 +126,12 @@ next-env.d.ts
 # Custom AI prompts, agent strategies, and automation workflows that contain
 # proprietary development methodologies and should remain private
 /prompts/
-/scripts/*
+
+# =============================================================================
+# Local automation scripts
+# =============================================================================
+# Root-level automation/testing scripts that should remain local
+/scripts/
+# App-specific scripts used for local tooling under apps/site
+/apps/site/scripts/
+/apps/docs/scripts/
