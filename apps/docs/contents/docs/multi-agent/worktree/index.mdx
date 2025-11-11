@@ -43,36 +43,24 @@ git worktree add worktrees/agent-2 feature/existing
 git worktree list
 ```
 
-### Using Scripts
+### Automated Setup
 
-```powershell
-# Automated setup
-.\scripts\agent-management\setup-agent-development.ps1 `
-  -AgentName "agent-1" `
-  -BaseBranch "develop" `
-  -FeatureName "authentication"
-```
+The system provides automated tooling for worktree creation that handles:
+- Branch creation from the specified base
+- Workspace configuration and isolation
+- Dependency installation
+- Environment setup
 
 ## Worktree Structure
 
 ### Recommended Organization
 
-```
-portfolio-os/
-├── .git/                      # Shared Git database
-├── apps/                      # Main worktree
-├── packages/
-├── worktrees/
-│   ├── agent-1-chris/        # Agent 1 worktree
-│   │   ├── apps/
-│   │   ├── packages/
-│   │   └── .git              # Link to main .git
-│   ├── agent-2-jason/        # Agent 2 worktree
-│   │   ├── apps/
-│   │   ├── packages/
-│   │   └── .git              # Link to main .git
-│   └── agent-3-alex/         # Agent 3 worktree
-```
+The multi-agent system organizes worktrees in a structured hierarchy:
+- A central shared Git database serves all workspaces
+- The main worktree contains the primary codebase
+- Agent worktrees are grouped in a dedicated directory
+- Each agent workspace is a complete, isolated working copy
+- All worktrees maintain references to the shared Git database
 
 ### Naming Conventions
 
@@ -202,94 +190,27 @@ git rebase --abort
 
 ## Advanced Techniques
 
-### Sharing Node Modules
+### Dependency Management
 
-Symlink to save disk space:
-
-```bash
-# In main repo
-pnpm install
-
-# In worktree (careful!)
-cd worktrees/agent-1
-rm -rf node_modules
-ln -s ../../node_modules node_modules
-```
+Each worktree can manage dependencies independently to ensure isolation. While techniques exist to share dependency installations across worktrees to save disk space, independent dependency management is generally recommended to prevent version conflicts and maintain workspace isolation.
 
 <Note type="warning">
-**Warning**: Shared node_modules can cause issues if dependencies differ between branches.
+**Warning**: Sharing dependencies between worktrees can cause issues if branches require different dependency versions.
 </Note>
 
 ### Sparse Worktrees
 
-Only checkout specific directories:
+For specialized work, Git supports sparse checkouts that only include specific directories. This technique reduces disk usage and improves performance when an agent only needs access to a subset of the codebase, such as documentation or a specific application.
 
-```bash
-# Create sparse worktree
-git worktree add --no-checkout worktrees/docs-only develop
-cd worktrees/docs-only
-git sparse-checkout init --cone
-git sparse-checkout set apps/docs
-git checkout
-```
+### Consistent Setup
 
-### Worktree Templates
+The system ensures consistent worktree initialization through:
+- Standardized branch creation process
+- Automated dependency installation
+- Environment configuration templates
+- Identity and permission setup
+- Validation and verification steps
 
-Create template for consistent setup:
-
-```bash
-# setup-worktree-template.sh
-git worktree add -b $BRANCH $PATH develop
-cd $PATH
-pnpm install
-cp ../../.env.example .env.local
-git config --local user.name "$AGENT_NAME"
-git config --local user.email "$AGENT_EMAIL"
-```
-
-## Troubleshooting
-
-### Worktree Locked
-
-```bash
-# Error: worktree is locked
-Solution:
-git worktree unlock worktrees/agent-1
-```
-
-### Cannot Remove Worktree
-
-```bash
-# Error: worktree contains modifications
-Solution:
-cd worktrees/agent-1
-git stash
-cd ../..
-git worktree remove worktrees/agent-1
-```
-
-### Branch Already Exists
-
-```bash
-# Error: branch 'feature/x' already exists
-Solution:
-git worktree add worktrees/agent-1 existing-branch  # Use existing
-# Or delete old branch first
-git branch -D feature/x
-git worktree add -b feature/x worktrees/agent-1 develop
-```
-
-### Performance Issues
-
-```bash
-# Slow operations
-Solution:
-# Prune old worktree references
-git worktree prune
-
-# Clean up
-git gc
-```
 
 ## Best Practices
 
@@ -304,43 +225,21 @@ git gc
 6. **Backup work** - Push branches regularly
 </Note>
 
-## Automation Scripts
+## Automation & Monitoring
 
-Portfolio OS includes worktree management scripts:
+The system provides comprehensive worktree management capabilities:
 
-```powershell
-# Create agent worktree
-.\scripts\agent-management\setup-agent-development.ps1 `
-  -AgentName "agent-1"
+**Automated Operations**
+- Worktree creation and initialization
+- Status monitoring and reporting
+- Synchronization with main branch
+- Cleanup and maintenance
 
-# List all worktrees
-.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
-  -Action list
-
-# Sync worktree with develop
-.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
-  -Action sync `
-  -WorktreePath "worktrees/agent-1"
-
-# Clean up old worktrees
-.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
-  -Action cleanup
-```
-
-## Monitoring Worktrees
-
-Track worktree health:
-
-```powershell
-# Check worktree status
-git worktree list --porcelain
-
-# View worktree state
-Get-Content scripts/configuration/worktree-state.json | ConvertFrom-Json
-
-# Generate worktree report
-.\scripts\monitoring\worktree-health-check.ps1
-```
+**Health Monitoring**
+- Real-time worktree status
+- State validation and tracking
+- Health check reporting
+- Performance metrics
 
 ## Next Steps
 

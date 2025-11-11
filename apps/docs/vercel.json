@@ -1,6 +1,7 @@
 {
-  "buildCommand": "echo \"⚠️ docs project is disabled; enable intentionally before deploying.\" && cd ../.. && npx pnpm@10.14.0 build --filter=@portfolio/docs",
-  "installCommand": "echo \"PNPM pinned to 10.14.0; update deliberately.\" && npx pnpm@10.14.0 install",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ../.. && npx pnpm@10.14.0 build --filter=@portfolio/docs",
+  "installCommand": "npx pnpm@10.14.0 install",
   "framework": "nextjs",
   "outputDirectory": ".next"
 }

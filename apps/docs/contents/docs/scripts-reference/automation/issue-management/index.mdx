@@ -1,0 +1,505 @@
+---
+title: Issue Management
+description: The Issue Management System automates the entire issue lifecycle from creation through resolution, providing intelligent classification, automated configuration, smart routing, and comprehensive tracking. This system transforms manual issue tracking into a streamlined, automated workflow that accelerates development and improves project visibility.
+---
+
+## Overview
+
+Effective issue management is critical for project success, but manual tracking and coordination is time-consuming and error-prone. The Issue Management System automates routine tasks while providing intelligent insights that help teams work more efficiently.
+
+<Note type="success" title="Impact">
+Automated issue management significantly reduces administrative overhead while improving issue resolution time through intelligent routing, automated configuration, and real-time tracking.
+</Note>
+
+## Key Capabilities
+
+<CardGrid>
+  <Card 
+    title="Smart Classification"
+    icon="tag"
+    description="Intelligent issue categorization and tagging"
+  >
+    - Type detection (bug, feature, task)
+    - Priority assessment
+    - Complexity estimation
+    - Domain identification
+  </Card>
+
+  <Card 
+    title="Automated Routing"
+    icon="navigation"
+    description="Intelligent assignment and workflow routing"
+  >
+    - Agent/team selection
+    - Workload balancing
+    - Expertise matching
+    - Priority-based scheduling
+  </Card>
+
+  <Card 
+    title="Lifecycle Automation"
+    icon="repeat"
+    description="End-to-end workflow automation"
+  >
+    - Status transitions
+    - Milestone tracking
+    - Sprint assignment
+    - Completion validation
+  </Card>
+
+  <Card 
+    title="Project Integration"
+    icon="kanban"
+    description="Seamless project board synchronization"
+  >
+    - Field automation
+    - Board updates
+    - Relationship tracking
+    - Progress visualization
+  </Card>
+</CardGrid>
+
+## Intelligent Classification
+
+### Automatic Type Detection
+
+Issues are automatically categorized by type:
+
+- **Bug Reports**: Issues describing unexpected behavior or errors
+- **Feature Requests**: Proposals for new functionality
+- **Tasks**: Work items for improvements or maintenance
+- **Documentation**: Content and documentation updates
+- **Infrastructure**: DevOps and system-related work
+
+### Priority Assessment
+
+Priority is determined based on:
+
+- **Impact Analysis**: Scope and severity of the issue
+- **Urgency Indicators**: Keywords and context suggesting urgency
+- **Business Value**: Alignment with strategic objectives
+- **Dependencies**: Blocking relationships with other work
+- **User Impact**: Number of users affected
+
+### Complexity Estimation
+
+Work complexity is evaluated considering:
+
+- **Scope Analysis**: Amount of code/systems affected
+- **Technical Difficulty**: Required expertise and challenges
+- **Dependency Count**: Number of related components
+- **Uncertainty Level**: Clarity of requirements and approach
+
+<Note type="note" title="Learning System">
+The classification system improves over time by learning from historical patterns, manual corrections, and outcomes, becoming more accurate with each issue processed.
+</Note>
+
+## Automated Routing
+
+### Intelligent Assignment
+
+Issues are routed to the optimal agent or team:
+
+<Step>
+  <StepItem title="Analyze Requirements">
+    Extract key information:
+    - Domain and technology stack
+    - Required skills and expertise
+    - Complexity and effort estimate
+    - Dependencies and context
+  </StepItem>
+
+  <StepItem title="Match to Capabilities">
+    Find best-fit assignee:
+    - Skill alignment
+    - Domain expertise
+    - Past performance
+    - Availability and capacity
+  </StepItem>
+
+  <StepItem title="Consider Constraints">
+    Apply business rules:
+    - Workload limits
+    - Priority handling
+    - Team boundaries
+    - Time zone considerations
+  </StepItem>
+
+  <StepItem title="Make Assignment">
+    Execute assignment:
+    - Update issue metadata
+    - Notify assignee
+    - Create workspace
+    - Track assignment
+  </StepItem>
+</Step>
+
+### Workload Balancing
+
+The system ensures fair work distribution:
+
+- **Capacity Tracking**: Monitoring current workload per agent
+- **Dynamic Rebalancing**: Redistributing when imbalances detected
+- **Priority Respect**: Ensuring high-priority work gets capacity
+- **Burnout Prevention**: Limiting concurrent high-complexity items
+
+### Expertise Matching
+
+Work is matched to appropriate expertise:
+
+- **Skill Database**: Tracking agent skills and specializations
+- **Historical Success**: Learning from past assignment outcomes
+- **Growth Opportunities**: Balancing expertise with learning
+- **Cross-Training**: Distributing work to build team capabilities
+
+## Lifecycle Automation
+
+### Status Management
+
+Issue status is updated automatically:
+
+- **Triage → Backlog**: After initial classification
+- **Backlog → In Progress**: When work begins
+- **In Progress → Review**: When implementation completes
+- **Review → Testing**: After code review approval
+- **Testing → Done**: After validation passes
+
+### Milestone Tracking
+
+Issues are aligned with milestones:
+
+- **Release Planning**: Assigning issues to target releases
+- **Sprint Assignment**: Allocating work to current sprint
+- **Deadline Monitoring**: Tracking progress against deadlines
+- **Capacity Planning**: Balancing sprint capacity and commitments
+
+### Dependency Management
+
+Related work is coordinated:
+
+- **Blocking Detection**: Identifying dependencies between issues
+- **Sequence Planning**: Ordering work appropriately
+- **Notification System**: Alerting when blockers are resolved
+- **Progress Tracking**: Monitoring dependency chains
+
+### Validation & Closure
+
+Completion is verified before closure:
+
+- **Acceptance Criteria**: Checking that requirements are met
+- **Testing Validation**: Ensuring tests pass
+- **Documentation**: Verifying documentation is updated
+- **Review Approval**: Confirming stakeholder acceptance
+
+<Note type="warning" title="Quality Focus">
+Automated validation catches incomplete work before closure, preventing issues from being prematurely marked as done and ensuring consistent quality standards.
+</Note>
+
+## Project Board Integration
+
+### Automated Field Management
+
+Project fields are maintained automatically:
+
+<CardGrid>
+  <Card 
+    title="Status"
+    icon="activity"
+    description="Current workflow state"
+  >
+    Triage, Backlog, In Progress, Review, Testing, Done
+  </Card>
+
+  <Card 
+    title="Priority"
+    icon="alertCircle"
+    description="Urgency and importance"
+  >
+    P0 (Critical), P1 (High), P2 (Medium), P3 (Low)
+  </Card>
+
+  <Card 
+    title="Size"
+    icon="maximize"
+    description="Effort estimation"
+  >
+    XS, S, M, L, XL based on complexity and scope
+  </Card>
+
+  <Card 
+    title="Iteration"
+    icon="calendar"
+    description="Sprint or milestone"
+  >
+    Current, Next, Future, or specific sprint names
+  </Card>
+</CardGrid>
+
+### Board Synchronization
+
+The system keeps project boards current:
+
+- **Real-Time Updates**: Changes reflected immediately
+- **Consistency Enforcement**: Preventing invalid states
+- **Batch Operations**: Efficient bulk updates
+- **History Tracking**: Audit trail of changes
+
+### Relationship Tracking
+
+Connections between items are maintained:
+
+- **Parent/Child**: Epic and story relationships
+- **Blockers**: Dependencies and blocking items
+- **Related Issues**: Conceptually related work
+- **Duplicate Detection**: Identifying duplicate issues
+
+## Estimation & Planning
+
+### Effort Estimation
+
+Work effort is estimated automatically:
+
+- **Historical Analysis**: Learning from similar past issues
+- **Complexity Factors**: Considering technical difficulty
+- **Scope Assessment**: Evaluating change magnitude
+- **Uncertainty Adjustment**: Accounting for unknowns
+
+### Sprint Planning
+
+Issues are allocated to sprints intelligently:
+
+- **Capacity Matching**: Respecting team capacity limits
+- **Priority Ordering**: Scheduling high-priority work first
+- **Dependency Respect**: Ordering dependent work appropriately
+- **Risk Distribution**: Balancing high-risk across sprints
+
+### Velocity Tracking
+
+Team velocity is monitored and used for planning:
+
+- **Historical Velocity**: Average completion rate
+- **Trend Analysis**: Velocity trends over time
+- **Capacity Forecasting**: Predicting future capacity
+- **Burndown Tracking**: Progress toward sprint goals
+
+<Note type="success" title="Planning Accuracy">
+Data-driven sprint planning improves commitment accuracy, reducing overcommitment and ensuring more predictable delivery schedules.
+</Note>
+
+## Monitoring & Analytics
+
+### Real-Time Dashboards
+
+Comprehensive visibility into work status:
+
+- **Work in Progress**: Current active issues by status
+- **Team Workload**: Distribution of work across team
+- **Priority Distribution**: Balance of P0-P3 work
+- **Blocked Items**: Issues waiting on dependencies
+
+### Performance Metrics
+
+Track key performance indicators:
+
+- **Cycle Time**: Time from creation to completion
+- **Lead Time**: Time from backlog to completion
+- **Throughput**: Issues completed per time period
+- **Aging**: Time in each status
+
+### Quality Metrics
+
+Monitor quality indicators:
+
+- **Escape Rate**: Issues requiring rework
+- **Accuracy**: Estimation accuracy
+- **Completion Rate**: Percentage of issues completed
+- **SLA Compliance**: Meeting time-based commitments
+
+### Trend Analysis
+
+Understand patterns over time:
+
+- **Velocity Trends**: Team capacity changes
+- **Type Distribution**: Mix of work types
+- **Complexity Trends**: Changes in work difficulty
+- **Bottlenecks**: Recurring delay patterns
+
+## Notification & Communication
+
+### Event-Based Notifications
+
+Stakeholders are notified of relevant events:
+
+- **Assignment**: When work is assigned
+- **Status Changes**: When issues transition states
+- **Blockers**: When dependencies are identified or resolved
+- **Mentions**: When specifically mentioned in comments
+- **Completion**: When work is done
+
+### Escalation Handling
+
+Issues receive attention when needed:
+
+- **Aging Alerts**: Notifications for stale issues
+- **Priority Escalation**: Alerts for delayed critical work
+- **Blocker Notifications**: Updates on blocking dependencies
+- **Deadline Warnings**: Reminders of approaching deadlines
+
+### Team Communication
+
+Coordination across team members:
+
+- **Assignment Notifications**: New work assignments
+- **Handoff Communication**: When work moves between people
+- **Review Requests**: When input is needed
+- **Completion Updates**: When dependent work completes
+
+## Integration Points
+
+The Issue Management System integrates with:
+
+<CardGrid>
+  <Card 
+    title="GitHub Issues"
+    icon="github"
+    description="Native GitHub issue tracking"
+  />
+
+  <Card 
+    title="Project Boards"
+    icon="kanban"
+    description="GitHub Projects and custom boards"
+  />
+
+  <Card 
+    title="Agent System"
+    icon="users"
+    description="Multi-agent development coordination"
+  />
+
+  <Card 
+    title="CI/CD"
+    icon="gitBranch"
+    description="Automated testing and deployment"
+  />
+</CardGrid>
+
+## Automated Workflows
+
+### On Issue Creation
+
+Initial processing when issues are created:
+
+1. **Content Analysis**: Extract key information and intent
+2. **Classification**: Determine type, priority, and complexity
+3. **Labeling**: Apply appropriate labels automatically
+4. **Routing**: Assign to optimal agent or team
+5. **Project Board**: Add to board with fields populated
+6. **Notifications**: Alert relevant stakeholders
+
+### During Development
+
+Coordination while work is in progress:
+
+- Track progress and status changes
+- Monitor for blockers or delays
+- Update project board fields
+- Coordinate with related issues
+- Send progress notifications
+- Validate quality gates
+
+### At Completion
+
+Verification and cleanup when work finishes:
+
+- Validate acceptance criteria
+- Verify testing completion
+- Check documentation updates
+- Update related issues
+- Close and archive
+- Generate completion metrics
+
+## Best Practices
+
+### Creating Effective Issues
+
+Write issues that enable automation:
+
+- Use clear, descriptive titles
+- Provide sufficient context and details
+- Include acceptance criteria
+- Link to related issues
+- Use consistent templates
+- Tag appropriately
+
+### Leveraging Automation
+
+Get the most from automated systems:
+
+- Trust automated classifications but review
+- Provide feedback to improve learning
+- Monitor aging and blocked issues
+- Use analytics to improve planning
+- Keep issue descriptions updated
+
+### Maintaining Quality
+
+Ensure consistent quality:
+
+- Follow issue templates
+- Update status promptly
+- Document decisions in comments
+- Close completed work promptly
+- Keep related issues linked
+
+## Business Benefits
+
+### Faster Resolution
+
+Accelerate issue resolution:
+
+- Automatic routing eliminates delays
+- Intelligent assignment matches expertise
+- Real-time tracking identifies bottlenecks
+- Automated workflows reduce manual work
+
+### Better Planning
+
+Improve planning accuracy:
+
+- Data-driven estimation
+- Historical velocity analysis
+- Capacity-aware sprint planning
+- Trend visibility for forecasting
+
+### Enhanced Visibility
+
+Clear insight into work status:
+
+- Real-time dashboards
+- Comprehensive metrics
+- Trend analysis
+- Bottleneck identification
+
+### Reduced Overhead
+
+Less manual effort required:
+
+- Automated classification
+- Smart routing
+- Status automation
+- Field management
+
+<Note type="success" title="Team Efficiency">
+Teams using automated issue management report significantly more time spent on actual development work versus administrative tasks, improving job satisfaction and productivity.
+</Note>
+
+## Related Systems
+
+The Issue Management System works with:
+
+- [Core Utilities](/docs/scripts-reference/automation/core-utilities) - Foundation layer
+- [Agent Management](/docs/scripts-reference/automation/agent-management) - Multi-agent orchestration  
+- [PR Management](/docs/scripts-reference/automation/pr-management) - Pull request automation
+- [Quick Start Guide](/docs/scripts-reference/automation/quick-start-guide) - Getting started
+
