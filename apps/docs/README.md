@@ -1,143 +1,340 @@
-# Documents
+# Portfolio OS Documentation
 
-Documents is a modern documentation starter kit built with **Next.js**, **React**, **Tailwind CSS**, and **TypeScript**. Designed for businesses, product teams, and technical writers, it provides a scalable and efficient foundation for building documentation websites, product manuals, and knowledge bases.
+<p align="center">
+  <a href="https://johnschibelli.dev">
+    <img src="public/images/og-image.png" alt="Portfolio OS Documentation" width="100%" />
+  </a>
+</p>
 
-> **Demo**: [https://rubix-documents.vercel.app](https://rubix-documents.vercel.app)
+<h1 align="center">Portfolio OS Documentation</h1>
+<p align="center">Complete developer documentation for Portfolio OS - a modern, production-grade monorepo platform.</p>
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Top Language](https://img.shields.io/github/languages/top/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents)
-
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/rubixvi/rubix-documents)
-[![Last Commit](https://img.shields.io/github/last-commit/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents/commits)
-[![GitHub issues](https://img.shields.io/github/issues/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents/issues)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents/pulls)
-
-[![GitHub stars](https://img.shields.io/github/stars/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents/network)
-[![GitHub repo size](https://img.shields.io/github/repo-size/rubixvi/rubix-documents)](https://github.com/rubixvi/rubix-documents)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Frubixvi%2Frubix-documents&project-name=my-documents&repository-name=my-documents&demo-title=Documents&demo-description=This%20Document%20Starter%20Kit%20is%20developed%20with%20Next.js%2C%20Tailwind%20CSS%20and%20TypeScript.%20It%20serves%20as%20a%20flexible%20and%20scalable%20foundation%20for%20building%20documentation%20websites%20or%20content-driven%20projects.&demo-url=https%3A%2F%2Frubix-documents.vercel.app%2F&demo-image=https%3A%2F%2Fgithub.com%2Frubixvi%2Frubix-documents%2Fblob%2Fmain%2Fpublic%2Fscreens%2Fscreen-1.png)
+<p align="center">
+  <a href="https://johnschibelli.dev"><img alt="Live Site" src="https://img.shields.io/badge/Live-johnschibelli.dev-blueviolet"></a>
+  <a href="https://dashboard.johnschibelli.dev"><img alt="Dashboard" src="https://img.shields.io/badge/Dashboard-dashboard.johnschibelli.dev-blue"></a>
+  <a href="http://localhost:3001"><img alt="Documentation" src="https://img.shields.io/badge/Docs-localhost:3001-orange"></a>
+  <a href="https://github.com/jschibelli/portfolio-os"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-portfolio--os-black"></a>
+</p>
 
 ---
 
 ## Overview
 
-Documents enables businesses to deliver clear, structured, and accessible product documentation — with a focus on performance, usability, and maintainability.
+This documentation site provides comprehensive guides for the **Portfolio OS** platform - a self-documenting, AI-powered development ecosystem built with Next.js, TypeScript, and Turborepo.
 
-Built for technical and content-driven projects, this starter kit supports Markdown (MDX), React components, and a flexible content architecture designed for scale.
+The documentation covers:
+
+- 🚀 **Getting Started** - Installation, setup, and first steps
+- 🎯 **Features** - Platform architecture, AI chatbot, booking system, and more
+- ⚙️ **Setup & Configuration** - Database, deployment, integrations, and worktree management
+- 👨‍💻 **Development** - Developer guide, API reference, coding standards
+- 🤖 **Automation & Scripts** - PowerShell automation, agent management, PR/issue workflows
+- 🏗️ **Advanced Topics** - Multi-agent system, worktree workflows, coordination
+- 📚 **Reference** - Apps, packages, releases, security
+- 🔧 **Troubleshooting** - Common issues, deployment problems, performance tips
 
 ---
 
 ## Features
 
 ### Content Management
-
-- MDX support (Markdown with React components)
-- Reusable custom components
-- Mermaid.js for diagrams and flowcharts
-- Tables and LaTeX math support
+- **MDX Support** - Markdown with React components for rich documentation
+- **Custom Components** - Reusable cards, notes, tabs, code blocks, and more
+- **Mermaid Diagrams** - Visual flowcharts and architecture diagrams
+- **Syntax Highlighting** - Beautiful code blocks with theme support
 
 ### Navigation & Structure
+- **Multi-level Navigation** - Organized sidebar with expandable sections
+- **Auto-generated TOC** - Table of contents for quick page navigation
+- **Content Pagination** - Previous/next page navigation
+- **Breadcrumbs** - Clear page hierarchy and location
+- **Search** - Fast fuzzy search with result highlighting
 
-- Multi-level navigation
-- Auto-generated table of contents
-- Content pagination
-- Code snippet switcher with copy functionality
-
-### Development Experience
-
-- Syntax highlighting with theme support
-- Enhanced code blocks with titles and line highlighting
-- Built-in light/dark mode with auto-detection
-- SEO-ready with dynamic meta tags
-
-### Search & Future Enhancements
-
-- Fuzzy search with term highlighting
-- Planned: AI-powered knowledgebase tools
+### Developer Experience
+- **Dark Mode** - Auto-detection with manual toggle
+- **Responsive Design** - Mobile-first, works on all devices
+- **Fast Performance** - Built on Next.js 14 with optimizations
+- **SEO Ready** - Dynamic meta tags and Open Graph support
 
 ---
 
 ## Quick Start
 
-### Installation
+### Local Development
 
 ```bash
-git clone https://github.com/rubixvi/rubix-documents.git
-cd rubix-documents
-npm install
-npm run dev
+# Navigate to docs directory
+cd apps/docs
+
+# Install dependencies (from monorepo root)
+pnpm install
+
+# Start development server
+pnpm dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to view your project locally.
+Visit [http://localhost:3001](http://localhost:3001) to view the documentation locally.
 
-**For production:**
+### Production Build
 
 ```bash
-npm run build
-npm run start
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
 ```
 
-Deploy to Vercel for automated builds and hosting.
+### From Monorepo Root
+
+```bash
+# Start all apps (site, docs, dashboard)
+pnpm dev
+
+# Build all apps
+pnpm build
+```
 
 ---
 
-## Usage
+## Project Structure
 
-Documents is designed to support:
+```
+apps/docs/
+├── app/                    # Next.js App Router
+│   ├── docs/              # Documentation pages
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Landing page
+├── components/            # React components
+│   ├── markdown/          # MDX components (cards, notes, tabs, etc.)
+│   ├── navigation/        # Navbar, sidebar, breadcrumbs, etc.
+│   └── ui/                # UI primitives (buttons, inputs, etc.)
+├── contents/              # Documentation content (MDX files)
+│   └── docs/              # All documentation pages
+│       ├── getting-started/
+│       ├── features/
+│       ├── setup/
+│       ├── developer-guide/
+│       ├── scripts-reference/
+│       ├── multi-agent/
+│       ├── api-reference/
+│       └── troubleshooting/
+├── lib/                   # Utilities and helpers
+├── public/                # Static assets
+├── settings/              # Configuration files
+│   ├── documents.ts       # Navigation structure
+│   ├── navigation.ts      # Header navigation
+│   └── settings.ts        # Site settings
+└── styles/                # Global styles
+```
 
-- Product documentation
-- Technical manuals
-- Internal guides
-- Business knowledge bases
+---
+
+## Documentation Content
+
+All documentation is written in **MDX** (Markdown + JSX), allowing you to use React components within markdown files.
+
+### Available MDX Components
+
+- **Card & CardGrid** - Feature cards and card layouts
+- **Note** - Info, warning, success, and error callouts
+- **Tabs** - Tabbed content sections
+- **Step & StepItem** - Step-by-step guides
+- **FileTree** - File structure visualization
+- **Mermaid** - Diagrams and flowcharts
+- **Code Blocks** - Syntax-highlighted code with copy button
+
+### Example MDX
+
+```mdx
+---
+title: My Documentation Page
+description: A helpful description for SEO
+---
+
+## Introduction
+
+<Note type="success">
+This is a success note with helpful information!
+</Note>
+
+<CardGrid>
+  <Card title="Feature 1" description="Description here" href="/link" />
+  <Card title="Feature 2" description="Description here" href="/link" />
+</CardGrid>
+
+```typescript
+// Your code here
+const example = "with syntax highlighting";
+```
+```
+
+---
+
+## Configuration
+
+### Site Settings (`settings/settings.ts`)
+
+Configure site metadata, URL, branding, and feature toggles.
+
+```typescript
+export const sitename = "Portfolio OS Documentation"
+export const description = "Comprehensive documentation for Portfolio OS"
+export const url = "http://localhost:3001"
+export const branding = true
+export const rightsidebar = true
+export const tableofcontent = true
+```
+
+### Navigation Structure (`settings/documents.ts`)
+
+Define the sidebar navigation structure and page hierarchy.
+
+### Header Navigation (`settings/navigation.ts`)
+
+Configure top navigation links to external sites.
+
+```typescript
+export const Navigations = [
+  { title: "Docs", href: `/docs${PageRoutes[0].href}` },
+  { title: "Portfolio", href: "https://johnschibelli.dev", external: true },
+  { title: "Dashboard", href: "https://dashboard.johnschibelli.dev", external: true },
+]
+```
+
+---
+
+## Testing & Quality Assurance
+
+Portfolio OS includes comprehensive testing automation:
+
+### Test Frameworks
+- **Jest** - Unit and integration tests
+- **Playwright** - End-to-end and accessibility tests
+- **React Testing Library** - Component testing
+- **@axe-core/playwright** - WCAG 2.1 AA compliance
+
+### Test Coverage
+- ✅ 23 Jest test files (unit/integration)
+- ✅ 29 Playwright specs (E2E/accessibility)
+- ✅ 85%+ code coverage target
+- ✅ Visual regression testing
+- ✅ Performance monitoring
+- ✅ SEO validation
+
+### Quick Test Commands
+
+```bash
+# Run all tests
+pnpm test
+
+# Specific test suites
+pnpm test:accessibility    # WCAG compliance
+pnpm test:functional       # Core user flows
+pnpm test:visual           # Visual regression
+pnpm test:seo              # SEO validation
+pnpm test:coverage         # With coverage report
+```
+
+For complete testing documentation, see: [Testing & Regression Strategy](http://localhost:3001/docs/features/testing)
+
+---
+
+## Technology Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Content**: MDX (Markdown + JSX)
+- **UI Components**: Radix UI primitives
+- **Icons**: Lucide React
+- **Syntax Highlighting**: Shiki
+- **Diagrams**: Mermaid.js
+- **Search**: Custom fuzzy search
+- **Testing**: Jest, Playwright, React Testing Library
+
+---
+
+## Deployment
+
+The documentation site can be deployed to:
+
+- **Vercel** (Recommended)
+- **Netlify**
+- **Self-hosted**
+
+### Vercel Deployment
+
+1. Connect your GitHub repository
+2. Set root directory to `apps/docs`
+3. Build command: `cd ../.. && pnpm build --filter=docs`
+4. Output directory: `.next`
+5. Deploy!
 
 ---
 
 ## Screenshots
 
-![Main Screen](./public/screens/screen-1.png)
-_Main Screen_
+### Light Mode
 
-![Document Screen](./public/screens/screen-2.png)
-_Document Screen_
+![Documentation Home](./public/screens/screen-1.png)
+*Documentation landing page with navigation and feature cards*
 
-![Document Footer](./public/screens/screen-3.png)
-_Document Footer_
+![Documentation Page](./public/screens/screen-2.png)
+*Documentation page with syntax highlighting and navigation*
 
-![Document Search](./public/screens/screen-4.png)
-_Document Search_
+![Documentation Footer](./public/screens/screen-3.png)
+*Page footer with pagination and feedback options*
 
-![Main Dark Screen](./public/screens/screen-5.png)
-_Main Dark Mode Screen_
+![Documentation Search](./public/screens/screen-4.png)
+*Fuzzy search functionality with result highlighting*
 
-![Document Dark Screen](./public/screens/screen-6.png)
-_Document Dark Mode Screen_
+### Dark Mode
+
+![Documentation Home - Dark](./public/screens/screen-5.png)
+*Landing page in dark mode*
+
+![Documentation Page - Dark](./public/screens/screen-6.png)
+*Documentation page in dark mode with code highlighting*
 
 ---
 
 ## Contributing
 
-We welcome contributions to improve this project.
+To add or update documentation:
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a pull request
+1. Navigate to `apps/docs/contents/docs/`
+2. Find the relevant section or create a new one
+3. Edit or create MDX files
+4. Update `settings/documents.ts` if adding new pages
+5. Test locally with `pnpm dev`
+6. Submit a pull request
+
+---
+
+## Live Sites
+
+- **Portfolio Site**: [https://johnschibelli.dev](https://johnschibelli.dev)
+- **Admin Dashboard**: [https://dashboard.johnschibelli.dev](https://dashboard.johnschibelli.dev)
+- **Documentation**: [http://localhost:3001](http://localhost:3001) (local)
+- **GitHub Repository**: [https://github.com/jschibelli/portfolio-os](https://github.com/jschibelli/portfolio-os)
+
+---
+
+## Support
+
+For issues, questions, or contributions:
+
+- Open an issue on [GitHub](https://github.com/jschibelli/portfolio-os/issues)
+- Review the [Troubleshooting Guide](http://localhost:3001/docs/troubleshooting)
+- Check the [Developer Guide](http://localhost:3001/docs/developer-guide)
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+MIT © John Schibelli
 
 ---
 
-## Contact
-
-For support or inquiries:
-
-Vincent Vu — [@rubixvi](https://x.com/rubixvi)
-
-Rubix Studios — [https://rubixstudios.com.au](https://rubixstudios.com.au)
-
-**Project:** [https://github.com/rubixvi/rubix-documents](https://github.com/rubixvi/rubix-documents)
+**Portfolio OS** - A modern, production-grade platform demonstrating full-stack development, AI integration, and automated workflows.

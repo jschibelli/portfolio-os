@@ -112,33 +112,24 @@ Agents sync periodically.
 
 ### Status Updates
 
-Agents should update status regularly:
+The coordination layer maintains real-time status tracking:
 
-```powershell
-# Update status
-.\scripts\agent-management\update-agent-status.ps1 `
-  -AgentName "agent-1" `
-  -Status "in-progress" `
-  -Progress 60 `
-  -Notes "Authentication flow complete, working on UI"
-```
+**Status Information**
+- Current work phase (not started, in progress, review, completed)
+- Progress indicators and completion percentage
+- Active tasks and priorities
+- Notes and context about current work state
 
 ### Dependency Declaration
 
-Declare dependencies upfront:
+Dependencies are explicitly tracked to coordinate work:
 
-```json
-{
-  "agent-1": {
-    "task": "Frontend Auth UI",
-    "dependsOn": ["agent-2:auth-api"]
-  },
-  "agent-2": {
-    "task": "Auth API",
-    "blocks": ["agent-1:auth-ui"]
-  }
-}
-```
+**Dependency Types**
+- **Depends On**: Work that must complete before this task can proceed
+- **Blocks**: Work that is waiting for this task to complete
+- **Related**: Work that shares common interfaces or contracts
+
+This enables intelligent scheduling and prevents agents from being blocked unnecessarily.
 
 ### Conflict Prevention
 
@@ -151,65 +142,36 @@ Strategies to prevent conflicts:
 
 ## Coordination Tools
 
-### Agent Configuration File
+### Configuration Management
 
-**scripts/configuration/agent-assignment-config.json**
+The system maintains structured configuration for coordination:
 
-```json
-{
-  "agents": [
-    {
-      "name": "agent-1",
-      "displayName": "Chris",
-      "role": "Frontend",
-      "worktreePath": "worktrees/agent-1-chris",
-      "branch": "chris-frontend-work",
-      "tasks": [266, 268],
-      "status": "in-progress",
-      "dependencies": [],
-      "blockedBy": []
-    }
-  ],
-  "coordination": {
-    "syncSchedule": "daily",
-    "conflictStrategy": "manual-review",
-    "mergeOrder": ["agent-2", "agent-1"]
-  }
-}
-```
+**Agent Assignment Configuration** tracks:
+- Agent identity and specialization
+- Current task assignments
+- Work status and progress
+- Dependencies and blockers
+- Branch and workspace information
 
-### Worktree State Tracking
+**Coordination Settings** define:
+- Synchronization frequency
+- Conflict resolution strategies
+- Integration order and priorities
+- Communication protocols
 
-**scripts/configuration/worktree-state.json**
+### State Management
 
-```json
-{
-  "worktrees": [
-    {
-      "path": "worktrees/agent-1-chris",
-      "branch": "chris-frontend-work",
-      "lastSync": "2025-10-08T14:30:00Z",
-      "commitsAhead": 5,
-      "commitsBehind": 2,
-      "uncommittedChanges": false,
-      "needsRebase": true
-    }
-  ]
-}
-```
+**Workspace State Tracking** monitors:
+- Last synchronization timestamps
+- Commit relationships with main branch
+- Uncommitted changes detection
+- Rebase and integration status
 
-### Coordination Scripts
-
-```powershell
-# Check all agent status
-.\scripts\agent-management\manage-multi-agent-system.ps1 -Action status
-
-# Sync all agents with develop
-.\scripts\agent-management\manage-multi-agent-system.ps1 -Action sync
-
-# Detect conflicts
-.\scripts\agent-management\manage-multi-agent-system.ps1 -Action check-conflicts
-```
+**Health Monitoring** provides:
+- Real-time agent status overview
+- Workspace synchronization status
+- Conflict detection and alerts
+- Integration readiness indicators
 
 ## Handling Conflicts
 
@@ -217,29 +179,31 @@ Strategies to prevent conflicts:
 
 <Step>
   <StepItem title="Detection">
-    System detects potential conflict during rebase or merge.
+    The system automatically detects potential conflicts during synchronization operations, analyzing file changes and merge scenarios.
   </StepItem>
 
   <StepItem title="Notification">
-    Alert relevant agents or human operator.
+    Stakeholders are immediately alerted with details about the conflict, including affected files and the agents involved.
   </StepItem>
 
   <StepItem title="Analysis">
-    Review conflicting changes:
-    ```powershell
-    git diff agent-1..agent-2 --name-only
-    ```
+    The system provides analysis of:
+    - Overlapping file changes
+    - Nature and extent of conflicts
+    - Potential resolution strategies
+    - Impact assessment
   </StepItem>
 
   <StepItem title="Resolution">
-    Options:
-    - Manual resolution
-    - Prioritize one agent's changes
-    - Merge both with adjustments
+    Conflicts are resolved through established strategies:
+    - Coordinated manual resolution when needed
+    - Priority-based change selection
+    - Integrated merge with adjustments
+    - Stakeholder decision support
   </StepItem>
 
   <StepItem title="Verification">
-    Run tests to ensure resolution is correct.
+    Comprehensive validation ensures the resolution is correct through automated testing and quality checks.
   </StepItem>
 </Step>
 
@@ -253,7 +217,7 @@ Strategies to prevent conflicts:
 
 ## Monitoring & Metrics
 
-Track coordination effectiveness:
+The system tracks coordination effectiveness through key metrics:
 
 | Metric | Target | Meaning |
 |--------|--------|---------|
@@ -263,10 +227,7 @@ Track coordination effectiveness:
 | Time to merge | &lt;24 hours | Speed of integration |
 | Rebase frequency | Daily | How often synced with develop |
 
-```powershell
-# Generate metrics
-.\scripts\monitoring\automation-metrics.ps1 -Type agent-coordination
-```
+These metrics provide insight into system efficiency and help identify opportunities for optimization.
 
 ## Best Practices
 
@@ -285,61 +246,27 @@ Track coordination effectiveness:
 
 ### Dynamic Task Assignment
 
-Automatically assign tasks based on agent capacity:
-
-```powershell
-.\scripts\agent-management\assign-tasks.ps1 -Mode automatic
-```
+The system can automatically assign tasks based on:
+- Agent specialization and skills
+- Current workload and capacity
+- Task complexity and priority
+- Historical performance data
 
 ### Load Balancing
 
-Distribute work evenly across agents:
-
-```powershell
-.\scripts\agent-management\balance-load.ps1
-```
+Work distribution is optimized through:
+- Real-time capacity monitoring
+- Even distribution across available agents
+- Skill-appropriate task matching
+- Dynamic rebalancing as needed
 
 ### Priority Queue
 
-Assign urgent tasks to available agents:
-
-```powershell
-.\scripts\agent-management\priority-queue.ps1
-```
-
-## Troubleshooting
-
-### Agents Out of Sync
-
-```powershell
-# Sync all agents
-cd worktrees/agent-1
-git fetch origin develop
-git rebase develop
-
-cd ../agent-2
-git fetch origin develop
-git rebase develop
-```
-
-### Conflicting PRs
-
-```powershell
-# Determine merge order
-.\scripts\agent-management\determine-merge-order.ps1
-
-# Merge in order, resolve conflicts
-```
-
-### Agent Blocked
-
-```powershell
-# Check dependencies
-.\scripts\agent-management\check-dependencies.ps1 -AgentName "agent-1"
-
-# Reassign if blocked too long
-.\scripts\agent-management\reassign-task.ps1
-```
+High-priority work is handled through:
+- Urgent task identification
+- Intelligent agent selection
+- Capacity preemption when needed
+- Expedited workflow processing
 
 ## Next Steps
 

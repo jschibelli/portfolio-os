@@ -1,12 +1,12 @@
 ---
 title: Quick Start
-description: Get Portfolio OS up and running in 10 minutes
+description: Get Portfolio OS up and running in 15 minutes
 ---
 
 Get Portfolio OS running on your local machine in just a few minutes. This guide will walk you through the essential setup steps.
 
 <Note type="success">
-**Estimated Time:** 10-15 minutes to have your development environment fully operational.
+**Estimated Time:** 15-20 minutes to have your development environment fully operational with all three apps running.
 </Note>
 
 ## What You'll Build
@@ -71,9 +71,10 @@ Already have the prerequisites? Skip to [Installation Steps](#installation-steps
     ```bash
     pnpm dev
     ```
-    Both apps will start in parallel:
+    All apps will start in parallel:
     - **Site**: [http://localhost:3000](http://localhost:3000)
-    - **Dashboard**: [http://localhost:3001](http://localhost:3001)
+    - **Docs**: [http://localhost:3001](http://localhost:3001)
+    - **Dashboard**: [http://localhost:3003](http://localhost:3003)
   </StepItem>
 </Step>
 
@@ -94,7 +95,7 @@ Now that you have Portfolio OS running, explore these guides:
 ## Common Issues
 
 <Note type="warning">
-**Port Already in Use?** If ports 3000 or 3001 are busy, stop the conflicting process or change ports in `next.config.js`.
+**Port Already in Use?** If ports 3000, 3001, or 3003 are busy, stop the conflicting process or change ports in the respective app's `next.config.js`.
 </Note>
 
 Having trouble? Check our [Troubleshooting Guide](/docs/troubleshooting/common-issues) or see detailed [Installation & Prerequisites](/docs/getting-started/installation).

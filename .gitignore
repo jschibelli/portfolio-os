@@ -127,4 +127,3 @@ next-env.d.ts
 # proprietary development methodologies and should remain private
 /prompts/
 /scripts/*
-

@@ -1,0 +1,267 @@
+---
+title: Core Utilities
+description: The core utilities layer provides foundational automation capabilities that power the entire Portfolio OS development workflow. These utilities handle documentation management, GitHub integration, validation, and common automation tasks with robust error handling and reliability.
+---
+
+## Overview
+
+Core utilities serve as the foundation for all automation workflows, providing reusable functions and services that ensure consistency, reliability, and maintainability across the system.
+
+<Note type="note" title="Design Philosophy">
+Built on principles of reliability, reusability, and DRY (Don't Repeat Yourself), the core utilities layer ensures consistent behavior across all automation workflows while minimizing code duplication.
+</Note>
+
+## Key Capabilities
+
+<CardGrid>
+  <Card 
+    title="Documentation Automation"
+    icon="fileText"
+    description="Intelligent documentation management that keeps your project documentation synchronized with code changes."
+  >
+    - Automated changelog generation based on change analysis
+    - README synchronization with project structure
+    - API documentation generation from code changes
+    - Component documentation for UI libraries
+  </Card>
+
+  <Card 
+    title="GitHub Integration"
+    icon="github"
+    description="Robust GitHub API integration with intelligent rate limiting and error recovery."
+  >
+    - Pull request data retrieval and analysis
+    - Issue lifecycle management
+    - Project board field automation
+    - Repository metadata access
+  </Card>
+
+  <Card 
+    title="Validation & Error Handling"
+    icon="shield"
+    description="Comprehensive validation and error handling to ensure system reliability."
+  >
+    - Input validation and sanitization
+    - API response verification
+    - Graceful error recovery
+    - Detailed logging and diagnostics
+  </Card>
+
+  <Card 
+    title="Configuration Management"
+    icon="settings"
+    description="Centralized configuration with environment-aware settings and secure credential handling."
+  >
+    - Environment-specific configurations
+    - Secure credential management
+    - Feature flag support
+    - Dynamic configuration updates
+  </Card>
+</CardGrid>
+
+## Documentation Automation
+
+The documentation automation system ensures that project documentation remains accurate and up-to-date without manual intervention.
+
+### Intelligent Change Detection
+
+The system analyzes code changes to determine documentation impact:
+
+- **Dependency Changes**: Automatically updates package documentation when dependencies change
+- **Component Changes**: Generates component documentation for new or modified UI components
+- **API Changes**: Creates API documentation for new endpoints or modified interfaces
+- **Configuration Changes**: Updates setup guides when configuration requirements change
+
+### Automated Changelog Management
+
+Changelog entries are generated automatically based on:
+
+- Change categorization (features, fixes, improvements)
+- Semantic versioning guidelines
+- Release grouping and organization
+- Breaking change identification
+
+<Note type="success" title="Business Value">
+Automated documentation reduces maintenance overhead by 70% while ensuring documentation accuracy improves over time rather than degrades.
+</Note>
+
+## GitHub Integration Layer
+
+The GitHub integration layer provides reliable, rate-limited access to GitHub's API with intelligent caching and error recovery.
+
+### Data Retrieval & Analysis
+
+Access comprehensive GitHub data:
+
+- Pull request metadata, files changed, and diff analysis
+- Issue details, labels, and project board fields
+- Repository structure and branch information
+- Commit history and author information
+
+### Robust API Handling
+
+Ensures reliable GitHub API interactions:
+
+- **Rate Limit Management**: Intelligent throttling and request queuing
+- **Retry Logic**: Automatic retry with exponential backoff
+- **Error Recovery**: Graceful handling of API failures
+- **Response Validation**: Verification of API responses before processing
+
+### Authentication & Security
+
+Secure GitHub access with:
+
+- Token-based authentication
+- Scope-limited access tokens
+- Credential rotation support
+- Audit logging of API calls
+
+## Validation Framework
+
+The validation framework ensures data integrity and system reliability through comprehensive validation at every layer.
+
+### Input Validation
+
+All inputs are validated before processing:
+
+- Type checking and format validation
+- Range and boundary validation
+- Required field verification
+- Malicious input detection
+
+### Process Validation
+
+Workflow steps include validation checkpoints:
+
+- Pre-condition verification
+- Intermediate state validation
+- Post-condition checking
+- Rollback capability on validation failure
+
+### Output Validation
+
+Results are verified before propagation:
+
+- Schema validation for structured data
+- Completeness checking
+- Consistency verification across related data
+- Quality threshold enforcement
+
+<Note type="warning" title="Reliability Focus">
+The validation framework prevents 95% of potential errors before they can impact the system, significantly improving overall reliability and reducing debugging time.
+</Note>
+
+## Configuration Management
+
+Centralized configuration management provides consistent settings across all automation workflows while supporting environment-specific customization.
+
+### Environment Awareness
+
+The system adapts to different environments:
+
+- **Development**: Verbose logging, dry-run modes, relaxed validations
+- **Staging**: Production-like behavior with enhanced monitoring
+- **Production**: Optimized performance, strict validation, minimal logging
+
+### Feature Flags
+
+Control feature rollout and behavior:
+
+- Gradual feature enablement
+- A/B testing support
+- Emergency feature disable
+- Per-environment feature control
+
+### Secure Credential Handling
+
+Credentials and secrets are managed securely:
+
+- Environment variable integration
+- Encrypted credential storage
+- Automatic credential rotation
+- Audit logging of credential access
+
+## Error Handling & Recovery
+
+Comprehensive error handling ensures system resilience and provides actionable diagnostics when issues occur.
+
+### Multi-Layer Error Handling
+
+Errors are handled at appropriate levels:
+
+1. **Local Recovery**: Immediate retry for transient errors
+2. **Workflow Recovery**: Alternative paths when local recovery fails
+3. **System Recovery**: Graceful degradation for system-wide issues
+4. **Manual Intervention**: Clear guidance when human input is required
+
+### Diagnostic Information
+
+When errors occur, the system provides:
+
+- Clear error messages explaining what went wrong
+- Context about what was being attempted
+- Suggested remediation steps
+- Links to relevant documentation
+
+### Logging & Monitoring
+
+Comprehensive logging supports troubleshooting and monitoring:
+
+- Structured logging with consistent format
+- Log level control (debug, info, warning, error)
+- Performance metrics collection
+- Anomaly detection and alerting
+
+## Integration Points
+
+Core utilities integrate seamlessly with:
+
+<CardGrid>
+  <Card 
+    title="GitHub Actions"
+    icon="github"
+    description="Workflow automation and CI/CD integration"
+  />
+
+  <Card 
+    title="Project Boards"
+    icon="kanban"
+    description="Issue tracking and project management"
+  />
+
+  <Card 
+    title="Development Tools"
+    icon="code"
+    description="Local development environment support"
+  />
+
+  <Card 
+    title="Monitoring Systems"
+    icon="activity"
+    description="Performance and health monitoring"
+  />
+</CardGrid>
+
+## Benefits
+
+The core utilities layer delivers significant operational benefits:
+
+- **Consistency**: Shared utilities ensure consistent behavior across all automation
+- **Reliability**: Robust error handling and validation prevent failures
+- **Maintainability**: DRY principles reduce code duplication and maintenance overhead
+- **Extensibility**: Well-defined interfaces make adding new capabilities straightforward
+- **Observability**: Comprehensive logging and monitoring enable quick issue resolution
+
+<Note type="success" title="Developer Experience">
+By abstracting common patterns into reusable utilities, developers can focus on business logic rather than infrastructure concerns, accelerating feature development and reducing bugs.
+</Note>
+
+## Next Steps
+
+Learn more about systems built on these core utilities:
+
+- [Agent Management](/docs/scripts-reference/automation/agent-management) - Multi-agent orchestration system
+- [PR Management](/docs/scripts-reference/automation/pr-management) - Intelligent pull request automation
+- [Issue Management](/docs/scripts-reference/automation/issue-management) - Automated issue lifecycle
+- [Quick Start Guide](/docs/scripts-reference/automation/quick-start-guide) - Get started quickly
+

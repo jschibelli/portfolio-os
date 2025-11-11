@@ -36,6 +36,10 @@ Your blog page is built at **deploy time** and cached. When you publish a new Ha
 # Visit: https://vercel.com/account/tokens
 # Create a new token with "Full Account" access
 
+<<<<<<< HEAD
+# 2. Run the redeploy script
+VERCEL_API_TOKEN=your_token_here npx tsx scripts/trigger-vercel-redeploy.ts
+=======
 # 2. Store the token securely (never commit this file)
 echo "VERCEL_API_TOKEN=your_token_here" >> .env.local
 
@@ -44,6 +48,7 @@ npx tsx scripts/trigger-vercel-redeploy.ts
 
 # Optional: one-off execution without writing to disk
 # VERCEL_API_TOKEN=your_token_here npx tsx scripts/trigger-vercel-redeploy.ts
+>>>>>>> 991357ede8eaa8dc8532ba5ac4cb5c55e3f63ff4
 ```
 
 ---

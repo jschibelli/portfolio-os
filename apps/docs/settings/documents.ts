@@ -210,12 +210,12 @@ export const Documents: Paths[] = [
   // ============================================
   {
     heading: "Automation & Scripts",
-    title: "Scripts Reference",
-    href: "/scripts-reference",
+    title: "Automation System",
+    href: "/scripts-reference/automation",
     items: [
       {
         title: "Overview",
-        href: "/overview",
+        href: "/quick-start-guide",
       },
       {
         title: "Core Utilities",
@@ -232,40 +232,6 @@ export const Documents: Paths[] = [
       {
         title: "Issue Management",
         href: "/issue-management",
-      },
-    ],
-  },
-  {
-    title: "Automation System",
-    href: "/scripts-reference/automation",
-    items: [
-      {
-        title: "Quick Start Guide",
-        href: "/quick-start-guide",
-      },
-      {
-        title: "System Architecture",
-        href: "/system-architecture",
-      },
-      {
-        title: "Complete Automation System",
-        href: "/complete-automation-system",
-      },
-      {
-        title: "Integrated Automation System",
-        href: "/integrated-automation-system",
-      },
-      {
-        title: "Automation System Manual",
-        href: "/automation-system-manual",
-      },
-      {
-        title: "GitHub Actions Workflows",
-        href: "/github-actions-workflows",
-      },
-      {
-        title: "PowerShell Automation Scripts",
-        href: "/powershell-automation-scripts",
       },
     ],
   },
