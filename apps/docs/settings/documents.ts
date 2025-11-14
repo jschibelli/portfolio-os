@@ -2,11 +2,53 @@ import { Paths } from "@/lib/pageroutes"
 
 export const Documents: Paths[] = [
   // ============================================
-  // GETTING STARTED
+  // ORIENTATION & QUICK START
   // ============================================
   {
-    heading: "Getting Started",
-    title: "Quick Start",
+    heading: "Orientation & Quick Start",
+    title: "Executive Overview",
+    href: "/features",
+    items: [
+      {
+        title: "Business Value & Economics",
+        href: "/business-value",
+      },
+      {
+        title: "Platform Architecture",
+        href: "/platform-architecture",
+      },
+      {
+        title: "Infrastructure & APIs",
+        href: "/infrastructure",
+      },
+      {
+        title: "AI Chatbot",
+        href: "/chatbot",
+      },
+      {
+        title: "AI Chatbot Business Case",
+        href: "/chatbot/business-case",
+      },
+      {
+        title: "Booking & Scheduling",
+        href: "/booking-system",
+      },
+      {
+        title: "Booking Business Case",
+        href: "/booking-system/business-case",
+      },
+      {
+        title: "Development Practices",
+        href: "/development-practices",
+      },
+      {
+        title: "Testing & Regression",
+        href: "/testing",
+      },
+    ],
+  },
+  {
+    title: "Core Quick Start",
     href: "/getting-started",
     items: [
       {
@@ -24,52 +66,18 @@ export const Documents: Paths[] = [
     ],
   },
   {
-    spacer: true,
-  },
-
-  // ============================================
-  // FEATURES
-  // ============================================
-  {
-    heading: "Features",
-    title: "Features Overview",
-    href: "/features",
-    items: [
-      {
-        title: "Platform Architecture",
-        href: "/platform-architecture",
-      },
-      {
-        title: "AI Chatbot",
-        href: "/chatbot",
-      },
-      {
-        title: "Booking & Scheduling",
-        href: "/booking-system",
-      },
-      {
-        title: "Infrastructure & APIs",
-        href: "/infrastructure",
-      },
-      {
-        title: "Development Practices",
-        href: "/development-practices",
-      },
-      {
-        title: "Testing & Regression",
-        href: "/testing",
-      },
-    ],
+    title: "Automation Quick Start",
+    href: "/getting-started/automation-hello-world",
   },
   {
     spacer: true,
   },
 
   // ============================================
-  // SETUP & CONFIGURATION
+  // SETUP & DELIVERY
   // ============================================
   {
-    heading: "Setup & Configuration",
+    heading: "Setup & Delivery",
     title: "Setup Guides",
     href: "/setup",
     items: [
@@ -136,10 +144,10 @@ export const Documents: Paths[] = [
   },
 
   // ============================================
-  // DEVELOPMENT
+  // ENGINEERING & APIS
   // ============================================
   {
-    heading: "Development",
+    heading: "Engineering & APIs",
     title: "Developer Guide",
     href: "/developer-guide",
     items: [
@@ -162,6 +170,10 @@ export const Documents: Paths[] = [
       {
         title: "Coding Standards",
         href: "/standards",
+      },
+      {
+        title: "Components & Patterns",
+        href: "/components",
       },
       {
         title: "Package System",
@@ -210,28 +222,66 @@ export const Documents: Paths[] = [
   // ============================================
   {
     heading: "Automation & Scripts",
-    title: "Automation System",
+    title: "Scripts Reference",
+    href: "/scripts-reference",
+  },
+  {
+    title: "Automation Concepts",
     href: "/scripts-reference/automation",
     items: [
       {
-        title: "Overview",
+        title: "Overview & Architecture",
         href: "/quick-start-guide",
       },
       {
-        title: "Core Utilities",
-        href: "/core-utilities",
-      },
-      {
-        title: "Agent Management",
-        href: "/agent-management",
-      },
-      {
-        title: "PR Management",
+        title: "PR Management Concepts",
         href: "/pr-management",
       },
       {
-        title: "Issue Management",
+        title: "Issue Management Concepts",
         href: "/issue-management",
+      },
+      {
+        title: "Agent Management Concepts",
+        href: "/agent-management",
+      },
+      {
+        title: "Core Utilities Concepts",
+        href: "/core-utilities",
+      },
+    ],
+  },
+  {
+    title: "Script Reference",
+    href: "/scripts-reference",
+    items: [
+      {
+        title: "Complete Script Guide",
+        href: "/complete-guide",
+      },
+      {
+        title: "PR Management Scripts",
+        href: "/pr-management",
+      },
+      {
+        title: "Issue Management Scripts",
+        href: "/issue-management",
+      },
+      {
+        title: "Agent Management Scripts",
+        href: "/agent-management",
+      },
+      {
+        title: "Core Utilities Scripts",
+        href: "/core-utilities",
+      },
+      {
+        title: "CI/CD Workflows",
+        href: "/ci-cd",
+      },
+      {
+        title: "Scripts Catalog",
+        href: "/overview",
       },
     ],
   },
@@ -270,14 +320,44 @@ export const Documents: Paths[] = [
     ],
   },
   {
+    title: "Workflow Diagrams",
+    href: "/workflows/diagrams",
+  },
+  {
+    title: "Front-End Automation",
+    href: "/frontend/automation",
+  },
+  {
     spacer: true,
   },
 
   // ============================================
-  // REFERENCE
+  // REFERENCE & SUPPORT
   // ============================================
   {
-    heading: "Reference",
+    heading: "Reference & Support",
+    title: "Testing Guide",
+    href: "/testing",
+  },
+  {
+    title: "Component Library",
+    href: "/component-library",
+    items: [
+      {
+        title: "Storybook",
+        href: "/storybook",
+      },
+    ],
+  },
+  {
+    title: "Design System",
+    href: "/design-system",
+  },
+  {
+    title: "Configuration Reference",
+    href: "/reference/configuration",
+  },
+  {
     title: "Apps & Packages",
     href: "/apps-packages",
     items: [
@@ -296,6 +376,16 @@ export const Documents: Paths[] = [
       {
         title: "UI Components",
         href: "/ui-components",
+      },
+    ],
+  },
+  {
+    title: "Guides",
+    href: "/guides",
+    items: [
+      {
+        title: "Migration & Upgrades",
+        href: "/migration",
       },
     ],
   },
@@ -340,6 +430,10 @@ export const Documents: Paths[] = [
       {
         title: "Deployment Issues",
         href: "/deployment",
+      },
+      {
+        title: "Automation Issues",
+        href: "/automation",
       },
       {
         title: "Performance Optimization",

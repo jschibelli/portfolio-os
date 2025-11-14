@@ -1,15 +1,316 @@
 ---
 title: Core Utilities
-description: Essential utility scripts
+description: >-
+  Foundational automation utilities for GitHub, documentation, AI services, and
+  projects
+---
+The Core Utilities scripts provide shared building blocks for automation across Portfolio OS.
+They handle documentation automation, GitHub integration, AI services, and project board
+management, and are reused by higher-level automation workflows.
+
+<Note type="info">
+Scripts live under `scripts/core-utilities/` and are often sourced or called by other
+automation scripts rather than run in isolation.
+</Note>
+
 ---
 
-# Core Utilities
+## Overview
 
-Foundational utilities for GitHub, documentation, and AI services.
+```text
+scripts/core-utilities/
+├── docs-updater.ps1          # Documentation automation system
+├── get-github-utilities.ps1  # Shared GitHub API utilities
+├── manage-ai-services.ps1    # AI services integration layer
+├── set-estimate-iteration.ps1# Project estimate/iteration management
+└── README.md                 # Detailed developer docs
+```
 
-## Key Scripts
+### Common Requirements
 
-- **get-github-utilities.ps1**: GitHub API functions
-- **docs-updater.ps1**: Documentation automation
-- **manage-ai-services.ps1**: AI service integration
+- **PowerShell 7+**
+- **GitHub CLI (`gh`)** authenticated against the target repo
+- Appropriate API keys for AI providers (when using AI-related functionality)
 
+---
+
+## `docs-updater.ps1` – Documentation Automation
+
+**Path**: `scripts/core-utilities/docs-updater.ps1`  
+**Purpose**: Automatically update project documentation based on PR content and code changes.
+
+### Capabilities
+
+- Analyze PR metadata and changed files
+- Update `CHANGELOG.md` based on PR type/labels
+- Update relevant `README` files when dependencies or components change
+- Generate or update API/component documentation for changed parts of the system
+- Produce summary reports of documentation updates
+
+### Key Parameters
+
+| Parameter         | Type   | Required | Description                                      |
+|------------------|--------|----------|--------------------------------------------------|
+| `-PRNumber`      | int    | Yes      | PR number to analyze                             |
+| `-UpdateChangelog` | Switch | No     | Update `CHANGELOG.md`                           |
+| `-UpdateReadme`  | Switch | No       | Update relevant README files                     |
+| `-GenerateDocs`  | Switch | No       | Generate API/component docs                      |
+| `-OutputDir`     | string | No       | Output directory for generated docs              |
+| `-DryRun`        | Switch | No       | Preview actions without writing changes          |
+
+### Usage Examples
+
+```powershell
+# Update changelog for a specific PR
+.\scripts\core-utilities\docs-updater.ps1 `
+  -PRNumber 123 `
+  -UpdateChangelog
+```
+
+```powershell
+# Generate all documentation artifacts for a PR
+.\scripts\core-utilities\docs-updater.ps1 `
+  -PRNumber 123 `
+  -GenerateDocs
+```
+
+```powershell
+# Update README and generate docs in a single run
+.\scripts\core-utilities\docs-updater.ps1 `
+  -PRNumber 123 `
+  -UpdateReadme `
+  -GenerateDocs
+```
+
+```powershell
+# Preview changes without modifying files
+.\scripts\core-utilities\docs-updater.ps1 `
+  -PRNumber 123 `
+  -GenerateDocs `
+  -DryRun
+```
+
+---
+
+## `get-github-utilities.ps1` – GitHub Integration Layer
+
+**Path**: `scripts/core-utilities/get-github-utilities.ps1`  
+**Purpose**: Provide a shared set of helpers for interacting with the GitHub API and Projects.
+
+### Capabilities
+
+- Retrieve and cache repository information (owner, name, default branch)
+- Fetch PR details (metadata, files, comments)
+- Interact with GitHub Projects (add items, set field values)
+- Retrieve CR-GPT comments for PRs where CR-GPT is used
+- Implement retry logic and error handling for GitHub API requests
+
+### Key Functions (examples)
+
+- `Get-RepoInfo` – Return cached repository info  
+- `Get-PRInfo` – Retrieve detailed PR metadata  
+- `Get-PRComments` – Retrieve all comments on a PR  
+- `Get-CRGPTComments` – Retrieve comments authored by the CR-GPT bot  
+- `Add-IssueToProject` – Add an issue to a project board  
+- `Set-ProjectFieldValue` – Set a specific field on a project item  
+- `Test-GitHubAuth` – Validate GitHub authentication and scopes  
+
+### Example Usage
+
+```powershell
+# Source the utilities in your own script
+. .\scripts\core-utilities\get-github-utilities.ps1
+
+# Validate authentication
+Test-GitHubAuth
+
+# Get repo and PR information
+$repo   = Get-RepoInfo
+$prInfo = Get-PRInfo -PRNumber "123"
+$comments = Get-PRComments -PRNumber "123"
+```
+
+---
+
+## `manage-ai-services.ps1` – AI Services Integration
+
+**Path**: `scripts/core-utilities/manage-ai-services.ps1`  
+**Purpose**: Provide a unified abstraction for calling AI providers such as OpenAI, Anthropic,
+and Azure OpenAI from automation scripts.
+
+### Capabilities
+
+- Initialize AI providers and validate configuration
+- Send completion/analysis requests to supported providers
+- Cache responses (where configured) for cost and performance
+- Support higher-level operations such as code analysis, implementation planning,
+  and response generation
+
+### Key Functions (examples)
+
+- `Initialize-AIServices` – Initialize provider configuration  
+- `Invoke-AICompletion` – Core AI completion wrapper with caching and retries  
+- `Analyze-CodeWithAI` – Analyze code for quality and security aspects  
+- `Generate-ImplementationPlan` – Propose an implementation plan based on issue context  
+- `Generate-PRResponse` – Generate a candidate response to review comments  
+- `Optimize-PerformanceWithAI` – Analyze code for performance improvements  
+- `Get-AICacheStats` – Inspect cache usage  
+
+### Example Usage
+
+```powershell
+# Source AI services
+. .\scripts\core-utilities\manage-ai-services.ps1
+
+# Initialize services (for example, using OpenAI)
+Initialize-AIServices -Provider "openai"
+
+# Analyze a block of code
+$analysis = Analyze-CodeWithAI -Code $codeContent -Language "typescript"
+
+# Generate an implementation plan for an issue
+$plan = Generate-ImplementationPlan `
+  -IssueDescription $issueDescription `
+  -IssueTitle $issueTitle
+```
+
+<Note>
+This script depends on provider-specific environment variables (e.g. `OPENAI_API_KEY`,
+`ANTHROPIC_API_KEY`, `AZURE_OPENAI_API_KEY`, etc.). See the README for exact requirements.
+</Note>
+
+---
+
+## `set-estimate-iteration.ps1` – Project Management
+
+**Path**: `scripts/core-utilities/set-estimate-iteration.ps1`  
+**Purpose**: Manage GitHub Project fields for estimates and iterations (sprints) on issues.
+
+### Capabilities
+
+- Set story point estimates for issues
+- Assign issues to iterations/sprints
+- Validate project field IDs and issue existence
+
+### Key Parameters
+
+| Parameter     | Type   | Required | Description                                      |
+|--------------|--------|----------|--------------------------------------------------|
+| `-IssueNumber` | int   | Yes      | GitHub issue number                              |
+| `-Estimate`  | int    | No       | Story point estimate (e.g. 0–13)                |
+| `-Iteration` | string | No       | Sprint/iteration name                            |
+
+### Usage Examples
+
+```powershell
+# Set an estimate for an issue
+.\scripts\core-utilities\set-estimate-iteration.ps1 `
+  -IssueNumber 123 `
+  -Estimate 5
+```
+
+```powershell
+# Set iteration for an issue
+.\scripts\core-utilities\set-estimate-iteration.ps1 `
+  -IssueNumber 123 `
+  -Iteration "Sprint 1"
+```
+
+```powershell
+# Set both estimate and iteration
+.\scripts\core-utilities\set-estimate-iteration.ps1 `
+  -IssueNumber 123 `
+  -Estimate 3 `
+  -Iteration "Sprint 2"
+```
+
+---
+
+## Integration Patterns
+
+These utilities are rarely used alone—they are typically composed into higher-level workflows.
+Here are a few common patterns:
+
+### Documentation Automation Workflow
+
+```powershell
+$prNumber = 123
+.\scripts\core-utilities\docs-updater.ps1 `
+  -PRNumber $prNumber `
+  -UpdateChangelog `
+  -UpdateReadme `
+  -GenerateDocs
+```
+
+### GitHub Integration Workflow
+
+```powershell
+. .\scripts\core-utilities\get-github-utilities.ps1
+
+$prInfo   = Get-PRInfo -PRNumber "123"
+$comments = Get-CRGPTComments -PRNumber "123"
+
+if ($prInfo.labels -contains "documentation") {
+  .\scripts\core-utilities\docs-updater.ps1 -PRNumber "123" -GenerateDocs
+}
+```
+
+### AI-Assisted Analysis
+
+```powershell
+. .\scripts\core-utilities\manage-ai-services.ps1
+Initialize-AIServices -Provider "openai"
+
+$analysis = Analyze-CodeWithAI -Code $changedCode -Language "typescript"
+$plan     = Generate-ImplementationPlan `
+  -IssueDescription $issueDescription `
+  -IssueTitle $issueTitle
+```
+
+### Project Field Management
+
+```powershell
+.\scripts\core-utilities\set-estimate-iteration.ps1 `
+  -IssueNumber 123 `
+  -Estimate 5 `
+  -Iteration "Sprint 1"
+```
+
+---
+
+## Configuration & Environment
+
+### GitHub Authentication
+
+```bash
+gh auth login
+gh auth status
+```
+
+Ensure `gh` is authenticated for the account that owns the issues/PRs and has access to the
+relevant project boards.
+
+### AI Provider Configuration
+
+Set provider-specific environment variables as needed, for example:
+
+```bash
+export OPENAI_API_KEY="your-openai-key"
+export ANTHROPIC_API_KEY="your-anthropic-key"
+export AZURE_OPENAI_API_KEY="your-azure-key"
+export AZURE_OPENAI_ENDPOINT="your-azure-endpoint"
+```
+
+---
+
+## Troubleshooting & Best Practices
+
+- Run with `-DryRun` and `-Verbose` when integrating utilities into new workflows.
+- Use `Test-GitHubAuth` (from `get-github-utilities.ps1`) to verify authentication before
+  running scripts that modify GitHub state.
+- Keep provider API keys in a secure secret store or environment variables—**never** commit
+  them to the repository.
+- Prefer calling these utilities from higher-level scripts (PR/Issue/Agent management)
+  instead of duplicating GitHub or AI integration logic.
+
+For deeper details and full function lists, see `scripts/core-utilities/README.md`.

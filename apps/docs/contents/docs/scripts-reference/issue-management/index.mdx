@@ -1,15 +1,273 @@
 ---
 title: Issue Management
-description: GitHub issue automation scripts
+description: >-
+  GitHub issue automation scripts for analysis, configuration, and
+  implementation
+---
+## Overview
+
+GitHub issue automation scripts for analysis, configuration, and implementation
+
+The Issue Management scripts automate the full lifecycle of GitHub issues in Portfolio OS:
+from analysis and configuration, to implementation workflow and queue management.
+
+<Note type="info">
+All scripts live under `scripts/issue-management/` and are organized into **analysis**,
+**configuration**, **implementation**, and **management** subfolders.
+</Note>
+
 ---
 
-# Issue Management Scripts
+## Directory Structure
 
-Automate issue triage, management, and implementation.
+```text
+scripts/issue-management/
+├── analysis/            # Issue analysis tools
+│   ├── analyze-issues.ps1
+│   └── analyze-stale-issues.ps1
+├── configuration/       # Issue configuration tools
+│   ├── configure-issue-auto.ps1
+│   └── configure-issues-unified.ps1
+├── implementation/      # Implementation workflow
+│   └── implement-issues.ps1
+├── management/          # Queue and pipeline orchestration
+│   ├── manage-issue-queue.ps1
+│   └── run-issue-pipeline.ps1
+└── README.md            # Detailed developer documentation
+```
 
-## Key Scripts
+### Prerequisites
 
-- **manage-issue-queue.ps1**: Manage issue backlog
-- **run-issue-pipeline.ps1**: Execute issue workflows
-- **analyze-issues.ps1**: Analyze issues
+- **PowerShell 7+**
+- **GitHub CLI (`gh`)** authenticated with `repo`, `project`, and `workflow` scopes
+- Run commands from the **repo root** (`portfolio-os`)
 
+---
+
+## `analysis/analyze-issues.ps1`
+
+**Path**: `scripts/issue-management/analysis/analyze-issues.ps1`  
+**Purpose**: Analyze issues and backlog to understand priorities, complexity, and patterns.
+
+### Capabilities
+
+- Analyze a single issue or the broader backlog
+- Surface stale or high-impact issues
+- Optionally generate implementation plans for selected issues
+
+### Key Parameters
+
+| Parameter       | Type    | Required | Description                                      |
+|----------------|---------|----------|--------------------------------------------------|
+| `-IssueNumber` | int     | No       | Analyze a specific issue                         |
+| `-GeneratePlan`| Switch  | No       | Generate an implementation plan where supported |
+| `-DryRun`      | Switch  | No       | Show planned operations without making changes   |
+
+### Usage Examples
+
+```powershell
+# Analyze a specific issue and generate an implementation plan
+.\scripts\issue-management\analysis\analyze-issues.ps1 `
+  -IssueNumber 250 `
+  -GeneratePlan
+```
+
+```powershell
+# Run a broader analysis on the backlog (mode depends on script configuration)
+.\scripts\issue-management\analysis\analyze-issues.ps1
+```
+
+---
+
+## `analysis/analyze-stale-issues.ps1`
+
+**Path**: `scripts/issue-management/analysis/analyze-stale-issues.ps1`  
+**Purpose**: Identify stale, old, or inactive issues that need attention.
+
+### Typical Usage
+
+```powershell
+# List stale issues based on age / last update
+.\scripts\issue-management\analysis\analyze-stale-issues.ps1
+```
+
+Use this script to drive triage sessions and clean up or re-prioritize long-running issues.
+
+---
+
+## `configuration/configure-issue-auto.ps1`
+
+**Path**: `scripts/issue-management/configuration/configure-issue-auto.ps1`  
+**Purpose**: Automatically configure an issue’s project fields and labels based on its content.
+
+### Capabilities
+
+- Set **priority**, **size**, **app**, and **area** for a single issue
+- Apply consistent labels for status and type
+
+### Key Parameters
+
+| Parameter       | Type    | Required | Description                                      |
+|----------------|---------|----------|--------------------------------------------------|
+| `-IssueNumber` | int     | Yes      | Issue to configure                               |
+| `-Priority`    | string  | No       | `P0`, `P1`, `P2`, `P3`                           |
+| `-Size`        | string  | No       | `XS`, `S`, `M`, `L`, `XL`                       |
+| `-App`         | string  | No       | App affected (e.g. `Portfolio Site`, `Docs`)    |
+| `-Area`        | string  | No       | Area (e.g. `Frontend`, `Infra`, `Content`)      |
+| `-DryRun`      | Switch  | No       | Preview field changes                            |
+
+### Usage Examples
+
+```powershell
+# Auto-configure an issue with explicit settings
+.\scripts\issue-management\configuration\configure-issue-auto.ps1 `
+  -IssueNumber 250 `
+  -Priority P1 `
+  -Size M `
+  -App "Portfolio Site" `
+  -Area "Frontend"
+```
+
+```powershell
+# Preview configuration without applying changes
+.\scripts\issue-management\configuration\configure-issue-auto.ps1 `
+  -IssueNumber 250 `
+  -DryRun
+```
+
+---
+
+## `configuration/configure-issues-unified.ps1`
+
+**Path**: `scripts/issue-management/configuration/configure-issues-unified.ps1`  
+**Purpose**: Unified issue configuration system with presets and higher-level workflows.
+
+### Example Usage
+
+```powershell
+# Use a named preset (for example, common blog-related configuration)
+.\scripts\issue-management\configuration\configure-issues-unified.ps1 `
+  -IssueNumber 250 `
+  -Preset blog
+```
+
+```powershell
+# Combine presets with interactive mode (where supported)
+.\scripts\issue-management\configuration\configure-issues-unified.ps1 `
+  -IssueNumber 250 `
+  -Preset infra
+```
+
+Refer to the script-level help and README for available presets and options.
+
+---
+
+## `implementation/implement-issues.ps1`
+
+**Path**: `scripts/issue-management/implementation/implement-issues.ps1`  
+**Purpose**: Drive the implementation workflow for one or more issues.
+
+### Capabilities
+
+- Orchestrate analysis → implementation → validation for selected issues
+- Support interactive or automated modes
+
+### Key Parameters
+
+| Parameter       | Type    | Required | Description                                      |
+|----------------|---------|----------|--------------------------------------------------|
+| `-IssueNumber` | int     | Yes      | Issue to implement                               |
+| `-Mode`        | string  | No       | Implementation mode (e.g. `auto`, `interactive`) |
+| `-DryRun`      | Switch  | No       | Preview actions                                  |
+
+### Usage Example
+
+```powershell
+# Run a full implementation workflow for an issue
+.\scripts\issue-management\implementation\implement-issues.ps1 `
+  -IssueNumber 250 `
+  -Mode auto
+```
+
+---
+
+## `management/manage-issue-queue.ps1`
+
+**Path**: `scripts/issue-management/management/manage-issue-queue.ps1`  
+**Purpose**: Manage the prioritized queue of issues ready for implementation.
+
+### Typical Usage
+
+```powershell
+# Start managing the issue queue
+.\scripts\issue-management\management\manage-issue-queue.ps1
+```
+
+Use this script to inspect and adjust the ordering of issues that are ready for automation
+and development.
+
+---
+
+## `management/run-issue-pipeline.ps1`
+
+**Path**: `scripts/issue-management/management/run-issue-pipeline.ps1`  
+**Purpose**: Run the continuous issue pipeline that processes issues according to configured rules.
+
+### Key Parameters
+
+| Parameter    | Type   | Required | Description                                      |
+|-------------|--------|----------|--------------------------------------------------|
+| `-MaxIssues`| int    | No       | Maximum number of issues to process in a run    |
+| `-Watch`    | Switch | No       | Run continuously instead of once                |
+
+### Usage Examples
+
+```powershell
+# Run the pipeline once for up to 5 issues
+.\scripts\issue-management\management\run-issue-pipeline.ps1 -MaxIssues 5
+```
+
+```powershell
+# Run the pipeline continuously
+.\scripts\issue-management\management\run-issue-pipeline.ps1 -Watch
+```
+
+---
+
+## Common Dependencies & Configuration
+
+These scripts depend on:
+
+- **GitHub CLI (`gh`)** for retrieving and updating issues and project fields
+- Portfolio OS project configuration, including:
+  - Default **project ID**
+  - **Base branch** (typically `develop`)
+  - Default owner / user for operations
+
+Configuration values are documented in the script README and can be overridden via
+environment variables or script parameters where supported.
+
+---
+
+## Troubleshooting & Best Practices
+
+- **Script cannot run due to execution policy**  
+  - On Windows, you may need to enable script execution:
+  - `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+
+- **Issue fields not updating**  
+  - Confirm `gh auth status` is successful for the right GitHub account.  
+  - Verify that the project, field IDs, and repository match your environment.
+
+- **No issues appear in the pipeline**  
+  - Check that issues are in a status/state expected by the pipeline logic.  
+  - Use analysis scripts to inspect the backlog and confirm filters.
+
+### Recommended Workflow
+
+1. **Analyze** using `analyze-issues.ps1` and/or `analyze-stale-issues.ps1`.  
+2. **Configure** new and existing issues using `configure-issue-auto.ps1` or `configure-issues-unified.ps1`.  
+3. **Implement** with `implement-issues.ps1` for targeted work.  
+4. **Automate** ongoing processing via `manage-issue-queue.ps1` and `run-issue-pipeline.ps1`.  
+
+For deeper detail and design rationale, see `scripts/issue-management/README.md`.

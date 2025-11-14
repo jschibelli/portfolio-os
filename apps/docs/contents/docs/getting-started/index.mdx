@@ -2,6 +2,9 @@
 title: Quick Start
 description: Get Portfolio OS up and running in 15 minutes
 ---
+## Overview
+
+Get Portfolio OS up and running in 15 minutes
 
 Get Portfolio OS running on your local machine in just a few minutes. This guide will walk you through the essential setup steps.
 
@@ -52,8 +55,8 @@ Already have the prerequisites? Skip to [Installation Steps](#installation-steps
   <StepItem title="Setup Environment Variables">
     ```bash
     # Copy environment templates
-    cp apps/site/.env.example apps/site/.env.local
-    cp apps/dashboard/.env.example apps/dashboard/.env.local
+    cp apps/site/env.template apps/site/.env.local
+    cp apps/dashboard/env.template apps/dashboard/.env.local
     ```
     Edit the `.env.local` files with your API keys. See [Environment Configuration](/docs/getting-started/environment) for details.
   </StepItem>
@@ -115,4 +118,3 @@ Having trouble? Check our [Troubleshooting Guide](/docs/troubleshooting/common-i
 <Note>
 For a deeper dive into the tech stack, architecture patterns, and development workflow, continue to the [Developer Guide](/docs/developer-guide/architecture).
 </Note>
-

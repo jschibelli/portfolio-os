@@ -1,14 +1,80 @@
 ---
 title: Troubleshooting
-description: Common issues and solutions
+description: Common issues and solutions for Portfolio OS
 ---
+## Overview
 
-Solutions to common problems in Portfolio OS.
+Common issues and solutions for Portfolio OS
+
+Comprehensive troubleshooting guides for all aspects of Portfolio OS.
 
 ## Categories
 
-- **Common Issues**: Frequent problems and solutions
-- **Development**: Dev environment issues
-- **Deployment**: Production deployment issues
-- **Performance**: Performance optimization
+### [Common Issues](/docs/troubleshooting/common-issues)
+Frequent problems and their solutions including installation, development, build, runtime, and git issues.
 
+### [Development Problems](/docs/troubleshooting/development)
+Development environment troubleshooting covering editor issues, monorepo problems, and test failures.
+
+### [Deployment Issues](/docs/troubleshooting/deployment)
+Production deployment troubleshooting including Vercel, environment variables, and domain configuration.
+
+### [Automation Troubleshooting](/docs/troubleshooting/automation)
+PowerShell scripts, GitHub Actions workflows, multi-agent systems, and PR/issue automation issues.
+
+### [Performance](/docs/troubleshooting/performance)
+Performance optimization and debugging slow builds, API calls, and page loads.
+
+---
+
+## Quick Fixes
+
+### Complete System Reset
+
+When experiencing persistent issues across multiple areas:
+
+```bash
+# Clean all build artifacts and caches
+rm -rf node_modules .next .turbo
+rm -rf apps/*/node_modules apps/*/.next
+rm -rf packages/*/node_modules
+
+# Clear PNPM store
+pnpm store prune
+
+# Reinstall dependencies
+pnpm install
+
+# Regenerate Prisma client
+cd apps/dashboard && pnpm prisma generate
+
+# Rebuild all packages
+pnpm build
+```
+
+---
+
+## Getting Help
+
+If you can't find a solution:
+
+1. **Search existing issues** - Someone may have encountered the same problem
+2. **Check relevant category** - Navigate to the specific troubleshooting section
+3. **Create detailed issue** - Include error messages, steps to reproduce, and environment details
+4. **Join discussions** - Ask questions in GitHub Discussions
+
+---
+
+## Report a Bug
+
+When reporting issues, please include:
+
+- **Error message** (full text with stack trace)
+- **Steps to reproduce** (detailed sequence)
+- **Expected behavior** vs. **Actual behavior**
+- **Environment details**:
+  - OS version
+  - Node.js version
+  - PNPM version
+  - PowerShell version (for scripts)
+- **Relevant logs** from build output or workflows

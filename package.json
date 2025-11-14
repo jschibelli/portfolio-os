@@ -9,7 +9,7 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "cd apps/dashboard && prisma generate",
-    "dev": "turbo run dev --parallel --filter=@mindware-blog/site --filter=@mindware-blog/dashboard",
+    "dev": "turbo run dev --parallel --filter=@mindware-blog/site --filter=@mindware-blog/dashboard --filter=@portfolio/docs",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test --continue",
@@ -50,7 +50,9 @@
     "prettier-plugin-tailwindcss": "^0.5.5",
     "tailwindcss": "^3.3.3",
     "turbo": "^2.5.8",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vscode-languageserver-types": "^3.17.5",
+    "vscode-uri": "^3.1.0"
   },
   "packageManager": "pnpm@10.14.0",
   "engines": {

@@ -1,0 +1,928 @@
+---
+title: Migration & Upgrade Guide
+description: >-
+  Complete guide for upgrading dependencies, migrating between versions, and
+  handling breaking changes in Portfolio OS
+---
+## Overview
+
+Complete guide for upgrading dependencies, migrating between versions, and handling breaking changes in Portfolio OS
+
+Comprehensive guide for upgrading Portfolio OS, managing dependencies, and migrating between versions.
+
+## Version Upgrade Strategy
+
+### Semantic Versioning
+
+Portfolio OS follows semantic versioning (SemVer):
+
+- **Major** (x.0.0) - Breaking changes
+- **Minor** (0.x.0) - New features, backward compatible
+- **Patch** (0.0.x) - Bug fixes, backward compatible
+
+---
+
+## Upgrading Dependencies
+
+### Node.js & Package Manager
+
+#### Upgrading Node.js
+
+```bash
+# Check current version
+node --version
+
+# Recommended: Node.js 18 LTS or 20 LTS
+# Download from: https://nodejs.org/
+
+# Verify installation
+node --version
+npm --version
+```
+
+**After upgrading Node.js:**
+
+```bash
+# Clean install dependencies
+rm -rf node_modules
+rm pnpm-lock.yaml
+pnpm install
+```
+
+---
+
+#### Upgrading PNPM
+
+```bash
+# Check current version
+pnpm --version
+
+# Upgrade PNPM
+npm install -g pnpm@latest
+
+# Verify
+pnpm --version
+
+# Update lockfile
+pnpm install
+```
+
+---
+
+### Next.js Upgrades
+
+#### Minor Version Upgrade (14.x → 14.y)
+
+```bash
+# Update Next.js
+pnpm add next@latest -w
+
+# Update related packages
+pnpm add react@latest react-dom@latest -w
+
+# Test build
+pnpm build
+
+# Run development server
+pnpm dev
+```
+
+**Check for breaking changes:**
+- Review [Next.js Release Notes](https://github.com/vercel/next.js/releases)
+- Test all routes
+- Verify API routes
+- Check image optimization
+
+---
+
+#### Major Version Upgrade (14.x → 15.x)
+
+<Note type="warning">
+Major upgrades may include breaking changes. Follow these steps carefully.
+</Note>
+
+**1. Review Breaking Changes**
+
+```bash
+# Read upgrade guide
+open https://nextjs.org/docs/upgrading
+```
+
+**2. Create Upgrade Branch**
+
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b upgrade/nextjs-15
+```
+
+**3. Update Dependencies**
+
+```bash
+# Update Next.js
+pnpm add next@15 -w
+
+# Update React (if required)
+pnpm add react@latest react-dom@latest -w
+
+# Update TypeScript types
+pnpm add -D @types/react@latest @types/react-dom@latest -w
+```
+
+**4. Update Configuration**
+
+```javascript
+// next.config.js
+// Check for deprecated options
+
+const nextConfig = {
+  // Remove deprecated options
+  // Add new required options
+  
+  // Example: New image config in Next.js 15
+  images: {
+    remotePatterns: [/* ... */],
+    // New options
+  },
+};
+```
+
+**5. Update App Router Patterns**
+
+```typescript
+// Update imports if changed
+// Old: import { useRouter } from 'next/router'
+// New: import { useRouter } from 'next/navigation'
+
+// Update route handlers
+// Check API route syntax
+// Verify middleware patterns
+```
+
+**6. Test Thoroughly**
+
+```bash
+# Run type checking
+pnpm typecheck
+
+# Run tests
+pnpm test
+
+# Build application
+pnpm build
+
+# Test production build locally
+pnpm start
+
+# Run E2E tests
+pnpm test:e2e
+```
+
+**7. Deploy to Staging**
+
+```bash
+git push origin upgrade/nextjs-15
+
+# Create PR
+gh pr create --base develop --title "Upgrade to Next.js 15"
+
+# Deploy to staging for testing
+# Monitor for issues
+```
+
+---
+
+### Upgrading Turbo
+
+```bash
+# Check current version
+turbo --version
+
+# Update Turbo
+pnpm add turbo@latest -w -D
+
+# Update turbo.json if needed
+# Check: https://turbo.build/repo/docs/getting-started/upgrade
+
+# Test build
+pnpm build
+
+# Clear cache if issues occur
+rm -rf .turbo
+pnpm build
+```
+
+---
+
+### Database Migrations
+
+#### Prisma Schema Updates
+
+**1. Update Prisma Client**
+
+```bash
+cd apps/dashboard
+
+# Update Prisma
+pnpm add prisma@latest @prisma/client@latest
+
+# Verify versions match
+pnpm prisma --version
+```
+
+**2. Create Migration**
+
+```bash
+# Generate migration from schema changes
+pnpm prisma migrate dev --name describe_your_changes
+
+# Example: Adding new field
+pnpm prisma migrate dev --name add_user_bio_field
+```
+
+**3. Apply to Production**
+
+```bash
+# Set production database URL
+DATABASE_URL="your-production-url" pnpm prisma migrate deploy
+
+# Or use environment variable
+pnpm prisma migrate deploy
+```
+
+**4. Generate Client**
+
+```bash
+# Regenerate Prisma Client
+pnpm prisma generate
+
+# Restart application
+pnpm dev
+```
+
+---
+
+#### Rollback Migration
+
+```bash
+# Reset to previous migration
+pnpm prisma migrate resolve --rolled-back <migration-name>
+
+# Reset database (development only!)
+pnpm prisma migrate reset
+
+# Reapply migrations
+pnpm prisma migrate dev
+```
+
+---
+
+### UI Library Upgrades
+
+#### Radix UI Updates
+
+```bash
+# Update all Radix packages
+pnpm up "@radix-ui/*@latest" -w
+
+# Test components after upgrade
+pnpm dev
+
+# Check for deprecation warnings in console
+```
+
+**Common Breaking Changes:**
+- Prop name changes
+- API updates
+- Styling changes
+- Accessibility improvements
+
+**Testing checklist:**
+- [ ] Navigation components
+- [ ] Dialog/Modal components
+- [ ] Form components
+- [ ] Dropdown/Select components
+- [ ] Tooltip components
+
+---
+
+#### Tailwind CSS Updates
+
+```bash
+# Update Tailwind
+pnpm add tailwindcss@latest -w -D
+
+# Update plugins
+pnpm add @tailwindcss/typography@latest -w -D
+
+# Rebuild CSS
+pnpm dev
+```
+
+**Check for breaking changes:**
+- New color palette
+- Updated utilities
+- Changed default values
+- Plugin changes
+
+---
+
+## Breaking Change Migrations
+
+### Next.js 14 → 15 Breaking Changes
+
+#### App Router Changes
+
+**Before (Next.js 14):**
+
+```typescript
+// app/page.tsx
+export default function Page() {
+  return <div>Hello</div>;
+}
+```
+
+**After (Next.js 15):**
+
+```typescript
+// app/page.tsx
+// No changes required for basic pages
+export default function Page() {
+  return <div>Hello</div>;
+}
+
+// But check for:
+// - New caching behavior
+// - Updated fetch API
+// - Server Actions changes
+```
+
+---
+
+#### Image Component Updates
+
+**Before:**
+
+```tsx
+<Image
+  src="/image.jpg"
+  alt="Description"
+  width={500}
+  height={300}
+  layout="responsive"
+/>
+```
+
+**After:**
+
+```tsx
+<Image
+  src="/image.jpg"
+  alt="Description"
+  width={500}
+  height={300}
+  sizes="100vw"
+  style={{ width: '100%', height: 'auto' }}
+/>
+```
+
+---
+
+#### API Routes to Route Handlers
+
+**Before (Pages Router):**
+
+```typescript
+// pages/api/hello.ts
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Hello' });
+}
+```
+
+**After (App Router):**
+
+```typescript
+// app/api/hello/route.ts
+export async function GET(request: Request) {
+  return Response.json({ message: 'Hello' });
+}
+```
+
+---
+
+### React 18 Features Migration
+
+#### Suspense Boundaries
+
+```typescript
+// Add Suspense boundaries for better loading states
+import { Suspense } from 'react';
+
+export default function Page() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <AsyncComponent />
+    </Suspense>
+  );
+}
+```
+
+---
+
+#### Server Components
+
+```typescript
+// app/components/ServerComponent.tsx
+// No 'use client' directive = Server Component
+
+export default async function ServerComponent() {
+  const data = await fetchData();
+  
+  return <div>{data.content}</div>;
+}
+
+// app/components/ClientComponent.tsx
+'use client';
+
+import { useState } from 'react';
+
+export default function ClientComponent() {
+  const [count, setCount] = useState(0);
+  
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+---
+
+## Environment Variable Changes
+
+### Migrating Environment Variables
+
+**1. Audit Current Variables**
+
+```bash
+# List all environment variables
+cat apps/site/.env.local
+
+# Check for deprecated variables
+grep -r "OLD_VAR_NAME" apps/
+```
+
+**2. Update Variable Names**
+
+Create migration mapping:
+
+| Old Name | New Name | Notes |
+|----------|----------|-------|
+| `NEXT_PUBLIC_API_URL` | `NEXT_PUBLIC_BASE_URL` | Renamed for clarity |
+| `DATABASE_URL` | `DATABASE_URL` | No change |
+| `OPENAI_KEY` | `OPENAI_API_KEY` | Standardized naming |
+
+**3. Update Code**
+
+```typescript
+// Before
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+// After
+const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+```
+
+**4. Update Documentation**
+
+```bash
+# Update env.template
+# Update README
+# Update configuration docs
+```
+
+**5. Deploy Changes**
+
+```bash
+# Update Vercel environment variables
+vercel env add NEXT_PUBLIC_BASE_URL production
+
+# Remove old variables
+vercel env rm NEXT_PUBLIC_API_URL production
+```
+
+---
+
+## Script Migrations
+
+### PowerShell Script Updates
+
+#### Updating Script Paths
+
+**Before:**
+
+```powershell
+.\scripts\automation\create-issue.ps1
+```
+
+**After (Reorganized):**
+
+```powershell
+.\scripts\issue-management\create-issue-enhanced.ps1
+```
+
+**Migration script:**
+
+```powershell
+# scripts/utilities/migrate-script-paths.ps1
+
+$oldPaths = @{
+    "automation\create-issue.ps1" = "issue-management\create-issue-enhanced.ps1"
+    "automation\manage-pr.ps1" = "pr-management\automate-pr-unified.ps1"
+}
+
+foreach ($old in $oldPaths.Keys) {
+    $new = $oldPaths[$old]
+    Write-Host "Migrating: $old → $new"
+    
+    # Update references in other scripts
+    Get-ChildItem -Path "scripts" -Recurse -Filter "*.ps1" | ForEach-Object {
+        $content = Get-Content $_.FullName -Raw
+        if ($content -match $old) {
+            $content = $content -replace [regex]::Escape($old), $new
+            Set-Content $_.FullName -Value $content
+            Write-Host "  Updated: $($_.Name)"
+        }
+    }
+}
+```
+
+---
+
+#### GitHub CLI Authentication Updates
+
+**Old authentication method:**
+
+```powershell
+$env:GITHUB_TOKEN = "ghp_token"
+gh api ...
+```
+
+**New authentication method:**
+
+```powershell
+# Use gh auth login
+gh auth login --scopes repo,project,workflow
+
+# Refresh token
+gh auth refresh --scopes repo,project,workflow
+
+# Use in scripts
+gh api ... # Automatically uses authenticated session
+```
+
+---
+
+## Configuration File Migrations
+
+### turbo.json Updates
+
+**Version 1 → Version 2:**
+
+```json
+{
+  // Before
+  "pipeline": {
+    "build": {
+      "outputs": [".next/**"]
+    }
+  },
+  
+  // After
+  "tasks": {
+    "build": {
+      "outputs": [".next/**"]
+    }
+  }
+}
+```
+
+---
+
+### package.json Scripts
+
+**Before:**
+
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "jest"
+  }
+}
+```
+
+**After (with Turbo):**
+
+```json
+{
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test --continue"
+  }
+}
+```
+
+---
+
+## Data Migrations
+
+### User Data Migration
+
+```typescript
+// scripts/migrations/migrate-user-data.ts
+
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function migrateUserData() {
+  // Get all users
+  const users = await prisma.user.findMany();
+  
+  // Transform data
+  for (const user of users) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        // Add new fields
+        bio: user.profile?.bio || null,
+        // Transform existing fields
+        name: user.name?.trim(),
+      },
+    });
+  }
+  
+  console.log(`Migrated ${users.length} users`);
+}
+
+migrateUserData()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());
+```
+
+**Run migration:**
+
+```bash
+DATABASE_URL="..." ts-node scripts/migrations/migrate-user-data.ts
+```
+
+---
+
+## Testing After Migration
+
+### Comprehensive Test Checklist
+
+**1. Unit Tests**
+
+```bash
+pnpm test
+# Verify all tests pass
+```
+
+**2. Type Checking**
+
+```bash
+pnpm typecheck
+# Fix any type errors
+```
+
+**3. Build Verification**
+
+```bash
+pnpm build
+# Ensure builds successfully
+```
+
+**4. E2E Tests**
+
+```bash
+pnpm test:e2e
+# Test critical user flows
+```
+
+**5. Manual Testing**
+
+- [ ] Homepage loads correctly
+- [ ] Navigation works
+- [ ] Blog posts render
+- [ ] Projects page displays
+- [ ] Contact form submits
+- [ ] Authentication works
+- [ ] Dashboard accessible
+- [ ] API routes respond
+
+**6. Performance Testing**
+
+```bash
+# Run Lighthouse
+pnpm build
+pnpm start
+# Open localhost:3000
+# Run Lighthouse audit
+```
+
+---
+
+## Rollback Procedures
+
+### Quick Rollback
+
+**1. Revert Code Changes**
+
+```bash
+# Revert to previous commit
+git revert HEAD
+
+# Or reset to previous commit (destructive)
+git reset --hard HEAD~1
+
+# Force push (if necessary)
+git push origin develop --force
+```
+
+**2. Redeploy Previous Version**
+
+```bash
+# On Vercel
+vercel rollback
+
+# Or redeploy previous commit
+vercel --prod
+```
+
+**3. Database Rollback**
+
+```bash
+# Rollback migration
+pnpm prisma migrate resolve --rolled-back <migration-name>
+
+# Or restore from backup
+# (See your database provider's documentation)
+```
+
+---
+
+### Gradual Rollback
+
+**1. Feature Flags**
+
+```typescript
+// Enable/disable features without deploying
+const features = {
+  newFeature: process.env.FEATURE_NEW_FEATURE === 'true',
+};
+
+export default function Component() {
+  if (!features.newFeature) {
+    return <OldComponent />;
+  }
+  return <NewComponent />;
+}
+```
+
+**2. Canary Deployment**
+
+```bash
+# Deploy to subset of users
+vercel --prod --alias canary.example.com
+
+# If successful, promote to main
+vercel alias canary.example.com www.example.com
+```
+
+---
+
+## Version-Specific Guides
+
+### Next.js 13 → 14
+
+**Key Changes:**
+- Server Actions stable
+- Partial Prerendering (experimental)
+- Improved error handling
+
+**Migration steps:**
+1. Update dependencies
+2. Test Server Actions
+3. Update error boundaries
+4. Test thoroughly
+
+---
+
+### Next.js 14 → 15
+
+**Key Changes:**
+- React 19 support
+- Turbopack stable
+- Enhanced caching
+
+**Migration steps:**
+1. Review React 19 breaking changes
+2. Test with Turbopack
+3. Verify caching behavior
+4. Update error handling
+
+---
+
+## Automation Script Upgrades
+
+### Multi-Agent System v1 → v2
+
+**Breaking Changes:**
+- Configuration file format changed
+- Agent assignment logic updated
+- Worktree management refactored
+
+**Migration:**
+
+```powershell
+# Backup old config
+Copy-Item scripts/configuration/agent-config.json `
+          scripts/configuration/agent-config-v1-backup.json
+
+# Run migration script
+.\scripts/utilities/migrate-agent-config-v1-to-v2.ps1
+
+# Verify new configuration
+Get-Content scripts/configuration/agent-assignment-config.json
+
+# Test new system
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Operation status
+```
+
+---
+
+## Best Practices
+
+### Pre-Migration Checklist
+
+- [ ] **Backup database**
+- [ ] **Document current state**
+- [ ] **Create upgrade branch**
+- [ ] **Review changelog**
+- [ ] **Test in staging**
+- [ ] **Prepare rollback plan**
+- [ ] **Schedule maintenance window**
+- [ ] **Notify team**
+
+---
+
+### During Migration
+
+- [ ] **Monitor logs**
+- [ ] **Test each step**
+- [ ] **Document issues**
+- [ ] **Keep communication open**
+- [ ] **Have rollback ready**
+
+---
+
+### Post-Migration
+
+- [ ] **Verify all functionality**
+- [ ] **Monitor performance**
+- [ ] **Check error logs**
+- [ ] **Update documentation**
+- [ ] **Notify team of completion**
+- [ ] **Schedule retrospective**
+
+---
+
+## Emergency Contacts
+
+### When Things Go Wrong
+
+1. **Immediate rollback** if critical issues
+2. **Check logs** for error details
+3. **Consult documentation**
+4. **Reach out to community**
+5. **Create detailed issue report**
+
+---
+
+## Additional Resources
+
+### Internal Documentation
+- [Configuration Reference](/docs/reference/configuration)
+- [Testing Guide](/docs/testing)
+- [Troubleshooting](/docs/troubleshooting)
+- [CI/CD Workflows](/docs/scripts-reference/ci-cd)
+
+### External Resources
+- [Next.js Upgrade Guide](https://nextjs.org/docs/upgrading)
+- [React Migration Guide](https://react.dev/blog/2022/03/08/react-18-upgrade-guide)
+- [Prisma Migration Guide](https://www.prisma.io/docs/guides/migrate)
+- [Vercel Deployment Guide](https://vercel.com/docs/deployments/overview)
+
+---
+
+**Need Help?** Create an issue with detailed migration steps and error messages for assistance.

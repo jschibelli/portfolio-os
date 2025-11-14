@@ -1,8 +1,9 @@
 ---
 title: Testing & Regression Strategy
-description: How Portfolio OS uses automated Jest and Playwright suites to prevent regressions across every release.
+description: >-
+  How Portfolio OS uses automated Jest and Playwright suites to prevent
+  regressions across every release.
 ---
-
 <Note type="success" title="Confidence at Every Release">
   Regression suites run on every pull request and before production deploys. That means every change is verified against business-critical flows before it reaches real users.
 </Note>
@@ -115,4 +116,3 @@ pnpm --filter @mindware-blog/site test:visual:update
 - [Development Practices](/docs/features/development-practices) — broader quality philosophy and CI pipeline details.
 - [Platform Architecture](/docs/features/platform-architecture) — how the deployment pipeline orchestrates these checks.
 - [Release Guide](/docs/releases/release-guide) — governance around final release sign-off.
-

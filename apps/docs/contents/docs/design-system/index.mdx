@@ -1,0 +1,58 @@
+---
+title: Design System
+description: >-
+  Tokens, typography, color, and spacing decisions that drive Portfolio OS
+  across web and docs surfaces.
+keywords: 'design system, tokens, typography'
+---
+## Overview
+
+The design system codifies colors, spacing, typography, and interaction patterns shared across the docs, site, and dashboard apps. It is implemented in Tailwind (docs) and CSS variables (site/dashboard) so UI teams can ship consistently without rewriting tokens per surface.
+
+---
+
+## Tokens
+
+Design tokens live inside `apps/docs/styles/globals.css` and `packages/ui/tailwind.config.js`. They expose semantic names instead of hex values:
+
+- `--color-background`, `--color-card`, `--color-ring`
+- `--radius-sm`, `--radius-md`, `--radius-lg`
+- `--color-sidebar-*` for navigation chrome
+
+Use semantic tokens inside components instead of hard-coded colors to keep dark mode parity.
+
+---
+
+## Typography
+
+`Inter` is the primary font across apps. In docs, typography is wrapped with the shared `Typography` component which applies prose styles, list markers, and code block formatting. For site/dashboard surfaces, typography utilities live in `packages/ui` and map to Tailwind presets.
+
+| Use Case | Utility | Notes |
+| -------- | ------- | ----- |
+| Page titles | `text-3xl font-semibold` | Mirror docs `<h1>` styling |
+| Section headings | `text-xl font-semibold` | Align with `## Overview` sections |
+| Body text | `text-sm text-muted-foreground` | Ensures contrast in both themes |
+
+---
+
+## Interaction & Components
+
+- Radix primitives ensure accessible dialogs, sheets, and dropdowns.
+- `class-variance-authority` enforces consistent variant naming (e.g., `variant="primary"` vs `size="lg"`).
+- Hover/focus states should use `ring` utilities and `transition` helpers for smooth feedback.
+
+When introducing a new component, update:
+
+1. The component implementation (`packages/ui` or app-specific directory)
+2. Storybook story (`apps/site/components/**/Component.stories.tsx`)
+3. Documentation entry (usually `docs/component-library`)
+
+---
+
+## Resources
+
+- [Components & Patterns](/docs/developer-guide/components)
+- [Storybook Component Library](/docs/component-library/storybook)
+- [Typography + tokens source (`globals.css`)](https://github.com/jschibelli/portfolio-os/blob/main/apps/docs/styles/globals.css)
+
+This shared system allows design updates (colors, typography, spacing) to propagate instantly to every app without manual refactors.

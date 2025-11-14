@@ -2,7 +2,6 @@
 title: Developer Guide
 description: Comprehensive guide for developers working on Portfolio OS
 ---
-
 Welcome to the Portfolio OS Developer Guide. This comprehensive resource covers everything you need to know to contribute effectively to the project.
 
 ## Overview
@@ -168,7 +167,7 @@ The `workspace:*` protocol links to the local package.
 **Critical Guidelines:**
 
 1. Always run tests before submitting PRs
-2. Follow the commit convention (see [Workflow](/docs/developer-guide/workflow))
+2. Follow the commit convention (see [Workflow](/docs/developer-guide/workflow) – Commit Convention section)
 3. Update documentation when adding features
 4. Review TypeScript errors - don't ignore them
 5. Test both site and dashboard apps when changing shared packages
@@ -177,12 +176,12 @@ The `workspace:*` protocol links to the local package.
 ## Testing & Quality Gates
 
 - Run `pnpm lint`, `pnpm typecheck`, and any relevant `pnpm test --filter=<package>` commands before opening a PR.
-- Follow the [Testing Strategy](/docs/testing/overview) to understand which suites cover API routes, UI flows, and end-to-end scenarios.
+- Follow the [Testing Strategy](/docs/testing) to understand which suites cover API routes, UI flows, and end-to-end scenarios.
 - Capture manual testing notes in the PR description, including environment variables or feature flags used.
 
 ## Version Control & Reviews
 
-- Use the conventional commit format described in [Development Workflow](/docs/developer-guide/workflow#commit-conventions).
+- Use the conventional commit format described in [Development Workflow](/docs/developer-guide/workflow) (Commit Convention section).
 - Reference related issues in PR descriptions and docs updates to maintain traceability.
 - Respond to code review feedback promptly; push follow-up commits that directly address reviewer comments and note the resolution in the PR thread.
 
@@ -203,4 +202,3 @@ The `workspace:*` protocol links to the local package.
 <Note>
 This developer guide is continuously updated. If you find gaps or inaccuracies, please open an issue or submit a PR!
 </Note>
-

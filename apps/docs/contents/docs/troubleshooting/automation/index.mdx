@@ -1,0 +1,894 @@
+---
+title: Automation Troubleshooting
+description: 'Solutions for PowerShell scripts, GitHub Actions, and automation system issues'
+---
+## Overview
+
+Solutions for PowerShell scripts, GitHub Actions, and automation system issues
+
+Comprehensive troubleshooting guide for PowerShell automation scripts, GitHub Actions workflows, and multi-agent systems.
+
+## PowerShell Script Issues
+
+### GitHub CLI Not Authenticated
+
+**Problem:** Scripts fail with `gh: Not logged in. Run 'gh auth login' to authenticate.`
+
+**Solution:**
+
+```powershell
+# Login to GitHub CLI
+gh auth login
+
+# Verify authentication
+gh auth status
+
+# Set required scopes
+gh auth refresh --scopes repo,project,workflow,admin:org
+
+# Check token
+gh auth token
+```
+
+**Required scopes:**
+- `repo` - Full repository access
+- `project` - Project management
+- `workflow` - GitHub Actions workflows
+- `admin:org` - Organization projects (if applicable)
+
+---
+
+### GITHUB_TOKEN Not Set
+
+**Problem:** `The term 'GITHUB_TOKEN' is not recognized`
+
+**Solution:**
+
+```powershell
+# Option 1: Set in current session
+$env:GITHUB_TOKEN = "ghp_your_token_here"
+
+# Option 2: Set permanently (Windows)
+[System.Environment]::SetEnvironmentVariable('GITHUB_TOKEN', 'ghp_your_token', 'User')
+
+# Option 3: Add to PowerShell profile
+Add-Content $PROFILE "`n`$env:GITHUB_TOKEN = 'ghp_your_token'"
+
+# Verify
+Write-Host $env:GITHUB_TOKEN
+```
+
+**Get token:**
+1. GitHub → Settings → Developer Settings → Personal Access Tokens
+2. Generate new token (classic)
+3. Select required scopes
+4. Copy immediately (shown only once)
+
+---
+
+### PowerShell Execution Policy Error
+
+**Problem:** `File cannot be loaded because running scripts is disabled`
+
+**Solution:**
+
+```powershell
+# Check current policy
+Get-ExecutionPolicy
+
+# Set for current user (recommended)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Or bypass for current session
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+
+# Verify
+Get-ExecutionPolicy -List
+```
+
+**Policies:**
+- `Restricted` - No scripts allowed
+- `RemoteSigned` - Downloaded scripts must be signed (recommended)
+- `Unrestricted` - All scripts allowed (not recommended)
+- `Bypass` - Nothing blocked, no warnings
+
+---
+
+### GitHub API Rate Limiting
+
+**Problem:** `API rate limit exceeded for user`
+
+**Solution:**
+
+```powershell
+# Check rate limit status
+gh api rate_limit
+
+# Wait until reset time or use authenticated requests
+$headers = @{
+    "Authorization" = "token $env:GITHUB_TOKEN"
+}
+
+# Most scripts already use authentication
+# If hitting limits, add delays between calls:
+Start-Sleep -Seconds 1
+```
+
+**Rate limits:**
+- Unauthenticated: 60 requests/hour
+- Authenticated: 5,000 requests/hour
+- GraphQL: 5,000 points/hour
+
+---
+
+### Project Item Not Found
+
+**Problem:** `Could not resolve to an item with number XX`
+
+**Solution:**
+
+```powershell
+# Check project number
+$projectNumber = "20"  # Your project number
+
+# List all items to verify
+gh project item-list $projectNumber --owner $owner --format json
+
+# If item exists, check permissions
+gh api graphql -f query='
+  query {
+    repository(owner: "yourusername", name: "yourrepo") {
+      projectV2(number: 20) {
+        id
+      }
+    }
+  }
+'
+
+# Common causes:
+# 1. Wrong project number
+# 2. Item was deleted
+# 3. No permissions
+# 4. Using organization project without org scope
+```
+
+---
+
+### JSON Parsing Errors
+
+**Problem:** `ConvertFrom-Json: Invalid JSON primitive`
+
+**Solution:**
+
+```powershell
+# Add error handling
+try {
+    $data = gh api ... | ConvertFrom-Json
+} catch {
+    Write-Host "JSON Parse Error:"
+    Write-Host $_.Exception.Message
+    Write-Host "Raw response:"
+    gh api ... # Show raw response
+}
+
+# Common causes:
+# 1. Empty response
+# 2. Non-JSON response (HTML error page)
+# 3. Rate limiting response
+# 4. Invalid query parameters
+
+# Debug by examining raw response:
+$raw = gh api /repos/owner/repo/issues/1 --jq '.'
+Write-Host $raw
+```
+
+---
+
+### Worktree Creation Fails
+
+**Problem:** `fatal: 'worktrees/agent-1' already exists`
+
+**Solution:**
+
+```powershell
+# List worktrees
+git worktree list
+
+# Remove existing worktree
+git worktree remove worktrees/agent-1
+
+# Force remove if locked
+git worktree remove --force worktrees/agent-1
+
+# Prune stale worktrees
+git worktree prune
+
+# Clean up references
+Remove-Item -Path .git/worktrees/agent-1 -Force -Recurse -ErrorAction SilentlyContinue
+
+# Recreate worktree
+git worktree add worktrees/agent-1 develop
+```
+
+---
+
+### Branch Conflicts
+
+**Problem:** `error: Your local changes would be overwritten by checkout`
+
+**Solution:**
+
+```powershell
+# Stash changes
+git stash push -m "Temporary stash before agent switch"
+
+# Switch agent/worktree
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 -Agent "agent-1"
+
+# Apply stashed changes
+git stash pop
+
+# Or discard changes if not needed
+git reset --hard HEAD
+```
+
+---
+
+## GitHub Actions Issues
+
+### Workflow Not Triggering
+
+**Problem:** Workflow doesn't run on push/PR
+
+**Solution:**
+
+```yaml
+# Check workflow triggers
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]  # Add all needed types
+  push:
+    branches: [develop, main]
+
+# Check path filters
+paths:
+  - "apps/**"
+  - "!apps/docs/**"  # Exclude docs
+
+# Verify workflow is enabled in GitHub
+# Repository → Actions → Select workflow → Enable workflow
+```
+
+**Common causes:**
+1. Workflow file not in `.github/workflows/`
+2. Invalid YAML syntax
+3. Workflow disabled
+4. Branch protection preventing triggers
+5. Path filters excluding changes
+
+---
+
+### Workflow Fails Silently
+
+**Problem:** Workflow shows as successful but tasks didn't run
+
+**Solution:**
+
+```yaml
+# Add explicit job dependencies
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: [...]
+  
+  test:
+    needs: build  # Ensure build completes first
+    runs-on: ubuntu-latest
+    steps: [...]
+
+# Check conditional logic
+- name: Deploy
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  run: |
+    # This only runs on push to main
+    pnpm deploy
+
+# Enable debug logging
+- name: Debug
+  run: |
+    echo "Event: ${{ github.event_name }}"
+    echo "Ref: ${{ github.ref }}"
+    echo "Branch: ${{ github.head_ref }}"
+```
+
+---
+
+### Secrets Not Available
+
+**Problem:** `Error: Input required and not supplied: token`
+
+**Solution:**
+
+```yaml
+# Check secret name matches exactly
+- name: Deploy
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Auto-provided
+    CUSTOM_SECRET: ${{ secrets.CUSTOM_SECRET }}  # Must be set manually
+
+# Secrets are case-sensitive!
+# In GitHub: MY_SECRET
+# In workflow: ${{ secrets.MY_SECRET }}
+
+# Verify secrets are set:
+# Repository → Settings → Secrets and Variables → Actions
+
+# Organization secrets must be shared with repository
+```
+
+---
+
+### Permissions Errors
+
+**Problem:** `Resource not accessible by integration`
+
+**Solution:**
+
+```yaml
+# Add required permissions to workflow
+permissions:
+  contents: write      # For pushing commits
+  pull-requests: write # For PR comments
+  issues: write        # For issue management
+  projects: write      # For project boards
+
+# Or grant all permissions (not recommended)
+permissions: write-all
+
+# Check token permissions
+- name: Check Permissions
+  run: |
+    gh api /repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission
+```
+
+---
+
+### Cache Not Working
+
+**Problem:** Cache always misses, builds slow
+
+**Solution:**
+
+```yaml
+- name: Cache Dependencies
+  uses: actions/cache@v4
+  with:
+    path: |
+      ~/.pnpm-store
+      node_modules
+      .next/cache
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+    restore-keys: |
+      ${{ runner.os }}-pnpm-
+
+# Common issues:
+# 1. Key changes on every run (use stable keys)
+# 2. Wrong paths
+# 3. Cache size limit exceeded (10GB)
+# 4. Cache was manually cleared
+```
+
+---
+
+## Multi-Agent System Issues
+
+### Agent Assignment Fails
+
+**Problem:** Issues not assigned to correct agent
+
+**Solution:**
+
+```powershell
+# Check agent configuration
+Get-Content scripts/configuration/agent-assignment-config.json
+
+# Verify issue labels/areas match agent configuration
+# Example: Issue labeled "Frontend" should match:
+{
+  "assignedAreas": ["Frontend", "UI/UX"]
+}
+
+# Manually assign issue
+.\scripts\issue-management\create-issue-enhanced.ps1 `
+  -Title "Test Issue" `
+  -Labels "Frontend" `
+  -Assignee "jschibelli"
+
+# Check agent availability
+.\scripts\agent-management\update-agent-status.ps1 -Status
+```
+
+---
+
+### Worktree Sync Issues
+
+**Problem:** Worktrees out of sync with main repo
+
+**Solution:**
+
+```powershell
+# Update all worktrees
+$worktrees = git worktree list --porcelain | Select-String "worktree" | ForEach-Object {
+    $_.ToString().Replace("worktree ", "")
+}
+
+foreach ($worktree in $worktrees) {
+    if ($worktree -ne (Get-Location).Path) {
+        Push-Location $worktree
+        Write-Host "Updating $worktree"
+        git fetch origin
+        git rebase origin/develop
+        Pop-Location
+    }
+}
+
+# Or use unified script
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 -Operation sync
+```
+
+---
+
+### Conflict Prevention Not Working
+
+**Problem:** Multiple agents editing same files
+
+**Solution:**
+
+```json
+// scripts/configuration/worktree-state.json
+{
+  "agents": {
+    "agent-1": {
+      "lockedIssues": [123, 124],  // Issues locked by this agent
+      "lockedFiles": [              // Files locked by this agent
+        "apps/site/components/Hero.tsx"
+      ]
+    }
+  },
+  "system": {
+    "conflictPrevention": {
+      "enabled": true,
+      "lockTimeout": 3600,  // Auto-unlock after 1 hour
+      "maxRetries": 3
+    }
+  }
+}
+```
+
+```powershell
+# Check locked issues
+$state = Get-Content scripts/configuration/worktree-state.json | ConvertFrom-Json
+$state.agents.'agent-1'.lockedIssues
+
+# Unlock issue if stuck
+# Edit worktree-state.json and remove from lockedIssues array
+```
+
+---
+
+### Agent Coordination Failures
+
+**Problem:** Agents not communicating properly
+
+**Solution:**
+
+```powershell
+# Check agent status
+.\scripts\agent-management\update-agent-status.ps1 -Agent "agent-1" -Status
+
+# View all agent statuses
+$state = Get-Content scripts/configuration/worktree-state.json | ConvertFrom-Json
+$state.agents.PSObject.Properties | ForEach-Object {
+    Write-Host "$($_.Name): $($_.Value.status)"
+}
+
+# Reset agent state
+.\scripts\agent-management\manage-agent-coordinator.ps1 -Operation reset -Agent "agent-1"
+
+# Full system reset
+Remove-Item scripts/configuration/worktree-state.json
+.\scripts\agent-management\setup-agent-development.ps1
+```
+
+---
+
+## PR Automation Issues
+
+### PR Not Auto-Configured
+
+**Problem:** PR fields not populated automatically
+
+**Solution:**
+
+```powershell
+# Manually configure PR
+.\scripts\pr-management\configure-pr-auto.ps1 `
+  -PRNumber 150 `
+  -Priority P1 `
+  -Size M `
+  -App "Portfolio Site" `
+  -Area "Frontend"
+
+# Check workflow trigger
+# Workflow runs on PR open, not draft
+# Convert to ready for review to trigger
+
+# Check workflow logs
+gh run list --workflow=pr-automation-optimized.yml
+
+# Verify project connection
+gh api graphql -f query='
+  query {
+    repository(owner: "yourusername", name: "portfolio-os") {
+      pullRequest(number: 150) {
+        projectItems(first: 10) {
+          nodes {
+            project {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+'
+```
+
+---
+
+### CR-GPT Not Responding
+
+**Problem:** Code review bot doesn't comment
+
+**Solution:**
+
+```yaml
+# Check if CR-GPT is installed
+# Repository → Settings → Integrations → Applications
+
+# Verify PR is not in draft
+# CR-GPT only reviews ready PRs
+
+# Check PR size
+# Very large PRs may timeout
+# Split into smaller PRs
+
+# Manual CR-GPT trigger
+# Add comment: @cr-gpt review
+```
+
+---
+
+### PR Quality Checks Failing
+
+**Problem:** Quality checker reports issues
+
+**Solution:**
+
+```powershell
+# Run quality checks locally
+.\scripts\pr-management\pr-quality-checker.ps1 `
+  -PRNumber 150 `
+  -Checks all `
+  -Detailed
+
+# Auto-fix issues
+.\scripts\pr-management\pr-quality-checker.ps1 `
+  -PRNumber 150 `
+  -Checks all `
+  -AutoFix
+
+# Check specific areas
+.\scripts\pr-management\pr-quality-checker.ps1 `
+  -PRNumber 150 `
+  -Checks security,performance `
+  -Detailed
+
+# Skip checks if intentional
+# Add to PR description: [skip-checks]
+```
+
+---
+
+## Issue Management Issues
+
+### Issue Queue Not Processing
+
+**Problem:** Issues stuck in queue
+
+**Solution:**
+
+```powershell
+# Check issue queue
+.\scripts\issue-management\management\manage-issue-queue.ps1 -List
+
+# Process queue manually
+.\scripts\issue-management\management\run-issue-pipeline.ps1
+
+# Check for errors in logs
+# Issues may be blocked by:
+# - Missing labels
+# - Assignee not available
+# - Conflict with existing work
+
+# Clear stuck items
+.\scripts\issue-management\management\manage-issue-queue.ps1 -Clear
+```
+
+---
+
+### Auto-Configuration Not Working
+
+**Problem:** New issues not automatically configured
+
+**Solution:**
+
+```yaml
+# Check workflow trigger
+# .github/workflows/auto-configure-issues-optimized.yml
+
+on:
+  issues:
+    types: [opened, labeled, assigned]
+
+# Workflow must be enabled
+# Check: Repository → Actions → Workflows
+
+# Verify issue template has required fields
+# .github/ISSUE_TEMPLATE/feature_request.md
+
+# Manual configuration
+.\scripts\issue-management\configuration\configure-issue-auto.ps1 `
+  -IssueNumber 123 `
+  -Priority P1 `
+  -Size M `
+  -Iteration @current
+```
+
+---
+
+## Debugging Techniques
+
+### Enable Verbose Logging
+
+```powershell
+# Set verbose preference
+$VerbosePreference = "Continue"
+
+# Run script with verbose flag
+.\script.ps1 -Verbose
+
+# Enable debug output
+$DebugPreference = "Continue"
+.\script.ps1 -Debug
+
+# View all environment variables
+Get-ChildItem env: | Sort-Object Name
+```
+
+---
+
+### Test GitHub API Calls
+
+```powershell
+# Test connection
+gh api /user
+
+# Test specific endpoint
+gh api /repos/yourusername/portfolio-os/issues/1
+
+# Test with full response
+gh api /repos/yourusername/portfolio-os/issues/1 --include
+
+# Use GraphQL playground
+# https://docs.github.com/en/graphql/overview/explorer
+
+# Test GraphQL query
+gh api graphql -f query='
+  query {
+    viewer {
+      login
+    }
+  }
+'
+```
+
+---
+
+### Script Debugging
+
+```powershell
+# Add breakpoints (PowerShell ISE)
+Set-PSBreakpoint -Script .\script.ps1 -Line 50
+
+# Step through script
+$host.EnterNestedPrompt()
+
+# Inspect variables
+Write-Host "Variable value: $myVariable"
+$myVariable | Get-Member
+
+# Catch all errors
+try {
+    # Your code
+} catch {
+    Write-Host "Error: $($_.Exception.Message)"
+    Write-Host "Stack trace: $($_.ScriptStackTrace)"
+}
+```
+
+---
+
+## Performance Issues
+
+### Script Running Slowly
+
+**Problem:** Automation scripts take too long
+
+**Solution:**
+
+```powershell
+# Measure script execution time
+Measure-Command {
+    .\scripts\pr-management\configure-pr-auto.ps1 -PRNumber 150
+}
+
+# Profile slow sections
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+# ... code ...
+Write-Host "Section took $($stopwatch.Elapsed.TotalSeconds) seconds"
+
+# Optimize API calls:
+# 1. Batch requests when possible
+# 2. Use GraphQL instead of REST for complex queries
+# 3. Cache responses
+# 4. Run operations in parallel
+
+# Parallel execution example
+$jobs = @()
+foreach ($item in $items) {
+    $jobs += Start-Job -ScriptBlock {
+        param($item)
+        # Process item
+    } -ArgumentList $item
+}
+$jobs | Wait-Job | Receive-Job
+```
+
+---
+
+### Too Many API Requests
+
+**Problem:** Hitting GitHub API rate limits
+
+**Solution:**
+
+```powershell
+# Check rate limit before operations
+$rateLimit = gh api /rate_limit | ConvertFrom-Json
+if ($rateLimit.rate.remaining -lt 100) {
+    Write-Host "Rate limit low, waiting..."
+    Start-Sleep -Seconds 60
+}
+
+# Use GraphQL for complex queries (more efficient)
+# Example: Get PR with all data in one request
+gh api graphql -f query='
+  query ($owner: String!, $repo: String!, $number: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $number) {
+        title
+        body
+        files(first: 100) {
+          nodes { path }
+        }
+        reviews(first: 10) {
+          nodes { state }
+        }
+      }
+    }
+  }
+' -f owner="yourusername" -f repo="portfolio-os" -F number=150
+
+# Cache results in memory for session
+$script:prCache = @{}
+```
+
+---
+
+## Getting Help
+
+### Log Files
+
+Check logs in these locations:
+
+```powershell
+# Script logs (if enabled)
+Get-Content scripts/logs/pr-automation-$(Get-Date -Format 'yyyy-MM-dd').log
+
+# GitHub Actions logs
+gh run view $(gh run list --limit 1 --json databaseId --jq '.[0].databaseId')
+
+# PowerShell transcript (if enabled)
+Start-Transcript -Path "C:\temp\script-log.txt"
+# ... run scripts ...
+Stop-Transcript
+```
+
+---
+
+### Report Issues
+
+When reporting issues, include:
+
+1. **Error message** (full text)
+2. **Command executed** (exact command)
+3. **Environment**:
+   ```powershell
+   $PSVersionTable
+   gh --version
+   git --version
+   ```
+4. **Steps to reproduce**
+5. **Expected vs actual behavior**
+6. **Relevant logs**
+
+---
+
+### Quick Diagnostics
+
+```powershell
+# Check environment
+Write-Host "=== Environment Check ==="
+Write-Host "PowerShell: $($PSVersionTable.PSVersion)"
+Write-Host "Git: $(git --version)"
+Write-Host "GitHub CLI: $(gh --version)"
+Write-Host "Node: $(node --version)"
+Write-Host "PNPM: $(pnpm --version)"
+
+# Check authentication
+Write-Host "`n=== Authentication ==="
+Write-Host "GitHub CLI: $(gh auth status 2>&1)"
+Write-Host "Token set: $([bool]$env:GITHUB_TOKEN)"
+
+# Check repository
+Write-Host "`n=== Repository ==="
+Write-Host "Remote: $(git remote get-url origin)"
+Write-Host "Branch: $(git branch --show-current)"
+Write-Host "Status: $(git status --short)"
+
+# Check configuration
+Write-Host "`n=== Configuration ==="
+Test-Path scripts/configuration/agent-assignment-config.json
+Test-Path scripts/configuration/worktree-state.json
+```
+
+---
+
+## Additional Resources
+
+### Internal Documentation
+- [Script Reference](/docs/scripts-reference)
+- [CI/CD Workflows](/docs/scripts-reference/ci-cd)
+- [Configuration Reference](/docs/reference/configuration)
+- [Common Issues](/docs/troubleshooting/common-issues)
+
+### External Resources
+- [PowerShell Documentation](https://docs.microsoft.com/en-us/powershell/)
+- [GitHub CLI Documentation](https://cli.github.com/manual/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [GitHub GraphQL API](https://docs.github.com/en/graphql)
+
+---
+
+**Still having issues?** Create an issue in the repository with full details and logs.

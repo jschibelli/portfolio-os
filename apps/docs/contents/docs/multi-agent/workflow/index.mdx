@@ -2,41 +2,74 @@
 title: Workflow Automation
 description: Automated workflows for multi-agent development
 ---
+## Overview
 
-# Workflow Automation
+Automated workflows for multi-agent development
 
 Orchestrate multi-agent workflows through automated systems and CI/CD integration.
+
+<Note type="info" title="Automated Orchestration">
+The workflow automation system handles the complete lifecycle from task assignment to PR merge, enabling parallel development with minimal manual intervention.
+</Note>
 
 ## End-to-End Workflow
 
 Complete automated workflow from task assignment to PR merge:
 
-<Mermaid chart={`sequenceDiagram
-    participant Human
-    participant Script
-    participant Agent1
-    participant Agent2
-    participant GitHub
+<Mermaid chart={`graph TB
+    Start[New Tasks Created] --> Initialize[Initialize Agent Worktrees]
+    Initialize --> Assign[Assign Tasks by Specialization]
     
-    Human->>Script: Start workflow
-    Script->>Agent1: Create worktree
-    Script->>Agent2: Create worktree
-    Script->>Agent1: Assign task A
-    Script->>Agent2: Assign task B
+    Assign --> Agent1[Agent 1: Frontend Task]
+    Assign --> Agent2[Agent 2: Backend Task]
     
-    Agent1->>Agent1: Implement feature
-    Agent2->>Agent2: Implement feature
+    Agent1 --> Dev1[Develop Feature A]
+    Agent2 --> Dev2[Develop Feature B]
     
-    Agent1->>GitHub: Create PR #123
-    Agent2->>GitHub: Create PR #124
+    Dev1 --> PR1[Create PR #123]
+    Dev2 --> PR2[Create PR #124]
     
-    GitHub->>GitHub: Run CI tests
-    GitHub->>Human: Request review
+    PR1 --> CI1[Run CI/CD Tests]
+    PR2 --> CI2[Run CI/CD Tests]
     
-    Human->>GitHub: Approve & merge
+    CI1 --> Quality1{Quality Checks Pass?}
+    CI2 --> Quality2{Quality Checks Pass?}
     
-    Script->>Agent1: Clean up worktree
-    Script->>Agent2: Clean up worktree`} />
+    Quality1 -->|Yes| Review1[Human Review]
+    Quality1 -->|No| Fix1[Auto-fix Issues]
+    Fix1 --> CI1
+    
+    Quality2 -->|Yes| Review2[Human Review]
+    Quality2 -->|No| Fix2[Auto-fix Issues]
+    Fix2 --> CI2
+    
+    Review1 --> Merge1[Merge to Develop]
+    Review2 --> Merge2[Merge to Develop]
+    
+    Merge1 --> Cleanup[Cleanup Worktrees]
+    Merge2 --> Cleanup
+    
+    Cleanup --> Complete[Workflow Complete]
+    
+    style Start fill:#e1f5ff
+    style Initialize fill:#fff4e1
+    style Assign fill:#ffe1e1
+    style Agent1 fill:#e1ffe1
+    style Agent2 fill:#e1ffe1
+    style Dev1 fill:#f0e1ff
+    style Dev2 fill:#f0e1ff
+    style PR1 fill:#e1f5ff
+    style PR2 fill:#e1f5ff
+    style CI1 fill:#fff4e1
+    style CI2 fill:#fff4e1
+    style Quality1 fill:#ffe1e1
+    style Quality2 fill:#ffe1e1
+    style Review1 fill:#f0e1ff
+    style Review2 fill:#f0e1ff
+    style Merge1 fill:#e1ffe1
+    style Merge2 fill:#e1ffe1
+    style Cleanup fill:#fff4e1
+    style Complete fill:#e1ffe1`} />
 
 ## Automated Workflow System
 
@@ -97,6 +130,28 @@ The workflow automation system provides end-to-end orchestration that:
 
 ## Workflow Patterns
 
+<CardGrid>
+  <Card title="Autonomous Operation" icon="cpu">
+    Agents work independently with minimal oversight - ideal for well-defined features
+  </Card>
+  <Card title="Continuous Monitoring" icon="activity">
+    Real-time oversight with proactive alerts - best for complex or high-priority work
+  </Card>
+  <Card title="Phased Rollout" icon="layers">
+    Staged deployment with incremental validation - optimal for large initiatives
+  </Card>
+</CardGrid>
+
+<Tabs defaultValue="autonomous">
+  <TabsList>
+    <TabsTrigger value="autonomous">Autonomous</TabsTrigger>
+    <TabsTrigger value="monitoring">Continuous</TabsTrigger>
+    <TabsTrigger value="phased">Phased</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="autonomous">
+<div>
+
 ### Pattern 1: Autonomous Operation
 
 The system can operate autonomously with minimal oversight:
@@ -104,7 +159,13 @@ The system can operate autonomously with minimal oversight:
 - Progress is tracked automatically
 - Pull requests are created when work completes
 - Stakeholders review at their convenience
-- Ideal for well-defined, independent features
+- **Ideal for**: Well-defined, independent features
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="monitoring">
+<div>
 
 ### Pattern 2: Continuous Monitoring
 
@@ -113,7 +174,13 @@ Active monitoring enables real-time oversight:
 - Proactive alerts for issues or blockers
 - Real-time intervention capability when needed
 - Progress dashboards and metrics
-- Best for complex or high-priority work
+- **Best for**: Complex or high-priority work
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="phased">
+<div>
 
 ### Pattern 3: Phased Rollout
 
@@ -122,75 +189,154 @@ Staged deployment reduces risk:
 - Completion and validation before next phase
 - Incremental capacity addition
 - Learning from each phase
-- Optimal for large initiatives
+- **Optimal for**: Large initiatives
+
+</div>
+  </TabsContent>
+</Tabs>
 
 ## Integration with CI/CD
 
+<Note type="tip" title="Seamless Integration">
+The multi-agent system integrates seamlessly with GitHub Actions, triggering automated quality checks and validation for every PR.
+</Note>
+
 ### Continuous Integration
 
-The multi-agent system integrates seamlessly with CI/CD pipelines:
+<Tabs defaultValue="quality">
+  <TabsList>
+    <TabsTrigger value="quality">Quality Checks</TabsTrigger>
+    <TabsTrigger value="validation">Agent Validation</TabsTrigger>
+    <TabsTrigger value="pr">PR Automation</TabsTrigger>
+  </TabsList>
 
-**Automated Quality Checks**
+  <TabsContent value="quality">
+<div>
+
+### Automated Quality Checks
+
 - Pull requests trigger automated test suites
 - Type checking validates code correctness
 - Linting ensures code quality standards
 - Security scans identify vulnerabilities
 - Performance tests validate efficiency
 
-**Agent-Specific Validation**
+**Quality Gates:**
+- All tests must pass before merge
+- Code coverage thresholds enforced
+- Security requirements validated
+- Performance criteria met
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="validation">
+<div>
+
+### Agent-Specific Validation
+
 - Agent work is identified and tracked
 - Specialized quality checks are applied
 - Integration tests verify cross-agent compatibility
 - Results are reported to coordination layer
 
+**Validation Process:**
+1. Identify agent and assigned area
+2. Apply specialized test suites
+3. Run integration tests
+4. Report results to coordination layer
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="pr">
+<div>
+
 ### Pull Request Automation
 
-PR management is streamlined through automation:
-
-**Automatic Processing**
-- PRs are automatically created when agents complete work
-- Project boards are updated with PR status
-- Appropriate labels and metadata are applied
-- Reviewers are assigned based on expertise
+**Automatic Processing:**
+- PRs auto-created when agents complete work
+- Project boards updated with PR status
+- Appropriate labels and metadata applied
+- Reviewers assigned based on expertise
 - Status updates flow to stakeholders
 
-**Quality Gates**
-- All tests must pass before merge
-- Code coverage thresholds are enforced
-- Security requirements are validated
-- Performance criteria are met
+**PR Workflow:**
+1. Agent completes feature
+2. System generates PR with metadata
+3. CI/CD pipeline triggered
+4. Quality checks executed
+5. Reviewers notified
+6. Merge on approval
+
+</div>
+  </TabsContent>
+</Tabs>
 
 ## Monitoring & Metrics
 
-### Real-time Dashboard
+<CardGrid>
+  <Card title="Real-time Status" icon="activity">
+    Live dashboard showing active agents, progress, and completion estimates
+  </Card>
+  <Card title="Performance Metrics" icon="trending-up">
+    Track agent utilization, completion times, and quality scores
+  </Card>
+  <Card title="Trend Analysis" icon="bar-chart">
+    Historical tracking for capacity planning and efficiency improvements
+  </Card>
+  <Card title="Alert System" icon="bell">
+    Proactive notifications for issues, blockers, and completions
+  </Card>
+</CardGrid>
 
-The system provides comprehensive visibility through monitoring dashboards:
+### Key Metrics Tracked
 
-**Active Status Display**
-- Currently active agents and their assignments
-- Real-time progress indicators
-- Task completion percentages
-- Estimated completion times
-- Pull request status and review progress
-
-### Performance Metrics
-
-The system tracks key performance indicators:
-
-**Operational Metrics**
-- Agent utilization rates
-- Average task completion time
-- Conflict and resolution rates
-- PR creation to merge time
-- Code quality scores
-
-**Trend Analysis**
-- Historical performance tracking
-- Capacity planning insights
-- Efficiency improvements over time
-- Bottleneck identification
+<Step>
+  <StepItem title="Active Status">
+    Currently active agents, assignments, and real-time progress indicators
+  </StepItem>
+  <StepItem title="Operational KPIs">
+    Agent utilization, task completion time, and PR merge velocity
+  </StepItem>
+  <StepItem title="Quality Metrics">
+    Code quality scores, test coverage, and security scan results
+  </StepItem>
+  <StepItem title="Trend Analysis">
+    Historical performance, capacity planning, and bottleneck identification
+  </StepItem>
+</Step>
 
 ## Advanced Capabilities
+
+<Note type="tip" title="Intelligent Automation">
+The system includes advanced features for dynamic scaling, intelligent task assignment, and proactive conflict prevention.
+</Note>
+
+<CardGrid>
+  <Card title="Dynamic Scaling" icon="maximize">
+    Automatic capacity adjustment based on workload demands
+  </Card>
+  <Card title="Smart Assignment" icon="target">
+    AI-driven task distribution based on specialization and capacity
+  </Card>
+  <Card title="Conflict Prevention" icon="shield">
+    Proactive conflict detection and early warning alerts
+  </Card>
+  <Card title="Auto Recovery" icon="refresh-cw">
+    Automatic restart and retry for failed operations
+  </Card>
+</CardGrid>
+
+<Tabs defaultValue="scaling">
+  <TabsList>
+    <TabsTrigger value="scaling">Dynamic Scaling</TabsTrigger>
+    <TabsTrigger value="assignment">Task Assignment</TabsTrigger>
+    <TabsTrigger value="conflict">Conflict Prevention</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="scaling">
+<div>
 
 ### Dynamic Agent Scaling
 
@@ -200,6 +346,18 @@ The system adapts to changing workload demands:
 - Workload-triggered scaling decisions
 - Resource optimization and efficiency
 
+**Scaling Triggers:**
+- Queue depth exceeds threshold
+- Average wait time increases
+- Priority tasks awaiting assignment
+- Resource availability changes
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="assignment">
+<div>
+
 ### Intelligent Task Assignment
 
 Task distribution leverages multiple factors:
@@ -207,6 +365,19 @@ Task distribution leverages multiple factors:
 - Current workload and capacity
 - Task complexity assessment
 - Dependency analysis and sequencing
+
+**Assignment Algorithm:**
+1. Analyze task requirements
+2. Match agent specializations
+3. Check current workload
+4. Assess dependencies
+5. Assign to optimal agent
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="conflict">
+<div>
 
 ### Conflict Prediction
 
@@ -216,23 +387,40 @@ Proactive conflict prevention through:
 - Early warning alerts for potential conflicts
 - Preventive coordination recommendations
 
+**Prevention Strategy:**
+1. Monitor file access patterns
+2. Detect overlapping work
+3. Alert stakeholders early
+4. Recommend coordination
+5. Suggest alternative assignments
+
+</div>
+  </TabsContent>
+</Tabs>
+
 ## Reliability & Recovery
 
-### Automatic Recovery
+<Note type="warning" title="Built-in Resilience">
+The system includes automatic recovery mechanisms, state management, and rollback capabilities to ensure reliable operations.
+</Note>
 
-The system includes resilience mechanisms:
-- Automatic restart capabilities for failed operations
-- Configurable retry policies
-- Failure notifications to stakeholders
-- Graceful degradation strategies
-
-### State Management
-
-Work preservation and rollback capabilities:
-- Checkpoint and state preservation
-- Rollback to known good states when needed
-- Change history tracking
-- Recovery from interruptions
+<Step>
+  <StepItem title="Automatic Recovery">
+    Failed operations restart automatically with configurable retry policies
+  </StepItem>
+  <StepItem title="State Preservation">
+    Checkpoints ensure work is preserved and can be recovered after interruptions
+  </StepItem>
+  <StepItem title="Rollback Capability">
+    System can rollback to known good states when issues are detected
+  </StepItem>
+  <StepItem title="Graceful Degradation">
+    System continues operating with reduced capacity if agents fail
+  </StepItem>
+  <StepItem title="Stakeholder Notifications">
+    Automatic alerts notify stakeholders of failures and recovery actions
+  </StepItem>
+</Step>
 
 ## Best Practices
 
@@ -250,6 +438,17 @@ Work preservation and rollback capabilities:
 
 ## Next Steps
 
-- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate agents effectively
-- [Worktree Management](/docs/multi-agent/worktree) - Manage Git worktrees
-- [Scripts Reference](/docs/scripts-reference/agent-management) - Available scripts
+<CardGrid>
+  <Card title="Agent Coordination" icon="users" href="/docs/multi-agent/coordination">
+    Learn how to coordinate multiple agents effectively
+  </Card>
+  <Card title="Worktree Management" icon="git-branch" href="/docs/multi-agent/worktree">
+    Master Git worktree operations and management
+  </Card>
+  <Card title="Scripts Reference" icon="code" href="/docs/scripts-reference/complete-guide">
+    Explore all available automation scripts
+  </Card>
+  <Card title="System Architecture" icon="cpu" href="/docs/multi-agent/architecture">
+    Understand the multi-agent system architecture
+  </Card>
+</CardGrid>

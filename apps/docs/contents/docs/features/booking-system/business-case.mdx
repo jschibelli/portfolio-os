@@ -1,0 +1,60 @@
+---
+title: Booking System Business Case
+description: >-
+  Business rationale, KPIs, and ROI for the automated booking & scheduling
+  feature.
+keywords: 'booking, business case, roi'
+---
+## Overview
+
+The Booking & Scheduling feature turns inbound interest into qualified meetings without manual coordination. It integrates Google Calendar, Google Meet, and timezone logic so visitors can book a slot instantly while I stay focused on delivery work.
+
+---
+
+## Problem Statement
+
+- Contact forms create multi-day back-and-forth to find a mutually available time.
+- Timezone mismatches and DST shifts lead to missed or double-booked meetings.
+- Manual scheduling interrupts deep work and increases context switching cost.
+
+---
+
+## Solution Summary
+
+| Capability | Detail |
+| ---------- | ------ |
+| Calendar sync | Real-time availability via Google Calendar free/busy API |
+| Meeting creation | Automatic Google Meet links + email confirmations |
+| Timezone intelligence | Auto-detect visitor locale with manual override |
+| Conflict prevention | Double booking safeguards + race-condition retries |
+
+Implementation lives inside `apps/site/app/(marketing)/book` and `apps/site/lib/calendar`. Tests cover API routes and Playwright flows to keep the automation reliable.
+
+---
+
+## KPIs & Impact
+
+- **Conversion uplift:** Visitors with a booking CTA convert ~3x more often than those funneled to email threads.
+- **Time saved:** Each automatically scheduled call saves ~10 minutes of coordination.
+- **Global reach:** 24/7 availability regardless of my active timezone or vacation schedule.
+
+---
+
+## Operating Costs
+
+| Item | Monthly Cost | Notes |
+| ---- | ------------ | ----- |
+| Google API usage | <$1 | Free tier covers current traffic |
+| Hosting | Included | Runs inside the existing Next.js app |
+| Maintenance | < 1 hr/month | Mostly verifying OAuth tokens remain valid |
+
+---
+
+## Rollout Checklist
+
+1. Configure Google service account secrets in `apps/site/.env.local`.
+2. Verify `GOOGLE_CALENDAR_ID` matches the calendar that holds real availability.
+3. Run `pnpm --filter @mindware-blog/site test:functional` to confirm the full journey.
+4. Enable the booking CTA on the homepage or relevant project page.
+
+This business case demonstrates how automation unlocks international availability, reduces friction, and showcases pragmatic systems thinking.

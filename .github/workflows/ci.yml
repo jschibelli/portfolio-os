@@ -351,4 +351,71 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "_Status: Site is deployment-ready. Dashboard and other issues are tracked in docs/TECHNICAL_DEBT.md and non-blocking._" >> $GITHUB_STEP_SUMMARY
 
+  # Build Storybook component library
+  build-storybook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Run in parallel with main build to save time
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        id: storybook
+        continue-on-error: true
+        run: |
+          echo "📚 Building Storybook component library..."
+          if ! pnpm --filter @mindware-blog/site build-storybook; then
+            echo ""
+            echo "⚠️  Storybook build failed:"
+            echo "   - Component library documentation failed to build"
+            echo "   - This is non-blocking for deployment"
+            echo "   - Fix: Run 'pnpm --filter @mindware-blog/site build-storybook' locally"
+            echo "   - Priority: Medium - should be addressed for better developer experience"
+            exit 1
+          fi
+          echo "✅ Storybook build completed successfully"
+
+      - name: Upload Storybook artifact
+        if: steps.storybook.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook
+          path: apps/site/storybook-static
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📚 Storybook Build" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.storybook.outcome }}" == "success" ]; then
+            echo "✅ **Storybook build successful**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Component library documentation has been built and uploaded as an artifact." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "- 📦 Artifact: \`storybook\`" >> $GITHUB_STEP_SUMMARY
+            echo "- 📏 Retention: 7 days" >> $GITHUB_STEP_SUMMARY
+            echo "- 🔗 Download from the Actions artifacts section" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Storybook build failed**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The component library documentation failed to build." >> $GITHUB_STEP_SUMMARY
+            echo "This is non-blocking, but should be fixed for better developer experience." >> $GITHUB_STEP_SUMMARY
+          fi
+
 

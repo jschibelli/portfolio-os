@@ -1,0 +1,230 @@
+---
+title: Automation Hello World
+description: Run your first Portfolio OS automation script in under 10 minutes
+---
+## Overview
+
+Run your first Portfolio OS automation script in under 10 minutes
+
+## Your First Automation Script
+
+This guide walks you through running your first Portfolio OS automation script on your machine.
+You'll verify your environment, clone the repo (if needed), and run a safe, read-only analysis
+of GitHub issues.
+
+<Note type="success">
+**Time required:** ~10 minutes  
+**Prerequisites:** PowerShell 7+, GitHub CLI (`gh`), access to the `portfolio-os` repository
+</Note>
+
+---
+
+## Quick Start Steps
+
+<Step>
+  <StepItem title="Check Your Environment">
+    Open a terminal and verify these tools:
+
+```powershell
+# PowerShell version (need 7+)
+$PSVersionTable.PSVersion
+
+# GitHub CLI
+gh --version
+
+# Git
+git --version
+```
+
+If `gh` is not authenticated:
+
+```powershell
+gh auth login
+gh auth status
+```
+
+Follow the prompts and choose HTTPS + browser login for GitHub.com.
+  </StepItem>
+
+  <StepItem title="Clone and Navigate to the Project">
+
+If you haven’t already cloned the repo:
+
+```powershell
+git clone https://github.com/jschibelli/portfolio-os.git
+cd portfolio-os
+```
+
+If you already have it on disk, just navigate to it:
+
+```powershell
+cd path/to/portfolio-os
+```
+
+All the automation scripts live in the top-level `scripts/` directory.
+  </StepItem>
+
+  <StepItem title="Explore the Issue Management Scripts">
+    The Issue Management scripts are a safe, friendly place to start:
+
+```powershell
+cd scripts/issue-management
+
+Get-ChildItem
+```
+
+You should see subfolders like:
+
+```text
+analysis/
+configuration/
+implementation/
+management/
+```
+
+We'll use an analysis script in **dry run** mode so you can see what it would do without
+changing anything.
+  </StepItem>
+
+  <StepItem title="Run Your First Script (Dry Run)">
+
+From the `scripts/issue-management` directory, run:
+
+```powershell
+.\analysis\analyze-issues.ps1 -DryRun
+```
+
+This command:
+
+- Connects to GitHub via `gh`
+- Fetches issue data for the configured project
+- Prints an analysis plan and summary to the console  
+  (instead of making any changes)
+
+### What You Should See
+
+Exact output will vary, but you should expect:
+
+- A confirmation that GitHub authentication is working  
+- A list or summary of issues being analyzed  
+- Notes about potential priorities, sizes, or patterns
+
+If something fails, check the **Common Issues** section below.
+  </StepItem>
+</Step>
+
+---
+
+## Next Steps: Beyond Hello World
+
+Once the dry run works, here are natural next steps:
+
+- **Run a more focused analysis**
+
+  ```powershell
+  # Analyze a specific issue (replace 250 with a real issue number)
+  .\analysis\analyze-issues.ps1 -IssueNumber 250 -GeneratePlan
+  ```
+
+- **Auto-configure an issue (preview only)**
+
+  ```powershell
+  .\configuration\configure-issue-auto.ps1 `
+    -IssueNumber 250 `
+    -DryRun
+  ```
+
+- **Explore other script categories**
+  - `scripts/pr-management` – PR automation and quality checks  
+  - `scripts/agent-management` – Multi-agent development workflows  
+  - `scripts/core-utilities` – Shared utilities and integrations  
+
+Use `Get-Help .\script-name.ps1 -Full` to discover parameters and examples for any script.
+
+---
+
+## Common Issues
+
+### "File cannot be loaded because running scripts is disabled"
+
+On Windows, PowerShell may block script execution by default.
+
+**Symptoms:**
+
+```text
+File cannot be loaded because running scripts is disabled
+```
+
+**Fix:**
+
+Run this once in an elevated PowerShell (or in your user session if allowed):
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then re-run the script.
+
+---
+
+### "gh: command not found" or authentication errors
+
+**Symptoms:**
+
+- `gh: command not found`
+- Errors about unauthorized or missing scopes
+
+**Fix:**
+
+1. Install GitHub CLI from the official site if it’s missing.  
+2. Authenticate:
+
+```powershell
+gh auth login
+gh auth status
+```
+
+Make sure the account you’re using has access to the `portfolio-os` repository.
+
+---
+
+### "Issue not found" or no issues returned
+
+If `-IssueNumber` is invalid or you’re working in a fork where the issue doesn’t exist,
+you may see errors or empty output.
+
+**Checks:**
+
+- Verify the issue number exists in the repository.  
+- If you are in a fork, make sure the scripts are configured to point at the right owner/repo.
+
+---
+
+## Where to Go Next
+
+<CardGrid>
+  <Card 
+    href="/docs/scripts-reference"
+    title="Scripts Reference"
+    icon="book"
+    description="Full catalog of automation scripts"
+  />
+  <Card 
+    href="/docs/scripts-reference/ci-cd"
+    title="CI/CD Workflows"
+    icon="git-branch"
+    description="GitHub Actions pipeline documentation"
+  />
+  <Card 
+    href="/docs/multi-agent"
+    title="Multi-Agent System"
+    icon="users"
+    description="Parallel development workflows"
+  />
+</CardGrid>
+
+<Note type="success" title="You're Ready!">
+You've now run your first automation script in Portfolio OS—everything else builds on the
+same patterns: clear parameters, `-DryRun` for safety, and GitHub-aware automation that
+keeps your workflows consistent.
+</Note>

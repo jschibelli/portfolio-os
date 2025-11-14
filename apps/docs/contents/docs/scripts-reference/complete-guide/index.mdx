@@ -1,0 +1,1018 @@
+---
+title: Complete Script Reference
+description: Comprehensive guide to all PowerShell automation scripts in Portfolio OS
+---
+## Overview
+
+Comprehensive guide to all PowerShell automation scripts in Portfolio OS
+
+Comprehensive documentation for all PowerShell automation scripts organized by category.
+
+<Note type="info" title="100+ Automation Scripts">
+Portfolio OS includes over 100 PowerShell scripts providing complete automation for PR management, issue tracking, multi-agent coordination, monitoring, and maintenance.
+</Note>
+
+## Script Categories
+
+<CardGrid>
+  <Card title="PR Management" icon="git-pull-request" href="#pr-management">
+    Automated pull request workflows, quality checking, and intelligent configuration
+  </Card>
+  <Card title="Issue Management" icon="list" href="#issue-management">
+    Issue tracking, analysis, queue management, and implementation automation
+  </Card>
+  <Card title="Agent Management" icon="users" href="#agent-management">
+    Multi-agent development system with worktree orchestration
+  </Card>
+  <Card title="Core Utilities" icon="tool" href="#core-utilities">
+    Shared utilities, helpers, and GitHub API integration
+  </Card>
+  <Card title="Monitoring" icon="activity" href="#monitoring">
+    Real-time metrics, performance analytics, and system health
+  </Card>
+  <Card title="Housekeeping" icon="package" href="#housekeeping">
+    Project maintenance, cleanup, and organization tools
+  </Card>
+</CardGrid>
+
+---
+
+## PR Management
+
+**Location:** `scripts/pr-management/`
+
+### Overview
+
+Comprehensive pull request management system with intelligent assignment, quality checking, and automated configuration.
+
+### PR Automation Workflow
+
+<Mermaid chart={`graph TB
+    Start[New PR Created] --> Analyze[automate-pr-unified.ps1]
+    Analyze --> |AI Analysis| Quality[pr-quality-checker.ps1]
+    Quality --> |Pass| Configure[configure-pr-auto.ps1]
+    Quality --> |Fail| Fix[Auto-fix Issues]
+    Fix --> Quality
+    Configure --> |Set Fields| Monitor[pr-monitor.ps1]
+    Monitor --> |Track Status| Review[Ready for Review]
+    Monitor --> |Issues Detected| Alert[Generate Alerts]
+    Alert --> Analyze
+    Review --> Merge[Merge to Develop]
+    
+    style Start fill:#e1f5ff
+    style Analyze fill:#fff4e1
+    style Quality fill:#ffe1e1
+    style Configure fill:#e1ffe1
+    style Monitor fill:#f0e1ff
+    style Merge fill:#e1ffe1`} />
+
+### Core Scripts
+
+#### `automate-pr-unified.ps1`
+
+<Note type="tip" title="Complete PR Automation">
+This is the primary PR automation script that orchestrates AI-powered analysis, quality checks, and automated responses.
+</Note>
+
+Complete PR automation with AI-powered analysis.
+
+<Tabs defaultValue="basic">
+  <TabsList>
+    <TabsTrigger value="basic">Basic Usage</TabsTrigger>
+    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+    <TabsTrigger value="actions">Actions</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="basic">
+```powershell
+# Full PR automation
+.\automate-pr-unified.ps1 -PRNumber 150 -Action all
+
+# Analyze only
+.\automate-pr-unified.ps1 -PRNumber 150 -Action analyze
+
+# Generate responses
+.\automate-pr-unified.ps1 -PRNumber 150 -Action respond
+```
+  </TabsContent>
+
+  <TabsContent value="advanced">
+```powershell
+# With auto-fix enabled
+.\automate-pr-unified.ps1 -PRNumber 150 -Action all -AutoFix
+
+# Continuous monitoring
+.\automate-pr-unified.ps1 -PRNumber 150 -Action monitor -Interval 300
+
+# Custom AI model
+.\automate-pr-unified.ps1 -PRNumber 150 -Action analyze -AIModel "gpt-4-turbo"
+```
+  </TabsContent>
+
+  <TabsContent value="actions">
+<div>
+
+**Available Actions:**
+- `analyze` - AI-powered PR analysis
+- `respond` - Generate automated responses
+- `monitor` - Continuous PR monitoring
+- `all` - Complete workflow (analyze + respond + monitor)
+
+**Parameters:**
+- `-PRNumber` - Pull request number (required)
+- `-Action` - Action to perform (required)
+- `-AutoFix` - Enable automatic fixes
+- `-Interval` - Monitoring interval in seconds
+- `-AIModel` - Specify AI model for analysis
+
+</div>
+  </TabsContent>
+</Tabs>
+
+---
+
+#### `configure-pr-auto.ps1`
+
+Automated PR configuration and field management.
+
+```powershell
+# Auto-configure PR
+.\configure-pr-auto.ps1 -PRNumber 150
+
+# With specific fields
+.\configure-pr-auto.ps1 -PRNumber 150 `
+  -Priority P1 `
+  -Size M `
+  -App "Portfolio Site" `
+  -Area "Frontend"
+```
+
+<CardGrid>
+  <Card title="Status Management" icon="check-circle">
+    Todo, In progress, Ready, Done
+  </Card>
+  <Card title="Priority Levels" icon="flag">
+    P0 (Critical), P1 (High), P2 (Medium), P3 (Low)
+  </Card>
+  <Card title="Size Estimation" icon="maximize">
+    XS, S, M, L, XL
+  </Card>
+  <Card title="Categorization" icon="tag">
+    App, Area, and Assignee fields
+  </Card>
+</CardGrid>
+
+---
+
+#### `pr-quality-checker.ps1`
+
+<Note type="warning" title="Quality Gates">
+This script enforces quality standards before PR approval. Failed checks will prevent merging until resolved.
+</Note>
+
+Automated quality assurance and testing.
+
+```powershell
+# Complete quality check
+.\pr-quality-checker.ps1 -PRNumber 150 -Checks all -AutoFix
+
+# Specific checks
+.\pr-quality-checker.ps1 -PRNumber 150 -Checks security,performance
+
+# With tests
+.\pr-quality-checker.ps1 -PRNumber 150 -Checks all -RunTests
+```
+
+**Check Types:**
+
+<Step>
+  <StepItem title="Linting">
+    ESLint and Prettier code quality checks
+  </StepItem>
+  <StepItem title="Formatting">
+    Code style and formatting validation
+  </StepItem>
+  <StepItem title="Security">
+    Dependency scanning and security vulnerabilities
+  </StepItem>
+  <StepItem title="Performance">
+    Bundle size and performance impact analysis
+  </StepItem>
+  <StepItem title="Documentation">
+    Documentation completeness and quality
+  </StepItem>
+  <StepItem title="Tests">
+    Unit, integration, and E2E test execution
+  </StepItem>
+</Step>
+
+---
+
+#### `pr-analyzer.ps1`
+Comprehensive PR analysis and assessment.
+
+```powershell
+# Full analysis
+.\pr-analyzer.ps1 -PRNumber 150 -Analysis comprehensive
+
+# Security analysis
+.\pr-analyzer.ps1 -PRNumber 150 -Analysis security
+
+# Performance analysis
+.\pr-analyzer.ps1 -PRNumber 150 -Analysis performance
+```
+
+**Analysis Types:**
+- `comprehensive` - Complete analysis
+- `security` - Security assessment
+- `performance` - Performance impact
+- `complexity` - Code complexity
+- `review` - Review status
+- `changes` - Change impact
+
+---
+
+#### `pr-monitor.ps1`
+Real-time PR monitoring and status tracking.
+
+```powershell
+# Monitor open PRs
+.\pr-monitor.ps1 -Filter open -ShowDetails
+
+# Watch mode
+.\pr-monitor.ps1 -WatchMode -Interval 30
+
+# Export report
+.\pr-monitor.ps1 -Filter open -ExportTo "pr-report.json"
+```
+
+---
+
+### Quick Reference
+
+| Script | Primary Use | Automation Level |
+|--------|-------------|------------------|
+| `automate-pr-unified.ps1` | Complete automation | High |
+| `configure-pr-auto.ps1` | Field configuration | Medium |
+| `pr-quality-checker.ps1` | Quality assurance | High |
+| `pr-analyzer.ps1` | Analysis & insights | Medium |
+| `pr-monitor.ps1` | Real-time monitoring | High |
+
+---
+
+## Issue Management
+
+**Location:** `scripts/issue-management/`
+
+### Directory Structure
+
+<FileTree>
+  <Folder name="issue-management" defaultOpen>
+    <Folder name="analysis">
+      <File name="analyze-issues.ps1 - Comprehensive issue analysis" />
+      <File name="analyze-stale-issues.ps1 - Identify stale issues" />
+    </Folder>
+    <Folder name="configuration">
+      <File name="configure-issue-auto.ps1 - Auto-configure issues" />
+      <File name="configure-issues-unified.ps1 - Unified configuration" />
+    </Folder>
+    <Folder name="implementation">
+      <File name="implement-issues.ps1 - Complete implementation workflow" />
+    </Folder>
+    <Folder name="management">
+      <File name="manage-issue-queue.ps1 - Queue management" />
+      <File name="run-issue-pipeline.ps1 - Continuous pipeline" />
+    </Folder>
+  </Folder>
+</FileTree>
+
+### Issue Processing Pipeline
+
+<Mermaid chart={`graph LR
+    New[New Issue] --> Analyze[analyze-issues.ps1]
+    Analyze --> Configure[configure-issue-auto.ps1]
+    Configure --> Queue[manage-issue-queue.ps1]
+    Queue --> Implement[implement-issues.ps1]
+    Implement --> |Success| PR[Create PR]
+    Implement --> |Retry| Queue
+    PR --> Review[Code Review]
+    Review --> Merge[Merge]
+    
+    Stale[Stale Issues] --> Check[analyze-stale-issues.ps1]
+    Check --> |Active| Queue
+    Check --> |Close| Archive[Archive]
+    
+    style New fill:#e1f5ff
+    style Analyze fill:#fff4e1
+    style Configure fill:#ffe1e1
+    style Queue fill:#f0e1ff
+    style Implement fill:#e1ffe1
+    style PR fill:#e1f5ff`} />
+
+### Core Scripts
+
+#### Analysis Tools
+
+**`analyze-issues.ps1`** - Comprehensive issue analysis
+
+```powershell
+# Analyze specific issue
+.\analysis\analyze-issues.ps1 -IssueNumber 250 -GeneratePlan
+
+# Analyze multiple issues
+.\analysis\analyze-issues.ps1 -IssueNumbers 250,251,252
+```
+
+**`analyze-stale-issues.ps1`** - Identify stale issues
+
+```powershell
+# Find stale issues
+.\analysis\analyze-stale-issues.ps1
+
+# With custom threshold
+.\analysis\analyze-stale-issues.ps1 -DaysInactive 30
+```
+
+---
+
+#### Configuration Tools
+
+**`configure-issue-auto.ps1`** - Auto-configure issues
+
+```powershell
+# Auto-configure
+.\configuration\configure-issue-auto.ps1 -IssueNumber 250
+
+# With specific fields
+.\configuration\configure-issue-auto.ps1 -IssueNumber 250 `
+  -Priority P1 `
+  -Size M `
+  -App "Portfolio Site"
+```
+
+**`configure-issues-unified.ps1`** - Unified configuration system
+
+```powershell
+# Use preset
+.\configuration\configure-issues-unified.ps1 -IssueNumber 250 -Preset blog
+
+# Enable AI recommendations
+.\configuration\configure-issues-unified.ps1 -IssueNumber 250 -EnableAI
+```
+
+---
+
+#### Implementation Tools
+
+**`implement-issues.ps1`** - Complete implementation workflow
+
+```powershell
+# Full implementation
+.\implementation\implement-issues.ps1 -IssueNumber 250 -Mode auto
+
+# Interactive mode
+.\implementation\implement-issues.ps1 -IssueNumber 250 -Interactive
+```
+
+---
+
+#### Queue Management
+
+**`manage-issue-queue.ps1`** - Queue management
+
+```powershell
+# List queue
+.\management\manage-issue-queue.ps1 -List
+
+# Process queue
+.\management\manage-issue-queue.ps1 -Process
+
+# Clear queue
+.\management\manage-issue-queue.ps1 -Clear
+```
+
+**`run-issue-pipeline.ps1`** - Continuous pipeline
+
+```powershell
+# Run pipeline
+.\management\run-issue-pipeline.ps1 -MaxIssues 5
+
+# Watch mode
+.\management\run-issue-pipeline.ps1 -Watch
+```
+
+---
+
+## Agent Management
+
+**Location:** `scripts/agent-management/`
+
+### Overview
+
+<Note type="info" title="Enterprise Multi-Agent System">
+Enterprise-grade multi-agent development framework for orchestrating parallel development workflows with Git worktrees.
+</Note>
+
+Enterprise-grade multi-agent development framework for orchestrating parallel development workflows.
+
+### Multi-Agent Architecture
+
+<Mermaid chart={`graph TB
+    subgraph "Coordination Layer"
+        Manager[manage-multi-agent-system.ps1]
+        Assigner[assign-agent-enhanced.ps1]
+        E2E[start-multi-agent-e2e-unified.ps1]
+    end
+    
+    subgraph "Worktree Layer"
+        WT1[Agent 1 Worktree]
+        WT2[Agent 2 Worktree]
+        WT3[Agent 3 Worktree]
+        WTOps[manage-worktree-operations-unified.ps1]
+    end
+    
+    subgraph "Git Layer"
+        Main[Main Repo]
+        Branch1[Feature 1]
+        Branch2[Feature 2]
+        Branch3[Feature 3]
+    end
+    
+    Manager --> |Create| WT1
+    Manager --> |Create| WT2
+    Manager --> |Create| WT3
+    Assigner --> |Assign Issues| WT1
+    Assigner --> |Assign Issues| WT2
+    Assigner --> |Assign Issues| WT3
+    E2E --> |Orchestrate| Manager
+    E2E --> |Monitor| WTOps
+    WTOps --> WT1
+    WTOps --> WT2
+    WTOps --> WT3
+    WT1 --> Branch1
+    WT2 --> Branch2
+    WT3 --> Branch3
+    Branch1 --> Main
+    Branch2 --> Main
+    Branch3 --> Main
+    
+    style Manager fill:#e1f5ff
+    style Assigner fill:#fff4e1
+    style E2E fill:#ffe1e1
+    style WT1 fill:#e1ffe1
+    style WT2 fill:#e1ffe1
+    style WT3 fill:#e1ffe1`} />
+
+### Core Scripts
+
+#### `manage-multi-agent-system.ps1`
+Core system management
+
+```powershell
+# Initialize system
+.\manage-multi-agent-system.ps1 -Operation setup
+
+# Create agent worktree
+.\manage-multi-agent-system.ps1 -Operation create -Agent "agent-frontend"
+
+# Check status
+.\manage-multi-agent-system.ps1 -Operation status
+
+# Cleanup
+.\manage-multi-agent-system.ps1 -Operation cleanup -Force
+```
+
+**Operations:**
+- `setup` - Initialize environment
+- `create` - Create worktrees
+- `destroy` - Remove worktrees
+- `list` - Display agents
+- `assign` - Assign issues
+- `sync` - Synchronize
+- `status` - System health
+- `cleanup` - Maintenance
+
+---
+
+#### `assign-agent-enhanced.ps1`
+Intelligent issue assignment
+
+```powershell
+# Auto-assign issue
+.\assign-agent-enhanced.ps1 -IssueNumber 250
+
+# Preview assignment
+.\assign-agent-enhanced.ps1 -IssueNumber 250 -DryRun
+
+# Force assignment
+.\assign-agent-enhanced.ps1 -IssueNumber 250 -Force
+```
+
+---
+
+#### `manage-worktree-operations-unified.ps1`
+Comprehensive worktree management
+
+```powershell
+# Assign worktree
+.\manage-worktree-operations-unified.ps1 -Operation assign -IssueNumber 250
+
+# Switch worktree
+.\manage-worktree-operations-unified.ps1 -Operation switch -Agent "agent-frontend"
+
+# Sync worktrees
+.\manage-worktree-operations-unified.ps1 -Operation sync
+```
+
+---
+
+#### `start-multi-agent-e2e-unified.ps1`
+End-to-end development workflow
+
+```powershell
+# Continuous mode
+.\start-multi-agent-e2e-unified.ps1 -Mode continuous
+
+# Individual agent
+.\start-multi-agent-e2e-unified.ps1 -Mode individual -Agent "agent-frontend"
+
+# Monitor mode
+.\start-multi-agent-e2e-unified.ps1 -Mode monitor
+```
+
+---
+
+### Agent Configuration
+
+<Note type="note" title="Agent Assignment Config">
+Configure agent capabilities, skills, and workload limits in `scripts/configuration/agent-assignment-config.json`
+</Note>
+
+**`scripts/configuration/agent-assignment-config.json`**
+
+<Tabs defaultValue="frontend">
+  <TabsList>
+    <TabsTrigger value="frontend">Frontend Agent</TabsTrigger>
+    <TabsTrigger value="backend">Backend Agent</TabsTrigger>
+    <TabsTrigger value="full">Full Config</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="frontend">
+```json
+{
+  "humanAgents": {
+    "agent-frontend": {
+      "assignedAreas": ["Frontend", "UI/UX", "Components"],
+      "skills": ["React", "TypeScript", "Tailwind"],
+      "maxConcurrentIssues": 4,
+      "priority": "high"
+    }
+  }
+}
+```
+  </TabsContent>
+
+  <TabsContent value="backend">
+```json
+{
+  "humanAgents": {
+    "agent-backend": {
+      "assignedAreas": ["Backend", "API", "Database"],
+      "skills": ["Node.js", "Prisma", "GraphQL"],
+      "maxConcurrentIssues": 3,
+      "priority": "high"
+    }
+  }
+}
+```
+  </TabsContent>
+
+  <TabsContent value="full">
+```json
+{
+  "humanAgents": {
+    "agent-frontend": {
+      "assignedAreas": ["Frontend", "UI/UX", "Components"],
+      "skills": ["React", "TypeScript", "Tailwind"],
+      "maxConcurrentIssues": 4
+    },
+    "agent-backend": {
+      "assignedAreas": ["Backend", "API", "Database"],
+      "skills": ["Node.js", "Prisma", "GraphQL"],
+      "maxConcurrentIssues": 3
+    },
+    "agent-devops": {
+      "assignedAreas": ["CI/CD", "Infrastructure", "Deployment"],
+      "skills": ["GitHub Actions", "Docker", "AWS"],
+      "maxConcurrentIssues": 2
+    }
+  }
+}
+```
+  </TabsContent>
+</Tabs>
+
+---
+
+## Core Utilities
+
+**Location:** `scripts/core-utilities/`
+
+### Scripts
+
+**`get-github-utilities.ps1`** - GitHub API helpers
+
+```powershell
+# Get issue details
+.\get-github-utilities.ps1 -Operation getIssue -IssueNumber 250
+
+# List PRs
+.\get-github-utilities.ps1 -Operation listPRs -State open
+```
+
+**`set-estimate-iteration.ps1`** - Set estimates and iterations
+
+```powershell
+# Set estimate
+.\set-estimate-iteration.ps1 -IssueNumber 250 -Estimate 3
+
+# Set iteration
+.\set-estimate-iteration.ps1 -IssueNumber 250 -Iteration "@current"
+```
+
+**`docs-updater.ps1`** - Update documentation
+
+```powershell
+# Update docs
+.\docs-updater.ps1 -Category "agent-management"
+
+# Force update
+.\docs-updater.ps1 -Category "all" -Force
+```
+
+---
+
+## Monitoring
+
+**Location:** `scripts/monitoring/`
+
+### Monitoring Architecture
+
+<Mermaid chart={`graph TB
+    subgraph "Data Collection"
+        Metrics[automation-metrics.ps1]
+        Perf[performance-analyzer.ps1]
+        Dashboard[real-time-dashboard.ps1]
+    end
+    
+    subgraph "Data Sources"
+        GitHub[GitHub API]
+        System[System Metrics]
+        Scripts[Script Execution]
+        Agents[Agent Activity]
+    end
+    
+    subgraph "Outputs"
+        Reports[Generated Reports]
+        Alerts[Alert System]
+        Visualizations[Live Dashboard]
+    end
+    
+    GitHub --> Metrics
+    System --> Perf
+    Scripts --> Metrics
+    Agents --> Metrics
+    Metrics --> Reports
+    Metrics --> Alerts
+    Perf --> Reports
+    Dashboard --> Visualizations
+    Metrics --> Dashboard
+    
+    style Metrics fill:#e1f5ff
+    style Perf fill:#fff4e1
+    style Dashboard fill:#e1ffe1`} />
+
+### Scripts
+
+#### `automation-metrics.ps1`
+
+<Note type="tip" title="Comprehensive Analytics">
+Track PR velocity, issue throughput, agent performance, and system health with detailed metrics and historical trends.
+</Note>
+
+Comprehensive analytics system for all automation operations.
+
+<Tabs defaultValue="basic">
+  <TabsList>
+    <TabsTrigger value="basic">Basic Usage</TabsTrigger>
+    <TabsTrigger value="operations">Operations</TabsTrigger>
+    <TabsTrigger value="exports">Export Reports</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="basic">
+```powershell
+# System overview
+.\automation-metrics.ps1 -Operation overview
+
+# Performance metrics
+.\automation-metrics.ps1 -Operation performance -TimeRange 7
+
+# Agent activity
+.\automation-metrics.ps1 -Operation agents
+```
+  </TabsContent>
+
+  <TabsContent value="operations">
+<div>
+
+**Available Operations:**
+- `overview` - Complete system dashboard
+- `performance` - Performance metrics and trends
+- `issues` - Issue tracking statistics
+- `agents` - Agent activity and workload
+- `trends` - Historical trend analysis
+- `health` - System health status
+- `alerts` - Alert management and notifications
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="exports">
+```powershell
+# Export to Markdown
+.\automation-metrics.ps1 -Operation overview -ExportTo "report.md"
+
+# Export to JSON
+.\automation-metrics.ps1 -Operation performance -ExportTo "metrics.json"
+
+# Export with time range
+.\automation-metrics.ps1 -Operation trends -TimeRange 30 -ExportTo "trends.md"
+```
+  </TabsContent>
+</Tabs>
+
+---
+
+#### `real-time-dashboard.ps1`
+Live monitoring dashboard
+
+```powershell
+# Start dashboard
+.\real-time-dashboard.ps1
+
+# Custom refresh
+.\real-time-dashboard.ps1 -RefreshInterval 10
+
+# With alerts
+.\real-time-dashboard.ps1 -ShowAlerts -ShowPerformance
+```
+
+---
+
+#### `performance-analyzer.ps1`
+Performance analysis tools
+
+```powershell
+# System analysis
+.\performance-analyzer.ps1 -Analysis system
+
+# Comprehensive report
+.\performance-analyzer.ps1 -Analysis comprehensive
+```
+
+**Analysis Types:**
+- `system` - System resources
+- `scripts` - Script performance
+- `api` - API response times
+- `git` - Git operations
+- `comprehensive` - Full analysis
+
+---
+
+## Housekeeping
+
+**Location:** `scripts/housekeeping/`
+
+<Note type="info" title="Automated Maintenance">
+Keep your repository clean and organized with automated housekeeping scripts for file organization, cleanup, and validation.
+</Note>
+
+### Scripts
+
+#### `clean-house-main.ps1`
+
+Comprehensive housekeeping and maintenance.
+
+<Tabs defaultValue="modes">
+  <TabsList>
+    <TabsTrigger value="modes">Cleanup Modes</TabsTrigger>
+    <TabsTrigger value="usage">Usage Examples</TabsTrigger>
+    <TabsTrigger value="schedule">Scheduling</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="modes">
+<CardGrid>
+  <Card title="Full Mode" icon="package">
+    Complete housekeeping with all operations
+  </Card>
+  <Card title="Organization" icon="folder">
+    File and directory organization
+  </Card>
+  <Card title="Cleanup" icon="trash">
+    Temporary file and cache cleanup
+  </Card>
+  <Card title="Validation" icon="check">
+    Project structure validation
+  </Card>
+  <Card title="Documentation" icon="book">
+    Documentation organization and updates
+  </Card>
+</CardGrid>
+  </TabsContent>
+
+  <TabsContent value="usage">
+```powershell
+# Full cleanup
+.\clean-house-main.ps1 -Mode full
+
+# Organization only
+.\clean-house-main.ps1 -Mode organization
+
+# Docs only
+.\clean-house-main.ps1 -Mode docs
+
+# Dry run (preview changes)
+.\clean-house-main.ps1 -Mode full -DryRun
+```
+  </TabsContent>
+
+  <TabsContent value="schedule">
+```powershell
+# Schedule weekly cleanup (Windows Task Scheduler)
+$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 2am
+$action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
+  -Argument "-File .\clean-house-main.ps1 -Mode full"
+Register-ScheduledTask -TaskName "WeeklyHousekeeping" `
+  -Trigger $trigger -Action $action
+```
+  </TabsContent>
+</Tabs>
+
+---
+
+#### `clean-house-quick.ps1`
+Quick access to common tasks
+
+```powershell
+# Quick clean
+.\clean-house-quick.ps1 -Action clean
+
+# Organize files
+.\clean-house-quick.ps1 -Action organize
+
+# Validate structure
+.\clean-house-quick.ps1 -Action validate
+```
+
+---
+
+#### `clean-house-advanced.ps1`
+
+<Note type="warning" title="Advanced Features">
+This script includes security scanning, performance analysis, and deep cleaning operations. Always run with `-DryRun` first.
+</Note>
+
+Advanced cleaning with security & performance analysis.
+
+```powershell
+# Full advanced cleanup
+.\clean-house-advanced.ps1 -Mode full -DryRun
+
+# Security scan
+.\clean-house-advanced.ps1 -Mode security
+
+# Performance analysis
+.\clean-house-advanced.ps1 -Mode performance
+```
+
+<Step>
+  <StepItem title="Security Scanning">
+    Scan dependencies for vulnerabilities and outdated packages
+  </StepItem>
+  <StepItem title="Performance Analysis">
+    Analyze bundle sizes, build times, and optimization opportunities
+  </StepItem>
+  <StepItem title="Dependency Management">
+    Check for unused dependencies and version conflicts
+  </StepItem>
+  <StepItem title="Git History Analysis">
+    Identify large files and optimize repository size
+  </StepItem>
+  <StepItem title="Deep Cleaning">
+    Remove redundant files, caches, and temporary data
+  </StepItem>
+</Step>
+
+---
+
+## Script Execution Best Practices
+
+<Note type="tip" title="Best Practices">
+Follow these guidelines for safe and effective script execution in production environments.
+</Note>
+
+### Execution Guidelines
+
+<Step>
+  <StepItem title="Always Use -DryRun First">
+    Test scripts with `-DryRun` or `-WhatIf` to preview changes before execution
+  </StepItem>
+  <StepItem title="Check Prerequisites">
+    Verify required environment variables and GitHub tokens are configured
+  </StepItem>
+  <StepItem title="Monitor Execution">
+    Watch script output for errors, warnings, and completion status
+  </StepItem>
+  <StepItem title="Review Logs">
+    Check generated logs in `logs/` directory for detailed execution history
+  </StepItem>
+  <StepItem title="Handle Errors Gracefully">
+    Scripts include error handling and rollback mechanisms
+  </StepItem>
+</Step>
+
+### Common Parameters
+
+All major scripts support these common parameters:
+
+<CardGrid>
+  <Card title="-DryRun" icon="eye">
+    Preview changes without executing
+  </Card>
+  <Card title="-Verbose" icon="message-square">
+    Enable detailed logging output
+  </Card>
+  <Card title="-Force" icon="zap">
+    Skip confirmation prompts
+  </Card>
+  <Card title="-WhatIf" icon="help-circle">
+    Show what would happen
+  </Card>
+</CardGrid>
+
+---
+
+## Additional Resources
+
+<Tabs defaultValue="docs">
+  <TabsList>
+    <TabsTrigger value="docs">Documentation</TabsTrigger>
+    <TabsTrigger value="readmes">README Files</TabsTrigger>
+    <TabsTrigger value="guides">Guides</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="docs">
+<div>
+
+### Internal Documentation
+- [CI/CD Workflows](/docs/scripts-reference/ci-cd) - GitHub Actions integration
+- [Multi-Agent Architecture](/docs/multi-agent/architecture) - System design
+- [Configuration Reference](/docs/reference/configuration) - Environment variables
+- [Troubleshooting](/docs/troubleshooting/automation) - Common issues
+- [Testing Guide](/docs/testing) - Test automation
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="readmes">
+<div>
+
+### Script README Files
+- [PR Management README](https://github.com/yourusername/portfolio-os/tree/main/scripts/pr-management) - Detailed PR script docs
+- [Issue Management README](https://github.com/yourusername/portfolio-os/tree/main/scripts/issue-management) - Issue automation
+- [Agent Management README](https://github.com/yourusername/portfolio-os/tree/main/scripts/agent-management) - Multi-agent system
+- [Monitoring README](https://github.com/yourusername/portfolio-os/tree/main/scripts/monitoring) - Metrics and monitoring
+- [Housekeeping README](https://github.com/yourusername/portfolio-os/tree/main/scripts/housekeeping) - Maintenance scripts
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="guides">
+<div>
+
+### Related Guides
+- [Getting Started](/docs/getting-started) - Initial setup
+- [Developer Guide](/docs/developer-guide) - Development workflow
+- [Migration Guide](/docs/guides/migration) - Upgrade procedures
+- [Front-End Automation](/docs/frontend/automation) - Build automation
+- [Workflow Diagrams](/docs/workflows/diagrams) - Visual workflows
+
+</div>
+  </TabsContent>
+</Tabs>
+
+---
+
+<Note type="success" title="Need Help?">
+Check the [Troubleshooting Guide](/docs/troubleshooting/automation) for common issues and solutions, or explore the [Configuration Reference](/docs/reference/configuration) for setup details.
+</Note>
