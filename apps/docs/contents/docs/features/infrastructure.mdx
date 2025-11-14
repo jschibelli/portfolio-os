@@ -321,7 +321,7 @@ The database schema balances several concerns:
 ### Core Tables
 
 **Users** - Authentication and authorization
-```prisma
+```ts
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -341,7 +341,7 @@ enum Role {
 ```
 
 **Articles** - Blog posts and content
-```prisma
+```ts
 model Article {
   id            String     @id @default(cuid())
   title         String
@@ -364,7 +364,7 @@ model Article {
 ```
 
 **Bookings** - Scheduled meetings
-```prisma
+```ts
 model Booking {
   id                String    @id @default(cuid())
   name              String
@@ -386,7 +386,7 @@ model Booking {
 ```
 
 **ChatAnalytics** - Chatbot usage metrics
-```prisma
+```ts
 model ChatAnalytics {
   id              String    @id @default(cuid())
   sessionId       String
