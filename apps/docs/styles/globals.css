@@ -142,8 +142,7 @@
   color: hsl(0, 0%, 79%);
 }
 
-.prose :where([class~="not-prose"] ul > li)::marker,
-.prose :where([class~="not-prose"] ul > li)::marker * {
+.prose :where([class~="not-prose"] ul > li)::marker {
   color: inherit;
 }
 
