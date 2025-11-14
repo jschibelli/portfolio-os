@@ -1,0 +1,47 @@
+---
+title: Chatbot Integration Setup
+description: Step-by-step guide for wiring the production chatbot into external properties and verifying telemetry.
+keywords: chatbot integration, automation, setup
+---
+
+## Overview
+
+This guide shows how to embed the Portfolio OS chatbot into any site (marketing, docs, landing pages) and connect it to the shared automation services that power analytics, logging, and conversation review.
+
+---
+
+## Prerequisites
+
+1. `OPENAI_API_KEY` stored in the shared `apps/.env.shared` file.
+2. `RESEND_API_KEY` for outbound escalations.
+3. Access to the Vercel project (or a local environment with `pnpm`).
+
+---
+
+## Installation Steps
+
+1. **Install packages**
+   ```bash
+   pnpm --filter @mindware-blog/site add openai zod
+   ```
+2. **Sync environment variables**
+   ```bash
+   pnpm env:sync
+   ```
+3. **Expose the chatbot component**
+   - Import `ChatbotDrawer` from `apps/site/components/chatbot/drawer`.
+   - Mount it inside `apps/site/app/(marketing)/layout.tsx`.
+4. **Register API route**
+   - Ensure `apps/site/app/api/chat/route.ts` is deployed.
+   - Verify `Vercel KV` binding exists for rate limiting.
+
+---
+
+## Validation
+
+- Run `pnpm --filter @mindware-blog/site test:chatbot` to execute integration tests.
+- Trigger a manual conversation locally and confirm the transcript appears in Supabase.
+- Submit a thumbs-down rating to verify the alert lands in Slack.
+
+Once these checks pass, the chatbot is fully integrated and observable across environments.
+

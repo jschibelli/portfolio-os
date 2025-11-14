@@ -1,0 +1,49 @@
+---
+title: Update Blog on Production
+description: Use the automation scripts to refresh the production blog with the latest MDX content.
+keywords: blog sync, automation, deployment
+---
+
+## Overview
+
+When new articles land in the docs repo, you can sync them to the production blog (Hashnode) with a single CLI command. This guide covers the update workflow.
+
+---
+
+## When to Run
+
+- After editing an existing article.
+- When frontmatter changes (title, tags, canonical URL).
+- After backfilling historical posts.
+
+---
+
+## Command
+
+```bash
+pnpm scripts hashnode:update --slug &lt;slug>
+```
+
+Example:
+```bash
+pnpm scripts hashnode:update --slug multi-agent-coordination
+```
+
+The script diff-checks the local MDX against the remote Hashnode post and updates only the changed fields, preserving stats and comments.
+
+---
+
+## Verification
+
+1. Open the Hashnode dashboard → Posts → select the article.
+2. Confirm the updated body and metadata.
+3. Check that the canonical URL remains `/docs/blog/&lt;slug>`.
+
+---
+
+## Troubleshooting
+
+- **404 slug not found**: ensure the MDX folder name matches the slug.
+- **Permission error**: refresh the token in `.env.shared`.
+- **No changes detected**: run `git status` to confirm the MDX file actually changed.
+
