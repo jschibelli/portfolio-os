@@ -20,8 +20,16 @@ This multi-agent system enables parallel development workflows using Git worktre
     GitDB --> Worktree1[Agent 1 Worktree]
     GitDB --> Worktree2[Agent 2 Worktree]
     
+<<<<<<< HEAD
     Worktree1 --> Branch1[Feature Branch 1]
     Worktree2 --> Branch2[Feature Branch 2]
+=======
+    subgraph "Coordination Layer"
+        Automation[Automation System]
+        Config[Agent Config]
+        State[Worktree State]
+    end
+>>>>>>> eca8a061f8acf0f70a3d34924ebee48e6d566b5a
     
     Automation[Automation System] --> Worktree1
     Automation --> Worktree2
@@ -31,7 +39,21 @@ This multi-agent system enables parallel development workflows using Git worktre
     Branch1 --> PR1[Pull Request 1]
     Branch2 --> PR2[Pull Request 2]
     
+<<<<<<< HEAD
     PR1 --> CI[CI/CD Pipeline]
+=======
+    Worktree1 --> Branch1
+    Worktree2 --> Branch2
+    
+    Automation --> Config
+    Automation --> State
+    Automation --> Worktree1
+    Automation --> Worktree2
+    
+    Branch1 --> PR1
+    Branch2 --> PR2
+    PR1 --> CI
+>>>>>>> eca8a061f8acf0f70a3d34924ebee48e6d566b5a
     PR2 --> CI
     CI --> Develop[Develop Branch]
     
@@ -69,6 +91,7 @@ This multi-agent system enables parallel development workflows using Git worktre
 ### 1. Git Worktrees
 
 Git worktrees are the foundation of the multi-agent system, providing isolated workspaces that share a common Git repository. Each agent operates in their own complete working directory with dedicated branches, while all workspaces reference the same underlying Git database.
+<<<<<<< HEAD
 
 <Note type="tip" title="Key Benefits">
 - **Shared Git Database**: All worktrees share the same `.git` database
@@ -76,7 +99,33 @@ Git worktrees are the foundation of the multi-agent system, providing isolated w
 - **Branch Separation**: Each worktree tracks a different branch
 - **No Duplication**: Zero duplication of Git history
 </Note>
+=======
+>>>>>>> eca8a061f8acf0f70a3d34924ebee48e6d566b5a
 
+### 2. Coordination Layer
+
+<<<<<<< HEAD
+The coordination layer orchestrates agent workflows through automated tooling:
+
+#### Core Capabilities
+
+**Agent Lifecycle Management**
+- Initialize new agent workspaces with proper isolation
+- Monitor agent status and health in real-time
+- Coordinate task assignment and workload distribution
+- Track progress and completion status
+
+**State Synchronization**
+- Maintain consistency across agent workspaces
+- Track branch relationships and dependencies
+- Monitor synchronization with main development line
+- Detect and flag potential integration issues
+
+#### Configuration Management
+
+The system uses structured configuration to track agent assignments and state:
+
+=======
 ### 2. Coordination Layer
 
 The coordination layer orchestrates agent workflows through automated tooling:
@@ -99,6 +148,7 @@ The coordination layer orchestrates agent workflows through automated tooling:
 
 The system uses structured configuration to track agent assignments and state:
 
+>>>>>>> eca8a061f8acf0f70a3d34924ebee48e6d566b5a
 **Agent Configuration** includes:
 - Agent identity and specialization
 - Assigned tasks and priorities
@@ -353,6 +403,7 @@ For 3 agents + main repo: **~2.5GB total**
 
 ## Monitoring & Observability
 
+<<<<<<< HEAD
 <Note type="tip" title="Comprehensive Observability">
 The system provides real-time monitoring, metrics collection, and analytics to ensure smooth multi-agent operations.
 </Note>
@@ -373,6 +424,21 @@ The system provides comprehensive observability:
     Integration success rates and quality performance indicators
   </Card>
 </CardGrid>
+=======
+The system provides comprehensive observability:
+
+**Health Monitoring**
+- Real-time agent status tracking
+- Workspace health validation
+- Performance metrics collection
+- Resource utilization monitoring
+
+**Metrics & Analytics**
+- Task completion rates
+- Agent productivity metrics
+- Integration success rates
+- Quality and performance indicators
+>>>>>>> eca8a061f8acf0f70a3d34924ebee48e6d566b5a
 
 ## Limitations & Constraints
 
