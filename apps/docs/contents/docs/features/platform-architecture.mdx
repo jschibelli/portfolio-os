@@ -179,7 +179,7 @@ The platform uses PostgreSQL for several reasons:
 ### Schema Design
 
 **Articles Table**
-```prisma
+```ts
 model Article {
   id          String   @id @default(cuid())
   title       String
@@ -206,7 +206,7 @@ This schema supports:
 - Automatic timestamp management
 
 **Bookings Table**
-```prisma
+```ts
 model Booking {
   id              String   @id @default(cuid())
   name            String
@@ -235,7 +235,7 @@ This schema tracks:
 ### Performance Optimization
 
 **Indexes**: Strategic indexes on frequently queried columns:
-```prisma
+```ts
 @@index([slug])
 @@index([published, publishedAt])
 @@index([authorId])

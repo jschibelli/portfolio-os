@@ -452,4 +452,4 @@ export const Documents: Paths[] = [
       },
     ],
   },
-]
+];
