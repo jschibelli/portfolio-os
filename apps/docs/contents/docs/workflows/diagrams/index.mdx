@@ -1,0 +1,784 @@
+---
+title: Workflow Diagrams
+description: >-
+  Visual representations of CI/CD flows, automation processes, and system
+  architecture in Portfolio OS
+---
+## Overview
+
+Visual representations of CI/CD flows, automation processes, and system architecture in Portfolio OS
+
+Visual guides to understanding how different systems and processes work together in Portfolio OS.
+
+<Note type="info" title="Interactive Diagrams">
+These diagrams provide visual representations of CI/CD flows, automation processes, and system architecture. All diagrams are color-coded and interactive in supported viewers.
+</Note>
+
+## Diagram Categories
+
+<CardGrid>
+  <Card title="CI/CD Workflows" icon="git-pull-request" href="#cicd-workflows">
+    Pull requests, deployments, and build optimization
+  </Card>
+  <Card title="Automation Workflows" icon="cpu" href="#automation-workflows">
+    Issue management, PR automation, and multi-agent coordination
+  </Card>
+  <Card title="System Architecture" icon="layers" href="#system-architecture">
+    Application structure and monorepo organization
+  </Card>
+  <Card title="Development Workflows" icon="code" href="#development-workflows">
+    Feature development and hotfix processes
+  </Card>
+  <Card title="Testing Workflows" icon="check-circle" href="#testing-workflows">
+    Test pipelines and execution flows
+  </Card>
+  <Card title="Data Flow" icon="database" href="#data-flow-diagrams">
+    Blog rendering and authentication flows
+  </Card>
+</CardGrid>
+
+---
+
+## CI/CD Workflows
+
+### Pull Request Workflow
+
+<Mermaid chart={`graph TB
+    A[Developer Pushes to PR] --> B{Draft PR?}
+    B -->|Yes| C[Skip Automation]
+    B -->|No| D[Trigger CI Workflow]
+    
+    D --> E[Path Detection]
+    E --> F{Changes in Site?}
+    E --> G{Changes in Dashboard?}
+    
+    F -->|Yes| H[Build Site]
+    G -->|Yes| I[Build Dashboard]
+    
+    H --> J[Lint Site]
+    I --> K[Lint Dashboard]
+    
+    J --> L[Test Site]
+    K --> M[Test Dashboard]
+    
+    L --> N[Type Check Site]
+    M --> O[Type Check Dashboard]
+    
+    N --> P[Build Verification]
+    O --> P
+    
+    P --> Q{All Checks Pass?}
+    Q -->|Yes| R[Mark PR Ready]
+    Q -->|No| S[Report Failures]
+    
+    R --> T[PR Auto-Config]
+    T --> U[Assign to Project]
+    U --> V[Agent Assignment]
+    V --> W[Ready for Review]
+    
+    style A fill:#e1f5ff
+    style D fill:#fff4e1
+    style H fill:#e1ffe1
+    style I fill:#e1ffe1
+    style J fill:#f0e1ff
+    style K fill:#f0e1ff
+    style L fill:#fff4e1
+    style M fill:#fff4e1
+    style P fill:#ffe1e1
+    style R fill:#e1ffe1
+    style S fill:#ffe1e1
+    style T fill:#f0e1ff
+    style W fill:#e1ffe1`} />
+
+---
+
+### Deployment Pipeline
+
+<Mermaid chart={`graph LR
+    A[Code Push] --> B{Branch?}
+    
+    B -->|develop| C[Staging Deployment]
+    B -->|main| D[Production Deployment]
+    B -->|feature/*| E[Preview Deployment]
+    
+    C --> F[Build Application]
+    D --> F
+    E --> F
+    
+    F --> G[Run Tests]
+    G --> H{Tests Pass?}
+    
+    H -->|No| I[Fail Deployment]
+    H -->|Yes| J[Deploy to Vercel]
+    
+    J --> K[Health Check]
+    K --> L{Healthy?}
+    
+    L -->|No| M[Rollback]
+    L -->|Yes| N[Update Status]
+    
+    N --> O{Production?}
+    O -->|Yes| P[Tag Release]
+    O -->|No| Q[Complete]
+    
+    P --> Q
+    M --> I
+    
+    style A fill:#e1f5ff
+    style C fill:#fff4e1
+    style D fill:#e1ffe1
+    style E fill:#f0e1ff
+    style F fill:#ffe1e1
+    style G fill:#fff4e1
+    style I fill:#ffe1e1
+    style J fill:#e1ffe1
+    style K fill:#f0e1ff
+    style M fill:#ffe1e1
+    style N fill:#e1ffe1
+    style P fill:#e1f5ff
+    style Q fill:#e1ffe1`} />
+
+---
+
+### Build Optimization Flow
+
+<Mermaid chart={`graph TD
+    A[Start Build] --> B[Check Turbo Cache]
+    B --> C{Cache Hit?}
+    
+    C -->|Yes| D[Load from Cache]
+    C -->|No| E[Full Build]
+    
+    D --> F[Verify Artifacts]
+    E --> G[Compile TypeScript]
+    
+    G --> H[Bundle JavaScript]
+    H --> I[Optimize Images]
+    I --> J[Generate Static Pages]
+    J --> K[Build CSS]
+    
+    K --> L[Save to Cache]
+    L --> F
+    
+    F --> M{Valid?}
+    M -->|Yes| N[Deploy]
+    M -->|No| E
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style D fill:#e1ffe1
+    style E fill:#ffe1e1
+    style G fill:#f0e1ff
+    style H fill:#fff4e1
+    style I fill:#e1ffe1
+    style J fill:#f0e1ff
+    style K fill:#fff4e1
+    style L fill:#e1f5ff
+    style F fill:#ffe1e1
+    style N fill:#e1ffe1`} />
+
+---
+
+## Automation Workflows
+
+<Note type="tip" title="Automation Workflows">
+These diagrams illustrate the automated issue management, PR automation, and multi-agent coordination systems.
+</Note>
+
+### Issue Management Pipeline
+
+<Mermaid chart={`graph TB
+    A[Issue Created] --> B[Auto-Configuration]
+    B --> C[Set Priority]
+    B --> D[Set Size]
+    B --> E[Set App/Area]
+    
+    C --> F[Add to Project Board]
+    D --> F
+    E --> F
+    
+    F --> G[Complexity Analysis]
+    G --> H{Complexity Level?}
+    
+    H -->|Low| I[Quick Queue]
+    H -->|Medium| J[Standard Queue]
+    H -->|High| K[Complex Queue]
+    
+    I --> L[Agent Assignment]
+    J --> L
+    K --> L
+    
+    L --> M{Agent Available?}
+    M -->|Yes| N[Assign to Agent]
+    M -->|No| O[Add to Wait Queue]
+    
+    N --> P[Create Worktree]
+    P --> Q[Start Development]
+    
+    O --> R[Wait for Availability]
+    R --> M
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style F fill:#ffe1e1
+    style G fill:#f0e1ff
+    style I fill:#e1ffe1
+    style J fill:#fff4e1
+    style K fill:#ffe1e1
+    style L fill:#f0e1ff
+    style N fill:#e1ffe1
+    style P fill:#fff4e1
+    style Q fill:#e1ffe1`} />
+
+---
+
+### PR Automation Flow
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant GH as GitHub
+    participant CI as CI/CD
+    participant Bot as Automation Bot
+    participant PM as Project Manager
+    
+    Dev->>GH: Create Pull Request
+    GH->>CI: Trigger CI Workflow
+    CI->>CI: Run Tests & Build
+    CI->>GH: Report Status
+    
+    GH->>Bot: PR Ready Event
+    Bot->>Bot: Analyze PR Content
+    Bot->>Bot: Determine Priority & Size
+    Bot->>GH: Update PR Fields
+    Bot->>PM: Add to Project Board
+    
+    PM->>Bot: Request Assignment
+    Bot->>Bot: Analyze Agent Workload
+    Bot->>Bot: Match Expertise
+    Bot->>GH: Assign to Agent
+    
+    GH->>Dev: Notification
+    Dev->>GH: Make Changes
+    GH->>CI: Re-run Checks
+    
+    CI->>GH: All Checks Pass
+    GH->>Bot: Request Review
+    Bot->>GH: Add Review Comments
+    
+    Dev->>GH: Address Comments
+    GH->>Bot: Ready to Merge
+    Bot->>GH: Merge PR
+    GH->>CI: Deploy
+```
+
+---
+
+### Multi-Agent Coordination
+
+<Mermaid chart={`graph TB
+    A[Agent Coordinator] --> B[Check Work Queue]
+    B --> C{Issues Available?}
+    
+    C -->|Yes| D[Load Agent Config]
+    C -->|No| E[Wait]
+    
+    D --> F[Agent 1: Frontend]
+    D --> G[Agent 2: Backend]
+    D --> H[Agent 3: Infrastructure]
+    
+    F --> I{Agent 1 Free?}
+    G --> J{Agent 2 Free?}
+    H --> K{Agent 3 Free?}
+    
+    I -->|Yes| L[Assign Frontend Issue]
+    J -->|Yes| M[Assign Backend Issue]
+    K -->|Yes| N[Assign Infra Issue]
+    
+    L --> O[Create Worktree 1]
+    M --> P[Create Worktree 2]
+    N --> Q[Create Worktree 3]
+    
+    O --> R[Parallel Development]
+    P --> R
+    Q --> R
+    
+    R --> S[Conflict Check]
+    S --> T{Conflicts?}
+    
+    T -->|Yes| U[Coordinate Resolution]
+    T -->|No| V[Create PRs]
+    
+    U --> V
+    V --> W[Merge Queue]
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style D fill:#ffe1e1
+    style F fill:#e1ffe1
+    style G fill:#e1ffe1
+    style H fill:#e1ffe1
+    style L fill:#f0e1ff
+    style M fill:#f0e1ff
+    style N fill:#f0e1ff
+    style O fill:#fff4e1
+    style P fill:#fff4e1
+    style Q fill:#fff4e1
+    style R fill:#e1ffe1
+    style S fill:#ffe1e1
+    style U fill:#fff4e1
+    style V fill:#e1f5ff
+    style W fill:#e1ffe1`} />
+
+---
+
+## System Architecture
+
+### Application Architecture
+
+```mermaid
+graph LR
+    A[User] --> B[Next.js Frontend]
+    B --> C[API Routes]
+    C --> D[Database - PostgreSQL]
+    C --> E[External APIs]
+    
+    E --> F[Hashnode GraphQL]
+    E --> G[OpenAI API]
+    E --> H[Google Calendar]
+    E --> I[Resend Email]
+    
+    B --> J[Static Assets]
+    J --> K[Vercel Edge Network]
+    
+    C --> L[Authentication]
+    L --> M[NextAuth]
+    M --> D
+    
+    B --> N[State Management]
+    N --> O[React Context]
+    N --> P[URL State]
+    
+    D --> Q[Prisma ORM]
+    Q --> R[Schema Management]
+```
+
+---
+
+### Monorepo Structure
+
+```mermaid
+graph TD
+    A[Portfolio OS Root] --> B[apps/]
+    A --> C[packages/]
+    A --> D[scripts/]
+    
+    B --> E[site]
+    B --> F[dashboard]
+    B --> G[docs]
+    
+    C --> H[@mindware-blog/ui]
+    C --> I[@mindware-blog/lib]
+    C --> J[@mindware-blog/db]
+    C --> K[@mindware-blog/hashnode]
+    
+    D --> L[agent-management/]
+    D --> M[pr-management/]
+    D --> N[issue-management/]
+    
+    E --> O[Depends on packages]
+    F --> O
+    G --> O
+    
+    O --> H
+    O --> I
+    O --> J
+    O --> K
+```
+
+---
+
+## Development Workflows
+
+### Feature Development Flow
+
+```mermaid
+graph TB
+    A[Create Issue] --> B[Issue Auto-Config]
+    B --> C[Assign to Agent]
+    C --> D[Create Branch from develop]
+    
+    D --> E[Switch to Worktree]
+    E --> F[Implement Feature]
+    F --> G[Write Tests]
+    G --> H[Local Testing]
+    
+    H --> I{Tests Pass?}
+    I -->|No| F
+    I -->|Yes| J[Commit Changes]
+    
+    J --> K[Push to Remote]
+    K --> L[Create Pull Request]
+    L --> M[CI Checks]
+    
+    M --> N{Checks Pass?}
+    N -->|No| F
+    N -->|Yes| O[Request Review]
+    
+    O --> P[Code Review]
+    P --> Q{Approved?}
+    
+    Q -->|No| R[Address Feedback]
+    R --> F
+    Q -->|Yes| S[Merge to develop]
+    
+    S --> T[Deploy to Staging]
+    T --> U[QA Testing]
+    U --> V{QA Pass?}
+    
+    V -->|No| W[Create Bug Report]
+    W --> A
+    V -->|Yes| X[Ready for Production]
+```
+
+---
+
+### Hotfix Workflow
+
+```mermaid
+graph LR
+    A[Critical Bug Found] --> B[Create Hotfix Branch from main]
+    B --> C[Implement Fix]
+    C --> D[Write Test]
+    D --> E[Local Verify]
+    
+    E --> F[Create Hotfix PR]
+    F --> G[Fast-Track Review]
+    G --> H[Merge to main]
+    
+    H --> I[Deploy to Production]
+    I --> J[Verify Fix]
+    J --> K[Backport to develop]
+    K --> L[Close Issue]
+```
+
+---
+
+## Testing Workflows
+
+### Testing Pipeline
+
+```mermaid
+graph TB
+    A[Code Change] --> B[Pre-commit Hooks]
+    B --> C[Lint & Format]
+    C --> D{Pass?}
+    
+    D -->|No| E[Fix Issues]
+    E --> B
+    D -->|Yes| F[Commit]
+    
+    F --> G[Push to Remote]
+    G --> H[CI Pipeline]
+    
+    H --> I[Unit Tests]
+    H --> J[Component Tests]
+    H --> K[API Tests]
+    
+    I --> L{Pass?}
+    J --> L
+    K --> L
+    
+    L -->|No| M[Fail Build]
+    L -->|Yes| N[Build Application]
+    
+    N --> O[E2E Tests]
+    O --> P[Visual Tests]
+    O --> Q[Accessibility Tests]
+    O --> R[Performance Tests]
+    
+    P --> S{All Pass?}
+    Q --> S
+    R --> S
+    
+    S -->|No| M
+    S -->|Yes| T[Deploy Preview]
+    
+    T --> U[Manual QA]
+    U --> V{Approved?}
+    V -->|Yes| W[Merge]
+    V -->|No| X[Create Issues]
+```
+
+---
+
+### Test Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Local as Local Machine
+    participant CI as CI Server
+    participant Playwright as Playwright
+    participant Report as Test Report
+    
+    Dev->>Local: npm test
+    Local->>Local: Run Jest
+    Local->>Local: Run Unit Tests
+    Local->>Dev: Results
+    
+    Dev->>CI: Push Code
+    CI->>CI: Install Dependencies
+    CI->>CI: Build Application
+    
+    CI->>Playwright: Start Test Server
+    Playwright->>Playwright: Run E2E Tests
+    Playwright->>Playwright: Visual Regression
+    Playwright->>Playwright: Accessibility Tests
+    
+    Playwright->>Report: Generate HTML Report
+    Report->>CI: Upload Artifacts
+    CI->>Dev: Send Notification
+    
+    Dev->>Report: View Failures
+    Report->>Dev: Screenshots & Videos
+```
+
+---
+
+## Data Flow Diagrams
+
+### Blog Post Rendering
+
+```mermaid
+graph LR
+    A[User Request] --> B[Next.js Server]
+    B --> C{Static?}
+    
+    C -->|Yes| D[Return Cached HTML]
+    C -->|No| E[Fetch from Hashnode]
+    
+    E --> F[GraphQL Query]
+    F --> G[Hashnode API]
+    G --> H[Return Post Data]
+    
+    H --> I[Transform Markdown]
+    I --> J[Generate HTML]
+    J --> K[Apply Styling]
+    K --> L[Cache Result]
+    
+    L --> M[Return to User]
+    D --> M
+    
+    M --> N[Client Hydration]
+    N --> O[Interactive Components]
+```
+
+---
+
+### Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant NextAuth
+    participant Database
+    participant GitHub
+    
+    User->>Frontend: Click Login
+    Frontend->>NextAuth: Initiate Auth
+    NextAuth->>GitHub: OAuth Request
+    GitHub->>User: Login Page
+    
+    User->>GitHub: Enter Credentials
+    GitHub->>NextAuth: Auth Code
+    NextAuth->>GitHub: Exchange for Token
+    GitHub->>NextAuth: Access Token
+    
+    NextAuth->>Database: Create/Update Session
+    Database->>NextAuth: Session ID
+    NextAuth->>Frontend: Set Cookie
+    Frontend->>User: Redirect to Dashboard
+    
+    User->>Frontend: Access Protected Page
+    Frontend->>NextAuth: Verify Session
+    NextAuth->>Database: Check Session
+    Database->>NextAuth: Session Valid
+    NextAuth->>Frontend: Allow Access
+    Frontend->>User: Show Content
+```
+
+---
+
+## Performance Optimization
+
+### Image Optimization Pipeline
+
+```mermaid
+graph TB
+    A[Original Image] --> B[Next.js Image Component]
+    B --> C[Determine Sizes Needed]
+    C --> D[Generate Responsive Sizes]
+    
+    D --> E[Convert to WebP]
+    D --> F[Convert to AVIF]
+    D --> G[Keep Original Format]
+    
+    E --> H{Browser Support?}
+    F --> H
+    G --> H
+    
+    H -->|AVIF| I[Serve AVIF]
+    H -->|WebP| J[Serve WebP]
+    H -->|Original| K[Serve Original]
+    
+    I --> L[Edge Cache]
+    J --> L
+    K --> L
+    
+    L --> M[CDN Distribution]
+    M --> N[User Browser]
+    
+    N --> O{Cached?}
+    O -->|Yes| P[Load from Cache]
+    O -->|No| Q[Download]
+    Q --> P
+```
+
+---
+
+### Build Cache Strategy
+
+```mermaid
+graph LR
+    A[Code Change] --> B[Turbo Analyzer]
+    B --> C{Has File Changed?}
+    
+    C -->|No| D[Load from Cache]
+    C -->|Yes| E[Check Dependencies]
+    
+    E --> F{Dependencies Changed?}
+    F -->|No| G[Partial Rebuild]
+    F -->|Yes| H[Full Rebuild]
+    
+    G --> I[Build Changed Files]
+    H --> J[Build All Files]
+    
+    I --> K[Save to Cache]
+    J --> K
+    
+    K --> L[Upload to Remote Cache]
+    D --> M[Verify Cache]
+    
+    M --> N{Valid?}
+    N -->|Yes| O[Use Cached Build]
+    N -->|No| E
+    
+    L --> O
+```
+
+---
+
+## Monitoring & Alerts
+
+### Alert Management Flow
+
+```mermaid
+graph TB
+    A[System Monitoring] --> B{Threshold Exceeded?}
+    B -->|No| C[Continue Monitoring]
+    B -->|Yes| D[Create Alert]
+    
+    D --> E{Severity?}
+    E -->|Info| F[Log Only]
+    E -->|Warning| G[Send Notification]
+    E -->|Critical| H[Immediate Alert]
+    
+    G --> I[Slack Notification]
+    H --> I
+    H --> J[Email Alert]
+    H --> K[PagerDuty]
+    
+    I --> L[Alert Manager]
+    J --> L
+    K --> L
+    
+    L --> M[Acknowledge Alert]
+    M --> N[Investigate Issue]
+    N --> O[Implement Fix]
+    
+    O --> P[Verify Resolution]
+    P --> Q{Resolved?}
+    
+    Q -->|No| N
+    Q -->|Yes| R[Close Alert]
+    R --> S[Update Runbook]
+```
+
+---
+
+### Performance Monitoring
+
+```mermaid
+graph LR
+    A[Application] --> B[Web Vitals API]
+    B --> C[Collect Metrics]
+    
+    C --> D[LCP]
+    C --> E[FID]
+    C --> F[CLS]
+    C --> G[TTFB]
+    
+    D --> H[Analytics]
+    E --> H
+    F --> H
+    G --> H
+    
+    H --> I[Aggregate Data]
+    I --> J[Generate Reports]
+    
+    J --> K{Threshold Exceeded?}
+    K -->|Yes| L[Create Alert]
+    K -->|No| M[Archive]
+    
+    L --> N[Investigation]
+    N --> O[Optimization]
+    O --> P[Deploy Fix]
+    P --> B
+```
+
+---
+
+## Additional Resources
+
+<CardGrid>
+  <Card title="CI/CD Reference" icon="git-pull-request" href="/docs/scripts-reference/ci-cd">
+    Complete CI/CD workflows and GitHub Actions documentation
+  </Card>
+  <Card title="Multi-Agent Architecture" icon="users" href="/docs/multi-agent/architecture">
+    Deep dive into the multi-agent development system
+  </Card>
+  <Card title="Testing Guide" icon="check-circle" href="/docs/testing">
+    Comprehensive testing infrastructure documentation
+  </Card>
+  <Card title="Configuration Reference" icon="settings" href="/docs/reference/configuration">
+    Environment variables and configuration options
+  </Card>
+</CardGrid>
+
+### External Resources
+
+<Note type="info" title="Additional Learning">
+Explore these external resources to learn more about the technologies and tools used in these workflows.
+</Note>
+
+- **[Mermaid Documentation](https://mermaid.js.org/)** - Learn how to create and customize diagrams
+- **[GitHub Actions Workflow Syntax](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions)** - Master GitHub Actions workflows
+- **[Next.js Deployment](https://nextjs.org/docs/deployment)** - Best practices for deploying Next.js applications
+
+---
+
+<Note type="success" title="Interactive Diagrams">
+These diagrams are interactive in supported viewers. Hover over elements for details, and click to zoom and explore different sections of the workflows.
+</Note>

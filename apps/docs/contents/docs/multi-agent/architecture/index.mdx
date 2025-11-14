@@ -2,68 +2,80 @@
 title: System Architecture
 description: Multi-agent system architecture and technical implementation
 ---
+## Overview
 
-# Multi-Agent System Architecture
+Multi-agent system architecture and technical implementation
 
 Deep dive into the technical architecture of Portfolio OS's multi-agent development system.
 
+<Note type="info" title="Enterprise-Grade Architecture">
+This multi-agent system enables parallel development workflows using Git worktrees, allowing multiple agents to work simultaneously on different features while maintaining code isolation and consistency.
+</Note>
+
 ## Architecture Overview
 
-<Mermaid chart={`graph TB
-    subgraph "File System"
-        MainRepo[Main Repository]
-        Worktree1[Agent 1 Worktree]
-        Worktree2[Agent 2 Worktree]
-    end
+<Mermaid chart={`graph LR
+    MainRepo[Main Repository] --> GitDB[Shared .git Database]
     
-    subgraph "Git Layer"
-        GitDB[.git Database]
-        Branch1[Feature Branch 1]
-        Branch2[Feature Branch 2]
-        Develop[Develop Branch]
-    end
+    GitDB --> Worktree1[Agent 1 Worktree]
+    GitDB --> Worktree2[Agent 2 Worktree]
     
-    subgraph "Coordination Layer"
-        Automation[Automation System]
-        Config[Agent Config]
-        State[Worktree State]
-    end
+    Worktree1 --> Branch1[Feature Branch 1]
+    Worktree2 --> Branch2[Feature Branch 2]
     
-    subgraph "Integration"
-        PR1[Pull Request 1]
-        PR2[Pull Request 2]
-        CI[CI/CD Pipeline]
-    end
-    
-    MainRepo -.->|Shares| GitDB
-    Worktree1 -.->|Shares| GitDB
-    Worktree2 -.->|Shares| GitDB
-    
-    Worktree1 --> Branch1
-    Worktree2 --> Branch2
-    
-    Automation --> Config
-    Automation --> State
-    Automation --> Worktree1
+    Automation[Automation System] --> Worktree1
     Automation --> Worktree2
+    Config[Agent Config] --> Automation
+    State[Worktree State] --> Automation
     
-    Branch1 --> PR1
-    Branch2 --> PR2
-    PR1 --> CI
+    Branch1 --> PR1[Pull Request 1]
+    Branch2 --> PR2[Pull Request 2]
+    
+    PR1 --> CI[CI/CD Pipeline]
     PR2 --> CI
-    CI --> Develop`} />
+    CI --> Develop[Develop Branch]
+    
+    style MainRepo fill:#e1f5ff
+    style GitDB fill:#fff4e1
+    style Worktree1 fill:#e1ffe1
+    style Worktree2 fill:#e1ffe1
+    style Branch1 fill:#f0e1ff
+    style Branch2 fill:#f0e1ff
+    style Automation fill:#fff4e1
+    style Config fill:#ffe1e1
+    style State fill:#ffe1e1
+    style PR1 fill:#e1f5ff
+    style PR2 fill:#e1f5ff
+    style CI fill:#e1ffe1
+    style Develop fill:#e1f5ff`} />
 
 ## Core Components
+
+<CardGrid>
+  <Card title="Git Worktrees" icon="git-branch">
+    Isolated workspaces sharing a common Git repository for parallel development
+  </Card>
+  <Card title="Coordination Layer" icon="activity">
+    Orchestrates agent workflows, state synchronization, and task assignment
+  </Card>
+  <Card title="Task Assignment" icon="check-circle">
+    Intelligent routing of tasks based on agent specialization and workload
+  </Card>
+  <Card title="State Management" icon="database">
+    Tracks agent, worktree, and task states across the entire system
+  </Card>
+</CardGrid>
 
 ### 1. Git Worktrees
 
 Git worktrees are the foundation of the multi-agent system, providing isolated workspaces that share a common Git repository. Each agent operates in their own complete working directory with dedicated branches, while all workspaces reference the same underlying Git database.
 
-**Key Features:**
-- All worktrees share the same `.git` database
-- Each worktree has its own working directory
-- Each worktree tracks a different branch
-- No duplication of Git history
+<Note type="tip" title="Key Benefits">
+- **Shared Git Database**: All worktrees share the same `.git` database
+- **Isolated Working Directories**: Each worktree has its own working directory
+- **Branch Separation**: Each worktree tracks a different branch
+- **No Duplication**: Zero duplication of Git history
+</Note>
 
 ### 2. Coordination Layer
 
@@ -110,21 +122,29 @@ Tasks are assigned based on agent roles:
   </TabsList>
   
   <TabsContent value="frontend">
-    **Frontend Specialist Tasks:**
-    - UI components
-    - User workflows
-    - Client-side logic
-    - Analytics dashboards
-    - User experience features
+<div>
+
+**Frontend Specialist Tasks:**
+- UI components
+- User workflows
+- Client-side logic
+- Analytics dashboards
+- User experience features
+
+</div>
   </TabsContent>
   
   <TabsContent value="backend">
-    **Backend Specialist Tasks:**
-    - API endpoints
-    - Database operations
-    - Infrastructure
-    - AI service integration
-    - Queue management systems
+<div>
+
+**Backend Specialist Tasks:**
+- API endpoints
+- Database operations
+- Infrastructure
+- AI service integration
+- Queue management systems
+
+</div>
   </TabsContent>
 </Tabs>
 
@@ -132,23 +152,52 @@ Tasks are assigned based on agent roles:
 
 The system tracks multiple state dimensions:
 
-**Agent State:**
+<Tabs defaultValue="agent">
+  <TabsList>
+    <TabsTrigger value="agent">Agent State</TabsTrigger>
+    <TabsTrigger value="worktree">Worktree State</TabsTrigger>
+    <TabsTrigger value="task">Task State</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="agent">
+<div>
+
+**Agent State Tracking:**
 - Current branch
 - Assigned tasks
 - Work progress
 - Dependencies
+- Last activity timestamp
 
-**Worktree State:**
+</div>
+  </TabsContent>
+
+  <TabsContent value="worktree">
+<div>
+
+**Worktree State Tracking:**
 - Last sync with develop
 - Uncommitted changes
 - Commits ahead/behind develop
+- Health status
+- Resource utilization
 
-**Task State:**
+</div>
+  </TabsContent>
+
+  <TabsContent value="task">
+<div>
+
+**Task State Tracking:**
 - Not started
 - In progress
 - In review
 - Completed
 - Blocked
+
+</div>
+  </TabsContent>
+</Tabs>
 
 ## Workflow Automation
 
@@ -225,7 +274,21 @@ The system handles conflicts through a defined process:
 
 ## Performance Considerations
 
-### Disk Space
+<Note type="warning" title="Resource Requirements">
+Plan for adequate disk space, memory, and CPU resources when running multiple agents simultaneously.
+</Note>
+
+<Tabs defaultValue="disk">
+  <TabsList>
+    <TabsTrigger value="disk">Disk Space</TabsTrigger>
+    <TabsTrigger value="cpu">CPU/Memory</TabsTrigger>
+    <TabsTrigger value="network">Network</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="disk">
+<div>
+
+### Disk Space Requirements
 
 Each worktree requires:
 - Working directory: ~100MB
@@ -234,17 +297,47 @@ Each worktree requires:
 
 **Total per agent: ~650MB**
 
-### CPU/Memory
+For 3 agents + main repo: **~2.5GB total**
 
-- Each agent can run dev server: ~500MB RAM
+</div>
+  </TabsContent>
+
+  <TabsContent value="cpu">
+<div>
+
+### CPU/Memory Requirements
+
+- Each agent dev server: ~500MB RAM
 - Build processes: 1-2 CPU cores per agent
-- Recommended: 8GB RAM for 2-3 active agents
+- **Recommended**: 8GB RAM for 2-3 active agents
+- **Minimum**: 4GB RAM for 1-2 agents
 
-### Network
+**Optimal Configuration:**
+- 16GB RAM for 3+ agents
+- Multi-core CPU (6+ cores)
+- SSD storage for faster builds
 
-- Minimal network overhead
+</div>
+  </TabsContent>
+
+  <TabsContent value="network">
+<div>
+
+### Network Requirements
+
+- **Minimal network overhead**
 - Git operations share local .git database
 - Only PRs and pushes use network
+- No continuous network sync required
+
+**Bandwidth Usage:**
+- Initial clone: ~100MB
+- PR push: ~1-10MB per PR
+- Fetch updates: ~1-5MB
+
+</div>
+  </TabsContent>
+</Tabs>
 
 ## Security Considerations
 
@@ -260,38 +353,80 @@ Each worktree requires:
 
 ## Monitoring & Observability
 
+<Note type="tip" title="Comprehensive Observability">
+The system provides real-time monitoring, metrics collection, and analytics to ensure smooth multi-agent operations.
+</Note>
+
 The system provides comprehensive observability:
 
-**Health Monitoring**
-- Real-time agent status tracking
-- Workspace health validation
-- Performance metrics collection
-- Resource utilization monitoring
-
-**Metrics & Analytics**
-- Task completion rates
-- Agent productivity metrics
-- Integration success rates
-- Quality and performance indicators
+<CardGrid>
+  <Card title="Health Monitoring" icon="heart">
+    Real-time agent status tracking and workspace health validation
+  </Card>
+  <Card title="Performance Metrics" icon="activity">
+    Performance metrics collection and resource utilization monitoring
+  </Card>
+  <Card title="Task Analytics" icon="trending-up">
+    Task completion rates and agent productivity metrics
+  </Card>
+  <Card title="Quality Indicators" icon="check-circle">
+    Integration success rates and quality performance indicators
+  </Card>
+</CardGrid>
 
 ## Limitations & Constraints
 
+<Note type="warning" title="Current Limitations">
+Be aware of the current system constraints when planning your multi-agent workflow.
+</Note>
+
 ### Current Limitations
 
-- **Max agents**: 3-4 recommended (disk/resource limits)
-- **Coordination**: Manual task assignment
-- **Conflict resolution**: Requires human intervention
-- **Cleanup**: Worktrees must be manually removed
+<CardGrid>
+  <Card title="Max Agents" icon="users">
+    3-4 agents recommended due to disk/resource limits
+  </Card>
+  <Card title="Task Assignment" icon="target">
+    Manual task assignment and coordination required
+  </Card>
+  <Card title="Conflict Resolution" icon="alert-circle">
+    Requires human intervention for complex conflicts
+  </Card>
+  <Card title="Cleanup" icon="trash">
+    Worktrees must be manually removed after completion
+  </Card>
+</CardGrid>
 
 ### Future Improvements
 
-- Automatic task assignment based on agent specialization
-- AI-powered conflict resolution
-- Dynamic agent scaling
-- Cloud-based worktree storage
+<Step>
+  <StepItem title="Intelligent Task Assignment">
+    Automatic task assignment based on agent specialization and workload
+  </StepItem>
+  <StepItem title="Automated Conflict Resolution">
+    Conflict resolution based on defined coordination rules and patterns
+  </StepItem>
+  <StepItem title="Dynamic Scaling">
+    Dynamic agent scaling based on workload and resource availability
+  </StepItem>
+  <StepItem title="Cloud Storage">
+    Cloud-based worktree storage for unlimited scalability
+  </StepItem>
+</Step>
 
 ## Next Steps
 
-- [Quick Start](/docs/multi-agent/quick-start) - Get started with multi-agent
-- [Worktree Management](/docs/multi-agent/worktree) - Manage worktrees
-- [Agent Coordination](/docs/multi-agent/coordination) - Coordinate agents
+<CardGrid>
+  <Card title="Quick Start" icon="zap" href="/docs/multi-agent/quick-start">
+    Get started with the multi-agent development system
+  </Card>
+  <Card title="Worktree Management" icon="git-branch" href="/docs/multi-agent/worktree">
+    Learn how to manage and operate worktrees effectively
+  </Card>
+  <Card title="Agent Coordination" icon="users" href="/docs/multi-agent/coordination">
+    Coordinate multiple agents for optimal workflows
+  </Card>
+  <Card title="Script Reference" icon="code" href="/docs/scripts-reference/complete-guide">
+    Complete guide to all automation scripts
+  </Card>
+</CardGrid>

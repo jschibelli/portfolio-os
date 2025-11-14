@@ -1,7 +1,10 @@
-﻿---
+---
 title: Update Blog on Production
 description: How to update blog content in production
 ---
+## Overview
+
+How to update blog content in production
 
 When you publish a new article on Hashnode, it won't automatically appear on your production site due to build-time caching. Here's how to make it appear.
 
@@ -193,4 +196,3 @@ Consider using build cache:
 - `scripts/trigger-vercel-redeploy.ts` - Redeploy automation script
 - `scripts/revalidate-blog.ts` - Cache revalidation script
 - `apps/site/app/api/revalidate/route.ts` - Revalidation API endpoint
-

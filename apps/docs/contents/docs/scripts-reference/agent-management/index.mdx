@@ -1,17 +1,232 @@
 ---
 title: Agent Management
-description: Multi-agent development system scripts
+description: >-
+  Multi-agent development system scripts for worktrees, coordination, and
+  workflows
+---
+## Overview
+
+Multi-agent development system scripts for worktrees, coordination, and workflows
+
+The Agent Management scripts implement the multi-agent development model used in Portfolio OS.
+They create and manage isolated worktrees for each agent, coordinate assignments, and orchestrate
+end-to-end workflows across multiple agents.
+
+<Note type="info">
+These scripts live under `scripts/agent-management/` and are best understood alongside the
+conceptual docs in **Multi-Agent System → Quick Start & Architecture**.
+</Note>
+
 ---
 
-# Agent Management Scripts
+## Directory Overview
 
-Scripts for managing the multi-agent development system.
+```text
+scripts/agent-management/
+├── setup-agent-development.ps1         # Initialize agent worktrees
+├── manage-multi-agent-system.ps1       # High-level system management
+├── manage-agent-coordination-unified.ps1
+├── manage-worktree-operations-unified.ps1
+├── start-multi-agent-e2e-unified.ps1   # Orchestrate end-to-end workflows
+├── update-agent-status.ps1             # Update agent status and metrics
+└── README.md                           # Enterprise developer guide
+```
 
-## Key Scripts
+### Prerequisites
 
-- **setup-agent-development.ps1**: Create agent worktrees
-- **manage-multi-agent-system.ps1**: Coordinate agents
-- **start-multi-agent-e2e-unified.ps1**: Run complete workflows
+- **PowerShell 7+**
+- Git installed and configured
+- GitHub CLI (`gh`) configured for the repository (for project/issue integration)
 
-See [Multi-Agent System](/docs/multi-agent/quick-start) for detailed usage.
+---
 
+## `setup-agent-development.ps1`
+
+**Path**: `scripts/agent-management/setup-agent-development.ps1`  
+**Purpose**: One-time or occasional setup of agent worktrees for multi-agent development.
+
+### Capabilities
+
+- Create isolated Git worktrees per agent (e.g., `agent-1`, `agent-2`)
+- Ensure each agent has a clean working directory and consistent base branch
+
+### Key Parameters
+
+| Parameter    | Type   | Required | Description                                      |
+|-------------|--------|----------|--------------------------------------------------|
+| `-AgentName`| string | Yes      | Agent identifier, e.g. `"agent-1"`              |
+| `-Branch`   | string | No       | Base branch for the worktree (default `develop`)|
+
+### Usage Example
+
+```powershell
+# Create a worktree for agent-1
+.\scripts\agent-management\setup-agent-development.ps1 -AgentName "agent-1"
+```
+
+---
+
+## `manage-multi-agent-system.ps1`
+
+**Path**: `scripts/agent-management/manage-multi-agent-system.ps1`  
+**Purpose**: Core control surface for the multi-agent development system.
+
+### Operations
+
+Depending on the script implementation, common operations include:
+
+- `setup` – Initialize the multi-agent system
+- `create` – Create additional agent worktrees
+- `destroy` – Remove agent worktrees when no longer needed
+- `list` – Show current agents, branches, and status
+- `assign` – Assign issues or PRs to specific agents
+- `sync` – Synchronize worktrees with the main branch
+- `status` – Show system/agent health
+- `cleanup` – Clean up stale branches or worktrees
+
+### Usage Examples
+
+```powershell
+# List current agents and their worktrees
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action list
+```
+
+```powershell
+# Synchronize all agent worktrees with the main development branch
+.\scripts\agent-management\manage-multi-agent-system.ps1 -Action sync
+```
+
+```powershell
+# Assign an issue to a particular agent (if supported)
+.\scripts\agent-management\manage-multi-agent-system.ps1 `
+  -Action assign `
+  -AgentName "agent-1" `
+  -IssueNumber 250
+```
+
+Consult `Get-Help .\manage-multi-agent-system.ps1 -Full` for the exact action and parameter set.
+
+---
+
+## `manage-agent-coordination-unified.ps1`
+
+**Path**: `scripts/agent-management/manage-agent-coordination-unified.ps1`  
+**Purpose**: Central coordination and command helper for multi-agent workflows.
+
+### Capabilities
+
+- Show agent-specific commands and helpful summaries
+- Report branch status and sync status per agent
+- Generate suggested commands for syncing or switching worktrees
+- Provide a consolidated status view of all agents
+
+### Typical Usage
+
+```powershell
+# Get a high-level view of all agents and recommended commands
+.\scripts\agent-management\manage-agent-coordination-unified.ps1
+```
+
+Use this script as your “command center” when operating multiple agents in parallel.
+
+---
+
+## `manage-worktree-operations-unified.ps1`
+
+**Path**: `scripts/agent-management/manage-worktree-operations-unified.ps1`  
+**Purpose**: Unified interface for creating, switching, and managing agent worktrees.
+
+### Capabilities
+
+- Create new worktrees for agents
+- Switch the current working directory to a specific agent’s worktree
+- Map issues to agents and associated branches
+- Run batch operations over multiple worktrees
+
+### Example Usage
+
+```powershell
+# Switch to the worktree for agent-2
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
+  -Action switch `
+  -AgentName "agent-2"
+```
+
+```powershell
+# Create a new agent worktree and link it to an issue
+.\scripts\agent-management\manage-worktree-operations-unified.ps1 `
+  -Action create `
+  -AgentName "agent-3" `
+  -IssueNumber 260
+```
+
+---
+
+## `start-multi-agent-e2e-unified.ps1`
+
+**Path**: `scripts/agent-management/start-multi-agent-e2e-unified.ps1`  
+**Purpose**: Orchestrate end-to-end multi-agent workflows across multiple issues or tasks.
+
+### Capabilities
+
+- Coordinate parallel development across multiple agents
+- Provide different execution modes (continuous, batch, monitor) depending on script design
+- Connect issues → branches → PRs as part of a unified flow
+
+### Typical Parameters
+
+Exact parameters may vary; common ones include:
+
+| Parameter    | Type   | Description                                      |
+|-------------|--------|--------------------------------------------------|
+| `-NumAgents`| int    | Number of agents participating                   |
+| `-Tasks`    | array  | Optional list of task descriptions               |
+| `-Mode`     | string | Execution mode (e.g. `continuous`, `monitor`)    |
+
+### Usage Example
+
+```powershell
+# Start a two-agent E2E workflow with descriptive task names
+.\scripts\agent-management\start-multi-agent-e2e-unified.ps1 `
+  -NumAgents 2 `
+  -Tasks "Implement feature A", "Implement feature B"
+```
+
+---
+
+## `update-agent-status.ps1`
+
+**Path**: `scripts/agent-management/update-agent-status.ps1`  
+**Purpose**: Update and report agent status information (e.g. active tasks, progress).
+
+### Example Usage
+
+```powershell
+# Mark an agent as in progress on a set of issues
+.\scripts\agent-management\update-agent-status.ps1 `
+  -AgentName "agent-1" `
+  -Status "In progress"
+```
+
+---
+
+## Recommended Workflow
+
+1. **Initial Setup** – Run `setup-agent-development.ps1` to create agent worktrees.  
+2. **System Management** – Use `manage-multi-agent-system.ps1` to manage agents and sync branches.  
+3. **Coordination** – Use `manage-agent-coordination-unified.ps1` as a dashboard for commands and status.  
+4. **Worktree Operations** – Use `manage-worktree-operations-unified.ps1` to switch or create worktrees.  
+5. **End-to-End Runs** – Use `start-multi-agent-e2e-unified.ps1` for full multi-agent workflows.  
+6. **Status Updates** – Use `update-agent-status.ps1` to keep status in sync with project tracking.  
+
+---
+
+## Troubleshooting & Further Reading
+
+- If Git operations fail, verify that your local Git configuration and remotes match the
+  expected `origin` for Portfolio OS.
+- For conflicts or branch issues, synchronize with the main branch before re-running E2E
+  workflows.
+- For conceptual background and detailed architecture diagrams, see:
+  - `docs → Advanced Topics → Multi-Agent System`
+  - `scripts/agent-management/README.md` (enterprise-level guide)

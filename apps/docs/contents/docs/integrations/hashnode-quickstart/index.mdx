@@ -1,0 +1,37 @@
+---
+title: Hashnode Quick Start
+description: Publish your first article from Portfolio OS to Hashnode in under 10 minutes.
+keywords: hashnode quick start, publishing
+---
+
+## Overview
+
+This quick start walks through the minimum steps to publish an article from the docs repo to Hashnode using the automation scripts.
+
+---
+
+## Steps
+
+1. **Add credentials**
+   - Create `HASHNODE_TOKEN` and `HASHNODE_PUBLICATION_ID` in `.env.shared`.
+
+2. **Write your article**
+   - Create `apps/docs/contents/blog/my-first-post/index.mdx`.
+   - Include frontmatter (`title`, `description`, `tags`).
+
+3. **Preview locally**
+   ```bash
+   pnpm docs:dev
+   ```
+
+4. **Publish**
+   ```bash
+   pnpm scripts hashnode:publish --slug my-first-post
+   ```
+
+5. **Verify**
+   - Open the Hashnode dashboard → Posts → check the new entry.
+   - Ensure the canonical URL points to `/docs/blog/my-first-post`.
+
+You're now synced between Hashnode and the Portfolio OS documentation.
+

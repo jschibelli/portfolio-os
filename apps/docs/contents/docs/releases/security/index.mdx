@@ -1,0 +1,49 @@
+---
+title: Security Overview
+description: Security practices, hardening checklist, and guidance for keeping Portfolio OS deployments safe.
+keywords: security, hardening, best practices, authentication, authorization
+---
+
+## Overview
+
+This page provides a **high-level security overview** for Portfolio OS, including:
+
+- Core security principles
+- Recommended hardening steps
+- Operational checklists for deployments
+
+Use this as a starting point; tailor controls to your actual environment and risk profile.
+
+---
+
+## Core Security Principles
+
+Portfolio OS is designed around a few key principles:
+
+1. **Least privilege**: Services and users should have only the permissions they absolutely need.
+2. **Defense in depth**: Multiple layers of controls (network, application, and data) protect against failures in any single layer.
+3. **Secure by default**: Default configuration should be safe for non-production environments and easy to harden for production.
+4. **Auditability**: Critical actions should be observable and traceable.
+
+---
+
+## Hardening Checklist (High Level)
+
+Before treating a deployment as production-ready, ensure you've:
+
+- Enabled **HTTPS everywhere** (behind a TLS-terminating proxy or platform like Vercel).
+- Locked down **environment variables** and secrets using a secure secret store.
+- Applied **principle of least privilege** to your database user and any API keys.
+- Enabled **monitoring and logging** for authentication events and critical API calls.
+- Set up **backup and restore** procedures for your database.
+
+---
+
+## Next Steps
+
+- Review the **Authentication Fixes** and **Release Guide** pages for more operational detail.
+- Document environment-specific controls (networking, identity provider, SSO, etc.) in your own runbooks.
+
+This stub page exists to avoid broken links while still giving you a useful starting point. You can safely expand or replace the content with your own security documentation over time.
+
+

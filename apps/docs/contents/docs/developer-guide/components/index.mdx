@@ -1,0 +1,65 @@
+---
+title: Components & Patterns
+description: >-
+  Guidelines for creating reusable UI primitives and surface-specific components
+  across the Portfolio OS apps.
+keywords: 'components, ui, guidelines'
+---
+## Overview
+
+Portfolio OS ships with two layers of components:
+
+- **UI primitives** in `packages/ui` that power both the site and dashboard
+- **Surface components** co-located with their respective apps (for example `apps/site/components/projects`)
+
+This page documents the expectations for building, documenting, and consuming components so Storybook, MDX embeds, and production experiences all stay in sync.
+
+---
+
+## Authoring Principles
+
+1. **Single responsibility** – build narrowly scoped primitives (`Button`, `Card`, `Tabs`) and compose them for higher-order sections.
+2. **Accessibility-first** – prefer Radix UI primitives, include ARIA labels, and replicate keyboard support (see the `Gallery` component for an example of focus trapping + arrow navigation).
+3. **Dark-mode parity** – every component must include `dark:` styles that map to the design tokens defined in `apps/docs/styles/globals.css`.
+4. **Deterministic variants** – use `class-variance-authority` or explicit props instead of ad-hoc `className` concatenation to guarantee theme consistency.
+
+---
+
+## File Placement
+
+| Component Type | Location | Example |
+| -------------- | -------- | ------- |
+| Core primitives | `packages/ui/src/components` | `button.tsx`, `input.tsx` |
+| Docs-only MDX helpers | `apps/docs/components/markdown` | `Card`, `Note`, `Mermaid` |
+| Site/project UI | `apps/site/components` | `projects/Gallery.tsx`, `features/blog/PostCard.tsx` |
+| Dashboard widgets | `apps/dashboard/components` | `analytics/OverviewCard.tsx` |
+
+Always colocate stories next to the component (`Component.stories.tsx`) and import them in Storybook via absolute paths (`@/components/...`).
+
+---
+
+## Documentation Requirements
+
+- **Storybook stories** covering default, edge, and error states. Reuse `controls` to show prop-driven variations.
+- **MDX usage snippets** when a component is referenced from docs (see `/docs/component-library/storybook` for canonical examples).
+- **Props tables** – expose `Props` types from the component file so Storybook autodocs can derive metadata.
+
+---
+
+## Testing Expectations
+
+| Layer | Tooling | Notes |
+| ----- | ------- | ----- |
+| Unit | Jest + Testing Library | `apps/*/__tests__/**/*.test.tsx` |
+| Visual/UX | Storybook + Playwright | Baseline regression coverage for critical UI primitives |
+| Accessibility | `@axe-core/playwright`, `jest-axe` | Audit interactive components (buttons, inputs, dialogs) |
+
+---
+
+## Useful References
+
+- [Storybook Component Library](/docs/component-library/storybook)
+- [Development Practices](/docs/features/development-practices)
+- [Testing Guide](/docs/testing)
+
+Following these guardrails keeps authored UI consistent across the three apps, ensures every component is testable, and makes the documentation trustworthy.

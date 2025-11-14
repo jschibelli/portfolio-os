@@ -1,0 +1,44 @@
+---
+title: Authentication Fixes
+description: Guidance for diagnosing and fixing authentication issues in Portfolio OS.
+keywords: authentication, security, troubleshooting, login, auth fixes
+---
+
+## Overview
+
+This page documents **common authentication problems** and how to fix them in a Portfolio OS deployment.
+It is intentionally high-level so you can adapt it to your actual identity provider and environment.
+
+---
+
+## Common Issues
+
+### 1. Users Cannot Log In
+
+Check the following:
+
+- Environment variables for your auth provider (e.g. OAuth client ID/secret) are set correctly.
+- Redirect URLs configured with your provider match your deployed URLs.
+- Time on your servers is roughly in sync (JWTs and signed tokens are time-sensitive).
+
+### 2. Session Expiring Too Quickly
+
+- Verify cookie/session configuration in your app (maxAge, secure, sameSite).
+- Ensure you are not inadvertently clearing auth cookies on navigation or logout actions.
+
+### 3. Token Validation Errors
+
+- Confirm that the signing keys or JWKs used by your provider match what your app expects.
+- For self-hosted auth, rotate secrets carefully and update all dependent services.
+
+---
+
+## Operational Recommendations
+
+- Enable **structured logging** for auth flows (login, logout, token refresh, errors).
+- Monitor failed login attempts and consider basic rate limiting or WAF rules.
+- Regularly review and rotate secrets, especially after incidents or personnel changes.
+
+This stub page can be expanded with environment-specific examples and runbooks as your system evolves.
+
+

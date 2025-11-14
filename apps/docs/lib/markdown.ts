@@ -16,6 +16,7 @@ import { visit } from "unist-util-visit"
 import { components } from "@/lib/components"
 import { Settings } from "@/lib/meta"
 import { PageRoutes } from "@/lib/pageroutes"
+import "@/lib/prism-aliases"
 
 declare module "hast" {
   interface Element {

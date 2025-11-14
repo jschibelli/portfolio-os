@@ -1,0 +1,981 @@
+---
+title: Testing Guide
+description: >-
+  Comprehensive guide to testing in Portfolio OS including unit tests, E2E
+  tests, accessibility testing, and CI integration
+---
+## Overview
+
+Comprehensive guide to testing in Portfolio OS including unit tests, E2E tests, accessibility testing, and CI integration
+
+Portfolio OS uses comprehensive automated testing at multiple levels to ensure code quality, functionality, and accessibility. This guide covers all testing approaches, commands, and best practices.
+
+## Testing Philosophy
+
+<Note type="info">
+Our testing strategy follows the testing pyramid approach, ensuring fast feedback loops and reliable quality gates.
+</Note>
+
+**Testing Pyramid:**
+- **Unit Tests**: Fast, isolated tests for components and utilities
+- **Integration Tests**: API and component integration testing
+- **E2E Tests**: Complete user journey validation with Playwright
+- **Accessibility Tests**: WCAG compliance validation
+
+## Testing Stack
+
+<CardGrid>
+  <Card title="Jest" icon="check-circle">
+    Unit & component testing framework with full TypeScript support
+  </Card>
+  <Card title="React Testing Library" icon="code">
+    Component testing utilities for user-centric tests
+  </Card>
+  <Card title="Playwright" icon="play-circle">
+    E2E and visual regression testing across browsers
+  </Card>
+  <Card title="axe-core" icon="accessibility">
+    WCAG compliance and accessibility validation
+  </Card>
+  <Card title="Storybook" icon="book">
+    Component development environment and visual testing
+  </Card>
+</CardGrid>
+
+### Core Technologies
+
+| Tool | Purpose | Location |
+|------|---------|----------|
+| **Jest** | Unit & component testing | `apps/*/jest.config.js` |
+| **React Testing Library** | Component testing utilities | All `__tests__/` directories |
+| **Playwright** | E2E and visual regression testing | `apps/site/tests/` |
+| **axe-core** | Accessibility testing | Integrated in Playwright tests |
+| **jest-axe** | Unit-level accessibility testing | Used in component tests |
+| **Storybook** | Component development & visual testing | `apps/site/.storybook/` |
+
+## Quick Start
+
+### Run All Tests
+
+```bash
+# Run all unit tests across workspace
+pnpm test
+
+# Run all E2E tests (requires dev server running)
+pnpm --filter @mindware-blog/site test:all
+
+# Run tests in specific app
+pnpm --filter @mindware-blog/site test
+```
+
+### Run Tests in CI Mode
+
+```bash
+# Unit tests with coverage (CI optimized)
+pnpm --filter @mindware-blog/site test:ci
+
+# E2E tests in CI environment
+CI=1 pnpm --filter @mindware-blog/site test:all
+```
+
+---
+
+## Unit & Component Testing
+
+### Overview
+
+Unit tests use Jest with React Testing Library to test individual components and utility functions in isolation.
+
+**Test Location**: `apps/*/__ tests__/**/*.test.{ts,tsx}`
+**Framework**: Jest + React Testing Library + jsdom
+**Total Tests**: 50+ unit and component tests
+
+### Running Unit Tests
+
+<Tabs defaultValue="watch">
+  <TabsList>
+    <TabsTrigger value="watch">Watch Mode</TabsTrigger>
+    <TabsTrigger value="coverage">Coverage</TabsTrigger>
+    <TabsTrigger value="ci">CI Mode</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="watch">
+    ```bash
+    # Watch mode for development
+    pnpm --filter @mindware-blog/site test:watch
+    
+    # Runs continuously, re-running tests on file changes
+    ```
+  </TabsContent>
+  
+  <TabsContent value="coverage">
+    ```bash
+    # Generate coverage report
+    pnpm --filter @mindware-blog/site test:coverage
+    
+    # Opens coverage report
+    open apps/site/coverage/lcov-report/index.html
+    ```
+  </TabsContent>
+  
+  <TabsContent value="ci">
+    ```bash
+    # CI-optimized test run
+    pnpm --filter @mindware-blog/site test:ci
+    
+    # Runs once with coverage, no watch mode
+    ```
+  </TabsContent>
+</Tabs>
+
+**Additional Commands:**
+
+```bash
+# Test specific patterns
+pnpm --filter @mindware-blog/site test:unit
+
+# Test API endpoints only
+pnpm --filter @mindware-blog/site test:api
+
+# Debug mode (show open handles)
+pnpm --filter @mindware-blog/site test:debug
+```
+
+### Writing Unit Tests
+
+#### Basic Component Test
+
+```typescript
+// apps/site/__tests__/components/Gallery.test.tsx
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Gallery from '@/components/Gallery';
+
+describe('Gallery Component', () => {
+  it('renders gallery with images', () => {
+    const images = [
+      { url: '/test1.jpg', alt: 'Test 1' },
+      { url: '/test2.jpg', alt: 'Test 2' },
+    ];
+    
+    render(<Gallery images={images} />);
+    
+    expect(screen.getByAltText('Test 1')).toBeInTheDocument();
+    expect(screen.getByAltText('Test 2')).toBeInTheDocument();
+  });
+  
+  it('handles empty images array', () => {
+    render(<Gallery images={[]} />);
+    expect(screen.getByText(/no images/i)).toBeInTheDocument();
+  });
+});
+```
+
+#### Testing with User Interactions
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+describe('Interactive Component', () => {
+  it('handles button click', async () => {
+    const user = userEvent.setup();
+    const handleClick = jest.fn();
+    
+    render(<Button onClick={handleClick}>Click Me</Button>);
+    
+    await user.click(screen.getByRole('button'));
+    
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+#### API Route Testing
+
+```typescript
+// apps/site/__tests__/api/chat.test.ts
+import { POST } from '@/app/api/chat/route';
+import { NextRequest } from 'next/server';
+
+describe('Chat API', () => {
+  it('validates required fields', async () => {
+    const request = new NextRequest('http://localhost:3000/api/chat', {
+      method: 'POST',
+      body: JSON.stringify({ message: '' }),
+    });
+    
+    const response = await POST(request);
+    const data = await response.json();
+    
+    expect(response.status).toBe(400);
+    expect(data.error).toBe('Message is required');
+  });
+});
+```
+
+### Test Configuration
+
+#### Jest Configuration (`jest.config.js`)
+
+```javascript
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  
+  // Path aliases
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+    '^@components/(.*)$': '<rootDir>/components/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
+  
+  // Coverage thresholds
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 60,
+      lines: 60,
+      statements: 60,
+    },
+    './lib/': {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+    './app/api/': {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
+  
+  testTimeout: 10000,
+  maxWorkers: '50%',
+};
+```
+
+### Test Organization
+
+<FileTree>
+  <Folder name="apps/site" defaultOpen>
+    <Folder name="__tests__" defaultOpen>
+      <Folder name="components">
+        <File name="Gallery.test.tsx" />
+        <File name="FeatureGrid.test.tsx" />
+        <File name="InlineCaseStudy.test.tsx" />
+      </Folder>
+      <Folder name="api">
+        <File name="chat.test.ts" />
+        <File name="book.test.ts" />
+        <File name="image-proxy.test.ts" />
+      </Folder>
+      <Folder name="blog">
+        <File name="blog-data-fetching.test.ts" />
+        <File name="blog-skeleton.test.tsx" />
+        <File name="blog-error-boundary.test.tsx" />
+      </Folder>
+      <File name="auth-security.test.ts" />
+      <File name="config-validation.test.ts" />
+      <File name="email-validation.test.ts" />
+      <Folder name="test-mocks">
+        <File name="browserMocks.ts" />
+      </Folder>
+      <File name="setup.ts" />
+    </Folder>
+    <File name="jest.setup.js" />
+  </Folder>
+</FileTree>
+
+---
+
+## E2E & Visual Testing
+
+### Overview
+
+End-to-end tests use Playwright to test complete user journeys across multiple browsers and devices.
+
+**Test Location**: `apps/site/tests/**/*.spec.ts`
+**Framework**: Playwright with axe-core integration
+**Total Tests**: 30+ E2E test files
+**Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari
+
+### Running E2E Tests
+
+```bash
+# All E2E tests
+pnpm --filter @mindware-blog/site test:all
+
+# Accessibility tests
+pnpm --filter @mindware-blog/site test:accessibility
+
+# Visual regression tests
+pnpm --filter @mindware-blog/site test:visual
+
+# Update visual snapshots
+pnpm --filter @mindware-blog/site test:visual:update
+
+# Interactive UI mode
+pnpm --filter @mindware-blog/site test:visual:ui
+
+# SEO tests
+pnpm --filter @mindware-blog/site test:seo
+
+# Performance tests
+pnpm --filter @mindware-blog/site test:performance
+
+# Case study tests
+pnpm --filter @mindware-blog/site test:case-studies
+
+# Functional tests
+pnpm --filter @mindware-blog/site test:functional
+```
+
+### Writing E2E Tests
+
+#### Basic Page Test
+
+```typescript
+// apps/site/tests/pages/homepage-interactive.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Homepage', () => {
+  test('should load and display hero section', async ({ page }) => {
+    await page.goto('/');
+    
+    // Verify hero section
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('h1')).toContainText('Jason Schibelli');
+    
+    // Verify navigation
+    await expect(page.locator('nav')).toBeVisible();
+  });
+  
+  test('should navigate to projects page', async ({ page }) => {
+    await page.goto('/');
+    
+    await page.click('text=Projects');
+    await expect(page).toHaveURL('/projects');
+    await expect(page.locator('h1')).toContainText('Projects');
+  });
+});
+```
+
+#### Accessibility Testing
+
+```typescript
+// apps/site/tests/accessibility.spec.ts
+import { test, expect } from '@playwright/test';
+import { 
+  runComprehensiveAccessibilityTest,
+  testKeyboardNavigation 
+} from './utils/test-helpers';
+
+test.describe('Accessibility Tests', () => {
+  test('Homepage meets WCAG standards', async ({ page }) => {
+    await runComprehensiveAccessibilityTest(page, 'Homepage', '/');
+  });
+  
+  test('Navigation is keyboard accessible', async ({ page }) => {
+    await page.goto('/');
+    await testKeyboardNavigation(page, 5);
+  });
+  
+  test('Forms have proper labels', async ({ page }) => {
+    await page.goto('/contact');
+    
+    const nameInput = page.locator('input[name="name"]');
+    const label = page.locator('label[for="name"]');
+    
+    await expect(label).toBeVisible();
+    await expect(nameInput).toHaveAccessibleName();
+  });
+});
+```
+
+#### Visual Regression Testing
+
+```typescript
+// apps/site/tests/visual/homepage.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Homepage Visual Tests', () => {
+  test('homepage should match snapshot', async ({ page }) => {
+    await page.goto('/');
+    
+    // Wait for content to load
+    await page.waitForLoadState('networkidle');
+    
+    // Take screenshot and compare
+    await expect(page).toHaveScreenshot('homepage.png', {
+      fullPage: true,
+      threshold: 0.1, // 0.1% difference allowed
+    });
+  });
+  
+  test('homepage mobile view', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+    
+    await expect(page).toHaveScreenshot('homepage-mobile.png');
+  });
+});
+```
+
+#### Performance Testing
+
+```typescript
+// apps/site/tests/blog-performance.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Performance Tests', () => {
+  test('blog page loads within performance budget', async ({ page }) => {
+    const startTime = Date.now();
+    
+    await page.goto('/blog');
+    await page.waitForLoadState('networkidle');
+    
+    const loadTime = Date.now() - startTime;
+    
+    // Performance assertion (3 seconds max)
+    expect(loadTime).toBeLessThan(3000);
+  });
+  
+  test('Core Web Vitals are within thresholds', async ({ page }) => {
+    await page.goto('/');
+    
+    const metrics = await page.evaluate(() => {
+      return new Promise((resolve) => {
+        new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          resolve(entries);
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      });
+    });
+    
+    // LCP should be under 2.5s (good threshold)
+    expect(metrics[0].startTime).toBeLessThan(2500);
+  });
+});
+```
+
+### Playwright Configuration
+
+#### Multi-Browser & Device Testing
+
+```typescript
+// apps/site/playwright.config.ts
+export default defineConfig({
+  testDir: './tests',
+  fullyParallel: true,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
+  
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
+    { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } },
+  ],
+  
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+### Test Organization
+
+<FileTree>
+  <Folder name="apps/site/tests" defaultOpen>
+    <Folder name="accessibility">
+      <File name="accessibility.spec.ts" />
+      <File name="accessibility-comprehensive.spec.ts" />
+    </Folder>
+    <Folder name="visual">
+      <File name="homepage.spec.ts" />
+      <File name="blog-page.spec.ts" />
+      <File name="projects-page.spec.ts" />
+    </Folder>
+    <Folder name="flows">
+      <File name="flow-contact.spec.ts" />
+      <File name="flow-chatbot.spec.ts" />
+    </Folder>
+    <Folder name="components">
+      <File name="navigation-comprehensive.spec.ts" />
+      <File name="blog-components.spec.ts" />
+    </Folder>
+    <Folder name="pages">
+      <File name="homepage-interactive.spec.ts" />
+    </Folder>
+    <Folder name="utils">
+      <File name="test-helpers.ts" />
+    </Folder>
+    <Folder name="config">
+      <File name="test-data.ts" />
+    </Folder>
+  </Folder>
+</FileTree>
+
+---
+
+## CI Integration
+
+### GitHub Actions Integration
+
+Tests run automatically in CI/CD pipelines. See our workflows:
+
+```yaml
+# .github/workflows/ci-optimized.yml
+- name: Run Unit Tests
+  run: pnpm test:ci
+  
+- name: Run E2E Tests
+  run: |
+    pnpm build
+    pnpm test:all
+```
+
+### Test Reports
+
+- **Unit Test Coverage**: Automatically generated and uploaded
+- **E2E Test Reports**: Available in GitHub Actions artifacts
+- **Playwright HTML Report**: Viewable in CI artifacts
+- **Visual Diff Reports**: Attached to failed E2E tests
+
+### CI-Specific Configurations
+
+```typescript
+// CI environment detection
+const isCI = !!process.env.CI;
+
+// Retries in CI
+retries: isCI ? 2 : 0,
+
+// Single worker in CI for stability
+workers: isCI ? 1 : undefined,
+
+// GitHub reporter in CI
+reporter: isCI ? [['github'], ['html']] : [['html']],
+```
+
+---
+
+## Coverage Reports
+
+### Generating Coverage
+
+```bash
+# Unit test coverage
+pnpm --filter @mindware-blog/site test:coverage
+
+# Coverage is saved to:
+# apps/site/coverage/lcov-report/index.html
+```
+
+### Coverage Thresholds
+
+Current coverage requirements:
+
+| Area | Branches | Functions | Lines | Statements |
+|------|----------|-----------|-------|------------|
+| **Global** | 60% | 60% | 60% | 60% |
+| **lib/** | 70% | 70% | 70% | 70% |
+| **app/api/** | 80% | 80% | 80% | 80% |
+
+### Viewing Coverage Reports
+
+```bash
+# Open coverage report in browser
+open apps/site/coverage/lcov-report/index.html
+
+# Or on Windows
+start apps/site/coverage/lcov-report/index.html
+```
+
+---
+
+## Test Utilities & Helpers
+
+### Shared Test Utilities
+
+```typescript
+// apps/site/tests/utils/test-helpers.ts
+
+/**
+ * Run comprehensive accessibility test on a page
+ */
+export async function runComprehensiveAccessibilityTest(
+  page: Page,
+  name: string,
+  url: string
+) {
+  await page.goto(url);
+  const results = await injectAxe(page);
+  await checkA11y(page, null, {
+    detailedReport: true,
+    detailedReportOptions: { html: true },
+  });
+}
+
+/**
+ * Test keyboard navigation
+ */
+export async function testKeyboardNavigation(
+  page: Page,
+  expectedLinks: number
+) {
+  await page.keyboard.press('Tab');
+  const focusedElement = await page.locator(':focus');
+  await expect(focusedElement).toBeVisible();
+}
+
+/**
+ * Navigate with validation
+ */
+export async function navigateWithValidation(
+  page: Page,
+  url: string
+) {
+  await page.goto(url);
+  await page.waitForLoadState('networkidle');
+  await expect(page).toHaveURL(url);
+}
+```
+
+### Mock Data
+
+```typescript
+// apps/site/__tests__/test-mocks/browserMocks.ts
+
+export const mockBlogPost = {
+  id: 'test-post-1',
+  title: 'Test Blog Post',
+  slug: 'test-blog-post',
+  content: 'Test content',
+  publishedAt: '2024-01-01',
+};
+
+export const mockProjects = [
+  {
+    id: 'project-1',
+    title: 'Test Project',
+    description: 'Test description',
+  },
+];
+```
+
+---
+
+## Common Testing Patterns
+
+### Testing Async Components
+
+```typescript
+import { render, screen, waitFor } from '@testing-library/react';
+
+test('loads and displays data', async () => {
+  render(<AsyncComponent />);
+  
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  
+  await waitFor(() => {
+    expect(screen.getByText('Data loaded')).toBeInTheDocument();
+  });
+});
+```
+
+### Testing Error Boundaries
+
+```typescript
+test('error boundary catches errors', () => {
+  const ThrowError = () => {
+    throw new Error('Test error');
+  };
+  
+  render(
+    <ErrorBoundary>
+      <ThrowError />
+    </ErrorBoundary>
+  );
+  
+  expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+});
+```
+
+### Testing Forms
+
+```typescript
+test('form submission', async () => {
+  const handleSubmit = jest.fn();
+  const user = userEvent.setup();
+  
+  render(<ContactForm onSubmit={handleSubmit} />);
+  
+  await user.type(screen.getByLabelText('Name'), 'John Doe');
+  await user.type(screen.getByLabelText('Email'), 'john@example.com');
+  await user.click(screen.getByRole('button', { name: /submit/i }));
+  
+  expect(handleSubmit).toHaveBeenCalledWith({
+    name: 'John Doe',
+    email: 'john@example.com',
+  });
+});
+```
+
+---
+
+## Troubleshooting
+
+<Note type="warning">
+Common test issues and their solutions. Check here before opening an issue.
+</Note>
+
+### Common Issues
+
+#### Tests Failing Locally But Pass in CI
+
+<Tabs defaultValue="jest">
+  <TabsList>
+    <TabsTrigger value="jest">Jest Issues</TabsTrigger>
+    <TabsTrigger value="playwright">Playwright Issues</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="jest">
+    ```bash
+    # Clear Jest cache
+    pnpm --filter @mindware-blog/site test --clearCache
+    
+    # Delete node_modules and reinstall
+    rm -rf node_modules
+    pnpm install
+    ```
+  </TabsContent>
+  
+  <TabsContent value="playwright">
+    ```bash
+    # Clear Playwright cache
+    pnpm playwright install --force
+    
+    # Reinstall with dependencies
+    pnpm playwright install --with-deps
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Playwright Browsers Not Installed
+
+```bash
+# Install Playwright browsers
+pnpm playwright install
+
+# Install with dependencies
+pnpm playwright install --with-deps
+```
+
+#### Port Already in Use
+
+```bash
+# Kill process on port 3000 (macOS/Linux)
+lsof -ti:3000 | xargs kill -9
+
+# Windows
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+```
+
+#### Visual Regression Failures
+
+```bash
+# Update snapshots after intentional changes
+pnpm --filter @mindware-blog/site test:visual:update
+
+# View diff in UI mode
+pnpm --filter @mindware-blog/site test:visual:ui
+```
+
+#### Flaky Tests
+
+```typescript
+// Increase timeout for slow operations
+test('slow operation', async ({ page }) => {
+  test.setTimeout(60000); // 60 seconds
+  
+  await page.goto('/slow-page');
+  await page.waitForLoadState('networkidle');
+});
+```
+
+### Debug Mode
+
+```bash
+# Jest debug mode
+node --inspect-brk node_modules/.bin/jest --runInBand
+
+# Playwright debug mode
+PWDEBUG=1 pnpm --filter @mindware-blog/site test:all
+
+# Headed mode (see browser)
+pnpm playwright test --headed
+
+# Step through tests
+pnpm playwright test --debug
+```
+
+---
+
+## Best Practices
+
+### DO
+
+✅ **Write descriptive test names**
+```typescript
+test('should display error message when email is invalid', ...)
+```
+
+✅ **Use data-testid for complex selectors**
+```typescript
+<button data-testid="submit-button">Submit</button>
+screen.getByTestId('submit-button')
+```
+
+✅ **Test user behavior, not implementation**
+```typescript
+// Good: Tests what user sees
+expect(screen.getByText('Welcome')).toBeVisible();
+
+// Bad: Tests implementation detail
+expect(component.state.isLoaded).toBe(true);
+```
+
+✅ **Clean up after tests**
+```typescript
+afterEach(() => {
+  jest.clearAllMocks();
+});
+```
+
+### DON'T
+
+❌ **Don't test third-party libraries**
+```typescript
+// Bad: Testing Next.js Link component
+test('Link component works', ...)
+```
+
+❌ **Don't use arbitrary waits**
+```typescript
+// Bad
+await page.waitForTimeout(5000);
+
+// Good
+await page.waitForLoadState('networkidle');
+```
+
+❌ **Don't make tests dependent on each other**
+```typescript
+// Bad: test2 depends on test1
+```
+
+---
+
+## Storybook Component Development
+
+### Overview
+
+Storybook provides an isolated environment for developing and testing UI components.
+
+**Location**: `apps/site/.storybook/`  
+**Stories**: `apps/site/components/**/*.stories.tsx`
+
+### Running Storybook
+
+```bash
+# Start Storybook development server (http://localhost:6006)
+pnpm --filter @mindware-blog/site storybook
+
+# Build Storybook for production
+pnpm --filter @mindware-blog/site build-storybook
+```
+
+### Benefits
+
+- **Isolated Development** - Build components without running the full app
+- **Visual Testing** - See all component variants at once
+- **Documentation** - Auto-generated prop tables and usage docs
+- **Accessibility Testing** - Built-in a11y checks
+- **Responsive Testing** - Test across different viewports
+
+### Example Story
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './button';
+
+const meta = {
+  title: 'UI/Button',
+  component: Button,
+  tags: ['autodocs'],
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    children: 'Click me',
+    variant: 'default',
+  },
+};
+```
+
+### Learn More
+
+See the complete [Storybook Documentation](/docs/component-library/storybook) for detailed setup and usage guides.
+
+---
+
+## Test Checklist
+
+When adding new features, ensure you have:
+
+- [ ] Unit tests for utilities and helpers
+- [ ] Component tests for React components
+- [ ] API tests for API routes
+- [ ] E2E tests for critical user paths
+- [ ] Accessibility tests for new UI
+- [ ] Visual regression tests for UI changes
+- [ ] Performance tests for performance-critical features
+- [ ] **Storybook stories for new UI components**
+- [ ] Tests pass in CI
+
+---
+
+## Additional Resources
+
+### Documentation
+- [Jest Documentation](https://jestjs.io/docs/getting-started)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Playwright Documentation](https://playwright.dev/)
+- [axe-core Rules](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md)
+
+### Internal Docs
+- [CI/CD Workflows](/docs/scripts-reference/ci-cd)
+- [Development Workflow](/docs/developer-guide/workflow)
+- [Configuration Reference](/docs/reference/configuration)
+
+---
+
+**Need Help?** Check the troubleshooting section or create an issue in the repository.

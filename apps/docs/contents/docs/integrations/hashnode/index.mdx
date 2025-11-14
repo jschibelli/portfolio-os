@@ -1,0 +1,59 @@
+---
+title: Hashnode Integration
+description: Configure the Portfolio OS automation scripts to publish and sync articles with Hashnode while keeping metadata consistent.
+keywords: hashnode integration, publishing, automation
+---
+
+## Overview
+
+Portfolio OS ships a Hashnode integration so long-form articles stay in sync between the docs repo and your developer blog. The integration runs through the automation scripts package and can publish, update, or archive posts programmatically.
+
+---
+
+## Requirements
+
+- Hashnode Personal Access Token with `publication:write` scopes.
+- Publication ID (available in the Hashnode dashboard → Settings → API).
+- `pnpm` workspace access to `packages/scripts`.
+
+Set both values in `.env.shared`:
+
+```bash
+HASHNODE_TOKEN=...
+HASHNODE_PUBLICATION_ID=...
+```
+
+---
+
+## Publishing Flow
+
+1. Write or update your article in `apps/docs/contents/blog/<slug>/index.mdx`.
+2. Run the content build to ensure frontmatter is valid:
+   ```bash
+   pnpm docs:lint
+   ```
+3. Execute the publish script:
+   ```bash
+   pnpm scripts hashnode:publish --slug <slug>
+   ```
+4. Confirm the post appears on Hashnode with the correct canonical URL pointing back to the docs site.
+
+---
+
+## Updating or Archiving
+
+- `pnpm scripts hashnode:update --slug <slug>`
+- `pnpm scripts hashnode:archive --slug <slug>`
+
+Both commands read the existing MDX, apply the changes, and keep the Hashnode draft history intact.
+
+---
+
+## Troubleshooting
+
+- **401 Unauthorized**: regenerate the token and verify the scopes.
+- **Slug mismatch**: ensure the MDX folder name matches the slug you pass to the script.
+- **Rate limiting**: the CLI retries automatically with backoff; rerun after a minute if needed.
+
+This integration keeps external content aligned with the documentation repo, so hiring managers can follow canonical references across both surfaces.
+

@@ -1,0 +1,626 @@
+---
+title: Storybook Component Library
+description: Interactive component development and documentation with Storybook
+---
+
+## Overview
+Portfolio OS uses **Storybook** as its component development environment and living documentation system. Storybook allows you to develop, test, and document UI components in isolation.
+
+Storybook provides:
+
+- **Interactive Development** - Build and test components without running the full app
+- **Visual Testing** - See all component variants and states in one place
+- **Documentation** - Auto-generated docs with prop tables and usage examples
+- **Accessibility Testing** - Built-in a11y checks and keyboard navigation testing
+- **Responsive Testing** - View components across different viewport sizes
+
+<Note type="info">
+Storybook runs independently from your Next.js application on port 6006.
+</Note>
+
+---
+
+## Quick Start
+
+### Starting Storybook
+
+```bash
+# Start Storybook development server
+pnpm --filter @mindware-blog/site storybook
+
+# Or from the workspace root
+pnpm storybook --filter @mindware-blog/site
+```
+
+Storybook will start at `http://localhost:6006`
+
+### Building for Production
+
+```bash
+# Build static Storybook
+pnpm --filter @mindware-blog/site build-storybook
+
+# Serve the built Storybook
+pnpm --filter @mindware-blog/site storybook:serve
+```
+
+---
+
+## Component Categories
+
+### UI Components
+
+Core design system components located in `components/ui/`:
+
+- **Button** - Various button styles and sizes
+- **Card** - Container component with header, content, and footer
+- **Badge** - Labels and tags
+- **Input** - Text inputs with validation states
+- **Select** - Dropdown selection components
+- **Dialog** - Modal dialogs and overlays
+- **Tooltip** - Contextual help tooltips
+
+### Project Components
+
+Components for portfolio and project showcases in `components/projects/`:
+
+- **Gallery** - Image gallery with lightbox
+- **FeatureGrid** - Responsive feature showcase grid
+- **InlineCaseStudy** - Case study highlight blocks
+
+### Blog Components
+
+Blog-specific components in `components/features/blog/`:
+
+- **PostCard** - Blog post preview cards
+- **PostHeader** - Article headers with metadata
+- **ModernPostCard** - Enhanced post card design
+- **TableOfContents** - Dynamic TOC for articles
+
+---
+
+## Writing Stories
+
+### Basic Story Structure
+
+Stories are written in TypeScript with the `.stories.tsx` extension:
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './button';
+
+const meta = {
+  title: 'UI/Button',
+  component: Button,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    children: 'Click me',
+    variant: 'default',
+  },
+};
+```
+
+### Story Naming Conventions
+
+- **Title**: Use hierarchical paths like `UI/Button` or `Projects/Gallery`
+- **Story Names**: Descriptive names like `Default`, `WithIcon`, `Disabled`
+- **File Names**: Match component names: `button.stories.tsx`
+
+### Creating Comprehensive Stories
+
+Include these essential variants:
+
+<Tabs defaultValue="states">
+  <TabsList>
+    <TabsTrigger value="states">Component States</TabsTrigger>
+    <TabsTrigger value="variants">Variants</TabsTrigger>
+    <TabsTrigger value="edge">Edge Cases</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="states">
+```typescript
+// Default state
+export const Default: Story = {
+  args: { children: 'Button' },
+};
+
+// Disabled state
+export const Disabled: Story = {
+  args: {
+    children: 'Disabled',
+    disabled: true,
+  },
+};
+
+// Loading state
+export const Loading: Story = {
+  args: {
+    children: 'Loading...',
+    disabled: true,
+  },
+};
+```
+  </TabsContent>
+  
+  <TabsContent value="variants">
+```typescript
+// Different visual variants
+export const Primary: Story = {
+  args: { variant: 'default' },
+};
+
+export const Secondary: Story = {
+  args: { variant: 'secondary' },
+};
+
+export const Outline: Story = {
+  args: { variant: 'outline' },
+};
+```
+  </TabsContent>
+  
+  <TabsContent value="edge">
+```typescript
+// Empty state
+export const Empty: Story = {
+  args: {
+    items: [],
+  },
+};
+
+// With long text
+export const LongText: Story = {
+  args: {
+    children: 'This is a very long button text that might wrap',
+  },
+};
+
+// Error state
+export const Error: Story = {
+  args: {
+    error: 'Something went wrong',
+  },
+};
+```
+  </TabsContent>
+</Tabs>
+
+---
+
+## Configuration
+
+### Main Configuration
+
+Storybook configuration is in `.storybook/main.ts`:
+
+```typescript
+import type { StorybookConfig } from '@storybook/nextjs';
+
+const config: StorybookConfig = {
+  stories: [
+    '../components/**/*.stories.@(js|jsx|ts|tsx|mdx)',
+    '../app/**/*.stories.@(js|jsx|ts|tsx|mdx)',
+    '../stories/**/*.stories.@(js|jsx|ts|tsx|mdx)',
+  ],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+  ],
+  framework: {
+    name: '@storybook/nextjs',
+    options: {},
+  },
+  docs: {
+    autodocs: 'tag',
+  },
+};
+
+export default config;
+```
+
+### Preview Configuration
+
+Global decorators and parameters in `.storybook/preview.ts`:
+
+```typescript
+import type { Preview } from '@storybook/react';
+import '../app/globals.css';
+
+const preview: Preview = {
+  parameters: {
+    backgrounds: {
+      default: 'light',
+      values: [
+        { name: 'light', value: '#ffffff' },
+        { name: 'dark', value: '#0a0a0a' },
+      ],
+    },
+  },
+};
+
+export default preview;
+```
+
+---
+
+## Features
+
+### Autodocs
+
+Add the `autodocs` tag to automatically generate documentation:
+
+```typescript
+const meta = {
+  title: 'UI/Button',
+  component: Button,
+  tags: ['autodocs'], // Enables automatic documentation
+} satisfies Meta<typeof Button>;
+```
+
+### Controls
+
+Interactive controls for props:
+
+```typescript
+argTypes: {
+  variant: {
+    control: 'select',
+    options: ['default', 'secondary', 'outline'],
+    description: 'Visual style of the button',
+  },
+  size: {
+    control: 'select',
+    options: ['sm', 'default', 'lg'],
+  },
+  disabled: {
+    control: 'boolean',
+  },
+}
+```
+
+### Actions
+
+Log component interactions:
+
+```typescript
+export const WithAction: Story = {
+  args: {
+    onClick: () => console.log('Button clicked!'),
+  },
+};
+```
+
+### Viewport Testing
+
+Test responsive behavior:
+
+```typescript
+parameters: {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
+}
+```
+
+---
+
+## Best Practices
+
+### DO ✅
+
+- **Write stories for all public components**
+- **Include all variants and states**
+- **Add descriptive documentation**
+- **Test accessibility**
+- **Use TypeScript for type safety**
+- **Keep stories focused and simple**
+
+### DON'T ❌
+
+- **Don't include business logic in stories**
+- **Don't rely on external API calls**
+- **Don't test implementation details**
+- **Don't forget edge cases**
+- **Don't skip accessibility checks**
+
+---
+
+## Integration with Testing
+
+### Visual Regression Testing
+
+Storybook stories can be used for visual regression testing:
+
+```bash
+# Take snapshots of all stories
+pnpm test:visual:storybook
+```
+
+### Accessibility Testing
+
+Built-in a11y addon checks for common issues:
+
+1. Navigate to the Accessibility tab in Storybook
+2. View violations and passes
+3. Fix any issues before committing
+
+### Interaction Testing
+
+Test user interactions with `@storybook/test`:
+
+```typescript
+import { expect, userEvent, within } from '@storybook/test';
+
+export const ClickTest: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button');
+    
+    await userEvent.click(button);
+    await expect(button).toHaveTextContent('Clicked');
+  },
+};
+```
+
+---
+
+## CI/CD Integration
+
+### GitHub Actions Workflow
+
+Storybook can be built and deployed in CI:
+
+```yaml
+name: Storybook
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-storybook:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build Storybook
+        run: pnpm --filter @mindware-blog/site build-storybook
+      
+      - name: Upload Storybook
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook
+          path: apps/site/storybook-static
+```
+
+### Deployment
+
+Deploy Storybook to static hosting:
+
+```bash
+# Build Storybook
+pnpm --filter @mindware-blog/site build-storybook
+
+# Deploy to Vercel, Netlify, or GitHub Pages
+vercel deploy apps/site/storybook-static
+```
+
+---
+
+## Known Limitations
+
+<Note type="warning">
+**Current Status**: Storybook infrastructure is complete, but there is a known compatibility issue between Storybook 8.6.14 and Next.js 15.5.2 that prevents the dev server and build from running successfully.
+</Note>
+
+### Next.js 15 Compatibility Issue
+
+**Issue**: Webpack module resolution errors when starting Storybook  
+**Affected Versions**:
+- Next.js 15.5.2 (App Router)
+- Storybook 8.6.14
+- @storybook/nextjs 8.6.14
+
+**Status**: Known ecosystem compatibility issue tracked in [Storybook Issue #30944](https://github.com/storybookjs/storybook/issues/30944)
+
+**What Works**:
+- ✅ All component stories are written and ready (40+ stories)
+- ✅ Documentation is complete
+- ✅ CI/CD integration configured
+- ✅ Story files serve as component documentation
+- ✅ Configuration files are correct
+
+**Workarounds**:
+
+1. **View Stories as Code Examples**
+   - All `.stories.tsx` files in `components/` can be read directly
+   - Each story demonstrates component usage with props
+   - Full TypeScript types included
+
+2. **Future Resolution Options**:
+   - **Storybook 9** (Beta) - Has improved Next.js 15 support
+   - **Next.js 14 LTS** - Known to work with Storybook 8.x
+   - **Ecosystem Fix** - May be resolved in future patch releases
+
+**Timeline**: Expected resolution Q1 2025 when Storybook 9 reaches stable release
+
+**Impact**: Development only - does not affect production Next.js application
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Port 6006 already in use
+
+Kill the process using port 6006:
+
+```bash
+# Windows
+netstat -ano | findstr :6006
+taskkill /PID <PID> /F
+
+# Mac/Linux
+lsof -ti:6006 | xargs kill -9
+
+# Or use a different port
+pnpm storybook -- -p 6007
+```
+
+#### Styles not loading correctly
+
+Ensure global styles are imported in `.storybook/preview.ts`:
+
+```typescript
+import '../app/globals.css';
+```
+
+For Tailwind, make sure the config is properly set up in Storybook's webpack config.
+
+#### Next.js Image component not working
+
+The `@storybook/nextjs` framework handles Next.js Image components automatically. If issues persist:
+
+1. Ensure you're using `@storybook/nextjs` (not `@storybook/react`)
+2. Check that `staticDirs` is configured in `.storybook/main.ts`
+3. Use relative paths for local images
+
+---
+
+## Examples
+
+### Complete Button Story
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './button';
+import { Plus, Download } from 'lucide-react';
+
+const meta = {
+  title: 'UI/Button',
+  component: Button,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: 'A versatile button component with multiple variants.',
+      },
+    },
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+    },
+    size: {
+      control: 'select',
+      options: ['default', 'sm', 'lg', 'icon'],
+    },
+  },
+} satisfies Meta<typeof Button>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    children: 'Button',
+  },
+};
+
+export const WithIcon: Story = {
+  args: {
+    children: (
+      <>
+        <Plus className="mr-2 h-4 w-4" />
+        Add Item
+      </>
+    ),
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div className="flex gap-2">
+      <Button variant="default">Default</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+      <Button variant="destructive">Destructive</Button>
+    </div>
+  ),
+};
+```
+
+---
+
+## Resources
+
+### Documentation
+- [Storybook Official Docs](https://storybook.js.org/docs)
+- [Next.js Framework Guide](https://storybook.js.org/docs/get-started/nextjs)
+- [Writing Stories Guide](https://storybook.js.org/docs/writing-stories)
+
+### Addons
+- [Essential Addons](https://storybook.js.org/docs/essentials)
+- [Accessibility Addon](https://storybook.js.org/addons/@storybook/addon-a11y)
+- [Interactions Addon](https://storybook.js.org/addons/@storybook/addon-interactions)
+
+### Internal Resources
+- [Component Library Guidelines](/docs/developer-guide/components)
+- [Testing Guide](/docs/testing)
+- [Design System](/docs/design-system)
+
+---
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Create Your First Story" icon="pencil">
+    Follow the guide to create stories for your components
+  </Card>
+  <Card title="Configure Addons" icon="puzzle">
+    Enhance Storybook with additional functionality
+  </Card>
+  <Card title="Deploy Storybook" icon="rocket">
+    Share your component library with your team
+  </Card>
+  <Card title="Visual Testing" icon="eye">
+    Set up automated visual regression testing
+  </Card>
+</CardGrid>
+
+---
+
+**Need Help?** Check the [troubleshooting section](#troubleshooting) or create an issue in the repository.
+
