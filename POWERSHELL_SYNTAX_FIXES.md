@@ -108,6 +108,21 @@ Going forward, always use `${variableName}` syntax when:
 2. Variable name needs to be explicitly delimited
 3. Variable is part of a GitHub issue/PR reference pattern like `#${number}:`
 
+## Known Issues (Skipped)
+
+**`create-branch-from-develop.ps1`** (both worktrees)
+- Has additional structural parsing errors beyond the variable syntax issue
+- Script is not critical as `create-issue-enhanced.ps1` already creates branches automatically
+- Marked for future investigation/rewrite
+
+## Testing Results
+
+✅ **VERIFIED WORKING:** `create-issue-enhanced.ps1`
+```powershell
+.\worktrees\agent-2-jason\scripts\issue-management\create-issue-enhanced.ps1 -Title "Test" -Body "Test body" -DryRun
+```
+Output: Successfully creates issue and branch in dry-run mode with proper formatting
+
 ## Related Issue
 
 Issue #359: Create Comprehensive Automation System Index and Documentation
