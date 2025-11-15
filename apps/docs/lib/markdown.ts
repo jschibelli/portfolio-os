@@ -3,6 +3,7 @@ import path from "path"
 
 import { GitHubLink } from "@/settings/navigation"
 import { Element, Text } from "hast"
+import type { Code } from "mdast"
 import { compileMDX } from "next-mdx-remote/rsc"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeCodeTitles from "rehype-code-titles"
@@ -16,7 +17,6 @@ import { visit } from "unist-util-visit"
 import { components } from "@/lib/components"
 import { Settings } from "@/lib/meta"
 import { PageRoutes } from "@/lib/pageroutes"
-import "@/lib/prism-aliases"
 
 declare module "hast" {
   interface Element {
@@ -45,7 +45,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
           rehypeAutolinkHeadings,
           postCopy,
         ],
-        remarkPlugins: [remarkGfm],
+        remarkPlugins: [normalizeCodeLanguages, remarkGfm],
       },
     },
     components,
@@ -203,6 +203,24 @@ const postCopy = () => (tree: Node) => {
     if (node.tagName === "pre" && node.raw) {
       node.properties = node.properties || {}
       node.properties["raw"] = node.raw
+    }
+  })
+}
+
+const LANGUAGE_ALIASES: Record<string, string> = {
+  prisma: "sql",
+  env: "bash",
+}
+
+const normalizeCodeLanguages = () => (tree: Node) => {
+  visit(tree, "code", (node: Code) => {
+    const current = node.lang?.toLowerCase()
+    if (current && LANGUAGE_ALIASES[current]) {
+      const next = LANGUAGE_ALIASES[current]
+      node.lang = next
+      node.meta = node.meta
+        ? `${node.meta} data-original-lang="${current}"`
+        : `data-original-lang="${current}"`
     }
   })
 }

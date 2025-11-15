@@ -1,0 +1,59 @@
+---
+title: Releases & Security
+description: >-
+  How Portfolio OS ships production releases, tracks change history, and keeps
+  the platform secure across site, dashboard, and docs.
+keywords: 'releases, security, changelog, portfolio os'
+---
+
+## Release workflow overview
+
+Portfolio OS uses a monorepo-wide release process that keeps apps and packages in sync:
+
+1. **Worktree branches** – Feature teams create dedicated worktrees so long-running efforts stay isolated from `develop`.
+2. **Automated checks** – Turbo pipelines run lint, tests, and type-check inside CI before any merge.
+3. **Release pull request** – The release captain opens a PR targeting `develop` → `main`, referencing the relevant worktrees.
+4. **Docs + changelog update** – Each release must document user-facing changes inside `/docs/releases/*` and link to corresponding PRs or incidents.
+5. **Tag & deploy** – Once the PR is approved, the release is tagged (e.g., `v2025.11.15`) and deployed via Vercel + the dashboard’s CI workflow.
+
+Detailed handbooks for every step live in the subpages:
+
+- [Release Guide](/docs/releases/release-guide)
+- [Release Workflow](/docs/releases/workflow)
+- [Security Overview](/docs/releases/security)
+- [Auth Fixes](/docs/releases/auth-fixes)
+
+---
+
+## Documentation expectations
+
+| Artifact | Owner | Notes |
+| -------- | ----- | ----- |
+| Changelog entry | Release captain | Should summarize scope, risks, and rollback plan |
+| Security review | Platform engineering | Required if dependencies, auth, or infra changed |
+| Docs updates | Feature engineer | Update tutorials, references, or screenshots affected by the release |
+| Incident follow-up | On-call engineer | Link postmortems for regressions or hotfixes |
+
+Use `/docs/basic-setup/changelog` for user-facing highlights and `/docs/releases` for the canonical engineering record.
+
+---
+
+## Security posture
+
+- **OWASP alignment** – Dashboard and Site are scanned for the OWASP Top 10 via automated OWASP ZAP jobs in CI.
+- **Dependency hygiene** – `pnpm audit` runs nightly. Critical issues trigger PagerDuty and block the next release.
+- **Secrets management** – Production secrets live in Vercel / GitHub environments. Local `.env` files are never committed.
+- **Authentication** – Prisma migrations touching auth tables must be reviewed by the security owner before merge.
+
+For deep dives, see the [Security Overview](/docs/releases/security) and coordinate with the platform team listed there.
+
+---
+
+## When things go wrong
+
+- Follow the [Release Workflow](/docs/releases/workflow) rollback steps.
+- Document mitigation steps under `/docs/releases/auth-fixes` or create a sibling doc if a new category is needed.
+- If the issue affects customers, update `/docs/basic-setup/changelog` and broadcast via the comms checklist in the Release Guide.
+
+Keeping this overview up to date ensures every team member can find the right sub-page during high-pressure incidents.
+

@@ -1,0 +1,55 @@
+---
+title: Component Library
+description: >-
+  Overview of the shared Storybook workspace, governance guidelines, and how to
+  consume Portfolio OS UI components across apps.
+keywords: 'component library, storybook, ui, portfolio os'
+---
+
+## Why it exists
+
+Portfolio OS ships a single Storybook workspace that showcases every reusable component from `packages/ui`, `apps/site`, and `apps/dashboard`. The goal is to give product, design, and engineering a canonical view of:
+
+- Supported variants, states, and accessibility notes for each component
+- Match between design tokens (`apps/docs/styles/globals.css`) and UI implementations
+- Ready-to-copy code snippets so engineers can drop a component into any front-end surface
+
+The Storybook docs live at [/docs/component-library/storybook](/docs/component-library/storybook) and publish to the hosted Storybook instance linked from the main navigation.
+
+---
+
+## How the workspace is structured
+
+1. **Foundations** – Typography, spacing, color, and interactive primitives. These map to the Design System page and should be updated first whenever tokens change.
+2. **Core components** – Buttons, cards, nav items, data tables, banners, etc. Each story exports both a Canvas demo and an MDX-based usage guide.
+3. **Application flows** – Higher-level compositions (e.g., Gallery grid, AI assistant prompt list) that document required data contracts.
+
+When you add a new component:
+
+```text
+packages/ui/src/components/NewComponent.tsx
+apps/site/components/NewComponent.stories.tsx
+apps/docs/contents/docs/component-library/storybook/index.mdx
+```
+
+- Keep the component props typed with `ComponentPropsWithoutRef` so stories and docs can infer prop tables.
+- Use the shared `cn` utility for conditional class names to stay consistent with Tailwind conventions.
+
+---
+
+## Governance checklist
+
+- **Accessibility** – Every story must include keyboard navigation notes and aria attributes when applicable.
+- **Visual regression baseline** – Run `pnpm test-storybook` (Playwright) whenever you add or refactor a component. Attach the diff to the PR.
+- **Docs sync** – Update both this overview page and the detailed [Storybook guide](/docs/component-library/storybook) if you change folder structure, naming, or publishing steps.
+- **Cross-app parity** – Dashboard and Site consume the same packages. If you ship a component to one surface, list any app-specific overrides inside the Storybook notes.
+
+---
+
+## Resources
+
+- [Storybook Deep Dive](/docs/component-library/storybook)
+- [Design System reference](/docs/design-system)
+- [Developer Guide: Components](/docs/developer-guide/components)
+- [Storybook implementation summary on GitHub](https://github.com/jschibelli/portfolio-os/blob/main/STORYBOOK_IMPLEMENTATION_SUMMARY.md)
+
