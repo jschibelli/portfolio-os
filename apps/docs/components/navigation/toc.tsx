@@ -12,6 +12,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Card } from "@/components/markdown/card"
 
 type TocProps = {
   tocs: { href: string; level: number; text: string }[]
@@ -87,7 +88,7 @@ export default function Toc({ tocs }: TocProps) {
   // If there are no h2 headings, show flat list
   if (sections.length === 0) {
     return (
-      <div className="flex w-full flex-col gap-3 pl-2">
+      <Card className="flex w-full flex-col gap-3 px-4 py-3">
         <h3 className="text-sm font-semibold">On this page</h3>
         <ScrollArea className="pt-0.5 pb-4">
           <div className="flex flex-col gap-2.5 text-sm text-neutral-800 dark:text-neutral-300/85">
@@ -108,29 +109,33 @@ export default function Toc({ tocs }: TocProps) {
             ))}
           </div>
         </ScrollArea>
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className="flex w-full flex-col gap-3 pl-2">
+    <Card className="flex w-full flex-col gap-3 px-4 py-3">
       <h3 className="text-sm font-semibold">On this page</h3>
       <ScrollArea className="pt-0.5 pb-4">
         <div className="flex flex-col gap-2 text-sm">
           {sections.map((section, index) => {
             // Check if this section or any of its items are active
-            const sectionId = section.heading.href.startsWith("#") 
-              ? section.heading.href.slice(1) 
+            const sectionId = section.heading.href.startsWith("#")
+              ? section.heading.href.slice(1)
               : section.heading.href
-            const isActive = activeId === sectionId || 
-              section.items.some(item => {
-                const itemId = item.href.startsWith("#") ? item.href.slice(1) : item.href
+            const isActive =
+              activeId === sectionId ||
+              section.items.some((item) => {
+                const itemId = item.href.startsWith("#")
+                  ? item.href.slice(1)
+                  : item.href
                 return itemId === activeId
               })
 
+            const key = `${section.heading.href}-${index}`
             return (
               <TocSection
-                key={section.heading.href}
+                key={key}
                 section={section}
                 handleSmoothScroll={handleSmoothScroll}
                 isActive={isActive}
@@ -141,7 +146,7 @@ export default function Toc({ tocs }: TocProps) {
           })}
         </div>
       </ScrollArea>
-    </div>
+      </Card>
   )
 }
 

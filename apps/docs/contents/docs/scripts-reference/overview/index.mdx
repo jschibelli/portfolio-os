@@ -1,6 +1,7 @@
 ---
 title: Complete Scripts Overview
 description: Full catalog of all Portfolio OS automation scripts
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -22,12 +23,11 @@ Comprehensive reference of all available automation scripts in Portfolio OS.
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `automate-pr-unified.ps1` | Create PRs automatically | `.\automate-pr-unified.ps1 -Title "feat: new feature"` |
-| `pr-quality-checker.ps1` | Check PR quality | `.\pr-quality-checker.ps1 -PRNumber 123` |
-| `pr-analyzer.ps1` | Analyze PR content | `.\pr-analyzer.ps1 -PRNumber 123` |
-| `pr-monitor.ps1` | Monitor PR status | `.\pr-monitor.ps1` |
-| `assign-pr-agents.ps1` | Assign PRs to agents | `.\assign-pr-agents.ps1 -PRNumber 123` |
-| `configure-pr-auto.ps1` | Configure PR automation | `.\configure-pr-auto.ps1` |
+| `pr-automation-unified.ps1` | AI-powered PR automation | `.\scripts\automation\pr-automation-unified.ps1 -PRNumber 123 -Action all` |
+| `auto-configure-pr.ps1` | Configure PR fields/metadata | `.\scripts\automation\auto-configure-pr.ps1 -PRNumber 123` |
+| `assign-pr-agents.ps1` | Assign PRs to agents | `.\scripts\automation\assign-pr-agents.ps1 -PRNumber 123` |
+| `pr-quality-checker.ps1` | Check PR quality (legacy) | `.\scripts\pr-management\pr-quality-checker.ps1 -PRNumber 123` |
+| `pr-monitor.ps1` | Monitor PR status (legacy) | `.\scripts\pr-management\pr-monitor.ps1` |
 
 ## Issue Management Scripts
 

@@ -1,6 +1,7 @@
 ---
 title: Scripts Reference
 description: PowerShell automation scripts for Portfolio OS development and operations
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -19,6 +20,11 @@ All scripts are located in the `scripts/` directory and use PowerShell for cross
     href="/docs/scripts-reference/automation/quick-start-guide" 
     title="Concepts – Automation Overview" 
     description="High-level overview of the automation system and components" 
+  />
+  <Card 
+    href="/docs/scripts-reference/prompts" 
+    title="Prompt Library" 
+    description="Browse copy-ready prompt templates with execution commands" 
   />
   <Card 
     href="/docs/getting-started/automation-hello-world" 
@@ -86,16 +92,17 @@ Get-Help .\script-name.ps1 -Full
 ### 1. Create and Manage PR
 
 ```powershell
-# Create PR automatically
-.\pr-management\automate-pr-unified.ps1 `
-  -Title "feat: add dark mode" `
-  -Body "Implements dark mode toggle"
+# Run unified PR automation
+.\scripts\automation\pr-automation-unified.ps1 `
+  -PRNumber 456 `
+  -Action all `
+  -AutoFix
 
-# Analyze PR quality
-.\pr-management\pr-quality-checker.ps1 -PRNumber 123
+# Analyze PR quality (legacy utility)
+.\scripts\pr-management\pr-quality-checker.ps1 -PRNumber 456
 
-# Monitor PR status
-.\pr-management\pr-monitor.ps1
+# Monitor PR status (legacy utility)
+.\scripts\pr-management\pr-monitor.ps1
 ```
 
 ### 2. Multi-Agent Development
@@ -148,10 +155,15 @@ scripts/
 │   ├── manage-multi-agent-system.ps1
 │   └── start-multi-agent-e2e-unified.ps1
 │
-├── pr-management/           # PR automation
-│   ├── automate-pr-unified.ps1
+├── automation/              # Canonical automation entrypoints
+│   ├── pr-automation-unified.ps1
+│   ├── auto-configure-pr.ps1
+│   ├── assign-pr-agents.ps1
+│   └── docs-updater.ps1
+│
+├── pr-management/           # Legacy PR utilities
 │   ├── pr-quality-checker.ps1
-│   └── pr-analyzer.ps1
+│   └── pr-monitor.ps1
 │
 ├── issue-management/        # Issue automation
 │   ├── management/

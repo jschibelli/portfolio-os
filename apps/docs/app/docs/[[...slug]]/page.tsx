@@ -22,7 +22,16 @@ export default async function Pages({ params }: PageProps) {
 
   if (!res) notFound()
 
-  const { frontmatter, content, tocs } = res
+  const { frontmatter, content, tocs, lastUpdated } = res
+  const displayLastUpdated =
+    frontmatter.lastUpdated ??
+    (lastUpdated
+      ? new Intl.DateTimeFormat("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        }).format(new Date(lastUpdated))
+      : null)
 
   return (
     <div className="flex items-start gap-14">
@@ -31,7 +40,14 @@ export default async function Pages({ params }: PageProps) {
 
         <Typography>
           <h1 className="!mb-2 text-3xl !font-semibold">{frontmatter.title}</h1>
-          <p className="-mt-4 text-sm">{frontmatter.description}</p>
+          {frontmatter.description && (
+            <p className="-mt-4 text-sm">{frontmatter.description}</p>
+          )}
+          {displayLastUpdated && (
+            <p className="mt-2 text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+              Last updated {displayLastUpdated}
+            </p>
+          )}
           <Separator className="my-6" />
           <section>{content}</section>
           <Pagination pathname={pathName} />

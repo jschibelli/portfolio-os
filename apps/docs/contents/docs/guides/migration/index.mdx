@@ -3,6 +3,7 @@ title: Migration & Upgrade Guide
 description: >-
   Complete guide for upgrading dependencies, migrating between versions, and
   handling breaking changes in Portfolio OS
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -534,7 +535,7 @@ vercel env rm NEXT_PUBLIC_API_URL production
 
 $oldPaths = @{
     "automation\create-issue.ps1" = "issue-management\create-issue-enhanced.ps1"
-    "automation\manage-pr.ps1" = "pr-management\automate-pr-unified.ps1"
+    "automation\manage-pr.ps1" = "automation\pr-automation-unified.ps1"
 }
 
 foreach ($old in $oldPaths.Keys) {

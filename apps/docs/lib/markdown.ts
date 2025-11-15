@@ -26,8 +26,9 @@ declare module "hast" {
 
 type BaseMdxFrontmatter = {
   title: string
-  description: string
-  keywords: string
+  description?: string
+  keywords?: string
+  lastUpdated?: string
 }
 
 async function parseMdx<Frontmatter>(rawMdx: string) {
@@ -91,20 +92,23 @@ export async function getDocument(slug: string) {
 
     const parsedMdx = await parseMdx<BaseMdxFrontmatter>(rawMdx)
     const tocs = await getTable(slug)
+    const frontmatterDate = parsedMdx.frontmatter?.lastUpdated
+    const normalizedFrontmatterDate =
+      frontmatterDate && !Number.isNaN(Date.parse(frontmatterDate))
+        ? new Date(frontmatterDate).toISOString()
+        : null
 
     return {
       frontmatter: parsedMdx.frontmatter,
       content: parsedMdx.content,
       tocs,
-      lastUpdated,
+      lastUpdated: normalizedFrontmatterDate ?? lastUpdated,
     }
   } catch (err) {
     console.error(err)
     return null
   }
 }
-
-const headingsRegex = /^(#{2,4})\s(.+)$/gm
 
 export async function getTable(
   slug: string
@@ -147,15 +151,44 @@ export async function getTable(
     }
   }
 
-  let match
-  while ((match = headingsRegex.exec(rawMdx)) !== null) {
-    const level = match[1].length
-    const text = match[2].trim()
-    extractedHeadings.push({
-      level: level,
-      text: text,
-      href: `#${innerslug(text)}`,
-    })
+  const slugCounts = new Map<string, number>()
+  let inFence = false
+  let fenceMarker: string | null = null
+
+  const lines = rawMdx.split(/\r?\n/)
+  for (const line of lines) {
+    const fenceMatch = line.match(/^(\s*)(```|~~~)/)
+    if (fenceMatch) {
+      const marker = fenceMatch[2]
+      if (inFence && marker === fenceMarker) {
+        inFence = false
+        fenceMarker = null
+      } else if (!inFence) {
+        inFence = true
+        fenceMarker = marker
+      }
+      continue
+    }
+
+    if (inFence) continue
+
+    const headingMatch = line.match(/^(#{2,4})\s+(.*)$/)
+    if (headingMatch) {
+      const level = headingMatch[1].length
+      const text = headingMatch[2].trim()
+      let slug = innerslug(text)
+      const count = slugCounts.get(slug) ?? 0
+      if (count > 0) {
+        slug = `${slug}-${count}`
+      }
+      slugCounts.set(slug, count + 1)
+
+      extractedHeadings.push({
+        level,
+        text,
+        href: `#${slug}`,
+      })
+    }
   }
 
   return extractedHeadings

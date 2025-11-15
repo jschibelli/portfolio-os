@@ -81,8 +81,11 @@ jobs:
             echo "Error: Issue number is not available"
             exit 1
           fi
-          chmod +x scripts/issue-analyzer.ps1
-          pwsh scripts/issue-analyzer.ps1 -IssueNumber $ISSUE_NUMBER -GeneratePlan -ExportTo "issue-$ISSUE_NUMBER-analysis.json"
+          if [ ! -f "scripts/automation/issue-implementation.ps1" ]; then
+            echo "scripts/automation/issue-implementation.ps1 missing"
+            exit 1
+          fi
+          pwsh scripts/automation/issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -GeneratePlan
         continue-on-error: true
           
       - name: Comment Analysis Results
@@ -119,7 +122,7 @@ jobs:
           
           To proceed with implementation, run:
           \`\`\`powershell
-          ./scripts/issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -Action all
+          ./scripts/automation/issue-implementation.ps1 -IssueNumber $ISSUE_NUMBER -GeneratePlan -CreatePR
           \`\`\`"
           
           gh issue comment $ISSUE_NUMBER --body "$ANALYSIS_COMMENT"

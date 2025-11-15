@@ -1,6 +1,7 @@
 ---
 title: Automation Troubleshooting
 description: 'Solutions for PowerShell scripts, GitHub Actions, and automation system issues'
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -512,7 +513,7 @@ Remove-Item scripts/configuration/worktree-state.json
 
 ```powershell
 # Manually configure PR
-.\scripts\pr-management\configure-pr-auto.ps1 `
+.\scripts\automation\auto-configure-pr.ps1 `
   -PRNumber 150 `
   -Priority P1 `
   -Size M `
@@ -740,7 +741,7 @@ try {
 ```powershell
 # Measure script execution time
 Measure-Command {
-    .\scripts\pr-management\configure-pr-auto.ps1 -PRNumber 150
+    .\scripts\automation\auto-configure-pr.ps1 -PRNumber 150
 }
 
 # Profile slow sections

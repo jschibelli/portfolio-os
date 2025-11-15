@@ -3,6 +3,7 @@ title: PR Management
 description: >-
   Pull request automation scripts for analysis, configuration, and quality
   checks
+lastUpdated: November 14, 2025
 ---
 The PR Management script suite automates the full pull request lifecycle in Portfolio OS:
 from creating and configuring PRs, to analyzing quality, coordinating reviews, and keeping
@@ -12,8 +13,9 @@ These scripts are designed to work together with the CI/CD workflows and multi-a
 automation system documented elsewhere in the docs.
 
 <Note type="info">
-All scripts live under `scripts/pr-management/` and require **PowerShell 7+** and the
-**GitHub CLI (`gh`)** authenticated against the target repository.
+Primary PR automation scripts now live under `scripts/automation/` (PowerShell 7+ required).  
+The legacy `scripts/pr-management/` folder only contains utility tools like `pr-monitor.ps1`
+and `pr-quality-checker.ps1`.
 </Note>
 
 ---
@@ -23,17 +25,21 @@ All scripts live under `scripts/pr-management/` and require **PowerShell 7+** an
 ### Folder Structure
 
 ```text
-scripts/pr-management/
-├── automate-pr-unified.ps1          # Main PR automation entrypoint
-├── configure-pr-auto.ps1            # Configure PR fields and project metadata
+scripts/automation/
+├── pr-automation-unified.ps1        # Main PR automation entrypoint (AI, CR-GPT, responses)
+├── auto-configure-pr.ps1            # Configure PR fields and project metadata
 ├── assign-pr-agents.ps1             # Assign PRs to agents / reviewers
+├── docs-updater.ps1                 # Update READMEs / changelog for PRs
+└── core-utilities/ai-services.ps1   # Shared AI helpers
+
+Legacy utilities (still available):
+scripts/pr-management/
+├── pr-monitor.ps1                   # Real-time PR monitoring
+├── pr-quality-checker.ps1           # Quality checks and test orchestration
 ├── configure-sprint-estimate.ps1    # Sprint estimation and capacity planning
 ├── get-pr-aliases.ps1               # PR alias and quick access utilities
 ├── test-pr-identification.ps1       # PR identification and validation
-├── pr-monitor.ps1                   # Real-time PR monitoring
-├── pr-analyzer.ps1                  # Comprehensive PR analysis
-├── pr-quality-checker.ps1           # Quality checks and test orchestration
-└── DEVELOPER_GUIDE.md               # In-depth implementation details
+└── DEVELOPER_GUIDE.md               # Historical implementation details
 ```
 
 ### Common Requirements
@@ -55,9 +61,9 @@ Use `Get-Help .\script-name.ps1 -Full` for the authoritative parameter list.
 
 ---
 
-## `automate-pr-unified.ps1`
+## `pr-automation-unified.ps1`
 
-**Path**: `scripts/pr-management/automate-pr-unified.ps1`  
+**Path**: `scripts/automation/pr-automation-unified.ps1`  
 **Purpose**: Unified automation entrypoint for PR analysis, CR-GPT integration, monitoring,
 and response handling.
 
@@ -82,7 +88,7 @@ and response handling.
 
 ```powershell
 # Run complete PR automation (analysis + responses + monitoring)
-.\scripts\pr-management\automate-pr-unified.ps1 `
+.\scripts\automation\pr-automation-unified.ps1 `
   -PRNumber 150 `
   -Action all `
   -AutoFix
@@ -90,7 +96,7 @@ and response handling.
 
 ```powershell
 # Analyze a PR and CR-GPT feedback without modifying anything
-.\scripts\pr-management\automate-pr-unified.ps1 `
+.\scripts\automation\pr-automation-unified.ps1 `
   -PRNumber 150 `
   -Action analyze `
   -Detailed `
@@ -99,7 +105,7 @@ and response handling.
 
 ```powershell
 # Generate suggested responses to existing review/CR-GPT comments
-.\scripts\pr-management\automate-pr-unified.ps1 `
+.\scripts\automation\pr-automation-unified.ps1 `
   -PRNumber 150 `
   -Action respond `
   -AutoFix
@@ -121,9 +127,9 @@ and response handling.
 
 ---
 
-## `configure-pr-auto.ps1`
+## `auto-configure-pr.ps1`
 
-**Path**: `scripts/pr-management/configure-pr-auto.ps1`  
+**Path**: `scripts/automation/auto-configure-pr.ps1`  
 **Purpose**: Configure PR fields and GitHub Project data consistently based on PR content.
 
 ### Capabilities
@@ -147,12 +153,12 @@ and response handling.
 
 ```powershell
 # Configure a PR using defaults inferred from content
-.\scripts\pr-management\configure-pr-auto.ps1 -PRNumber 150
+.\scripts\automation\auto-configure-pr.ps1 -PRNumber 150
 ```
 
 ```powershell
 # Configure a high-priority backend PR for the dashboard
-.\scripts\pr-management\configure-pr-auto.ps1 `
+.\scripts\automation\auto-configure-pr.ps1 `
   -PRNumber 150 `
   -Priority P0 `
   -Size L `
@@ -162,7 +168,7 @@ and response handling.
 
 ```powershell
 # Preview all configuration changes without applying them
-.\scripts\pr-management\configure-pr-auto.ps1 `
+.\scripts\automation\auto-configure-pr.ps1 `
   -PRNumber 150 `
   -DryRun
 ```
@@ -176,7 +182,7 @@ and response handling.
 
 ## `assign-pr-agents.ps1`
 
-**Path**: `scripts/pr-management/assign-pr-agents.ps1`  
+**Path**: `scripts/automation/assign-pr-agents.ps1`  
 **Purpose**: Assign PRs to agents or reviewers based on workload and domain.
 
 ### Capabilities
@@ -198,7 +204,7 @@ and response handling.
 
 ```powershell
 # Propose assignments for all PRs in a project (preview only)
-.\scripts\pr-management\assign-pr-agents.ps1 `
+.\scripts\automation\assign-pr-agents.ps1 `
   -ProjectNumber "20" `
   -Owner "jschibelli" `
   -DryRun
@@ -206,7 +212,7 @@ and response handling.
 
 ```powershell
 # Apply assignments and export a markdown report
-.\scripts\pr-management\assign-pr-agents.ps1 `
+.\scripts\automation\assign-pr-agents.ps1 `
   -ProjectNumber "20" `
   -Owner "jschibelli" `
   -ExportTo "assignment-report.md"
@@ -254,48 +260,6 @@ and response handling.
 
 ---
 
-## `pr-analyzer.ps1`
-
-**Path**: `scripts/pr-management/pr-analyzer.ps1`  
-**Purpose**: Perform detailed PR analysis (scope, risk, complexity, and review status).
-
-### Analysis Modes
-
-- `comprehensive` – Full PR analysis
-- `security` – Security-focused checks
-- `performance` – Performance-related impact
-- `complexity` – Code complexity and review effort
-- `review` – Review status, feedback, and blockers
-- `changes` – Focus on change impact and touched areas
-
-### Key Parameters
-
-| Parameter    | Type   | Required | Description                                      |
-|-------------|--------|----------|--------------------------------------------------|
-| `-PRNumber` | int    | Yes      | PR number                                        |
-| `-Analysis` | string | Yes      | One of the analysis modes listed above          |
-| `-ExportTo` | string | No       | Optional path to export analysis (JSON/MD, etc.)|
-| `-Detailed` | Switch | No       | Include additional diagnostic data               |
-
-### Usage Examples
-
-```powershell
-# Run full analysis with detailed console output
-.\scripts\pr-management\pr-analyzer.ps1 `
-  -PRNumber 150 `
-  -Analysis comprehensive `
-  -Detailed
-```
-
-```powershell
-# Generate a security analysis report
-.\scripts\pr-management\pr-analyzer.ps1 `
-  -PRNumber 150 `
-  -Analysis security `
-  -ExportTo "security-report.json"
-```
-
----
 
 ## `pr-quality-checker.ps1`
 

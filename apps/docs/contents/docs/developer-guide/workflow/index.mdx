@@ -1,6 +1,7 @@
 ---
 title: Development Workflow
 description: 'Branching strategy, commit conventions, and PR process for Portfolio OS'
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -419,8 +420,8 @@ Portfolio OS includes PowerShell scripts for common workflows:
 # Create new feature branch
 .\scripts\branch-management\create-branch.ps1 -Type feature -Name "add-comments"
 
-# Create PR
-.\scripts\pr-management\create-pr.ps1 -Title "feat(blog): add comment system"
+# Create PR (GitHub CLI)
+gh pr create --title "feat(blog): add comment system" --body "Implements comment system"
 
 # Sync all worktrees
 .\scripts\agent-management\sync-agents.ps1

@@ -1,0 +1,521 @@
+---
+title: Developer Automation Cookbook
+description: Practical runbooks for the Portfolio OS PowerShell scripts that ship in `/scripts`, including usage recipes, sequencing tips, and failure guardrails.
+lastUpdated: November 15, 2025
+---
+
+## How to Use This Cookbook
+
+- Each section mirrors a folder under `scripts/`. The listed commands are stable entry points you can paste directly into a PowerShell session that already trusts the repo tooling.
+- All scripts assume you are at the repository root (`portfolio-os`) and have a valid `GITHUB_TOKEN`, `OPENAI_API_KEY`, and other secrets loaded (commonly via `direnv` or Windows Credential Manager).
+- Prefer `-DryRun` first when it is offered; many automation scripts touch GitHub, project boards, or workflow docs.
+- When chaining scripts, keep the same PowerShell session alive so that shared modules loaded with `. <path>` stay cached.
+
+<Note type="note" title="Date accuracy">
+The `lastUpdated` metadata on this page (and across the docs) is backfilled from Git history. When you materially change a doc, update the date in the frontmatter using the Month Day, Year format so the UI can surface it automatically.
+</Note>
+
+## Quick Reference Matrix
+
+| Area | Primary Scripts | Ideal For | Quick Guardrail |
+| --- | --- | --- | --- |
+| Agent Coordination | `assign-agent-enhanced.ps1`, `update-agent-status.ps1` | Routing issues to Chris/Jason and keeping workflow docs synced | Requires workflow doc write access and `GITHUB_TOKEN` with repo + project permissions |
+| Issue Lifecycle | `create-issue-enhanced.ps1`, `configure-issues-unified.ps1`, `run-issue-pipeline.ps1` | Generating issues + semantic branches + board fields | Many commands auto-create branches; confirm local git is clean |
+| PR Automation | `pr-automation-unified.ps1`, `pr-quality-checker.ps1`, `assign-pr-agents.ps1` | AI-assisted reviews, CR-GPT triage, and reviewer routing | Uses CR-GPT comments—make sure CR-GPT bot already ran or run `pr-monitor.ps1` first |
+| Project / Release | `backfill-project-fields.ps1`, `create-release.ps1`, `release-app.ps1` | Updating project fields, creating tags and changelogs | Requires PAT with `repo`, `project`, and `workflow` scopes |
+| Monitoring & Ops | `monitoring\*.ps1` | Tracking automation health or performance | Scripts stream live dashboards—run from terminals that can stay open |
+| Housekeeping | `clean-house-*.ps1`, `clean-folder-intelligent.ps1` | Tidying branches, node modules, and temp files | Back up any custom worktrees; housekeeping scripts prune aggressively |
+| Utilities | `add-frontmatter.ps1`, `sync-env-to-vercel.ps1`, `migrate-docs.ps1` | One-off migrations and doc hygiene | Preview diff before writing to docs—most scripts emit plan files |
+
+## Agent Management Recipes
+
+### Assign Agent Automation
+
+**Script path:** `scripts/agent-management/assign-agent-enhanced.ps1`
+
+**What it does:** Evaluates an issue’s title/body, picks the right automation agent (or uses the one you pass in), posts a GitHub comment, and updates the workflow doc so everyone can see the owner.
+
+**When to run it:** Immediately after creating an issue (or whenever ownership changes) so status boards and workflow docs stay accurate.
+
+**Pre-flight checklist:**
+- Confirm `prompts/workflows/multi-agent-e2e-workflow.md` is synced locally; the script edits it in place.
+- `GITHUB_TOKEN` must have `repo`, `project`, and `issues` scopes.
+
+**Example command:**
+
+```powershell
+.\scripts\agent-management\assign-agent-enhanced.ps1 `
+  -IssueNumber 432 `
+  -AgentName auto `
+  -UpdateWorkflowDocs `
+  -DryRun
+```
+
+**Sample prompt:**  
+> “Assign issue 432 to the best-fit automation agent, preview the workflow doc update, and stop before writing anything.”
+
+### Agent Status Updates
+
+**Script path:** `scripts/agent-management/update-agent-status.ps1`
+
+**What it does:** Logs whether an agent has started, paused, resumed, or completed an issue and writes that status back to the workflow dashboards.
+
+**When to run it:** Anytime work starts/stops on a tracked issue, especially during handoffs.
+
+**Pre-flight checklist:**
+- Use the same worktree that holds the workflow markdown so git captures the edits.
+- Pick one of the supported actions: `start`, `pause`, `resume`, `complete`.
+
+**Example command:**
+
+```powershell
+.\scripts\agent-management\update-agent-status.ps1 `
+  -AgentName "jason" `
+  -IssueNumber 432 `
+  -Action start `
+  -Notes "Starting backend hardening"
+```
+
+**Sample prompt:**  
+> “Mark issue 432 as started for Jason and include a short status note.”
+
+### Agent Worktree Setup
+
+**Script path:** `scripts/agent-management/setup-agent-development.ps1`
+
+**What it does:** Creates or refreshes a named worktree, copies env templates, installs dependencies, and configures Git remotes so an agent can start coding immediately.
+
+**When to run it:** Before onboarding a new contributor or when an agent needs a clean workspace that mirrors production tooling.
+
+**Pre-flight checklist:**
+- Close editors tied to the target worktree; the script may delete/recreate directories.
+- Decide whether you want `-BootstrapEnv` (copies `.env` values) and `-CreateWorktree`.
+
+**Example command:**
+
+```powershell
+.\scripts\agent-management\setup-agent-development.ps1 `
+  -AgentName "agent-2-jason" `
+  -CreateWorktree `
+  -BootstrapEnv
+```
+
+**Sample prompt:**  
+> “Spin up the `agent-2-jason` worktree with env files so I can start the automation tasks from scratch.”
+
+---
+
+## Issue Lifecycle & Automation
+
+### Enhanced Issue Creation
+
+**Script path:** `scripts/issue-management/create-issue-enhanced.ps1`
+
+**What it does:** Creates a GitHub issue, generates a semantic branch name, optionally pushes it, and echoes a summary so you can copy/paste into commits or Slack.
+
+**When to run it:** Anytime you need a brand-new issue + branch combo, especially for structured automation work.
+
+**Pre-flight checklist:**
+- Ensure your local `develop` is up to date; the branch is cut from your current checkout.
+- Decide whether you want auto-push (`-PushBranch`) or to stage commits manually.
+
+**Example command:**
+
+```powershell
+.\scripts\issue-management\create-issue-enhanced.ps1 `
+  -Title "Implement developer cookbook docs" `
+  -Body "Add cookbook and lastUpdated metadata" `
+  -Labels "docs,automation" `
+  -CreateBranch `
+  -PushBranch `
+  -DryRun
+```
+
+**Sample prompt:**  
+> “Create a docs issue called ‘Implement developer cookbook docs,’ generate the branch, but stop after the dry run so I can inspect the plan.”
+
+### Issue Configuration Presets
+
+**Script path:** `scripts/issue-management/configuration/configure-issues-unified.ps1`
+
+**What it does:** Applies reusable presets (assignee, labels, estimates, project fields) so issues stay consistent with Portfolio OS workflow rules.
+
+**When to run it:** Right after an issue is created (manual or automated) or whenever you need to realign fields with a new preset.
+
+**Pre-flight checklist:**
+- Inspect `scripts/issue-management/configuration/presets.json` to learn what each preset toggles.
+- Rate-limit yourself (sleep for ~2 seconds) when iterating over many issues.
+
+**Example command:**
+
+```powershell
+.\scripts\issue-management\configuration\configure-issues-unified.ps1 `
+  -IssueNumber 432 `
+  -Preset "frontend" `
+  -AddToProject `
+  -Estimate "3"
+```
+
+**Sample prompt:**  
+> “Apply the `frontend` preset to issue 432, make sure it lands on the project board, and set the estimate to 3.”
+
+### Issue Pipeline Sweep
+
+**Script path:** `scripts/issue-management/management/run-issue-pipeline.ps1`
+
+**What it does:** Sweeps the backlog for stale work, missing branches, or mis-labeled tickets and posts comments/updates automatically.
+
+**When to run it:** At the start of the day or before handoffs to keep the board clean.
+
+**Pre-flight checklist:**
+- Start with `-DryRun` and review the generated log; it will show exactly which issues it plans to touch.
+- Prefer running during quiet GitHub hours to avoid rate limiting.
+
+**Example command:**
+
+```powershell
+.\scripts\issue-management\management\run-issue-pipeline.ps1 `
+  -Mode full `
+  -DryRun `
+  -LogPath ".\\logs\\issue-pipeline-$(Get-Date -Format yyyyMMdd).log"
+```
+
+**Sample prompt:**  
+> “Dry run the issue pipeline in full mode and save the log so I can review before we touch real issues.”
+
+---
+
+## Pull Request Automation
+
+### Unified PR Automation
+
+**Script path:** `scripts/automation/pr-automation-unified.ps1`
+
+**What it does:** Pulls CR-GPT findings, runs portfolio-specific quality checks, optionally applies autofixes, and can even commit/push if confident.
+
+**When to run it:** After CR-GPT has commented on a PR or when you need a one-command triage before review.
+
+**Pre-flight checklist:**
+- Ensure CR-GPT has scanned the PR (use `pr-monitor.ps1` if unsure).
+- Work inside a disposable branch/worktree because `-AutoFix` can modify files.
+
+**Example command:**
+
+```powershell
+.\scripts\automation\pr-automation-unified.ps1 `
+  -PRNumber 512 `
+  -Action all `
+  -AutoFix `
+  -AutoCommit `
+  -Detailed
+```
+
+**Sample prompt:**  
+> “Run the unified PR automation on PR 512, include autofix and autocomet, and show me the verbose output.”
+
+### PR Quality Checker
+
+**Script path:** `scripts/pr-management/pr-quality-checker.ps1`
+
+**What it does:** Verifies a PR links to issues, has meaningful descriptions, satisfies label gates, and reports the findings in JSON/Markdown/plain text.
+
+**When to run it:** Before assigning reviewers or merging to ensure the PR meets hygiene standards.
+
+**Pre-flight checklist:**
+- Decide the desired output format (`json`, `markdown`, `text`).
+- Enable `-Strict` only if you want warnings to block merges.
+
+**Example command:**
+
+```powershell
+.\scripts\pr-management\pr-quality-checker.ps1 `
+  -PRNumber 512 `
+  -Strict `
+  -Output json
+```
+
+**Sample prompt:**  
+> “Lint PR 512 with strict mode and return JSON so I can pipe it into other tooling.”
+
+### PR Reviewer Assignment
+
+**Script path:** `scripts/automation/assign-pr-agents.ps1`
+
+**What it does:** Chooses reviewers (Jason/Chris/etc.) for a PR based on branch naming, labels, and touched areas, then requests reviews through the GitHub API.
+
+**When to run it:** Right after opening a PR or when re-routing reviews because scope changed.
+
+**Pre-flight checklist:**
+- PAT must include `pull_request:write`.
+- Branch name should follow `issue-###-slug` so auto mode can infer ownership.
+
+**Example command:**
+
+```powershell
+.\scripts\automation\assign-pr-agents.ps1 `
+  -PRNumber 512 `
+  -Mode auto `
+  -DryRun
+```
+
+**Sample prompt:**  
+> “Pick the right reviewer for PR 512 automatically, but do a dry run so I can confirm before notifying GitHub.”
+
+---
+
+## Project & Release Operations
+
+### Project Field Backfill
+
+**Script path:** `scripts/project-management/backfill-project-fields.ps1`
+
+**What it does:** Reads a GitHub Projects view and ensures each card carries the right status, priority, and estimate values, logging everything it touches.
+
+**When to run it:** After importing issues, reprioritizing, or whenever the board drifts from source-of-truth values.
+
+**Pre-flight checklist:**
+- Use `gh project item-field-list` to grab the exact field names you plan to update.
+- Expect a CSV log next to the script—stash it for audits.
+
+**Example command:**
+
+```powershell
+.\scripts\project-management\backfill-project-fields.ps1 `
+  -ProjectNumber 20 `
+  -View "In Progress" `
+  -Fields "Status,Priority,Estimate"
+```
+
+**Sample prompt:**  
+> “Backfill status, priority, and estimate for every card in the In Progress view of project 20.”
+
+### Release Packaging & Deployment
+
+**Script paths:** `scripts/project-management/create-release.ps1`, `scripts/project-management/release-app.ps1`
+
+**What they do:** `create-release.ps1` tags the repo, assembles a changelog, and drafts a GitHub Release. `release-app.ps1` deploys a specific app (site/docs/dashboard) using that tag.
+
+**When to run them:** At the end of a sprint or whenever you package a new milestone.
+
+**Pre-flight checklist:**
+- Run `pnpm install` inside each app before calling `release-app.ps1`; it shells into their scripts.
+- Double-check changelog contents while `-DryRun` is still enabled—tags are permanent once pushed.
+
+**Example command:**
+
+```powershell
+.\scripts\project-management\create-release.ps1 `
+  -Tag "v1.8.0" `
+  -TargetBranch "develop" `
+  -DryRun
+
+.\scripts\project-management\release-app.ps1 `
+  -App "site" `
+  -Tag "v1.8.0" `
+  -PromoteTo production
+```
+
+**Sample prompt:**  
+> “Draft release v1.8.0 from develop, inspect the changelog, then prep the site deployment plan but stop before promoting.”
+
+---
+
+## Monitoring & Observability
+
+### Automation Metrics Stream
+
+**Script path:** `scripts/monitoring/automation-metrics.ps1`
+
+**What it does:** Streams KPIs (issue throughput, PR SLA, doc freshness) and optionally writes them to JSON so you can feed dashboards.
+
+**When to run it:** During standups, release windows, or whenever leadership asks for fresh automation metrics.
+
+**Pre-flight checklist:**
+- Decide whether you want console-only output or to persist data via `-OutputPath`.
+- Consider running the script within `Start-Job` if you need the same terminal for other work.
+
+**Example command:**
+
+```powershell
+.\scripts\monitoring\automation-metrics.ps1 `
+  -OutputPath ".\\metrics\\automation.json" `
+  -IntervalSeconds 60
+```
+
+**Sample prompt:**  
+> “Collect automation metrics every minute and log them to `metrics/automation.json` while I watch the console.”
+
+### Real-Time Automation Dashboard
+
+**Script path:** `scripts/monitoring/real-time-dashboard.ps1`
+
+**What it does:** Launches an interactive terminal UI that combines GitHub data, agent status, and pipeline signals in one screen.
+
+**When to run it:** During live debugging sessions, demo prep, or whenever you need instant situational awareness.
+
+**Pre-flight checklist:**
+- Use Windows Terminal (or another ANSI-capable terminal) for best rendering.
+- Remember it streams until you `Ctrl+C`; logs land under `logs/dashboard`.
+
+**Example command:**
+
+```powershell
+.\scripts\monitoring\real-time-dashboard.ps1 `
+  -Theme dark `
+  -ShowAgents `
+  -ShowPipelines
+```
+
+**Sample prompt:**  
+> “Spin up the real-time dashboard with the dark theme and show both agent and pipeline panels.”
+
+---
+
+## Housekeeping & Environment Utilities
+
+### Intelligent Repo Cleanup
+
+**Script path:** `scripts/housekeeping/clean-folder-intelligent.ps1`
+
+**What it does:** Detects large caches, stale worktrees, orphaned node_modules, and proposes a cleanup plan you can approve step by step.
+
+**When to run it:** Weekly, before taking new perf measurements, or whenever your repo feels sluggish.
+
+**Pre-flight checklist:**
+- Read the on-screen plan carefully—each step can be skipped interactively.
+- Run in an elevated PowerShell session if you expect to delete locked directories.
+
+**Example command:**
+
+```powershell
+.\scripts\housekeeping\clean-folder-intelligent.ps1 `
+  -Scope repo `
+  -PreserveWorktrees `
+  -DryRun
+```
+
+**Sample prompt:**  
+> “Preview the intelligent cleanup for the whole repo, but don’t delete anything yet.”
+
+### Quick Build Reset
+
+**Script path:** `scripts/housekeeping/clean-house-quick.ps1`
+
+**What it does:** Wipes the most common build artifacts (Next cache, `.turbo`, `.next`, temp coverage) for a fast reset.
+
+**When to run it:** Right before running `pnpm test` or `next build` if you see flaky behavior.
+
+**Pre-flight checklist:**
+- Avoid `-Confirm:$false` unless you are in a disposable environment; it skips safety prompts.
+- Pair with `clean-house-advanced.ps1` if you also need worktree pruning.
+
+**Example command:**
+
+```powershell
+.\scripts\housekeeping\clean-house-quick.ps1 -Confirm:$false
+```
+
+**Sample prompt:**  
+> “Do the quick cleanup so my next docs build runs from a clean slate.”
+
+### Frontmatter Injection
+
+**Script path:** `scripts/utilities/add-frontmatter.ps1`
+
+**What it does:** Adds or updates YAML frontmatter across a folder of markdown/MDX files—ideal for enforcing the `lastUpdated` field.
+
+**When to run it:** After backfilling metadata or when bootstrapping a new docs section.
+
+**Pre-flight checklist:**
+- Stage docs first so you can diff the rewrite easily.
+- Use `-TitleFromHeading` only if each file has an `# H1`.
+
+**Example command:**
+
+```powershell
+.\scripts\utilities\add-frontmatter.ps1 `
+  -Path "apps/docs/contents/docs/getting-started" `
+  -TitleFromHeading `
+  -LastUpdated (Get-Date -Format "MMMM dd, yyyy")
+```
+
+**Sample prompt:**  
+> “Add `lastUpdated` to every getting-started doc using today’s date and reuse the H1 as the title when missing.”
+
+### Vercel Env Sync
+
+**Script path:** `scripts/utilities/sync-env-to-vercel.ps1`
+
+**What it does:** Reads your `.env` file and mirrors the secrets to Vercel (production, preview, or development scopes).
+
+**When to run it:** After rotating API keys or before enabling a preview environment for QA.
+
+**Pre-flight checklist:**
+- Run `vercel login` so the CLI has an active session.
+- Double-check the env file before streaming secrets into Vercel.
+
+**Example command:**
+
+```powershell
+.\scripts\utilities\sync-env-to-vercel.ps1 `
+  -Project "portfolio-os" `
+  -EnvFile ".env" `
+  -Scope production
+```
+
+**Sample prompt:**  
+> “Sync my local `.env` values to the production Vercel project so previews pick up the new keys.”
+
+---
+
+## Testing Boosters
+
+### Full Regression Runner
+
+**Script path:** `scripts/testing/test-script.ps1`
+
+**What it does:** Chains Playwright UI tests with API smoke checks and can capture artifacts (videos, traces) per suite.
+
+**When to run it:** Before submitting a PR touching site/docs flows or when validating staging environments.
+
+**Pre-flight checklist:**
+- Install browsers once via `pnpm playwright install --with-deps`.
+- Pick a suite name that matches the config (see `scripts/testing/config/`).
+
+**Example command:**
+
+```powershell
+.\scripts\testing\test-script.ps1 `
+  -Suite "site-regression" `
+  -Browser "chromium" `
+  -RecordVideo
+```
+
+**Sample prompt:**  
+> “Run the site regression suite in chromium, keep it headful, and capture video evidence.”
+
+### Simple Package Smoke Test
+
+**Script path:** `scripts/testing/simple-test.ps1`
+
+**What it does:** Lightweight wrapper that triggers package-level test/lint scripts so you can validate install health quickly.
+
+**When to run it:** After dependency installs, before pushing, or when verifying a new workstation setup.
+
+**Pre-flight checklist:**
+- Run `pnpm install` at the repo root so required deps exist.
+- Use `-Scope` to target `docs`, `site`, or `dashboard`.
+
+**Example command:**
+
+```powershell
+.\scripts\testing\simple-test.ps1 -Scope docs -Verbose
+```
+
+**Sample prompt:**  
+> “Smoke-test the docs package with verbose logs so I can confirm the tooling installs cleanly.”
+
+---
+
+Need a recipe that is not listed here? Start from the relevant folder under `scripts/`, look for `README` or comments at the top of each `.ps1`, and add a new section following the same structure so the cookbook stays authoritative.
+

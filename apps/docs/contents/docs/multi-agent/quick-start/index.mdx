@@ -1,6 +1,7 @@
 ---
 title: Multi-Agent Quick Start
 description: Get started with multi-agent development in 15 minutes
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -98,13 +99,13 @@ Now let's run multiple agents in parallel:
     ```powershell
     # Agent 1 completes work
     cd worktrees/agent-1
-    .\scripts\pr-management\automate-pr-unified.ps1 `
+    .\scripts\automation\pr-automation-unified.ps1 `
       -Title "feat: add user authentication" `
       -Body "Implements JWT-based auth"
     
     # Agent 2 completes work
     cd worktrees/agent-2
-    .\scripts\pr-management\automate-pr-unified.ps1 `
+    .\scripts\automation\pr-automation-unified.ps1 `
       -Title "feat: create admin dashboard" `
       -Body "Adds admin UI with analytics"
     ```

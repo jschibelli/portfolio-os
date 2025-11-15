@@ -260,6 +260,10 @@ export const Documents: Paths[] = [
         href: "/complete-guide",
       },
       {
+        title: "Developer Cookbook",
+        href: "/developer-cookbook",
+      },
+      {
         title: "PR Management Scripts",
         href: "/pr-management",
       },
@@ -282,6 +286,10 @@ export const Documents: Paths[] = [
       {
         title: "Scripts Catalog",
         href: "/overview",
+      },
+      {
+        title: "Prompt Library",
+        href: "/prompts",
       },
     ],
   },

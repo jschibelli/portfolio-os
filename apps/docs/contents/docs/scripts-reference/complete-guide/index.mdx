@@ -1,6 +1,7 @@
 ---
 title: Complete Script Reference
 description: Comprehensive guide to all PowerShell automation scripts in Portfolio OS
+lastUpdated: November 14, 2025
 ---
 ## Overview
 
@@ -39,7 +40,7 @@ Portfolio OS includes over 100 PowerShell scripts providing complete automation 
 
 ## PR Management
 
-**Location:** `scripts/pr-management/`
+**Location:** `scripts/automation/` (with supplemental legacy utilities under `scripts/pr-management/`)
 
 ### Overview
 
@@ -48,9 +49,9 @@ Comprehensive pull request management system with intelligent assignment, qualit
 ### PR Automation Workflow
 
 <Mermaid chart={`graph TB
-    Start[New PR Created] --> Analyze[automate-pr-unified.ps1]
+    Start[New PR Created] --> Analyze[pr-automation-unified.ps1]
     Analyze --> |AI Analysis| Quality[pr-quality-checker.ps1]
-    Quality --> |Pass| Configure[configure-pr-auto.ps1]
+    Quality --> |Pass| Configure[auto-configure-pr.ps1]
     Quality --> |Fail| Fix[Auto-fix Issues]
     Fix --> Quality
     Configure --> |Set Fields| Monitor[pr-monitor.ps1]
@@ -68,7 +69,7 @@ Comprehensive pull request management system with intelligent assignment, qualit
 
 ### Core Scripts
 
-#### `automate-pr-unified.ps1`
+#### `pr-automation-unified.ps1`
 
 <Note type="tip" title="Complete PR Automation">
 This is the primary PR automation script that orchestrates AI-powered analysis, quality checks, and automated responses.
@@ -86,26 +87,26 @@ Complete PR automation with AI-powered analysis.
   <TabsContent value="basic">
 ```powershell
 # Full PR automation
-.\automate-pr-unified.ps1 -PRNumber 150 -Action all
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action all
 
 # Analyze only
-.\automate-pr-unified.ps1 -PRNumber 150 -Action analyze
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action analyze
 
 # Generate responses
-.\automate-pr-unified.ps1 -PRNumber 150 -Action respond
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action respond
 ```
   </TabsContent>
 
   <TabsContent value="advanced">
 ```powershell
 # With auto-fix enabled
-.\automate-pr-unified.ps1 -PRNumber 150 -Action all -AutoFix
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action all -AutoFix
 
 # Continuous monitoring
-.\automate-pr-unified.ps1 -PRNumber 150 -Action monitor -Interval 300
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action monitor -Interval 300
 
 # Custom AI model
-.\automate-pr-unified.ps1 -PRNumber 150 -Action analyze -AIModel "gpt-4-turbo"
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 150 -Action analyze -AIModel "gpt-4-turbo"
 ```
   </TabsContent>
 
@@ -131,16 +132,16 @@ Complete PR automation with AI-powered analysis.
 
 ---
 
-#### `configure-pr-auto.ps1`
+#### `auto-configure-pr.ps1`
 
 Automated PR configuration and field management.
 
 ```powershell
 # Auto-configure PR
-.\configure-pr-auto.ps1 -PRNumber 150
+.\scripts\automation\auto-configure-pr.ps1 -PRNumber 150
 
 # With specific fields
-.\configure-pr-auto.ps1 -PRNumber 150 `
+.\scripts\automation\auto-configure-pr.ps1 -PRNumber 150 `
   -Priority P1 `
   -Size M `
   -App "Portfolio Site" `
@@ -208,30 +209,6 @@ Automated quality assurance and testing.
 
 ---
 
-#### `pr-analyzer.ps1`
-Comprehensive PR analysis and assessment.
-
-```powershell
-# Full analysis
-.\pr-analyzer.ps1 -PRNumber 150 -Analysis comprehensive
-
-# Security analysis
-.\pr-analyzer.ps1 -PRNumber 150 -Analysis security
-
-# Performance analysis
-.\pr-analyzer.ps1 -PRNumber 150 -Analysis performance
-```
-
-**Analysis Types:**
-- `comprehensive` - Complete analysis
-- `security` - Security assessment
-- `performance` - Performance impact
-- `complexity` - Code complexity
-- `review` - Review status
-- `changes` - Change impact
-
----
-
 #### `pr-monitor.ps1`
 Real-time PR monitoring and status tracking.
 
@@ -252,10 +229,10 @@ Real-time PR monitoring and status tracking.
 
 | Script | Primary Use | Automation Level |
 |--------|-------------|------------------|
-| `automate-pr-unified.ps1` | Complete automation | High |
-| `configure-pr-auto.ps1` | Field configuration | Medium |
+| `pr-automation-unified.ps1` | Complete automation | High |
+| `auto-configure-pr.ps1` | Field configuration | Medium |
+| `assign-pr-agents.ps1` | Reviewer assignment | Medium |
 | `pr-quality-checker.ps1` | Quality assurance | High |
-| `pr-analyzer.ps1` | Analysis & insights | Medium |
 | `pr-monitor.ps1` | Real-time monitoring | High |
 
 ---

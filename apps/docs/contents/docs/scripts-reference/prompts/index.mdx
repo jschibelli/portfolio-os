@@ -1,0 +1,3692 @@
+---
+title: Prompt Library
+description: Browse copy-ready prompt templates with execution commands pulled directly from /prompts.
+lastUpdated: November 15, 2025
+---
+{/* AUTO-GENERATED via scripts/documentation/generate-prompt-library.js */}
+import Note from '@/components/docs/note'
+
+# Prompt Library
+
+<Note type="warning">
+This page is auto-generated from the metadata defined in the `prompts/` directory. Run `node scripts/documentation/generate-prompt-library.js` after adding or updating a prompt.
+</Note>
+
+## Using This Library
+
+- Start with the category tables below to find a prompt by workflow area.
+- Expand any entry in **Prompt Details** to copy the complete text into Cursor or another tool.
+- Each prompt lists linked scripts so you can run the right automation helpers.
+- Regenerate this page any time prompts change with `node scripts/documentation/generate-prompt-library.js`.
+
+## Prompt Categories
+
+### Agents Prompts
+
+| Prompt | Last Reviewed | Status | Linked Scripts |
+| --- | --- | --- | --- |
+| [Agent Assignments - Automation System Development](https://github.com/jschibelli/portfolio-os/blob/develop/agents/agent-assignments.md) | 2025-11-15 | draft | `scripts/automation/core-utilities/ai-services.ps1`, `scripts/automation/issue-queue-manager.ps1` |
+
+### Automation Prompts
+
+| Prompt | Last Reviewed | Status | Linked Scripts |
+| --- | --- | --- | --- |
+| [Automation Prompt Library Audit](https://github.com/jschibelli/portfolio-os/blob/develop/automation/automation-prompt-audit.md) | 2025-11-15 | draft | — |
+| [Automation Security & Ops Guardrails](https://github.com/jschibelli/portfolio-os/blob/develop/automation/security-and-ops.md) | 2025-11-15 | draft | `scripts/automation/core-utilities/ai-services.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/issue-config-unified.ps1` |
+| [GitHub Issue Auto-Configuration Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/automation/github-issue-auto-configuration.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/auto-configure-issue-updated.ps1`, `scripts/core-utilities/set-estimate-iteration.ps1` |
+| [Integration Implementation Guide](https://github.com/jschibelli/portfolio-os/blob/develop/automation/integration-implementation-guide.md) | 2025-11-15 | draft | `scripts/automation/auto-configure-pr.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/docs-updater.ps1`, `scripts/automation/continuous-issue-pipeline.ps1`, `scripts/automation/issue-queue-manager.ps1`, `scripts/automation/issue-implementation.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
+| [Issue Analysis Prompt Template](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-analysis-prompt-template.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
+| [Issue Management Automation - Prompt Engineering Strategy](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-management-prompt-engineering.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
+| [PR Automation Prompt Template](https://github.com/jschibelli/portfolio-os/blob/develop/automation/pr-automation-prompt-template.md) | 2025-11-15 | draft | `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
+| [Workflow & Automation Evaluation Report](https://github.com/jschibelli/portfolio-os/blob/develop/automation/workflow-evaluation-report.md) | 2025-11-15 | draft | — |
+
+### Generated Prompts
+
+| Prompt | Last Reviewed | Status | Linked Scripts |
+| --- | --- | --- | --- |
+| [Automation Metrics Workflow Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/generated/automation-metrics-workflow-prompt.md) | 2025-11-15 | draft | `scripts/automation/monitoring/automation-metrics.ps1` |
+| [Docs Updater Workflow Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/generated/docs-updater-workflow-prompt.md) | 2025-11-15 | draft | `scripts/automation/docs-updater.ps1` |
+| [Manage Projects Workflow Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/generated/manage-projects-workflow-prompt.md) | 2025-11-15 | draft | `scripts/automation/project-manager.ps1` |
+| [PR Agent Assignment Workflow Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/generated/pr-agent-assignment-workflow-prompt.md) | 2025-11-15 | draft | `scripts/automation/assign-pr-agents.ps1`, `scripts/core-utilities/get-github-utilities.ps1`, `scripts/core-utilities/manage-ai-services.ps1` |
+
+### Templates Prompts
+
+| Prompt | Last Reviewed | Status | Linked Scripts |
+| --- | --- | --- | --- |
+| [GitHub Complete Prompt List](https://github.com/jschibelli/portfolio-os/blob/develop/templates/github-complete-prompt-list.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/auto-configure-issue-updated.ps1` |
+| [GitHub PR to Merge Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/templates/github-pr-to-merge.md) | 2025-11-15 | draft | `scripts/automation/pr-automation-unified.ps1` |
+
+### Workflows Prompts
+
+| Prompt | Last Reviewed | Status | Linked Scripts |
+| --- | --- | --- | --- |
+| [Default Two-Agent PR Assignment Strategy](https://github.com/jschibelli/portfolio-os/blob/develop/workflows/default-two-agent-pr-assignment-strategy.md) | 2025-11-15 | draft | `scripts/automation/pr-automation-unified.ps1` |
+| [End-to-End Issue to Merge Workflow](https://github.com/jschibelli/portfolio-os/blob/develop/workflows/e2e-issue-to-merge.md) | 2025-11-15 | draft | `scripts/automation/create-issue-enhanced.ps1`, `scripts/automation/continuous-issue-pipeline.ps1`, `scripts/automation/issue-queue-manager.ps1`, `scripts/automation/agent-status-update.ps1`, `scripts/automation/issue-config-unified.ps1`, `scripts/automation/issue-implementation.ps1`, `scripts/automation/pr-automation-unified.ps1` |
+
+## Prompt Details
+
+### Agents
+
+#### Agent Assignments - Automation System Development
+
+- **Source:** [agents/agent-assignments.md](https://github.com/jschibelli/portfolio-os/blob/develop/agents/agent-assignments.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/core-utilities/ai-services.ps1`, `scripts/automation/issue-queue-manager.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Agent Assignments - Automation System Development
+
+## Documentation Reference
+
+**Always start here**: `DOCS_MAP.md` in repository root
+
+For complete documentation discovery guide: `prompts/documentation-guide.md`
+
+**Documentation Site**: http://localhost:3001 (when running)
+
+Key documentation sections:
+- Getting Started: `apps/docs/contents/docs/getting-started/`
+- Developer Guide: `apps/docs/contents/docs/developer-guide/`
+- Scripts Reference: `apps/docs/contents/docs/scripts-reference/`
+- Multi-Agent System: `apps/docs/contents/docs/multi-agent/`
+
+---
+
+## **Jason: Backend & Infrastructure Specialist**
+
+**Your Issues:**
+- **Issue #264**: Create AI Services Integration Layer
+- **Issue #265**: Create Issue Queue Management System  
+- **Issue #267**: Integrate AI Intelligence into Existing Scripts
+
+**Issue Links:**
+- https://github.com/jschibelli/portfolio-os/issues/264
+- https://github.com/jschibelli/portfolio-os/issues/265
+- https://github.com/jschibelli/portfolio-os/issues/267
+
+**Your Working Branch:** `jason-automation-backend`
+
+**Script Files You'll Work On:**
+- `scripts/automation/core-utilities/ai-services.ps1` (create new)
+- `scripts/automation/issue-queue-manager.ps1` (create new)
+- `scripts/automation/issue-management/issue-config-unified.ps1` (update existing)
+- `scripts/automation/pr-automation-unified.ps1` (update existing)
+- `scripts/automation/continuous-issue-pipeline.ps1` (update existing)
+
+**Your Focus:** Backend infrastructure, AI services, queue management, PowerShell integration
+
+---
+
+## **Chris: Frontend & User Experience Specialist**
+
+**Your Issues:**
+- **Issue #266**: Create Issue Implementation System
+- **Issue #268**: Create Advanced Analytics and Monitoring System
+
+**Issue Links:**
+- https://github.com/jschibelli/portfolio-os/issues/266
+- https://github.com/jschibelli/portfolio-os/issues/268
+
+**Your Working Branch:** `chris-automation-frontend`
+
+**Script Files You'll Work On:**
+- `scripts/automation/issue-implementation.ps1` (create new)
+- `scripts/automation/monitoring/automation-metrics.ps1` (create new)
+- `scripts/automation/monitoring/` (create new directory)
+
+**Your Focus:** User workflows, code generation, analytics dashboards, user experience
+
+---
+
+## **Quick Reference**
+
+**All Issues:** https://github.com/jschibelli/portfolio-os/issues?q=is%3Aopen+label%3Aautomation
+
+**Scripts Directory:** `scripts/automation/`
+
+**Base Branch:** `develop`
+
+**Start Time:** Both agents start immediately (simultaneous work)
+
+**No File Conflicts:** Agent 1 works on backend files, Agent 2 works on frontend files
+~~~
+
+</details>
+
+### Automation
+
+#### Automation Prompt Library Audit
+
+- **Source:** [automation/automation-prompt-audit.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/automation-prompt-audit.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** —
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Automation Prompt Library Audit
+
+_Generated: 2025-11-15_
+
+This report catalogs the current automation prompt assets, maps them to supporting workflows/scripts, and recommends upgrades to strengthen the Portfolio OS Home Automation system.
+
+> Note: Script existence/paths verified against `C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os` at the time of writing.
+
+## 1. Prompt Catalog & Gaps
+
+| Document | Intent & Audience | Current Completeness | Gaps / Immediate Actions |
+| --- | --- | --- | --- |
+| `issue-management-prompt-engineering.md` | End-to-end strategy for AI-driven issue/PR/project automation; audience = automation engineers configuring GitHub Actions + PowerShell. | Comprehensive narrative (principles, templates, architecture) but lacks ownership/status and implementation checkpoints. | References scripts (`issue-config-unified.ps1`, `ai-enhanced-pr-automation.ps1`) and workflows that do not exist in the main repo; duplicates implementation steps already in `integration-implementation-guide.md`; no versioning or change log. |
+| `github-issue-auto-configuration.md` | Field mapping and manual/CLI recipes for consistent issue setup; audience = contributors running scripts locally. | Contains up-to-date project IDs/options (as of 2025-01-07) and thorough CLI snippets. | Primary script `scripts/auto-configure-issue-updated.ps1` missing; field IDs lack validation guardrail; preset guidance is static (no AI pathway); no linkage to `issue-analysis-prompt-template.md`. |
+| `integration-implementation-guide.md` | Phase-based rollout plan for completing automation stack; audience = maintainers executing roadmap. | Detailed checklist + step-by-step instructions with code samples. | Depends on seven missing scripts (auto-configure-pr, pr-automation-unified, docs-updater, continuous-issue-pipeline, issue-queue-manager, issue-implementation, ai-services); PowerShell snippets assume directories such as `scripts/automation/issue-management` that are absent; checklist status stale. |
+| `issue-analysis-prompt-template.md` | Canonical AI prompt for analyzing GitHub issues; audience = PowerShell/GitHub Actions integrators. | Highly detailed template with JSON contract and integration notes. | Does not document escaping/placeholder constraints; assumes helper `Invoke-AICompletion` exists; no examples of failed responses or validation; duplicative criteria vs. `issue-management-prompt-engineering.md`. |
+| `pr-automation-prompt-template.md` | AI prompt for PR analysis + CR-GPT responses. | Rich guidance incl. response templates and GitHub Actions sample. | References helper scripts `ai-pr-analyzer.ps1`, `post-cr-gpt-responses.ps1`, `update-pr-status.ps1` that do not exist; lacks mapping to `pr-automation-optimized.yml`; does not specify rate limits / token strategy. |
+| `workflow-evaluation-report.md` | Audit of current automation coverage. | Clear snapshot of missing components and phased recommendations. | Last updated before latest repo changes; relies on same missing script list; duplicates recommendations from `integration-implementation-guide.md`; does not track remediation progress or owners. |
+
+## 2. Prompt  Workflow/Script Coverage
+
+| Prompt / Doc | Intended Script(s) / Workflow(s) | Current Implementation Status | Notes / Blockers |
+| --- | --- | --- | --- |
+| `issue-management-prompt-engineering.md` | `scripts/automation/issue-management/issue-config-unified.ps1`, `scripts/ai-enhanced-issue-config.ps1`, GitHub workflow `orchestrate-issues-prs.yml` | Scripts/workflow paths absent in repo; only legacy references in worktrees. | Need to port or recreate the unified issue config + AI wrapper in `/scripts/automation`. |
+| `github-issue-auto-configuration.md` | `scripts/auto-configure-issue-updated.ps1`, `scripts/set-estimate-iteration.ps1`, manual `gh project item-edit` commands | Neither script located in repo root; manual commands usable but undocumented in automation toolchain. | Either reintroduce scripts from worktrees or update doc to reflect manual-only path. |
+| `integration-implementation-guide.md` | `orchestrate-issues-prs.yml`, `pr-automation-optimized.yml`, AI services module, `auto-configure-pr.ps1`, `pr-automation-unified.ps1`, `docs-updater.ps1`, `continuous-issue-pipeline.ps1`, `issue-queue-manager.ps1`, `issue-implementation.ps1` | Workflows exist but call non-existent scripts; AI services module not present; rest of scripts missing. | Requires script creation + workflow patching before guide is actionable. |
+| `issue-analysis-prompt-template.md` | `Invoke-AIIssueAnalysis` helper inside `issue-config-unified.ps1`, GitHub Action step `AI Issue Analysis`, PowerShell utility `ai-issue-analyzer.ps1` | No helper or analyzer script in repo; workflow lacks AI step; template currently theoretical. | Must build shared AI client (`core-utilities/ai-services.ps1`) plus analyzer wrapper. |
+| `pr-automation-prompt-template.md` | `ai-pr-analyzer.ps1`, `post-cr-gpt-responses.ps1`, `update-pr-status.ps1`, workflow `pr-automation-optimized.yml` | Workflow exists but does not call AI analyzer; none of the helper scripts exist. | Need PR data fetch + response posting scripts aligned with CR-GPT conventions. |
+| `workflow-evaluation-report.md` | Cross-checks all workflows (`orchestrate-issues-prs.yml`, `pr-automation-optimized.yml`, `project-status-automation.yml`, `add-to-project.yml`) and scripts listed above | Report matches current state (missing scripts) but lacks automated verification. | Consider generating report from scripted audit to keep findings fresh. |
+
+### Coverage Insights
+
+1. **Zero prompt is currently executable end-to-end** because every template references helper scripts that are missing from the main workspace.  
+2. **GitHub Actions workflows run but degrade**: they reference non-existent scripts, so steps will fail or are commented out.  
+3. **PowerShell tree gap**: `scripts/automation/` currently holds only documentationno `.ps1` filesso automation is effectively broken.  
+4. **AI layer untreated**: `Invoke-AICompletion`, prompt templating, and API key handling exist only in docs, not code.
+
+## 3. Recommended Enhancements
+
+### Immediate (restore functionality)
+
+- **Recreate core scripts** (`auto-configure-pr.ps1`, `pr-automation-unified.ps1`, `docs-updater.ps1`, `continuous-issue-pipeline.ps1`, `issue-queue-manager.ps1`, `issue-implementation.ps1`, `ai-services.ps1`) under `scripts/automation/`, sourced from historical worktrees or rebuilt from doc snippets.
+- **Patch workflows** (`.github/workflows/orchestrate-issues-prs.yml`, `pr-automation-optimized.yml`) to reference the restored scripts and add failure guards when scripts are missing.
+- **Add repository-wide `Invoke-AICompletion` utility** with provider abstraction and secure secret loading; document usage inline with prompts.
+
+### Near-Term (stabilize AI-driven prompts)
+
+- **Version each prompt file** (front-matter with `version`, `owner`, `last_reviewed`) and link to the script/workflow implementing it.
+- **Create prompt validation harness** (e.g., `scripts/automation/tests/prompt-contract.ps1`) that runs JSON schema checks against AI responses for the issue/PR templates.
+- **Attach usage guides**: embed How to trigger steps within each prompt doc, referencing CLI + workflow triggers once scripts return.
+- **Consolidate duplicated content** by splitting strategy (`issue-management-prompt-engineering.md`) from implementation guide; cross-link instead of restating long sections.
+
+### Future (optimize & monitor)
+
+- **Automation metrics layer**: add `scripts/automation/monitoring/automation-metrics.ps1` to log success/failure counts and feed into dashboards.
+- **Security & ops guardrails**: centralize API key management, rate limiting, and audit logging guidance inside `prompts/automation/security.md`.
+- **Learning loop**: implement telemetry to capture AI recommendation accuracy and feed back into prompt tuning (documented in `issue-analysis-prompt-template.md`).
+
+## 4. Next Steps & Validation
+
+1. **Source missing scripts** from `worktrees/agent-*` and port them (with updates) into `scripts/automation/`.  
+2. **Update workflows** to fail fast with descriptive errors if dependencies are absent.  
+3. **Run dry-run tests** for issue + PR flows, confirming prompts generate valid JSON and that GitHub field updates succeed using `gh project item-edit`.  
+4. **Schedule quarterly prompt reviews**: capture owners, success metrics, and backlog items directly in each doc.
+
+Once these actions are complete, the Home Automation system will have a documented, testable bridge between prompt strategy and executable workflows.
+~~~
+
+</details>
+
+#### Automation Security & Ops Guardrails
+
+- **Source:** [automation/security-and-ops.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/security-and-ops.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/core-utilities/ai-services.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/issue-config-unified.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Automation Security & Ops Guardrails
+
+## API Key Management
+- Store OpenAI/Anthropic keys in GitHub Actions secrets (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`).
+- For local use, prefer `.env.local` files ignored by Git and load via `$env:OPENAI_API_KEY`.
+- Rotate keys quarterly and immediately after suspected leaks.
+
+## Secret Ingestion
+```powershell
+# Example
+$env:OPENAI_API_KEY = (Get-Content ./secrets/openai.key -Raw).Trim()
+```
+
+## Rate Limiting
+- Default concurrency: 2 issues per queue, 1 PR automation job per PR number.
+- `pr-automation-unified.ps1` batches AI calls and backs off exponentially on HTTP 429/503.
+- Use `issue-queue-manager.ps1 -MaxConcurrent <N>` to cap automation throughput.
+
+## Audit Logging
+- All automation scripts log to `logs/automation/*.log`. Metrics collector parses:
+  - `ISSUE_PROCESSED` lines from `continuous-issue-pipeline.ps1`
+  - `PR_ANALYZED` lines from `pr-automation-unified.ps1`
+  - `ERROR` lines from any script exceptions
+
+## Manual Overrides
+- Set `DRY_RUN_RESPONSES=true` in workflows to prevent auto-commenting.
+- Pass `-DryRun` to any PowerShell helper for a side-effect-free preview.
+- Use `scripts/automation/project-manager.ps1 -Operation status` before running watchers.
+
+## Quarterly Review Checklist
+1. Run `scripts/automation/tests/prompt-contract.ps1` and fix failures.
+2. Revalidate workflow references to ensure script paths are current.
+3. Rotate API keys & ensure secrets are scoped to required repos only.
+4. Review automation logs for anomalous spikes in failures or API calls.
+~~~
+
+</details>
+
+#### GitHub Issue Auto-Configuration Prompt
+
+- **Source:** [automation/github-issue-auto-configuration.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/github-issue-auto-configuration.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/issue-config-unified.ps1`, `scripts/automation/auto-configure-issue-updated.ps1`, `scripts/core-utilities/set-estimate-iteration.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# GitHub Issue Auto-Configuration Prompt
+
+## Purpose
+Automatically configure GitHub issues with proper project fields, labels, and milestone assignments for the Portfolio OS project.
+
+## Execution
+- Primary script: `pwsh ./scripts/automation/issue-config-unified.ps1 -IssueNumber <ID> -Preset <blog|dashboard|docs|infra> -AddToProject`
+- Alternate script: `pwsh ./scripts/automation/auto-configure-issue-updated.ps1` (legacy syntax)
+- Manual fallback: run `gh project item-edit` commands in the sections below when automation cannot run.
+
+## Usage
+When creating or updating GitHub issues, use this automation to ensure consistent project field configuration.
+
+## Available Scripts
+
+### 1. Updated Configuration Script (Recommended)
+**File:** `scripts/auto-configure-issue-updated.ps1`
+
+**Usage:**
+```powershell
+# Basic configuration
+.\scripts\auto-configure-issue-updated.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend"
+
+# Full configuration with estimate and milestone
+.\scripts\auto-configure-issue-updated.ps1 -IssueNumber 190 -Priority "P1" -Size "M" -App "Portfolio Site" -Area "Frontend" -Estimate 3 -Milestone "Sprint 1" -Labels "ready-to-implement"
+```
+
+### 2. Set Estimate and Iteration
+**File:** `scripts/set-estimate-iteration.ps1`
+
+**Usage:**
+```powershell
+# Set estimate only
+.\scripts\set-estimate-iteration.ps1 -IssueNumber 190 -Estimate 3
+
+# Set both estimate and iteration
+.\scripts\set-estimate-iteration.ps1 -IssueNumber 190 -Estimate 3 -Iteration "Sprint 1"
+```
+
+### 3. Legacy Scripts (Deprecated)
+**Files:** `scripts/auto-configure-issue.ps1`, `scripts/auto-configure-issue-simple.ps1`
+
+**Note:** These scripts use GraphQL mutations which can fail silently. Use the updated scripts above instead.
+
+## Configuration Presets
+
+### Blog Issues
+- **Priority:** P1 (High)
+- **Size:** M (Medium)
+- **App:** Portfolio Site
+- **Area:** Frontend
+- **Labels:** ready-to-implement, priority: high, area: functionality
+
+### Dashboard Issues
+- **Priority:** P1 (High)
+- **Size:** M (Medium)
+- **App:** Dashboard
+- **Area:** Frontend
+- **Labels:** ready-to-implement, priority: high, area: functionality
+
+### Documentation Issues
+- **Priority:** P2 (Medium)
+- **Size:** S (Small)
+- **App:** Docs
+- **Area:** Content
+- **Labels:** ready-to-implement, priority: medium, area: content
+
+### Infrastructure Issues
+- **Priority:** P1 (High)
+- **Size:** L (Large)
+- **App:** Portfolio Site
+- **Area:** Infra
+- **Labels:** ready-to-implement, priority: high, area: infra
+
+## Project Field Mappings
+
+### Field IDs (Current as of 2025-01-07)
+- **Project ID:** PVT_kwHOAEnMVc4BCu-c
+- **Status Field:** PVTSSF_lAHOAEnMVc4BCu-czg028oM
+- **Priority Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qQ
+- **Size Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qU
+- **App Field:** PVTSSF_lAHOAEnMVc4BCu-czg156-s
+- **Area Field:** PVTSSF_lAHOAEnMVc4BCu-czg156_Y
+- **Estimate Field:** PVTF_lAHOAEnMVc4BCu-czg028qY
+- **Iteration Field:** PVTSSF_lAHOAEnMVc4BCu-czg028qY
+
+### Status Options
+- **Ready:** e18bf179
+- **In progress:** 47fc9ee4
+- **In review:** aba860b9
+- **Done:** 98236657
+
+### Priority Options
+- **P0:** 79628723
+- **P1:** 0a877460
+- **P2:** da944a9c
+
+### Size Options
+- **XS:** 911790be
+- **S:** b277fb01
+- **M:** 86db8eb3
+- **L:** 853c8207
+- **XL:** 2d0801e2
+
+### App Options
+- **Docs:** e504fedd
+- **Portfolio Site:** de5faa4a
+- **Dashboard:** d134f386
+- **Chatbot:** c95306ff
+
+### Area Options
+- **Frontend:** 5618641d
+- **Content:** 663d7084
+- **Infra:** 5a298e61
+- **DX/Tooling:** a67a98e5
+
+### Estimate Options (Number Field)
+- **1-2 days:** 1
+- **3-5 days:** 3
+- **1 week:** 5
+- **2 weeks:** 10
+- **1 month:** 20
+
+## GitHub Actions Integration
+
+### Workflow Example
+```yaml
+name: Auto-Configure Issue
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  configure-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure Issue
+        run: |
+          # Add your automation logic here
+          echo "Configuring issue #${{ github.event.issue.number }}"
+```
+
+## Manual Configuration Commands
+
+### Set Project Fields (Recommended Method)
+```bash
+# Get issue ID
+ISSUE_ID=$(gh issue view ISSUE_NUMBER --json id -q .id)
+
+# Get project item ID
+PROJECT_ITEM_ID=$(gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id title } } } } } }' -f issueId=$ISSUE_ID | jq -r '.data.node.projectItems.nodes[0].id')
+
+# Update fields using gh project item-edit (RECOMMENDED)
+# Priority
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qQ" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "0a877460"
+
+# Size
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qU" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "86db8eb3"
+
+# App
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg156-s" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "de5faa4a"
+
+# Area
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg156_Y" --project-id "PVT_kwHOAEnMVc4BCu-c" --single-select-option-id "5618641d"
+
+# Estimate (number field)
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTF_lAHOAEnMVc4BCu-czg028qY" --project-id "PVT_kwHOAEnMVc4BCu-c" --number 3
+
+# Sprint/Iteration (if needed)
+gh project item-edit --id $PROJECT_ITEM_ID --field-id "PVTSSF_lAHOAEnMVc4BCu-czg028qY" --project-id "PVT_kwHOAEnMVc4BCu-c" --iteration-id "ITERATION_ID"
+```
+
+### Set Milestone
+```bash
+gh issue edit ISSUE_NUMBER --milestone "MILESTONE_NAME"
+```
+
+### Set Labels
+```bash
+gh issue edit ISSUE_NUMBER --add-label "label1,label2,label3"
+```
+
+## Key Improvements (2025-01-07)
+
+### What's Fixed
+- **Reliable field updates** using `gh project item-edit` instead of GraphQL mutations
+- **Added Estimate field support** for story points/time tracking
+- **Added Iteration field support** for sprint planning
+- **Better error handling** with clear success/failure feedback
+- **Updated field IDs** to current project structure
+
+### What's New
+- **Estimate field** - Set story points (1-20 days)
+- **Iteration field** - Assign to sprints/iterations
+- **Simplified syntax** - No complex GraphQL mutations needed
+- **Better debugging** - Clear error messages and status updates
+
+## Best Practices
+
+1. **Use the updated scripts** (`auto-configure-issue-updated.ps1`) for reliability
+2. **Set estimate values** for better sprint planning (1-20 days)
+3. **Set milestone** for issue tracking and sprint planning
+4. **Use appropriate labels** for filtering and organization
+5. **Configure all project fields** for proper project board organization
+6. **Test the automation** with a test issue before using in production
+7. **Check field IDs** if project structure changes using `gh project view 20 --json fields`
+
+## Troubleshooting
+
+### Common Issues
+- **Issue not found:** Verify issue number exists
+- **Project not found:** Ensure issue is added to the correct project
+- **Field update fails:** Use `gh project item-edit` instead of GraphQL mutations
+- **Permission denied:** Ensure GitHub CLI is authenticated
+- **GraphQL mutations succeed but don't update:** This is a known issue - use `gh project item-edit` instead
+
+### Debug Commands
+```bash
+# Check GitHub CLI authentication
+gh auth status
+
+# List available projects
+gh project list
+
+# View issue details
+gh issue view ISSUE_NUMBER --json id,projectItems
+
+# Get current project field values
+gh project view 20 --json fields
+
+# Test individual field update
+gh project item-edit --id PROJECT_ITEM_ID --field-id FIELD_ID --project-id PROJECT_ID --single-select-option-id OPTION_ID
+```
+
+### Why Use `gh project item-edit` Instead of GraphQL?
+- **GraphQL mutations can "succeed" but not actually update fields** - this is a known GitHub API issue
+- **`gh project item-edit` is more reliable** - it directly updates the project fields
+- **Better error handling** - clearer success/failure feedback
+- **Simpler syntax** - no need to construct complex GraphQL mutations
+
+## Integration with Development Workflow
+
+1. **Create issue** using GitHub CLI or web interface
+2. **Run automation script** to configure project fields
+3. **Issue appears** in project board with correct status and priority
+4. **Begin development** with proper project tracking
+
+## Maintenance
+
+- **Update field IDs** if project structure changes
+- **Add new presets** for different issue types
+- **Test automation** regularly with new issues
+- **Document changes** to configuration options
+~~~
+
+</details>
+
+#### Integration Implementation Guide
+
+- **Source:** [automation/integration-implementation-guide.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/integration-implementation-guide.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/auto-configure-pr.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/docs-updater.ps1`, `scripts/automation/continuous-issue-pipeline.ps1`, `scripts/automation/issue-queue-manager.ps1`, `scripts/automation/issue-implementation.ps1`, `scripts/automation/core-utilities/ai-services.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Integration Implementation Guide
+
+## **Overview**
+
+This guide provides step-by-step instructions for implementing the complete AI-enhanced automation system for the Portfolio OS project. It integrates the existing PowerShell scripts with the new prompt engineering strategy and missing automation components.
+
+## **Implementation Checklist**
+
+### **Phase 1: Critical Fixes (Week 1)**
+
+#### ** Completed**
+- [x] Created `auto-configure-pr.ps1` - PR configuration automation
+- [x] Created `pr-automation-unified.ps1` - Comprehensive PR automation
+- [x] Created `docs-updater.ps1` - Documentation automation
+- [x] Created `continuous-issue-pipeline.ps1` - Continuous processing pipeline
+- [x] Created comprehensive prompt engineering strategy
+- [x] Created issue analysis prompt templates
+- [x] Created PR automation prompt templates
+
+#### ** In Progress**
+- [ ] Test all new scripts for functionality
+- [ ] Update GitHub Actions workflows to use correct script paths
+- [ ] Integrate AI services (OpenAI, Claude, etc.)
+- [ ] Test end-to-end automation flows
+
+#### ** Pending**
+- [ ] Create missing utility scripts
+- [ ] Implement AI integration layer
+- [ ] Add intelligent decision-making
+- [ ] Create monitoring and analytics
+
+### **Phase 2: AI Integration (Week 2)**
+
+#### **AI Service Integration**
+- [ ] Set up OpenAI API integration
+- [ ] Set up Claude API integration (alternative)
+- [ ] Create AI service configuration
+- [ ] Implement prompt template engine
+- [ ] Add AI response generation
+- [ ] Test AI-powered automation
+
+#### **Intelligent Automation**
+- [ ] Integrate issue analysis with AI
+- [ ] Add intelligent field configuration
+- [ ] Implement smart PR response generation
+- [ ] Add predictive capabilities
+- [ ] Create learning and adaptation system
+
+### **Phase 3: Advanced Features (Week 3)**
+
+#### **Continuous Pipeline Enhancement**
+- [ ] Implement queue management
+- [ ] Add agent coordination
+- [ ] Create parallel processing
+- [ ] Add dependency resolution
+- [ ] Implement failure recovery
+
+#### **Advanced Analytics**
+- [ ] Add performance monitoring
+- [ ] Create success metrics
+- [ ] Implement predictive analytics
+- [ ] Add automation dashboards
+- [ ] Create reporting system
+
+## **Step-by-Step Implementation**
+
+### **Step 1: Fix GitHub Actions Workflows**
+
+#### **Update `orchestrate-issues-prs.yml`**
+```yaml
+# Fix the issue configuration step
+- name: Auto-configure issue fields and labels
+  shell: pwsh
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    ./scripts/automation/issue-management/issue-config-unified.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -Preset blog -AddToProject
+```
+
+#### **Update `pr-automation-optimized.yml`**
+```yaml
+# Fix the PR configuration step
+- name: Configure fields and assign
+  shell: pwsh
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    if (-not $env:GITHUB_TOKEN) { throw "GITHUB_TOKEN is required" }
+    if (-not $env:PR_NUMBER) { throw "PR_NUMBER is required for configure-pr" }
+    ./scripts/automation/auto-configure-pr.ps1 `
+      -PRNumber $env:PR_NUMBER `
+      -Status "In progress" `
+      -Priority "P1" `
+      -Size "M" `
+      -Estimate 3 `
+      -App "Portfolio Site" `
+      -Area "Frontend" `
+      -Assign "jschibelli"
+
+# Fix the PR automation step
+- name: Universal PR Automation (monitoring, responses, merge guidance)
+  if: env.PR_NUMBER != ''
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: pwsh -c "./scripts/automation/pr-automation-unified.ps1 -PRNumber ${{ env.PR_NUMBER }} -Action all"
+
+# Fix the docs updater step
+- name: Docs Updater
+  if: env.PR_NUMBER != '' && hashFiles('scripts/automation/docs-updater.ps1') != ''
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: pwsh -c "./scripts/automation/docs-updater.ps1 -PRNumber ${{ env.PR_NUMBER }} -UpdateChangelog -UpdateReadme -GenerateDocs"
+```
+
+### **Step 2: Create AI Integration Layer**
+
+#### **Create AI Service Configuration**
+```powershell
+# scripts/automation/core-utilities/ai-services.ps1
+param(
+    [ValidateSet("openai", "claude", "local")]
+    [string]$Provider = "openai",
+    
+    [string]$ApiKey = "",
+    [string]$Model = "gpt-4",
+    [int]$MaxTokens = 2000,
+    [double]$Temperature = 0.7
+)
+
+$script:aiConfig = @{
+    Provider = $Provider
+    ApiKey = $ApiKey
+    Model = $Model
+    MaxTokens = $MaxTokens
+    Temperature = $Temperature
+}
+
+function Invoke-AICompletion {
+    param(
+        [string]$Prompt,
+        [hashtable]$Options = @{}
+    )
+    
+    $config = $script:aiConfig
+    if ($Options.ContainsKey("Model")) { $config.Model = $Options.Model }
+    if ($Options.ContainsKey("MaxTokens")) { $config.MaxTokens = $Options.MaxTokens }
+    if ($Options.ContainsKey("Temperature")) { $config.Temperature = $Options.Temperature }
+    
+    switch ($config.Provider) {
+        "openai" { return Invoke-OpenAICompletion -Prompt $Prompt -Config $config }
+        "claude" { return Invoke-ClaudeCompletion -Prompt $Prompt -Config $config }
+        "local" { return Invoke-LocalCompletion -Prompt $Prompt -Config $config }
+    }
+}
+
+function Invoke-OpenAICompletion {
+    param([string]$Prompt, [hashtable]$Config)
+    
+    $headers = @{
+        "Authorization" = "Bearer $($Config.ApiKey)"
+        "Content-Type" = "application/json"
+    }
+    
+    $body = @{
+        model = $Config.Model
+        messages = @(@{ role = "user"; content = $Prompt })
+        max_tokens = $Config.MaxTokens
+        temperature = $Config.Temperature
+    } | ConvertTo-Json -Depth 3
+    
+    try {
+        $response = Invoke-RestMethod -Uri "https://api.openai.com/v1/chat/completions" -Method POST -Headers $headers -Body $body
+        return $response.choices[0].message.content
+    } catch {
+        Write-Error "OpenAI API call failed: $($_.Exception.Message)"
+        return $null
+    }
+}
+```
+
+#### **Integrate AI with Issue Configuration**
+```powershell
+# Add to issue-config-unified.ps1
+function Invoke-AIIssueAnalysis {
+    param([string]$IssueNumber, [string]$IssueTitle, [string]$IssueBody)
+    
+    # Load AI service configuration
+    $aiConfigPath = Join-Path $PSScriptRoot "..\core-utilities\ai-services.ps1"
+    if (Test-Path $aiConfigPath) {
+        . $aiConfigPath
+    }
+    
+    # Load prompt template
+    $promptTemplate = Get-Content "prompts/automation/issue-analysis-prompt-template.md" -Raw
+    
+    # Replace placeholders
+    $prompt = $promptTemplate -replace '\{ISSUE_NUMBER\}', $IssueNumber
+    $prompt = $prompt -replace '\{ISSUE_TITLE\}', $IssueTitle
+    $prompt = $prompt -replace '\{ISSUE_BODY\}', $IssueBody
+    $prompt = $prompt -replace '\{CURRENT_LABELS\}', ""
+    $prompt = $prompt -replace '\{CURRENT_ASSIGNEE\}', ""
+    $prompt = $prompt -replace '\{CREATED_DATE\}', (Get-Date -Format 'yyyy-MM-dd')
+    $prompt = $prompt -replace '\{UPDATED_DATE\}', (Get-Date -Format 'yyyy-MM-dd')
+    
+    # Call AI service
+    $analysis = Invoke-AICompletion -Prompt $prompt -Options @{ Model = "gpt-4" }
+    
+    if ($analysis) {
+        try {
+            return $analysis | ConvertFrom-Json
+        } catch {
+            Write-Warning "Failed to parse AI analysis as JSON"
+            return $null
+        }
+    }
+    
+    return $null
+}
+
+# Update main configuration logic
+if ($UseAI) {
+    $aiAnalysis = Invoke-AIIssueAnalysis -IssueNumber $IssueNumber -IssueTitle $issueData.title -IssueBody $issueData.body
+    if ($aiAnalysis) {
+        $Priority = $aiAnalysis.priority
+        $Size = $aiAnalysis.size
+        $App = $aiAnalysis.app
+        $Area = $aiAnalysis.area
+        $Labels = $aiAnalysis.labels
+        $Milestone = $aiAnalysis.milestone
+    }
+}
+```
+
+### **Step 3: Create Missing Utility Scripts**
+
+#### **Create Issue Queue Manager**
+```powershell
+# scripts/automation/issue-queue-manager.ps1
+param(
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("list", "status", "process", "create", "clear")]
+    [string]$Operation,
+    
+    [string]$Queue = "default",
+    [string]$Priority = "P1",
+    [string]$App = "",
+    [string]$Area = "",
+    [int]$MaxConcurrent = 3
+)
+
+function Get-QueueStatus {
+    param([string]$QueueName)
+    
+    $queueFile = "queues/$QueueName.json"
+    if (Test-Path $queueFile) {
+        return Get-Content $queueFile | ConvertFrom-Json
+    }
+    return @{ items = @(); processing = @(); completed = @() }
+}
+
+function Add-ToQueue {
+    param([string]$QueueName, [hashtable]$Issue)
+    
+    $queue = Get-QueueStatus -QueueName $QueueName
+    $queue.items += $Issue
+    
+    $queueDir = "queues"
+    if (-not (Test-Path $queueDir)) {
+        New-Item -ItemType Directory -Path $queueDir -Force | Out-Null
+    }
+    
+    $queue | ConvertTo-Json -Depth 3 | Out-File -FilePath "queues/$QueueName.json" -Encoding UTF8
+}
+
+function Process-Queue {
+    param([string]$QueueName)
+    
+    $queue = Get-QueueStatus -QueueName $QueueName
+    
+    if ($queue.items.Count -eq 0) {
+        Write-Host "Queue '$QueueName' is empty" -ForegroundColor Yellow
+        return
+    }
+    
+    Write-Host "Processing queue '$QueueName' with $($queue.items.Count) items" -ForegroundColor Green
+    
+    foreach ($issue in $queue.items) {
+        Write-Host "Processing issue #$($issue.number) - $($issue.title)" -ForegroundColor White
+        
+        # Move to processing
+        $queue.processing += $issue
+        $queue.items = $queue.items | Where-Object { $_.number -ne $issue.number }
+        
+        # Process the issue
+        try {
+            & "$PSScriptRoot/continuous-issue-pipeline.ps1" -MaxIssues 1 -Status "Todo" -Priority $issue.priority
+            $queue.completed += $issue
+        } catch {
+            Write-Host "Failed to process issue #$($issue.number)" -ForegroundColor Red
+        }
+        
+        # Update queue
+        $queue | ConvertTo-Json -Depth 3 | Out-File -FilePath "queues/$QueueName.json" -Encoding UTF8
+        
+        # Small delay between issues
+        Start-Sleep -Seconds 2
+    }
+}
+
+# Main execution
+switch ($Operation) {
+    "list" {
+        $queues = Get-ChildItem "queues/*.json" -ErrorAction SilentlyContinue
+        if ($queues) {
+            foreach ($queue in $queues) {
+                $queueName = $queue.BaseName
+                $queueData = Get-QueueStatus -QueueName $queueName
+                Write-Host "Queue: $queueName" -ForegroundColor Green
+                Write-Host "  Items: $($queueData.items.Count)" -ForegroundColor White
+                Write-Host "  Processing: $($queueData.processing.Count)" -ForegroundColor White
+                Write-Host "  Completed: $($queueData.completed.Count)" -ForegroundColor White
+            }
+        } else {
+            Write-Host "No queues found" -ForegroundColor Yellow
+        }
+    }
+    "status" {
+        $queueData = Get-QueueStatus -QueueName $Queue
+        Write-Host "Queue Status: $Queue" -ForegroundColor Green
+        Write-Host "  Items: $($queueData.items.Count)" -ForegroundColor White
+        Write-Host "  Processing: $($queueData.processing.Count)" -ForegroundColor White
+        Write-Host "  Completed: $($queueData.completed.Count)" -ForegroundColor White
+    }
+    "process" {
+        Process-Queue -QueueName $Queue
+    }
+    "create" {
+        Write-Host "Creating queue: $Queue" -ForegroundColor Green
+        Add-ToQueue -QueueName $Queue -Issue @{ number = 0; title = "Queue Created"; priority = $Priority }
+    }
+    "clear" {
+        if (Test-Path "queues/$Queue.json") {
+            Remove-Item "queues/$Queue.json"
+            Write-Host "Cleared queue: $Queue" -ForegroundColor Green
+        }
+    }
+}
+```
+
+#### **Create Issue Implementation Script**
+```powershell
+# scripts/automation/issue-implementation.ps1
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$IssueNumber,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$GenerateCode,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$CreatePR,
+    
+    [Parameter(Mandatory=$false)]
+    [switch]$DryRun
+)
+
+function Get-IssueData {
+    param([string]$IssueNumber)
+    
+    try {
+        $issueData = gh issue view $IssueNumber --json number,title,body,labels,assignees,state,url,createdAt,updatedAt
+        return $issueData | ConvertFrom-Json
+    } catch {
+        Write-Error "Failed to get issue data for #$IssueNumber"
+        return $null
+    }
+}
+
+function Generate-ImplementationCode {
+    param([object]$IssueData)
+    
+    Write-Host "Generating implementation code for issue #$($IssueData.number)" -ForegroundColor Green
+    
+    # This would integrate with AI to generate actual code
+    # For now, create a placeholder implementation
+    
+    $implementationDir = "implementations/issue-$($IssueData.number)"
+    if (-not (Test-Path $implementationDir)) {
+        New-Item -ItemType Directory -Path $implementationDir -Force | Out-Null
+    }
+    
+    # Create implementation plan
+    $plan = @"
+# Implementation Plan for Issue #$($IssueData.number)
+
+## Issue: $($IssueData.title)
+
+## Description
+$($IssueData.body)
+
+## Implementation Steps
+1. [ ] Analyze requirements
+2. [ ] Create/modify components
+3. [ ] Add tests
+4. [ ] Update documentation
+5. [ ] Create PR
+
+## Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+"@
+    
+    $plan | Out-File -FilePath "$implementationDir/plan.md" -Encoding UTF8
+    
+    Write-Host "Implementation plan created: $implementationDir/plan.md" -ForegroundColor Green
+}
+
+function Create-ImplementationPR {
+    param([object]$IssueData)
+    
+    Write-Host "Creating PR for issue #$($IssueData.number)" -ForegroundColor Green
+    
+    $branchName = "issue-$($IssueData.number)"
+    $prTitle = "Implement: $($IssueData.title)"
+    $prBody = @"
+## Description
+Implements issue #$($IssueData.number): $($IssueData.title)
+
+## Changes
+- [ ] Implementation details here
+
+## Testing
+- [ ] Tests added/updated
+- [ ] Manual testing completed
+
+## Documentation
+- [ ] Documentation updated
+
+## Related
+Closes #$($IssueData.number)
+"@
+    
+    if (-not $DryRun) {
+        try {
+            gh pr create --title $prTitle --body $prBody --base develop --head $branchName
+            Write-Host "PR created successfully" -ForegroundColor Green
+        } catch {
+            Write-Error "Failed to create PR: $($_.Exception.Message)"
+        }
+    } else {
+        Write-Host "[DRY RUN] Would create PR: $prTitle" -ForegroundColor Cyan
+    }
+}
+
+# Main execution
+$issueData = Get-IssueData -IssueNumber $IssueNumber
+if (-not $issueData) {
+    exit 1
+}
+
+Write-Host "Implementing issue #$IssueNumber - $($issueData.title)" -ForegroundColor Blue
+
+if ($GenerateCode) {
+    Generate-ImplementationCode -IssueData $issueData
+}
+
+if ($CreatePR) {
+    Create-ImplementationPR -IssueData $issueData
+}
+
+Write-Host "Implementation complete!" -ForegroundColor Green
+```
+
+### **Step 4: Update Documentation**
+
+#### **Update Script README**
+```markdown
+# Updated Automation Scripts Organization
+
+## **New AI-Enhanced Scripts**
+
+### **`auto-configure-pr.ps1`** -  **NEW**
+Automatically configures pull request fields and metadata with AI-powered recommendations.
+
+**Usage:**
+```powershell
+.\scripts\automation\auto-configure-pr.ps1 -PRNumber 123 -Status "In progress" -Priority "P1"
+```
+
+### **`pr-automation-unified.ps1`** -  **NEW**
+Comprehensive PR automation including analysis, quality checks, and AI-powered response generation.
+
+**Usage:**
+```powershell
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 123 -Action all
+```
+
+### **`docs-updater.ps1`** -  **NEW**
+Automatically updates documentation based on code changes and PR content.
+
+**Usage:**
+```powershell
+.\scripts\automation\docs-updater.ps1 -PRNumber 123 -UpdateChangelog -GenerateDocs
+```
+
+### **`continuous-issue-pipeline.ps1`** -  **NEW**
+Processes multiple issues continuously from Todo  In progress  Ready  Done  Merged.
+
+**Usage:**
+```powershell
+.\scripts\automation\continuous-issue-pipeline.ps1 -MaxIssues 10 -Watch -Interval 30
+```
+
+### **`issue-queue-manager.ps1`** -  **NEW**
+Manages issue queues and priorities for continuous processing.
+
+**Usage:**
+```powershell
+.\scripts\automation\issue-queue-manager.ps1 -Operation process -Queue "blog"
+```
+
+### **`issue-implementation.ps1`** -  **NEW**
+Generates implementation code and creates PRs for issues.
+
+**Usage:**
+```powershell
+.\scripts\automation\issue-implementation.ps1 -IssueNumber 123 -GenerateCode -CreatePR
+```
+
+## **AI Integration**
+
+### **AI-Enhanced Features**
+- **Intelligent Issue Analysis**: AI-powered priority and size estimation
+- **Smart Field Configuration**: Automatic project field assignment
+- **Contextual PR Responses**: AI-generated responses to CR-GPT feedback
+- **Predictive Automation**: Learning from patterns and improving over time
+
+### **AI Service Configuration**
+```powershell
+# Configure AI services
+.\scripts\automation\core-utilities\ai-services.ps1 -Provider "openai" -ApiKey "your-api-key" -Model "gpt-4"
+```
+
+### **Prompt Templates**
+- **Issue Analysis**: `prompts/automation/issue-analysis-prompt-template.md`
+- **PR Automation**: `prompts/automation/pr-automation-prompt-template.md`
+- **Continuous Pipeline**: `prompts/automation/continuous-pipeline-prompt-template.md`
+```
+
+### **Step 5: Testing and Validation**
+
+#### **Test Scripts Individually**
+```powershell
+# Test issue configuration
+.\scripts\automation\issue-management\issue-config-unified.ps1 -IssueNumber 123 -Preset blog -DryRun
+
+# Test PR configuration
+.\scripts\automation\auto-configure-pr.ps1 -PRNumber 456 -Status "In progress" -DryRun
+
+# Test PR automation
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 456 -Action analyze -DryRun
+
+# Test documentation updater
+.\scripts\automation\docs-updater.ps1 -PRNumber 456 -UpdateChangelog -DryRun
+
+# Test continuous pipeline
+.\scripts\automation\continuous-issue-pipeline.ps1 -MaxIssues 3 -DryRun
+```
+
+#### **Test GitHub Actions Workflows**
+```yaml
+# Test workflow execution
+- Create a test issue
+- Verify automatic configuration
+- Check project board updates
+- Create a test PR
+- Verify PR automation
+- Check documentation updates
+```
+
+#### **Test AI Integration**
+```powershell
+# Test AI issue analysis
+.\scripts\automation\issue-management\issue-config-unified.ps1 -IssueNumber 123 -UseAI -DryRun
+
+# Test AI PR responses
+.\scripts\automation\pr-automation-unified.ps1 -PRNumber 456 -Action respond -DryRun
+```
+
+### **Step 6: Deployment and Monitoring**
+
+#### **Deploy to Production**
+1. **Update GitHub Actions Workflows**
+   - Commit updated workflow files
+   - Test in development environment
+   - Deploy to main repository
+
+2. **Configure AI Services**
+   - Set up API keys in GitHub Secrets
+   - Configure AI service parameters
+   - Test AI integration
+
+3. **Enable Automation**
+   - Start continuous pipeline processing
+   - Monitor automation performance
+   - Collect feedback and metrics
+
+#### **Monitor Performance**
+```powershell
+# Monitor automation metrics
+.\scripts\automation\monitoring\automation-metrics.ps1 -Operation status
+
+# Check queue status
+.\scripts\automation\issue-queue-manager.ps1 -Operation status -Queue "default"
+
+# Review automation logs
+Get-Content "logs/automation-*.log" -Tail 50
+```
+
+## **Success Criteria**
+
+### **Immediate Success (Week 1)**
+- [ ] All GitHub Actions workflows execute without errors
+- [ ] All referenced scripts exist and function properly
+- [ ] Basic automation flows work end-to-end
+- [ ] Documentation is up to date
+
+### **Short-term Success (Week 2)**
+- [ ] AI integration is working
+- [ ] Intelligent automation decisions are being made
+- [ ] Continuous pipeline is processing issues
+- [ ] Performance metrics are being collected
+
+### **Long-term Success (Week 3)**
+- [ ] Advanced AI features are operational
+- [ ] Learning and adaptation is working
+- [ ] Performance optimization is achieved
+- [ ] Comprehensive analytics and monitoring are in place
+
+## **Troubleshooting**
+
+### **Common Issues**
+
+#### **Script Not Found Errors**
+```bash
+# Check script paths
+ls -la scripts/automation/
+ls -la scripts/automation/issue-management/
+ls -la scripts/automation/core-utilities/
+```
+
+#### **Permission Errors**
+```powershell
+# Fix PowerShell execution policy
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+#### **GitHub API Errors**
+```bash
+# Check GitHub CLI authentication
+gh auth status
+gh auth login
+```
+
+#### **AI Service Errors**
+```powershell
+# Test AI service configuration
+.\scripts\automation\core-utilities\ai-services.ps1 -Provider "openai" -ApiKey "test"
+```
+
+### **Debug Mode**
+```powershell
+# Enable debug output
+$DebugPreference = "Continue"
+.\scripts\automation\continuous-issue-pipeline.ps1 -MaxIssues 1 -DryRun
+```
+
+## **Performance Optimization**
+
+### **Script Optimization**
+- Use parallel processing for multiple issues
+- Implement caching for GitHub API calls
+- Add retry logic for failed operations
+- Optimize PowerShell execution
+
+### **AI Optimization**
+- Cache AI responses for similar issues
+- Use smaller models for simple tasks
+- Implement prompt optimization
+- Add response validation
+
+### **Monitoring and Alerting**
+- Set up performance dashboards
+- Create automation success metrics
+- Implement failure alerting
+- Track user satisfaction
+
+---
+
+## **Next Steps**
+
+1. **Complete Phase 1**: Fix all critical issues and test basic functionality
+2. **Implement AI Integration**: Add AI services and test intelligent automation
+3. **Deploy and Monitor**: Put the system into production and monitor performance
+4. **Iterate and Improve**: Collect feedback and continuously improve the system
+
+This implementation guide provides a comprehensive roadmap for transforming your existing automation system into an intelligent, AI-powered platform that can handle complex issue management scenarios while maintaining reliability and efficiency.
+~~~
+
+</details>
+
+#### Issue Analysis Prompt Template
+
+- **Source:** [automation/issue-analysis-prompt-template.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-analysis-prompt-template.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/issue-config-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Issue Analysis Prompt Template
+
+## **Purpose**
+This template provides a structured prompt for AI agents to analyze GitHub issues and generate intelligent configuration recommendations for the Portfolio OS project automation system.
+
+## Execution
+- Primary script: `pwsh ./scripts/automation/issue-config-unified.ps1 -IssueNumber <ID> -UseAI`
+- Inputs required: `{ISSUE_NUMBER}`, `{ISSUE_TITLE}`, `{ISSUE_BODY}`, `{CURRENT_LABELS}`, `{CURRENT_ASSIGNEE}`
+- Fallback: if AI services are unavailable, run `./scripts/automation/issue-config-unified.ps1 -IssueNumber <ID> -Preset <blog|dashboard|docs|infra>`
+
+## **Placeholder Contracts**
+| Placeholder | Description | Required |
+| --- | --- | --- |
+| `{ISSUE_NUMBER}` | GitHub issue number |  |
+| `{ISSUE_TITLE}` | Issue title text |  |
+| `{ISSUE_BODY}` | Markdown body (sanitize code fences) |  |
+| `{CURRENT_LABELS}` | Comma-separated label list |  |
+| `{CURRENT_ASSIGNEE}` | Comma-separated logins |  |
+| `{CREATED_DATE}` / `{UPDATED_DATE}` | ISO date strings |  |
+
+## **Base Template**
+
+```
+You are an expert issue analyst for the Portfolio OS project, a comprehensive portfolio management system with multiple applications (Portfolio Site, Dashboard, Docs, Infrastructure). 
+
+**Your Role:**
+- Analyze GitHub issues with deep understanding of the project architecture
+- Provide intelligent recommendations for project field configuration
+- Generate implementation plans and technical requirements
+- Ensure consistency with established project patterns and workflows
+
+**Project Context:**
+- **Portfolio Site**: User-facing website with blog, projects, and portfolio content
+- **Dashboard**: Admin interface for content management and site administration  
+- **Docs**: Documentation system with guides, API docs, and developer resources
+- **Infrastructure**: CI/CD, deployment, monitoring, and development tooling
+
+**Issue to Analyze:**
+- **Number**: {ISSUE_NUMBER}
+- **Title**: {ISSUE_TITLE}
+- **Description**: {ISSUE_BODY}
+- **Current Labels**: {CURRENT_LABELS}
+- **Current Assignee**: {CURRENT_ASSIGNEE}
+- **Created Date**: {CREATED_DATE}
+- **Updated Date**: {UPDATED_DATE}
+
+**Analysis Requirements:**
+
+### 1. **Priority Assessment**
+Determine priority level (P0/P1/P2/P3) based on:
+- **P0 (Critical)**: Production bugs, security vulnerabilities, data loss risks, complete system failures
+- **P1 (High)**: User-facing bugs, missing core functionality, performance issues, broken workflows
+- **P2 (Medium)**: Feature enhancements, improvements, documentation gaps, minor bugs
+- **P3 (Low)**: Nice-to-have features, technical debt, cosmetic improvements, future considerations
+
+Consider factors:
+- Business impact and user experience
+- Technical complexity and implementation risk
+- Dependencies and blocking relationships
+- Timeline constraints and deadlines
+- Security and stability implications
+
+### 2. **Size Estimation**
+Estimate implementation size (XS/S/M/L/XL) based on:
+- **XS (Extra Small)**: < 2 hours - Simple fixes, typos, minor updates, configuration changes
+- **S (Small)**: 2-4 hours - Small features, bug fixes, minor enhancements, documentation updates
+- **M (Medium)**: 4-8 hours - Medium features, refactoring, integrations, significant updates
+- **L (Large)**: 8-16 hours - Complex features, major refactoring, new integrations, architectural changes
+- **XL (Extra Large)**: 16+ hours - Major features, complete rewrites, complex integrations, new systems
+
+Consider factors:
+- Implementation complexity and scope
+- Testing requirements and quality assurance
+- Documentation and training needs
+- Integration and deployment complexity
+- Risk mitigation and rollback planning
+
+### 3. **Application Assignment**
+Determine which application (App field) this issue belongs to:
+- **Portfolio Site**: User-facing website features, blog functionality, portfolio display, public pages
+- **Dashboard**: Admin interface, content management, user management, site administration
+- **Docs**: Documentation, guides, API documentation, developer resources, tutorials
+- **Infra**: Infrastructure, CI/CD, deployment, monitoring, development tools, automation
+
+### 4. **Area Classification**
+Determine the technical area (Area field) this issue affects:
+- **Frontend**: React components, UI/UX, client-side logic, styling, user interactions
+- **Backend**: API endpoints, server logic, data processing, business logic, integrations
+- **Infra**: Deployment, CI/CD, infrastructure, monitoring, development environment
+- **Content**: Documentation, blog posts, marketing content, user guides, tutorials
+- **Design**: Visual design, user experience, accessibility, branding, layout
+
+### 5. **Label Recommendations**
+Suggest appropriate labels for categorization:
+- **Type Labels**: bug, enhancement, feature, documentation, refactor, test, security
+- **Priority Labels**: priority: critical, priority: high, priority: medium, priority: low
+- **Area Labels**: area: frontend, area: backend, area: infra, area: content, area: design
+- **Status Labels**: ready-to-implement, needs-review, blocked, in-design
+- **Technology Labels**: react, typescript, tailwind, nextjs, prisma, graphql
+- **Component Labels**: component-specific labels based on affected systems
+
+### 6. **Implementation Planning**
+Generate detailed implementation guidance:
+- **Acceptance Criteria**: Clear, testable requirements for completion
+- **Technical Requirements**: Specific technical implementation needs
+- **Files to Modify**: Expected files and components that will be changed
+- **Dependencies**: Required issues, PRs, or external dependencies
+- **Testing Strategy**: Recommended testing approach and validation methods
+- **Documentation Needs**: Required documentation updates and additions
+
+**Output Format:**
+Provide your analysis in the following JSON structure:
+
+```json
+{
+  "analysis_summary": "Brief summary of the issue and analysis approach",
+  "priority": "P0|P1|P2|P3",
+  "size": "XS|S|M|L|XL",
+  "app": "Portfolio Site|Dashboard|Docs|Infra",
+  "area": "Frontend|Backend|Infra|Content|Design",
+  "status": "Todo|In progress|Ready|Done",
+  "labels": ["label1", "label2", "label3"],
+  "milestone": "Suggested milestone or empty string",
+  "assignee": "jschibelli",
+  "acceptance_criteria": [
+    "Clear, testable requirement 1",
+    "Clear, testable requirement 2",
+    "Clear, testable requirement 3"
+  ],
+  "technical_requirements": [
+    "Specific technical requirement 1",
+    "Specific technical requirement 2",
+    "Specific technical requirement 3"
+  ],
+  "files_to_modify": [
+    "path/to/file1.tsx",
+    "path/to/file2.ts",
+    "path/to/file3.md"
+  ],
+  "dependencies": [
+    "Issue #123 - Related feature",
+    "PR #456 - Required infrastructure change"
+  ],
+  "testing_strategy": "Recommended testing approach and validation methods",
+  "documentation_needs": "Required documentation updates and additions",
+  "implementation_notes": "Additional implementation guidance and considerations",
+  "reasoning": {
+    "priority_reasoning": "Explanation for priority assignment",
+    "size_reasoning": "Explanation for size estimation",
+    "app_reasoning": "Explanation for application assignment",
+    "area_reasoning": "Explanation for area classification"
+  },
+  "risk_assessment": "Potential risks and mitigation strategies",
+  "success_metrics": "How to measure successful completion"
+}
+```
+
+**Quality Guidelines:**
+- Be thorough but concise in your analysis
+- Consider the broader project context and architecture
+- Provide actionable and specific recommendations
+- Ensure consistency with established project patterns
+- Consider both immediate needs and long-term maintainability
+- Validate that all recommendations are technically feasible
+```
+
+## **Usage Instructions**
+
+### **Integration with PowerShell Scripts**
+```powershell
+function Invoke-IssueAnalysis {
+    param(
+        [string]$IssueNumber,
+        [string]$IssueTitle, 
+        [string]$IssueBody,
+        [string[]]$CurrentLabels,
+        [string]$CurrentAssignee,
+        [string]$CreatedDate,
+        [string]$UpdatedDate
+    )
+    
+    # Load the prompt template
+    $promptTemplate = Get-Content "prompts/automation/issue-analysis-prompt-template.md" -Raw
+    
+    # Replace placeholders with actual values
+    $prompt = $promptTemplate -replace '\{ISSUE_NUMBER\}', $IssueNumber
+    $prompt = $prompt -replace '\{ISSUE_TITLE\}', $IssueTitle
+    $prompt = $prompt -replace '\{ISSUE_BODY\}', $IssueBody
+    $prompt = $prompt -replace '\{CURRENT_LABELS\}', ($CurrentLabels -join ', ')
+    $prompt = $prompt -replace '\{CURRENT_ASSIGNEE\}', $CurrentAssignee
+    $prompt = $prompt -replace '\{CREATED_DATE\}', $CreatedDate
+    $prompt = $prompt -replace '\{UPDATED_DATE\}', $UpdatedDate
+    
+    # Call AI service (OpenAI, Claude, etc.)
+    $analysis = Invoke-AICompletion -Prompt $prompt -Model "gpt-4"
+    
+    return $analysis
+}
+```
+
+### **Integration with GitHub Actions**
+```yaml
+- name: AI Issue Analysis
+  if: needs.detect-and-route.outputs.is_issue == 'true'
+  shell: pwsh
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  run: |
+    $issueData = gh issue view ${{ needs.detect-and-route.outputs.issue_number }} --json title,body,labels,assignees,createdAt,updatedAt
+    $issue = $issueData | ConvertFrom-Json
+    
+    $analysis = ./scripts/ai-issue-analyzer.ps1 `
+      -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} `
+      -IssueTitle $issue.title `
+      -IssueBody $issue.body `
+      -CurrentLabels ($issue.labels.name -join ',') `
+      -CurrentAssignee ($issue.assignees.login -join ',') `
+      -CreatedDate $issue.createdAt `
+      -UpdatedDate $issue.updatedAt
+    
+    echo "AI_ANALYSIS=$($analysis | ConvertTo-Json -Compress)" >> $GITHUB_OUTPUT
+```
+
+## **Example Usage**
+
+### **Sample Issue Analysis**
+```json
+{
+  "analysis_summary": "This is a critical security vulnerability in the authentication system that could allow unauthorized access to admin functions.",
+  "priority": "P0",
+  "size": "S",
+  "app": "Portfolio Site",
+  "area": "Backend",
+  "status": "Todo",
+  "labels": ["bug", "security", "priority: critical", "area: backend", "authentication"],
+  "milestone": "Security Fixes",
+  "assignee": "jschibelli",
+  "acceptance_criteria": [
+    "Authentication bypass vulnerability is fixed",
+    "All admin endpoints require proper authentication",
+    "Security tests pass",
+    "No regression in existing authentication flows"
+  ],
+  "technical_requirements": [
+    "Add proper authentication middleware to admin endpoints",
+    "Implement rate limiting on authentication attempts",
+    "Add security headers and CSRF protection",
+    "Update authentication tests"
+  ],
+  "files_to_modify": [
+    "apps/site/middleware.ts",
+    "apps/site/lib/auth.ts",
+    "apps/site/app/admin/layout.tsx",
+    "__tests__/auth.test.ts"
+  ],
+  "dependencies": [],
+  "testing_strategy": "Unit tests for authentication middleware, integration tests for admin endpoints, security penetration testing",
+  "documentation_needs": "Update security documentation and authentication guide",
+  "implementation_notes": "This is a high-priority security fix that should be implemented immediately. Consider implementing additional security measures like 2FA for admin users.",
+  "reasoning": {
+    "priority_reasoning": "Security vulnerabilities that could lead to unauthorized access are critical and must be addressed immediately",
+    "size_reasoning": "The fix involves updating authentication middleware and tests, which is a small to medium change",
+    "app_reasoning": "This affects the main Portfolio Site application's authentication system",
+    "area_reasoning": "This is a backend security issue involving server-side authentication logic"
+  },
+  "risk_assessment": "Low implementation risk, but high impact if not addressed quickly",
+  "success_metrics": "All security tests pass, no unauthorized access possible, authentication flows work correctly"
+}
+```
+
+## **Continuous Improvement**
+
+### **Feedback Loop**
+- Collect feedback on AI analysis accuracy
+- Monitor automation success rates
+- Update prompt templates based on learnings
+- Refine analysis criteria based on project evolution
+
+### **Version Control**
+- Maintain version history of prompt templates
+- Track performance improvements over time
+- Document changes and rationale
+- A/B test different prompt variations
+
+---
+
+This template provides a comprehensive foundation for AI-powered issue analysis that integrates seamlessly with your existing automation infrastructure while providing intelligent, contextual recommendations for issue management.
+~~~
+
+</details>
+
+#### Issue Management Automation - Prompt Engineering Strategy
+
+- **Source:** [automation/issue-management-prompt-engineering.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-management-prompt-engineering.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/issue-config-unified.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Issue Management Automation - Prompt Engineering Strategy
+
+## **Overview**
+## Execution Map
+- **Issue configuration**  `pwsh ./scripts/automation/issue-config-unified.ps1 -IssueNumber <ID> -Preset <blog|dashboard|docs|infra> -UseAI`
+- **PR automation**  `pwsh ./scripts/automation/pr-automation-unified.ps1 -PRNumber <ID> -Action all`
+- **Project metadata**  `pwsh ./scripts/automation/auto-configure-pr.ps1 -PRNumber <ID> -Status "<state>"`
+- **Continuous pipeline**  `pwsh ./scripts/automation/continuous-issue-pipeline.ps1 -MaxIssues <N>`
+
+
+This document outlines a comprehensive prompt engineering strategy for the Portfolio OS issue management automation system. The strategy leverages AI agents to enhance existing PowerShell scripts and GitHub Actions workflows with intelligent decision-making capabilities.
+
+## **Architecture Integration**
+
+### **Current System Components**
+- **GitHub Actions Workflows**: Event-driven automation (orchestrate-issues-prs.yml, pr-automation-optimized.yml)
+- **PowerShell Scripts**: Local execution and coordination (issue-config-unified.ps1, issue-analyzer.ps1, project-manager.ps1)
+- **Project Board Integration**: GitHub project management with field automation
+- **CR-GPT Integration**: AI-powered code review automation
+- **Multi-Agent Work Tree System**: Parallel development isolation
+
+### **Prompt Engineering Enhancement Layer**
+```
+
+                    AI Agent Layer                          
+     
+   Issue Analysis    PR Automation     Project Mgmt     
+   Agent             Agent             Agent            
+     
+
+                                
+
+              Existing Automation Layer                     
+     
+   GitHub Actions    PowerShell        Project Board    
+   Workflows         Scripts           Integration      
+     
+
+```
+
+## **Core Prompt Engineering Principles**
+
+### **1. Context-Aware Decision Making**
+- **Issue Classification**: Automatically categorize issues by type, priority, and complexity
+- **Smart Field Assignment**: Use AI to determine optimal project field values
+- **Dependency Detection**: Identify related issues and potential conflicts
+- **Resource Allocation**: Optimize agent assignment based on workload and expertise
+
+### **2. Adaptive Automation**
+- **Learning from Patterns**: Improve automation based on historical data
+- **Dynamic Configuration**: Adjust automation parameters based on project state
+- **Error Recovery**: Intelligent handling of automation failures
+- **Escalation Logic**: Smart escalation for complex issues requiring human intervention
+
+### **3. Intelligent Communication**
+- **Contextual Comments**: Generate meaningful issue and PR comments
+- **Status Updates**: Provide clear, actionable status updates
+- **Documentation**: Auto-generate implementation plans and documentation
+- **Stakeholder Communication**: Tailor communication for different audiences
+
+## **Prompt Templates by Use Case**
+
+### **Issue Creation & Configuration**
+
+#### **Template 1: Issue Analysis & Classification**
+```
+You are an expert issue analyst for the Portfolio OS project. Analyze the following issue and provide structured recommendations:
+
+**Issue Details:**
+- Title: {issue_title}
+- Body: {issue_body}
+- Labels: {current_labels}
+- Assignee: {current_assignee}
+
+**Analysis Tasks:**
+1. **Priority Assessment**: Determine priority (P0/P1/P2/P3) based on:
+   - Business impact and user experience
+   - Technical complexity and risk
+   - Dependencies and blocking issues
+   - Timeline constraints
+
+2. **Size Estimation**: Estimate size (XS/S/M/L/XL) based on:
+   - Implementation complexity
+   - Testing requirements
+   - Documentation needs
+   - Integration scope
+
+3. **Field Configuration**: Recommend optimal values for:
+   - App: Portfolio Site/Dashboard/Docs/Infra
+   - Area: Frontend/Backend/Infra/Content/Design
+   - Status: Todo/In progress/Ready/Done
+   - Labels: Suggest relevant labels for categorization
+
+4. **Implementation Planning**: Generate:
+   - Acceptance criteria checklist
+   - Technical requirements
+   - Files likely to be modified
+   - Dependencies and prerequisites
+
+**Output Format:**
+```json
+{
+  "priority": "P1",
+  "size": "M", 
+  "app": "Portfolio Site",
+  "area": "Frontend",
+  "status": "Todo",
+  "labels": ["enhancement", "frontend", "priority: high"],
+  "acceptance_criteria": ["..."],
+  "technical_requirements": ["..."],
+  "estimated_files": ["..."],
+  "dependencies": ["..."],
+  "implementation_plan": "..."
+}
+```
+```
+
+#### **Template 2: Smart Field Configuration**
+```
+You are a project management expert. Based on the issue analysis, configure the GitHub project fields optimally:
+
+**Issue Context:**
+- Issue: {issue_number} - {issue_title}
+- Analysis: {ai_analysis_results}
+- Current Project State: {project_metrics}
+
+**Configuration Rules:**
+1. **Priority Logic**:
+   - P0: Critical bugs, security issues, production blockers
+   - P1: High-impact features, important bugs, user-facing issues
+   - P2: Medium impact features, documentation, improvements
+   - P3: Nice-to-have features, technical debt, low priority
+
+2. **Size Logic**:
+   - XS: < 2 hours (simple fixes, typos, minor updates)
+   - S: 2-4 hours (small features, bug fixes)
+   - M: 4-8 hours (medium features, refactoring)
+   - L: 8-16 hours (complex features, integrations)
+   - XL: 16+ hours (major features, architectural changes)
+
+3. **App Assignment**:
+   - Portfolio Site: User-facing website features
+   - Dashboard: Admin/management interface
+   - Docs: Documentation and guides
+   - Infra: Infrastructure, deployment, CI/CD
+
+4. **Area Assignment**:
+   - Frontend: React components, UI/UX, client-side logic
+   - Backend: API endpoints, server logic, data processing
+   - Infra: Deployment, CI/CD, infrastructure
+   - Content: Documentation, blog posts, marketing content
+   - Design: Visual design, user experience, accessibility
+
+**Generate Configuration:**
+```json
+{
+  "priority": "calculated_priority",
+  "size": "calculated_size",
+  "app": "calculated_app", 
+  "area": "calculated_area",
+  "status": "Todo",
+  "labels": ["calculated_labels"],
+  "milestone": "suggested_milestone",
+  "assignee": "jschibelli",
+  "reasoning": "explanation_of_choices"
+}
+```
+```
+
+### **PR Automation & Management**
+
+#### **Template 3: PR Analysis & Response Generation**
+```
+You are a senior code reviewer and automation specialist. Analyze the PR and generate intelligent responses:
+
+**PR Context:**
+- PR: #{pr_number} - {pr_title}
+- Base Branch: {base_branch}
+- Files Changed: {changed_files}
+- CR-GPT Comments: {cr_gpt_feedback}
+- CI Status: {ci_status}
+
+**Analysis Tasks:**
+1. **Code Quality Assessment**: 
+   - Review code changes for best practices
+   - Identify potential issues or improvements
+   - Assess test coverage and documentation
+   - Check for security vulnerabilities
+
+2. **CR-GPT Response Generation**:
+   - Categorize feedback by priority (bugs > tests > typing > logic > docs > style)
+   - Generate contextual responses to CR-GPT comments
+   - Provide implementation guidance for fixes
+   - Create threaded conversations for complex discussions
+
+3. **Merge Readiness Assessment**:
+   - Verify all requirements are met
+   - Check CI/CD pipeline status
+   - Ensure proper documentation
+   - Confirm no breaking changes
+
+**Response Strategy:**
+```json
+{
+  "overall_assessment": "ready_for_review|needs_work|blocked",
+  "priority_issues": ["..."],
+  "cr_gpt_responses": [
+    {
+      "comment_id": "123",
+      "response": "Thank you for the feedback...",
+      "action_plan": "I'll implement the suggested changes...",
+      "priority": "high"
+    }
+  ],
+  "merge_checklist": ["..."],
+  "status_update": "Ready for final review"
+}
+```
+```
+
+#### **Template 4: Continuous Pipeline Management**
+```
+You are a project automation coordinator. Manage the continuous issue processing pipeline:
+
+**Pipeline Context:**
+- Current Queue: {queue_status}
+- Active Issues: {active_issues}
+- Completed Issues: {completed_issues}
+- Failed Issues: {failed_issues}
+- Resource Availability: {agent_status}
+
+**Management Tasks:**
+1. **Queue Optimization**:
+   - Prioritize issues based on business value
+   - Detect and resolve dependencies
+   - Balance workload across agents
+   - Handle blocking issues
+
+2. **Resource Allocation**:
+   - Assign issues to available agents
+   - Monitor agent capacity and performance
+   - Escalate complex issues to senior agents
+   - Coordinate parallel development
+
+3. **Progress Monitoring**:
+   - Track issue completion rates
+   - Identify bottlenecks and delays
+   - Generate progress reports
+   - Predict completion timelines
+
+**Pipeline Decisions:**
+```json
+{
+  "next_issue": "issue_number",
+  "agent_assignment": "agent_id",
+  "priority_adjustments": ["..."],
+  "dependency_resolution": ["..."],
+  "escalation_needed": ["..."],
+  "pipeline_status": "healthy|degraded|blocked",
+  "recommendations": ["..."]
+}
+```
+```
+
+### **Project Management & Coordination**
+
+#### **Template 5: Project Board Intelligence**
+```
+You are a project management AI assistant. Provide intelligent project board management:
+
+**Project Context:**
+- Project: Portfolio OS (ID: PVT_kwHOAEnMVc4BCu-c)
+- Current Issues: {total_issues}
+- Status Distribution: {status_breakdown}
+- Team Capacity: {team_metrics}
+- Sprint Goals: {sprint_objectives}
+
+**Management Tasks:**
+1. **Status Optimization**:
+   - Identify stalled issues
+   - Suggest status transitions
+   - Detect workflow bottlenecks
+   - Recommend process improvements
+
+2. **Resource Planning**:
+   - Forecast capacity needs
+   - Identify skill gaps
+   - Suggest training opportunities
+   - Optimize team allocation
+
+3. **Sprint Management**:
+   - Plan upcoming sprints
+   - Balance workload distribution
+   - Set realistic commitments
+   - Track progress against goals
+
+**Management Recommendations:**
+```json
+{
+  "stalled_issues": ["..."],
+  "status_updates": ["..."],
+  "capacity_recommendations": ["..."],
+  "sprint_planning": ["..."],
+  "process_improvements": ["..."],
+  "risk_assessment": ["..."]
+}
+```
+```
+
+## **Implementation Integration**
+
+### **PowerShell Script Enhancement**
+
+#### **Enhanced Issue Configuration Script**
+```powershell
+# Add AI analysis to issue-config-unified.ps1
+function Invoke-AIAnalysis {
+    param([string]$IssueNumber, [string]$IssueTitle, [string]$IssueBody)
+    
+    $prompt = Get-IssueAnalysisPrompt -IssueNumber $IssueNumber -Title $IssueTitle -Body $IssueBody
+    $analysis = Invoke-AICompletion -Prompt $prompt -Model "gpt-4"
+    
+    return $analysis | ConvertFrom-Json
+}
+
+function Set-SmartConfiguration {
+    param([string]$IssueNumber)
+    
+    $issueData = Get-IssueData -IssueNumber $IssueNumber
+    $aiAnalysis = Invoke-AIAnalysis -IssueNumber $IssueNumber -Title $issueData.title -Body $issueData.body
+    
+    # Apply AI-recommended configuration
+    Set-ProjectFields -IssueNumber $IssueNumber -Configuration $aiAnalysis
+    Set-IssueLabels -IssueNumber $IssueNumber -Labels $aiAnalysis.labels
+    Set-IssueMilestone -IssueNumber $IssueNumber -Milestone $aiAnalysis.milestone
+}
+```
+
+#### **Enhanced PR Automation Script**
+```powershell
+# Add AI response generation to pr-automation scripts
+function Generate-CRGPTResponses {
+    param([string]$PRNumber)
+    
+    $prData = Get-PRData -PRNumber $PRNumber
+    $crGPTComments = Get-CRGPTComments -PRNumber $PRNumber
+    
+    foreach ($comment in $crGPTComments) {
+        $prompt = Get-CRGPTResponsePrompt -PRNumber $PRNumber -Comment $comment
+        $response = Invoke-AICompletion -Prompt $prompt -Model "gpt-4"
+        
+        Post-CommentResponse -CommentId $comment.id -Response $response
+    }
+}
+```
+
+### **GitHub Actions Integration**
+
+#### **Enhanced Workflow with AI**
+```yaml
+# Add AI analysis step to orchestrate-issues-prs.yml
+- name: AI Issue Analysis
+  if: needs.detect-and-route.outputs.is_issue == 'true'
+  shell: pwsh
+  run: |
+    $analysis = ./scripts/ai-issue-analyzer.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }}
+    echo "AI_ANALYSIS=$($analysis | ConvertTo-Json -Compress)" >> $GITHUB_OUTPUT
+
+- name: Apply AI Configuration
+  if: needs.detect-and-route.outputs.is_issue == 'true'
+  shell: pwsh
+  run: |
+    ./scripts/issue-config-unified.ps1 -IssueNumber ${{ needs.detect-and-route.outputs.issue_number }} -AIConfig ${{ steps.ai-analysis.outputs.AI_ANALYSIS }}
+```
+
+## **Monitoring & Optimization**
+
+### **Performance Metrics**
+- **Issue Processing Time**: Time from creation to completion
+- **Automation Accuracy**: Percentage of correct field assignments
+- **Agent Efficiency**: Issues completed per agent per day
+- **Error Rates**: Failed automation attempts
+- **User Satisfaction**: Feedback on automation quality
+
+### **Continuous Improvement**
+- **Pattern Learning**: Identify successful automation patterns
+- **Failure Analysis**: Learn from automation failures
+- **User Feedback Integration**: Incorporate team feedback
+- **Performance Optimization**: Improve response times and accuracy
+
+## **Deployment Strategy**
+
+### **Phase 1: Core Integration**
+1. Integrate AI analysis into existing PowerShell scripts
+2. Add AI-powered field configuration
+3. Implement basic response generation
+
+### **Phase 2: Advanced Features**
+1. Deploy continuous pipeline management
+2. Add intelligent project board management
+3. Implement learning and adaptation
+
+### **Phase 3: Full Automation**
+1. Complete end-to-end automation
+2. Advanced analytics and reporting
+3. Predictive capabilities and forecasting
+
+## **Usage Examples**
+
+### **Basic Issue Processing**
+```bash
+# Traditional approach
+./scripts/issue-config-unified.ps1 -IssueNumber 123 -Preset blog
+
+# AI-enhanced approach
+./scripts/ai-enhanced-issue-config.ps1 -IssueNumber 123 -UseAI
+```
+
+### **PR Automation**
+```bash
+# Traditional approach
+./scripts/pr-automation-unified.ps1 -PRNumber 456 -Action all
+
+# AI-enhanced approach
+./scripts/ai-enhanced-pr-automation.ps1 -PRNumber 456 -GenerateResponses -SmartAnalysis
+```
+
+### **Continuous Pipeline**
+```bash
+# Start AI-enhanced continuous processing
+./scripts/ai-continuous-pipeline.ps1 -MaxIssues 10 -UseAI -LearningEnabled
+```
+
+## **Security & Privacy Considerations**
+
+- **Data Handling**: Ensure sensitive issue data is handled securely
+- **API Keys**: Secure management of AI service API keys
+- **Rate Limiting**: Implement proper rate limiting for AI API calls
+- **Audit Logging**: Log all AI decisions for accountability
+- **Fallback Mechanisms**: Maintain manual override capabilities
+
+## **Success Metrics**
+
+- **Automation Coverage**: Percentage of issues processed automatically
+- **Accuracy Rate**: Correctness of AI-generated configurations
+- **Time Savings**: Reduction in manual configuration time
+- **Quality Improvement**: Better issue prioritization and assignment
+- **Team Satisfaction**: User feedback on automation quality
+
+---
+
+This prompt engineering strategy transforms your existing automation system into an intelligent, adaptive, and self-improving platform that can handle complex issue management scenarios while maintaining the reliability and efficiency of your current PowerShell and GitHub Actions infrastructure.
+~~~
+
+</details>
+
+#### PR Automation Prompt Template
+
+- **Source:** [automation/pr-automation-prompt-template.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/pr-automation-prompt-template.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# PR Automation Prompt Template
+
+## **Purpose**
+This template provides structured prompts for AI agents to analyze pull requests, generate intelligent responses to CR-GPT feedback, and manage PR automation workflows for the Portfolio OS project.
+
+## Execution
+- Primary script: `pwsh ./scripts/automation/pr-automation-unified.ps1 -PRNumber <ID> -Action <analyze|respond|quality|docs|all>`
+- Dependencies: GitHub CLI (`gh`), optional AI provider (OpenAI via `OPENAI_API_KEY`)
+- Fallback: run `./scripts/automation/auto-configure-pr.ps1 -PRNumber <ID>` to set project metadata when AI is unavailable.
+
+## **Placeholder Contracts**
+| Placeholder | Description |
+| --- | --- |
+| `{PR_NUMBER}` | Pull request number |
+| `{PR_TITLE}` / `{PR_DESCRIPTION}` | Copy from PR metadata |
+| `{BASE_BRANCH}` | Destination branch |
+| `{CHANGED_FILES}` | Comma-separated file paths |
+| `{LINES_CHANGED}` | Human-readable stats string |
+| `{CI_STATUS}` / `{REVIEW_STATUS}` | Workflow + review states |
+| `{CR_GPT_COMMENTS}` | JSON array of CR-GPT comment payloads |
+
+## **Base Template - PR Analysis & Response Generation**
+
+```
+You are a senior code reviewer and automation specialist for the Portfolio OS project. Your role is to analyze pull requests, generate intelligent responses to CR-GPT feedback, and manage PR automation workflows.
+
+**Your Expertise:**
+- Deep understanding of React, TypeScript, Next.js, and modern web development
+- Experience with Tailwind CSS, Prisma, GraphQL, and full-stack development
+- Knowledge of best practices for code quality, testing, and documentation
+- Understanding of the Portfolio OS architecture and established patterns
+
+**PR Context:**
+- **PR Number**: {PR_NUMBER}
+- **Title**: {PR_TITLE}
+- **Description**: {PR_DESCRIPTION}
+- **Base Branch**: {BASE_BRANCH}
+- **Files Changed**: {CHANGED_FILES}
+- **Lines Added/Removed**: {LINES_CHANGED}
+- **CI Status**: {CI_STATUS}
+- **Review Status**: {REVIEW_STATUS}
+
+**CR-GPT Feedback:**
+{CR_GPT_COMMENTS}
+
+**Analysis Tasks:**
+
+### 1. **Code Quality Assessment**
+Analyze the PR for:
+- **Code Quality**: Adherence to coding standards, best practices, and project conventions
+- **Architecture**: Proper separation of concerns, component structure, and design patterns
+- **Performance**: Efficient algorithms, proper state management, and optimization opportunities
+- **Security**: Input validation, authentication, authorization, and security best practices
+- **Accessibility**: WCAG compliance, keyboard navigation, screen reader support
+- **Testing**: Test coverage, test quality, and testing best practices
+- **Documentation**: Code comments, README updates, and inline documentation
+
+### 2. **CR-GPT Response Strategy**
+For each CR-GPT comment:
+- **Categorize Priority**: bugs > tests > typing > logic > docs > style
+- **Generate Contextual Response**: Acknowledge feedback and provide implementation plan
+- **Create Action Items**: Specific, actionable steps to address the feedback
+- **Provide Guidance**: Technical guidance and best practices for implementation
+- **Thread Management**: Maintain coherent conversation threads for complex discussions
+
+### 3. **Merge Readiness Assessment**
+Evaluate PR readiness for merge:
+- **Requirements Met**: All acceptance criteria satisfied
+- **Quality Gates**: CI/CD pipeline passing, tests green, linting clean
+- **Documentation**: Proper documentation updates and changelog entries
+- **Breaking Changes**: Identify and document any breaking changes
+- **Dependencies**: Verify all dependencies are properly resolved
+- **Security Review**: Confirm no security vulnerabilities introduced
+
+**Response Generation Guidelines:**
+
+### **Response Structure**
+Each CR-GPT response should follow this pattern:
+1. **Acknowledgment**: Thank the reviewer and acknowledge the feedback
+2. **Understanding**: Demonstrate understanding of the issue/concern
+3. **Action Plan**: Specific steps to address the feedback
+4. **Implementation**: Technical details of the planned changes
+5. **Timeline**: When the changes will be implemented
+6. **Questions**: Any clarifications needed or alternative approaches
+
+### **Priority-Based Response Strategy**
+- **Critical (Bugs/Security)**: Immediate acknowledgment, detailed fix plan, priority scheduling
+- **High (Tests/Typing)**: Comprehensive response, testing strategy, implementation timeline
+- **Medium (Logic/Architecture)**: Thoughtful discussion, alternative approaches, trade-offs
+- **Low (Docs/Style)**: Quick acknowledgment, simple implementation plan, minor updates
+
+**Output Format:**
+Provide your analysis and responses in the following JSON structure:
+
+```json
+{
+  "pr_analysis": {
+    "overall_assessment": "excellent|good|needs_work|blocked",
+    "quality_score": "1-10",
+    "merge_readiness": "ready|needs_changes|blocked",
+    "risk_level": "low|medium|high|critical",
+    "estimated_review_time": "hours",
+    "summary": "Brief summary of PR analysis"
+  },
+  "code_quality": {
+    "architecture": "assessment_and_recommendations",
+    "performance": "assessment_and_recommendations", 
+    "security": "assessment_and_recommendations",
+    "accessibility": "assessment_and_recommendations",
+    "testing": "assessment_and_recommendations",
+    "documentation": "assessment_and_recommendations"
+  },
+  "cr_gpt_responses": [
+    {
+      "comment_id": "123456",
+      "comment_body": "Original CR-GPT comment",
+      "priority": "critical|high|medium|low",
+      "category": "bugs|tests|typing|logic|docs|style",
+      "response": "Generated response to the comment",
+      "action_plan": "Specific steps to address the feedback",
+      "implementation_notes": "Technical implementation details",
+      "estimated_effort": "XS|S|M|L|XL",
+      "timeline": "When changes will be implemented"
+    }
+  ],
+  "merge_checklist": [
+    "All acceptance criteria met",
+    "CI/CD pipeline passing",
+    "Tests updated and passing",
+    "Documentation updated",
+    "No breaking changes",
+    "Security review completed"
+  ],
+  "recommendations": {
+    "immediate_actions": ["..."],
+    "future_improvements": ["..."],
+    "best_practices": ["..."],
+    "learning_opportunities": ["..."]
+  },
+  "status_update": {
+    "new_status": "In progress|Ready|Needs work|Blocked",
+    "reasoning": "Explanation for status change",
+    "next_steps": "What happens next"
+  }
+}
+```
+
+**Quality Standards:**
+- Provide constructive, actionable feedback
+- Maintain professional and collaborative tone
+- Be specific about issues and solutions
+- Consider the developer's experience level
+- Balance thoroughness with efficiency
+- Focus on learning and improvement opportunities
+```
+
+## **CR-GPT Response Templates**
+
+### **Template 1: Bug Fix Response**
+```
+Thank you for catching this bug! You're absolutely right - {describe_the_bug}. This could definitely cause {potential_impact}.
+
+**Action Plan:**
+1. [ ] {specific_fix_step_1}
+2. [ ] {specific_fix_step_2}
+3. [ ] {specific_fix_step_3}
+
+**Implementation:**
+I'll {detailed_implementation_approach} to ensure {expected_outcome}. This should resolve the issue by {how_fix_works}.
+
+**Timeline:** I'll implement this fix {timeline_estimate}.
+
+**Questions:** {any_clarifications_needed}
+```
+
+### **Template 2: Test Improvement Response**
+```
+Great point about the testing! You're right that {test_concern} should be addressed.
+
+**Action Plan:**
+1. [ ] {test_improvement_step_1}
+2. [ ] {test_improvement_step_2}
+3. [ ] {test_improvement_step_3}
+
+**Implementation:**
+I'll add {specific_tests} to cover {test_scenarios}. This will ensure {test_coverage_goals}.
+
+**Timeline:** I'll add these tests {timeline_estimate}.
+
+**Questions:** {any_testing_questions}
+```
+
+### **Template 3: Code Quality Response**
+```
+Thanks for the feedback on {quality_aspect}! I agree that {quality_concern} could be improved.
+
+**Action Plan:**
+1. [ ] {quality_improvement_step_1}
+2. [ ] {quality_improvement_step_2}
+3. [ ] {quality_improvement_step_3}
+
+**Implementation:**
+I'll {detailed_improvement_approach} to make the code {quality_improvement_goals}.
+
+**Timeline:** I'll implement these improvements {timeline_estimate}.
+
+**Questions:** {any_quality_questions}
+```
+
+### **Template 4: Documentation Response**
+```
+You're absolutely right - the documentation should be clearer about {documentation_concern}.
+
+**Action Plan:**
+1. [ ] {documentation_step_1}
+2. [ ] {documentation_step_2}
+3. [ ] {documentation_step_3}
+
+**Implementation:**
+I'll update {specific_documentation} to include {documentation_improvements}.
+
+**Timeline:** I'll update the documentation {timeline_estimate}.
+
+**Questions:** {any_documentation_questions}
+```
+
+## **Integration Examples**
+
+### **PowerShell Integration**
+```powershell
+function Generate-CRGPTResponses {
+    param(
+        [string]$PRNumber,
+        [string]$PRTitle,
+        [string]$PRDescription,
+        [string]$BaseBranch,
+        [string[]]$ChangedFiles,
+        [string]$CIStatus,
+        [string]$ReviewStatus,
+        [hashtable[]]$CRGPTComments
+    )
+    
+    # Load the prompt template
+    $promptTemplate = Get-Content "prompts/automation/pr-automation-prompt-template.md" -Raw
+    
+    # Replace placeholders with actual values
+    $prompt = $promptTemplate -replace '\{PR_NUMBER\}', $PRNumber
+    $prompt = $prompt -replace '\{PR_TITLE\}', $PRTitle
+    $prompt = $prompt -replace '\{PR_DESCRIPTION\}', $PRDescription
+    $prompt = $prompt -replace '\{BASE_BRANCH\}', $BaseBranch
+    $prompt = $prompt -replace '\{CHANGED_FILES\}', ($ChangedFiles -join ', ')
+    $prompt = $prompt -replace '\{CI_STATUS\}', $CIStatus
+    $prompt = $prompt -replace '\{REVIEW_STATUS\}', $ReviewStatus
+    
+    # Format CR-GPT comments
+    $commentsJson = $CRGPTComments | ConvertTo-Json -Depth 3
+    $prompt = $prompt -replace '\{CR_GPT_COMMENTS\}', $commentsJson
+    
+    # Call AI service
+    $analysis = Invoke-AICompletion -Prompt $prompt -Model "gpt-4"
+    
+    return $analysis | ConvertFrom-Json
+}
+
+function Post-CommentResponses {
+    param([hashtable[]]$Responses)
+    
+    foreach ($response in $Responses) {
+        if ($response.response -and $response.comment_id) {
+            # Post response to GitHub comment
+            gh api graphql -f query='
+                mutation($commentId: ID!, $body: String!) {
+                    addComment(input: {subjectId: $commentId, body: $body}) {
+                        commentEdge {
+                            node {
+                                id
+                                body
+                            }
+                        }
+                    }
+                }
+            ' -f commentId=$response.comment_id -f body=$response.response
+        }
+    }
+}
+```
+
+### **GitHub Actions Integration**
+```yaml
+- name: AI PR Analysis and Response Generation
+  if: github.event_name == 'pull_request' || github.event_name == 'pull_request_review'
+  shell: pwsh
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    # Get PR data
+    $prData = gh pr view ${{ env.PR_NUMBER }} --json title,body,baseRefName,files,additions,deletions,statusCheckRollup
+    
+    # Get CR-GPT comments
+    $comments = gh api graphql -f query='
+      query($prNumber: Int!, $repo: String!, $owner: String!) {
+        repository(name: $repo, owner: $owner) {
+          pullRequest(number: $prNumber) {
+            comments(first: 100) {
+              nodes {
+                id
+                body
+                author {
+                  login
+                }
+                createdAt
+              }
+            }
+          }
+        }
+      }
+    ' -f prNumber=${{ env.PR_NUMBER }} -f repo=${{ github.repository }} -f owner=${{ github.repository_owner }}
+    
+    # Filter CR-GPT comments
+    $crGPTComments = $comments.data.repository.pullRequest.comments.nodes | Where-Object { $_.author.login -eq "cr-gpt" }
+    
+    # Generate AI analysis and responses
+    $analysis = ./scripts/ai-pr-analyzer.ps1 `
+      -PRNumber ${{ env.PR_NUMBER }} `
+      -PRTitle $prData.title `
+      -PRDescription $prData.body `
+      -BaseBranch $prData.baseRefName `
+      -ChangedFiles ($prData.files.path) `
+      -CIStatus $prData.statusCheckRollup.state `
+      -CRGPTComments $crGPTComments
+    
+    # Post responses
+    ./scripts/post-cr-gpt-responses.ps1 -Responses $analysis.cr_gpt_responses
+    
+    # Update project status
+    ./scripts/update-pr-status.ps1 -PRNumber ${{ env.PR_NUMBER }} -Status $analysis.status_update.new_status
+```
+
+## **Example Output**
+
+### **Sample PR Analysis**
+```json
+{
+  "pr_analysis": {
+    "overall_assessment": "good",
+    "quality_score": "8",
+    "merge_readiness": "needs_changes",
+    "risk_level": "low",
+    "estimated_review_time": "2",
+    "summary": "Well-implemented feature with minor testing and documentation improvements needed"
+  },
+  "code_quality": {
+    "architecture": "Good component structure and separation of concerns. Consider extracting some logic into custom hooks.",
+    "performance": "Efficient implementation with proper memoization. No performance concerns identified.",
+    "security": "Proper input validation and sanitization. No security vulnerabilities found.",
+    "accessibility": "Good keyboard navigation support. Consider adding more ARIA labels for screen readers.",
+    "testing": "Basic tests are present but could be more comprehensive. Missing edge case coverage.",
+    "documentation": "Code is well-commented. Consider updating README with new feature information."
+  },
+  "cr_gpt_responses": [
+    {
+      "comment_id": "123456",
+      "comment_body": "The error handling in the API call could be more robust. Consider adding retry logic for network failures.",
+      "priority": "medium",
+      "category": "logic",
+      "response": "Thanks for the feedback! You're absolutely right - the error handling could be more robust. I'll add retry logic for network failures and improve the error messaging to provide better user feedback.\n\n**Action Plan:**\n1. [ ] Add exponential backoff retry logic for network failures\n2. [ ] Implement proper error boundary handling\n3. [ ] Add user-friendly error messages for different failure scenarios\n\n**Implementation:**\nI'll use a retry utility with exponential backoff and add proper error handling in the API service layer. This will ensure the app gracefully handles network issues and provides clear feedback to users.\n\n**Timeline:** I'll implement these improvements within the next hour.\n\n**Questions:** Should I also add offline detection and caching for better UX?",
+      "action_plan": "Add retry logic, improve error handling, enhance user feedback",
+      "implementation_notes": "Use exponential backoff retry utility, implement error boundaries, add user-friendly error messages",
+      "estimated_effort": "S",
+      "timeline": "Within the next hour"
+    }
+  ],
+  "merge_checklist": [
+    "All acceptance criteria met",
+    "CI/CD pipeline passing",
+    "Tests updated and passing",
+    "Documentation updated",
+    "No breaking changes",
+    "Security review completed"
+  ],
+  "recommendations": {
+    "immediate_actions": ["Add retry logic for API calls", "Improve test coverage", "Update documentation"],
+    "future_improvements": ["Consider implementing offline support", "Add performance monitoring", "Enhance accessibility features"],
+    "best_practices": ["Use custom hooks for complex logic", "Implement proper error boundaries", "Add comprehensive testing"],
+    "learning_opportunities": ["Explore advanced error handling patterns", "Study accessibility best practices", "Learn about performance optimization techniques"]
+  },
+  "status_update": {
+    "new_status": "In progress",
+    "reasoning": "PR has good overall quality but needs minor improvements based on CR-GPT feedback",
+    "next_steps": "Address CR-GPT feedback, improve tests, update documentation, then ready for final review"
+  }
+}
+```
+
+## **Continuous Improvement**
+
+### **Response Quality Metrics**
+- **Response Relevance**: How well responses address the specific feedback
+- **Actionability**: Clarity and specificity of action plans
+- **Timeliness**: Speed of response generation
+- **Developer Satisfaction**: Feedback from developers on response quality
+
+### **Learning and Adaptation**
+- **Pattern Recognition**: Identify common feedback patterns and improve response templates
+- **Context Learning**: Learn from project-specific patterns and improve recommendations
+- **Quality Feedback**: Incorporate developer feedback to improve response quality
+- **Template Evolution**: Continuously refine response templates based on effectiveness
+
+---
+
+This template provides a comprehensive foundation for AI-powered PR automation that enhances your existing CR-GPT integration while maintaining high-quality, contextual responses that improve the development workflow.
+~~~
+
+</details>
+
+#### Workflow & Automation Evaluation Report
+
+- **Source:** [automation/workflow-evaluation-report.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/workflow-evaluation-report.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** —
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Workflow & Automation Evaluation Report
+
+## **Executive Summary**
+
+This comprehensive evaluation of the Portfolio OS automation system reveals a sophisticated but incomplete automation infrastructure. While the core components are well-designed and functional, several critical scripts are missing, and the integration between components needs enhancement to fully realize the automation vision.
+
+## **Current System Status**
+
+### ** WORKING COMPONENTS**
+
+#### **GitHub Actions Workflows**
+- **`orchestrate-issues-prs.yml`** -  **FUNCTIONAL** - Event-driven issue/PR orchestration
+- **`pr-automation-optimized.yml`** -  **FUNCTIONAL** - PR automation and quality checks
+- **`project-status-automation.yml`** -  **FUNCTIONAL** - Project board status management
+- **`add-to-project.yml`** -  **FUNCTIONAL** - Automatic project item addition
+
+#### **PowerShell Automation Scripts**
+- **`issue-config-unified.ps1`** -  **FUNCTIONAL** - Unified issue configuration with presets
+- **`issue-analyzer.ps1`** -  **FUNCTIONAL** - Issue analysis and implementation planning
+- **`backfill-project-fields.ps1`** -  **FUNCTIONAL** - Project field standardization
+- **`project-manager.ps1`** -  **FUNCTIONAL** - Main project management controller
+- **`github-utils.ps1`** -  **FUNCTIONAL** - Shared GitHub API utilities
+- **`fix-quotes.ps1`** -  **FUNCTIONAL** - Quote formatting fixes
+- **`pr-aliases.ps1`** -  **FUNCTIONAL** - PR management aliases
+
+#### **Utility Scripts**
+- **Housekeeping Scripts** -  **FUNCTIONAL** - Comprehensive maintenance system
+- **Build Tools** -  **FUNCTIONAL** - Build automation (`build.sh`)
+- **Analysis Scripts** -  **FUNCTIONAL** - Code quality and cleanup analysis
+
+### ** MISSING CRITICAL COMPONENTS**
+
+#### **Referenced in Workflows but Missing**
+1. **`auto-configure-pr.ps1`** - Referenced in `pr-automation-optimized.yml`
+2. **`pr-automation-unified.ps1`** - Referenced in multiple workflows
+3. **`universal-pr-automation-simple.ps1`** - Referenced in workflow documentation
+4. **`continuous-issue-pipeline.ps1`** - Referenced in prompt templates
+5. **`issue-queue-manager.ps1`** - Referenced in prompt templates
+6. **`issue-implementation.ps1`** - Referenced in prompt templates
+7. **`docs-updater.ps1`** - Referenced in workflows
+
+#### **Documentation Gaps**
+- Missing integration documentation for AI-enhanced automation
+- Incomplete prompt engineering implementation guides
+- Missing script usage documentation for new components
+
+## **Integration Analysis**
+
+### **Current Integration Points**
+
+#### **GitHub Actions  PowerShell Scripts**
+```yaml
+# Working Integration Examples
+- name: Auto-configure issue
+  run: pwsh -c "./scripts/issue-config-unified.ps1 -IssueNumber ${{ issue_number }}"
+
+- name: Backfill project fields  
+  run: pwsh -c "./scripts/backfill-project-fields.ps1"
+```
+
+#### **Script Dependencies**
+```powershell
+# Working Dependencies
+$sharedPath = Join-Path $PSScriptRoot "shared\github-utils.ps1"
+if (Test-Path $sharedPath) {
+    . $sharedPath
+}
+```
+
+### **Missing Integration Points**
+
+#### **AI-Enhanced Automation**
+- No integration between prompt templates and existing scripts
+- Missing AI service integration (OpenAI, Claude, etc.)
+- No intelligent decision-making layer
+
+#### **Continuous Pipeline**
+- Missing continuous processing capabilities
+- No queue management system
+- No agent coordination for parallel processing
+
+## **Critical Issues**
+
+### **1. Workflow Failures**
+Several GitHub Actions workflows reference scripts that don't exist:
+- `pr-automation-optimized.yml` calls `auto-configure-pr.ps1` (missing)
+- `pr-automation-optimized.yml` calls `pr-automation-unified.ps1` (missing)
+- Multiple workflows reference `docs-updater.ps1` (missing)
+
+### **2. Incomplete Automation**
+- No end-to-end issue processing pipeline
+- Missing PR response automation
+- No intelligent field configuration
+- No continuous processing capabilities
+
+### **3. Documentation Inconsistencies**
+- Script documentation doesn't match actual capabilities
+- Missing integration guides
+- Incomplete prompt engineering documentation
+
+## **Recommendations**
+
+### **Immediate Actions (Priority 1)**
+
+#### **1. Create Missing Critical Scripts**
+```powershell
+# Required for workflow completion
+scripts/automation/auto-configure-pr.ps1
+scripts/automation/pr-automation-unified.ps1
+scripts/automation/docs-updater.ps1
+scripts/automation/continuous-issue-pipeline.ps1
+```
+
+#### **2. Fix Workflow References**
+Update GitHub Actions workflows to reference existing scripts or create missing ones:
+```yaml
+# Fix pr-automation-optimized.yml
+- name: Configure PR
+  run: pwsh -c "./scripts/automation/issue-config-unified.ps1 -IssueNumber ${{ env.PR_NUMBER }} -Type PR"
+```
+
+#### **3. Implement AI Integration Layer**
+```powershell
+# Add to existing scripts
+function Invoke-AIAnalysis {
+    param([string]$IssueNumber, [string]$IssueTitle, [string]$IssueBody)
+    # AI analysis implementation
+}
+```
+
+### **Short-term Actions (Priority 2)**
+
+#### **1. Complete Prompt Engineering Integration**
+- Integrate prompt templates with existing scripts
+- Add AI service configuration
+- Implement intelligent decision-making
+
+#### **2. Enhance Documentation**
+- Create comprehensive integration guides
+- Update script documentation
+- Add AI automation documentation
+
+#### **3. Implement Continuous Pipeline**
+- Create queue management system
+- Add agent coordination
+- Implement parallel processing
+
+### **Long-term Actions (Priority 3)**
+
+#### **1. Advanced AI Features**
+- Implement learning and adaptation
+- Add predictive capabilities
+- Enhance intelligent automation
+
+#### **2. Performance Optimization**
+- Optimize script execution times
+- Implement caching mechanisms
+- Add performance monitoring
+
+#### **3. Advanced Analytics**
+- Add automation metrics
+- Implement success tracking
+- Create performance dashboards
+
+## **Implementation Plan**
+
+### **Phase 1: Critical Fixes (Week 1)**
+1. **Create Missing Scripts**
+   - `auto-configure-pr.ps1`
+   - `pr-automation-unified.ps1`
+   - `docs-updater.ps1`
+
+2. **Fix Workflow References**
+   - Update GitHub Actions workflows
+   - Test workflow execution
+   - Fix any remaining issues
+
+3. **Basic AI Integration**
+   - Add AI analysis to existing scripts
+   - Implement basic prompt integration
+   - Test AI functionality
+
+### **Phase 2: Enhanced Integration (Week 2)**
+1. **Complete Prompt Engineering**
+   - Integrate all prompt templates
+   - Add AI service configuration
+   - Implement intelligent automation
+
+2. **Continuous Pipeline**
+   - Create queue management system
+   - Add agent coordination
+   - Implement parallel processing
+
+3. **Enhanced Documentation**
+   - Update all documentation
+   - Create integration guides
+   - Add usage examples
+
+### **Phase 3: Advanced Features (Week 3)**
+1. **Advanced AI Features**
+   - Implement learning capabilities
+   - Add predictive features
+   - Enhance automation intelligence
+
+2. **Performance & Monitoring**
+   - Add performance monitoring
+   - Implement analytics
+   - Create dashboards
+
+3. **Testing & Validation**
+   - Comprehensive testing
+   - Performance validation
+   - User acceptance testing
+
+## **Success Metrics**
+
+### **Immediate Success Criteria**
+- All GitHub Actions workflows execute without errors
+- All referenced scripts exist and function properly
+- Basic AI integration is working
+
+### **Short-term Success Criteria**
+- Complete prompt engineering integration
+- Continuous pipeline processing
+- Intelligent automation decisions
+
+### **Long-term Success Criteria**
+- Advanced AI features operational
+- Performance optimization achieved
+- Comprehensive analytics and monitoring
+
+## **Risk Assessment**
+
+### **High Risk**
+- **Workflow Failures**: Missing scripts cause immediate workflow failures
+- **Automation Gaps**: Incomplete automation reduces productivity
+- **Integration Issues**: Poor integration reduces system effectiveness
+
+### **Medium Risk**
+- **AI Integration Complexity**: AI integration may be more complex than anticipated
+- **Performance Issues**: Additional AI processing may impact performance
+- **Learning Curve**: Team may need time to adapt to new automation
+
+### **Low Risk**
+- **Documentation Updates**: Documentation updates are straightforward
+- **Script Maintenance**: Existing scripts are well-maintained
+- **Gradual Implementation**: Phased approach reduces implementation risk
+
+## **Next Steps**
+
+### **Immediate (This Week)**
+1. Create missing critical scripts
+2. Fix workflow references
+3. Test basic functionality
+
+### **Short-term (Next 2 Weeks)**
+1. Implement AI integration
+2. Complete prompt engineering
+3. Add continuous pipeline
+
+### **Long-term (Next Month)**
+1. Advanced AI features
+2. Performance optimization
+3. Comprehensive monitoring
+
+---
+
+## **Conclusion**
+
+The Portfolio OS automation system has a solid foundation with well-designed core components, but critical gaps prevent full automation realization. The immediate priority is creating missing scripts and fixing workflow references. Once these issues are resolved, the system can be enhanced with AI integration and advanced automation features.
+
+The prompt engineering strategy provides a clear roadmap for intelligent automation, but implementation requires completing the missing components and ensuring proper integration between all system parts.
+
+**Recommendation**: Proceed with Phase 1 implementation immediately to restore full workflow functionality, then continue with AI integration and advanced features.
+~~~
+
+</details>
+
+### Generated
+
+#### Automation Metrics Workflow Prompt
+
+- **Source:** [generated/automation-metrics-workflow-prompt.md](https://github.com/jschibelli/portfolio-os/blob/develop/generated/automation-metrics-workflow-prompt.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/monitoring/automation-metrics.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# AI Workflow Assistant Prompt
+
+## Role
+You are an AI assistant specialized in helping developers work with the **Monitoring** system in Portfolio OS. You understand PowerShell scripting, GitHub workflows, and automated project management.
+
+## Context
+The user is working with the **automation-metrics.ps1** script, which is a **high** complexity **monitoring** tool.
+
+## Script Purpose
+Advanced Analytics and Monitoring System for Portfolio OS Automation
+
+## Script Location
+- **File**: $(System.Collections.Hashtable.FullPath)
+- **Category**: Monitoring
+- **Complexity**: High
+
+## Parameters
+The script accepts the following parameters:
+- **$Operation** [string] (Optional)
+- **$ExportTo** [string] (Optional)
+- **$TimeRange** [int] (Optional)
+- **$RealTime** [switch] (Optional)
+- **$Detailed** [switch] (Optional)
+## Functions Available
+This script does not define custom functions.
+## Usage Instructions
+.\scripts\automation\monitoring\automation-metrics.ps1 [-Operation <OPERATION>] [-ExportTo <FILE>] [-TimeRange <DAYS>]
+
+## Your Tasks
+1. **Help the user understand** what this script does and when to use it
+2. **Provide examples** of how to run the script with different parameters
+3. **Troubleshoot issues** when the script doesn't work as expected
+4. **Suggest improvements** or alternative approaches when appropriate
+5. **Explain the workflow** and how it fits into the larger Portfolio OS system
+
+## Response Guidelines
+- Be specific and actionable
+- Provide PowerShell code examples when helpful
+- Explain the "why" behind recommendations
+- Consider the script's complexity level in your explanations
+- Reference related scripts in the same category when relevant
+
+## Example Interactions
+- "How do I run this script with custom parameters?"
+- "What does this script do and when should I use it?"
+- "I'm getting an error when running this script, can you help?"
+- "How does this script integrate with other Portfolio OS tools?"
+
+Remember: You're helping with a **monitoring** tool that's part of a larger automated development workflow system.
+~~~
+
+</details>
+
+#### Docs Updater Workflow Prompt
+
+- **Source:** [generated/docs-updater-workflow-prompt.md](https://github.com/jschibelli/portfolio-os/blob/develop/generated/docs-updater-workflow-prompt.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/docs-updater.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# AI Workflow Assistant Prompt
+
+## Role
+You are an AI assistant specialized in helping developers work with the **Core Utilities** system in Portfolio OS. You understand PowerShell scripting, GitHub workflows, and automated project management.
+
+## Context
+The user is working with the **docs-updater.ps1** script, which is a **medium** complexity **core utilities** tool.
+
+## Script Purpose
+Documentation Updater Script
+
+## Script Location
+- **File**: $(System.Collections.Hashtable.FullPath)
+- **Category**: Core Utilities
+- **Complexity**: Medium
+
+## Parameters
+The script accepts the following parameters:
+- **$PRNumber** [string] (Optional)
+- **$UpdateChangelog** [switch] (Optional)
+- **$UpdateReadme** [switch] (Optional)
+- **$GenerateDocs** [switch] (Optional)
+- **$OutputDir** [string] (Optional)
+- **$DryRun** [switch] (Optional)
+## Functions Available
+This script does not define custom functions.
+## Usage Instructions
+.\scripts\automation\docs-updater.ps1 -PRNumber <NUMBER> [-UpdateChangelog] [-UpdateReadme] [-GenerateDocs] [-DryRun]
+
+## Your Tasks
+1. **Help the user understand** what this script does and when to use it
+2. **Provide examples** of how to run the script with different parameters
+3. **Troubleshoot issues** when the script doesn't work as expected
+4. **Suggest improvements** or alternative approaches when appropriate
+5. **Explain the workflow** and how it fits into the larger Portfolio OS system
+
+## Response Guidelines
+- Be specific and actionable
+- Provide PowerShell code examples when helpful
+- Explain the "why" behind recommendations
+- Consider the script's complexity level in your explanations
+- Reference related scripts in the same category when relevant
+
+## Example Interactions
+- "How do I run this script with custom parameters?"
+- "What does this script do and when should I use it?"
+- "I'm getting an error when running this script, can you help?"
+- "How does this script integrate with other Portfolio OS tools?"
+
+Remember: You're helping with a **core utilities** tool that's part of a larger automated development workflow system.
+~~~
+
+</details>
+
+#### Manage Projects Workflow Prompt
+
+- **Source:** [generated/manage-projects-workflow-prompt.md](https://github.com/jschibelli/portfolio-os/blob/develop/generated/manage-projects-workflow-prompt.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/project-manager.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# AI Workflow Assistant Prompt
+
+## Role
+You are an AI assistant specialized in helping developers work with the **Project Management** system in Portfolio OS. You understand PowerShell scripting, GitHub workflows, and automated project management.
+
+## Context
+The user is working with the **manage-projects.ps1** script, which is a **high** complexity **project management** tool.
+
+## Script Purpose
+PowerShell script for comprehensive project management
+
+## Script Location
+- **File**: $(System.Collections.Hashtable.FullPath)
+- **Category**: Project Management
+- **Complexity**: High
+
+## Parameters
+The script accepts the following parameters:
+- **$Operation** [string] (Required)
+- **$Preset** [string] (Optional)
+- **$Priority** [string] (Optional)
+- **$Size** [string] (Optional)
+- **$App** [string] (Optional)
+- **$Area** [string] (Optional)
+- **$Milestone** [string] (Optional)
+- **$Status** [string] (Optional)
+- **$ProjectId** [string] (Optional)
+- **$DryRun** [switch] (Optional)
+## Functions Available
+This script does not define custom functions.
+## Usage Instructions
+.\scripts\project-manager.ps1 -Operation <OPERATION> -Issues <ISSUE_LIST> [OPTIONS]
+
+## Your Tasks
+1. **Help the user understand** what this script does and when to use it
+2. **Provide examples** of how to run the script with different parameters
+3. **Troubleshoot issues** when the script doesn't work as expected
+4. **Suggest improvements** or alternative approaches when appropriate
+5. **Explain the workflow** and how it fits into the larger Portfolio OS system
+
+## Response Guidelines
+- Be specific and actionable
+- Provide PowerShell code examples when helpful
+- Explain the "why" behind recommendations
+- Consider the script's complexity level in your explanations
+- Reference related scripts in the same category when relevant
+
+## Example Interactions
+- "How do I run this script with custom parameters?"
+- "What does this script do and when should I use it?"
+- "I'm getting an error when running this script, can you help?"
+- "How does this script integrate with other Portfolio OS tools?"
+
+Remember: You're helping with a **project management** tool that's part of a larger automated development workflow system.
+~~~
+
+</details>
+
+#### PR Agent Assignment Workflow Prompt
+
+- **Source:** [generated/pr-agent-assignment-workflow-prompt.md](https://github.com/jschibelli/portfolio-os/blob/develop/generated/pr-agent-assignment-workflow-prompt.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/assign-pr-agents.ps1`, `scripts/core-utilities/get-github-utilities.ps1`, `scripts/core-utilities/manage-ai-services.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# AI Workflow Assistant Prompt
+
+## Role
+You are an AI assistant specialized in helping developers work with the **Agent Management** system in Portfolio OS. You understand PowerShell scripting, GitHub workflows, and automated project management.
+
+## Context
+The user is working with the **pr-agent-assignment-workflow.ps1** script, which is a **high** complexity **agent management** tool.
+
+## Script Purpose
+PR Agent Assignment Workflow
+
+## Script Location
+- **File**: $(System.Collections.Hashtable.FullPath)
+- **Category**: Agent Management
+- **Complexity**: High
+
+## Parameters
+The script accepts the following parameters:
+- No parameters defined
+## Functions Available
+This script does not define custom functions.
+## Dependencies
+The script depends on:
+- `.\scripts\core-utilities\get-github-utilities.ps1`
+- `.\scripts\core-utilities\manage-ai-services.ps1`
+## Usage Instructions
+.\scripts\automation\assign-pr-agents.ps1 [-ProjectNumber <NUMBER>] [-Owner <USERNAME>] [-DryRun]
+
+## Your Tasks
+1. **Help the user understand** what this script does and when to use it
+2. **Provide examples** of how to run the script with different parameters
+3. **Troubleshoot issues** when the script doesn't work as expected
+4. **Suggest improvements** or alternative approaches when appropriate
+5. **Explain the workflow** and how it fits into the larger Portfolio OS system
+
+## Response Guidelines
+- Be specific and actionable
+- Provide PowerShell code examples when helpful
+- Explain the "why" behind recommendations
+- Consider the script's complexity level in your explanations
+- Reference related scripts in the same category when relevant
+
+## Example Interactions
+- "How do I run this script with custom parameters?"
+- "What does this script do and when should I use it?"
+- "I'm getting an error when running this script, can you help?"
+- "How does this script integrate with other Portfolio OS tools?"
+
+Remember: You're helping with a **agent management** tool that's part of a larger automated development workflow system.
+~~~
+
+</details>
+
+### Templates
+
+#### GitHub Complete Prompt List
+
+- **Source:** [templates/github-complete-prompt-list.md](https://github.com/jschibelli/portfolio-os/blob/develop/templates/github-complete-prompt-list.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/issue-config-unified.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/auto-configure-issue-updated.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+Heres a set of ready-to-paste oneliners you can use (swap in your links/values).
+
+Issue-focused
+- Analyze and plan: <ISSUE_URL>. Generate plan, acceptance criteria, risks, and next commands.
+- Auto-configure: <ISSUE_URL>. Set Status=Ready, Priority=P1, Size=M, App=Portfolio Site, Area=Frontend; label ready-to-implement.
+- Start work: <ISSUE_URL>. Assign me, set Status=In progress, create branch name, list first 3 steps.
+- Implement end-to-end: <ISSUE_URL>. Analyze, set fields, create and track PR, monitor CRGPT, reply, update Status, guide to merge.
+- Grooming: <ISSUE_URL>. Break into subtasks with estimates and labels.
+
+PR-focused
+- Automate this PR end-to-end: <PR_URL>. Monitor reviews, analyze CRGPT, draft threaded replies, update Project Status, run checks, drive to merge.
+- Review summary: <PR_URL>. Summarize reviewer+CRGPT comments by priority with an action checklist.
+- Draft replies: <PR_URL>. Generate concise threaded replies for all unresolved comments.
+- Conflict guard: <PR_URL>. Check mergeability, attempt auto-rebase, and report outcome.
+- Metadata & routing: <PR_URL>. Add labels [type: enhancement, area: frontend], request reviewers @user1 @user2, link related issue.
+- Merge prep: <PR_URL>. Verify all comments resolved and CI green; produce final merge checklist (rebase merge).
+- Changelog: <PR_URL>. Draft release notes and improve PR description.
+
+Cross-cutting
+- Status update: <URL>. Set Status=<ready|in progress|in review|done>, Priority=<p0|p1|p2>, add labels <LABELS>.
+- Test & QA: <PR_URL>. Run lint/test/build summary; list failures with suggested fixes.
+- Security scan: <PR_URL>. Identify security-sensitive diffs and propose mitigations.
+- Performance pass: <PR_URL>. Inspect hotspots; propose measurable optimizations.
+- Docs pass: <PR_URL>. Identify docs to update and draft changes.
+- Backport/cherry-pick: <PR_URL>. Create backport PR to <BRANCH> with minimal diffs.
+
+Ops/maintenance
+- Dependency refresh: <URL>. Propose safe dependency updates and impact notes.
+- Dead code/find TODOs: <PR_URL>. Flag dead code and convert TODOs into actionable tasks with owners.
+- Risk assessment: <PR_URL>. Summarize risks, rollback plan, and validation steps.
+
+Universal autopilot
+- Automate end-to-end: <URL>. Detect issue vs PR; for issues, analyze, set fields, create and track PR; for PRs, monitor reviews, analyze CRGPT, thread replies, update Status, run checks, drive to merge (rebase merge).
+
+Universal PR Automation
+- Universal PR automation: <PR_NUMBER>. Configure project fields, monitor CRGPT, generate responses, check merge readiness, provide guidance for any PR.
+~~~
+
+</details>
+
+#### GitHub PR to Merge Prompt
+
+- **Source:** [templates/github-pr-to-merge.md](https://github.com/jschibelli/portfolio-os/blob/develop/templates/github-pr-to-merge.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/pr-automation-unified.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+Automate end-to-end: <PR_URL>. Monitor reviews, analyze CRGPT, draft threaded replies, update Project Status, run checks, drive to merge.
+
+**Execution:** `pwsh ./scripts/automation/pr-automation-unified.ps1 -PRNumber <PR_NUMBER> -Action all`
+
+**Use:** `.\scripts\pr-automation-unified.ps1 -PRNumber <PR_NUMBER> -Action all`
+
+Universal PR Automation: <PR_NUMBER>. Configure project fields, monitor CRGPT, generate responses, check merge readiness, provide guidance.
+
+**Available Actions:**
+- `monitor` - Show PR status and watch for changes
+- `analyze` - Analyze CR-GPT comments and generate report
+- `respond` - Generate automated responses to CR-GPT comments
+- `quality` - Run code quality checks (lint, type-check)
+- `docs` - Update documentation
+- `all` - Run all actions (recommended)
+~~~
+
+</details>
+
+### Workflows
+
+#### Default Two-Agent PR Assignment Strategy
+
+- **Source:** [workflows/default-two-agent-pr-assignment-strategy.md](https://github.com/jschibelli/portfolio-os/blob/develop/workflows/default-two-agent-pr-assignment-strategy.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/pr-automation-unified.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Default Two-Agent PR Assignment Strategy
+## Template for PR Distribution Between Two Specialized Agents
+
+## **Pre-Assignment Checklist**
+
+Before assigning PRs to agents, verify:
+- [ ] All PRs target the correct base branch (usually `develop` or `main`)
+- [ ] PRs are properly labeled and prioritized
+- [ ] No critical merge conflicts exist
+- [ ] Required approvals are in place
+
+---
+
+## **Two-Agent Strategy Overview**
+
+Split PRs between **2 specialized agents** with clear separation of concerns and staggered execution timing.
+
+### **Agent Separation Strategy:**
+- **Agent 1**: Frontend/UI focused PRs + Critical Security
+- **Agent 2**: Backend/Infrastructure focused PRs + Performance
+- **Staggered Execution**: Agent 1 starts first, Agent 2 starts 30 minutes later
+- **File Isolation**: Minimal overlap in file modifications
+- **Rate Limit Protection**: Maximum 8-9 PRs per agent
+
+---
+
+## **Workload Distribution Template**
+
+### **Agent 1: Frontend & Critical Security Specialist** 
+**Focus**: Frontend components, UI/UX, Critical security issues
+**PR Count**: [X] PRs
+**Estimated Comments**: [X]+ comments
+
+**Assigned PRs:**
+1. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] CRITICAL ([Type]), [X] HIGH ([Type])
+   - **Priority**: P[X] - [Description]
+2. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+3. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+4. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+5. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+
+**Agent 1 Workload Summary:**
+- **CRITICAL**: [X] comments ([Type])
+- **HIGH**: [X] comments ([Type])
+- **LOW**: [X]+ comments ([Type])
+- **Draft PRs**: [X] ([Description])
+- **Ready for Merge**: [X] ([Description])
+
+---
+
+### **Agent 2: Backend & Infrastructure Specialist** 
+**Focus**: Backend services, infrastructure, server-side performance
+**PR Count**: [X] PRs
+**Estimated Comments**: [X]+ comments
+
+**Assigned PRs:**
+1. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] CRITICAL ([Type])
+   - **Priority**: P[X] - [Description]
+2. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] CRITICAL ([Type])
+   - **Priority**: P[X] - [Description]
+3. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+4. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+5. **[PR #XXX]** - [Title] ([Category])
+   - [X] CR-GPT comments, [X] priority ([Type])
+   - **Priority**: P[X] - [Description]
+
+**Agent 2 Workload Summary:**
+- **CRITICAL**: [X] comments ([Type])
+- **HIGH**: [X] comments ([Type])
+- **LOW**: [X]+ comments ([Type])
+- **Draft PRs**: [X] ([Description])
+- **Ready for Merge**: [X] ([Description])
+
+---
+
+## **Execution Strategy Template**
+
+### **Phase 1: Critical Issues (Day 1-2)**
+**Agent 1 (Starts First):**
+- 09:00 - Start with [PR #XXX] (CRITICAL Security)
+- 10:30 - Move to [PR #XXX] (HIGH Performance)
+- 12:00 - Break for lunch
+- 13:00 - Continue with [PR #XXX] (HIGH [Category])
+- 14:30 - Handle [PR #XXX] ([Category])
+
+**Agent 2 (Starts 30 minutes later):**
+- 09:30 - Start with [PR #XXX] (CRITICAL Security)
+- 11:00 - Move to [PR #XXX] (CRITICAL Security)
+- 12:30 - Break for lunch
+- 13:30 - Continue with [PR #XXX] (HIGH [Category])
+- 15:00 - Handle [PR #XXX] (Ready for merge)
+
+### **Phase 2: Quality Improvements (Day 3-4)**
+**Agent 1:**
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+
+**Agent 2:**
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+- [PR #XXX] ([Category])
+
+### **Phase 3: Final Cleanup (Day 5)**
+- Both agents complete remaining work
+- Final quality checks and merges
+- Documentation updates
+
+---
+
+## **Conflict Prevention Strategy**
+
+### **File Isolation:**
+- **Agent 1**: Focuses on `[frontend-paths]`, `[ui-paths]`, frontend assets
+- **Agent 2**: Focuses on `[backend-paths]`, `[api-paths]`, backend services
+- **Shared Files**: Coordinate on `[shared-config-files]` changes
+
+### **Rate Limit Protection:**
+- **Maximum 2 concurrent PR operations per agent**
+- **30-minute stagger between agent start times**
+- **5-minute breaks between PR operations**
+- **Automated retry with exponential backoff**
+
+### **Coordination Protocol:**
+1. **Daily Standup**: 15-minute sync at 09:00 and 15:00
+2. **File Lock Detection**: Check for active file modifications before starting
+3. **Shared Resources**: Coordinate on shared configuration files
+4. **Progress Updates**: Real-time project board status updates
+
+---
+
+## **Agent-Specific Commands Template**
+
+### **Agent 1 Commands (Frontend & Critical Security):**
+```powershell
+# Day 1 Morning - Critical Security
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Morning - Frontend Performance  
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Afternoon - [Category]
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Afternoon - [Category]
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+
+# Day 2 - [Category] and Features
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action quality
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action monitor  # Review draft
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action monitor  # Review draft
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+```
+
+### **Agent 2 Commands (Backend & Infrastructure):**
+```powershell
+# Day 1 Morning - Critical Security (Start 30 min after Agent 1)
+Start-Sleep -Seconds 1800  # 30-minute delay
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Morning - Backend API Security
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Afternoon - Backend [Category]
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+Start-Sleep -Seconds 300  # 5-minute break
+
+# Day 1 Afternoon - Backend [Category]
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action quality
+
+# Day 2 - [Category] Systems
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action all
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action quality
+.\scripts\pr-automation-unified.ps1 -PRNumber [XXX] -Action monitor  # Review draft
+```
+
+---
+
+## **Success Metrics Template**
+
+### **Agent 1 Targets:**
+- **[X] CRITICAL security issues resolved** ([PR #XXX])
+- **[X] HIGH priority issues resolved** ([PR #XXX])
+- **[X]+ LOW priority issues resolved** ([PR #XXX])
+- **[X] draft PRs integrated** ([PR #XXX])
+- **[X] PRs merged** ([PR #XXX])
+
+### **Agent 2 Targets:**
+- **[X] CRITICAL security issues resolved** ([PR #XXX])
+- **[X] HIGH priority issues resolved** ([PR #XXX])
+- **[X]+ LOW priority issues resolved** ([PR #XXX])
+- **[X] draft PRs integrated** ([PR #XXX])
+- **[X] PRs merged** ([PR #XXX])
+
+### **Overall Goals:**
+- **100% of CRITICAL security issues resolved**
+- **100% of HIGH priority issues resolved**
+- **90% of MEDIUM/LOW priority issues resolved**
+- **All ready PRs merged**
+- **All draft PRs integrated or closed**
+
+---
+
+## **Coordination Checkpoints**
+
+### **Daily Sync Points:**
+- **09:00**: Morning standup - review priorities and conflicts
+- **12:00**: Lunch break - status update
+- **15:00**: Afternoon sync - resolve blockers
+- **17:00**: End of day - progress review and next day planning
+
+### **Conflict Resolution:**
+1. **File Conflicts**: Agent 2 waits if Agent 1 is modifying shared files
+2. **Rate Limits**: Automatic 5-minute delays between operations
+3. **Priority Conflicts**: Agent 1 handles CRITICAL, Agent 2 handles HIGH
+4. **Resource Conflicts**: First-come-first-served with 5-minute hold
+
+---
+
+## **Project Board Updates**
+
+Both agents will update the [Project Name] project board (#[Project Number]) with:
+- **Status**: In progress  Ready  Done
+- **Priority**: P0/P1/P2/P3 (based on analysis)
+- **Progress**: Daily updates on comment resolution
+- **Assignee**: [username] (with agent notes in comments)
+
+---
+
+## **Expected Timeline**
+
+- **Day 1**: Critical and HIGH priority issues resolved
+- **Day 2**: MEDIUM/LOW priority issues and draft PR integration
+- **Day 3**: Final cleanup and quality assurance
+- **Day 4**: Documentation and merge finalization
+- **Day 5**: Project completion and celebration!
+
+---
+
+## **How to Use This Template**
+
+1. **Replace [XXX] placeholders** with actual PR numbers
+2. **Update [Category] placeholders** with specific PR categories
+3. **Fill in [X] placeholders** with actual comment counts and priorities
+4. **Customize file paths** based on your project structure
+5. **Adjust timeline** based on your team's capacity
+6. **Update project board references** with your actual project details
+
+This template ensures optimal workload distribution, conflict prevention, and systematic resolution of CR-GPT comments across your open pull requests while maintaining high efficiency and avoiding rate limit issues.
+~~~
+
+</details>
+
+#### End-to-End Issue to Merge Workflow
+
+- **Source:** [workflows/e2e-issue-to-merge.md](https://github.com/jschibelli/portfolio-os/blob/develop/workflows/e2e-issue-to-merge.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/automation/create-issue-enhanced.ps1`, `scripts/automation/continuous-issue-pipeline.ps1`, `scripts/automation/issue-queue-manager.ps1`, `scripts/automation/agent-status-update.ps1`, `scripts/automation/issue-config-unified.ps1`, `scripts/automation/issue-implementation.ps1`, `scripts/automation/pr-automation-unified.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# End-to-End Issue to Merge Workflow (Single Developer)
+
+**Purpose**: Streamlined automation for solo developers to process issues from creation to merge.
+
+** NEW: Continuous Pipeline Processing** - Automatically processes multiple issues from Backlog  In progress  In review  Ready  Ready for Merge  Done  Merged in sequence, then continues to the next available issues until no more work is available.
+
+> **Note**: For multi-agent workflows with Jason and Chris assignments, see `multi-agent-e2e-workflow.md`
+
+## **Enhanced Issue & Branch Creation**
+
+### **Create Issue with Auto Branch:**
+```powershell
+# Create issue and automatically generate branch
+.\scripts\issue-management\create-issue-enhanced.ps1 `
+  -Title "Add dark mode toggle" `
+  -Body "Implement dark mode toggle in settings" `
+  -Labels "enhancement,frontend" `
+  -Milestone "v1.0.0" `
+  -CreateBranch `
+  -PushBranch
+
+# Result: Issue created + branch created + pushed to remote
+# Branch name: issue-XXX-add-dark-mode-toggle
+```
+
+### **Manual Issue Creation:**
+```powershell
+# Traditional method (if you prefer manual control)
+gh issue create --title "Title" --body "Description" --label "enhancement"
+git branch issue-XXX-feature-name
+git push origin issue-XXX-feature-name
+```
+
+## **Continuous Pipeline (NEW - Primary Method)**
+
+### **Start Continuous Processing:**
+```powershell
+# Process up to 10 issues continuously
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 10 -Status "Backlog" -Priority "P1"
+
+# Process with specific filters
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 5 -App "Portfolio Site" -Area "Frontend"
+
+# Watch mode - continuously monitor for new issues
+.\scripts\continuous-issue-pipeline.ps1 -Watch -Interval 30
+
+# Dry run to see what would be processed
+.\scripts\continuous-issue-pipeline.ps1 -MaxIssues 3 -DryRun
+```
+
+### **Queue Management:**
+```powershell
+# List available queues
+.\scripts\issue-queue-manager.ps1 -Operation list
+
+# Check queue status
+.\scripts\issue-queue-manager.ps1 -Operation status -Queue "blog"
+
+# Process specific queue
+.\scripts\issue-queue-manager.ps1 -Operation process -Queue "blog"
+
+# Create custom queue
+.\scripts\issue-queue-manager.ps1 -Operation create -Queue "custom" -Priority "P1" -App "Portfolio Site" -Area "Frontend" -MaxConcurrent 3
+```
+
+## **Agent Status Updates (NEW - P0 Fix)**
+
+### **Update Project Board Status:**
+```powershell
+# Direct method - Fast and immediate
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Webhook method - Reliable with logging
+.\scripts\agent-project-status-webhook.ps1 -IssueNumber 250 -Action start -AgentName "jason"
+
+# Complete work
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action complete -AgentName "jason"
+
+# Create PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action create-pr -AgentName "jason"
+
+# Merge PR
+.\scripts\agent-status-update.ps1 -IssueNumber 250 -Action merge-pr -AgentName "jason"
+```
+
+### **Available Actions:**
+- `start` - Move issue to "In Progress"
+- `complete` - Move issue to "Ready" 
+- `create-pr` - Move issue to "Ready"
+- `merge-pr` - Move issue to "Done"
+
+## **Continuous Workflow Process**
+
+**For Each Issue (Automated Loop):**
+1. **Discovery**: Find next available issues matching criteria (Status=Backlog, Priority=P1, etc.)
+2. **Configuration**: Auto-configure project fields using `issue-config-unified.ps1`
+3. **Status Update**: Set issue to **"In progress"** on project board using `agent-status-update.ps1`
+4. **Branch Creation**: Create branch from `develop` using `create-branch-from-develop.ps1`
+5. **Implementation**: Implement using `issue-implementation.ps1`
+6. **PR Creation**: Automatically create PR with proper base branch
+7. **Status Update**: Set issue to **"Ready"** (in review) on project board using `agent-status-update.ps1`
+8. **PR Automation**: Monitor and automate using `pr-automation-unified.ps1`
+9. **Status Update**: Set issue to **"Done"** after successful merge using `agent-status-update.ps1`
+10. **Continue**: Move to next issue in queue
+
+## **Example: Multi-Agent Completed Work (Epic #291)**
+
+### **Jason (Infrastructure/Testing Specialist) - 7 Issues Completed:**
+
+| Issue | PR | Description | Status |
+|-------|-----|-------------|--------|
+| #292 | [#306](https://github.com/jschibelli/portfolio-os/pull/306) | Test Utils & Config Updates (Foundation) |  Open - Ready for Review |
+| #294 | [#307](https://github.com/jschibelli/portfolio-os/pull/307) | Projects & Portfolio Tests (~70 tests) |  Open - Ready for Review |
+| #297 | [#312](https://github.com/jschibelli/portfolio-os/pull/312) | Protected Routes & Session Tests (40+ tests) |  Open - Ready for Review |
+| #299 | [#308](https://github.com/jschibelli/portfolio-os/pull/308) | Newsletter Subscription Tests (50+ tests) |  Open - Ready for Review |
+| #301 | [#309](https://github.com/jschibelli/portfolio-os/pull/309) | Booking System Tests (50+ tests) |  Open - Ready for Review |
+| #303 | [#310](https://github.com/jschibelli/portfolio-os/pull/310) | Error Handling & Edge Cases (31 tests) |  Open - Ready for Review |
+| #305 | [#311](https://github.com/jschibelli/portfolio-os/pull/311) | Performance & Accessibility (28 tests) |  Open - Ready for Review |
+
+**Jason's Total Delivered:**
+- 7 PRs (100% completion - All Open)
+- 13 test files created
+- ~290+ comprehensive tests
+- ~14,400+ lines of code added
+- Foundation utilities for entire team
+
+---
+
+### **Chris (Frontend/UI Specialist) - 7 Issues Completed:**
+
+| Issue | PR | Description | Status |
+|-------|-----|-------------|--------|
+| #293 | [#317](https://github.com/jschibelli/portfolio-os/pull/317) | Blog Post Detail Page Tests (23 tests) |  Merged |
+| #295 | [#315](https://github.com/jschibelli/portfolio-os/pull/315) | Homepage Interactive Tests (28 tests) |  Merged |
+| #296 | [#313](https://github.com/jschibelli/portfolio-os/pull/313) | Authentication Flow Tests (34 tests) |  Merged |
+| #298 | [#314](https://github.com/jschibelli/portfolio-os/pull/314) | Contact Form Flow Tests (32 tests) |  Merged |
+| #300 | [#316](https://github.com/jschibelli/portfolio-os/pull/316) | Chatbot Interaction Tests (21 tests) |  Merged |
+| #302 | [#318](https://github.com/jschibelli/portfolio-os/pull/318) | Interactive Component Tests (43 tests) |  Merged |
+| #304 | [#319](https://github.com/jschibelli/portfolio-os/pull/319) | Visual Regression Expansion (19 tests + baselines) |  Merged |
+
+**Chris's Total Delivered:**
+- 7 PRs (100% completion - All Merged )
+- 14 test files created
+- ~200+ comprehensive tests (functional + visual)
+- 12 visual regression baselines
+- ~7,400+ lines of code added
+- Complete frontend test coverage
+
+---
+
+### **Combined Epic #291 Achievements:**
+-  **14 PRs total** (100% of planned work)
+  - 7 PRs from Chris: **All Merged **
+  - 7 PRs from Jason: **All Open - Ready for Review **
+-  **27 test files** created
+-  **490+ tests** implemented
+-  **~21,800+ lines** of test code added
+-  **Complete E2E coverage** (frontend + backend + visual)
+-  **Perfect parallel execution** - no conflicts between agents
+
+**Status Summary:**
+- Chris's work: 100% merged into `develop` branch
+- Jason's work: 100% complete and awaiting review/merge
+
+**Assign Jason's Open PRs (if needed):**
+```powershell
+# Jason's PRs are all assigned and open - awaiting review
+gh pr edit 306 --add-assignee jschibelli
+gh pr edit 307 --add-assignee jschibelli
+gh pr edit 308 --add-assignee jschibelli
+gh pr edit 309 --add-assignee jschibelli
+gh pr edit 310 --add-assignee jschibelli
+gh pr edit 311 --add-assignee jschibelli
+gh pr edit 312 --add-assignee jschibelli
+
+# Chris's PRs are all MERGED - no action needed 
+```
+
+**Update Project Status for Jason's Issues (if needed):**
+```powershell
+# Mark Jason's issues as ready for review (if not already done)
+.\scripts\agent-status-update.ps1 -IssueNumber 292 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 294 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 297 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 299 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 301 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 303 -Action complete -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 305 -Action complete -AgentName jason
+
+# Chris's issues are already merged - status already updated to "Done" 
+```
+
+**To Merge Jason's PRs (once reviewed):**
+```powershell
+# Merge each PR after approval
+gh pr merge 306 --rebase --delete-branch
+gh pr merge 307 --rebase --delete-branch
+gh pr merge 308 --rebase --delete-branch
+gh pr merge 309 --rebase --delete-branch
+gh pr merge 310 --rebase --delete-branch
+gh pr merge 311 --rebase --delete-branch
+gh pr merge 312 --rebase --delete-branch
+
+# Update status to "Done" after merge
+.\scripts\agent-status-update.ps1 -IssueNumber 292 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 294 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 297 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 299 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 301 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 303 -Action merge-pr -AgentName jason
+.\scripts\agent-status-update.ps1 -IssueNumber 305 -Action merge-pr -AgentName jason
+```
+
+** Real-time Project Board Updates:**
+- **Backlog**  **In progress** (when work starts)
+- **In progress**  **Ready** (when PR is created and in review)
+- **Ready**  **Done** (when PR is merged successfully)
+
+**Queue Processing Features:**
+- **Priority-based ordering** (P0 > P1 > P2 > P3)
+- **Dependency checking** (waits for blocked issues)
+- **Concurrent processing** (configurable limits per queue)
+- **Failure recovery** (resume from failed issues)
+- **Real-time monitoring** (watch mode with intervals)
+- **Comprehensive logging** (detailed pipeline logs)
+
+**For Issues:**
+- Use `.\scripts\issue-config-unified.ps1 -IssueNumber <NUMBER> -Preset blog -AddToProject`
+- Auto-configure project fields (Status=In progress, Priority=P1, Size=M, App=Portfolio Site, Area=Frontend, Assignee=jschibelli)
+- Analyze requirements and generate implementation plan
+- **CRITICAL**: Create branch from `develop` base using `.\scripts\create-branch-from-develop.ps1 -IssueNumber <NUMBER>`
+- Track progress and update status
+
+**For PRs:**
+- **CRITICAL**: Verify base branch is set to `develop` - automation MUST NOT proceed if base branch is `main`
+- Use `.\scripts\pr-automation-unified.ps1 -PRNumber <NUMBER> -Action all -AutoFix` (AutoFix automatically corrects base branch)
+- Monitor CR-GPT bot comments and reviews
+- Analyze feedback with priority categorization (bugs > tests > typing > logic > docs > style)
+- Generate threaded replies to CR-GPT comments
+- Run quality checks (lint, test, build)
+- Update project status and metadata
+- Drive to merge with rebase merge strategy (only if base branch is `develop`)
+- Update documentation and changelog
+
+**Universal Features:**
+- Real-time monitoring and notifications
+- Automated testing and validation
+- Security and performance analysis
+- Documentation updates
+- Status tracking and reporting
+- ** NEW**: Continuous pipeline processing
+- ** NEW**: Queue management and prioritization
+- ** NEW**: Dependency resolution
+- ** NEW**: Failure recovery and resumption
+~~~
+
+</details>
+
+
+---
+
+Need the raw prompt text? Open the linked markdown file in GitHub or your editor, copy the body below the front-matter, and follow the documented Execution snippet.
