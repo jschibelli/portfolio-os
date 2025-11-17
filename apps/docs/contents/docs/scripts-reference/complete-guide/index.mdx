@@ -629,6 +629,124 @@ Configure agent capabilities, skills, and workload limits in `scripts/configurat
 
 ---
 
+## Branch Automation Suite
+
+**Location:** `scripts/branch-management/`
+
+<Note type="info" title="Git Workflow Guardrails">
+Branch automation scripts enforce naming conventions, keep `develop` healthy, and streamline multi-issue workflows. Each script shares the helper module `branch-utils.psm1` for GitHub lookups, sanitized branch names, and consistent logging.
+</Note>
+
+### Summary
+
+<CardGrid>
+  <Card title="Health Audit" icon="shield">
+    Detect stale branches, missing upstreams, and divergence across local/remote refs.
+  </Card>
+  <Card title="Sync Assistant" icon="git-merge">
+    Rebase or merge feature branches onto develop with optional tests and pushes.
+  </Card>
+  <Card title="Batch Orchestrator" icon="layers">
+    Create and push dozens of branches using presets or JSON-driven issue lists.
+  </Card>
+</CardGrid>
+
+---
+
+### `branch-health-audit.ps1`
+
+Daily branch hygiene with optional auto-cleanup.
+
+```powershell
+# Inspect local and remote branches, export JSON
+pwsh scripts/branch-management/branch-health-audit.ps1 `
+  -Scope all `
+  -MaxAgeDays 10 `
+  -ReportPath reports/branch-health.json
+
+# Dry-run auto cleanup for merged stale branches
+pwsh scripts/branch-management/branch-health-audit.ps1 `
+  -Scope local `
+  -AutoFix `
+  -BaseBranch develop `
+  -DryRun
+```
+
+| Parameter | Description |
+| --- | --- |
+| `-Scope` | `local`, `remote`, or `all` (default `local`) |
+| `-MaxAgeDays` | Flag branches older than N days (default 14) |
+| `-ReportPath` | Write JSON report for dashboards |
+| `-OutputFormat` | `table`, `json`, or `csv` |
+| `-AutoFix` | Delete stale merged locals (respects `-DryRun`) |
+| `-BaseBranch` | Base branch used to determine “merged” status |
+
+---
+
+### `sync-feature-branch.ps1`
+
+Guided rebase/merge with guardrails and optional test hook.
+
+```powershell
+# Rebase current branch onto develop and push with force-with-lease
+pwsh scripts/branch-management/sync-feature-branch.ps1 `
+  -Strategy rebase `
+  -Push `
+  -ForceWithLease `
+  -TestCommand "pnpm lint"
+
+# Merge a specific branch without pushing
+pwsh scripts/branch-management/sync-feature-branch.ps1 `
+  -Branch feature/402-new-ui `
+  -Base main `
+  -Strategy merge
+```
+
+| Parameter | Description |
+| --- | --- |
+| `-Branch` | Target branch (defaults to current branch) |
+| `-Base` | Base branch to sync from (default `develop`) |
+| `-Strategy` | `rebase` or `merge` (default `rebase`) |
+| `-Push` | Push branch after sync |
+| `-ForceWithLease` | Push with `--force-with-lease` (rebase only) |
+| `-TestCommand` | Optional command to run post-sync |
+| `-Force` | Allow dirty working tree (otherwise aborts) |
+| `-DryRun` | Print planned actions without executing |
+
+---
+
+### `batch-branch-orchestrator.ps1`
+
+Bulk branch creation for large project pushes.
+
+```powershell
+# Create branches for a preset range and push upstream
+pwsh scripts/branch-management/batch-branch-orchestrator.ps1 `
+  -Preset docs `
+  -Push `
+  -ReportPath reports/docs-batch.json
+
+# Use custom JSON config with force recreation
+pwsh scripts/branch-management/batch-branch-orchestrator.ps1 `
+  -ConfigPath configs/issues.json `
+  -Source develop `
+  -Pattern "{type}/{issue-number}-{title}" `
+  -Force
+```
+
+| Parameter | Description |
+| --- | --- |
+| `-Preset` | Built-in issue ranges (`blog`, `dashboard`, `docs`, `infra`) |
+| `-Issues` | Manual list of issue numbers |
+| `-ConfigPath` | JSON file with `{ "number": 310, "type": "hotfix" }` entries |
+| `-Source` | Base branch to start from (default `develop`) |
+| `-Pattern` | Branch naming template |
+| `-Push` | Push newly created branches to origin |
+| `-Force` | Delete and recreate existing branches |
+| `-ReportPath` | Persist structured results for dashboards |
+
+---
+
 ## Monitoring
 
 **Location:** `scripts/monitoring/`

@@ -33,11 +33,14 @@ This page is auto-generated from the metadata defined in the `prompts/` director
 | --- | --- | --- | --- |
 | [Automation Prompt Library Audit](https://github.com/jschibelli/portfolio-os/blob/develop/automation/automation-prompt-audit.md) | 2025-11-15 | draft | — |
 | [Automation Security & Ops Guardrails](https://github.com/jschibelli/portfolio-os/blob/develop/automation/security-and-ops.md) | 2025-11-15 | draft | `scripts/automation/core-utilities/ai-services.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/issue-config-unified.ps1` |
+| [Batch Branch Orchestrator Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/automation/batch-branch-orchestrator.md) | 2025-11-15 | draft | `scripts/branch-management/batch-branch-orchestrator.ps1` |
+| [Branch Health Audit Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/automation/branch-health-audit.md) | 2025-11-15 | draft | `scripts/branch-management/branch-health-audit.ps1` |
 | [GitHub Issue Auto-Configuration Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/automation/github-issue-auto-configuration.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/auto-configure-issue-updated.ps1`, `scripts/core-utilities/set-estimate-iteration.ps1` |
 | [Integration Implementation Guide](https://github.com/jschibelli/portfolio-os/blob/develop/automation/integration-implementation-guide.md) | 2025-11-15 | draft | `scripts/automation/auto-configure-pr.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/docs-updater.ps1`, `scripts/automation/continuous-issue-pipeline.ps1`, `scripts/automation/issue-queue-manager.ps1`, `scripts/automation/issue-implementation.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
 | [Issue Analysis Prompt Template](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-analysis-prompt-template.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
 | [Issue Management Automation - Prompt Engineering Strategy](https://github.com/jschibelli/portfolio-os/blob/develop/automation/issue-management-prompt-engineering.md) | 2025-11-15 | draft | `scripts/automation/issue-config-unified.ps1`, `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
 | [PR Automation Prompt Template](https://github.com/jschibelli/portfolio-os/blob/develop/automation/pr-automation-prompt-template.md) | 2025-11-15 | draft | `scripts/automation/pr-automation-unified.ps1`, `scripts/automation/core-utilities/ai-services.ps1` |
+| [Sync Feature Branch Prompt](https://github.com/jschibelli/portfolio-os/blob/develop/automation/sync-feature-branch.md) | 2025-11-15 | draft | `scripts/branch-management/sync-feature-branch.ps1` |
 | [Workflow & Automation Evaluation Report](https://github.com/jschibelli/portfolio-os/blob/develop/automation/workflow-evaluation-report.md) | 2025-11-15 | draft | — |
 
 ### Generated Prompts
@@ -288,6 +291,171 @@ $env:OPENAI_API_KEY = (Get-Content ./secrets/openai.key -Raw).Trim()
 2. Revalidate workflow references to ensure script paths are current.
 3. Rotate API keys & ensure secrets are scoped to required repos only.
 4. Review automation logs for anomalous spikes in failures or API calls.
+~~~
+
+</details>
+
+#### Batch Branch Orchestrator Prompt
+
+- **Source:** [automation/batch-branch-orchestrator.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/batch-branch-orchestrator.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/branch-management/batch-branch-orchestrator.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Batch Branch Orchestrator Prompt
+
+Enable maintainers to create/push multiple issue branches using presets, CLI lists, or JSON configs, while logging results for documentation.
+
+## Preconditions
+
+- Repo cloned locally; git + gh configured.
+- Issue numbers (or JSON config) identified and accessible.
+- Operator understands whether to force-delete existing branches.
+
+## Runbook
+
+1. **Collect Inputs**
+   - Source branch (default `develop`)
+   - Issue list source: preset (`blog`, `dashboard`, `docs`, `infra`), manual numbers, or config file path.
+   - Naming pattern (default `{type}/{issue-number}-{title}`) and default type (`feature`).
+   - Should branches be pushed? Should existing ones be force recreated?
+   - Desired report path (default `reports/batch-branches.json`).
+
+2. **Confirm Issue Set**
+   - If using preset/JSON, echo the resolved list to the operator for approval.
+
+3. **Dry Run (recommended)**
+   ```powershell
+   pwsh scripts/branch-management/batch-branch-orchestrator.ps1 `
+     -Preset {{preset|custom}} `
+     -Issues {{comma_separated}} `
+     -ConfigPath "{{config}}" `
+     -Source {{source}} `
+     -Pattern "{{pattern}}" `
+     -Type {{type}} `
+     -Push:{{true|false}} `
+     -Force:{{true|false}} `
+     -ReportPath "{{report_path}}" `
+     -DryRun
+   ```
+
+4. **Live Run**
+   - After approval, drop `-DryRun` and rerun.
+   - Monitor output for failures; if a branch fails to create/push, capture the error and continue (script already logs status per issue).
+
+5. **Summarize**
+   - Provide counts for Created / Skipped / Failed.
+   - Surface the `ReportPath` JSON for downstream docs or dashboards.
+   - Suggest next actions (e.g., assign developers, open draft PRs, run branch health audit).
+
+## Prompt Template
+
+```
+You orchestrate batch branch creation.
+- Gather: source branch, issue set (preset/list/JSON), push + force flags, report path.
+- Run the orchestrator with `-DryRun` first, summarize planned branches, and ask for confirmation.
+- Execute the live run, capturing successes/failures.
+- Return a table of Issue  Branch  Status and provide the JSON report location.
+If any branches fail, recommend follow-up remediation steps.
+```
+
+## Validation Checklist
+
+- [ ] Issue list confirmed before live creation
+- [ ] Dry run executed unless operator explicitly skipped
+- [ ] JSON report path shared
+- [ ] Failures flagged with actionable guidance
+~~~
+
+</details>
+
+#### Branch Health Audit Prompt
+
+- **Source:** [automation/branch-health-audit.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/branch-health-audit.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/branch-management/branch-health-audit.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Branch Health Audit Prompt
+
+Guides an automation agent (or GitHub Actions step) through auditing local + remote branches using `branch-health-audit.ps1`, capturing findings, and deciding whether to auto-clean stale branches.
+
+## Preconditions
+
+- PowerShell 7+, git, gh CLI available
+- Repo cloned at `C:\Users\jschi\OneDrive\Desktop\2025_portfolio\portfolio-os`
+- `gh auth status` is valid to resolve issue titles (optional but recommended)
+
+## Runbook
+
+1. **Collect Context**
+   - Ask user which scope to scan (`local`, `remote`, `all`), desired `MaxAgeDays`, and whether they want a JSON report saved (default `reports/branch-health.json`).
+   - Confirm if auto-cleanup should run and whether it should be live or dry-run first.
+
+2. **Execute Audit (Dry Run First)**
+   ```powershell
+   pwsh scripts/branch-management/branch-health-audit.ps1 `
+     -Scope {{scope}} `
+     -MaxAgeDays {{max_age}} `
+     -OutputFormat table `
+     -ReportPath "{{report_path}}" `
+     -AutoFix:$false `
+     -DryRun
+   ```
+   - Capture the rendered table plus the JSON file (if requested) for summary.
+
+3. **Summarize Findings**
+   - Count number of branches flagged as stale, missing upstreams, or failing naming rules.
+   - Highlight critical branches (e.g., age > 30 days or ahead/behind deltas).
+
+4. **Optional Auto-Fix**
+   - If user agrees, rerun without `-DryRun` and with `-AutoFix`.
+   ```powershell
+   pwsh scripts/branch-management/branch-health-audit.ps1 `
+     -Scope local `
+     -MaxAgeDays {{max_age}} `
+     -AutoFix `
+     -BaseBranch develop
+   ```
+   - Report which branches were deleted (or errors if any).
+
+5. **Next Steps**
+   - Suggest syncing problematic branches via `sync-feature-branch.ps1`.
+   - Attach/commit the JSON report or upload to dashboards if required.
+
+## Prompt Template (for AI Agent)
+
+```
+You are Portfolio OS's Branch Health Auditor. Follow these steps:
+
+1. Run `branch-health-audit.ps1` with the provided parameters in DRY RUN mode first.
+2. Summarize:
+   - total branches inspected
+   - stale branches (list top 5 with age + ahead/behind)
+   - branches missing upstream tracking
+   - naming violations
+3. Ask if the operator wants to auto-delete stale merged branches. If yes, re-run with `-AutoFix` (no dry run) and list deletions.
+4. Provide a final recommendation: which branches to sync, delete manually, or escalate.
+
+Always include the command(s) you executed and where any report file was written.
+```
+
+## Validation Checklist
+
+- [ ] Dry-run output captured and summarized
+- [ ] User explicitly opted-in before destructive `-AutoFix` action
+- [ ] JSON/CSV report path shared
+- [ ] Follow-up actions (sync, PR cleanup) suggested
 ~~~
 
 </details>
@@ -2478,6 +2646,81 @@ function Post-CommentResponses {
 ---
 
 This template provides a comprehensive foundation for AI-powered PR automation that enhances your existing CR-GPT integration while maintaining high-quality, contextual responses that improve the development workflow.
+~~~
+
+</details>
+
+#### Sync Feature Branch Prompt
+
+- **Source:** [automation/sync-feature-branch.md](https://github.com/jschibelli/portfolio-os/blob/develop/automation/sync-feature-branch.md)
+- **Last Reviewed:** 2025-11-15
+- **Status:** draft
+- **Linked Scripts:** `scripts/branch-management/sync-feature-branch.ps1`
+
+
+<details>
+<summary>Copy Prompt</summary>
+
+~~~markdown
+# Sync Feature Branch Prompt
+
+Helps an operator (human or agent) safely rebase/merge a feature branch onto `develop` (or another base), run optional tests, and push with the right safeguards.
+
+## Preconditions
+
+- Working tree must be clean unless the user explicitly accepts `-Force`.
+- Repo checked out locally with git + gh configured.
+- The branch to sync exists locally and tracks origin.
+
+## Runbook
+
+1. **Gather Inputs**
+   - Target branch (default: current)
+   - Base branch (default: `develop`)
+   - Strategy (`rebase` vs `merge`)
+   - Should we push afterward? If rebase + push, confirm willingness to `--force-with-lease`.
+   - Optional test command (e.g., `pnpm lint` or `pnpm test`).
+
+2. **Pre-flight Check**
+   - Run `git status --short`; if dirty and user refuses to force, abort with guidance.
+
+3. **Execute Sync**
+   ```powershell
+   pwsh scripts/branch-management/sync-feature-branch.ps1 `
+     -Branch {{branch}} `
+     -Base {{base}} `
+     -Strategy {{rebase|merge}} `
+     -Push:{{true|false}} `
+     -ForceWithLease:{{true|false}} `
+     -TestCommand "{{test_command}}" `
+     -Force:{{true|false}}
+   ```
+   - Capture output JSON summary.
+
+4. **Handle Conflicts**
+   - If script exits with a conflict, instruct operator to resolve (`git status`, `git rebase --continue`, etc.) and rerun.
+
+5. **Report**
+   - Include duration, number of commits rebased (if available via git log), whether tests ran, and push status.
+   - Suggest next actions (open PR, notify reviewer, run branch health audit).
+
+## Prompt Template
+
+```
+You are the Sync Assistant. Always:
+1. Confirm the branch, base, strategy, push preference, and optional tests with the operator.
+2. Ensure the working tree is clean unless they allow Force.
+3. Run `sync-feature-branch.ps1` with their choices.
+4. If conflicts occur, pause and explain how to resolve before retrying.
+5. Summarize the outcome (duration, tests, push) and recommend a follow-up (e.g., run CI, create PR).
+```
+
+## Safety Checklist
+
+- [ ] Operator explicitly approved `--force-with-lease` before pushing rebased commits
+- [ ] Dirty working tree acknowledged before forcing
+- [ ] Conflicts communicated with resolution steps
+- [ ] Summary JSON stored/logged for traceability
 ~~~
 
 </details>

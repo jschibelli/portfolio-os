@@ -1,0 +1,1096 @@
+[
+  {
+    "Branch": "origin/2-in-app-chatbot-custom-styled-openai-powered",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-08-17T13:19:57-04:00",
+    "AgeDays": 89.79,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/case-study-implementation",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-01T16:33:30-04:00",
+    "AgeDays": 74.66,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/article-settings-drawer",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-01T16:41:02-04:00",
+    "AgeDays": 74.65,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/17-add-article-settings-drawer-to-admin-dashboard",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-04T22:29:55-04:00",
+    "AgeDays": 71.41,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/seo-dynamic-og-images",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-10T23:17:59-04:00",
+    "AgeDays": 65.37,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/accessibility-enhancements",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-12T11:26:33-04:00",
+    "AgeDays": 63.87,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/homepage-hero-redesign",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-12T11:47:07-04:00",
+    "AgeDays": 63.85,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/about-hero-redesign-103",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T01:46:28-04:00",
+    "AgeDays": 63.27,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/about-timeline-106",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T02:11:34-04:00",
+    "AgeDays": 63.25,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/31-phase-22-fix-performance-tests---core-web-vitals",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T15:04:18-04:00",
+    "AgeDays": 62.72,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/pr37-merge-resolve",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T15:04:18-04:00",
+    "AgeDays": 62.72,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/fix/21-blog-rebuild-from-spec",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T15:25:22-04:00",
+    "AgeDays": 62.7,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/projects-listing-page",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T16:01:22-04:00",
+    "AgeDays": 62.68,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/accessibility-unit-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-13T16:23:07-04:00",
+    "AgeDays": 62.66,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/unused",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-14T10:55:49-04:00",
+    "AgeDays": 61.89,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/redesign-skills-section-107",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-14T15:25:32-04:00",
+    "AgeDays": 61.7,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/117-contact-form-improvements",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-17T01:27:28-04:00",
+    "AgeDays": 59.28,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-130-strengthen-cta-sections",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-17T12:40:37-04:00",
+    "AgeDays": 58.82,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/refactor/v0.10-split",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-23T01:01:31-04:00",
+    "AgeDays": 53.3,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/epic/151-scaffold-turborepo",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-23T02:29:22-04:00",
+    "AgeDays": 53.24,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/misc-bug-fixes",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-27T12:04:57-04:00",
+    "AgeDays": 48.84,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feat/maintenance-gate-170",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-27T14:19:26-04:00",
+    "AgeDays": 48.75,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-173-remove-arrogant-language",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-27T21:36:33-04:00",
+    "AgeDays": 48.44,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-175-improve-portfolio-tone",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-28T02:55:42-04:00",
+    "AgeDays": 48.22,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-c7abbf17-7b13-41da-accb-ead417dd85f8",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-28T13:52:20-04:00",
+    "AgeDays": 47.77,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-ec5d8379-58b3-4118-a566-505c733eb27f",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-28T13:49:16-04:00",
+    "AgeDays": 47.77,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-5847d01a-7fd6-4d1a-9714-f5cfb7b8397c",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-28T14:02:55-04:00",
+    "AgeDays": 47.76,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-86a55562-c54b-4a64-bb20-e163cb12455d",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-28T14:10:02-04:00",
+    "AgeDays": 47.75,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/196-tiptap-editor-complete",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-29T00:45:27-04:00",
+    "AgeDays": 47.31,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-5e38aa93-d284-4a5d-b6b8-ca1d580b8d28",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-29T16:15:49-04:00",
+    "AgeDays": 46.67,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/chore/ci-e2e-pr-automation-optimized",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-29T21:05:15-04:00",
+    "AgeDays": 46.47,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/197-enhanced-toolbar",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-29T22:26:17-04:00",
+    "AgeDays": 46.41,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/198-enhanced-slash-commands",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-29T22:49:03-04:00",
+    "AgeDays": 46.39,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/199-dual-editor-mode",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-30T00:06:21-04:00",
+    "AgeDays": 46.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/200-seo-settings-panel",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-30T01:23:40-04:00",
+    "AgeDays": 46.29,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/201-publishing-options-panel",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-09-30T10:56:46-04:00",
+    "AgeDays": 45.89,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/204-phase-41-hashnode-publishing-api-integration",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-01T01:25:19-04:00",
+    "AgeDays": 45.29,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-225-dashboard-site-api-integration",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-01T23:36:07-04:00",
+    "AgeDays": 44.36,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-6b96c6bc-cc72-4d31-8189-b1134f8971db",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T10:39:41-04:00",
+    "AgeDays": 43.9,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-3f0130bb-622a-45aa-b300-549083e7a530",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T10:34:51-04:00",
+    "AgeDays": 43.9,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-1b9e0313-cd7d-4c91-b212-9a8a12fb094e",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T10:48:11-04:00",
+    "AgeDays": 43.9,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-88b7358f-421e-4474-aa8e-9c8b77babc7d",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T10:41:48-04:00",
+    "AgeDays": 43.9,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot/fix-8b391884-65cc-4edb-ba84-e1f377bd8702",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T10:38:43-04:00",
+    "AgeDays": 43.9,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/issue-184-fix-hashnode-api-connection",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T11:07:32-04:00",
+    "AgeDays": 43.88,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/multi-agent-system-implementation",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-02T13:17:46-04:00",
+    "AgeDays": 43.79,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-226-modular-content-block-system",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-03T00:26:18-04:00",
+    "AgeDays": 43.33,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-226",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-04T03:20:30-04:00",
+    "AgeDays": 42.21,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-247-contact-resend-integration",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-04T16:53:25-04:00",
+    "AgeDays": 41.64,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-252-remove-inflated-metrics",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-04T17:03:58-04:00",
+    "AgeDays": 41.63,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/agent-3-automation-fix",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-04T17:37:03-04:00",
+    "AgeDays": 41.61,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/agent-2-automation-frontend",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-05T03:19:12-04:00",
+    "AgeDays": 41.21,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-250-seo-robots-sitemap-metadata",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-06T00:28:31-04:00",
+    "AgeDays": 40.33,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/copilot-fix-56aab07e-3258-4fb2-868f-299adc76e886-chris",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-06T01:33:05-04:00",
+    "AgeDays": 40.28,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-247-contact-resend-integration-chris",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-06T01:32:34-04:00",
+    "AgeDays": 40.28,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-251-social-og-twitter-images",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-06T01:51:27-04:00",
+    "AgeDays": 40.27,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-253-a11y-navigation-focus",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-06T03:03:29-04:00",
+    "AgeDays": 40.22,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-279-contact-environment-config",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-08T01:41:46-04:00",
+    "AgeDays": 38.27,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-280-contact-database-persistence",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-08T01:49:58-04:00",
+    "AgeDays": 38.27,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-281-contact-error-handling",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-08T02:05:16-04:00",
+    "AgeDays": 38.26,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-293-blog-post-detail-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T22:57:23-04:00",
+    "AgeDays": 36.39,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-295-homepage-interactive-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T23:08:21-04:00",
+    "AgeDays": 36.38,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-296-authentication-flow-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T23:20:08-04:00",
+    "AgeDays": 36.37,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-300-chatbot-interaction-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T23:38:57-04:00",
+    "AgeDays": 36.36,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-298-contact-form-flow-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T23:33:47-04:00",
+    "AgeDays": 36.36,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-302-interactive-component-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-09T23:53:18-04:00",
+    "AgeDays": 36.35,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-305-performance-accessibility-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:26-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-304-visual-regression-expansion",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:13:48-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-303-error-handling-edge-cases-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:20-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-301-booking-system-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:12-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-292-test-utils-config-updates",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:02:42-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-299-newsletter-subscription-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:05-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-294-projects-portfolio-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:00-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-297-protected-routes-session-tests",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-10T00:03:39-04:00",
+    "AgeDays": 36.34,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-254-performance-images-fonts-headers",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-11T16:15:40-04:00",
+    "AgeDays": 34.67,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/fix/typescript-compilation-errors",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-11T16:42:08-04:00",
+    "AgeDays": 34.65,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/issue-227",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T01:02:03-04:00",
+    "AgeDays": 26.3,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/agent-2",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T02:28:42-04:00",
+    "AgeDays": 26.24,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/Agent-3",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T02:28:42-04:00",
+    "AgeDays": 26.24,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/agent-1",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T02:28:42-04:00",
+    "AgeDays": 26.24,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/chatbot-context-window-328",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T15:50:37-04:00",
+    "AgeDays": 25.69,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/refactor/chatbot-modularize-330",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T15:59:22-04:00",
+    "AgeDays": 25.68,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/chatbot-persistence-327",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T15:56:50-04:00",
+    "AgeDays": 25.68,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/feature/chatbot-quick-replies-329",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T15:58:16-04:00",
+    "AgeDays": 25.68,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/docs/chatbot-types-docs-331",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-20T16:22:46-04:00",
+    "AgeDays": 25.66,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/fix/typescript-errors-issue-344",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-21T23:22:39-04:00",
+    "AgeDays": 24.37,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/sandbox",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-23T10:33:19-04:00",
+    "AgeDays": 22.91,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/security/fix-auth-hardcoded-credentials",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-10-23T11:48:50-04:00",
+    "AgeDays": 22.85,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": [
+      "Stale (> 14 days)"
+    ]
+  },
+  {
+    "Branch": "origin/houskeeping",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-11-10T18:02:07-05:00",
+    "AgeDays": 4.59,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": []
+  },
+  {
+    "Branch": "origin",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-11-14T12:52:54-05:00",
+    "AgeDays": 0.81,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": []
+  },
+  {
+    "Branch": "origin/main",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-11-14T12:52:54-05:00",
+    "AgeDays": 0.81,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": []
+  },
+  {
+    "Branch": "origin/develop",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-11-14T12:47:39-05:00",
+    "AgeDays": 0.81,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": []
+  },
+  {
+    "Branch": "origin/feature/359-create-comprehensive-automation-system-index-and-documentation",
+    "Category": "remote",
+    "Upstream": "",
+    "LastCommit": "2025-11-15T02:27:01-05:00",
+    "AgeDays": 0.24,
+    "Ahead": 0,
+    "Behind": 0,
+    "Issues": []
+  }
+]
