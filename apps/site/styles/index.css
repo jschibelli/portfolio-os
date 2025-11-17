@@ -112,32 +112,37 @@
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
+  [role="button"]:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid hsl(var(--ring, 346.8 77.2% 45%));
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
     outline-offset: 2px;
     border-radius: 4px;
   }
 
-  /* Enhanced focus states for navigation */
+  /* Enhanced focus for navigation elements */
   nav a:focus-visible,
   nav button:focus-visible {
-    outline: 2px solid hsl(var(--ring, 346.8 77.2% 45%));
+    outline: 2px solid hsl(var(--ring, 346.8 77.2% 49.8%));
     outline-offset: 2px;
     background-color: hsl(var(--accent, 240 4.8% 95.9%));
-    border-radius: 6px;
   }
 
-  /* Skip link focus state */
-  .skip-link:focus {
+  /* Skip link specific styling */
+  .skip-link {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 9999;
-    background: hsl(var(--primary, 346.8 77.2% 45%));
-    color: hsl(var(--primary-foreground, 355.7 100% 97.3%));
-    padding: 8px 16px;
+    top: -40px;
+    left: 6px;
+    background: hsl(var(--foreground, 240 10% 3.9%));
+    color: hsl(var(--background, 0 0% 100%));
+    padding: 8px;
     text-decoration: none;
-    border-radius: 0 0 4px 0;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+  }
+
+  .skip-link:focus {
+    top: 6px;
   }
 
   /* Screen reader only content */
