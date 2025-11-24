@@ -20,8 +20,9 @@ const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'
   loading: () => null,
 });
 
-// ISR with 60 second revalidation
-export const revalidate = 60;
+// ISR with 30 second revalidation (reduced from 60 for faster updates)
+// Webhook revalidation will make new posts appear immediately when configured
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title: 'Blog | John Schibelli',
@@ -101,8 +102,9 @@ export default async function BlogPage() {
   let currentPublication = defaultPublication;
   
   try {
+    // Fetch more posts to ensure we get all articles including older ones
     const [fetchedPosts, fetchedPublication] = await Promise.all([
-      fetchPosts(10),
+      fetchPosts(50), // Increased from 10 to 50 to ensure all posts are included
       fetchPublication()
     ]);
     posts = fetchedPosts || [];

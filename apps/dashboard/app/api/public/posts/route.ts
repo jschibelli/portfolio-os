@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // Public API endpoint for posts - no authentication required
 export async function GET(request: NextRequest) {
@@ -46,22 +44,22 @@ export async function GET(request: NextRequest) {
       prisma.article.findMany({
         where,
         include: {
-          author: {
+          User: {
             select: {
               name: true,
               email: true,
               image: true
             }
           },
-          cover: {
+          ImageAsset: {
             select: {
               url: true,
               alt: true
             }
           },
-          tags: {
+          ArticleTag: {
             select: {
-              tag: {
+              Tag: {
                 select: {
                   id: true,
                   name: true,
@@ -94,18 +92,18 @@ export async function GET(request: NextRequest) {
       views: post.views || 0,
       featured: post.featured || false,
       author: {
-        name: post.author?.name || 'Unknown',
-        email: post.author?.email || '',
-        image: post.author?.image || ''
+        name: post.User?.name || 'Unknown',
+        email: post.User?.email || '',
+        image: post.User?.image || ''
       },
-      cover: post.cover ? {
-        url: post.cover.url,
-        alt: post.cover.alt || post.title
+      cover: post.ImageAsset ? {
+        url: post.ImageAsset.url,
+        alt: post.ImageAsset.alt || post.title
       } : null,
-      tags: post.tags.map(tag => ({
-        id: tag.tag.id,
-        name: tag.tag.name,
-        slug: tag.tag.slug
+      tags: post.ArticleTag.map(articleTag => ({
+        id: articleTag.Tag.id,
+        name: articleTag.Tag.name,
+        slug: articleTag.Tag.slug
       }))
     }));
 

@@ -123,6 +123,8 @@ export default function CTA({
 								placeholder="Email address"
 								className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring hover:border-primary/50 focus:border-primary flex-1 rounded-lg border px-3 py-2 text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-4 sm:py-3 sm:text-base"
 								disabled={requestInProgress}
+								// Suppress hydration warnings for browser extension attributes
+								suppressHydrationWarning
 							/>
 							<Button
 								onClick={subscribe}
