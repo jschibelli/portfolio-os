@@ -8,7 +8,7 @@
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json}\"",
     "preinstall": "npx only-allow pnpm",
-    "postinstall": "cd apps/dashboard && prisma generate",
+    "postinstall": "node node_modules/@jschibelli/portfolio-os-automation/postinstall.js && cd apps/dashboard && prisma generate",
     "dev": "turbo run dev --parallel --filter=@mindware-blog/site --filter=@mindware-blog/dashboard --filter=@portfolio/docs",
     "build": "turbo run build",
     "lint": "turbo run lint",
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
+    "@jschibelli/portfolio-os-automation": "^1.0.2",
     "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
