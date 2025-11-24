@@ -6,7 +6,7 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 92s
+ ✓ Compiled successfully in 34.0s
    Skipping validation of types
    Skipping linting
    Collecting page data ...
@@ -14,103 +14,54 @@
 [env-validation] Starting validation...
 [env-validation] Validation successful
 [env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:30:59.975Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:33:44.506Z', service: 'google-calendar' }
 [env-validation] Initializing environment variables...
 [env-validation] Starting validation...
 [env-validation] Validation successful
 [env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:00.182Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:33:44.681Z', service: 'google-calendar' }
  ⚠ Using edge runtime on a page currently disables static generation for that page
 [env-validation] Initializing environment variables...
 [env-validation] Starting validation...
+[env-validation] Validation successful
+[env-validation] Environment variables initialized
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:33:44.693Z', service: 'google-calendar' }
 [env-validation] Initializing environment variables...
 [env-validation] Starting validation...
 [env-validation] Validation successful
 [env-validation] Environment variables initialized
-[env-validation] Validation successful
-[env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:00.365Z', service: 'google-calendar' }
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:00.374Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:33:44.732Z', service: 'google-calendar' }
 [env-validation] Initializing environment variables...
 [env-validation] Starting validation...
 [env-validation] Validation successful
 [env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:00.435Z', service: 'google-calendar' }
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:33:44.788Z', service: 'google-calendar' }
 [Build] Fetching blog post slugs for static generation
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Build] Generating static pages for 21 blog posts
-   Generating static pages (0/132) ...
-[Blog Post] Fetching post: building-a-scalable-website
+[Build] Generating static pages for 24 blog posts
+   Generating static pages (0/136) ...
+[Blog Post] Fetching post: getting-started-with-blog-management
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: building-a-scalable-website
+[Content API] Fetching post by slug: getting-started-with-blog-management
 [Content API] Using Hashnode API for post
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: building-a-scalable-website from mindware.hashnode.dev
+[Hashnode API] Fetching post: getting-started-with-blog-management from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
+[Blog Post] Fetching post: case-study-hybrid-development-approach
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
+[Content API] Fetching post by slug: case-study-hybrid-development-approach
 [Content API] Using Hashnode API for post
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid from mindware.hashnode.dev
+[Hashnode API] Fetching post: case-study-hybrid-development-approach from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: wordpress-vs-contentful
+[Blog Post] Fetching post: tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: wordpress-vs-contentful
+[Content API] Fetching post by slug: tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy
 [Content API] Using Hashnode API for post
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: wordpress-vs-contentful from mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: modern-web-development-frameworks-comparison
-[Blog Post] NEXT_PHASE: phase-production-build
-[Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: modern-web-development-frameworks-comparison
-[Content API] Using Hashnode API for post
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: modern-web-development-frameworks-comparison from mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Successfully fetched post: building-a-scalable-website
-[Content API] Successfully fetched post "building-a-scalable-website" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: Building a Scalable Website
-[Hashnode API] Successfully fetched post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
-[Content API] Successfully fetched post "how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: How to Use Social Media to Properly Market Yourself and What to Avoid
-[Hashnode API] Successfully fetched post: wordpress-vs-contentful
-[Content API] Successfully fetched post "wordpress-vs-contentful" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: WordPress vs. Contentful
-[Hashnode API] Successfully fetched post: modern-web-development-frameworks-comparison
-[Content API] Successfully fetched post "modern-web-development-frameworks-comparison" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: Modern Web Development Frameworks Comparison
-[env-validation] Initializing environment variables...
-[env-validation] Starting validation...
-[env-validation] Validation successful
-[env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:26.144Z', service: 'google-calendar' }
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: are-we-in-an-ai-bubble-or-a-renaissance
-[Blog Post] NEXT_PHASE: phase-production-build
-[Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: are-we-in-an-ai-bubble-or-a-renaissance
-[Content API] Using Hashnode API for post
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: are-we-in-an-ai-bubble-or-a-renaissance from mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
-[Blog Post] NEXT_PHASE: phase-production-build
-[Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
-[Content API] Using Hashnode API for post
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai from mindware.hashnode.dev
+[Hashnode API] Fetching post: tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours
 [Blog Post] NEXT_PHASE: phase-production-build
@@ -120,6 +71,14 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
+[Blog Post] Fetching post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: how-we-built-synaplyai
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
@@ -128,13 +87,13 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: how-we-built-synaplyai from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: advanced-react-hooks-custom-hooks-and-performance-optimization
+[Blog Post] Fetching post: vibe-coding
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: advanced-react-hooks-custom-hooks-and-performance-optimization
+[Content API] Fetching post by slug: vibe-coding
 [Content API] Using Hashnode API for post
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: advanced-react-hooks-custom-hooks-and-performance-optimization from mindware.hashnode.dev
+[Hashnode API] Fetching post: vibe-coding from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: advanced-state-management-in-react-when-to-use-context-redux-or-zustand
 [Blog Post] NEXT_PHASE: phase-production-build
@@ -144,35 +103,49 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: advanced-state-management-in-react-when-to-use-context-redux-or-zustand from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Successfully fetched post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
-[Content API] Successfully fetched post "from-setback-to-comeback-my-stroke-recovery-journey-with-ai" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: From Setback to Comeback: My Stroke Recovery Journey with AI
+[Blog Post] Post found: NO
+[Blog Post] Post not found, returning 404 for slug: getting-started-with-blog-management
+[Content API] Using Hashnode API for posts
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching posts from publication: mindware.hashnode.dev
+[Hashnode API] Post not found: getting-started-with-blog-management
+[Content API] Post "getting-started-with-blog-management" not found in Hashnode
+[Hashnode API] Post not found: tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy
+[Content API] Post "tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy" not found in Hashnode
+[Hashnode API] Post not found: case-study-hybrid-development-approach
+[Content API] Post "case-study-hybrid-development-approach" not found in Hashnode
+[Hashnode API] Post not found: vibe-coding
+[Content API] Post "vibe-coding" not found in Hashnode
 [Hashnode API] Successfully fetched post: how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours
 [Content API] Successfully fetched post "how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: How I Use GPT to Scope and Estimate Freelance Projects (Without Burning Hours)
-[Hashnode API] Successfully fetched post: are-we-in-an-ai-bubble-or-a-renaissance
-[Content API] Successfully fetched post "are-we-in-an-ai-bubble-or-a-renaissance" from Hashnode
+[Hashnode API] Successfully fetched post: from-setback-to-comeback-my-stroke-recovery-journey-with-ai
+[Content API] Successfully fetched post "from-setback-to-comeback-my-stroke-recovery-journey-with-ai" from Hashnode
 [Blog Post] Post found: YES
-[Blog Post] Post title: Are We in an AI Bubble or a Renaissance?
+[Blog Post] Post title: From Setback to Comeback: My Stroke Recovery Journey with AI
 [Hashnode API] Successfully fetched post: how-we-built-synaplyai
 [Content API] Successfully fetched post "how-we-built-synaplyai" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: How We Built SynaplyAI
-[Hashnode API] Successfully fetched post: advanced-react-hooks-custom-hooks-and-performance-optimization
-[Content API] Successfully fetched post "advanced-react-hooks-custom-hooks-and-performance-optimization" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: Advanced React Hooks: Custom Hooks and Performance Optimization
 [Hashnode API] Successfully fetched post: advanced-state-management-in-react-when-to-use-context-redux-or-zustand
 [Content API] Successfully fetched post "advanced-state-management-in-react-when-to-use-context-redux-or-zustand" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Advanced State Management in React: When to Use Context, Redux, or Zustand
-[env-validation] Initializing environment variables...
-[env-validation] Starting validation...
-[env-validation] Validation successful
-[env-validation] Environment variables initialized
-[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-14T07:31:28.454Z', service: 'google-calendar' }
+[Blog Post] Post found: NO
+[Blog Post] Post not found, returning 404 for slug: tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy
+[Blog Post] Post found: NO
+[Blog Post] Post not found, returning 404 for slug: case-study-hybrid-development-approach
+[Blog Post] Post found: NO
+[Blog Post] Post not found, returning 404 for slug: vibe-coding
+[Blog Post] Fetching post: advanced-react-hooks-custom-hooks-and-performance-optimization
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: advanced-react-hooks-custom-hooks-and-performance-optimization
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: advanced-react-hooks-custom-hooks-and-performance-optimization from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: lifecycle-methods-and-introduction-to-hooks
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
@@ -221,14 +194,6 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: understanding-components-props-and-state-management-in-react from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
-[Blog Post] Fetching post: introduction-to-react-building-your-first-component
-[Blog Post] NEXT_PHASE: phase-production-build
-[Blog Post] NODE_ENV: production
-[Content API] Fetching post by slug: introduction-to-react-building-your-first-component
-[Content API] Using Hashnode API for post
-[Hashnode API] Using publication host: mindware.hashnode.dev
-[Hashnode API] Fetching post: introduction-to-react-building-your-first-component from mindware.hashnode.dev
-[Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: understanding-jsx-and-rendering-in-nextjs
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
@@ -237,6 +202,10 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: understanding-jsx-and-rendering-in-nextjs from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Successfully fetched post: advanced-react-hooks-custom-hooks-and-performance-optimization
+[Content API] Successfully fetched post "advanced-react-hooks-custom-hooks-and-performance-optimization" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: Advanced React Hooks: Custom Hooks and Performance Optimization
 [Hashnode API] Successfully fetched post: lifecycle-methods-and-introduction-to-hooks
 [Content API] Successfully fetched post "lifecycle-methods-and-introduction-to-hooks" from Hashnode
 [Blog Post] Post found: YES
@@ -245,14 +214,14 @@
 [Content API] Successfully fetched post "the-evolution-of-critical-thinking-in-the-era-of-generative-ai" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: The Evolution of Critical Thinking in the Era of Generative AI
-[Hashnode API] Successfully fetched post: event-handling-conditional-rendering-in-react
-[Content API] Successfully fetched post "event-handling-conditional-rendering-in-react" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: Event Handling & Conditional Rendering in React
 [Hashnode API] Successfully fetched post: managing-lists-keys-and-forms-in-react
 [Content API] Successfully fetched post "managing-lists-keys-and-forms-in-react" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Managing Lists, Keys, and Forms in React
+[Hashnode API] Successfully fetched post: event-handling-conditional-rendering-in-react
+[Content API] Successfully fetched post "event-handling-conditional-rendering-in-react" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: Event Handling & Conditional Rendering in React
 [Hashnode API] Successfully fetched post: how-github-copilots-robin-takes-debugging-to-the-next-level
 [Content API] Successfully fetched post "how-github-copilots-robin-takes-debugging-to-the-next-level" from Hashnode
 [Blog Post] Post found: YES
@@ -261,14 +230,18 @@
 [Content API] Successfully fetched post "understanding-components-props-and-state-management-in-react" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Understanding Components, Props, and State Management in React
-[Hashnode API] Successfully fetched post: introduction-to-react-building-your-first-component
-[Content API] Successfully fetched post "introduction-to-react-building-your-first-component" from Hashnode
-[Blog Post] Post found: YES
-[Blog Post] Post title: Introduction to React: Building Your First Component with Next.js
 [Hashnode API] Successfully fetched post: understanding-jsx-and-rendering-in-nextjs
 [Content API] Successfully fetched post "understanding-jsx-and-rendering-in-nextjs" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Understanding JSX and Rendering in Next.js
+[Blog Post] Fetching post: introduction-to-react-building-your-first-component
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: introduction-to-react-building-your-first-component
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: introduction-to-react-building-your-first-component from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: unleashing-the-power-of-usestate-and-useeffect-in-modern-react
 [Blog Post] NEXT_PHASE: phase-production-build
 [Blog Post] NODE_ENV: production
@@ -276,6 +249,38 @@
 [Content API] Using Hashnode API for post
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: unleashing-the-power-of-usestate-and-useeffect-in-modern-react from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Blog Post] Fetching post: modern-web-development-frameworks-comparison
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: modern-web-development-frameworks-comparison
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: modern-web-development-frameworks-comparison from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Blog Post] Fetching post: wordpress-vs-contentful
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: wordpress-vs-contentful
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: wordpress-vs-contentful from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Blog Post] Fetching post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid from mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Blog Post] Fetching post: building-a-scalable-website
+[Blog Post] NEXT_PHASE: phase-production-build
+[Blog Post] NODE_ENV: production
+[Content API] Fetching post by slug: building-a-scalable-website
+[Content API] Using Hashnode API for post
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching post: building-a-scalable-website from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Blog Post] Fetching post: the-power-of-quiet-observation
 [Blog Post] NEXT_PHASE: phase-production-build
@@ -293,10 +298,30 @@
 [Hashnode API] Using publication host: mindware.hashnode.dev
 [Hashnode API] Fetching post: optimizing-react-applications-for-better-performance from mindware.hashnode.dev
 [Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Successfully fetched post: introduction-to-react-building-your-first-component
+[Content API] Successfully fetched post "introduction-to-react-building-your-first-component" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: Introduction to React: Building Your First Component with Next.js
 [Hashnode API] Successfully fetched post: unleashing-the-power-of-usestate-and-useeffect-in-modern-react
 [Content API] Successfully fetched post "unleashing-the-power-of-usestate-and-useeffect-in-modern-react" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Unleashing the Power of useState and useEffect in Modern React
+[Hashnode API] Successfully fetched post: modern-web-development-frameworks-comparison
+[Content API] Successfully fetched post "modern-web-development-frameworks-comparison" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: Modern Web Development Frameworks Comparison
+[Hashnode API] Successfully fetched post: how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid
+[Content API] Successfully fetched post "how-to-use-social-media-to-properly-market-yourself-and-what-to-avoid" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: How to Use Social Media to Properly Market Yourself and What to Avoid
+[Hashnode API] Successfully fetched post: wordpress-vs-contentful
+[Content API] Successfully fetched post "wordpress-vs-contentful" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: WordPress vs. Contentful
+[Hashnode API] Successfully fetched post: building-a-scalable-website
+[Content API] Successfully fetched post "building-a-scalable-website" from Hashnode
+[Blog Post] Post found: YES
+[Blog Post] Post title: Building a Scalable Website
 [Hashnode API] Successfully fetched post: the-power-of-quiet-observation
 [Content API] Successfully fetched post "the-power-of-quiet-observation" from Hashnode
 [Blog Post] Post found: YES
@@ -305,154 +330,175 @@
 [Content API] Successfully fetched post "optimizing-react-applications-for-better-performance" from Hashnode
 [Blog Post] Post found: YES
 [Blog Post] Post title: Optimizing React Applications for Better Performance
-   Generating static pages (33/132) 
-   Generating static pages (66/132) 
-   Generating static pages (99/132) 
- ✓ Generating static pages (132/132)
+[env-validation] Initializing environment variables...
+[env-validation] Starting validation...
+[env-validation] Validation successful
+[env-validation] Environment variables initialized
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:34:02.482Z', service: 'google-calendar' }
+[Hashnode API] Successfully fetched 22 posts from mindware.hashnode.dev
+[Hashnode API] Post date range: 2024-09-19T04:00:00.000Z to 2025-11-24T00:38:05.624Z
+[Content API] Fetched 22 posts from Hashnode
+[Content API] Using Hashnode API for posts
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Fetching posts from publication: mindware.hashnode.dev
+[Hashnode API] Using publication host: mindware.hashnode.dev
+[Hashnode API] Successfully fetched 22 posts from mindware.hashnode.dev
+[Hashnode API] Post date range: 2024-09-19T04:00:00.000Z to 2025-11-24T00:38:05.624Z
+[Content API] Fetched 22 posts from Hashnode
+[env-validation] Initializing environment variables...
+[env-validation] Starting validation...
+[env-validation] Validation successful
+[env-validation] Environment variables initialized
+[google-auth] SSL compatibility fix applied successfully { timestamp: '2025-11-24T20:34:03.062Z', service: 'google-calendar' }
+   Generating static pages (34/136) 
+   Generating static pages (68/136) 
+   Generating static pages (102/136) 
+ ✓ Generating static pages (136/136)
    Finalizing page optimization ...
    Collecting build traces ...
 
-Route (app)                                                                                  Size  First Load JS  Revalidate  Expire
-┌ ƒ /                                                                                     11.3 kB         207 kB
-├ ○ /_not-found                                                                             999 B         104 kB
-├ ○ /about                                                                                10.9 kB         200 kB
-├ ○ /admin                                                                                5.79 kB         232 kB
-├ ○ /admin/activity                                                                       5.01 kB         108 kB
-├ ○ /admin/analytics                                                                      12.1 kB         233 kB
-├ ○ /admin/articles                                                                       3.89 kB         125 kB
-├ ƒ /admin/articles/[id]/edit                                                               137 B         145 kB
-├ ○ /admin/articles/new                                                                     137 B         145 kB
-├ ○ /admin/articles/scheduled                                                             4.91 kB         107 kB
-├ ○ /admin/case-studies                                                                   3.32 kB         118 kB
-├ ○ /admin/case-studies/new                                                               5.64 kB         120 kB
-├ ○ /admin/comments                                                                       4.66 kB         107 kB
-├ ○ /admin/contacts                                                                       4.78 kB         107 kB
-├ ○ /admin/control-center                                                                 4.64 kB         115 kB
-├ ○ /admin/control-center/analytics                                                         349 B         103 kB
-├ ○ /admin/control-center/calendar                                                          349 B         103 kB
-├ ○ /admin/control-center/composer                                                        8.39 kB         126 kB
-├ ○ /admin/control-center/devops                                                            349 B         103 kB
-├ ○ /admin/control-center/email                                                           12.9 kB         137 kB
-├ ○ /admin/control-center/finance                                                           349 B         103 kB
-├ ○ /admin/control-center/notes                                                             349 B         103 kB
-├ ○ /admin/control-center/social                                                            349 B         103 kB
-├ ○ /admin/media                                                                          5.34 kB         117 kB
-├ ○ /admin/media/upload                                                                   5.17 kB         108 kB
-├ ○ /admin/newsletter                                                                     5.48 kB         108 kB
-├ ○ /admin/settings                                                                       4.71 kB         116 kB
-├ ○ /admin/settings/appearance                                                            6.37 kB         109 kB
-├ ○ /admin/settings/database                                                              5.68 kB         108 kB
-├ ○ /admin/settings/email                                                                 5.17 kB         108 kB
-├ ○ /admin/settings/integrations                                                          5.85 kB         108 kB
-├ ○ /admin/settings/roles                                                                 4.23 kB         107 kB
-├ ○ /admin/settings/seo                                                                   5.01 kB         108 kB
-├ ○ /admin/settings/users                                                                 4.93 kB         107 kB
-├ ○ /admin/tags                                                                           3.82 kB         106 kB
-├ ƒ /api/admin/activity                                                                     349 B         103 kB
-├ ƒ /api/admin/analytics                                                                    349 B         103 kB
-├ ƒ /api/admin/articles                                                                     349 B         103 kB
-├ ƒ /api/admin/articles/[id]                                                                349 B         103 kB
-├ ƒ /api/admin/articles/import-hashnode                                                     349 B         103 kB
-├ ƒ /api/admin/articles/scheduled                                                           349 B         103 kB
-├ ƒ /api/admin/case-studies                                                                 349 B         103 kB
-├ ƒ /api/admin/case-studies/[id]                                                            349 B         103 kB
-├ ƒ /api/admin/comments                                                                     349 B         103 kB
-├ ƒ /api/admin/comments/[id]                                                                349 B         103 kB
-├ ƒ /api/admin/contacts                                                                     349 B         103 kB
-├ ƒ /api/admin/contacts/[id]/retry                                                          349 B         103 kB
-├ ƒ /api/admin/media                                                                        349 B         103 kB
-├ ƒ /api/admin/newsletter                                                                   349 B         103 kB
-├ ƒ /api/admin/newsletter/campaigns/[id]                                                    349 B         103 kB
-├ ƒ /api/admin/newsletter/subscribers/[id]                                                  349 B         103 kB
-├ ƒ /api/admin/roles                                                                        349 B         103 kB
-├ ƒ /api/admin/settings/appearance                                                          349 B         103 kB
-├ ƒ /api/admin/settings/database                                                            349 B         103 kB
-├ ƒ /api/admin/settings/email                                                               349 B         103 kB
-├ ƒ /api/admin/settings/integrations                                                        349 B         103 kB
-├ ƒ /api/admin/settings/seo                                                                 349 B         103 kB
-├ ƒ /api/admin/stats                                                                        349 B         103 kB
-├ ƒ /api/admin/tags                                                                         349 B         103 kB
-├ ƒ /api/admin/tags/[id]                                                                    349 B         103 kB
-├ ƒ /api/admin/users                                                                        349 B         103 kB
-├ ƒ /api/admin/users/[id]                                                                   349 B         103 kB
-├ ƒ /api/ai/og-image                                                                        349 B         103 kB
-├ ƒ /api/ai/writing                                                                         349 B         103 kB
-├ ƒ /api/analytics                                                                          349 B         103 kB
-├ ƒ /api/analytics/overview                                                                 349 B         103 kB
-├ ƒ /api/analytics/track                                                                    349 B         103 kB
-├ ƒ /api/articles/publish                                                                   349 B         103 kB
-├ ƒ /api/articles/save-draft                                                                349 B         103 kB
-├ ƒ /api/auth/[...nextauth]                                                                 349 B         103 kB
-├ ƒ /api/calendar                                                                           349 B         103 kB
-├ ƒ /api/calendar/event                                                                     349 B         103 kB
-├ ƒ /api/calendar/upcoming                                                                  349 B         103 kB
-├ ƒ /api/case-studies                                                                       349 B         103 kB
-├ ƒ /api/case-studies/[slug]                                                                349 B         103 kB
-├ ƒ /api/chat                                                                               349 B         103 kB
-├ ƒ /api/contact                                                                            349 B         103 kB
-├ ƒ /api/cron/run-jobs                                                                      349 B         103 kB
-├ ƒ /api/devops                                                                             349 B         103 kB
-├ ƒ /api/devops/github                                                                      349 B         103 kB
-├ ƒ /api/devops/sentry                                                                      349 B         103 kB
-├ ƒ /api/devops/vercel                                                                      349 B         103 kB
-├ ƒ /api/finance                                                                            349 B         103 kB
-├ ƒ /api/finance/stripe/summary                                                             349 B         103 kB
-├ ƒ /api/gmail                                                                              349 B         103 kB
-├ ƒ /api/gmail/delete                                                                       349 B         103 kB
-├ ƒ /api/gmail/list                                                                         349 B         103 kB
-├ ƒ /api/gmail/mark-read                                                                    349 B         103 kB
-├ ƒ /api/gmail/permanently-delete                                                           349 B         103 kB
-├ ƒ /api/gmail/restore                                                                      349 B         103 kB
-├ ƒ /api/gmail/send                                                                         349 B         103 kB
-├ ƒ /api/gmail/test                                                                         349 B         103 kB
-├ ƒ /api/gmail/toggle-star                                                                  349 B         103 kB
-├ ƒ /api/google/oauth/callback                                                              349 B         103 kB
-├ ƒ /api/google/oauth/health                                                                349 B         103 kB
-├ ƒ /api/google/oauth/start                                                                 349 B         103 kB
-├ ƒ /api/media/upload                                                                       349 B         103 kB
-├ ƒ /api/notes                                                                              349 B         103 kB
-├ ƒ /api/revalidate                                                                         349 B         103 kB
-├ ƒ /api/schedule/availability                                                              349 B         103 kB
-├ ƒ /api/schedule/book                                                                      349 B         103 kB
-├ ƒ /api/schedule/check-conflict                                                            349 B         103 kB
-├ ƒ /api/schedule/health                                                                    349 B         103 kB
-├ ƒ /api/schedule/slots                                                                     349 B         103 kB
-├ ƒ /api/schedule/slots-optimized                                                           349 B         103 kB
-├ ƒ /api/search                                                                             349 B         103 kB
-├ ƒ /api/social                                                                             349 B         103 kB
-├ ƒ /api/social/publish                                                                     349 B         103 kB
-├ ƒ /api/tts                                                                                349 B         103 kB
-├ ƒ /api/upload                                                                             349 B         103 kB
-├ ƒ /api/webhooks/stripe                                                                    349 B         103 kB
-├ ○ /blog                                                                                 27.6 kB         258 kB          1m      1y
-├ ● /blog/[slug]                                                                          2.62 kB         162 kB          1m      1y
-├   ├ /blog/are-we-in-an-ai-bubble-or-a-renaissance
-├   ├ /blog/how-i-use-gpt-to-scope-and-estimate-freelance-projects-without-burning-hours                                  1m      1y
-├   ├ /blog/from-setback-to-comeback-my-stroke-recovery-journey-with-ai                                                   1m      1y
-├   └ [+18 more paths]
-├ ƒ /blog/rss.xml                                                                           349 B         103 kB
-├ ○ /case-studies                                                                          4.6 kB         175 kB
-├ ● /case-studies/[slug]                                                                   159 kB         399 kB
+Route (app)                                                                       Size  First Load JS  Revalidate  Expire
+┌ ƒ /                                                                          11.3 kB         207 kB
+├ ○ /_not-found                                                                  999 B         104 kB
+├ ○ /about                                                                     10.9 kB         200 kB
+├ ○ /admin                                                                     5.79 kB         232 kB
+├ ○ /admin/activity                                                            5.01 kB         108 kB
+├ ○ /admin/analytics                                                           12.1 kB         233 kB
+├ ○ /admin/articles                                                            3.89 kB         125 kB
+├ ƒ /admin/articles/[id]/edit                                                    137 B         145 kB
+├ ○ /admin/articles/new                                                          137 B         145 kB
+├ ○ /admin/articles/scheduled                                                  4.91 kB         107 kB
+├ ○ /admin/case-studies                                                        3.34 kB         118 kB
+├ ○ /admin/case-studies/new                                                    5.66 kB         120 kB
+├ ○ /admin/comments                                                            4.66 kB         107 kB
+├ ○ /admin/contacts                                                            4.78 kB         107 kB
+├ ○ /admin/control-center                                                      4.64 kB         115 kB
+├ ○ /admin/control-center/analytics                                              351 B         103 kB
+├ ○ /admin/control-center/calendar                                               351 B         103 kB
+├ ○ /admin/control-center/composer                                             8.39 kB         126 kB
+├ ○ /admin/control-center/devops                                                 351 B         103 kB
+├ ○ /admin/control-center/email                                                12.9 kB         137 kB
+├ ○ /admin/control-center/finance                                                351 B         103 kB
+├ ○ /admin/control-center/notes                                                  351 B         103 kB
+├ ○ /admin/control-center/social                                                 351 B         103 kB
+├ ○ /admin/media                                                               5.34 kB         117 kB
+├ ○ /admin/media/upload                                                        5.17 kB         108 kB
+├ ○ /admin/newsletter                                                          5.48 kB         108 kB
+├ ○ /admin/settings                                                            4.71 kB         116 kB
+├ ○ /admin/settings/appearance                                                 6.37 kB         109 kB
+├ ○ /admin/settings/database                                                   5.68 kB         108 kB
+├ ○ /admin/settings/email                                                      5.17 kB         108 kB
+├ ○ /admin/settings/integrations                                               5.85 kB         108 kB
+├ ○ /admin/settings/roles                                                      4.23 kB         107 kB
+├ ○ /admin/settings/seo                                                        5.01 kB         108 kB
+├ ○ /admin/settings/users                                                      4.93 kB         107 kB
+├ ○ /admin/tags                                                                3.82 kB         106 kB
+├ ƒ /api/admin/activity                                                          351 B         103 kB
+├ ƒ /api/admin/analytics                                                         351 B         103 kB
+├ ƒ /api/admin/articles                                                          351 B         103 kB
+├ ƒ /api/admin/articles/[id]                                                     351 B         103 kB
+├ ƒ /api/admin/articles/import-hashnode                                          351 B         103 kB
+├ ƒ /api/admin/articles/scheduled                                                351 B         103 kB
+├ ƒ /api/admin/case-studies                                                      351 B         103 kB
+├ ƒ /api/admin/case-studies/[id]                                                 351 B         103 kB
+├ ƒ /api/admin/comments                                                          351 B         103 kB
+├ ƒ /api/admin/comments/[id]                                                     351 B         103 kB
+├ ƒ /api/admin/contacts                                                          351 B         103 kB
+├ ƒ /api/admin/contacts/[id]/retry                                               351 B         103 kB
+├ ƒ /api/admin/media                                                             351 B         103 kB
+├ ƒ /api/admin/newsletter                                                        351 B         103 kB
+├ ƒ /api/admin/newsletter/campaigns/[id]                                         351 B         103 kB
+├ ƒ /api/admin/newsletter/subscribers/[id]                                       351 B         103 kB
+├ ƒ /api/admin/roles                                                             351 B         103 kB
+├ ƒ /api/admin/settings/appearance                                               351 B         103 kB
+├ ƒ /api/admin/settings/database                                                 351 B         103 kB
+├ ƒ /api/admin/settings/email                                                    351 B         103 kB
+├ ƒ /api/admin/settings/integrations                                             351 B         103 kB
+├ ƒ /api/admin/settings/seo                                                      351 B         103 kB
+├ ƒ /api/admin/stats                                                             351 B         103 kB
+├ ƒ /api/admin/tags                                                              351 B         103 kB
+├ ƒ /api/admin/tags/[id]                                                         351 B         103 kB
+├ ƒ /api/admin/users                                                             351 B         103 kB
+├ ƒ /api/admin/users/[id]                                                        351 B         103 kB
+├ ƒ /api/ai/og-image                                                             351 B         103 kB
+├ ƒ /api/ai/writing                                                              351 B         103 kB
+├ ƒ /api/analytics                                                               351 B         103 kB
+├ ƒ /api/analytics/overview                                                      351 B         103 kB
+├ ƒ /api/analytics/track                                                         351 B         103 kB
+├ ƒ /api/articles/publish                                                        351 B         103 kB
+├ ƒ /api/articles/save-draft                                                     351 B         103 kB
+├ ƒ /api/auth/[...nextauth]                                                      351 B         103 kB
+├ ƒ /api/calendar                                                                351 B         103 kB
+├ ƒ /api/calendar/event                                                          351 B         103 kB
+├ ƒ /api/calendar/upcoming                                                       351 B         103 kB
+├ ƒ /api/case-studies                                                            351 B         103 kB
+├ ƒ /api/case-studies/[slug]                                                     351 B         103 kB
+├ ƒ /api/chat                                                                    351 B         103 kB
+├ ƒ /api/contact                                                                 351 B         103 kB
+├ ƒ /api/cron/run-jobs                                                           351 B         103 kB
+├ ƒ /api/devops                                                                  351 B         103 kB
+├ ƒ /api/devops/github                                                           351 B         103 kB
+├ ƒ /api/devops/sentry                                                           351 B         103 kB
+├ ƒ /api/devops/vercel                                                           351 B         103 kB
+├ ƒ /api/finance                                                                 351 B         103 kB
+├ ƒ /api/finance/stripe/summary                                                  351 B         103 kB
+├ ƒ /api/gmail                                                                   351 B         103 kB
+├ ƒ /api/gmail/delete                                                            351 B         103 kB
+├ ƒ /api/gmail/list                                                              351 B         103 kB
+├ ƒ /api/gmail/mark-read                                                         351 B         103 kB
+├ ƒ /api/gmail/permanently-delete                                                351 B         103 kB
+├ ƒ /api/gmail/restore                                                           351 B         103 kB
+├ ƒ /api/gmail/send                                                              351 B         103 kB
+├ ƒ /api/gmail/test                                                              351 B         103 kB
+├ ƒ /api/gmail/toggle-star                                                       351 B         103 kB
+├ ƒ /api/google/oauth/callback                                                   351 B         103 kB
+├ ƒ /api/google/oauth/health                                                     351 B         103 kB
+├ ƒ /api/google/oauth/start                                                      351 B         103 kB
+├ ƒ /api/media/upload                                                            351 B         103 kB
+├ ƒ /api/notes                                                                   351 B         103 kB
+├ ƒ /api/revalidate                                                              351 B         103 kB
+├ ƒ /api/schedule/availability                                                   351 B         103 kB
+├ ƒ /api/schedule/book                                                           351 B         103 kB
+├ ƒ /api/schedule/check-conflict                                                 351 B         103 kB
+├ ƒ /api/schedule/health                                                         351 B         103 kB
+├ ƒ /api/schedule/slots                                                          351 B         103 kB
+├ ƒ /api/schedule/slots-optimized                                                351 B         103 kB
+├ ƒ /api/search                                                                  351 B         103 kB
+├ ƒ /api/social                                                                  351 B         103 kB
+├ ƒ /api/social/publish                                                          351 B         103 kB
+├ ƒ /api/tts                                                                     351 B         103 kB
+├ ƒ /api/upload                                                                  351 B         103 kB
+├ ƒ /api/webhooks/hashnode                                                       351 B         103 kB
+├ ƒ /api/webhooks/stripe                                                         351 B         103 kB
+├ ○ /blog                                                                      27.6 kB         258 kB         30s      1y
+├ ● /blog/[slug]                                                               2.62 kB         162 kB         30s      1y
+├   ├ /blog/getting-started-with-blog-management                                                              30s      1y
+├   ├ /blog/case-study-hybrid-development-approach                                                            30s      1y
+├   ├ /blog/tendril-multi-tenant-chatbot-from-market-research-to-mvp-strategy                                 30s      1y
+├   └ [+21 more paths]
+├ ƒ /blog/rss.xml                                                                351 B         103 kB
+├ ○ /case-studies                                                               4.6 kB         175 kB
+├ ● /case-studies/[slug]                                                        159 kB         399 kB
 ├   ├ /case-studies/portfolio-os
 ├   └ /case-studies/tendril
-├ ○ /case-studies/tendril-multi-tenant-chatbot-saas                                        8.5 kB         218 kB
-├ ○ /contact                                                                              6.63 kB         182 kB
-├ ○ /login                                                                                1.91 kB         113 kB
-├ ○ /maintenance                                                                            349 B         103 kB
-├ ○ /projects                                                                             9.69 kB         250 kB
-├ ● /projects/[slug]                                                                      7.43 kB         178 kB
+├ ○ /case-studies/tendril-multi-tenant-chatbot-saas                             8.5 kB         218 kB
+├ ○ /contact                                                                   6.63 kB         182 kB
+├ ○ /login                                                                     1.91 kB         113 kB
+├ ○ /maintenance                                                                 351 B         103 kB
+├ ○ /projects                                                                  9.69 kB         250 kB
+├ ● /projects/[slug]                                                           7.43 kB         178 kB
 ├   └ /projects/portfolio-os
-├ ƒ /projects/[slug]/opengraph-image                                                        349 B         103 kB
-├ ○ /robots.txt                                                                             349 B         103 kB
-├ ƒ /sitemap.xml                                                                            349 B         103 kB
-└ ○ /under-construction                                                                     349 B         103 kB
-+ First Load JS shared by all                                                              103 kB
-  ├ chunks/9863-165e0172c157afe8.js                                                       45.5 kB
-  ├ chunks/f3c972f3-ede0e7e730fd1be8.js                                                   54.2 kB
-  └ other shared chunks (total)                                                            2.8 kB
+├ ƒ /projects/[slug]/opengraph-image                                             351 B         103 kB
+├ ○ /robots.txt                                                                  351 B         103 kB
+├ ○ /sitemap.xml                                                                 351 B         103 kB         30s      1y
+└ ○ /under-construction                                                          351 B         103 kB
++ First Load JS shared by all                                                   103 kB
+  ├ chunks/9863-165e0172c157afe8.js                                            45.5 kB
+  ├ chunks/f3c972f3-ede0e7e730fd1be8.js                                        54.2 kB
+  └ other shared chunks (total)                                                2.81 kB
 
 
-ƒ Middleware                                                                              34.8 kB
+ƒ Middleware                                                                   34.8 kB
 
 ○  (Static)   prerendered as static content
 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
