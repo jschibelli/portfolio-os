@@ -17,14 +17,30 @@ export async function GET(request: NextRequest) {
 
     // Use environment variables and defaults for publication info
     // Since there's no Setting model, we'll use sensible defaults
+    
+    // Parse JSON environment variables with error handling
+    let socialLinks = {};
+    try {
+      socialLinks = process.env.SOCIAL_LINKS ? JSON.parse(process.env.SOCIAL_LINKS) : {};
+    } catch (e) {
+      console.error('Invalid JSON in SOCIAL_LINKS environment variable:', e);
+    }
+    
+    let seoSettings = {};
+    try {
+      seoSettings = process.env.SEO_SETTINGS ? JSON.parse(process.env.SEO_SETTINGS) : {};
+    } catch (e) {
+      console.error('Invalid JSON in SEO_SETTINGS environment variable:', e);
+    }
+    
     const publication = {
       name: process.env.SITE_NAME || 'Portfolio Blog',
       description: process.env.SITE_DESCRIPTION || 'A modern blog powered by Next.js',
       url: process.env.NEXTAUTH_URL || process.env.SITE_URL || 'http://localhost:3000',
       logo: process.env.SITE_LOGO || null,
       favicon: process.env.SITE_FAVICON || null,
-      socialLinks: process.env.SOCIAL_LINKS ? JSON.parse(process.env.SOCIAL_LINKS) : {},
-      seoSettings: process.env.SEO_SETTINGS ? JSON.parse(process.env.SEO_SETTINGS) : {},
+      socialLinks,
+      seoSettings,
       stats: {
         totalPosts: stats._count.id,
         lastUpdated: new Date().toISOString()

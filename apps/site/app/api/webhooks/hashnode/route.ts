@@ -57,10 +57,13 @@ function verifyWebhookSignature(
     .digest('hex');
 
   // Compare signatures in constant time to prevent timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  // timingSafeEqual requires buffers to be the same length
+  const sigBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expectedSignature);
+  if (sigBuffer.length !== expectedBuffer.length) {
+    return false;
+  }
+  return crypto.timingSafeEqual(sigBuffer, expectedBuffer);
 }
 
 export async function POST(request: NextRequest) {

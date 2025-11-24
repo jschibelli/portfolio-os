@@ -44,22 +44,22 @@ export async function GET(request: NextRequest) {
       prisma.article.findMany({
         where,
         include: {
-          User: {
+          author: {
             select: {
               name: true,
               email: true,
               image: true
             }
           },
-          ImageAsset: {
+          cover: {
             select: {
               url: true,
               alt: true
             }
           },
-          ArticleTag: {
+          tags: {
             select: {
-              Tag: {
+              tag: {
                 select: {
                   id: true,
                   name: true,
@@ -92,18 +92,18 @@ export async function GET(request: NextRequest) {
       views: post.views || 0,
       featured: post.featured || false,
       author: {
-        name: post.User?.name || 'Unknown',
-        email: post.User?.email || '',
-        image: post.User?.image || ''
+        name: post.author?.name || 'Unknown',
+        email: post.author?.email || '',
+        image: post.author?.image || ''
       },
-      cover: post.ImageAsset ? {
-        url: post.ImageAsset.url,
-        alt: post.ImageAsset.alt || post.title
+      cover: post.cover ? {
+        url: post.cover.url,
+        alt: post.cover.alt || post.title
       } : null,
-      tags: post.ArticleTag.map(articleTag => ({
-        id: articleTag.Tag.id,
-        name: articleTag.Tag.name,
-        slug: articleTag.Tag.slug
+      tags: post.tags.map(articleTag => ({
+        id: articleTag.tag.id,
+        name: articleTag.tag.name,
+        slug: articleTag.tag.slug
       }))
     }));
 
