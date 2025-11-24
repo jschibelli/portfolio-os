@@ -350,7 +350,40 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
 
   // Use Hashnode API (default and fallback)
   try {
-    return await fetchHashnodePublication();
+    const hashnodePub = await fetchHashnodePublication();
+    if (!hashnodePub) {
+      return null;
+    }
+    
+    // Transform HashnodePublication to UnifiedPublication
+    return {
+      id: hashnodePub.id,
+      title: hashnodePub.title,
+      description: hashnodePub.descriptionSEO || '',
+      url: hashnodePub.url,
+      favicon: hashnodePub.favicon || '',
+      logo: hashnodePub.preferences?.logo || '',
+      isTeam: hashnodePub.isTeam,
+      preferences: {
+        logo: hashnodePub.preferences?.logo || '',
+        darkMode: {
+          logo: hashnodePub.preferences?.logo || '',
+        },
+        navbarItems: [],
+        layout: {
+          navbarStyle: 'default',
+          footerStyle: 'default',
+          showBranding: true,
+        },
+        members: [],
+      },
+      displayTitle: hashnodePub.displayTitle,
+      descriptionSEO: hashnodePub.descriptionSEO,
+      posts: hashnodePub.posts,
+      author: hashnodePub.author,
+      followersCount: hashnodePub.followersCount,
+      ogMetaData: hashnodePub.ogMetaData,
+    };
   } catch (error) {
     console.error('[Content API] Hashnode API failed for publication:', error instanceof Error ? error.message : 'Unknown error');
     return null;
