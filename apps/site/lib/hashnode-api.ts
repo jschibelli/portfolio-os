@@ -43,7 +43,9 @@ export interface HashnodePublication {
 }
 
 const GQL_ENDPOINT = 'https://gql.hashnode.com/';
-const CACHE_DURATION = 60; // seconds
+// Reduced cache duration from 60 to 30 seconds for faster updates
+// Webhook revalidation will still be faster, but this ensures posts appear within 30 seconds
+const CACHE_DURATION = 30; // seconds
 
 /**
  * Get the Hashnode publication host from environment variables
@@ -123,17 +125,48 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Ha
               readTimeInMinutes
             }
           }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
         }
       }
     }
   `;
 
   try {
+    console.log(`[Hashnode API] Fetching posts from publication: ${host}`);
     const data = await makeGraphQLRequest(query, { host, first, after });
-    const edges = data?.publication?.posts?.edges || [];
-    return edges.map((e: any) => e.node);
+    
+    if (!data || !data.publication) {
+      console.error(`[Hashnode API] No publication data returned for host: ${host}`);
+      return [];
+    }
+    
+    const edges = data.publication.posts?.edges || [];
+    const posts = edges.map((e: any) => e.node);
+    const pageInfo = data.publication.posts?.pageInfo;
+    
+    console.log(`[Hashnode API] Successfully fetched ${posts.length} posts from ${host}`);
+    if (pageInfo?.hasNextPage) {
+      console.log(`[Hashnode API] More posts available (hasNextPage: true, endCursor: ${pageInfo.endCursor})`);
+    }
+    
+    // Log post dates for debugging
+    if (posts.length > 0) {
+      const dates = posts.map(p => p.publishedAt).filter(Boolean);
+      if (dates.length > 0) {
+        console.log(`[Hashnode API] Post date range: ${dates[dates.length - 1]} to ${dates[0]}`);
+      }
+    }
+    
+    return posts;
   } catch (error) {
-    console.error('Failed to fetch posts:', error);
+    console.error('[Hashnode API] Failed to fetch posts:', error);
+    if (error instanceof Error) {
+      console.error('[Hashnode API] Error message:', error.message);
+      console.error('[Hashnode API] Error stack:', error.stack);
+    }
     return [];
   }
 }

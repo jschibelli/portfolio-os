@@ -189,33 +189,51 @@ async function isDashboardAvailable(): Promise<boolean> {
 }
 
 /**
- * Fetch posts with Dashboard API fallback to Hashnode
- * Improved error handling to ensure Hashnode fallback works when Dashboard API is unavailable
+ * Fetch posts - Uses Hashnode API directly for blog
+ * Dashboard API is disabled for blog posts to avoid data inconsistencies
+ * 
+ * To enable Dashboard API, set USE_DASHBOARD_FOR_BLOG=true in environment variables
  */
 export async function fetchPosts(first: number = 10, after?: string): Promise<UnifiedPost[]> {
-  // Check if Dashboard API is available first
-  const dashboardAvailable = await isDashboardAvailable();
+  // By default, use Hashnode for blog posts (more reliable)
+  // Only use Dashboard if explicitly enabled
+  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
   
-  if (dashboardAvailable) {
-    try {
-      const response = await dashboardAPI.getPosts({ limit: first });
-      // Verify we got valid posts data
-      if (response && response.posts && Array.isArray(response.posts)) {
-        return response.posts.map(transformDashboardPost);
-      } else {
-        console.warn('[Content API] Dashboard API returned invalid response, falling back to Hashnode');
+  if (useDashboard) {
+    // Check if Dashboard API is available
+    const dashboardAvailable = await isDashboardAvailable();
+    
+    if (dashboardAvailable) {
+      try {
+        const response = await dashboardAPI.getPosts({ limit: first });
+        // Verify we got valid posts data
+        if (response && response.posts && Array.isArray(response.posts) && response.posts.length > 0) {
+          console.log(`[Content API] Using Dashboard API for posts (${response.posts.length} posts)`);
+          return response.posts.map(transformDashboardPost);
+        } else {
+          console.warn('[Content API] Dashboard API returned empty or invalid response, falling back to Hashnode');
+          // Invalidate cache to force recheck next time
+          dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
+        }
+      } catch (error) {
+        console.warn('[Content API] Dashboard API failed, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
+        // Invalidate cache on error to force recheck next time
+        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
       }
-    } catch (error) {
-      console.warn('[Content API] Dashboard API failed, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
-      // Invalidate cache on error to force recheck next time
-      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
   }
 
-  // Fallback to Hashnode (always try if Dashboard is unavailable or failed)
+  // Use Hashnode API (default and fallback)
   try {
     console.log('[Content API] Using Hashnode API for posts');
     const hashnodePosts = await fetchHashnodePosts(first, after);
+    console.log(`[Content API] Fetched ${hashnodePosts.length} posts from Hashnode`);
+    
+    if (hashnodePosts.length === 0) {
+      console.warn('[Content API] Hashnode API returned no posts. Check publication host configuration.');
+      console.warn('[Content API] Current host:', process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev');
+    }
+    
     return hashnodePosts.map(post => ({
       id: post.id,
       title: post.title,
@@ -231,39 +249,45 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
       featured: false
     }));
   } catch (error) {
-    console.error('[Content API] Both Dashboard and Hashnode APIs failed:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('[Content API] Hashnode API failed:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('[Content API] Error details:', error);
     return [];
   }
 }
 
 /**
- * Fetch a single post by slug with fallback
- * Improved error handling to ensure Hashnode fallback works when Dashboard API is unavailable
+ * Fetch a single post by slug - Uses Hashnode API directly for blog
+ * Dashboard API is disabled for blog posts to avoid data inconsistencies
  */
 export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null> {
   console.log(`[Content API] Fetching post by slug: ${slug}`);
   
-  // Check if Dashboard API is available first
-  const dashboardAvailable = await isDashboardAvailable();
+  // By default, use Hashnode for blog posts
+  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
   
-  if (dashboardAvailable) {
-    try {
-      console.log('[Content API] Using Dashboard API for post');
-      const post = await dashboardAPI.getPost(slug);
-      // Verify we got valid post data
-      if (post && post.slug) {
-        return transformDashboardPost(post);
-      } else {
-        console.warn(`[Content API] Dashboard API returned invalid post data for "${slug}", falling back to Hashnode`);
+  if (useDashboard) {
+    // Check if Dashboard API is available
+    const dashboardAvailable = await isDashboardAvailable();
+    
+    if (dashboardAvailable) {
+      try {
+        console.log('[Content API] Using Dashboard API for post');
+        const post = await dashboardAPI.getPost(slug);
+        // Verify we got valid post data
+        if (post && post.slug) {
+          return transformDashboardPost(post);
+        } else {
+          console.warn(`[Content API] Dashboard API returned invalid post data for "${slug}", falling back to Hashnode`);
+        }
+      } catch (error) {
+        console.warn(`[Content API] Dashboard API failed for post "${slug}", falling back to Hashnode:`, error instanceof Error ? error.message : 'Unknown error');
+        // Invalidate cache on error to force recheck next time
+        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
       }
-    } catch (error) {
-      console.warn(`[Content API] Dashboard API failed for post "${slug}", falling back to Hashnode:`, error instanceof Error ? error.message : 'Unknown error');
-      // Invalidate cache on error to force recheck next time
-      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
   }
 
-  // Fallback to Hashnode (always try if Dashboard is unavailable or failed)
+  // Use Hashnode API (default and fallback)
   try {
     console.log('[Content API] Using Hashnode API for post');
     const hashnodePost = await fetchHashnodePost(slug);
@@ -290,40 +314,78 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
       featured: false
     };
   } catch (error) {
-    console.error(`[Content API] Both Dashboard and Hashnode APIs failed for post "${slug}":`, error instanceof Error ? error.message : 'Unknown error');
+    console.error(`[Content API] Hashnode API failed for post "${slug}":`, error instanceof Error ? error.message : 'Unknown error');
     return null;
   }
 }
 
 /**
- * Fetch publication information with fallback
- * Improved error handling to ensure Hashnode fallback works when Dashboard API is unavailable
+ * Fetch publication information - Uses Hashnode API directly for blog
+ * Dashboard API is disabled for blog to avoid data inconsistencies
  */
 export async function fetchPublication(): Promise<UnifiedPublication | null> {
-  // Check if Dashboard API is available first
-  const dashboardAvailable = await isDashboardAvailable();
+  // By default, use Hashnode for blog
+  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
   
-  if (dashboardAvailable) {
-    try {
-      const pub = await dashboardAPI.getPublication();
-      // Verify we got valid publication data
-      if (pub && pub.name) {
-        return transformDashboardPublication(pub);
-      } else {
-        console.warn('[Content API] Dashboard API returned invalid publication data, falling back to Hashnode');
+  if (useDashboard) {
+    // Check if Dashboard API is available
+    const dashboardAvailable = await isDashboardAvailable();
+    
+    if (dashboardAvailable) {
+      try {
+        const pub = await dashboardAPI.getPublication();
+        // Verify we got valid publication data
+        if (pub && pub.name) {
+          return transformDashboardPublication(pub);
+        } else {
+          console.warn('[Content API] Dashboard API returned invalid publication data, falling back to Hashnode');
+        }
+      } catch (error) {
+        console.warn('[Content API] Dashboard API failed for publication, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
+        // Invalidate cache on error to force recheck next time
+        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
       }
-    } catch (error) {
-      console.warn('[Content API] Dashboard API failed for publication, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
-      // Invalidate cache on error to force recheck next time
-      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
   }
 
-  // Fallback to Hashnode (always try if Dashboard is unavailable or failed)
+  // Use Hashnode API (default and fallback)
   try {
-    return await fetchHashnodePublication();
+    const hashnodePub = await fetchHashnodePublication();
+    if (!hashnodePub) {
+      return null;
+    }
+    
+    // Transform HashnodePublication to UnifiedPublication
+    return {
+      id: hashnodePub.id,
+      title: hashnodePub.title,
+      description: hashnodePub.descriptionSEO || '',
+      url: hashnodePub.url,
+      favicon: hashnodePub.favicon || '',
+      logo: hashnodePub.preferences?.logo || '',
+      isTeam: hashnodePub.isTeam,
+      preferences: {
+        logo: hashnodePub.preferences?.logo || '',
+        darkMode: {
+          logo: hashnodePub.preferences?.logo || '',
+        },
+        navbarItems: [],
+        layout: {
+          navbarStyle: 'default',
+          footerStyle: 'default',
+          showBranding: true,
+        },
+        members: [],
+      },
+      displayTitle: hashnodePub.displayTitle,
+      descriptionSEO: hashnodePub.descriptionSEO,
+      posts: hashnodePub.posts,
+      author: hashnodePub.author,
+      followersCount: hashnodePub.followersCount,
+      ogMetaData: hashnodePub.ogMetaData,
+    };
   } catch (error) {
-    console.error('[Content API] Both Dashboard and Hashnode APIs failed for publication:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('[Content API] Hashnode API failed for publication:', error instanceof Error ? error.message : 'Unknown error');
     return null;
   }
 }
