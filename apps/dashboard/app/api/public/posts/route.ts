@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
         url: post.cover.url,
         alt: post.cover.alt || post.title
       } : null,
-      tags: post.tags.map(articleTag => ({
+      tags: (post.tags || []).map(articleTag => ({
         id: articleTag.tag.id,
         name: articleTag.tag.name,
         slug: articleTag.tag.slug
