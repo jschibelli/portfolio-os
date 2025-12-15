@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
  * Usage:
  *   POST /api/revalidate?path=/blog&secret=YOUR_SECRET
  *   POST /api/revalidate?path=/blog/my-post-slug&secret=YOUR_SECRET
+ *   POST /api/revalidate?path=/blog&path=/blog/my-post-slug&secret=YOUR_SECRET (multiple paths)
  * 
  * Required environment variables:
  *   CRON_SECRET - Secret key for authentication
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const secret = searchParams.get('secret');
-    const path = searchParams.get('path');
+    const paths = searchParams.getAll('path'); // Support multiple paths
 
     // Validate secret
     const expectedSecret = process.env.CRON_SECRET;
@@ -34,22 +35,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate path
-    if (!path) {
+    // Validate paths
+    if (paths.length === 0) {
       return NextResponse.json(
-        { message: 'Missing path parameter' },
+        { message: 'Missing path parameter. Provide at least one path to revalidate.' },
         { status: 400 }
       );
     }
 
-    // Revalidate the path
-    revalidatePath(path);
+    // Revalidate all provided paths
+    const revalidatedPaths: string[] = [];
+    const errors: Array<{ path: string; error: string }> = [];
 
-    console.log(`[Revalidate API] Successfully revalidated: ${path}`);
+    for (const path of paths) {
+      try {
+        revalidatePath(path);
+        revalidatedPaths.push(path);
+        console.log(`[Revalidate API] Successfully revalidated: ${path}`);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        errors.push({ path, error: errorMessage });
+        console.error(`[Revalidate API] Error revalidating ${path}:`, errorMessage);
+      }
+    }
 
+    // If all paths failed, return error
+    if (revalidatedPaths.length === 0) {
+      return NextResponse.json(
+        {
+          message: 'Failed to revalidate all paths',
+          errors,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Return success with any errors noted
     return NextResponse.json({
       revalidated: true,
-      path,
+      paths: revalidatedPaths,
+      errors: errors.length > 0 ? errors : undefined,
       now: Date.now(),
     });
   } catch (error) {

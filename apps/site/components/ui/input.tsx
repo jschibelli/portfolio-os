@@ -19,6 +19,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					className,
 				)}
 				ref={ref}
+				// Suppress hydration warnings for browser extension attributes
+				// (e.g., fdprocessedid, data-np-mark) that are added by form fillers/password managers
+				suppressHydrationWarning
 				// Ensure proper accessibility attributes
 				aria-invalid={props['aria-invalid'] || props['aria-describedby'] ? undefined : false}
 				{...props}
