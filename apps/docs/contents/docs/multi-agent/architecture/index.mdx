@@ -22,6 +22,11 @@ This multi-agent system enables parallel development workflows using Git worktre
     
     Worktree1 --> Branch1[Feature Branch 1]
     Worktree2 --> Branch2[Feature Branch 2]
+    subgraph "Coordination Layer"
+        Automation[Automation System]
+        Config[Agent Config]
+        State[Worktree State]
+    end
     
     Automation[Automation System] --> Worktree1
     Automation --> Worktree2
@@ -32,6 +37,17 @@ This multi-agent system enables parallel development workflows using Git worktre
     Branch2 --> PR2[Pull Request 2]
     
     PR1 --> CI[CI/CD Pipeline]
+    Worktree1 --> Branch1
+    Worktree2 --> Branch2
+    
+    Automation --> Config
+    Automation --> State
+    Automation --> Worktree1
+    Automation --> Worktree2
+    
+    Branch1 --> PR1
+    Branch2 --> PR2
+    PR1 --> CI
     PR2 --> CI
     CI --> Develop[Develop Branch]
     
@@ -76,6 +92,28 @@ Git worktrees are the foundation of the multi-agent system, providing isolated w
 - **Branch Separation**: Each worktree tracks a different branch
 - **No Duplication**: Zero duplication of Git history
 </Note>
+
+### 2. Coordination Layer
+
+The coordination layer orchestrates agent workflows through automated tooling:
+
+#### Core Capabilities
+
+**Agent Lifecycle Management**
+- Initialize new agent workspaces with proper isolation
+- Monitor agent status and health in real-time
+- Coordinate task assignment and workload distribution
+- Track progress and completion status
+
+**State Synchronization**
+- Maintain consistency across agent workspaces
+- Track branch relationships and dependencies
+- Monitor synchronization with main development line
+- Detect and flag potential integration issues
+
+#### Configuration Management
+
+The system uses structured configuration to track agent assignments and state:
 
 ### 2. Coordination Layer
 
@@ -373,6 +411,19 @@ The system provides comprehensive observability:
     Integration success rates and quality performance indicators
   </Card>
 </CardGrid>
+The system provides comprehensive observability:
+
+**Health Monitoring**
+- Real-time agent status tracking
+- Workspace health validation
+- Performance metrics collection
+- Resource utilization monitoring
+
+**Metrics & Analytics**
+- Task completion rates
+- Agent productivity metrics
+- Integration success rates
+- Quality and performance indicators
 
 ## Limitations & Constraints
 

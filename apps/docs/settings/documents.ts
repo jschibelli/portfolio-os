@@ -222,15 +222,11 @@ export const Documents: Paths[] = [
   // ============================================
   {
     heading: "Automation & Scripts",
-    title: "Scripts Reference",
-    href: "/scripts-reference",
-  },
-  {
-    title: "Automation Concepts",
+    title: "Automation System",
     href: "/scripts-reference/automation",
     items: [
       {
-        title: "Overview & Architecture",
+        title: "Overview",
         href: "/quick-start-guide",
       },
       {
@@ -284,8 +280,6 @@ export const Documents: Paths[] = [
         href: "/overview",
       },
     ],
-  },
-  {
     spacer: true,
   },
 

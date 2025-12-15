@@ -154,6 +154,8 @@ The workflow automation system provides end-to-end orchestration that:
 
 ### Pattern 1: Autonomous Operation
 
+### Pattern 1: Autonomous Operation
+
 The system can operate autonomously with minimal oversight:
 - Agents are initialized and begin work independently
 - Progress is tracked automatically
@@ -166,6 +168,7 @@ The system can operate autonomously with minimal oversight:
 
   <TabsContent value="monitoring">
 <div>
+- Ideal for well-defined, independent features
 
 ### Pattern 2: Continuous Monitoring
 
@@ -181,6 +184,7 @@ Active monitoring enables real-time oversight:
 
   <TabsContent value="phased">
 <div>
+- Best for complex or high-priority work
 
 ### Pattern 3: Phased Rollout
 
@@ -272,6 +276,43 @@ The multi-agent system integrates seamlessly with GitHub Actions, triggering aut
 </div>
   </TabsContent>
 </Tabs>
+- Optimal for large initiatives
+
+## Integration with CI/CD
+
+### Continuous Integration
+
+The multi-agent system integrates seamlessly with CI/CD pipelines:
+
+**Automated Quality Checks**
+- Pull requests trigger automated test suites
+- Type checking validates code correctness
+- Linting ensures code quality standards
+- Security scans identify vulnerabilities
+- Performance tests validate efficiency
+
+**Agent-Specific Validation**
+- Agent work is identified and tracked
+- Specialized quality checks are applied
+- Integration tests verify cross-agent compatibility
+- Results are reported to coordination layer
+
+### Pull Request Automation
+
+PR management is streamlined through automation:
+
+**Automatic Processing**
+- PRs are automatically created when agents complete work
+- Project boards are updated with PR status
+- Appropriate labels and metadata are applied
+- Reviewers are assigned based on expertise
+- Status updates flow to stakeholders
+
+**Quality Gates**
+- All tests must pass before merge
+- Code coverage thresholds are enforced
+- Security requirements are validated
+- Performance criteria are met
 
 ## Monitoring & Metrics
 
@@ -337,6 +378,33 @@ The system includes advanced features for dynamic scaling, intelligent task assi
 
   <TabsContent value="scaling">
 <div>
+The system provides comprehensive visibility through monitoring dashboards:
+
+**Active Status Display**
+- Currently active agents and their assignments
+- Real-time progress indicators
+- Task completion percentages
+- Estimated completion times
+- Pull request status and review progress
+
+### Performance Metrics
+
+The system tracks key performance indicators:
+
+**Operational Metrics**
+- Agent utilization rates
+- Average task completion time
+- Conflict and resolution rates
+- PR creation to merge time
+- Code quality scores
+
+**Trend Analysis**
+- Historical performance tracking
+- Capacity planning insights
+- Efficiency improvements over time
+- Bottleneck identification
+
+## Advanced Capabilities
 
 ### Dynamic Agent Scaling
 
@@ -397,6 +465,7 @@ Proactive conflict prevention through:
 </div>
   </TabsContent>
 </Tabs>
+## Reliability & Recovery
 
 ## Reliability & Recovery
 
@@ -421,6 +490,19 @@ The system includes automatic recovery mechanisms, state management, and rollbac
     Automatic alerts notify stakeholders of failures and recovery actions
   </StepItem>
 </Step>
+The system includes resilience mechanisms:
+- Automatic restart capabilities for failed operations
+- Configurable retry policies
+- Failure notifications to stakeholders
+- Graceful degradation strategies
+
+### State Management
+
+Work preservation and rollback capabilities:
+- Checkpoint and state preservation
+- Rollback to known good states when needed
+- Change history tracking
+- Recovery from interruptions
 
 ## Best Practices
 

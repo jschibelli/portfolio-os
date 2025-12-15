@@ -51,7 +51,7 @@
     "jest-axe": "^10.0.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.526.0",
-    "next": "^15.5.2",
+    "next": "15.5.9",
     "next-auth": "^4.24.11",
     "optional": "^0.1.4",
     "react": "^18.3.1",
