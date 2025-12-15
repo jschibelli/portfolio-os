@@ -154,8 +154,6 @@ The workflow automation system provides end-to-end orchestration that:
 
 ### Pattern 1: Autonomous Operation
 
-### Pattern 1: Autonomous Operation
-
 The system can operate autonomously with minimal oversight:
 - Agents are initialized and begin work independently
 - Progress is tracked automatically
@@ -168,7 +166,6 @@ The system can operate autonomously with minimal oversight:
 
   <TabsContent value="monitoring">
 <div>
-- Ideal for well-defined, independent features
 
 ### Pattern 2: Continuous Monitoring
 
@@ -184,7 +181,6 @@ Active monitoring enables real-time oversight:
 
   <TabsContent value="phased">
 <div>
-- Best for complex or high-priority work
 
 ### Pattern 3: Phased Rollout
 
@@ -276,13 +272,84 @@ The multi-agent system integrates seamlessly with GitHub Actions, triggering aut
 </div>
   </TabsContent>
 </Tabs>
-- Optimal for large initiatives
 
 ## Integration with CI/CD
 
+<Note type="tip" title="Seamless Integration">
+The multi-agent system integrates seamlessly with GitHub Actions, triggering automated quality checks and validation for every PR.
+</Note>
+
 ### Continuous Integration
 
-The multi-agent system integrates seamlessly with CI/CD pipelines:
+<Tabs defaultValue="quality">
+  <TabsList>
+    <TabsTrigger value="quality">Quality Checks</TabsTrigger>
+    <TabsTrigger value="validation">Agent Validation</TabsTrigger>
+    <TabsTrigger value="pr">PR Automation</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="quality">
+<div>
+
+### Automated Quality Checks
+
+- Pull requests trigger automated test suites
+- Type checking validates code correctness
+- Linting ensures code quality standards
+- Security scans identify vulnerabilities
+- Performance tests validate efficiency
+
+**Quality Gates:**
+- All tests must pass before merge
+- Code coverage thresholds enforced
+- Security requirements validated
+- Performance criteria met
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="validation">
+<div>
+
+### Agent-Specific Validation
+
+- Agent work is identified and tracked
+- Specialized quality checks are applied
+- Integration tests verify cross-agent compatibility
+- Results are reported to coordination layer
+
+**Validation Process:**
+1. Identify agent and assigned area
+2. Apply specialized test suites
+3. Run integration tests
+4. Report results to coordination layer
+
+</div>
+  </TabsContent>
+
+  <TabsContent value="pr">
+<div>
+
+### Pull Request Automation
+
+**Automatic Processing:**
+- PRs auto-created when agents complete work
+- Project boards updated with PR status
+- Appropriate labels and metadata applied
+- Reviewers assigned based on expertise
+- Status updates flow to stakeholders
+
+**PR Workflow:**
+1. Agent completes feature
+2. System generates PR with metadata
+3. CI/CD pipeline triggered
+4. Quality checks executed
+5. Reviewers notified
+6. Merge on approval
+
+</div>
+  </TabsContent>
+</Tabs>
 
 **Automated Quality Checks**
 - Pull requests trigger automated test suites
@@ -378,33 +445,6 @@ The system includes advanced features for dynamic scaling, intelligent task assi
 
   <TabsContent value="scaling">
 <div>
-The system provides comprehensive visibility through monitoring dashboards:
-
-**Active Status Display**
-- Currently active agents and their assignments
-- Real-time progress indicators
-- Task completion percentages
-- Estimated completion times
-- Pull request status and review progress
-
-### Performance Metrics
-
-The system tracks key performance indicators:
-
-**Operational Metrics**
-- Agent utilization rates
-- Average task completion time
-- Conflict and resolution rates
-- PR creation to merge time
-- Code quality scores
-
-**Trend Analysis**
-- Historical performance tracking
-- Capacity planning insights
-- Efficiency improvements over time
-- Bottleneck identification
-
-## Advanced Capabilities
 
 ### Dynamic Agent Scaling
 
@@ -466,7 +506,6 @@ Proactive conflict prevention through:
   </TabsContent>
 </Tabs>
 ## Reliability & Recovery
-
 ## Reliability & Recovery
 
 <Note type="warning" title="Built-in Resilience">
@@ -490,19 +529,6 @@ The system includes automatic recovery mechanisms, state management, and rollbac
     Automatic alerts notify stakeholders of failures and recovery actions
   </StepItem>
 </Step>
-The system includes resilience mechanisms:
-- Automatic restart capabilities for failed operations
-- Configurable retry policies
-- Failure notifications to stakeholders
-- Graceful degradation strategies
-
-### State Management
-
-Work preservation and rollback capabilities:
-- Checkpoint and state preservation
-- Rollback to known good states when needed
-- Change history tracking
-- Recovery from interruptions
 
 ## Best Practices
 
