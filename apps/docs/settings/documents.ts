@@ -226,7 +226,7 @@ export const Documents: Paths[] = [
     href: "/scripts-reference/automation",
     items: [
       {
-        title: "Overview",
+        title: "Quick Start Guide",
         href: "/quick-start-guide",
       },
       {
@@ -320,6 +320,10 @@ export const Documents: Paths[] = [
   {
     title: "Front-End Automation",
     href: "/frontend/automation",
+  },
+  {
+    title: "AI Prompts Library",
+    href: "/prompts",
   },
   {
     spacer: true,
