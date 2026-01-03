@@ -2,13 +2,14 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'apps/site/**'
       - 'apps/dashboard/**'
       - 'packages/**'
       - '.github/workflows/**'
   push:
-    branches: [ main ]
+    branches: [ develop ]
     paths:
       - 'apps/site/**'
       - 'apps/dashboard/**'
@@ -30,18 +31,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup pnpm with consistent version pinning
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Detect changed areas
+        id: filter
+        uses: dorny/paths-filter@v3
         with:
-          version: 10.14.0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            site:
+              - 'apps/site/**'
+            dashboard:
+              - 'apps/dashboard/**'
+            packages:
+              - 'packages/**'
 
-      # Setup Node.js with caching
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node + pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          node-version: '18'
-          cache: 'pnpm'
+          node-version: "20"
+          pnpm-version: "10.14.0"
 
       # Security: Audit dependencies for vulnerabilities
       - name: Security audit
@@ -60,39 +67,54 @@ jobs:
           fi
 
       # Install dependencies with frozen lockfile for consistency
-      - name: Install dependencies
+      - name: Explain change detection
         run: |
-          echo "📦 Installing dependencies..."
-          pnpm install --frozen-lockfile
+          echo "Changed areas:"
+          echo "  - site: ${{ steps.filter.outputs.site }}"
+          echo "  - dashboard: ${{ steps.filter.outputs.dashboard }}"
+          echo "  - packages: ${{ steps.filter.outputs.packages }}"
 
       # Lint with improved error reporting
       - name: Lint applications
         id: lint
         continue-on-error: true
         run: |
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.dashboard }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "No relevant changes detected for lint; skipping."
+            exit 0
+          fi
+
           echo "🔍 Linting site application..."
-          if ! pnpm --filter @mindware-blog/site lint; then
-            echo "⚠️  Site linting failed:"
-            echo "   - Found ESLint errors or warnings"
-            echo "   - Common issues: unused imports, missing dependencies, formatting"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/site lint --fix' locally"
-            echo "   - Tracking: Pre-existing issues being addressed incrementally"
-            echo "lint_site_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.site }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/site lint; then
+              echo "⚠️  Site linting failed:"
+              echo "   - Found ESLint errors or warnings"
+              echo "   - Common issues: unused imports, missing dependencies, formatting"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/site lint --fix' locally"
+              echo "   - Tracking: Pre-existing issues being addressed incrementally"
+              echo "lint_site_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Site linting passed"
+            fi
           else
-            echo "✅ Site linting passed"
+            echo "No changes in site/packages; skipping site lint."
           fi
           
           echo ""
           echo "🔍 Linting dashboard application..."
-          if ! pnpm --filter @mindware-blog/dashboard lint; then
-            echo "⚠️  Dashboard linting failed:"
-            echo "   - Found ESLint errors or warnings"
-            echo "   - Common issues: TypeScript errors, React hooks dependencies"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard lint --fix' locally"
-            echo "   - Tracking: Known issues documented in GitHub Issues"
-            echo "lint_dashboard_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.dashboard }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/dashboard lint; then
+              echo "⚠️  Dashboard linting failed:"
+              echo "   - Found ESLint errors or warnings"
+              echo "   - Common issues: TypeScript errors, React hooks dependencies"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard lint --fix' locally"
+              echo "   - Tracking: Known issues documented in GitHub Issues"
+              echo "lint_dashboard_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Dashboard linting passed"
+            fi
           else
-            echo "✅ Dashboard linting passed"
+            echo "No changes in dashboard/packages; skipping dashboard lint."
           fi
           
           echo ""
@@ -105,35 +127,48 @@ jobs:
         id: typecheck
         continue-on-error: true
         run: |
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.dashboard }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "No relevant changes detected for typecheck; skipping."
+            exit 0
+          fi
+
           echo "📝 Type checking site application..."
-          if ! pnpm --filter @mindware-blog/site typecheck 2>&1 | tee site-typecheck.log; then
-            echo ""
-            echo "⚠️  Site type checking failed:"
-            echo "   - Found TypeScript compilation errors"
-            echo "   - Common issues: Type mismatches, missing type definitions, strict null checks"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/site typecheck' locally to see details"
-            echo "   - Review: Check site-typecheck.log artifact for full error list"
-            echo "   - Status: Non-blocking while addressing technical debt"
-            echo "   - Tracking: See docs/TECHNICAL_DEBT.md for details and action plan"
-            echo "typecheck_site_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.site }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/site typecheck 2>&1 | tee site-typecheck.log; then
+              echo ""
+              echo "⚠️  Site type checking failed:"
+              echo "   - Found TypeScript compilation errors"
+              echo "   - Common issues: Type mismatches, missing type definitions, strict null checks"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/site typecheck' locally to see details"
+              echo "   - Review: Check site-typecheck.log artifact for full error list"
+              echo "   - Status: Non-blocking while addressing technical debt"
+              echo "   - Tracking: See docs/TECHNICAL_DEBT.md for details and action plan"
+              echo "typecheck_site_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Site type checking passed"
+            fi
           else
-            echo "✅ Site type checking passed"
+            echo "No changes in site/packages; skipping site typecheck."
           fi
           
           echo ""
           echo "📝 Type checking dashboard application..."
-          if ! pnpm --filter @mindware-blog/dashboard typecheck 2>&1 | tee dashboard-typecheck.log; then
-            echo ""
-            echo "⚠️  Dashboard type checking failed:"
-            echo "   - Found TypeScript compilation errors"
-            echo "   - Common issues: Missing type definitions, incompatible library types"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard typecheck' locally"
-            echo "   - Review: Check dashboard-typecheck.log artifact for full error list"
-            echo "   - Status: Non-blocking, tracked in backlog for resolution"
-            echo "   - Tracking: See docs/TECHNICAL_DEBT.md for details and action plan"
-            echo "typecheck_dashboard_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.dashboard }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/dashboard typecheck 2>&1 | tee dashboard-typecheck.log; then
+              echo ""
+              echo "⚠️  Dashboard type checking failed:"
+              echo "   - Found TypeScript compilation errors"
+              echo "   - Common issues: Missing type definitions, incompatible library types"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard typecheck' locally"
+              echo "   - Review: Check dashboard-typecheck.log artifact for full error list"
+              echo "   - Status: Non-blocking, tracked in backlog for resolution"
+              echo "   - Tracking: See docs/TECHNICAL_DEBT.md for details and action plan"
+              echo "typecheck_dashboard_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Dashboard type checking passed"
+            fi
           else
-            echo "✅ Dashboard type checking passed"
+            echo "No changes in dashboard/packages; skipping dashboard typecheck."
           fi
           
           echo ""
@@ -146,33 +181,46 @@ jobs:
         id: tests
         continue-on-error: true
         run: |
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.dashboard }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "No relevant changes detected for tests; skipping."
+            exit 0
+          fi
+
           echo "🧪 Running site tests..."
-          if ! pnpm --filter @mindware-blog/site test -- --ci --passWithNoTests; then
-            echo ""
-            echo "⚠️  Site tests failed or not configured:"
-            echo "   - Test suite may be missing or have failing tests"
-            echo "   - Action needed: Set up Jest/Vitest configuration"
-            echo "   - Add unit tests for critical components and utilities"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/site test' locally"
-            echo "   - Priority: Medium - should be addressed for production readiness"
-            echo "test_site_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.site }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/site test -- --ci --passWithNoTests; then
+              echo ""
+              echo "⚠️  Site tests failed or not configured:"
+              echo "   - Test suite may be missing or have failing tests"
+              echo "   - Action needed: Set up Jest/Vitest configuration"
+              echo "   - Add unit tests for critical components and utilities"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/site test' locally"
+              echo "   - Priority: Medium - should be addressed for production readiness"
+              echo "test_site_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Site tests passed"
+            fi
           else
-            echo "✅ Site tests passed"
+            echo "No changes in site/packages; skipping site tests."
           fi
           
           echo ""
           echo "🧪 Running dashboard tests..."
-          if ! pnpm --filter @mindware-blog/dashboard test -- --ci --passWithNoTests; then
-            echo ""
-            echo "⚠️  Dashboard tests failed:"
-            echo "   - Test suite has failing tests or configuration issues"
-            echo "   - Common issues: Mock setup, async timing, component mounting"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard test' locally"
-            echo "   - Review test failures and update snapshots if needed"
-            echo "   - Priority: High - tests should pass before merging new features"
-            echo "test_dashboard_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.dashboard }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/dashboard test -- --ci --passWithNoTests; then
+              echo ""
+              echo "⚠️  Dashboard tests failed:"
+              echo "   - Test suite has failing tests or configuration issues"
+              echo "   - Common issues: Mock setup, async timing, component mounting"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard test' locally"
+              echo "   - Review test failures and update snapshots if needed"
+              echo "   - Priority: High - tests should pass before merging new features"
+              echo "test_dashboard_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Dashboard tests passed"
+            fi
           else
-            echo "✅ Dashboard tests passed"
+            echo "No changes in dashboard/packages; skipping dashboard tests."
           fi
           
           echo ""
@@ -184,33 +232,46 @@ jobs:
       - name: Build applications
         id: build
         run: |
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.dashboard }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "No relevant changes detected for build; skipping."
+            exit 0
+          fi
+
           echo "🏗️  Building site application..."
           echo "   This is the primary application and must build successfully"
-          if ! pnpm --filter @mindware-blog/site build; then
-            echo ""
-            echo "❌ Site build FAILED - This is a critical error"
-            echo "   - The site application failed to compile"
-            echo "   - Common issues: TypeScript errors, missing dependencies, build config"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/site build' locally"
-            echo "   - This will block the PR from merging"
-            exit 1
+          if [ "${{ steps.filter.outputs.site }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/site build; then
+              echo ""
+              echo "❌ Site build FAILED - This is a critical error"
+              echo "   - The site application failed to compile"
+              echo "   - Common issues: TypeScript errors, missing dependencies, build config"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/site build' locally"
+              echo "   - This will block the PR from merging"
+              exit 1
+            fi
+            echo "✅ Site build completed successfully"
+          else
+            echo "No changes in site/packages; skipping site build."
           fi
-          echo "✅ Site build completed successfully"
           
           echo ""
           echo "🏗️  Building dashboard application..."
-          if ! pnpm --filter @mindware-blog/dashboard build; then
-            echo ""
-            echo "⚠️  Dashboard build failed:"
-            echo "   - Dashboard application failed to compile"
-            echo "   - Common issues: Import errors, missing types, configuration"
-            echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard build' locally"
-            echo "   - Tracking: See docs/TECHNICAL_DEBT.md#dashboard-build-failures"
-            echo "   - Status: Non-blocking for site-only deployments"
-            echo "   - Note: Dashboard issues should be fixed before v1.2.0 release"
-            echo "build_dashboard_failed=true" >> $GITHUB_OUTPUT
+          if [ "${{ steps.filter.outputs.dashboard }}" = "true" ] || [ "${{ steps.filter.outputs.packages }}" = "true" ]; then
+            if ! pnpm --filter @mindware-blog/dashboard build; then
+              echo ""
+              echo "⚠️  Dashboard build failed:"
+              echo "   - Dashboard application failed to compile"
+              echo "   - Common issues: Import errors, missing types, configuration"
+              echo "   - Fix: Run 'pnpm --filter @mindware-blog/dashboard build' locally"
+              echo "   - Tracking: See docs/TECHNICAL_DEBT.md#dashboard-build-failures"
+              echo "   - Status: Non-blocking for site-only deployments"
+              echo "   - Note: Dashboard issues should be fixed before v1.2.0 release"
+              echo "build_dashboard_failed=true" >> $GITHUB_OUTPUT
+            else
+              echo "✅ Dashboard build completed successfully"
+            fi
           else
-            echo "✅ Dashboard build completed successfully"
+            echo "No changes in dashboard/packages; skipping dashboard build."
           fi
           
           echo ""
@@ -226,7 +287,9 @@ jobs:
           
           # Verify site artifacts (critical)
           echo "Checking site build artifacts..."
-          if [ -d "apps/site/.next" ]; then
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "Skipping site artifact verification (site/packages unchanged)."
+          elif [ -d "apps/site/.next" ]; then
             echo "✅ Site .next directory found"
             SITE_SIZE=$(du -sh apps/site/.next | cut -f1)
             echo "   - Build size: $SITE_SIZE"
@@ -257,7 +320,9 @@ jobs:
           
           # Verify dashboard artifacts (non-critical)
           echo "Checking dashboard build artifacts..."
-          if [ -d "apps/dashboard/.next" ]; then
+          if [ "${{ steps.filter.outputs.dashboard }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "Skipping dashboard artifact verification (dashboard/packages unchanged)."
+          elif [ -d "apps/dashboard/.next" ]; then
             echo "✅ Dashboard .next directory found"
             DASHBOARD_SIZE=$(du -sh apps/dashboard/.next | cut -f1)
             echo "   - Build size: $DASHBOARD_SIZE"
@@ -360,25 +425,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Detect changed areas
+        id: filter
+        uses: dorny/paths-filter@v3
         with:
-          version: 10.14.0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            site:
+              - 'apps/site/**'
+            packages:
+              - 'packages/**'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node + pnpm
+        if: steps.filter.outputs.site == 'true' || steps.filter.outputs.packages == 'true'
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          node-version: '18'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          node-version: "20"
+          pnpm-version: "10.14.0"
 
       - name: Build Storybook
         id: storybook
         continue-on-error: true
         run: |
           echo "📚 Building Storybook component library..."
+          if [ "${{ steps.filter.outputs.site }}" != "true" ] && [ "${{ steps.filter.outputs.packages }}" != "true" ]; then
+            echo "No changes in site/packages; skipping Storybook build."
+            exit 0
+          fi
           if ! pnpm --filter @mindware-blog/site build-storybook; then
             echo ""
             echo "⚠️  Storybook build failed:"

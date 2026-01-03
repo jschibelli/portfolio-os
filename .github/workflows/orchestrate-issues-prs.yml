@@ -10,7 +10,7 @@ on:
   pull_request_review_comment:
     types: [created, edited]
   issue_comment:
-    types: [created]
+    types: [created, edited]
 
 permissions:
   contents: read
@@ -46,8 +46,9 @@ jobs:
         with:
           script: |
             const payload = context.payload
-            const isIssue = !!payload.issue && !payload.pull_request
-            const isPR = !!payload.pull_request
+            // issue_comment fires for both Issues and PRs (PRs are exposed as `payload.issue` with `issue.pull_request`).
+            const isIssue = !!payload.issue && !payload.issue.pull_request && !payload.pull_request
+            const isPR = !!payload.pull_request || (!!payload.issue && !!payload.issue.pull_request)
             const isReviewComment = !!payload.comment && !!payload.pull_request && payload.comment.pull_request_review_id != null
             const isPRClosed = context.eventName === 'pull_request' && payload.action === 'closed'
             const isPRMerged = isPRClosed && payload.pull_request.merged === true
@@ -57,7 +58,8 @@ jobs:
             core.setOutput('is_pr_closed', String(isPRClosed))
             core.setOutput('is_pr_merged', String(isPRMerged))
             core.setOutput('issue_number', isIssue ? String(payload.issue.number) : '')
-            core.setOutput('pr_number', isPR ? String(payload.pull_request.number) : '')
+            // For issue_comment on a PR, the PR number is the issue.number.
+            core.setOutput('pr_number', payload.pull_request ? String(payload.pull_request.number) : (payload.issue && payload.issue.pull_request ? String(payload.issue.number) : ''))
             core.setOutput('review_state', payload.review ? String(payload.review.state || '') : '')
             core.setOutput('review_comment_id', payload.comment ? String(payload.comment.id || '') : '')
 
@@ -128,7 +130,8 @@ jobs:
   pr-orchestration:
     name: PR orchestration
     needs: detect-and-route
-    if: ${{ needs.detect-and-route.outputs.is_pr == 'true' && needs.detect-and-route.outputs.is_pr_closed != 'true' }}
+    # Avoid running on issue_comment events (they can be on PRs too).
+    if: ${{ needs.detect-and-route.outputs.is_pr == 'true' && needs.detect-and-route.outputs.is_pr_closed != 'true' && github.event_name != 'issue_comment' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -152,20 +155,12 @@ jobs:
         run: |
           ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
-      - name: Set up Node (for mono-repo checks)
+      - name: Setup Node + pnpm
         if: success()
-        uses: actions/setup-node@v4
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          node-version: '20'
-
-      - name: Enable pnpm
-        if: success()
-        run: corepack enable && corepack prepare pnpm@latest --activate
-
-      - name: Install deps (root)
-        if: success()
-        run: |
-          if [ -f package.json ]; then pnpm install --frozen-lockfile || pnpm install; fi
+          node-version: "20"
+          pnpm-version: "10.14.0"
 
       - name: Run checks (build, lint, typecheck, tests)
         if: success()
@@ -175,11 +170,10 @@ jobs:
           pnpm run typecheck || pnpm run type-check || true
           pnpm run test || true
 
-      - name: CR-GPT analyze and upload report
+      - name: PR analysis (report)
         if: success()
         run: |
-          pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport -ExportTo analysis.md"
-          echo "analysis.md" > artifact_list.txt
+          pwsh -c "./scripts/pr-management/pr-analyzer.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Analysis comprehensive -ExportTo analysis.md" || true
         continue-on-error: true
 
       - name: Universal PR Automation (CR-GPT monitoring, merge guidance)
@@ -188,13 +182,49 @@ jobs:
           pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action all"
         continue-on-error: true
 
+      - name: Code Quality Checker
+        if: success() && hashFiles('scripts/code-quality/check-code-quality.ps1') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/code-quality/check-code-quality.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -FixIssues -RunTests -GenerateReport"
+        continue-on-error: true
+
+      - name: Docs Updater
+        if: success() && hashFiles('scripts/core-utilities/docs-updater.ps1') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pwsh -c "./scripts/core-utilities/docs-updater.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -UpdateChangelog -UpdateReadme -GenerateDocs"
+        continue-on-error: true
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: orchestrator-reports-${{ needs.detect-and-route.outputs.pr_number }}
           path: |
             analysis.md
+            quality-report-pr-*.md
+            docs/generated/**
           if-no-files-found: ignore
+
+      - name: Post Summary
+        if: always() && needs.detect-and-route.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = Number('${{ needs.detect-and-route.outputs.pr_number }}' || '0')
+            if (!prNumber) return
+            const body = [
+              '### PR Automation Summary',
+              '- PR analysis, automation, and optional quality/docs steps executed.',
+              '- Artifacts: `analysis.md`, `quality-report-pr-*.md`, `docs/generated/*` (if present).',
+              `- DRY_RUN_RESPONSES = ${process.env.DRY_RUN_RESPONSES}`
+            ].join('\n')
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body
+            })
 
       - name: Optional auto-respond to CR-GPT thread (dry-run controlled)
         if: success()
@@ -282,6 +312,129 @@ jobs:
           PR_NUMBER: ${{ steps.meta.outputs.pr || '' }}
           COMMENT_ID: ${{ steps.meta.outputs.comment_id || '' }}
         run: pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber $env:PR_NUMBER -Action respond"
+
+  review-comment-triage:
+    name: Review comment triage (labels)
+    needs: detect-and-route
+    if: ${{ needs.detect-and-route.outputs.is_review_comment == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh jq
+      - name: Label based on keywords
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+
+          PR='${{ needs.detect-and-route.outputs.pr_number }}'
+          BODY='${{ github.event.comment.body }}'
+          LOWER=$(printf "%s" "$BODY" | tr '[:upper:]' '[:lower:]')
+
+          if echo "$LOWER" | grep -q "bug\|null\|undefined\|exception"; then
+            gh pr edit "$PR" --add-label "type: bug" || true
+          fi
+          if echo "$LOWER" | grep -q "perf\|performance\|optimiz"; then
+            gh pr edit "$PR" --add-label "area: performance" || true
+          fi
+
+  issue-comment-commands:
+    name: Issue comment commands router
+    needs: detect-and-route
+    if: ${{ github.event_name == 'issue_comment' && needs.detect-and-route.outputs.is_issue == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh jq
+      - name: Handle commands
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
+
+          BODY='${{ github.event.comment.body }}'
+          ISSUE_NUMBER='${{ needs.detect-and-route.outputs.issue_number }}'
+          ACTOR='${{ github.actor }}'
+
+          echo "Comment on #$ISSUE_NUMBER by $ACTOR: $BODY"
+
+          LOWER=$(printf "%s" "$BODY" | tr '[:upper:]' '[:lower:]')
+
+          if echo "$LOWER" | grep -q "^/help"; then
+            gh issue comment "$ISSUE_NUMBER" --body "Available commands:\n- /assign me\n- /status <ready|in progress|in review|done>\n- /priority <p0|p1|p2>\n- /labels add <comma,separated>\n- /unassign me"
+            exit 0
+          fi
+
+          if echo "$LOWER" | grep -q "^/assign me$"; then
+            gh issue edit "$ISSUE_NUMBER" --add-assignee "$ACTOR"
+            exit 0
+          fi
+
+          if echo "$LOWER" | grep -q "^/unassign me$"; then
+            gh issue edit "$ISSUE_NUMBER" --remove-assignee "$ACTOR"
+            exit 0
+          fi
+
+          if echo "$LOWER" | grep -q "^/labels add "; then
+            LABELS=$(printf "%s" "$BODY" | sed -E 's#^/labels add ##i')
+            IFS=',' read -ra LA <<< "$LABELS"
+            for l in "${LA[@]}"; do
+              gh issue edit "$ISSUE_NUMBER" --add-label "$(echo "$l" | xargs)"
+            done
+            exit 0
+          fi
+
+          update_field() {
+            ISSUE_ID=$(gh issue view "$ISSUE_NUMBER" --json id -q .id)
+            ITEM_ID=$(gh api graphql -f query='query($issueId: ID!) { node(id: $issueId) { ... on Issue { projectItems(first: 10) { nodes { id project { id } } } } } }' -f issueId="$ISSUE_ID" | jq -r '.data.node.projectItems.nodes[0].id')
+            [ -z "$ITEM_ID" ] && echo "No project item found" && exit 0
+            gh api graphql -f query='mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) { updateProjectV2ItemFieldValue(input: {projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: {singleSelectOptionId: $value}}) { projectV2Item { id } } }' \
+              -f projectId=PVT_kwHOAEnMVc4BCu-c -f itemId="$ITEM_ID" -f fieldId="$1" -f value="$2" >/dev/null
+          }
+
+          STATUS_FIELD=PVTSSF_lAHOAEnMVc4BCu-czg028oM
+          STATUS_READY=e18bf179
+          STATUS_INPROGRESS=47fc9ee4
+          STATUS_INREVIEW=aba860b9
+          STATUS_DONE=98236657
+
+          PRIORITY_FIELD=PVTSSF_lAHOAEnMVc4BCu-czg028qQ
+          PRIORITY_P0=79628723
+          PRIORITY_P1=0a877460
+          PRIORITY_P2=da944a9c
+
+          if echo "$LOWER" | grep -q "^/status "; then
+            VAL=$(printf "%s" "$LOWER" | sed -E 's#^/status ##')
+            case "$VAL" in
+              ready)         update_field "$STATUS_FIELD" "$STATUS_READY" ;;
+              "in progress") update_field "$STATUS_FIELD" "$STATUS_INPROGRESS" ;;
+              "in review")   update_field "$STATUS_FIELD" "$STATUS_INREVIEW" ;;
+              done)          update_field "$STATUS_FIELD" "$STATUS_DONE" ;;
+              *) echo "Unknown status: $VAL" ;;
+            esac
+            exit 0
+          fi
+
+          if echo "$LOWER" | grep -q "^/priority "; then
+            VAL=$(printf "%s" "$LOWER" | sed -E 's#^/priority ##')
+            case "$VAL" in
+              p0) update_field "$PRIORITY_FIELD" "$PRIORITY_P0" ;;
+              p1) update_field "$PRIORITY_FIELD" "$PRIORITY_P1" ;;
+              p2) update_field "$PRIORITY_FIELD" "$PRIORITY_P2" ;;
+              *) echo "Unknown priority: $VAL" ;;
+            esac
+            exit 0
+          fi
+
+          echo "No matching command"
 
   pr-merged-status:
     name: Update Status on merge (Done)

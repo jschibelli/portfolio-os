@@ -30,16 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Node + pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          node-version: 20
-
-      - name: Install pnpm
-        run: corepack enable && corepack prepare pnpm@latest --activate
-
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+          node-version: "20"
+          pnpm-version: "10.14.0"
 
       - name: Build site
         run: pnpm --filter @mindware-blog/site run build
