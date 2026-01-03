@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchPosts as fetchHashnodePosts } from '../../../lib/hashnode-api';
+import { fetchPosts as fetchHashnodePosts } from '@/lib/hashnode-api';
 
 /**
  * Debug endpoint to verify which Hashnode publication the deployment is querying.
