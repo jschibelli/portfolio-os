@@ -1,0 +1,224 @@
+---
+title: AI Prompts Library
+description: Curated collection of AI prompts for Portfolio OS development
+---
+## Overview
+
+A curated collection of AI prompts designed for senior front-end developers building AI-powered SaaS products. These templates are optimized for use with Cursor, Claude, and ChatGPT in multi-agent workflows.
+
+<Note type="info" title="Quick Start">
+1. **Copy the prompt** from the relevant template file
+2. **Paste into your AI tool** (Cursor, Claude, ChatGPT)
+3. **Fill in the variables** marked with `{{VARIABLE_NAME}}`
+4. **Execute and iterate** based on the response
+</Note>
+
+## Template Categories
+
+<CardGrid>
+  <Card 
+    title="Development Workflow"
+    icon="code"
+    description="Prompts for component generation, feature specs, and code review"
+  >
+    - Component generator
+    - Feature specifications
+    - Refactor review
+    - Post-merge review
+  </Card>
+
+  <Card 
+    title="Content & Documentation"
+    icon="file-text"
+    description="Prompts for case studies, blog articles, and SEO"
+  >
+    - Case study templates
+    - Blog article templates
+    - SEO checklists
+    - Documentation generation
+  </Card>
+
+  <Card 
+    title="Testing & Quality"
+    icon="shield"
+    description="Prompts for test generation and quality assurance"
+  >
+    - Playwright test generator
+    - Accessibility checker
+    - Bug report response
+    - Quality audits
+  </Card>
+
+  <Card 
+    title="DevOps & CI/CD"
+    icon="settings"
+    description="Prompts for CI/CD debugging and commit messages"
+  >
+    - CI debug helper
+    - Commit message writer
+    - Deployment automation
+    - Pipeline troubleshooting
+  </Card>
+</CardGrid>
+
+## Development Workflow Prompts
+
+### Component Generator
+Generate React components with proper TypeScript, styling, and accessibility.
+
+**Location:** `apps/site/docs/development/prompts/component-generator.md`
+
+**Best For:** New UI components  
+**AI Tool Preference:** Cursor
+
+### Feature Spec
+Create detailed feature specifications for new functionality.
+
+**Location:** `apps/site/docs/development/prompts/feature-spec.md`
+
+**Best For:** Planning new features  
+**AI Tool Preference:** Claude
+
+### Refactor Review
+Analyze and improve existing code structure.
+
+**Location:** `apps/site/docs/development/prompts/refactor-review.md`
+
+**Best For:** Code improvement  
+**AI Tool Preference:** Claude
+
+### Post-Merge Review
+Review code after merging to ensure quality.
+
+**Location:** `apps/site/docs/development/prompts/post-merge-review.md`
+
+**Best For:** Quality assurance after merge  
+**AI Tool Preference:** Cursor or Claude
+
+## Content & Documentation Prompts
+
+### Case Study Template
+Generate comprehensive case studies with proper structure.
+
+**Location:** `apps/site/docs/development/prompts/case-study-template.md`
+
+**Best For:** Documentation  
+**AI Tool Preference:** ChatGPT
+
+### Blog Article Template
+Create engaging blog content with SEO optimization.
+
+**Location:** `apps/site/docs/development/prompts/blog-article-template.md`
+
+**Best For:** Content creation  
+**AI Tool Preference:** ChatGPT
+
+### SEO Checklist
+Comprehensive SEO audit and optimization guide.
+
+**Location:** `apps/site/docs/development/prompts/seo-checklist.md`
+
+**Best For:** SEO audits  
+**AI Tool Preference:** ChatGPT
+
+## Testing & Quality Prompts
+
+### Playwright Test Generator
+Generate comprehensive test suites.
+
+**Location:** `apps/site/docs/development/prompts/playwright-test-generator.md`
+
+**Best For:** Test coverage  
+**AI Tool Preference:** Cursor
+
+### Accessibility Checker
+Audit and improve accessibility compliance.
+
+**Location:** `apps/site/docs/development/prompts/accessibility-checker.md`
+
+**Best For:** Accessibility compliance  
+**AI Tool Preference:** Cursor or Claude
+
+### Bug Report Response
+Structured approach to bug investigation and resolution.
+
+**Location:** `apps/site/docs/development/prompts/bug-report-response.md`
+
+**Best For:** Bug investigation  
+**AI Tool Preference:** Claude
+
+## DevOps & CI/CD Prompts
+
+### CI Debug Helper
+Debug CI/CD pipeline issues systematically.
+
+**Location:** `apps/site/docs/development/prompts/ci-debug-helper.md`
+
+**Best For:** Pipeline troubleshooting  
+**AI Tool Preference:** Claude
+
+### Commit Message Writer
+Generate clear, conventional commit messages.
+
+**Location:** `apps/site/docs/development/prompts/commit-message-writer.md`
+
+**Best For:** Commit message generation  
+**AI Tool Preference:** Any
+
+## Usage Guidelines
+
+### When to Use Each Template
+
+| Template | Best For | AI Tool Preference |
+|----------|----------|-------------------|
+| component-generator | New UI components | Cursor |
+| feature-spec | Planning new features | Claude |
+| case-study-template | Documentation | ChatGPT |
+| playwright-test-generator | Test coverage | Cursor |
+| refactor-review | Code improvement | Claude |
+| seo-checklist | SEO audits | ChatGPT |
+
+### Prompt Customization Tips
+
+1. **Context Matters**: Always provide relevant context about your project
+2. **Be Specific**: Replace all `{{VARIABLE_NAME}}` placeholders with actual values
+3. **Iterate**: Use the AI's response to refine your next prompt
+4. **Combine**: Mix and match sections from different templates as needed
+
+## Best Practices
+
+### For Cursor Users
+- Use component-generator for React/TypeScript components
+- Leverage refactor-review for code improvements
+- Combine with your existing codebase context
+
+### For Claude Users
+- Use feature-spec for detailed planning
+- Leverage case-study-template for documentation
+- Take advantage of Claude's reasoning capabilities
+
+### For ChatGPT Users
+- Use blog-article-template for content creation
+- Leverage seo-checklist for optimization
+- Use accessibility-checker for compliance
+
+## Accessing Prompts
+
+All prompts are located in the `apps/site/docs/development/prompts/` directory. You can:
+
+1. **Browse the files directly** in your codebase
+2. **Copy and paste** into your AI tool
+3. **Customize** for your specific needs
+4. **Share** with your team
+
+## Related Resources
+
+- [Developer Guide](/docs/developer-guide) - Architecture and development workflow
+- [Testing Guide](/docs/testing) - Comprehensive testing documentation
+- [Automation System](/docs/scripts-reference/automation) - Multi-agent automation
+- [Component Library](/docs/component-library) - UI component documentation
+
+<Note type="success" title="Contributing">
+Have a great prompt template? Consider adding it to the prompts directory and updating this documentation!
+</Note>
+

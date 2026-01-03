@@ -81,7 +81,7 @@ model Article {
 ### 4. Environment Configuration
 
 #### Required Environment Variables:
-```env
+```bash
 # Hashnode Publishing API
 HASHNODE_API_TOKEN="your-hashnode-api-token-here"
 HASHNODE_PUBLICATION_ID="your-publication-id-here"
@@ -90,6 +90,8 @@ HASHNODE_WEBHOOK_SECRET="your-webhook-secret-here"  # Optional
 # Optional: Custom Hashnode API URL (defaults to https://gql.hashnode.com)
 # HASHNODE_API_URL="https://gql.hashnode.com"
 ```
+
+Store these values as environment variables (e.g. `.env.local` for local dev) and as GitHub Actions secrets in CI. Never commit tokens or secrets to the repository.
 
 ## API Endpoints
 
@@ -432,10 +434,10 @@ console.log('Reset:', rateLimit?.reset);
 ## Next Steps
 
 1. ✅ Complete implementation
-2. â­ï¸ Test with real Hashnode account
-3. â­ï¸ Create PR and request review
-4. â­ï¸ Deploy to staging environment
-5. â­ï¸ Production deployment after testing
+2. Pending: Test with real Hashnode account
+3. Pending: Create PR and request review
+4. Pending: Deploy to staging environment
+5. Pending: Production deployment after testing
 
 ## Related Files
 
