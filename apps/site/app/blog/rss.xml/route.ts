@@ -1,66 +1,51 @@
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { NextResponse } from 'next/server';
+import { fetchPosts } from '../../../lib/content-api';
 
 export async function GET() {
   try {
-    const articles = await prisma.article.findMany({
-      where: {
-        status: "PUBLISHED",
-        visibility: "PUBLIC",
-      },
-      orderBy: { publishedAt: "desc" },
-      take: 20,
-      select: {
-        title: true,
-        subtitle: true,
-        slug: true,
-        excerpt: true,
-        publishedAt: true,
-        author: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://johnschibelli.dev';
+    const posts = await fetchPosts(20);
 
     const rss = `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Shabelle.dev Blog</title>
-    <description>Technology & Development Blog</description>
-    <link>https://shabelle.dev/blog</link>
-    <atom:link href="https://shabelle.dev/blog/rss.xml" rel="self" type="application/rss+xml" />
+    <title>John Schibelli Blog</title>
+    <description>Technology &amp; Development</description>
+    <link>${baseUrl}/blog</link>
+    <atom:link href="${baseUrl}/blog/rss.xml" rel="self" type="application/rss+xml" />
     <language>en-US</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    ${articles
-      .map(
-        (article) => `
+    ${posts
+      .map((post) => {
+        const title = post.title || 'Untitled';
+        const description = post.brief || '';
+        const link = `${baseUrl}/blog/${post.slug}`;
+        const pubDate = post.publishedAt ? new Date(post.publishedAt).toUTCString() : new Date().toUTCString();
+        const author = post.author?.name || 'John Schibelli';
+
+        return `
     <item>
-      <title><![CDATA[${article.title}]]></title>
-      <description><![CDATA[${article.excerpt || article.subtitle || ""}]]></description>
-      <link>https://shabelle.dev/blog/${article.slug}</link>
-      <guid>https://shabelle.dev/blog/${article.slug}</guid>
-      <pubDate>${article.publishedAt?.toUTCString() || new Date().toUTCString()}</pubDate>
-      <author>${article.author?.name || article.author?.email || "Shabelle.dev"}</author>
-    </item>`
-      )
-      .join("")}
+      <title><![CDATA[${title}]]></title>
+      <description><![CDATA[${description}]]></description>
+      <link>${link}</link>
+      <guid>${link}</guid>
+      <pubDate>${pubDate}</pubDate>
+      <author><![CDATA[${author}]]></author>
+    </item>`;
+      })
+      .join('')}
   </channel>
 </rss>`;
 
     return new NextResponse(rss, {
       headers: {
-        "Content-Type": "application/xml",
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        'Content-Type': 'application/xml; charset=utf-8',
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
       },
     });
   } catch (error) {
-    console.error("Failed to generate RSS feed:", error);
-    return new NextResponse("Failed to generate RSS feed", { status: 500 });
+    console.error('Failed to generate RSS feed:', error);
+    return new NextResponse('Failed to generate RSS feed', { status: 500 });
   }
 }
 

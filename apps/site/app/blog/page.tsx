@@ -96,10 +96,24 @@ const defaultPublication = {
   },
 };
 
-export default async function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams?: { page?: string };
+}) {
+  // Pagination
+  // Page 1: 1 featured + 9 list items (total 10 shown)
+  // Page 2+: 10 list items per page
+  // We fetch a larger set from the API and paginate locally for reliability.
+  // (Cursor-based pagination is possible but requires storing/deriving cursors.)
+  const PAGE_SIZE = 10;
+  const rawPage = Number.parseInt(searchParams?.page ?? '1', 10);
+  const requestedPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+
   // Fetch posts during build and runtime with graceful fallback
   let posts: any[] = [];
   let currentPublication = defaultPublication;
+  let page = requestedPage;
   
   try {
     // Fetch more posts to ensure we get all articles including older ones
@@ -116,8 +130,18 @@ export default async function BlogPage() {
     currentPublication = defaultPublication;
   }
 
-  const featuredPost = posts.length > 0 ? posts[0] : null;
-  const morePosts = posts.length > 1 ? posts.slice(1, 4) : [];
+  const totalPages =
+    posts.length <= PAGE_SIZE ? 1 : 1 + Math.ceil((posts.length - PAGE_SIZE) / PAGE_SIZE);
+
+  // Clamp requested page to valid range
+  page = Math.min(Math.max(page, 1), totalPages);
+
+  const isFirstPage = page === 1;
+  const featuredPost = isFirstPage && posts.length > 0 ? posts[0] : null;
+
+  const listStartIndex = isFirstPage ? 1 : PAGE_SIZE + (page - 2) * PAGE_SIZE;
+  const listCount = isFirstPage ? PAGE_SIZE - 1 : PAGE_SIZE;
+  const pagedPosts = posts.length > listStartIndex ? posts.slice(listStartIndex, listStartIndex + listCount) : [];
 
   return (
     <AppProvider publication={currentPublication as any}>
@@ -188,7 +212,7 @@ export default async function BlogPage() {
               {/* RSS Feed */}
               <Link
                 prefetch={false}
-                href="/rss.xml"
+                href="/blog/rss.xml"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open blog XML Feed, opens in new tab"
@@ -226,14 +250,14 @@ export default async function BlogPage() {
               tags={['Featured', 'Technology', 'Insights']}
             />
 
-            {/* Latest Posts Grid */}
-            {posts.length > 1 && (
+            {/* Posts Grid */}
+            {pagedPosts.length > 0 && (
               <div id="latest-posts-section" data-animate-section className="space-y-6 transition-all duration-1000 ease-out">
                 <h2 className="animate-fade-in-up text-2xl font-bold text-stone-900 dark:text-stone-100">
                   Latest Posts
                 </h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {morePosts.map((post, index) => (
+                  {pagedPosts.map((post, index) => (
                     <div
                       key={post.id}
                       className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
@@ -257,6 +281,78 @@ export default async function BlogPage() {
                   ))}
                 </div>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* Non-featured pages: show only the paged list */}
+        {posts.length > 0 && !featuredPost && pagedPosts.length > 0 && (
+          <div id="posts-section" data-animate-section className="duration-900 space-y-12 transition-all ease-out">
+            <div className="space-y-6 transition-all duration-1000 ease-out">
+              <h2 className="animate-fade-in-up text-2xl font-bold text-stone-900 dark:text-stone-100">
+                Posts
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {pagedPosts.map((post, index) => (
+                  <div
+                    key={post.id}
+                    className={`animate-fade-in-up transition-all duration-300 hover:scale-[1.02] ${
+                      index === 0
+                        ? 'animation-delay-200'
+                        : index === 1
+                          ? 'animation-delay-300'
+                          : 'animation-delay-400'
+                    }`}
+                  >
+                    <ModernPostCard
+                      title={post.title}
+                      excerpt={post.brief}
+                      coverImage={post.coverImage?.url || DEFAULT_COVER}
+                      date={post.publishedAt}
+                      slug={post.slug}
+                      readTime="3 min read"
+                      tags={['Technology', 'Development']}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination (placeholder: we'll wire up ?page= in the next patch via searchParams) */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-4 pt-6">
+            {page > 1 ? (
+              <Link
+                prefetch={false}
+                href={page - 1 === 1 ? '/blog' : `/blog?page=${page - 1}`}
+                className="rounded-full border border-stone-200 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800"
+              >
+                Prev
+              </Link>
+            ) : (
+              <span className="cursor-not-allowed rounded-full border border-stone-200 px-4 py-2 text-sm font-medium text-stone-400 dark:border-stone-700 dark:text-stone-600">
+                Prev
+              </span>
+            )}
+
+            <span className="text-sm text-stone-600 dark:text-stone-400">
+              Page {page} of {totalPages}
+            </span>
+
+            {page < totalPages ? (
+              <Link
+                prefetch={false}
+                href={`/blog?page=${page + 1}`}
+                className="rounded-full border border-stone-200 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-100 dark:border-stone-700 dark:text-stone-300 dark:hover:bg-stone-800"
+              >
+                Next
+              </Link>
+            ) : (
+              <span className="cursor-not-allowed rounded-full border border-stone-200 px-4 py-2 text-sm font-medium text-stone-400 dark:border-stone-700 dark:text-stone-600">
+                Next
+              </span>
             )}
           </div>
         )}

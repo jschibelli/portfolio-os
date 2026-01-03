@@ -51,14 +51,33 @@ const CACHE_DURATION = 30; // seconds
  * Get the Hashnode publication host from environment variables
  */
 function getHost(): string {
-  const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev';
+  // Prefer server-only env var, fall back to public env var
+  const host =
+    process.env.HASHNODE_PUBLICATION_HOST ||
+    process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST;
+
+  const normalizedHost = host?.trim();
+  if (!normalizedHost) {
+    const message =
+      '[Hashnode API] Missing publication host. Set HASHNODE_PUBLICATION_HOST (server) or NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST (public).';
+
+    // In production, fail fast so we don't silently fetch from the wrong publication
+    if (process.env.NODE_ENV === 'production') {
+      console.error(message);
+      throw new Error(message);
+    }
+
+    // In dev/test, keep a fallback to make local bootstrapping easier
+    console.warn(`${message} Falling back to mindware.hashnode.dev for development.`);
+    return 'mindware.hashnode.dev';
+  }
   
   // Log during build to help diagnose issues
   if (process.env.NODE_ENV !== 'development') {
-    console.log(`[Hashnode API] Using publication host: ${host}`);
+    console.log(`[Hashnode API] Using publication host: ${normalizedHost}`);
   }
   
-  return host;
+  return normalizedHost;
 }
 
 /**
