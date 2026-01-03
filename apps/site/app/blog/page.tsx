@@ -99,7 +99,8 @@ const defaultPublication = {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: { page?: string };
+  // Next.js 15: `searchParams` is async in server components and must be awaited
+  searchParams?: Promise<{ page?: string }>;
 }) {
   // Pagination
   // Page 1: 1 featured + 9 list items (total 10 shown)
@@ -107,7 +108,8 @@ export default async function BlogPage({
   // We fetch a larger set from the API and paginate locally for reliability.
   // (Cursor-based pagination is possible but requires storing/deriving cursors.)
   const PAGE_SIZE = 10;
-  const rawPage = Number.parseInt(searchParams?.page ?? '1', 10);
+  const resolvedSearchParams = await searchParams;
+  const rawPage = Number.parseInt(resolvedSearchParams?.page ?? '1', 10);
   const requestedPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   // Fetch posts during build and runtime with graceful fallback
