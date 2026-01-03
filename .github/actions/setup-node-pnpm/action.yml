@@ -3,11 +3,11 @@ description: Shared setup for Node and pnpm (Corepack) with optional install
 
 inputs:
   node-version:
-    description: Node.js version to use
+    description: Node.js version to use (recommend LTS, pinned for reproducible CI)
     required: false
     default: "20"
   pnpm-version:
-    description: pnpm version to activate via Corepack
+    description: pnpm version to activate via Corepack (pinned for reproducible CI)
     required: false
     default: "10.14.0"
   install:
@@ -26,6 +26,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
+        # Uses the pnpm store cache keying logic from actions/setup-node
         cache: pnpm
 
     - name: Enable Corepack + activate pnpm

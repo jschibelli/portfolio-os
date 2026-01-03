@@ -33,6 +33,7 @@ jobs:
       - name: Setup Node + pnpm
         uses: ./.github/actions/setup-node-pnpm
         with:
+          # Pin toolchain versions to reduce CI drift across runs.
           node-version: "20"
           pnpm-version: "10.14.0"
 
