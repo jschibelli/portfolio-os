@@ -231,10 +231,22 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
     
     if (hashnodePosts.length === 0) {
       console.warn('[Content API] Hashnode API returned no posts. Check publication host configuration.');
-      console.warn('[Content API] Current host:', process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || 'mindware.hashnode.dev');
+      console.warn(
+        '[Content API] Current host:',
+        process.env.HASHNODE_PUBLICATION_HOST ||
+          process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST ||
+          '(not set)'
+      );
     }
-    
-    return hashnodePosts.map(post => ({
+
+    // Defensive: ensure newest posts appear first regardless of API ordering
+    const sortedPosts = [...hashnodePosts].sort((a, b) => {
+      const aTime = a.publishedAt ? Date.parse(a.publishedAt) : 0;
+      const bTime = b.publishedAt ? Date.parse(b.publishedAt) : 0;
+      return bTime - aTime;
+    });
+
+    return sortedPosts.map(post => ({
       id: post.id,
       title: post.title,
       brief: post.brief,
