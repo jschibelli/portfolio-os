@@ -7,6 +7,25 @@
 
 import { prisma } from '@/lib/prisma'
 
+// In many dev/prod configurations, the Site app may not have a database wired up
+// (or the analytics models may not exist in the current Prisma schema).
+// Instead of throwing at runtime, we treat analytics tracking as best-effort/no-op.
+const hasDatabaseUrl = Boolean(process.env.DATABASE_URL)
+const warnedMissingModels = new Set<string>()
+
+function getModel(name: string): any | null {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const model = (prisma as any)?.[name]
+  return model ?? null
+}
+
+function warnOnce(key: string, message: string) {
+  if (process.env.NODE_ENV !== 'development') return
+  if (warnedMissingModels.has(key)) return
+  warnedMissingModels.add(key)
+  console.warn(message)
+}
+
 export interface PageViewEvent {
   url: string
   title: string
@@ -44,8 +63,16 @@ export interface AnalyticsSession {
  */
 export async function trackPageView(event: PageViewEvent): Promise<void> {
   try {
+    if (!hasDatabaseUrl) return
+
+    const pageViewModel = getModel('pageView')
+    if (!pageViewModel?.create) {
+      warnOnce('pageView', '[analytics] Prisma model "pageView" not available; skipping page view tracking.')
+      return
+    }
+
     // Store in database
-    await prisma.pageView.create({
+    await pageViewModel.create({
       data: {
         url: event.url,
         title: event.title,
@@ -61,7 +88,13 @@ export async function trackPageView(event: PageViewEvent): Promise<void> {
     if (event.url.includes('/blog/') || event.url.includes('/case-studies/')) {
       const slug = event.url.split('/').pop()
       if (slug) {
-        await prisma.article.updateMany({
+        const articleModel = getModel('article')
+        if (!articleModel?.updateMany) {
+          warnOnce('article', '[analytics] Prisma model "article" not available; skipping view increment.')
+          return
+        }
+
+        await articleModel.updateMany({
           where: { slug },
           data: {
             views: {
@@ -81,7 +114,15 @@ export async function trackPageView(event: PageViewEvent): Promise<void> {
  */
 export async function trackUserInteraction(interaction: UserInteraction): Promise<void> {
   try {
-    await prisma.userInteraction.create({
+    if (!hasDatabaseUrl) return
+
+    const interactionModel = getModel('userInteraction')
+    if (!interactionModel?.create) {
+      warnOnce('userInteraction', '[analytics] Prisma model "userInteraction" not available; skipping interaction tracking.')
+      return
+    }
+
+    await interactionModel.create({
       data: {
         type: interaction.type,
         element: interaction.element,
@@ -102,7 +143,15 @@ export async function trackUserInteraction(interaction: UserInteraction): Promis
  */
 export async function startSession(session: AnalyticsSession): Promise<void> {
   try {
-    await prisma.analyticsSession.create({
+    if (!hasDatabaseUrl) return
+
+    const sessionModel = getModel('analyticsSession')
+    if (!sessionModel?.create) {
+      warnOnce('analyticsSession', '[analytics] Prisma model "analyticsSession" not available; skipping session start.')
+      return
+    }
+
+    await sessionModel.create({
       data: {
         sessionId: session.sessionId,
         userId: session.userId,
@@ -123,13 +172,21 @@ export async function startSession(session: AnalyticsSession): Promise<void> {
  */
 export async function endSession(sessionId: string, endTime: Date): Promise<void> {
   try {
-    const session = await prisma.analyticsSession.findUnique({
+    if (!hasDatabaseUrl) return
+
+    const sessionModel = getModel('analyticsSession')
+    if (!sessionModel?.findUnique || !sessionModel?.update) {
+      warnOnce('analyticsSession', '[analytics] Prisma model "analyticsSession" not available; skipping session end.')
+      return
+    }
+
+    const session = await sessionModel.findUnique({
       where: { sessionId }
     })
 
     if (session) {
       const duration = endTime.getTime() - session.startTime.getTime()
-      await prisma.analyticsSession.update({
+      await sessionModel.update({
         where: { sessionId },
         data: {
           endTime,
@@ -153,27 +210,64 @@ export async function getRealAnalyticsData(period: string = '7d'): Promise<{
   timeSeriesData: any[]
 }> {
   try {
+    if (!hasDatabaseUrl) {
+      return {
+        overview: {
+          visitors: 0,
+          pageviews: 0,
+          sessions: 0,
+          bounce_rate: 0,
+          visit_duration: 0,
+          newUsers: 0
+        },
+        topPages: [],
+        topReferrers: [],
+        deviceData: [],
+        timeSeriesData: []
+      }
+    }
+
+    const pageViewModel = getModel('pageView')
+    const sessionModel = getModel('analyticsSession')
+    if (!pageViewModel || !sessionModel) {
+      warnOnce('analyticsModels', '[analytics] Prisma analytics models not available; returning empty analytics data.')
+      return {
+        overview: {
+          visitors: 0,
+          pageviews: 0,
+          sessions: 0,
+          bounce_rate: 0,
+          visit_duration: 0,
+          newUsers: 0
+        },
+        topPages: [],
+        topReferrers: [],
+        deviceData: [],
+        timeSeriesData: []
+      }
+    }
+
     const days = parseInt(period.replace('d', ''))
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - days)
 
     // Get overview data
     const [totalViews, uniqueVisitorsData, totalSessions, avgDuration] = await Promise.all([
-      prisma.pageView.count({
+      pageViewModel.count({
         where: { timestamp: { gte: startDate } }
       }),
       // Count unique visitors using groupBy
-      prisma.analyticsSession.groupBy({
+      sessionModel.groupBy({
         by: ['userId'],
         where: { 
           startTime: { gte: startDate },
           userId: { not: null }
         }
       }),
-      prisma.analyticsSession.count({
+      sessionModel.count({
         where: { startTime: { gte: startDate } }
       }),
-      prisma.analyticsSession.aggregate({
+      sessionModel.aggregate({
         where: { 
           startTime: { gte: startDate },
           duration: { not: null }
@@ -185,7 +279,7 @@ export async function getRealAnalyticsData(period: string = '7d'): Promise<{
     const uniqueVisitors = uniqueVisitorsData.length
 
     // Get top pages
-    const topPages = await prisma.pageView.groupBy({
+    const topPages = await pageViewModel.groupBy({
       by: ['url'],
       where: { timestamp: { gte: startDate } },
       _count: { id: true },
@@ -194,7 +288,7 @@ export async function getRealAnalyticsData(period: string = '7d'): Promise<{
     })
 
     // Get top referrers
-    const topReferrers = await prisma.pageView.groupBy({
+    const topReferrers = await pageViewModel.groupBy({
       by: ['referrer'],
       where: { 
         timestamp: { gte: startDate },
@@ -206,7 +300,7 @@ export async function getRealAnalyticsData(period: string = '7d'): Promise<{
     })
 
     // Get device data (from user agents)
-    const deviceData = await prisma.pageView.groupBy({
+    const deviceData = await pageViewModel.groupBy({
       by: ['userAgent'],
       where: { timestamp: { gte: startDate } },
       _count: { id: true },
@@ -225,7 +319,7 @@ export async function getRealAnalyticsData(period: string = '7d'): Promise<{
     `
 
     // Calculate bounce rate (sessions with only 1 page view)
-    const bounceRate = await prisma.analyticsSession.count({
+    const bounceRate = await sessionModel.count({
       where: {
         startTime: { gte: startDate },
         pageViews: 1
