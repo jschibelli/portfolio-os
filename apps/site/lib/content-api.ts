@@ -5,6 +5,11 @@
 
 import { dashboardAPI, DashboardPost, DashboardPublication } from './dashboard-api';
 import { fetchPosts as fetchHashnodePosts, fetchPostBySlug as fetchHashnodePost, fetchPublication as fetchHashnodePublication, HashnodePost, HashnodePublication } from './hashnode-api';
+import {
+  getLocalBlogPostBySlug,
+  getLocalBlogPosts,
+  getLocalBlogSlugs,
+} from './local-blog-loader';
 
 export interface UnifiedPost {
   id: string;
@@ -12,6 +17,7 @@ export interface UnifiedPost {
   brief: string;
   slug: string;
   publishedAt: string;
+  updatedAt?: string;
   coverImage?: { url: string };
   author?: { name: string };
   tags?: Array<{ name: string; slug: string }>;
@@ -75,6 +81,7 @@ function transformDashboardPost(post: DashboardPost): UnifiedPost {
     brief: post.excerpt,
     slug: post.slug,
     publishedAt: post.publishedAt,
+    updatedAt: post.updatedAt,
     coverImage: post.cover ? { url: post.cover.url } : undefined,
     author: { name: post.author.name },
     tags: post.tags.map(tag => ({ name: tag.name, slug: tag.slug })),
@@ -189,10 +196,9 @@ async function isDashboardAvailable(): Promise<boolean> {
 }
 
 /**
- * Fetch posts - Uses Hashnode API directly for blog
- * Dashboard API is disabled for blog posts to avoid data inconsistencies
- * 
- * To enable Dashboard API, set USE_DASHBOARD_FOR_BLOG=true in environment variables
+ * Fetch posts - Uses Hashnode API by default, with local markdown fallback
+ * Dashboard API is disabled for blog posts unless USE_DASHBOARD_FOR_BLOG=true
+ * Set USE_LOCAL_BLOG=true to force content/blog/*.md
  */
 export async function fetchPosts(first: number = 10, after?: string): Promise<UnifiedPost[]> {
   // By default, use Hashnode for blog posts (more reliable)
@@ -223,20 +229,22 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
     }
   }
 
-  // Use Hashnode API (default and fallback)
+  // Prefer Hashnode when available; fall back to local markdown in content/blog
+  const preferLocal = process.env.USE_LOCAL_BLOG === 'true';
+
+  if (preferLocal) {
+    console.log('[Content API] Using local markdown for posts (USE_LOCAL_BLOG=true)');
+    return getLocalBlogPosts(first);
+  }
+
   try {
     console.log('[Content API] Using Hashnode API for posts');
     const hashnodePosts = await fetchHashnodePosts(first, after);
     console.log(`[Content API] Fetched ${hashnodePosts.length} posts from Hashnode`);
     
     if (hashnodePosts.length === 0) {
-      console.warn('[Content API] Hashnode API returned no posts. Check publication host configuration.');
-      console.warn(
-        '[Content API] Current host:',
-        process.env.HASHNODE_PUBLICATION_HOST ||
-          process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST ||
-          '(not set)'
-      );
+      console.warn('[Content API] Hashnode API returned no posts, falling back to local markdown');
+      return getLocalBlogPosts(first);
     }
 
     // Defensive: ensure newest posts appear first regardless of API ordering
@@ -252,6 +260,7 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
       brief: post.brief,
       slug: post.slug,
       publishedAt: post.publishedAt,
+      updatedAt: post.updatedAt,
       coverImage: post.coverImage,
       author: post.author,
       tags: post.tags,
@@ -261,9 +270,8 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
       featured: false
     }));
   } catch (error) {
-    console.error('[Content API] Hashnode API failed:', error instanceof Error ? error.message : 'Unknown error');
-    console.error('[Content API] Error details:', error);
-    return [];
+    console.error('[Content API] Hashnode API failed, falling back to local markdown:', error instanceof Error ? error.message : 'Unknown error');
+    return getLocalBlogPosts(first);
   }
 }
 
@@ -299,14 +307,20 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
     }
   }
 
-  // Use Hashnode API (default and fallback)
+  const preferLocal = process.env.USE_LOCAL_BLOG === 'true';
+
+  if (preferLocal) {
+    console.log(`[Content API] Using local markdown for post "${slug}" (USE_LOCAL_BLOG=true)`);
+    return getLocalBlogPostBySlug(slug);
+  }
+
   try {
     console.log('[Content API] Using Hashnode API for post');
     const hashnodePost = await fetchHashnodePost(slug);
     
     if (!hashnodePost) {
-      console.warn(`[Content API] Post "${slug}" not found in Hashnode`);
-      return null;
+      console.warn(`[Content API] Post "${slug}" not found in Hashnode, trying local markdown`);
+      return getLocalBlogPostBySlug(slug);
     }
     
     console.log(`[Content API] Successfully fetched post "${slug}" from Hashnode`);
@@ -317,6 +331,7 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
       brief: hashnodePost.brief,
       slug: hashnodePost.slug,
       publishedAt: hashnodePost.publishedAt,
+      updatedAt: hashnodePost.updatedAt,
       coverImage: hashnodePost.coverImage,
       author: hashnodePost.author,
       tags: hashnodePost.tags,
@@ -326,8 +341,8 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
       featured: false
     };
   } catch (error) {
-    console.error(`[Content API] Hashnode API failed for post "${slug}":`, error instanceof Error ? error.message : 'Unknown error');
-    return null;
+    console.error(`[Content API] Hashnode API failed for post "${slug}", falling back to local markdown:`, error instanceof Error ? error.message : 'Unknown error');
+    return getLocalBlogPostBySlug(slug);
   }
 }
 
@@ -436,13 +451,22 @@ export async function getAllPostSlugs(): Promise<string[]> {
       }
     }
 
-    // Fallback to Hashnode (always try if Dashboard is unavailable or failed)
+    if (process.env.USE_LOCAL_BLOG === 'true') {
+      console.log('[Content API] Using local markdown slugs (USE_LOCAL_BLOG=true)');
+      return getLocalBlogSlugs();
+    }
+
+    // Fallback to Hashnode, then local markdown
     try {
       const hashnodePosts = await fetchHashnodePosts(50);
-      return hashnodePosts.map(post => post.slug);
+      if (hashnodePosts.length > 0) {
+        return hashnodePosts.map(post => post.slug);
+      }
+      console.warn('[Content API] Hashnode returned no slugs, using local markdown');
+      return getLocalBlogSlugs();
     } catch (error) {
-      console.error('[Content API] Both Dashboard and Hashnode APIs failed for slugs:', error instanceof Error ? error.message : 'Unknown error');
-      return [];
+      console.error('[Content API] Hashnode failed for slugs, using local markdown:', error instanceof Error ? error.message : 'Unknown error');
+      return getLocalBlogSlugs();
     }
   })();
 

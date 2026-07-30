@@ -9,6 +9,7 @@ const nextConfig = {
     '@mindware-blog/hashnode',
     '@mindware-blog/emails',
     '@mindware-blog/chatbot',
+    '@starter-kit/utils',
   ],
   outputFileTracingRoot: path.join(__dirname, '../../'),
   images: {
