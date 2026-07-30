@@ -37,6 +37,7 @@
     "@mindware-blog/hashnode": "workspace:*",
     "@mindware-blog/lib": "workspace:*",
     "@mindware-blog/ui": "workspace:*",
+    "@starter-kit/utils": "workspace:*",
     "@octokit/rest": "^20.0.2",
     "@prisma/client": "^5.0.0",
     "@radix-ui/react-accordion": "^1.2.1",

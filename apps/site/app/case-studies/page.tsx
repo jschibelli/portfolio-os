@@ -18,6 +18,25 @@ const Chatbot = dynamic(() => import('../../components/features/chatbot/Chatbot'
 // Mock case studies data - in a real app, this would come from your CMS or database
 const caseStudies = [
   {
+    id: 'intraweb',
+    title: 'IntraWeb Nexus: Business Operations and Workflow Automation Platform',
+    slug: 'intraweb',
+    description:
+      'Production client portal, staff operations console, and curated n8n automation—connecting HubSpot, Stripe, Clerk, and Supabase with honest maturity labels.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
+    tags: ['Next.js', 'TypeScript', 'Supabase', 'Clerk', 'n8n', 'Stripe', 'HubSpot'],
+    publishedAt: '2026-07-30',
+    author: 'John Schibelli',
+    featured: true,
+    metrics: {
+      portalSurfaces: '~30 page surfaces',
+      curatedWorkflows: '~28 curated workflows',
+      migrations: '19 schema migrations'
+    },
+    liveUrl: 'https://intrawebtech.com',
+    caseStudyUrl: '/case-studies/intraweb'
+  },
+  {
     id: 'portfolio-os',
     title: 'Portfolio OS: Building a Self-Documenting Development Platform',
     slug: 'portfolio-os',
