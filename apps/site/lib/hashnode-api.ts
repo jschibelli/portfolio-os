@@ -8,6 +8,7 @@ export interface HashnodePost {
   brief: string;
   slug: string;
   publishedAt: string;
+  updatedAt?: string;
   coverImage?: { url: string };
   author?: { name: string };
   tags?: Array<{ name: string; slug: string }>;
@@ -88,10 +89,25 @@ async function makeGraphQLRequest(query: string, variables: Record<string, any>)
     // Add 10 second timeout to prevent hanging during slower production builds (previously 3 seconds)
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
-    
+
+    // As of May 2026 Hashnode requires Pro + PAT for GraphQL reads/writes.
+    // Dashboard publishing already uses HASHNODE_API_TOKEN; site reads must too.
+    const apiToken = process.env.HASHNODE_API_TOKEN?.trim();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    if (apiToken) {
+      headers.Authorization = apiToken;
+    } else if (process.env.NODE_ENV === 'production') {
+      console.warn(
+        '[Hashnode API] HASHNODE_API_TOKEN is not set. GraphQL reads may fail after Hashnode Pro API gating.'
+      );
+    }
+
     const response = await fetch(GQL_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ query, variables }),
       next: { revalidate: CACHE_DURATION },
       signal: controller.signal,
@@ -99,12 +115,36 @@ async function makeGraphQLRequest(query: string, variables: Record<string, any>)
 
     clearTimeout(timeout);
 
+    const contentType = response.headers.get('content-type') || '';
+    const bodyText = await response.text();
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(
+        `HTTP error! status: ${response.status}; content-type: ${contentType}; body: ${bodyText.slice(0, 160)}`
+      );
     }
 
-    const data = await response.json();
-    
+    // gql.hashnode.com occasionally serves the playground HTML (or Cloudflare HTML)
+    // when the GraphQL origin is unhealthy — never call response.json() blindly.
+    if (!contentType.includes('application/json') || bodyText.trimStart().startsWith('<')) {
+      throw new Error(
+        `Hashnode returned non-JSON (${contentType || 'unknown content-type'}, status ${response.status}). ` +
+          `Likely API outage, Cloudflare 5xx, or missing/invalid HASHNODE_API_TOKEN. ` +
+          `Body starts with: ${bodyText.slice(0, 80).replace(/\s+/g, ' ')}`
+      );
+    }
+
+    let data: any;
+    try {
+      data = JSON.parse(bodyText);
+    } catch {
+      throw new Error(
+        `Hashnode response was not valid JSON (status ${response.status}). Body starts with: ${bodyText
+          .slice(0, 80)
+          .replace(/\s+/g, ' ')}`
+      );
+    }
+
     if (data.errors) {
       console.error('GraphQL Errors:', data.errors);
       throw new Error(`GraphQL errors: ${data.errors.map((e: any) => e.message).join(', ')}`);
@@ -138,6 +178,7 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Ha
               brief
               slug
               publishedAt
+              updatedAt
               coverImage { url }
               author { name }
               tags { name slug }
@@ -207,6 +248,7 @@ export async function fetchPostBySlug(slug: string): Promise<HashnodePost | null
           brief
           slug
           publishedAt
+          updatedAt
           coverImage { url }
           author { name }
           tags { name slug }
