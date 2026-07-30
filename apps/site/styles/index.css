@@ -155,7 +155,8 @@
 }
 
 .hashnode-content-style{
-    @apply prose break-words text-slate-950 lg:prose-xl dark:prose-invert dark:text-neutral-50 dark:prose-pre:bg-neutral-900;
+    /* Match Hashnode’s reading size more closely (slightly larger + more relaxed). */
+    @apply prose prose-lg break-words text-slate-950 dark:prose-invert dark:text-neutral-50 dark:prose-pre:bg-neutral-900;
 }
 
 /* Ensure first child headings/paragraphs have no extra top margin */
@@ -174,9 +175,9 @@
     height: auto;
 }
 
-/* Comfortable line-height for common elements */
+/* Match Hashnode-like line-height for comfortable reading */
 .hashnode-content-style :where(p, blockquote, figure, figcaption, pre, li, ul, ol, th, td) {
-    line-height: 1.45;
+    line-height: 1.6;
 }
 
 /* Link styling within prose */
