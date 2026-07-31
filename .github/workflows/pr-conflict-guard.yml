@@ -15,12 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # Full history needed for rebase onto base
           fetch-depth: 0
 
-      - name: Setup tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq gh
+      # gh/jq are preinstalled on ubuntu-latest
 
       - name: Check mergeability
         id: pr
@@ -28,10 +26,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
           PR='${{ github.event.pull_request.number }}'
           MERGEABLE=$(gh pr view "$PR" --json mergeable -q .mergeable)
-          echo "mergeable=$MERGEABLE" >> $GITHUB_OUTPUT
+          echo "mergeable=$MERGEABLE" >> "$GITHUB_OUTPUT"
           echo "Mergeable: $MERGEABLE"
 
       - name: Try auto-rebase onto base branch

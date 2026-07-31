@@ -20,7 +20,6 @@ export default function AdminArticles() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
-  const [isImporting, setIsImporting] = useState(false);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -67,27 +66,6 @@ export default function AdminArticles() {
 
     setFilteredArticles(filtered);
   }, [articles, searchTerm, statusFilter]);
-
-  const handleImportHashnode = async () => {
-    try {
-      setIsImporting(true);
-      setError("");
-      
-      const result = await adminDataService.importHashnodeArticles();
-      
-      // Refresh articles after import
-      await fetchArticles();
-      
-      // Show success message
-      alert(`Successfully imported articles from Hashnode! Total articles: ${result.importedCount}`);
-    } catch (error) {
-      console.error("Failed to import Hashnode articles:", error);
-      setError("Failed to import articles from Hashnode. Please check your GitHub token configuration.");
-    } finally {
-      setIsImporting(false);
-    }
-  };
-
 
   const handleEdit = (id: string) => {
     router.push(`/admin/articles/${id}/edit`);
@@ -260,13 +238,6 @@ export default function AdminArticles() {
             className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
           >
             {viewMode === 'table' ? 'Grid' : 'Table'}
-          </button>
-          <button
-            onClick={handleImportHashnode}
-            disabled={isImporting}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isImporting ? 'Importing...' : 'Import from Hashnode'}
           </button>
           <Link
             href="/admin/articles/new"

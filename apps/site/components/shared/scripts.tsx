@@ -5,7 +5,7 @@ export const Scripts = () => {
     gtag('js', new Date());`;
 	return (
 		<>
-			<script async src={`https://ping.hashnode.com/gtag/js?id=G-72XG3F8LNJ`} />
+			<script async src="https://www.googletagmanager.com/gtag/js?id=G-72XG3F8LNJ" />
 			<script dangerouslySetInnerHTML={{ __html: googleAnalytics }} />
 		</>
 	);

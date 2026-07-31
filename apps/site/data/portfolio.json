@@ -90,7 +90,7 @@
 		"description": "A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.",
 		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
 		"tags": ["Next.js", "TypeScript", "Tailwind CSS", "React"],
-		"liveUrl": "https://mindware.hashnode.dev",
+		"liveUrl": "https://johnschibelli.dev/blog",
 		"caseStudyUrl": "/case-studies/portfolio-site",
 		"metrics": {
 			"performance": {

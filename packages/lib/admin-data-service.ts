@@ -190,19 +190,6 @@ class AdminDataService {
     }
   }
 
-  // Import Hashnode articles
-  async importHashnodeArticles(): Promise<{ message: string; importedCount: number }> {
-    try {
-      const response = await this.apiCall<{ message: string; importedCount: number }>('articles/import-hashnode', {
-        method: 'POST'
-      });
-      return response;
-    } catch (error) {
-      console.error('Failed to import Hashnode articles:', error);
-      throw error;
-    }
-  }
-
   // Get real case studies from API
   async getCaseStudies(): Promise<AdminCaseStudy[]> {
     try {

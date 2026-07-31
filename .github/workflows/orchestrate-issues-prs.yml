@@ -155,20 +155,9 @@ jobs:
         run: |
           ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
-      - name: Setup Node + pnpm
-        if: success()
-        uses: ./.github/actions/setup-node-pnpm
-        with:
-          node-version: "20"
-          pnpm-version: "10.14.0"
-
-      - name: Run checks (build, lint, typecheck, tests)
-        if: success()
-        run: |
-          pnpm run build || true
-          pnpm run lint || true
-          pnpm run typecheck || pnpm run type-check || true
-          pnpm run test || true
+      # Build/lint/typecheck/test are owned by the CI workflow (turbo --affected).
+      # Re-running an unfiltered full monorepo build here duplicated 10–30+ minutes
+      # per PR event and fought with CI concurrency. Rely on required status checks.
 
       - name: PR analysis (report)
         if: success()
@@ -182,11 +171,12 @@ jobs:
           pwsh -c "./scripts/pr-management/automate-pr-unified.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -Action all"
         continue-on-error: true
 
+      # Omit -RunTests: CI workflow owns test/build. Quality script may still lint reports.
       - name: Code Quality Checker
         if: success() && hashFiles('scripts/code-quality/check-code-quality.ps1') != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pwsh -c "./scripts/code-quality/check-code-quality.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -FixIssues -RunTests -GenerateReport"
+        run: pwsh -c "./scripts/code-quality/check-code-quality.ps1 -PRNumber ${{ needs.detect-and-route.outputs.pr_number }} -GenerateReport"
         continue-on-error: true
 
       - name: Docs Updater
@@ -319,17 +309,12 @@ jobs:
     if: ${{ needs.detect-and-route.outputs.is_review_comment == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gh jq
+      # gh/jq are preinstalled on ubuntu-latest — no apt or checkout needed
       - name: Label based on keywords
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
 
           PR='${{ needs.detect-and-route.outputs.pr_number }}'
           BODY='${{ github.event.comment.body }}'
@@ -348,17 +333,12 @@ jobs:
     if: ${{ github.event_name == 'issue_comment' && needs.detect-and-route.outputs.is_issue == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gh jq
+      # No checkout — uses gh/jq only (preinstalled on ubuntu-latest)
       - name: Handle commands
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh auth status || gh auth login --with-token <<< "$GITHUB_TOKEN"
 
           BODY='${{ github.event.comment.body }}'
           ISSUE_NUMBER='${{ needs.detect-and-route.outputs.issue_number }}'

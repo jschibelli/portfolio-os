@@ -19,7 +19,7 @@ export interface PublishingStatus {
 
 export interface PublishingPlatform {
   id: string;
-  name: 'dashboard' | 'hashnode' | 'medium' | 'devto' | 'linkedin';
+  name: 'dashboard' | 'medium' | 'devto' | 'linkedin';
   enabled: boolean;
   status: 'pending' | 'publishing' | 'published' | 'failed';
   url?: string;

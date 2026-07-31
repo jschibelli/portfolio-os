@@ -36,7 +36,6 @@ export function PublishingDashboard({ articleId, onPublish, onSchedule }: Publis
   // Platform configurations
   const platforms = [
     { id: 'dashboard', name: 'Dashboard', enabled: true, color: 'blue' },
-    { id: 'hashnode', name: 'Hashnode', enabled: false, color: 'purple' },
     { id: 'medium', name: 'Medium', enabled: false, color: 'green' },
     { id: 'devto', name: 'Dev.to', enabled: false, color: 'orange' },
     { id: 'linkedin', name: 'LinkedIn', enabled: false, color: 'blue' }

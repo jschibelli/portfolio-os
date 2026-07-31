@@ -13,7 +13,6 @@ import {
   PublishingJob
 } from './types';
 import { PrismaClient } from '@prisma/client';
-import { HashnodeAdapter } from './adapters/hashnode';
 import { MediumAdapter } from './adapters/medium';
 import { DevToAdapter } from './adapters/devto';
 import { LinkedInAdapter } from './adapters/linkedin';
@@ -26,7 +25,6 @@ export class UnifiedPublishingService implements PublishingService {
 
   constructor() {
     // Initialize platform adapters
-    this.adapters.set('hashnode', new HashnodeAdapter());
     this.adapters.set('medium', new MediumAdapter());
     this.adapters.set('devto', new DevToAdapter());
     this.adapters.set('linkedin', new LinkedInAdapter());

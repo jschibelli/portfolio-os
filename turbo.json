@@ -1,180 +1,60 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
-    "**/.env*",
-    "**/package.json",
-    "**/pnpm-lock.yaml",
-    "**/tsconfig.json",
-    "**/next.config.js",
-    "**/tailwind.config.js"
+    "pnpm-lock.yaml"
   ],
-  // Remote cache configuration for improved build performance
-  // Signature ensures cache integrity and prevents cache poisoning
   "remoteCache": {
     "enabled": true,
     "signature": true
   },
   "tasks": {
-    // Development task with caching enabled for faster subsequent builds
-    "dev": {
-      "cache": true,
-      "persistent": true,
-      "dependsOn": ["^dev"]
-    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**", "build/**"],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.json",
-        "**/*.css",
-        "**/*.scss",
-        "**/*.md",
-        "**/*.mdx",
-        "**/public/**",
-        "**/assets/**"
-      ],
-      // Environment variables required for build tasks
-      // Restricted to essential variables for security
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_*",
-        "VERCEL_ENV"
-      ]
-    },
-    "@mindware-blog/site#build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**"],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.json",
-        "**/*.css",
-        "**/*.scss",
-        "**/*.md",
-        "**/*.mdx",
-        "**/public/**",
-        "**/assets/**"
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        "dist/**",
+        "build/**",
+        "storybook-static/**"
       ],
       "env": [
         "NODE_ENV",
         "NEXT_PUBLIC_*",
-        "VERCEL_ENV"
+        "VERCEL",
+        "VERCEL_ENV",
+        "VERCEL_URL",
+        "DATABASE_URL",
+        "DIRECT_URL",
+        "USE_DASHBOARD_FOR_BLOG",
+        "DASHBOARD_API_URL",
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET",
+        "AUTH_SECRET"
       ]
-    },
-    "@mindware-blog/dashboard#build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**"],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.json",
-        "**/*.css",
-        "**/*.scss",
-        "**/*.md",
-        "**/*.mdx",
-        "**/public/**",
-        "**/assets/**"
-      ]
-    },
-    "@portfolio/docs#build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**"],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.json",
-        "**/*.css",
-        "**/*.scss",
-        "**/*.md",
-        "**/*.mdx",
-        "**/public/**",
-        "**/assets/**"
-      ]
-    },
-    "@mindware-blog/chatbot#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@mindware-blog/db#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@mindware-blog/emails#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@mindware-blog/hashnode#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@mindware-blog/lib#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@mindware-blog/ui#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@starter-kit/eslint-config-custom#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@starter-kit/tsconfig#build": {
-      "outputs": [],
-      "cache": true
-    },
-    "@starter-kit/utils#build": {
-      "outputs": [],
-      "cache": true
     },
     "lint": {
-      "outputs": [],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.js",
-        "**/*.jsx",
-        "**/.eslintrc*",
-        "**/eslint.config.*"
-      ]
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "outputs": ["tsconfig.tsbuildinfo"]
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"],
-      "cache": true,
-      "inputs": [
-        "**/*.test.*",
-        "**/*.spec.*",
-        "**/__tests__/**",
-        "**/tests/**",
-        "**/jest.config.*",
-        "**/playwright.config.*"
-      ]
+      "outputs": ["coverage/**"]
     },
-    "typecheck": {
-      "outputs": ["tsconfig.tsbuildinfo"],
-      "cache": true,
-      "inputs": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/tsconfig*.json"
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"],
+      "env": [
+        "NODE_ENV",
+        "NEXT_PUBLIC_*"
       ]
     }
   }
 }
-

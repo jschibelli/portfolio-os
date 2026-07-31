@@ -50,35 +50,24 @@ jobs:
         id: changelog
         run: |
           VERSION=${{ steps.get_version.outputs.version }}
-          
+
           # Try to extract the specific version's changelog
           if grep -q "\[$VERSION\]" CHANGELOG.md 2>/dev/null; then
-            # Extract section between this version and the next version marker
             NOTES=$(sed -n "/\[$VERSION\]/,/^## \[/p" CHANGELOG.md | sed '1d;$d' | sed '/^---$/d')
-            
             if [ -z "$NOTES" ]; then
-              NOTES="Release version $VERSION
-
-See CHANGELOG.md for details."
+              NOTES=$(printf 'Release version %s\n\nSee CHANGELOG.md for details.' "$VERSION")
             fi
           else
-            # Fallback: use the entire changelog or generic message
             if [ -f CHANGELOG.md ]; then
               NOTES=$(head -n 100 CHANGELOG.md)
-              NOTES="$NOTES
-
-*Full changelog available in CHANGELOG.md*"
+              NOTES=$(printf '%s\n\n*Full changelog available in CHANGELOG.md*' "$NOTES")
             else
-              NOTES="Release version $VERSION
-
-This is an automated release. Check the repository for details."
+              NOTES=$(printf 'Release version %s\n\nThis is an automated release. Check the repository for details.' "$VERSION")
             fi
           fi
-          
-          # Write to file for multiline content
+
           echo "$NOTES" > /tmp/release_notes.md
-          echo "notes_file=/tmp/release_notes.md" >> $GITHUB_OUTPUT
-      
+          echo "notes_file=/tmp/release_notes.md" >> "$GITHUB_OUTPUT"      
       - name: Generate release title
         id: title
         run: |

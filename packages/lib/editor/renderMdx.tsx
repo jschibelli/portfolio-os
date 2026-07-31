@@ -3,8 +3,6 @@
 // Uses next-mdx-remote to render MDX content with custom components
 
 import React from 'react'
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
-import { mdxComponents } from './mdxComponents'
 
 interface RenderMdxProps {
   mdxContent: string

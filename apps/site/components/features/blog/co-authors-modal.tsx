@@ -17,7 +17,7 @@ const AuthorCard = ({ author }: { author: PostFullFragment['author'] }) => {
 			<div className="flex w-full flex-wrap items-center justify-between overflow-hidden px-0 py-2.5">
 				<div className="flex flex-wrap items-center overflow-hidden">
 					<a
-						href={`https://hashnode.com/@${author.username}`}
+						href={`/about`}
 						title={author.name}
 						className="mr-2 w-8"
 					>
@@ -29,7 +29,7 @@ const AuthorCard = ({ author }: { author: PostFullFragment['author'] }) => {
 					</a>
 					<div className="flex flex-row items-center text-clip">
 						<a
-							href={`https://hashnode.com/@${author.username}`}
+							href={`/about`}
 							title={author.name}
 							className="truncate font-sans text-sm font-medium text-slate-700 dark:text-slate-200"
 						>

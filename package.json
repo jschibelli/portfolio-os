@@ -11,9 +11,14 @@
     "postinstall": "cd apps/dashboard && prisma generate",
     "dev": "turbo run dev --parallel --filter=@mindware-blog/site --filter=@mindware-blog/dashboard --filter=@portfolio/docs",
     "build": "turbo run build",
+    "build:affected": "turbo run build --affected",
     "lint": "turbo run lint",
+    "lint:affected": "turbo run lint --affected",
     "test": "turbo run test --continue",
-    "typecheck": "turbo run typecheck"
+    "test:affected": "turbo run test --affected --continue",
+    "typecheck": "turbo run typecheck",
+    "typecheck:affected": "turbo run typecheck --affected",
+    "check:affected": "turbo run lint typecheck test build --affected --continue"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
