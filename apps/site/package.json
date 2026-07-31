@@ -71,7 +71,7 @@
     "mermaid": "^10.9.1",
     "next": "15.5.9",
     "next-auth": "^4.24.11",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.3.0",
     "openai": "^5.12.2",
     "react": "^18.3.1",
