@@ -1,6 +1,4 @@
-import Cookies from 'js-cookie';
 import { useCallback, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import { useAppContext } from './contexts/appContext';
 
@@ -10,7 +8,7 @@ declare global {
 		gtag: (...args: any[]) => void;
 	}
 }
-const GA_TRACKING_ID = 'G-72XG3F8LNJ'; // This is Hashnode's GA tracking ID
+const GA_TRACKING_ID = 'G-72XG3F8LNJ';
 const isProd = process.env.NEXT_PUBLIC_MODE === 'production';
 const isDev = process.env.NODE_ENV === 'development';
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_URL || '';
@@ -18,52 +16,15 @@ const BASE_PATH = process.env.NEXT_PUBLIC_BASE_URL || '';
 export const Analytics = () => {
 	const { publication, post, series, page } = useAppContext();
 
-	const _sendPageViewsToHashnodeGoogleAnalytics = useCallback(() => {
+	const _sendPageViewsToGoogleAnalytics = useCallback(() => {
 		// Check if gtag exists and is a function
 		if (typeof window !== 'undefined' && window.gtag && typeof window.gtag === 'function') {
 			// @ts-ignore
-			window.gtag('config', GA_TRACKING_ID, {
-				transport_url: 'https://ping.hashnode.com',
-				first_party_collection: true,
-			});
+			window.gtag('config', GA_TRACKING_ID);
 		} else {
 			console.warn('Google Analytics (gtag) not available');
 		}
 	}, []);
-
-	const _sendViewsToHashnodeInternalAnalytics = useCallback(async () => {
-		// Send to Hashnode's own internal analytics
-		const event: Record<string, string | number | object> = {
-			event_type: 'pageview',
-			time: new Date().getTime(),
-			event_properties: {
-				hostname: window.location.hostname,
-				url: window.location.pathname,
-				eventType: 'pageview',
-				publicationId: publication.id,
-				dateAdded: new Date().getTime(),
-				referrer: window.document.referrer,
-			},
-		};
-
-		let deviceId = Cookies.get('__amplitudeDeviceID');
-		if (!deviceId) {
-			deviceId = uuidv4();
-			Cookies.set('__amplitudeDeviceID', deviceId, {
-				expires: 365 * 2,
-			}); // expire after two years
-		}
-
-		event['device_id'] = deviceId;
-
-		await fetch(`${BASE_PATH}/ping/data-event`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ events: [event] }),
-		});
-	}, [publication.id]);
 
 	const _sendViewsToAdvancedAnalyticsDashboard = useCallback(() => {
 		const publicationId = publication.id;
@@ -155,12 +116,10 @@ export const Analytics = () => {
 		// Only run analytics in browser environment
 		if (typeof window === 'undefined') return;
 
-		_sendPageViewsToHashnodeGoogleAnalytics();
-		_sendViewsToHashnodeInternalAnalytics();
+		_sendPageViewsToGoogleAnalytics();
 		_sendViewsToAdvancedAnalyticsDashboard();
 	}, [
-		_sendPageViewsToHashnodeGoogleAnalytics,
-		_sendViewsToHashnodeInternalAnalytics,
+		_sendPageViewsToGoogleAnalytics,
 		_sendViewsToAdvancedAnalyticsDashboard,
 	]);
 

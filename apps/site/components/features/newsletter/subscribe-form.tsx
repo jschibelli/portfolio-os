@@ -1,48 +1,43 @@
-import request from 'graphql-request';
 import { useRef, useState } from 'react';
-import {
-	SubscribeToNewsletterDocument,
-	SubscribeToNewsletterMutation,
-	SubscribeToNewsletterMutationVariables,
-	SubscribeToNewsletterPayload,
-} from '../../../generated/graphql';
-import { useAppContext } from '../../contexts/appContext';
 import { Button } from '../../ui/button';
 
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
-
+/**
+ * Newsletter signup — posts to the site contact API (Hashnode newsletter removed).
+ */
 export const SubscribeForm = () => {
-	const [status, setStatus] = useState<SubscribeToNewsletterPayload['status']>();
+	const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 	const [requestInProgress, setRequestInProgress] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
-	const { publication } = useAppContext();
 
 	const subscribe = async () => {
-		const email = inputRef.current?.value;
+		const email = inputRef.current?.value?.trim();
 		if (!email) return;
 
 		setRequestInProgress(true);
+		setStatus('idle');
 
 		try {
-			const data = await request<
-				SubscribeToNewsletterMutation,
-				SubscribeToNewsletterMutationVariables
-			>(GQL_ENDPOINT, SubscribeToNewsletterDocument, {
-				input: { publicationId: publication.id, email },
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: 'Newsletter subscriber',
+					email,
+					message: 'Newsletter signup request',
+					source: 'newsletter',
+				}),
 			});
-			setRequestInProgress(false);
-			setStatus(data.subscribeToNewsletter.status);
-		} catch (error) {
-			const message = (error as any).response?.errors?.[0]?.message;
-			if (message) {
-				window.alert(message);
-			}
+			setStatus(res.ok ? 'success' : 'error');
+		} catch {
+			setStatus('error');
+		} finally {
 			setRequestInProgress(false);
 		}
 	};
+
 	return (
 		<>
-			{!status && (
+			{status !== 'success' && (
 				<div className="relative w-full rounded-full bg-white p-2 dark:bg-neutral-950">
 					<input
 						ref={inputRef}
@@ -60,15 +55,18 @@ export const SubscribeForm = () => {
 					</Button>
 				</div>
 			)}
-			{status === 'PENDING' && (
+			{status === 'success' && (
 				<div className="relative w-full p-2 text-center">
-					<p className="font-bold text-green-600 dark:text-green-500">Almost there!</p>
+					<p className="font-bold text-green-600 dark:text-green-500">Thanks for signing up!</p>
 					<p className="font-medium text-slate-600 dark:text-neutral-300">
-						Check your inbox for a confirmation email and click{' '}
-						<strong>&quot;Confirm and Subscribe&quot;</strong> to complete your subscription. Thanks
-						for joining us!
+						We received your email and will be in touch.
 					</p>
 				</div>
+			)}
+			{status === 'error' && (
+				<p className="mt-2 text-center text-sm text-red-600 dark:text-red-400">
+					Something went wrong. Please try again or use the contact form.
+				</p>
 			)}
 		</>
 	);

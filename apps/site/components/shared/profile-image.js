@@ -23,7 +23,7 @@ function ProfileImage({ user, blogURL, postUrlForAnonymous, className, width, he
 				blogURL
 					? blogURL
 					: user && !user.isDeactivated
-						? `https://hashnode.com/@${user.username}`
+						? `/about`
 						: postUrlForAnonymous
 							? postUrlForAnonymous
 							: '#'

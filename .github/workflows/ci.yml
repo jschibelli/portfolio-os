@@ -169,7 +169,6 @@ jobs:
               - 'packages/chatbot/**'
               - 'packages/db/**'
               - 'packages/emails/**'
-              - 'packages/hashnode/**'
               - 'packages/lib/**'
               - 'packages/ui/**'
               - 'packages/utils/**'

@@ -27,7 +27,6 @@
     "@mindware-blog/chatbot": "workspace:*",
     "@mindware-blog/db": "workspace:*",
     "@mindware-blog/emails": "workspace:*",
-    "@mindware-blog/hashnode": "workspace:*",
     "@mindware-blog/lib": "workspace:*",
     "@mindware-blog/ui": "workspace:*",
     "@prisma/client": "^5.0.0",

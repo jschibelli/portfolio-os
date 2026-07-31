@@ -132,9 +132,6 @@ importers:
       '@mindware-blog/emails':
         specifier: workspace:*
         version: link:../../packages/emails
-      '@mindware-blog/hashnode':
-        specifier: workspace:*
-        version: link:../../packages/hashnode
       '@mindware-blog/lib':
         specifier: workspace:*
         version: link:../../packages/lib
@@ -485,9 +482,6 @@ importers:
       '@mindware-blog/emails':
         specifier: workspace:*
         version: link:../../packages/emails
-      '@mindware-blog/hashnode':
-        specifier: workspace:*
-        version: link:../../packages/hashnode
       '@mindware-blog/lib':
         specifier: workspace:*
         version: link:../../packages/lib

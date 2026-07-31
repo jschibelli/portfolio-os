@@ -33,9 +33,6 @@ const envSchema = z.object({
   // Node environment
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   
-  // Hashnode integration (required)
-  NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: z.string().min(1, 'Hashnode publication host is required'),
-  
   // Google Calendar OAuth2 (optional during build, required at runtime)
   GOOGLE_CLIENT_ID: z.string().min(1, 'Google Client ID is required for calendar integration').optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1, 'Google Client Secret is required for calendar integration').optional(),
@@ -114,7 +111,6 @@ export function validateEnv() {
         // Return a partial environment object for build time
         return {
           NODE_ENV: process.env.NODE_ENV || 'development',
-          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || '',
           GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
           GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
           GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || '',
@@ -154,8 +150,6 @@ export function validateEnv() {
         console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
       console.error('\nRequired environment variables:');
-      console.error('  Core:');
-      console.error('    - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST - Your Hashnode publication host');
       console.error('  Email (Contact Form):');
       console.error('    - RESEND_API_KEY - Get from https://resend.com/api-keys');
       console.error('    - EMAIL_FROM - Verified sender email (e.g., noreply@yourdomain.com)');

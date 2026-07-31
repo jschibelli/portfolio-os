@@ -1,10 +1,9 @@
 /**
- * Unified Content API - Dashboard API with Hashnode fallback
- * Provides a consistent interface for fetching content from either Dashboard or Hashnode
+ * Unified Content API — local markdown is the sole blog source.
+ * Optional Dashboard API when USE_DASHBOARD_FOR_BLOG=true.
  */
 
 import { dashboardAPI, DashboardPost, DashboardPublication } from './dashboard-api';
-import { fetchPosts as fetchHashnodePosts, fetchPostBySlug as fetchHashnodePost, fetchPublication as fetchHashnodePublication, HashnodePost, HashnodePublication } from './hashnode-api';
 import {
   getLocalBlogPostBySlug,
   getLocalBlogPosts,
@@ -31,8 +30,7 @@ export interface UnifiedPost {
 }
 
 /**
- * UnifiedPublication interface that is compatible with PublicationFragment
- * This ensures type safety when passing to components expecting PublicationFragment
+ * UnifiedPublication interface compatible with PublicationFragment consumers.
  */
 export interface UnifiedPublication {
   id: string;
@@ -55,7 +53,6 @@ export interface UnifiedPublication {
     };
     members: any[];
   };
-  // Additional fields for extended functionality
   displayTitle?: string | null;
   descriptionSEO?: string;
   posts?: {
@@ -71,9 +68,6 @@ export interface UnifiedPublication {
   };
 }
 
-/**
- * Transform Dashboard post to unified format
- */
 function transformDashboardPost(post: DashboardPost): UnifiedPost {
   return {
     id: post.id,
@@ -84,20 +78,17 @@ function transformDashboardPost(post: DashboardPost): UnifiedPost {
     updatedAt: post.updatedAt,
     coverImage: post.cover ? { url: post.cover.url } : undefined,
     author: { name: post.author.name },
-    tags: post.tags.map(tag => ({ name: tag.name, slug: tag.slug })),
+    tags: post.tags.map((tag) => ({ name: tag.name, slug: tag.slug })),
     content: {
       markdown: post.content,
-      html: undefined
+      html: undefined,
     },
     readTimeInMinutes: post.readingMinutes,
     views: post.views,
-    featured: post.featured
+    featured: post.featured,
   };
 }
 
-/**
- * Transform Dashboard publication to unified format
- */
 function transformDashboardPublication(pub: DashboardPublication): UnifiedPublication {
   return {
     id: 'dashboard-publication',
@@ -123,47 +114,62 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
     displayTitle: pub.name,
     descriptionSEO: pub.description,
     posts: {
-      totalDocuments: pub.stats.totalPosts
+      totalDocuments: pub.stats.totalPosts,
     },
     author: {
       name: 'John Schibelli',
-      profilePicture: null
+      profilePicture: null,
     },
     followersCount: 0,
     ogMetaData: {
-      image: null
-    }
+      image: null,
+    },
+  };
+}
+
+function localPublication(): UnifiedPublication {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev';
+  return {
+    id: 'local-publication',
+    title: 'John Schibelli',
+    description: 'Engineering notes, case studies, and product development.',
+    url: siteUrl,
+    favicon: '',
+    logo: '',
+    isTeam: false,
+    preferences: {
+      logo: '',
+      darkMode: { logo: '' },
+      navbarItems: [],
+      layout: {
+        navbarStyle: 'default',
+        footerStyle: 'default',
+        showBranding: true,
+      },
+      members: [],
+    },
+    displayTitle: 'John Schibelli',
+    descriptionSEO: 'Engineering notes, case studies, and product development.',
+    posts: {
+      totalDocuments: getLocalBlogSlugs().length,
+    },
+    author: {
+      name: 'John Schibelli',
+      profilePicture: null,
+    },
+    followersCount: 0,
+    ogMetaData: {
+      image: null,
+    },
   };
 }
 
 const DASHBOARD_HEALTH_CHECK_TIMEOUT_MS = 2000;
-// Reduced cache time from 5 minutes to 30 seconds to fail fast when Dashboard API is unavailable
 const DASHBOARD_HEALTH_CHECK_CACHE_MS = 30 * 1000;
 
 let dashboardAvailabilityCache: { value: boolean; checkedAt: number } | null = null;
 let dashboardAvailabilityCheckPromise: Promise<boolean> | null = null;
 
-/**
- * Prefer local markdown during Next.js production builds so Hashnode outages
- * cannot thrash or fail static generation. Runtime still uses Hashnode first.
- */
-function shouldPreferLocalBlog(): boolean {
-  if (process.env.USE_LOCAL_BLOG === 'true') return true;
-  return process.env.NEXT_PHASE === 'phase-production-build';
-}
-
-function localBlogReason(): string {
-  return process.env.USE_LOCAL_BLOG === 'true' ? 'USE_LOCAL_BLOG=true' : 'production build';
-}
-
-let loggedLocalPosts = false;
-let loggedLocalSlugs = false;
-
-/**
- * Check if Dashboard API is available
- * Performs a health check to the Dashboard API
- * Result is cached for 30 seconds to avoid repeated network calls while still failing fast
- */
 async function isDashboardAvailable(): Promise<boolean> {
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_API_URL || process.env.DASHBOARD_API_URL;
   if (!dashboardUrl) {
@@ -171,7 +177,10 @@ async function isDashboardAvailable(): Promise<boolean> {
   }
 
   const now = Date.now();
-  if (dashboardAvailabilityCache && now - dashboardAvailabilityCache.checkedAt < DASHBOARD_HEALTH_CHECK_CACHE_MS) {
+  if (
+    dashboardAvailabilityCache &&
+    now - dashboardAvailabilityCache.checkedAt < DASHBOARD_HEALTH_CHECK_CACHE_MS
+  ) {
     return dashboardAvailabilityCache.value;
   }
 
@@ -186,17 +195,8 @@ async function isDashboardAvailable(): Promise<boolean> {
           method: 'GET',
           cache: 'no-store',
         });
-
-        // Only consider available if health check returns 200 OK
-        const isAvailable = response.ok && response.status === 200;
-        
-        if (!isAvailable) {
-          console.warn(`[Content API] Dashboard API health check failed with status ${response.status}`);
-        }
-        
-        return isAvailable;
-      } catch (error) {
-        console.warn('[Content API] Dashboard API health check failed:', error instanceof Error ? error.message : 'Unknown error');
+        return response.ok && response.status === 200;
+      } catch {
         return false;
       } finally {
         clearTimeout(timeoutId);
@@ -207,289 +207,80 @@ async function isDashboardAvailable(): Promise<boolean> {
   const available = await dashboardAvailabilityCheckPromise;
   dashboardAvailabilityCache = { value: available, checkedAt: Date.now() };
   dashboardAvailabilityCheckPromise = null;
-
   return available;
 }
 
-/**
- * Fetch posts - Uses Hashnode API by default, with local markdown fallback
- * Dashboard API is disabled for blog posts unless USE_DASHBOARD_FOR_BLOG=true
- * Set USE_LOCAL_BLOG=true to force content/blog/*.md
- */
-export async function fetchPosts(first: number = 10, after?: string): Promise<UnifiedPost[]> {
-  // By default, use Hashnode for blog posts (more reliable)
-  // Only use Dashboard if explicitly enabled
-  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
-  
-  if (useDashboard) {
-    // Check if Dashboard API is available
-    const dashboardAvailable = await isDashboardAvailable();
-    
-    if (dashboardAvailable) {
-      try {
-        const response = await dashboardAPI.getPosts({ limit: first });
-        // Verify we got valid posts data
-        if (response && response.posts && Array.isArray(response.posts) && response.posts.length > 0) {
-          console.log(`[Content API] Using Dashboard API for posts (${response.posts.length} posts)`);
-          return response.posts.map(transformDashboardPost);
-        } else {
-          console.warn('[Content API] Dashboard API returned empty or invalid response, falling back to Hashnode');
-          // Invalidate cache to force recheck next time
-          dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
-        }
-      } catch (error) {
-        console.warn('[Content API] Dashboard API failed, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
-        // Invalidate cache on error to force recheck next time
-        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
-      }
-    }
-  }
-
-  // Prefer Hashnode when available; fall back to local markdown in content/blog
-  if (shouldPreferLocalBlog()) {
-    if (!loggedLocalPosts) {
-      loggedLocalPosts = true;
-      console.log(`[Content API] Using local markdown for posts (${localBlogReason()})`);
-    }
-    return getLocalBlogPosts(first);
-  }
+async function tryDashboardPosts(first: number): Promise<UnifiedPost[] | null> {
+  if (process.env.USE_DASHBOARD_FOR_BLOG !== 'true') return null;
+  if (!(await isDashboardAvailable())) return null;
 
   try {
-    console.log('[Content API] Using Hashnode API for posts');
-    const hashnodePosts = await fetchHashnodePosts(first, after);
-    console.log(`[Content API] Fetched ${hashnodePosts.length} posts from Hashnode`);
-    
-    if (hashnodePosts.length === 0) {
-      console.warn('[Content API] Hashnode API returned no posts, falling back to local markdown');
-      return getLocalBlogPosts(first);
+    const response = await dashboardAPI.getPosts({ limit: first });
+    if (response?.posts?.length) {
+      return response.posts.map(transformDashboardPost);
     }
-
-    // Defensive: ensure newest posts appear first regardless of API ordering
-    const sortedPosts = [...hashnodePosts].sort((a, b) => {
-      const aTime = a.publishedAt ? Date.parse(a.publishedAt) : 0;
-      const bTime = b.publishedAt ? Date.parse(b.publishedAt) : 0;
-      return bTime - aTime;
-    });
-
-    return sortedPosts.map(post => ({
-      id: post.id,
-      title: post.title,
-      brief: post.brief,
-      slug: post.slug,
-      publishedAt: post.publishedAt,
-      updatedAt: post.updatedAt,
-      coverImage: post.coverImage,
-      author: post.author,
-      tags: post.tags,
-      content: post.content,
-      readTimeInMinutes: post.readTimeInMinutes,
-      views: 0,
-      featured: false
-    }));
   } catch (error) {
-    console.error('[Content API] Hashnode API failed, falling back to local markdown:', error instanceof Error ? error.message : 'Unknown error');
-    return getLocalBlogPosts(first);
+    console.warn(
+      '[Content API] Dashboard posts failed:',
+      error instanceof Error ? error.message : 'Unknown error',
+    );
+    dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
   }
+  return null;
 }
 
 /**
- * Fetch a single post by slug - Uses Hashnode API directly for blog
- * Dashboard API is disabled for blog posts to avoid data inconsistencies
+ * Fetch posts from local markdown (default) or Dashboard when enabled.
+ */
+export async function fetchPosts(first: number = 10, _after?: string): Promise<UnifiedPost[]> {
+  const fromDashboard = await tryDashboardPosts(first);
+  if (fromDashboard) return fromDashboard;
+  return getLocalBlogPosts(first);
+}
+
+/**
+ * Fetch a single post by slug from local markdown (or Dashboard when enabled).
  */
 export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null> {
-  // By default, use Hashnode for blog posts
-  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
-  
-  if (useDashboard) {
-    // Check if Dashboard API is available
-    const dashboardAvailable = await isDashboardAvailable();
-    
-    if (dashboardAvailable) {
-      try {
-        console.log('[Content API] Using Dashboard API for post');
-        const post = await dashboardAPI.getPost(slug);
-        // Verify we got valid post data
-        if (post && post.slug) {
-          return transformDashboardPost(post);
-        } else {
-          console.warn(`[Content API] Dashboard API returned invalid post data for "${slug}", falling back to Hashnode`);
-        }
-      } catch (error) {
-        console.warn(`[Content API] Dashboard API failed for post "${slug}", falling back to Hashnode:`, error instanceof Error ? error.message : 'Unknown error');
-        // Invalidate cache on error to force recheck next time
-        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
-      }
+  if (process.env.USE_DASHBOARD_FOR_BLOG === 'true' && (await isDashboardAvailable())) {
+    try {
+      const post = await dashboardAPI.getPost(slug);
+      if (post?.slug) return transformDashboardPost(post);
+    } catch {
+      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
   }
-
-  if (shouldPreferLocalBlog()) {
-    return getLocalBlogPostBySlug(slug);
-  }
-
-  try {
-    console.log('[Content API] Using Hashnode API for post');
-    const hashnodePost = await fetchHashnodePost(slug);
-    
-    if (!hashnodePost) {
-      console.warn(`[Content API] Post "${slug}" not found in Hashnode, trying local markdown`);
-      return getLocalBlogPostBySlug(slug);
-    }
-    
-    console.log(`[Content API] Successfully fetched post "${slug}" from Hashnode`);
-    
-    return {
-      id: hashnodePost.id,
-      title: hashnodePost.title,
-      brief: hashnodePost.brief,
-      slug: hashnodePost.slug,
-      publishedAt: hashnodePost.publishedAt,
-      updatedAt: hashnodePost.updatedAt,
-      coverImage: hashnodePost.coverImage,
-      author: hashnodePost.author,
-      tags: hashnodePost.tags,
-      content: hashnodePost.content,
-      readTimeInMinutes: hashnodePost.readTimeInMinutes,
-      views: 0,
-      featured: false
-    };
-  } catch (error) {
-    console.error(`[Content API] Hashnode API failed for post "${slug}", falling back to local markdown:`, error instanceof Error ? error.message : 'Unknown error');
-    return getLocalBlogPostBySlug(slug);
-  }
+  return getLocalBlogPostBySlug(slug);
 }
 
 /**
- * Fetch publication information - Uses Hashnode API directly for blog
- * Dashboard API is disabled for blog to avoid data inconsistencies
+ * Publication metadata for layout/RSS consumers.
  */
 export async function fetchPublication(): Promise<UnifiedPublication | null> {
-  // By default, use Hashnode for blog
-  const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
-  
-  if (useDashboard) {
-    // Check if Dashboard API is available
-    const dashboardAvailable = await isDashboardAvailable();
-    
-    if (dashboardAvailable) {
-      try {
-        const pub = await dashboardAPI.getPublication();
-        // Verify we got valid publication data
-        if (pub && pub.name) {
-          return transformDashboardPublication(pub);
-        } else {
-          console.warn('[Content API] Dashboard API returned invalid publication data, falling back to Hashnode');
-        }
-      } catch (error) {
-        console.warn('[Content API] Dashboard API failed for publication, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
-        // Invalidate cache on error to force recheck next time
-        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
-      }
+  if (process.env.USE_DASHBOARD_FOR_BLOG === 'true' && (await isDashboardAvailable())) {
+    try {
+      const pub = await dashboardAPI.getPublication();
+      if (pub?.name) return transformDashboardPublication(pub);
+    } catch {
+      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
   }
-
-  // Use Hashnode API (default and fallback)
-  if (shouldPreferLocalBlog()) {
-    return null;
-  }
-
-  try {
-    const hashnodePub = await fetchHashnodePublication();
-    if (!hashnodePub) {
-      return null;
-    }
-    
-    // Transform HashnodePublication to UnifiedPublication
-    return {
-      id: hashnodePub.id,
-      title: hashnodePub.title,
-      description: hashnodePub.descriptionSEO || '',
-      url: hashnodePub.url,
-      favicon: hashnodePub.favicon || '',
-      logo: hashnodePub.preferences?.logo || '',
-      isTeam: hashnodePub.isTeam,
-      preferences: {
-        logo: hashnodePub.preferences?.logo || '',
-        darkMode: {
-          logo: hashnodePub.preferences?.logo || '',
-        },
-        navbarItems: [],
-        layout: {
-          navbarStyle: 'default',
-          footerStyle: 'default',
-          showBranding: true,
-        },
-        members: [],
-      },
-      displayTitle: hashnodePub.displayTitle,
-      descriptionSEO: hashnodePub.descriptionSEO,
-      posts: hashnodePub.posts,
-      author: hashnodePub.author,
-      followersCount: hashnodePub.followersCount,
-      ogMetaData: hashnodePub.ogMetaData,
-    };
-  } catch (error) {
-    console.error('[Content API] Hashnode API failed for publication:', error instanceof Error ? error.message : 'Unknown error');
-    return null;
-  }
+  return localPublication();
 }
 
 /**
- * Get all post slugs for static generation
- * Improved error handling to ensure Hashnode fallback works when Dashboard API is unavailable
+ * All post slugs for static generation.
  */
 export async function getAllPostSlugs(): Promise<string[]> {
-  // Add 15 second hard timeout for build — fall back to local, not empty
-  let timeoutId: ReturnType<typeof setTimeout>;
-  const timeoutPromise = new Promise<string[]>((resolve) => {
-    timeoutId = setTimeout(() => {
-      console.warn('[Content API] getAllPostSlugs timed out after 15 seconds, using local markdown');
-      resolve(getLocalBlogSlugs());
-    }, 15000);
-  });
-
-  const fetchPromise = (async () => {
-    if (shouldPreferLocalBlog()) {
-      if (!loggedLocalSlugs) {
-        loggedLocalSlugs = true;
-        console.log(`[Content API] Using local markdown slugs (${localBlogReason()})`);
-      }
-      return getLocalBlogSlugs();
-    }
-
-    // Check if Dashboard API is available first
-    const dashboardAvailable = await isDashboardAvailable();
-    
-    if (dashboardAvailable) {
-      try {
-        const response = await dashboardAPI.getPosts({ limit: 50 });
-        // Verify we got valid posts data
-        if (response && response.posts && Array.isArray(response.posts)) {
-          return response.posts.map(post => post.slug);
-        } else {
-          console.warn('[Content API] Dashboard API returned invalid response for slugs, falling back to Hashnode');
-        }
-      } catch (error) {
-        console.warn('[Content API] Dashboard API failed for slugs, falling back to Hashnode:', error instanceof Error ? error.message : 'Unknown error');
-        // Invalidate cache on error to force recheck next time
-        dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
-      }
-    }
-
-    // Fallback to Hashnode, then local markdown
+  if (process.env.USE_DASHBOARD_FOR_BLOG === 'true' && (await isDashboardAvailable())) {
     try {
-      const hashnodePosts = await fetchHashnodePosts(50);
-      if (hashnodePosts.length > 0) {
-        return hashnodePosts.map(post => post.slug);
+      const response = await dashboardAPI.getPosts({ limit: 100 });
+      if (response?.posts?.length) {
+        return response.posts.map((post) => post.slug);
       }
-      console.warn('[Content API] Hashnode returned no slugs, using local markdown');
-      return getLocalBlogSlugs();
-    } catch (error) {
-      console.error('[Content API] Hashnode failed for slugs, using local markdown:', error instanceof Error ? error.message : 'Unknown error');
-      return getLocalBlogSlugs();
+    } catch {
+      dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
     }
-  })();
-
-  const result = await Promise.race([fetchPromise, timeoutPromise]);
-  clearTimeout(timeoutId!);
-  return result;
+  }
+  return getLocalBlogSlugs();
 }

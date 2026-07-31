@@ -100,10 +100,7 @@ export function Integrations() {
 		if (typeof window !== 'undefined' && window.gtag && gaTrackingID) {
 			try {
 				// @ts-ignore
-				window.gtag('config', gaTrackingID, {
-					transport_url: 'https://ping.hashnode.com',
-					first_party_collection: true,
-				});
+				window.gtag('config', gaTrackingID);
 			} catch (error) {
 				console.error('Error configuring Google Analytics:', error);
 			}

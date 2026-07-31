@@ -41,7 +41,6 @@ interface PublishingOptions {
   seriesId?: string
   seriesPosition?: number
   crossPlatformPublishing: {
-    hashnode: boolean
     dev: boolean
     medium: boolean
   }
@@ -118,7 +117,6 @@ export function PublishingPanel({
     seriesId: undefined,
     seriesPosition: undefined,
     crossPlatformPublishing: {
-      hashnode: false,
       dev: false,
       medium: false
     },
@@ -555,25 +553,6 @@ export function PublishingPanel({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="hashnode">Hashnode</Label>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Publish to Hashnode
-              </p>
-            </div>
-            <Switch
-              id="hashnode"
-              checked={options.crossPlatformPublishing.hashnode}
-              onCheckedChange={(checked) => 
-                handleOptionChange('crossPlatformPublishing', {
-                  ...options.crossPlatformPublishing,
-                  hashnode: checked
-                })
-              }
-            />
-          </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="dev">Dev.to</Label>

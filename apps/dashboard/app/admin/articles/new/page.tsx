@@ -1,8 +1,8 @@
 // /app/admin/articles/new/page.tsx
 // New article page - renders ArticleEditor component
 
-import { ArticleEditorHashnode } from '../_components/ArticleEditorHashnode'
+import { ArticleEditor } from '../_components/ArticleEditor'
 
 export default function NewArticlePage() {
-  return <ArticleEditorHashnode />
+  return <ArticleEditor />
 }

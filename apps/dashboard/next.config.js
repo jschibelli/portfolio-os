@@ -4,7 +4,6 @@ const nextConfig = {
     '@mindware-blog/ui',
     '@mindware-blog/lib',
     '@mindware-blog/db',
-    '@mindware-blog/hashnode',
     '@mindware-blog/emails',
     '@mindware-blog/chatbot',
   ],
