@@ -27,7 +27,17 @@ export interface LocalBlogPost {
   featured?: boolean;
 }
 
-const contentDirectory = path.join(process.cwd(), 'content', 'blog');
+const contentDirectoryCandidates = [
+  path.join(process.cwd(), 'content', 'blog'),
+  path.join(process.cwd(), 'apps', 'site', 'content', 'blog'),
+];
+
+function resolveContentDirectory(): string {
+  for (const candidate of contentDirectoryCandidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return contentDirectoryCandidates[0];
+}
 
 type TagInput =
   | string
@@ -186,7 +196,9 @@ function fileToPost(filePath: string): LocalBlogPost | null {
 }
 
 function listMarkdownFiles(): string[] {
+  const contentDirectory = resolveContentDirectory();
   if (!fs.existsSync(contentDirectory)) {
+    console.warn(`[Local Blog] Content directory not found: ${contentDirectory}`);
     return [];
   }
 

@@ -100,12 +100,7 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params;
   
-  console.log(`[Blog Post] Fetching post: ${params.slug}`);
-  console.log(`[Blog Post] NEXT_PHASE: ${process.env.NEXT_PHASE}`);
-  console.log(`[Blog Post] NODE_ENV: ${process.env.NODE_ENV}`);
-  
-  // Always fetch at runtime (both dev and production)
-  // Only skip during build phase to prevent hanging
+  // Production builds prefer local markdown via content-api (NEXT_PHASE)
   let post = null;
   let currentPublication = defaultPublication;
   
@@ -116,17 +111,14 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
     ]);
     post = fetchedPost;
     currentPublication = fetchedPublication || defaultPublication;
-    
-    console.log(`[Blog Post] Post found: ${post ? 'YES' : 'NO'}`);
-    if (post) {
-      console.log(`[Blog Post] Post title: ${post.title}`);
-    }
   } catch (error) {
-    console.error(`[Blog Post] Error fetching post:`, error);
+    console.error(
+      `[Blog Post] Error fetching "${params.slug}":`,
+      error instanceof Error ? error.message : error
+    );
   }
 
   if (!post) {
-    console.log(`[Blog Post] Post not found, returning 404 for slug: ${params.slug}`);
     notFound();
   }
 

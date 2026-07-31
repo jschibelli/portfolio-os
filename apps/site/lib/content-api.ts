@@ -144,6 +144,22 @@ let dashboardAvailabilityCache: { value: boolean; checkedAt: number } | null = n
 let dashboardAvailabilityCheckPromise: Promise<boolean> | null = null;
 
 /**
+ * Prefer local markdown during Next.js production builds so Hashnode outages
+ * cannot thrash or fail static generation. Runtime still uses Hashnode first.
+ */
+function shouldPreferLocalBlog(): boolean {
+  if (process.env.USE_LOCAL_BLOG === 'true') return true;
+  return process.env.NEXT_PHASE === 'phase-production-build';
+}
+
+function localBlogReason(): string {
+  return process.env.USE_LOCAL_BLOG === 'true' ? 'USE_LOCAL_BLOG=true' : 'production build';
+}
+
+let loggedLocalPosts = false;
+let loggedLocalSlugs = false;
+
+/**
  * Check if Dashboard API is available
  * Performs a health check to the Dashboard API
  * Result is cached for 30 seconds to avoid repeated network calls while still failing fast
@@ -230,10 +246,11 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
   }
 
   // Prefer Hashnode when available; fall back to local markdown in content/blog
-  const preferLocal = process.env.USE_LOCAL_BLOG === 'true';
-
-  if (preferLocal) {
-    console.log('[Content API] Using local markdown for posts (USE_LOCAL_BLOG=true)');
+  if (shouldPreferLocalBlog()) {
+    if (!loggedLocalPosts) {
+      loggedLocalPosts = true;
+      console.log(`[Content API] Using local markdown for posts (${localBlogReason()})`);
+    }
     return getLocalBlogPosts(first);
   }
 
@@ -280,8 +297,6 @@ export async function fetchPosts(first: number = 10, after?: string): Promise<Un
  * Dashboard API is disabled for blog posts to avoid data inconsistencies
  */
 export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null> {
-  console.log(`[Content API] Fetching post by slug: ${slug}`);
-  
   // By default, use Hashnode for blog posts
   const useDashboard = process.env.USE_DASHBOARD_FOR_BLOG === 'true';
   
@@ -307,10 +322,7 @@ export async function fetchPostBySlug(slug: string): Promise<UnifiedPost | null>
     }
   }
 
-  const preferLocal = process.env.USE_LOCAL_BLOG === 'true';
-
-  if (preferLocal) {
-    console.log(`[Content API] Using local markdown for post "${slug}" (USE_LOCAL_BLOG=true)`);
+  if (shouldPreferLocalBlog()) {
     return getLocalBlogPostBySlug(slug);
   }
 
@@ -376,6 +388,10 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
   }
 
   // Use Hashnode API (default and fallback)
+  if (shouldPreferLocalBlog()) {
+    return null;
+  }
+
   try {
     const hashnodePub = await fetchHashnodePublication();
     if (!hashnodePub) {
@@ -422,16 +438,24 @@ export async function fetchPublication(): Promise<UnifiedPublication | null> {
  * Improved error handling to ensure Hashnode fallback works when Dashboard API is unavailable
  */
 export async function getAllPostSlugs(): Promise<string[]> {
-  // Add 15 second hard timeout for build
+  // Add 15 second hard timeout for build — fall back to local, not empty
   let timeoutId: ReturnType<typeof setTimeout>;
   const timeoutPromise = new Promise<string[]>((resolve) => {
     timeoutId = setTimeout(() => {
-      console.warn('[Content API] getAllPostSlugs timed out after 15 seconds, returning empty array');
-      resolve([]);
+      console.warn('[Content API] getAllPostSlugs timed out after 15 seconds, using local markdown');
+      resolve(getLocalBlogSlugs());
     }, 15000);
   });
 
   const fetchPromise = (async () => {
+    if (shouldPreferLocalBlog()) {
+      if (!loggedLocalSlugs) {
+        loggedLocalSlugs = true;
+        console.log(`[Content API] Using local markdown slugs (${localBlogReason()})`);
+      }
+      return getLocalBlogSlugs();
+    }
+
     // Check if Dashboard API is available first
     const dashboardAvailable = await isDashboardAvailable();
     
@@ -449,11 +473,6 @@ export async function getAllPostSlugs(): Promise<string[]> {
         // Invalidate cache on error to force recheck next time
         dashboardAvailabilityCache = { value: false, checkedAt: Date.now() };
       }
-    }
-
-    if (process.env.USE_LOCAL_BLOG === 'true') {
-      console.log('[Content API] Using local markdown slugs (USE_LOCAL_BLOG=true)');
-      return getLocalBlogSlugs();
     }
 
     // Fallback to Hashnode, then local markdown
