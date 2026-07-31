@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/site...",
+  "buildCommand": "cd ../.. && pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm turbo run build --filter=@mindware-blog/site...",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",
   "functions": {
