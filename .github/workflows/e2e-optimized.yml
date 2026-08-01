@@ -5,13 +5,32 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "apps/site/**"
-      - ".github/workflows/**"
+      - "packages/chatbot/**"
+      - "packages/db/**"
+      - "packages/emails/**"
+      - "packages/lib/**"
+      - "packages/ui/**"
+      - "packages/utils/**"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
+      - "package.json"
+      - ".github/workflows/e2e-optimized.yml"
   push:
-    branches: [ develop ]
+    branches: [develop]
     paths:
       - "apps/site/**"
-      - ".github/workflows/**"
+      - "packages/chatbot/**"
+      - "packages/db/**"
+      - "packages/emails/**"
+      - "packages/lib/**"
+      - "packages/ui/**"
+      - "packages/utils/**"
+      - "pnpm-lock.yaml"
+      - "turbo.json"
+      - "package.json"
+      - ".github/workflows/e2e-optimized.yml"
   schedule:
+    # Nightly full site E2E (intentional; not --affected)
     - cron: "0 6 * * *"
   workflow_dispatch:
 
@@ -22,6 +41,11 @@ concurrency:
   group: e2e-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+
 jobs:
   e2e:
     name: Playwright E2E
@@ -29,18 +53,44 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          # History for optional --affected dry-run skip on PRs
+          fetch-depth: 0
 
       - name: Setup Node + pnpm
         uses: ./.github/actions/setup-node-pnpm
         with:
-          # Pin toolchain versions to reduce CI drift across runs.
           node-version: "20"
           pnpm-version: "10.14.0"
 
-      - name: Build site
-        run: pnpm --filter @mindware-blog/site run build
+      - name: Skip when site package is unaffected (PR/push only)
+        id: scope
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: |
+          ZERO="0000000000000000000000000000000000000000"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "$ZERO" ]; then
+            BASE="${{ github.event.before }}"
+          else
+            BASE="origin/main"
+          fi
+          echo "TURBO_SCM_BASE=$BASE" >> "$GITHUB_ENV"
+
+          AFFECTED_JSON=$(pnpm exec turbo run build --filter=@mindware-blog/site --affected --dry=json)
+          if ! echo "$AFFECTED_JSON" | grep -q '"@mindware-blog/site#build"'; then
+            echo "Site unaffected by this change set — skipping E2E."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build site (+ dependency graph)
+        if: steps.scope.outputs.skip != 'true'
+        run: pnpm exec turbo run build --filter=@mindware-blog/site...
 
       - name: Cache Playwright browsers
+        if: steps.scope.outputs.skip != 'true'
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
@@ -49,17 +99,19 @@ jobs:
             playwright-${{ runner.os }}-
 
       - name: Install Playwright browsers
+        if: steps.scope.outputs.skip != 'true'
         run: pnpm --filter @mindware-blog/site exec playwright install --with-deps
 
       - name: Run Playwright chromium fast suite
         id: e2e
+        if: steps.scope.outputs.skip != 'true'
         continue-on-error: true
         run: |
           echo "🎭 Running Playwright E2E tests..."
           echo "   Test suite: CI Integration (Chromium)"
           echo "   Spec: tests/ci-integration.spec.ts"
           echo ""
-          
+
           if ! pnpm --filter @mindware-blog/site exec playwright test tests/ci-integration.spec.ts --project=chromium --reporter=line; then
             echo ""
             echo "⚠️  Playwright E2E tests failed:"
@@ -78,18 +130,19 @@ jobs:
             echo "   - Status: Non-blocking for PR merge"
             echo "   - Priority: Medium - should be fixed to maintain test coverage"
             echo "   - Tracking: See docs/TECHNICAL_DEBT.md#playwright-test-failures"
-            echo "e2e_failed=true" >> $GITHUB_OUTPUT
+            echo "e2e_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "✅ E2E tests passed successfully"
           fi
-      
+
       - name: Run accessibility tests
         id: accessibility
+        if: steps.scope.outputs.skip != 'true'
         continue-on-error: true
         run: |
           echo "♿ Running accessibility tests..."
           echo ""
-          
+
           if ! pnpm --filter @mindware-blog/site run test:accessibility --if-present; then
             echo ""
             echo "⚠️  Accessibility tests failed:"
@@ -108,88 +161,62 @@ jobs:
             echo "   - Priority: High - accessibility is important for all users"
             echo "   - Tracking: See docs/TECHNICAL_DEBT.md#accessibility-issues"
             echo "   - Resources: https://www.w3.org/WAI/WCAG21/quickref/"
-            echo "accessibility_failed=true" >> $GITHUB_OUTPUT
+            echo "accessibility_failed=true" >> "$GITHUB_OUTPUT"
           else
             echo "✅ Accessibility tests passed"
           fi
 
       - name: Upload Playwright report (always)
-        if: always()
+        if: always() && steps.scope.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: apps/site/playwright-report
           if-no-files-found: ignore
-      
-      # Summary report
+
       - name: E2E Workflow summary
         if: always()
         run: |
-          echo "## 🎭 E2E Testing Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Test results table
-          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Test Suite | Status | Priority |" >> $GITHUB_STEP_SUMMARY
-          echo "|------------|--------|----------|" >> $GITHUB_STEP_SUMMARY
-          
-          # E2E tests status
+          echo "## 🎭 E2E Testing Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.scope.outputs.skip }}" = "true" ]; then
+            echo "### ⏭️ Skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "Site package was unaffected by this change set." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "### Test Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test Suite | Status | Priority |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------------|--------|----------|" >> "$GITHUB_STEP_SUMMARY"
+
           E2E_FAILED="${{ steps.e2e.outputs.e2e_failed }}"
           E2E_STATUS=$([ -z "$E2E_FAILED" ] && echo "✅ Passed" || echo "⚠️ Failed")
-          echo "| **Playwright E2E Tests** | $E2E_STATUS | Medium |" >> $GITHUB_STEP_SUMMARY
-          
-          # Accessibility tests status
+          echo "| **Playwright E2E Tests** | $E2E_STATUS | Medium |" >> "$GITHUB_STEP_SUMMARY"
+
           A11Y_FAILED="${{ steps.accessibility.outputs.accessibility_failed }}"
           A11Y_STATUS=$([ -z "$A11Y_FAILED" ] && echo "✅ Passed" || echo "⚠️ Failed")
-          echo "| **Accessibility Tests** | $A11Y_STATUS | High |" >> $GITHUB_STEP_SUMMARY
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Detailed notes section
+          echo "| **Accessibility Tests** | $A11Y_STATUS | High |" >> "$GITHUB_STEP_SUMMARY"
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
           if [ -n "$E2E_FAILED" ] || [ -n "$A11Y_FAILED" ]; then
-            echo "### ⚠️ Issues Detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            
+            echo "### ⚠️ Issues Detected" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
             if [ -n "$E2E_FAILED" ]; then
-              echo "#### E2E Test Failures" >> $GITHUB_STEP_SUMMARY
-              echo "- Playwright tests encountered failures" >> $GITHUB_STEP_SUMMARY
-              echo "- Check the Playwright report artifact for details" >> $GITHUB_STEP_SUMMARY
-              echo "- Review screenshots and traces for failed tests" >> $GITHUB_STEP_SUMMARY
-              echo "- Update test selectors if components changed" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "#### E2E Test Failures" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Check the Playwright report artifact for screenshots and traces" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
             fi
-            
             if [ -n "$A11Y_FAILED" ]; then
-              echo "#### Accessibility Issues" >> $GITHUB_STEP_SUMMARY
-              echo "- Accessibility violations detected" >> $GITHUB_STEP_SUMMARY
-              echo "- Review axe-core output for specific violations" >> $GITHUB_STEP_SUMMARY
-              echo "- Address WCAG compliance issues" >> $GITHUB_STEP_SUMMARY
-              echo "- Ensure keyboard navigation and screen reader support" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "#### Accessibility Issues" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Review axe-core output for specific violations" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
             fi
           else
-            echo "### ✅ All Tests Passed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Great job! All E2E and accessibility tests are passing." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### ✅ All Tests Passed" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
           fi
-          
-          echo "### 📋 Next Steps" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -n "$E2E_FAILED" ] || [ -n "$A11Y_FAILED" ]; then
-            echo "1. Download and review the Playwright report artifact" >> $GITHUB_STEP_SUMMARY
-            echo "2. Run tests locally to reproduce failures" >> $GITHUB_STEP_SUMMARY
-            echo "3. Fix identified issues before next release" >> $GITHUB_STEP_SUMMARY
-            echo "4. See [Technical Debt Document](../docs/TECHNICAL_DEBT.md) for tracking" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "1. Review test coverage and consider adding more tests" >> $GITHUB_STEP_SUMMARY
-            echo "2. Keep tests updated as features evolve" >> $GITHUB_STEP_SUMMARY
-            echo "3. Monitor for regressions in future PRs" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "_Note: E2E test failures are tracked in docs/TECHNICAL_DEBT.md and are non-blocking for PR merges._" >> $GITHUB_STEP_SUMMARY
 
-
+          echo "_Note: E2E failures are non-blocking for PR merges. Tracked in docs/TECHNICAL_DEBT.md._" >> "$GITHUB_STEP_SUMMARY"

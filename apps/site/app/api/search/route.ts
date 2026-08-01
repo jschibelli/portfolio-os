@@ -47,13 +47,28 @@ export async function GET(request: NextRequest) {
       console.error('Error searching projects:', error);
     }
 
-    // Search blog posts (if you have blog functionality)
-    // This would require integration with your blog data source
-    // For now, we'll add a placeholder for future blog search
+    // Search blog posts from local markdown
     try {
-      // TODO: Implement blog post search when blog data is available
-      // const blogResults = await searchBlogPosts(searchTerm);
-      // results.push(...blogResults);
+      const { getLocalBlogPosts } = await import('../../../lib/local-blog-loader');
+      const posts = getLocalBlogPosts(100);
+      const blogResults = posts
+        .filter(
+          (post) =>
+            post.title.toLowerCase().includes(searchTerm) ||
+            post.brief.toLowerCase().includes(searchTerm) ||
+            (post.tags || []).some((tag) => tag.name.toLowerCase().includes(searchTerm)),
+        )
+        .map((post) => ({
+          id: post.id,
+          title: post.title,
+          description: post.brief,
+          type: 'blog' as const,
+          url: `/blog/${post.slug}`,
+          tags: (post.tags || []).map((t) => t.name),
+        }))
+        .slice(0, 5);
+
+      results.push(...blogResults);
     } catch (error) {
       console.error('Error searching blog posts:', error);
     }

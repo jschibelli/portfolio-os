@@ -79,7 +79,7 @@ export const ModernPostHeader = ({ title, coverImage, date, author, readTimeInMi
 						<div className="flex flex-col items-start">
 							{!post.coAuthors?.length && (
 								<a
-									href={`https://hashnode.com/@${post.author.username}`}
+									href={`/about`}
 									className="hover:text-primary font-semibold text-slate-600 transition-colors dark:text-white"
 								>
 									<span>{post.author.name}</span>

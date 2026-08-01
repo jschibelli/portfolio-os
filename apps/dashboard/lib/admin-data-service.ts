@@ -437,27 +437,6 @@ class AdminDataService {
     }
   }
 
-  /**
-   * Import articles from Hashnode
-   */
-  async importHashnodeArticles(): Promise<{ importedCount: number }> {
-    try {
-      // This would call the existing Hashnode import API
-      const response = await fetch('/api/admin/articles/import-hashnode', {
-        method: 'POST',
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to import from Hashnode');
-      }
-      
-      const data = await response.json();
-      return { importedCount: data.imported || 0 };
-    } catch (error) {
-      console.error('Error importing Hashnode articles:', error);
-      throw new Error('Failed to import articles from Hashnode');
-    }
-  }
 }
 
 // Export singleton instance

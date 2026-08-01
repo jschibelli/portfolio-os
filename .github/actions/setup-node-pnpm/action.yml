@@ -1,5 +1,5 @@
 name: Setup Node + pnpm
-description: Shared setup for Node and pnpm (Corepack) with optional install
+description: Shared setup for Node and pnpm with store cache and optional install
 
 inputs:
   node-version:
@@ -7,7 +7,7 @@ inputs:
     required: false
     default: "20"
   pnpm-version:
-    description: pnpm version to activate via Corepack (pinned for reproducible CI)
+    description: pnpm version to install (pinned for reproducible CI)
     required: false
     default: "10.14.0"
   install:
@@ -22,30 +22,26 @@ inputs:
 runs:
   using: composite
   steps:
+    # pnpm must be on PATH before setup-node cache: pnpm can resolve the store
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        # Uses the pnpm store cache keying logic from actions/setup-node
         cache: pnpm
-
-    - name: Enable Corepack + activate pnpm
-      shell: bash
-      run: |
-        set -euo pipefail
-        corepack enable
-        corepack prepare "pnpm@${{ inputs.pnpm-version }}" --activate
-        pnpm --version
 
     - name: Install dependencies
       if: inputs.install == 'true'
       shell: bash
       run: |
         set -euo pipefail
+        pnpm --version
         if [ "${{ inputs.frozen-lockfile }}" = "true" ]; then
           pnpm install --frozen-lockfile
         else
           pnpm install
         fi
-
-

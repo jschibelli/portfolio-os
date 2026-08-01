@@ -31,8 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
-      
+      # No checkout — project GraphQL only
       - name: Update PR Status
         uses: actions/github-script@v7
         with:
@@ -184,8 +183,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'issues'
     steps:
-      - uses: actions/checkout@v4
-      
+      # No checkout — project GraphQL only
       - name: Update Issue Status
         uses: actions/github-script@v7
         with:
@@ -344,8 +342,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.action == 'opened'
     steps:
-      - uses: actions/checkout@v4
-      
+      # No checkout — payload parsing only
       - name: Link PR to Related Issue
         uses: actions/github-script@v7
         with:

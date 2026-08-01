@@ -1,19 +1,9 @@
 "use client";
 
-import request from 'graphql-request';
 import { ReactNode, useState } from 'react';
 import { siteConfig } from '../../../config/site';
-import {
-	SubscribeToNewsletterDocument,
-	SubscribeToNewsletterMutation,
-	SubscribeToNewsletterMutationVariables,
-	SubscribeToNewsletterPayload,
-} from '../../../generated/graphql';
 import { cn } from '../../../lib/utils';
-import { useAppContext } from '../../contexts/appContext';
 import { Button, type ButtonProps, Section } from '../../ui';
-
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
 interface CTAButtonProps {
 	href: string;
@@ -43,19 +33,9 @@ export default function CTA({
 	showNewsletterForm = false,
 }: CTAProps) {
 	const [email, setEmail] = useState('');
-	const [status, setStatus] = useState<SubscribeToNewsletterPayload['status']>();
+	const [status, setStatus] = useState<'PENDING' | undefined>();
 	const [requestInProgress, setRequestInProgress] = useState(false);
 	const [error, setError] = useState('');
-
-	// Try to get publication from context, but handle case where it's not available
-	let publication;
-	try {
-		const context = useAppContext();
-		publication = context.publication;
-	} catch (error) {
-		// Component is being used outside of AppProvider context
-		publication = null;
-	}
 
 	const subscribe = async () => {
 		if (!email.trim()) {
@@ -63,30 +43,25 @@ export default function CTA({
 			return;
 		}
 
-		if (!publication) {
-			// If no publication is available (e.g., in test page), show a demo message
-			setStatus('Pending' as any);
-			setEmail('');
-			return;
-		}
-
 		setRequestInProgress(true);
 		setError('');
 
 		try {
-			const data = await request<
-				SubscribeToNewsletterMutation,
-				SubscribeToNewsletterMutationVariables
-			>(GQL_ENDPOINT, SubscribeToNewsletterDocument, {
-				input: { publicationId: publication.id, email },
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: 'Newsletter subscriber',
+					email: email.trim(),
+					message: 'Newsletter signup request',
+					source: 'newsletter-cta',
+				}),
 			});
-
-			setStatus(data.subscribeToNewsletter.status);
+			if (!res.ok) throw new Error('Subscribe failed');
+			setStatus('PENDING');
 			setEmail('');
-		} catch (error: any) {
-			const message =
-				error.response?.errors?.[0]?.message || 'Something went wrong. Please try again.';
-			setError(message);
+		} catch {
+			setError('Something went wrong. Please try again.');
 		} finally {
 			setRequestInProgress(false);
 		}

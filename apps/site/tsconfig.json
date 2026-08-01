@@ -21,9 +21,6 @@
       "@/db/*": [
         "../../packages/db/*"
       ],
-      "@/hashnode/*": [
-        "../../packages/hashnode/*"
-      ],
       "@/emails/*": [
         "../../packages/emails/*"
       ],

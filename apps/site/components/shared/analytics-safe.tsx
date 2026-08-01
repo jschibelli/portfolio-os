@@ -11,10 +11,7 @@ export const AnalyticsSafe = () => {
 		// Check if gtag exists before using it
 		if (typeof window.gtag === 'function') {
 			try {
-				window.gtag('config', 'G-72XG3F8LNJ', {
-					transport_url: 'https://ping.hashnode.com',
-					first_party_collection: true,
-				});
+				window.gtag('config', 'G-72XG3F8LNJ');
 			} catch (error) {
 				console.warn('Google Analytics error:', error);
 			}

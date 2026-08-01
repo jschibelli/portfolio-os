@@ -1,15 +1,5 @@
 import { Button, Card, CardContent, CardHeader, CardTitle, Glow } from '@/components/ui';
-import request from 'graphql-request';
 import React, { useEffect, useState } from 'react';
-import {
-	SubscribeToNewsletterDocument,
-	SubscribeToNewsletterMutation,
-	SubscribeToNewsletterMutationVariables,
-	SubscribeToNewsletterPayload,
-} from '../generated/graphql';
-import { useAppContext } from './contexts/appContext';
-
-const GQL_ENDPOINT = process.env.NEXT_PUBLIC_HASHNODE_GQL_ENDPOINT;
 
 interface ModernNewsletterProps {
 	title?: string;
@@ -26,18 +16,9 @@ export default function ModernNewsletter({
 }: ModernNewsletterProps) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [email, setEmail] = useState('');
-	const [status, setStatus] = useState<SubscribeToNewsletterPayload['status']>();
+	const [status, setStatus] = useState<'PENDING' | undefined>();
 	const [requestInProgress, setRequestInProgress] = useState(false);
 	const [error, setError] = useState('');
-	// Try to get publication from context, but handle case where it's not available
-	let publication;
-	try {
-		const context = useAppContext();
-		publication = context.publication;
-	} catch (error) {
-		// Component is being used outside of AppProvider context
-		publication = null;
-	}
 
 	useEffect(() => {
 		const observer = new IntersectionObserver(
@@ -67,30 +48,25 @@ export default function ModernNewsletter({
 			return;
 		}
 
-		if (!publication) {
-			// If no publication is available (e.g., in test page), show a demo message
-			setStatus('Pending' as any);
-			setEmail('');
-			return;
-		}
-
 		setRequestInProgress(true);
 		setError('');
 
 		try {
-			const data = await request<
-				SubscribeToNewsletterMutation,
-				SubscribeToNewsletterMutationVariables
-			>(GQL_ENDPOINT, SubscribeToNewsletterDocument, {
-				input: { publicationId: publication.id, email },
+			const res = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: 'Newsletter subscriber',
+					email: email.trim(),
+					message: 'Newsletter signup request',
+					source: 'modern-newsletter',
+				}),
 			});
-
-			setStatus(data.subscribeToNewsletter.status);
+			if (!res.ok) throw new Error('Subscribe failed');
+			setStatus('PENDING');
 			setEmail('');
-		} catch (error: any) {
-			const message =
-				error.response?.errors?.[0]?.message || 'Something went wrong. Please try again.';
-			setError(message);
+		} catch {
+			setError('Something went wrong. Please try again.');
 		} finally {
 			setRequestInProgress(false);
 		}
@@ -152,7 +128,6 @@ export default function ModernNewsletter({
 									placeholder={placeholder}
 									className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring hover:border-primary/50 focus:border-primary flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
 									disabled={requestInProgress}
-									// Suppress hydration warnings for browser extension attributes
 									suppressHydrationWarning
 								/>
 								<Button
@@ -191,7 +166,7 @@ export default function ModernNewsletter({
 								No spam, unsubscribe at any time. We respect your privacy.
 							</p>
 						</>
-					) : status === 'PENDING' ? (
+					) : (
 						<div
 							className={`delay-400 space-y-4 text-center transition-all duration-700 ${
 								isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
@@ -213,14 +188,11 @@ export default function ModernNewsletter({
 								</svg>
 							</div>
 							<div>
-								<h3 className="mb-2 text-xl font-semibold text-green-600">Almost there!</h3>
-								<p className="text-muted-foreground">
-									We&apos;ve sent a confirmation email to your inbox. Please check your email and
-									click the confirmation link to complete your subscription.
-								</p>
+								<h3 className="mb-2 text-xl font-semibold text-green-600">Thanks for signing up!</h3>
+								<p className="text-muted-foreground">We received your email and will be in touch.</p>
 							</div>
 						</div>
-					) : null}
+					)}
 				</CardContent>
 			</Card>
 		</div>

@@ -10,9 +10,6 @@ const envSchema = z.object({
   // Node environment
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   
-  // Hashnode integration (required)
-  NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: z.string().min(1, 'Hashnode publication host is required'),
-  
   // Google Calendar OAuth2 (optional during build, required at runtime)
   GOOGLE_CLIENT_ID: z.string().min(1, 'Google Client ID is required for calendar integration').optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1, 'Google Client Secret is required for calendar integration').optional(),
@@ -80,7 +77,6 @@ export function validateEnv() {
         // Return a partial environment object for build time
         return {
           NODE_ENV: process.env.NODE_ENV || 'development',
-          NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST: process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST || '',
           GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
           GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
           GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || '',
@@ -116,7 +112,6 @@ export function validateEnv() {
         console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
       console.error('\n📋 Required environment variables:');
-      console.error('  - NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST');
       console.error('  - GOOGLE_CLIENT_ID (optional during build)');
       console.error('  - GOOGLE_CLIENT_SECRET (optional during build)');
       console.error('  - GOOGLE_REDIRECT_URI (optional during build)');

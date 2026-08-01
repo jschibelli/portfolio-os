@@ -8,6 +8,9 @@ This guide explains how to set up environment variables in Vercel for the mindwa
 
 ### Core Application
 - `NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST` - Your Hashnode publication host (e.g., `yourblog.hashnode.dev`)
+- `HASHNODE_API_TOKEN` - Personal access token for Hashnode GraphQL reads/writes (required for live Hashnode content at runtime; **do not commit**). Builds use local `content/blog/*.md` when Hashnode is unavailable.
+- `HASHNODE_PUBLICATION_HOST` - Optional server-only override of the publication host
+- `USE_LOCAL_BLOG` - Set to `true` to always serve from `content/blog/*.md` (skips Hashnode)
 
 ### Google Calendar Integration
 - `GOOGLE_CLIENT_ID` - OAuth2 Client ID from Google Cloud Console
@@ -56,6 +59,9 @@ vercel env add GOOGLE_CALENDAR_ID
 vercel env add FIX_SSL_ISSUES
 vercel env add CRON_SECRET
 vercel env add NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST
+vercel env add HASHNODE_API_TOKEN
+# Optional: force local markdown only
+# vercel env add USE_LOCAL_BLOG
 
 # Optional variables
 vercel env add OPENAI_API_KEY
@@ -63,7 +69,11 @@ vercel env add STRIPE_SECRET_KEY
 vercel env add DATABASE_URL
 ```
 
-## Google Calendar Setup
+## Blog / Hashnode build behavior
+
+- **Production builds** (`next build`): prefer local markdown under `apps/site/content/blog` so Hashnode outages or Cloudflare HTML responses cannot thrash static generation.
+- **Runtime** (ISR / on-demand): tries Hashnode first; falls back to local markdown if the API returns empty/non-JSON or the circuit breaker is open.
+- Ensure `HASHNODE_API_TOKEN` is set in Vercel (Production **and** Preview) for live Hashnode content after deploy. Missing token does not fail the build.
 
 ### 1. Create Google Cloud Project
 

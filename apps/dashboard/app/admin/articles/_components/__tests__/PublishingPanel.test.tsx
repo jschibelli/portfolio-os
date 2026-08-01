@@ -140,7 +140,6 @@ describe('PublishingPanel', () => {
   it('shows cross-platform publishing options', () => {
     render(<PublishingPanel {...defaultProps} />)
     
-    expect(screen.getByText('Hashnode')).toBeInTheDocument()
     expect(screen.getByText('Dev.to')).toBeInTheDocument()
     expect(screen.getByText('Medium')).toBeInTheDocument()
   })
@@ -185,7 +184,6 @@ describe('PublishingPanel', () => {
           seriesId: undefined,
           seriesPosition: undefined,
           crossPlatformPublishing: {
-            hashnode: false,
             dev: false,
             medium: false
           }

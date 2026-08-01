@@ -20,7 +20,6 @@ const customJestConfig = {
     '^@/lib/(.*)$': '<rootDir>/lib/$1',
     '^@/ui/(.*)$': '../../packages/ui/$1',
     '^@/db/(.*)$': '../../packages/db/$1',
-    '^@/hashnode/(.*)$': '../../packages/hashnode/$1',
     '^@/emails/(.*)$': '../../packages/emails/$1',
     '^@/chatbot/(.*)$': '../../packages/chatbot/$1',
   },
