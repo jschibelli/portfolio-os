@@ -11,10 +11,10 @@ export abstract class BasePage {
   protected page: Page;
   
   // Common page elements
-  protected navigation: Locator;
-  protected main: Locator;
-  protected footer: Locator;
-  protected body: Locator;
+  protected navigation!: Locator;
+  protected main!: Locator;
+  protected footer!: Locator;
+  protected body!: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -151,7 +151,7 @@ export abstract class BasePage {
         return active ? {
           tagName: active.tagName,
           textContent: active.textContent?.slice(0, 30),
-          tabIndex: active.tabIndex
+          tabIndex: (active as HTMLElement).tabIndex
         } : null;
       });
       focusHistory.push(currentFocus);
