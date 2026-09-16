@@ -161,6 +161,7 @@ jobs:
 
       - name: Job summary
         if: always()
+        continue-on-error: true
         env:
           APP_ID: ${{ matrix.app.id }}
           APP_PACKAGE: ${{ matrix.app.package }}
@@ -172,6 +173,11 @@ jobs:
           APP_STORYBOOK: ${{ matrix.app.storybook }}
           APP_PLAYWRIGHT: ${{ matrix.app.playwright }}
         run: |
+          if [ -n "${TURBO_TOKEN:-}" ]; then
+            REMOTE_CACHE="enabled"
+          else
+            REMOTE_CACHE="disabled (set TURBO_TOKEN/TURBO_TEAM/TURBO_REMOTE_CACHE_SIGNATURE_KEY secrets)"
+          fi
           {
             echo "## ${APP_ID}"
             echo ""
@@ -183,11 +189,7 @@ jobs:
             echo "- Build: ${APP_BUILD}"
             echo "- Storybook: ${APP_STORYBOOK}"
             echo "- Playwright: ${APP_PLAYWRIGHT} (e2e-optimized.yml when true)"
-            if [ -n "${TURBO_TOKEN:-}" ]; then
-              echo "- Remote cache: enabled"
-            else
-              echo "- Remote cache: disabled (set TURBO_TOKEN/TURBO_TEAM/TURBO_REMOTE_CACHE_SIGNATURE_KEY secrets)"
-            fi
+            echo "- Remote cache: ${REMOTE_CACHE}"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   ci-summary:
