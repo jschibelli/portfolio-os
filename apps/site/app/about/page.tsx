@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { getSiteUrl } from '../../config/site';
 import { AboutPageClient } from './about-client';
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 		title: 'About | John Schibelli',
 		description:
 			'John Schibelli is a Senior Software Engineer who builds software, improves existing systems, and turns product requirements into maintainable production implementations.',
-		url: 'https://johnschibelli.dev/about',
+		url: getSiteUrl('/about'),
 		siteName: 'John Schibelli Portfolio',
 		locale: 'en_US',
 		type: 'website',
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 			'John Schibelli is a Senior Software Engineer who builds software, improves existing systems, and turns product requirements into maintainable production implementations.',
 	},
 	alternates: {
-		canonical: 'https://johnschibelli.dev/about',
+		canonical: getSiteUrl('/about'),
 	},
 };
 

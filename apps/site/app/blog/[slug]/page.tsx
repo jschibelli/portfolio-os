@@ -13,6 +13,7 @@ import {
 	getAllPostSlugs,
 } from '../../../lib/content-api';
 import { typeRole } from '../../../lib/typography';
+import { getMetadataBase, getSiteUrl } from '../../../config/site';
 
 // Enable dynamic rendering for new posts not generated at build time
 export const dynamicParams = true;
@@ -54,7 +55,7 @@ const defaultPublication: UnifiedPublication = {
 	id: 'fallback-blog-post',
 	title: 'John Schibelli',
 	description: 'Senior Software Engineer',
-	url: 'https://johnschibelli.dev',
+	url: getSiteUrl('/'),
 	favicon: '',
 	logo: '',
 	isTeam: false,
@@ -93,6 +94,13 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 	return {
 		title: 'Blog Post | John Schibelli',
 		description: 'Read the latest blog post',
+		metadataBase: getMetadataBase(),
+		alternates: {
+			canonical: getSiteUrl(`/blog/${params.slug}`),
+		},
+		openGraph: {
+			url: getSiteUrl(`/blog/${params.slug}`),
+		},
 	};
 }
 

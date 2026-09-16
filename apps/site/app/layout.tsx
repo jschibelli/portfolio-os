@@ -3,6 +3,8 @@ import { Inter, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import AnalyticsTracker from '../components/analytics/AnalyticsTracker';
 import { Providers } from '../components/providers/Providers';
+import { getMetadataBase, getSiteUrl } from '../config/site';
+import { generateWebSiteStructuredData } from '../lib/structured-data';
 import '../styles/index.css';
 
 const inter = Inter({
@@ -29,15 +31,15 @@ export const metadata: Metadata = {
 		address: false,
 		telephone: false,
 	},
-	metadataBase: new URL('https://johnschibelli.dev'),
+	metadataBase: getMetadataBase(),
 	alternates: {
-		canonical: '/',
+		canonical: getSiteUrl('/'),
 	},
 	openGraph: {
 		title: 'John Schibelli - Senior Software Engineer',
 		description:
 			'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
-		url: 'https://johnschibelli.dev',
+		url: getSiteUrl('/'),
 		siteName: 'John Schibelli Portfolio',
 		locale: 'en_US',
 		type: 'website',
@@ -82,6 +84,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			suppressHydrationWarning
 		>
 			<body className="bg-background text-foreground antialiased">
+				<script
+					type="application/ld+json"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify(generateWebSiteStructuredData()),
+					}}
+				/>
 				{/* Google Analytics */}
 				<Script
 					src="https://www.googletagmanager.com/gtag/js?id=G-CPM70NFZXR"

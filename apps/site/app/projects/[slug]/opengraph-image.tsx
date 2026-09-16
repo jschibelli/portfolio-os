@@ -203,7 +203,7 @@ export default async function OpengraphImage({ params }: OpengraphImageProps) {
                   color: '#a8a29e',
                 }}
               >
-                schibelli.dev
+                www.schibelli.com
               </div>
             </div>
           </div>

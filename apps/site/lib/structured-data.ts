@@ -1,3 +1,5 @@
+import { getSiteOrigin } from '../config/site';
+
 export interface PersonStructuredData {
 	name: string;
 	description: string;
@@ -595,12 +597,12 @@ export function generateWebSiteStructuredData() {
 		name: 'John Schibelli - Senior Software Engineer',
 		description:
 			'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
-		url: 'https://johnschibelli.com',
+		url: getSiteOrigin(),
 		author: generatePersonStructuredData({
 			name: 'John Schibelli',
 			description:
 				'Senior Software Engineer with experience in front-end and full-stack engineering, APIs, integrations, automation, and testing.',
-			url: 'https://johnschibelli.com',
+			url: getSiteOrigin(),
 			jobTitle: 'Senior Software Engineer',
 			knowsAbout: [
 				'JavaScript (ES6+)',
@@ -644,7 +646,7 @@ export function generateWebSiteStructuredData() {
 		publisher: generateOrganizationStructuredData({
 			name: 'John Schibelli',
 			description: 'Professional web development and consulting services',
-			url: 'https://johnschibelli.com',
+			url: getSiteOrigin(),
 			contactPoint: {
 				telephone: '+1-555-0123',
 				contactType: 'customer service',

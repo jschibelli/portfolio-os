@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { z } from 'zod';
+import { getSiteOrigin } from '../../../config/site';
 
 // Simple in-memory rate limiting (for production, consider Redis or database)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'audio/mpeg',
         'Content-Length': buffer.length.toString(),
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
-        'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://johnschibelli.dev' : '*',
+        'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? getSiteOrigin() : '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'X-Content-Type-Options': 'nosniff',
@@ -156,7 +157,7 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? 'https://johnschibelli.dev' : '*',
+      'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' ? getSiteOrigin() : '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },

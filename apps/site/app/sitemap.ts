@@ -1,45 +1,44 @@
 import { MetadataRoute } from 'next'
+import { getSiteUrl } from '../config/site'
 import { getAllProjects } from '../lib/project-utils'
 import { getAllCaseStudies } from '../lib/mdx-case-study-loader'
 import { fetchPosts } from '../lib/content-api'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://johnschibelli.dev'
-  
   // Performance optimization: Cache static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: getSiteUrl('/'),
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
+      url: getSiteUrl('/about'),
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/projects`,
+      url: getSiteUrl('/projects'),
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/case-studies`,
+      url: getSiteUrl('/case-studies'),
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: getSiteUrl('/blog'),
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: getSiteUrl('/contact'),
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
@@ -51,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const projects = await getAllProjects()
     projectPages = projects.map((project) => ({
-      url: `${baseUrl}/projects/${project.slug}`,
+      url: getSiteUrl(`/projects/${project.slug}`),
       lastModified: new Date(project.endDate || project.startDate || Date.now()),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
@@ -68,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     caseStudyPages = caseStudies
       .filter(caseStudy => caseStudy.meta.status === 'PUBLISHED')
       .map((caseStudy) => ({
-        url: `${baseUrl}/case-studies/${caseStudy.meta.slug}`,
+        url: getSiteUrl(`/case-studies/${caseStudy.meta.slug}`),
         lastModified: new Date(caseStudy.meta.updatedAt || caseStudy.meta.publishedAt || Date.now()),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
@@ -83,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const posts = await fetchPosts(50) // Fetch up to 50 blog posts
     blogPages = posts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
+      url: getSiteUrl(`/blog/${post.slug}`),
       lastModified: new Date(post.publishedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.6,

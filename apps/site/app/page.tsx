@@ -5,6 +5,7 @@ import CTABanner from '../components/features/marketing/cta-banner';
 import ModernHeader from '../components/features/navigation/modern-header';
 import FeaturedProjects from '../components/features/portfolio/featured-projects';
 import { Footer } from '../components/shared/footer';
+import { getSiteUrl } from '../config/site';
 
 // Force dynamic rendering for this page to ensure blog posts are fetched at runtime
 export const dynamic = 'force-dynamic';
@@ -17,7 +18,7 @@ const defaultPublication = {
 	displayTitle: 'John Schibelli',
 	descriptionSEO:
 		'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
-	url: 'https://johnschibelli.dev',
+	url: getSiteUrl('/'),
 	posts: {
 		totalDocuments: 0,
 	},

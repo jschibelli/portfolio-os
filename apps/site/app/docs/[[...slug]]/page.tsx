@@ -2,6 +2,7 @@ import path from "path"
 import { promises as fs } from "fs"
 import { notFound } from "next/navigation"
 import { compileMDX } from "next-mdx-remote/rsc"
+import { getSiteUrl } from "../../../config/site"
 
 type Frontmatter = {
   title?: string
@@ -109,9 +110,17 @@ export async function generateMetadata({
     const title = frontmatter?.title ?? slug.at(-1) ?? "Docs"
     const description = frontmatter?.description
 
+    const docCanonical = getSiteUrl(slug.length ? `/docs/${slug.join('/')}` : '/docs')
+
     return {
       title: `Docs — ${title}`,
       ...(description ? { description } : {}),
+      alternates: {
+        canonical: docCanonical,
+      },
+      openGraph: {
+        url: docCanonical,
+      },
     }
   } catch {
     return {}

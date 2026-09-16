@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Container } from '../../components/shared/container';
 import { Layout } from '../../components/shared/layout';
+import { getSiteUrl } from '../../config/site';
 
 import { AnimatedProjectCard } from '../../components/features/projects/animated-project-card';
 import { allProjects as projectMetaList } from '../../data/projects';
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: 'Projects and Case Studies | John Schibelli',
 		description: 'Selected software systems and the engineering decisions behind them.',
-		url: 'https://johnschibelli.dev/projects',
+		url: getSiteUrl('/projects'),
 		siteName: 'John Schibelli Portfolio',
 		locale: 'en_US',
 		type: 'website',
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
 		images: ['/assets/og.png'],
 	},
 	alternates: {
-		canonical: 'https://johnschibelli.dev/projects',
+		canonical: getSiteUrl('/projects'),
 	},
 };
 

@@ -17,6 +17,7 @@ import { Container } from '../../components/shared/container';
 import { Footer } from '../../components/shared/footer';
 import { fetchPosts, fetchPublication } from '../../lib/content-api';
 import { typeRole } from '../../lib/typography';
+import { getMetadataBase, getSiteUrl } from '../../config/site';
 import { DEFAULT_COVER } from '../../utils/const';
 
 // ISR with 30 second revalidation (reduced from 60 for faster updates)
@@ -40,14 +41,14 @@ export const metadata: Metadata = {
 	authors: [{ name: 'John Schibelli' }],
 	creator: 'John Schibelli',
 	publisher: 'John Schibelli',
-	metadataBase: new URL('https://johnschibelli.dev'),
+	metadataBase: getMetadataBase(),
 	alternates: {
-		canonical: '/blog',
+		canonical: getSiteUrl('/blog'),
 	},
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
-		url: 'https://johnschibelli.dev/blog',
+		url: getSiteUrl('/blog'),
 		title: 'Blog | John Schibelli',
 		description:
 			'Unfiltered perspectives on code, creativity, and the constant evolution of technology. Articles on React, Next.js, TypeScript, AI workflows, and modern web development.',
@@ -89,7 +90,7 @@ const defaultPublication = {
 	displayTitle: 'John Schibelli',
 	descriptionSEO:
 		'Senior Software Engineer. Notes on software engineering, production systems, automation, and AI-assisted development.',
-	url: 'https://johnschibelli.dev',
+	url: getSiteUrl('/'),
 	posts: {
 		totalDocuments: 0,
 	},

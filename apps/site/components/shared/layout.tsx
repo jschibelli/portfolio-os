@@ -5,6 +5,7 @@ import { Integrations } from './integrations';
 import { Meta } from './meta';
 import { Scripts } from './scripts';
 import { AppProvider } from '../contexts/appContext';
+import { siteConfig } from '../../config/site';
 
 type Props = {
 	children: React.ReactNode;
@@ -15,7 +16,7 @@ export const Layout = ({ children }: Props) => {
 	const defaultPublication = {
 		title: 'John Schibelli',
 		displayTitle: 'John Schibelli',
-		url: 'https://schibelli.dev',
+		url: siteConfig.url,
 		integrations: {},
 		links: {
 			github: '',

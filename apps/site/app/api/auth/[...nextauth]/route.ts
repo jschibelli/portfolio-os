@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "../../../../lib/prisma";
+import { COOKIE_DOMAIN } from "../../../../config/site";
 
 // PrismaAdapter configuration for NextAuth
 // This adapter provides database session and user management
@@ -49,7 +50,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
-        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
+        domain: process.env.NODE_ENV === 'production' ? COOKIE_DOMAIN : undefined,
       },
     },
     callbackUrl: {
@@ -62,7 +63,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
-        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
+        domain: process.env.NODE_ENV === 'production' ? COOKIE_DOMAIN : undefined,
       },
     },
     csrfToken: {
@@ -75,7 +76,7 @@ export const authOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60, // 24 hours
-        domain: process.env.NODE_ENV === 'production' ? '.johnschibelli.dev' : undefined,
+        domain: process.env.NODE_ENV === 'production' ? COOKIE_DOMAIN : undefined,
       },
     },
   },
