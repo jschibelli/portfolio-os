@@ -1,180 +1,201 @@
-import { ProjectMeta } from '../../../data/projects/types';
+import {
+	BookOpenIcon,
+	CalendarIcon,
+	CodeIcon,
+	ExternalLinkIcon,
+	FileTextIcon,
+	GithubIcon,
+	UsersIcon,
+} from 'lucide-react';
 import { Badge } from '../../../components/ui/badge';
-import { CalendarIcon, CodeIcon, ExternalLinkIcon, GithubIcon, UsersIcon, FileTextIcon, BookOpenIcon } from 'lucide-react';
+import { ProjectMeta } from '../../../data/projects/types';
+import { typeRole } from '../../../lib/typography';
 
 interface ContextualButton {
-  label: string;
-  url: string;
-  icon?: any;
-  external: boolean;
-  className: string;
+	label: string;
+	url: string;
+	icon?: any;
+	external: boolean;
+	className: string;
 }
 
 interface ProjectHeaderProps {
-  project: ProjectMeta;
+	project: ProjectMeta;
 }
 
 // Smart contextual button selection based on project type and available links
 function getContextualHeaderButtons(project: ProjectMeta): ContextualButton[] {
-  const buttons: ContextualButton[] = [];
-  
-  // Define button configurations
-  const buttonConfigs = {
-    liveSite: {
-      label: 'View Live Site',
-      url: project.liveUrl!,
-      icon: ExternalLinkIcon,
-      external: true,
-      className: 'inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg font-medium hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors'
-    },
-    caseStudy: {
-      label: 'Read Case Study',
-      url: project.caseStudyUrl!,
-      icon: FileTextIcon,
-      external: false,
-      className: 'inline-flex items-center gap-2 px-6 py-3 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors'
-    },
-    documentation: {
-      label: 'Documentation',
-      url: project.documentationUrl!,
-      icon: BookOpenIcon,
-      external: true,
-      className: 'inline-flex items-center gap-2 px-6 py-3 border border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors'
-    },
-    viewCode: {
-      label: 'View Code',
-      url: project.githubUrl!,
-      icon: GithubIcon,
-      external: true,
-      className: 'inline-flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors'
-    }
-  };
+	const buttons: ContextualButton[] = [];
 
-  // Priority-based selection logic - only add buttons if URLs exist
-  // 1. Live Site (highest priority for user-facing projects)
-  if (project.liveUrl) {
-    buttons.push(buttonConfigs.liveSite);
-  }
-  
-  // 2. Case Study (high priority for portfolio projects)
-  if (project.caseStudyUrl) {
-    buttons.push(buttonConfigs.caseStudy);
-  }
-  
-  // 3. Documentation (for technical projects without case studies)
-  if (project.documentationUrl && !project.caseStudyUrl) {
-    buttons.push(buttonConfigs.documentation);
-  }
-  
-  // 4. View Code (for open source or when no live site)
-  if (project.githubUrl && !project.liveUrl) {
-    buttons.push(buttonConfigs.viewCode);
-  }
-  
-  // If we have less than 2 buttons, add GitHub as a secondary action (only if it exists and not already added)
-  if (buttons.length < 2 && project.githubUrl && !buttons.some(b => b.url === project.githubUrl)) {
-    buttons.push(buttonConfigs.viewCode);
-  }
-  
-  // Limit to 3 buttons maximum for clean layout
-  return buttons.slice(0, 3);
+	// Define button configurations
+	const buttonConfigs = {
+		liveSite: {
+			label: 'View Live Site',
+			url: project.liveUrl!,
+			icon: ExternalLinkIcon,
+			external: true,
+			className:
+				'inline-flex items-center gap-2 px-6 py-3 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-lg font-medium hover:bg-stone-800 dark:hover:bg-stone-200 transition-colors',
+		},
+		caseStudy: {
+			label: 'Read Case Study',
+			url: project.caseStudyUrl!,
+			icon: FileTextIcon,
+			external: false,
+			className:
+				'inline-flex items-center gap-2 px-6 py-3 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors',
+		},
+		documentation: {
+			label: 'Documentation',
+			url: project.documentationUrl!,
+			icon: BookOpenIcon,
+			external: true,
+			className:
+				'inline-flex items-center gap-2 px-6 py-3 border border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors',
+		},
+		viewCode: {
+			label: 'View Code',
+			url: project.githubUrl!,
+			icon: GithubIcon,
+			external: true,
+			className:
+				'inline-flex items-center gap-2 px-6 py-3 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors',
+		},
+	};
+
+	// Priority-based selection logic - only add buttons if URLs exist
+	// 1. Live Site (highest priority for user-facing projects)
+	if (project.liveUrl) {
+		buttons.push(buttonConfigs.liveSite);
+	}
+
+	// 2. Case Study (high priority for portfolio projects)
+	if (project.caseStudyUrl) {
+		buttons.push(buttonConfigs.caseStudy);
+	}
+
+	// 3. Documentation (for technical projects without case studies)
+	if (project.documentationUrl && !project.caseStudyUrl) {
+		buttons.push(buttonConfigs.documentation);
+	}
+
+	// 4. View Code (for open source or when no live site)
+	if (project.githubUrl && !project.liveUrl) {
+		buttons.push(buttonConfigs.viewCode);
+	}
+
+	// If we have less than 2 buttons, add GitHub as a secondary action (only if it exists and not already added)
+	if (
+		buttons.length < 2 &&
+		project.githubUrl &&
+		!buttons.some((b) => b.url === project.githubUrl)
+	) {
+		buttons.push(buttonConfigs.viewCode);
+	}
+
+	// Limit to 3 buttons maximum for clean layout
+	return buttons.slice(0, 3);
 }
 
 export function ProjectHeader({ project }: ProjectHeaderProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-    });
-  };
+	const formatDate = (dateString: string) => {
+		return new Date(dateString).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+		});
+	};
 
-  // Get version from project data
-  const version = project.version;
-  const versionStatus = project.versionStatus;
+	// Get version from project data
+	const version = project.version;
+	const versionStatus = project.versionStatus;
 
-  const getVersionBadgeStyle = (status?: string) => {
-    switch (status) {
-      case 'alpha':
-        return 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
-      case 'beta':
-        return 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
-      case 'rc':
-        return 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
-      case 'stable':
-        return 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800';
-      default:
-        return 'bg-stone-50 dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-800';
-    }
-  };
+	const getVersionBadgeStyle = (status?: string) => {
+		switch (status) {
+			case 'alpha':
+				return 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800';
+			case 'beta':
+				return 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+			case 'rc':
+				return 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
+			case 'stable':
+				return 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800';
+			default:
+				return 'bg-stone-50 dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-800';
+		}
+	};
 
-  return (
-    <header className="space-y-6">
-      {/* Version/Status Badge */}
-      <div className="flex items-center gap-3">
-        {version ? (
-          <Badge 
-            variant="outline"
-            className={`text-sm font-semibold ${getVersionBadgeStyle(versionStatus)}`}
-          >
-            v{version}
-          </Badge>
-        ) : (
-          <Badge 
-            variant={project.status === 'completed' ? 'default' : 'secondary'}
-            className="text-sm font-medium"
-          >
-            {project.status.replace('-', ' ').toUpperCase()}
-          </Badge>
-        )}
-        {project.featured && (
-          <Badge variant="outline" className="text-sm font-medium border-amber-200 text-amber-800 dark:border-amber-800 dark:text-amber-200">
-            Featured
-          </Badge>
-        )}
-      </div>
+	return (
+		<header className="space-y-6">
+			{/* Version/Status Badge */}
+			<div className="flex items-center gap-3">
+				{version ? (
+					<Badge
+						variant="outline"
+						className={`text-sm font-semibold ${getVersionBadgeStyle(versionStatus)}`}
+					>
+						v{version}
+					</Badge>
+				) : (
+					<Badge
+						variant={project.status === 'completed' ? 'default' : 'secondary'}
+						className="text-sm font-medium"
+					>
+						{project.status.replace('-', ' ').toUpperCase()}
+					</Badge>
+				)}
+				{project.featured && (
+					<Badge
+						variant="outline"
+						className="border-amber-200 text-sm font-medium text-amber-800 dark:border-amber-800 dark:text-amber-200"
+					>
+						Featured
+					</Badge>
+				)}
+			</div>
 
-      {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
-        {project.title}
-      </h1>
+			{/* Title */}
+			<h1 className={`text-stone-900 dark:text-stone-100 ${typeRole.caseStudyH1}`}>
+				{project.title}
+			</h1>
 
-      {/* Description */}
-      <p className="text-xl text-stone-600 dark:text-stone-400 leading-relaxed max-w-3xl">
-        {project.description}
-      </p>
+			{/* Description */}
+			<p className={`text-stone-600 dark:text-stone-400 ${typeRole.heroSupport} max-w-3xl`}>
+				{project.description}
+			</p>
 
-      {/* Project Meta */}
-      <div className="flex flex-wrap items-center gap-6 text-sm text-stone-500 dark:text-stone-500">
-        {project.startDate && project.endDate && (
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="w-4 h-4" />
-            <span>
-              {formatDate(project.startDate)} - {formatDate(project.endDate)}
-            </span>
-          </div>
-        )}
-        
-        {project.duration && (
-          <div className="flex items-center gap-2">
-            <CodeIcon className="w-4 h-4" />
-            <span>{project.duration}</span>
-          </div>
-        )}
-        
-        {project.teamSize && (
-          <div className="flex items-center gap-2">
-            <UsersIcon className="w-4 h-4" />
-            <span>{project.teamSize}</span>
-          </div>
-        )}
-        
-        {project.category && (
-          <div className="flex items-center gap-2">
-            <span className="capitalize">{project.category.replace('-', ' ')}</span>
-          </div>
-        )}
-      </div>
+			{/* Project Meta */}
+			<div
+				className={`flex flex-wrap items-center gap-6 text-stone-500 dark:text-stone-500 ${typeRole.metadata}`}
+			>
+				{project.startDate && project.endDate && (
+					<div className="flex items-center gap-2">
+						<CalendarIcon className="h-4 w-4" />
+						<span>
+							{formatDate(project.startDate)} - {formatDate(project.endDate)}
+						</span>
+					</div>
+				)}
 
-    </header>
-  );
+				{project.duration && (
+					<div className="flex items-center gap-2">
+						<CodeIcon className="h-4 w-4" />
+						<span>{project.duration}</span>
+					</div>
+				)}
+
+				{project.teamSize && (
+					<div className="flex items-center gap-2">
+						<UsersIcon className="h-4 w-4" />
+						<span>{project.teamSize}</span>
+					</div>
+				)}
+
+				{project.category && (
+					<div className="flex items-center gap-2">
+						<span className="capitalize">{project.category.replace('-', ' ')}</span>
+					</div>
+				)}
+			</div>
+		</header>
+	);
 }

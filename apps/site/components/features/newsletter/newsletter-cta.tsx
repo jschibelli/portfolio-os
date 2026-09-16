@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import { ReactNode, useState } from 'react';
 import { siteConfig } from '../../../config/site';
 import { cn } from '../../../lib/utils';
-import { Button, type ButtonProps, Section } from '../../ui';
+import { Button, Section, type ButtonProps } from '../../ui';
 
 interface CTAButtonProps {
 	href: string;
@@ -105,7 +105,7 @@ export default function CTA({
 								onClick={subscribe}
 								disabled={requestInProgress || !email.trim()}
 								size="lg"
-								className="group w-full px-6 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg sm:w-fit sm:px-8 sm:py-3 sm:text-base"
+								className="type-button group w-full px-6 py-2 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg sm:w-fit sm:px-8 sm:py-3"
 							>
 								{requestInProgress ? (
 									<div className="flex items-center gap-2">

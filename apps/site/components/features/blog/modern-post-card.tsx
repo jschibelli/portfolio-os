@@ -4,6 +4,7 @@ import { Badge, Card, CardContent, CardHeader } from '../../ui';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
+import { typeRole } from '../../../lib/typography';
 import { useEffect, useState } from 'react';
 
 interface ModernPostCardProps {
@@ -106,20 +107,20 @@ export default function ModernPostCard({
 
 					<CardHeader className="p-6 pb-4">
 						<div className="space-y-2">
-							<div className="flex items-center gap-2 text-sm text-muted-foreground transition-all duration-300 group-hover:text-foreground">
+							<div className={`flex items-center gap-2 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${typeRole.metadata}`}>
 								<time dateTime={date}>{format(new Date(date), 'MMM dd, yyyy')}</time>
 								<span>•</span>
 								<span>{readTime}</span>
 							</div>
 
-							<h3 className="text-xl font-semibold leading-tight text-foreground transition-all duration-300 group-hover:scale-[1.02] group-hover:text-foreground">
+							<h3 className={`text-foreground transition-all duration-300 group-hover:scale-[1.02] group-hover:text-foreground ${typeRole.cardTitle}`}>
 								{title}
 							</h3>
 						</div>
 					</CardHeader>
 
 					<CardContent className="p-6 pt-0">
-						<p className="line-clamp-3 leading-relaxed text-muted-foreground transition-all duration-300 group-hover:text-foreground">
+						<p className={`line-clamp-3 text-muted-foreground transition-all duration-300 group-hover:text-foreground ${typeRole.body}`}>
 							{excerpt}
 						</p>
 

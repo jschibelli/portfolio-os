@@ -20,22 +20,18 @@ test.describe('Homepage - Hero Section', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify main heading
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
-    // Verify name is displayed (use more specific selector to avoid strict mode violation)
-    await expect(page.locator('#hero-name, p:has-text("John Schibelli")').first()).toBeVisible();
-    
-    // Verify title is displayed (use header context to avoid strict mode violation)
-    await expect(page.locator('header p:has-text("Senior Front-End Developer")').first()).toBeVisible();
+    // Verify title is displayed
+    await expect(page.locator('header p:has-text("Senior Software Engineer")').first()).toBeVisible();
   });
 
   test('should display hero background image', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000); // Wait for content to load
     
-    // Check for hero background image
-    const heroImage = page.locator('img[alt*="Professional background"]');
+    const heroImage = page.locator('header img').first();
     await expect(heroImage).toBeVisible();
     await expect(heroImage).toHaveAttribute('src');
   });
@@ -47,7 +43,7 @@ test.describe('Homepage - Hero Section', () => {
     await page.waitForTimeout(2000);
     
     // Verify hero heading is visible (animations complete)
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
     // Verify content has proper visibility (visible to user means opacity > 0 or element is rendered)
@@ -57,84 +53,39 @@ test.describe('Homepage - Hero Section', () => {
 });
 
 test.describe('Homepage - CTA Buttons', () => {
-  test('should display primary CTA button "Discuss Your Goals"', async ({ page }) => {
+  test('should display primary CTA button "View Work"', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000); // Wait for content to load
     
-    // Find primary CTA button
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await expect(primaryCTA).toBeVisible();
     
-    // Verify it links to contact page
-    await expect(primaryCTA).toHaveAttribute('href', '/contact');
+    await expect(primaryCTA).toHaveAttribute('href', '/projects');
   });
 
-  test('should display secondary CTA button "See My Results"', async ({ page }) => {
+  test('should navigate to projects page when clicking primary CTA', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000); // Wait for content to load
     
-    // Find secondary CTA button
-    const secondaryCTA = page.locator('a:has-text("See My Results")');
-    await expect(secondaryCTA).toBeVisible();
+    const primaryCTA = page.locator('a:has-text("View Work")');
     
-    // Verify it links to projects page
-    await expect(secondaryCTA).toHaveAttribute('href', '/projects');
-  });
-
-  test('should navigate to contact page when clicking primary CTA', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Click primary CTA and wait for navigation
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
-    
-    // Use Promise.all to handle navigation and click together
     await Promise.all([
-      page.waitForURL('**/contact', { timeout: 30000 }),
+      page.waitForURL('**/projects', { timeout: 30000 }),
       primaryCTA.click()
     ]);
     
-    // Verify navigation to contact page
-    expect(page.url()).toContain('/contact');
-  });
-
-  test('should navigate to projects page when clicking secondary CTA', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Click secondary CTA
-    const secondaryCTA = page.locator('a:has-text("See My Results")');
-    await secondaryCTA.click();
-    
-    // Verify navigation to projects page
-    await page.waitForURL('**/projects', { timeout: 10000 });
     expect(page.url()).toContain('/projects');
-  });
-
-  test('should display email link', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Find email link
-    const emailLink = page.locator('a:has-text("Email me directly")');
-    await expect(emailLink).toBeVisible();
-    
-    // Verify mailto link
-    await expect(emailLink).toHaveAttribute('href', /^mailto:/);
   });
 
   test('should show hover effect on CTA buttons', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.waitForTimeout(2000); // Wait for content to load
     
-    // Hover over primary CTA
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await primaryCTA.hover();
     
-    // Give time for hover effect
     await page.waitForTimeout(300);
     
-    // Verify button is still visible and interactive
     await expect(primaryCTA).toBeVisible();
   });
 });
@@ -252,17 +203,12 @@ test.describe('Homepage - Navigation and Scroll Behavior', () => {
 });
 
 test.describe('Homepage - Interactive Elements', () => {
-  test('should have chatbot button visible', async ({ page }) => {
+  test('should not display a chatbot launcher', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(3000); // Wait for chatbot to load (lazy loaded)
-    
-    // Look for chatbot trigger button
+    await page.waitForTimeout(1000);
+
     const chatbotButton = page.locator('button[aria-label*="chat"], button:has-text("Chat"), [data-testid*="chatbot"]');
-    const chatbotCount = await chatbotButton.count();
-    
-    if (chatbotCount > 0) {
-      await expect(chatbotButton.first()).toBeVisible();
-    }
+    await expect(chatbotButton).toHaveCount(0);
   });
 
   test('should have footer visible at bottom', async ({ page }) => {
@@ -305,11 +251,11 @@ test.describe('Homepage - Responsive Design', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify hero content is visible on mobile
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
     // Verify CTAs are visible on mobile
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await expect(primaryCTA).toBeVisible();
   });
 
@@ -320,11 +266,11 @@ test.describe('Homepage - Responsive Design', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify hero content is visible on tablet
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
     // Verify CTAs are visible on tablet
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await expect(primaryCTA).toBeVisible();
   });
 
@@ -335,11 +281,11 @@ test.describe('Homepage - Responsive Design', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify hero content is visible on desktop
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
     // Verify CTAs are visible on desktop
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await expect(primaryCTA).toBeVisible();
   });
 
@@ -355,11 +301,8 @@ test.describe('Homepage - Responsive Design', () => {
       await expect(ctaContainer).toBeVisible();
       
       // Verify buttons exist
-      const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
-      const secondaryCTA = page.locator('a:has-text("See My Results")');
-      
+      const primaryCTA = page.locator('a:has-text("View Work")');
       await expect(primaryCTA).toBeVisible();
-      await expect(secondaryCTA).toBeVisible();
     }
   });
 });
@@ -370,12 +313,8 @@ test.describe('Homepage - Accessibility', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Check primary CTA has aria-label
-    const primaryCTA = page.locator('a:has-text("Discuss Your Goals")');
+    const primaryCTA = page.locator('a:has-text("View Work")');
     await expect(primaryCTA).toHaveAttribute('aria-label');
-    
-    // Check secondary CTA has aria-label
-    const secondaryCTA = page.locator('a:has-text("See My Results")');
-    await expect(secondaryCTA).toHaveAttribute('aria-label');
   });
 
   test('should have semantic HTML structure', async ({ page }) => {
@@ -420,7 +359,7 @@ test.describe('Homepage - Performance', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify hero is visible
-    const heading = page.locator('h1:has-text("Building Reliable, Scalable")');
+    const heading = page.locator('h1:has-text("Engineering software that holds up in production")');
     await expect(heading).toBeVisible();
     
     const endTime = Date.now();
@@ -435,7 +374,7 @@ test.describe('Homepage - Performance', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Check hero background image has proper attributes
-    const heroImage = page.locator('img[alt*="Professional background"]');
+    const heroImage = page.locator('header img').first();
     
     if (await heroImage.count() > 0) {
       // Verify image has alt text
