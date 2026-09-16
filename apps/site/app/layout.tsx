@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import AnalyticsTracker from '../components/analytics/AnalyticsTracker';
 import { Providers } from '../components/providers/Providers';
+import { SITE_URL } from '../lib/site-url';
 import '../styles/index.css';
 
 const inter = Inter({
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 		address: false,
 		telephone: false,
 	},
-	metadataBase: new URL('https://johnschibelli.dev'),
+	metadataBase: new URL(SITE_URL),
 	alternates: {
 		canonical: '/',
 	},
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 		title: 'John Schibelli - Senior Software Engineer',
 		description:
 			'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
-		url: 'https://johnschibelli.dev',
+		url: SITE_URL,
 		siteName: 'John Schibelli Portfolio',
 		locale: 'en_US',
 		type: 'website',
