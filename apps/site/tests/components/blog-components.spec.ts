@@ -93,55 +93,11 @@ test.describe('Blog Components - Featured Post', () => {
 });
 
 test.describe('Blog Components - Newsletter CTA', () => {
-  test('should display newsletter subscription section', async ({ page }) => {
+  test('should not display a newsletter subscription section', async ({ page }) => {
     await page.goto('/blog', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Scroll down to newsletter section
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 500));
-    await page.waitForTimeout(500);
-    
-    // Look for newsletter section
-    const newsletterSection = page.locator('text=newsletter, text=subscribe').first();
-    const sectionCount = await newsletterSection.count();
-    
-    if (sectionCount > 0) {
-      await expect(newsletterSection).toBeVisible();
-    }
-  });
+    await page.waitForTimeout(2000);
 
-  test('should have email input in newsletter section', async ({ page }) => {
-    await page.goto('/blog', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Scroll to newsletter section
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 500));
-    await page.waitForTimeout(500);
-    
-    // Look for email input
-    const emailInputs = page.locator('input[type="email"]');
-    const inputCount = await emailInputs.count();
-    
-    if (inputCount > 0) {
-      await expect(emailInputs.last()).toBeVisible();
-    }
-  });
-
-  test('should have subscribe button', async ({ page }) => {
-    await page.goto('/blog', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Scroll to newsletter section
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight - 500));
-    await page.waitForTimeout(500);
-    
-    // Look for subscribe button
-    const subscribeButton = page.locator('button:has-text("Subscribe")');
-    const buttonCount = await subscribeButton.count();
-    
-    if (buttonCount > 0) {
-      await expect(subscribeButton.last()).toBeVisible();
-    }
+    await expect(page.locator('text=Stay updated with our newsletter')).toHaveCount(0);
   });
 });
 

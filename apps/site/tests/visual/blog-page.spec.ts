@@ -139,33 +139,10 @@ test.describe('Blog Page Visual Regression', () => {
     }
   });
 
-  test('newsletter form states', async ({ page }) => {
+  test('newsletter section is retired', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/blog');
-    
     await page.waitForLoadState('networkidle');
-    
-    // Scroll to newsletter section
-    await page.locator('text=Stay updated with our newsletter').scrollIntoViewIfNeeded();
-    await page.waitForTimeout(500);
-    
-    // Test newsletter form default state
-    const newsletterSection = page.locator('text=Stay updated with our newsletter').locator('..');
-    await expect(newsletterSection).toHaveScreenshot('newsletter-form-default.png', {
-      threshold: 0.1,
-      animations: 'disabled',
-    });
-    
-    // Test filled state
-    const emailInput = page.locator('input[type="email"]');
-    if (await emailInput.count() > 0) {
-      await emailInput.fill('test@example.com');
-      await page.waitForTimeout(300);
-      
-      await expect(newsletterSection).toHaveScreenshot('newsletter-form-filled.png', {
-        threshold: 0.1,
-        animations: 'disabled',
-      });
-    }
+    await expect(page.locator('text=Stay updated with our newsletter')).toHaveCount(0);
   });
 });

@@ -43,23 +43,16 @@ export function SEOHead({
 	// Default keywords for the site
 	const defaultKeywords = [
 		'John Schibelli',
-		'Front-End Developer',
+		'Senior Software Engineer',
 		'React Developer',
 		'Next.js Developer',
 		'TypeScript Developer',
 		'Web Development',
-		'UI/UX Design',
 		'JavaScript',
 		'React',
 		'Next.js',
 		'TypeScript',
 		'Tailwind CSS',
-		'Web Accessibility',
-		'SEO',
-		'Performance',
-		'Mobile Development',
-		'Cloud Solutions',
-		'Consulting',
 	];
 
 	const allKeywords = [...new Set([...defaultKeywords, ...keywords])];
@@ -89,7 +82,7 @@ export function SEOHead({
 			<meta property="og:image:width" content="1200" />
 			<meta property="og:image:height" content="630" />
 			<meta property="og:image:alt" content={title} />
-			<meta property="og:site_name" content="John Schibelli - Senior Front-End Developer" />
+			<meta property="og:site_name" content="John Schibelli - Senior Software Engineer" />
 			<meta property="og:locale" content="en_US" />
 
 			{/* Article specific Open Graph tags */}

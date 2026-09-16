@@ -1,9 +1,10 @@
-"use client";
+'use client';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { allProjects } from '../../../data/projects';
 import { ICON_SPACING, OUTLINE_BUTTON_STYLES } from '../../../lib/button-styles';
+import { typeRole } from '../../../lib/typography';
 import { Button } from '../../ui/button';
 import { AnimatedProjectCard } from '../projects/animated-project-card';
 
@@ -13,12 +14,14 @@ import { AnimatedProjectCard } from '../projects/animated-project-card';
  */
 export default function FeaturedProjects() {
 	// Get featured projects from projects data
-	const featuredProjects = allProjects.filter(project => project.featured && project.published !== false);
+	const featuredProjects = allProjects.filter(
+		(project) => project.featured && project.published !== false,
+	);
 
 	// Error handling for no featured projects
 	if (!featuredProjects || featuredProjects.length === 0) {
 		console.warn('FeaturedProjects: No featured projects found', {
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 		return null; // Don't show section if no featured projects
 	}
@@ -30,20 +33,16 @@ export default function FeaturedProjects() {
 	const getGridClasses = () => {
 		const count = featuredProjects.length;
 		if (count === 1) {
-			return "max-w-5xl mx-auto";
+			return 'max-w-5xl mx-auto';
 		} else if (count === 2) {
-			return "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto";
+			return 'grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto';
 		} else {
-			return "grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch";
+			return 'grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 lg:items-stretch';
 		}
 	};
 
 	return (
-		<section 
-			className="bg-background py-16"
-			aria-label="Featured projects"
-			role="region"
-		>
+		<section className="bg-background py-16" aria-label="Featured projects" role="region">
 			<div className="container mx-auto px-4">
 				{/* Section header with smooth animations */}
 				<motion.div
@@ -53,23 +52,20 @@ export default function FeaturedProjects() {
 					viewport={{ once: true }}
 					className="mb-12 text-center"
 				>
-					<h2 className="mb-3 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-						Featured {featuredProjects.length === 1 ? 'Project' : 'Projects'}
+					<h2 className={`mb-3 text-stone-900 dark:text-stone-100 ${typeRole.sectionH2}`}>
+						Featured Projects
 					</h2>
-					<p className="mx-auto max-w-2xl text-lg text-stone-600 dark:text-stone-400">
-						{featuredProjects.length === 1 
-							? "An in-depth look at a comprehensive development project showcasing real-world engineering expertise"
-							: "Comprehensive development projects demonstrating real-world engineering approaches"
-						}
+					<p className={`mx-auto max-w-2xl text-stone-600 dark:text-stone-400 ${typeRole.heroSupport}`}>
+						Selected systems and the engineering decisions behind them.
 					</p>
 				</motion.div>
 
 				{/* Dynamic Projects Grid - adapts to 1, 2, or 3+ items */}
 				<div className={`mb-12 ${getGridClasses()}`}>
 					{featuredProjects.map((project, index) => (
-						<AnimatedProjectCard 
-							key={project.id} 
-							project={project} 
+						<AnimatedProjectCard
+							key={project.id}
+							project={project}
 							index={index}
 							featured={featuredProjects.length === 1}
 						/>
@@ -84,20 +80,17 @@ export default function FeaturedProjects() {
 					viewport={{ once: true }}
 					className="text-center"
 				>
-                    <Button
-                        size="lg"
-                        variant="outline"
-                        className={OUTLINE_BUTTON_STYLES}
-                        asChild
-                        aria-describedby="view-all-projects-description"
-                    >
-						<Link 
-							href="/projects"
-							aria-label="View all projects"
-						>
+					<Button
+						size="lg"
+						variant="outline"
+						className={OUTLINE_BUTTON_STYLES}
+						asChild
+						aria-describedby="view-all-projects-description"
+					>
+						<Link href="/projects" aria-label="View all projects">
 							View All Projects
-							<ArrowRight 
-								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`} 
+							<ArrowRight
+								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`}
 								aria-hidden="true"
 							/>
 						</Link>

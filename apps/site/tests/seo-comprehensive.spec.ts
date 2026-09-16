@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Comprehensive SEO Tests', () => {
 	test('Homepage SEO validation', async ({ page }) => {
@@ -22,7 +22,9 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check Open Graph tags
 		const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content');
-		const ogDescription = await page.locator('meta[property="og:description"]').getAttribute('content');
+		const ogDescription = await page
+			.locator('meta[property="og:description"]')
+			.getAttribute('content');
 		const ogType = await page.locator('meta[property="og:type"]').getAttribute('content');
 		const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
 
@@ -34,7 +36,9 @@ test.describe('Comprehensive SEO Tests', () => {
 		// Check Twitter Card tags
 		const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content');
 		const twitterTitle = await page.locator('meta[name="twitter:title"]').getAttribute('content');
-		const twitterDescription = await page.locator('meta[name="twitter:description"]').getAttribute('content');
+		const twitterDescription = await page
+			.locator('meta[name="twitter:description"]')
+			.getAttribute('content');
 
 		expect(twitterCard).toBe('summary_large_image');
 		expect(twitterTitle).toBeTruthy();
@@ -43,7 +47,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		// Check structured data
 		const structuredData = await page.locator('script[type="application/ld+json"]').textContent();
 		expect(structuredData).toBeTruthy();
-		
+
 		const parsedData = JSON.parse(structuredData!);
 		expect(parsedData['@type']).toBe('WebSite');
 		expect(parsedData.name).toContain('John Schibelli');
@@ -54,7 +58,13 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check for skip link
 		const skipLink = page.locator('.skip-link');
-		await expect(skipLink).toBeVisible();
+		await expect(skipLink).toHaveCount(1);
+		await expect
+			.poll(async () => {
+				const box = await skipLink.boundingBox();
+				return box ? box.y + box.height : 0;
+			})
+			.toBeLessThanOrEqual(0);
 	});
 
 	test('About page SEO validation', async ({ page }) => {
@@ -68,7 +78,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		// Check meta description
 		const description = await page.locator('meta[name="description"]').getAttribute('content');
 		expect(description).toContain('John Schibelli');
-		expect(description).toContain('Front-End Developer');
+		expect(description).toContain('Senior Software Engineer');
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -166,7 +176,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		for (let i = 0; i < imageCount; i++) {
 			const alt = await images.nth(i).getAttribute('alt');
 			const role = await images.nth(i).getAttribute('role');
-			
+
 			// Images should have alt text unless they're decorative
 			if (role !== 'presentation' && role !== 'none') {
 				expect(alt).toBeTruthy();
@@ -180,14 +190,14 @@ test.describe('Comprehensive SEO Tests', () => {
 		// Check for proper heading hierarchy
 		const headings = await page.evaluate(() => {
 			const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-			return Array.from(elements).map(el => ({
+			return Array.from(elements).map((el) => ({
 				tag: el.tagName.toLowerCase(),
-				text: el.textContent?.trim()
+				text: el.textContent?.trim(),
 			}));
 		});
 
 		// Should have at least one H1
-		expect(headings.some(h => h.tag === 'h1')).toBeTruthy();
+		expect(headings.some((h) => h.tag === 'h1')).toBeTruthy();
 
 		// Check for logical hierarchy (no skipping levels)
 		let previousLevel = 0;
@@ -213,7 +223,7 @@ test.describe('Comprehensive SEO Tests', () => {
 			const link = internalLinks.nth(i);
 			const text = await link.textContent();
 			const href = await link.getAttribute('href');
-			
+
 			// Anchor text should be descriptive
 			expect(text!.trim().length).toBeGreaterThan(0);
 			expect(href).toBeTruthy();
@@ -291,7 +301,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		for (let i = 0; i < Math.min(buttonCount, 10); i++) {
 			const button = buttons.nth(i);
 			const box = await button.boundingBox();
-			
+
 			// Touch targets should be at least 44x44 pixels
 			if (box) {
 				expect(box.width).toBeGreaterThanOrEqual(44);
@@ -304,14 +314,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		await page.goto('/');
 
 		// Check for social media meta tags
-		const ogTags = [
-			'og:title',
-			'og:description',
-			'og:type',
-			'og:url',
-			'og:image',
-			'og:site_name',
-		];
+		const ogTags = ['og:title', 'og:description', 'og:type', 'og:url', 'og:image', 'og:site_name'];
 
 		for (const tag of ogTags) {
 			const element = page.locator(`meta[property="${tag}"]`);
@@ -319,12 +322,7 @@ test.describe('Comprehensive SEO Tests', () => {
 		}
 
 		// Check for Twitter Card tags
-		const twitterTags = [
-			'twitter:card',
-			'twitter:title',
-			'twitter:description',
-			'twitter:image',
-		];
+		const twitterTags = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image'];
 
 		for (const tag of twitterTags) {
 			const element = page.locator(`meta[name="${tag}"]`);

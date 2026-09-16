@@ -1,10 +1,11 @@
-"use client";
+'use client';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { ICON_SPACING, PRIMARY_BUTTON_STYLES } from '../../../lib/button-styles';
+import { typeRole } from '../../../lib/typography';
 import { Button } from '../../ui/button';
 import PostCard from './post-card';
-import { PRIMARY_BUTTON_STYLES, ICON_SPACING } from '../../../lib/button-styles';
 
 interface Post {
 	id: string;
@@ -26,8 +27,8 @@ interface LatestPostsClientProps {
  */
 export default function LatestPostsClient({ posts }: LatestPostsClientProps) {
 	return (
-		<section 
-			className="bg-stone-50 py-20 dark:bg-stone-900"
+		<section
+			className="bg-stone-50 py-16 dark:bg-stone-900"
 			aria-label="Latest blog posts section"
 			role="region"
 		>
@@ -37,14 +38,11 @@ export default function LatestPostsClient({ posts }: LatestPostsClientProps) {
 					whileInView={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, ease: 'easeOut' }}
 					viewport={{ once: true }}
-					className="mb-16 text-center"
+					className="mb-12 text-center"
 				>
-					<h2 className="mb-4 text-3xl font-bold text-stone-900 md:text-4xl dark:text-stone-100">
-						Latest from the Blog
+					<h2 className={`text-stone-900 dark:text-stone-100 ${typeRole.sectionH2}`}>
+						Technical Writing
 					</h2>
-					<p className="mx-auto max-w-2xl text-xl text-stone-600 dark:text-stone-400">
-						Insights, tutorials, and thoughts on modern web development and technology
-					</p>
 				</motion.div>
 
 				{/* Posts Grid */}
@@ -68,12 +66,9 @@ export default function LatestPostsClient({ posts }: LatestPostsClientProps) {
 						asChild
 						aria-describedby="read-blog-description"
 					>
-						<Link 
-							href="/blog"
-							aria-label="Read all blog posts and articles"
-						>
+						<Link href="/blog" aria-label="Read all blog posts and articles">
 							Read the Blog
-							<ArrowRight 
+							<ArrowRight
 								className={`${ICON_SPACING.right} transition-transform group-hover:translate-x-1`}
 								aria-hidden="true"
 							/>
