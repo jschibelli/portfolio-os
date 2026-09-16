@@ -14,6 +14,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '../../components/ui/card';
+import { SITE_URL, siteUrl } from '../../lib/site-url';
 import { typeRole } from '../../lib/typography';
 
 // Mock case studies data - in a real app, this would come from your CMS or database
@@ -96,6 +97,10 @@ export const metadata: Metadata = {
 		description:
 			'Explore detailed case studies showcasing successful projects, strategic analysis, and implementation results.',
 		type: 'website',
+		url: siteUrl('/case-studies'),
+	},
+	alternates: {
+		canonical: siteUrl('/case-studies'),
 	},
 };
 
@@ -106,7 +111,7 @@ export default function CaseStudiesPage() {
 				title: 'John Schibelli',
 				displayTitle: 'John Schibelli',
 				descriptionSEO: 'Senior Software Engineer',
-				url: 'https://johnschibelli.dev',
+				url: SITE_URL,
 				author: { name: 'John Schibelli' },
 				preferences: { logo: null as any },
 			}}

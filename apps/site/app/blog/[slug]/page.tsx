@@ -12,6 +12,7 @@ import {
 	fetchPublication,
 	getAllPostSlugs,
 } from '../../../lib/content-api';
+import { SITE_URL, siteUrl } from '../../../lib/site-url';
 import { typeRole } from '../../../lib/typography';
 
 // Enable dynamic rendering for new posts not generated at build time
@@ -54,7 +55,7 @@ const defaultPublication: UnifiedPublication = {
 	id: 'fallback-blog-post',
 	title: 'John Schibelli',
 	description: 'Senior Software Engineer',
-	url: 'https://johnschibelli.dev',
+	url: SITE_URL,
 	favicon: '',
 	logo: '',
 	isTeam: false,
@@ -93,6 +94,12 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 	return {
 		title: 'Blog Post | John Schibelli',
 		description: 'Read the latest blog post',
+		alternates: {
+			canonical: siteUrl(`/blog/${params.slug}`),
+		},
+		openGraph: {
+			url: siteUrl(`/blog/${params.slug}`),
+		},
 	};
 }
 

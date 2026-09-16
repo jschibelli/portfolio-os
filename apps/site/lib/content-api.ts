@@ -9,6 +9,7 @@ import {
   getLocalBlogPosts,
   getLocalBlogSlugs,
 } from './local-blog-loader';
+import { SITE_URL } from './site-url';
 
 export interface UnifiedPost {
   id: string;
@@ -128,7 +129,7 @@ function transformDashboardPublication(pub: DashboardPublication): UnifiedPublic
 }
 
 function localPublication(): UnifiedPublication {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.dev';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE_URL;
   return {
     id: 'local-publication',
     title: 'John Schibelli',

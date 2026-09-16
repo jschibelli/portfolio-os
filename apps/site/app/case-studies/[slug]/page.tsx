@@ -17,6 +17,7 @@ import {
 	CardTitle,
 } from '../../../components/ui/card';
 import { getAllCaseStudySlugs, getCaseStudyBySlug } from '../../../lib/mdx-case-study-loader';
+import { SITE_URL, siteUrl } from '../../../lib/site-url';
 import { typeRole } from '../../../lib/typography';
 
 interface CaseStudyPageProps {
@@ -39,10 +40,10 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
 	const title = `${meta.title} | John Schibelli Portfolio`;
 	const description =
 		meta.excerpt || meta.seoDescription || 'Case study showcasing development work';
-	const canonical = `https://johnschibelli.dev/case-studies/${slug}`;
+	const canonical = siteUrl(`/case-studies/${slug}`);
 
 	return {
-		metadataBase: new URL('https://johnschibelli.dev'),
+		metadataBase: new URL(SITE_URL),
 		title,
 		description,
 		keywords: meta.tags || [],
@@ -122,7 +123,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 				title: 'John Schibelli',
 				displayTitle: 'John Schibelli',
 				descriptionSEO: 'Senior Software Engineer',
-				url: 'https://johnschibelli.dev',
+				url: SITE_URL,
 				author: { name: 'John Schibelli' },
 				preferences: { logo: null as any },
 			}}

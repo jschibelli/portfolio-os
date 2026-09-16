@@ -2,9 +2,10 @@ import { MetadataRoute } from 'next'
 import { getAllProjects } from '../lib/project-utils'
 import { getAllCaseStudies } from '../lib/mdx-case-study-loader'
 import { fetchPosts } from '../lib/content-api'
+import { SITE_URL } from '../lib/site-url'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://johnschibelli.dev'
+  const baseUrl = SITE_URL
   
   // Performance optimization: Cache static pages
   const staticPages: MetadataRoute.Sitemap = [

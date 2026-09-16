@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { fetchPosts } from '../../../lib/content-api';
+import { SITE_URL } from '../../../lib/site-url';
 
 export async function GET() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://johnschibelli.dev';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || SITE_URL;
     const posts = await fetchPosts(20);
 
     const rss = `<?xml version="1.0" encoding="UTF-8" ?>

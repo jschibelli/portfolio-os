@@ -18,7 +18,7 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-		expect(canonical).toBe('https://johnschibelli.com/');
+		expect(canonical).toBe('https://www.schibelli.com/');
 
 		// Check Open Graph tags
 		const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content');
@@ -82,7 +82,7 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-		expect(canonical).toBe('https://johnschibelli.com/about');
+		expect(canonical).toBe('https://www.schibelli.com/about');
 
 		// Check Open Graph type
 		const ogType = await page.locator('meta[property="og:type"]').getAttribute('content');
@@ -110,7 +110,7 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-		expect(canonical).toBe('https://johnschibelli.com/blog');
+		expect(canonical).toBe('https://www.schibelli.com/blog');
 
 		// Check structured data
 		const structuredData = await page.locator('script[type="application/ld+json"]').textContent();
@@ -133,7 +133,7 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-		expect(canonical).toBe('https://johnschibelli.com/contact');
+		expect(canonical).toBe('https://www.schibelli.com/contact');
 
 		// Check structured data
 		const structuredData = await page.locator('script[type="application/ld+json"]').textContent();
@@ -157,7 +157,7 @@ test.describe('Comprehensive SEO Tests', () => {
 
 		// Check canonical URL
 		const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-		expect(canonical).toBe('https://johnschibelli.com/services/web-development');
+		expect(canonical).toBe('https://www.schibelli.com/services/web-development');
 
 		// Check structured data
 		const structuredData = await page.locator('script[type="application/ld+json"]').textContent();
@@ -264,10 +264,10 @@ test.describe('Comprehensive SEO Tests', () => {
 		expect(content).toContain('</urlset>');
 
 		// Check for main pages in sitemap
-		expect(content).toContain('<loc>https://johnschibelli.com/</loc>');
-		expect(content).toContain('<loc>https://johnschibelli.com/about</loc>');
-		expect(content).toContain('<loc>https://johnschibelli.com/contact</loc>');
-		expect(content).toContain('<loc>https://johnschibelli.com/blog</loc>');
+		expect(content).toContain('<loc>https://www.schibelli.com</loc>');
+		expect(content).toContain('<loc>https://www.schibelli.com/about</loc>');
+		expect(content).toContain('<loc>https://www.schibelli.com/contact</loc>');
+		expect(content).toContain('<loc>https://www.schibelli.com/blog</loc>');
 	});
 
 	test('Robots.txt validation', async ({ page }) => {
@@ -278,6 +278,9 @@ test.describe('Comprehensive SEO Tests', () => {
 		expect(content).toContain('User-agent: *');
 		expect(content).toContain('Allow: /');
 		expect(content).toContain('Sitemap:');
+		expect(content).toContain('https://www.schibelli.com/sitemap.xml');
+		expect(content).not.toContain('User-agent: GPTBot');
+		expect(content).not.toContain('User-agent: ChatGPT-User');
 
 		// Check for proper disallow rules
 		expect(content).toContain('Disallow: /admin/');

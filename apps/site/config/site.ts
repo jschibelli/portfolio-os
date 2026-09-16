@@ -3,8 +3,8 @@ export const siteConfig = {
 	professionalTitle: 'Senior Software Engineer',
 	description:
 		'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
-	url: 'https://johnschibelli.com',
-	ogImage: 'https://johnschibelli.com/og.png',
+	url: 'https://www.schibelli.com',
+	ogImage: 'https://www.schibelli.com/og.png',
 	links: {
 		twitter: 'https://twitter.com/johnschibelli',
 		github: 'https://github.com/johnschibelli',
