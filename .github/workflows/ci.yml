@@ -123,8 +123,18 @@ jobs:
         continue-on-error: true
         run: pnpm exec turbo run test --filter="${{ matrix.app.filter }}" --continue -- --ci --passWithNoTests
 
+      - name: Generate Prisma client
+        if: ${{ matrix.app.prisma == true || matrix.app.prisma == 'true' }}
+        run: |
+          pnpm exec prisma generate --schema=packages/db/prisma/schema.prisma
+          if [ -f "${{ matrix.app.dir }}/prisma/schema.prisma" ]; then
+            pnpm exec prisma generate --schema="${{ matrix.app.dir }}/prisma/schema.prisma"
+          fi
+
       - name: Build
         if: ${{ matrix.app.build }}
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm exec turbo run build --filter="${{ matrix.app.filter }}"
 
       - name: Verify Next.js artifacts

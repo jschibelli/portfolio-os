@@ -40,6 +40,7 @@ describe("discoverDeployableApps", () => {
     assert.equal(byId.site.scripts.test, true);
     assert.equal(byId.site.scripts.storybook, true);
     assert.equal(byId.site.scripts.playwright, true);
+    assert.equal(byId.site.scripts.prisma, true);
 
     assert.equal(byId.dashboard.scripts.build, true);
     assert.equal(byId.dashboard.scripts.lint, true);
@@ -47,6 +48,7 @@ describe("discoverDeployableApps", () => {
     assert.equal(byId.dashboard.scripts.test, true);
     assert.equal(byId.dashboard.scripts.storybook, false);
     assert.equal(byId.dashboard.scripts.playwright, false);
+    assert.equal(byId.dashboard.scripts.prisma, true);
 
     assert.equal(byId.docs.scripts.build, true);
     assert.equal(byId.docs.scripts.lint, true);
@@ -54,6 +56,7 @@ describe("discoverDeployableApps", () => {
     assert.equal(byId.docs.scripts.test, false);
     assert.equal(byId.docs.scripts.storybook, false);
     assert.equal(byId.docs.scripts.playwright, false);
+    assert.equal(byId.docs.scripts.prisma, false);
   });
 
   it("ignores placeholder npm test scripts", () => {

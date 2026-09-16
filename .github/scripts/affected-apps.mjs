@@ -60,7 +60,7 @@ export function detectScripts(pkgJson) {
     testScript.trim().length > 0 &&
     !/no test specified/i.test(testScript);
 
-  const playwright =
+    const playwright =
     Boolean(scripts.playwright) ||
     Object.keys(scripts).some(
       (key) =>
@@ -71,6 +71,8 @@ export function detectScripts(pkgJson) {
     Boolean(pkgJson.devDependencies?.["@playwright/test"]) ||
     Boolean(pkgJson.dependencies?.["@playwright/test"]);
 
+  const deps = { ...pkgJson.dependencies, ...pkgJson.devDependencies };
+
   return {
     build: typeof scripts.build === "string",
     lint: typeof scripts.lint === "string",
@@ -78,6 +80,7 @@ export function detectScripts(pkgJson) {
     test: testReal,
     storybook: typeof scripts["build-storybook"] === "string",
     playwright: Boolean(playwright),
+    prisma: Boolean(deps["@mindware-blog/db"] || deps["@prisma/client"] || deps.prisma),
   };
 }
 
@@ -165,6 +168,7 @@ export function toMatrixApp(app) {
     build: Boolean(app.scripts.build),
     storybook: Boolean(app.scripts.storybook),
     playwright: Boolean(app.scripts.playwright),
+    prisma: Boolean(app.scripts.prisma),
   };
 }
 
