@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Post } from '../../../data/posts';
+import { typeRole } from '../../../lib/typography';
 import { Card, CardContent, CardHeader } from '../../ui/card';
 
 interface PostCardProps {
@@ -29,7 +30,7 @@ export default function PostCard({ post, index }: PostCardProps) {
 		>
 			<Card className="group h-full border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
 				<CardHeader className="pb-4">
-					<div className="mb-2 flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+					<div className={`mb-2 flex items-center gap-4 text-stone-500 dark:text-stone-400 ${typeRole.metadata}`}>
 						<div className="flex items-center gap-1">
 							<CalendarIcon className="h-4 w-4" />
 							<span>{formatDate(post.date)}</span>
@@ -39,14 +40,14 @@ export default function PostCard({ post, index }: PostCardProps) {
 							<span>{post.readTime}</span>
 						</div>
 					</div>
-					<h3 className="line-clamp-2 text-xl font-bold text-foreground transition-colors group-hover:text-foreground">
+					<h3 className={`line-clamp-2 text-foreground transition-colors group-hover:text-foreground ${typeRole.cardTitle}`}>
 						{post.title}
 					</h3>
 				</CardHeader>
 
 				<CardContent className="space-y-4">
 					{/* Excerpt */}
-					<p className="line-clamp-3 leading-relaxed text-muted-foreground">
+					<p className={`line-clamp-3 text-muted-foreground ${typeRole.body}`}>
 						{post.excerpt}
 					</p>
 

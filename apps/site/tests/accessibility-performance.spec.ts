@@ -195,46 +195,9 @@ test.describe('Accessibility-Performance Integration', () => {
     expect(focusableElements).toBeGreaterThan(0);
   });
 
-  test('chatbot should maintain accessibility with performance optimizations', async ({ page }) => {
-    // Test chatbot accessibility and performance
+  test('chatbot launcher is retired from public pages', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    
-    // Wait for chatbot to load
-    await page.waitForSelector('[data-testid="chatbot"]', { timeout: 10000 });
-    
-    // Test chatbot accessibility
-    const chatbotAccessibility = await new AxeBuilder({ page })
-      .include('[data-testid="chatbot"]')
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
-      .analyze();
-
-    // Check for ARIA attributes and keyboard navigation
-    const chatbotButton = page.locator('[data-testid="chatbot-toggle"]');
-    await expect(chatbotButton).toHaveAttribute('aria-label');
-    await expect(chatbotButton).toHaveAttribute('aria-expanded');
-
-    // Test keyboard navigation
-    await chatbotButton.focus();
-    await page.keyboard.press('Enter');
-    
-    // Wait for chatbot to open
-    await page.waitForSelector('[data-testid="chatbot-panel"]', { timeout: 5000 });
-    
-    // Check if chatbot panel is accessible
-    const panelAccessibility = await new AxeBuilder({ page })
-      .include('[data-testid="chatbot-panel"]')
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
-      .analyze();
-
-    expect(chatbotAccessibility.violations).toHaveLength(0);
-    expect(panelAccessibility.violations).toHaveLength(0);
-
-    // Performance check for chatbot interaction
-    const interactionStart = Date.now();
-    await page.keyboard.press('Escape'); // Close chatbot
-    const interactionTime = Date.now() - interactionStart;
-    
-    expect(interactionTime).toBeLessThan(500); // Interaction should be < 500ms
+    await expect(page.locator('[data-testid="chatbot"], [data-testid="chatbot-toggle"]')).toHaveCount(0);
   });
 });
 

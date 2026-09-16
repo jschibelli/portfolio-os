@@ -107,15 +107,15 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 	if (!data || typeof data !== 'object') {
 		throw new Error('Person data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('Person name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('Person description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('Person URL is required and must be a non-empty string');
 	}
@@ -136,9 +136,9 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 		}
 
 		if (data.sameAs && Array.isArray(data.sameAs) && data.sameAs.length > 0) {
-			structuredData.sameAs = data.sameAs.filter(url => 
-				typeof url === 'string' && url.trim() !== ''
-			).map(url => url.trim());
+			structuredData.sameAs = data.sameAs
+				.filter((url) => typeof url === 'string' && url.trim() !== '')
+				.map((url) => url.trim());
 		}
 
 		if (data.jobTitle && typeof data.jobTitle === 'string' && data.jobTitle.trim() !== '') {
@@ -154,15 +154,15 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 		}
 
 		if (data.knowsAbout && Array.isArray(data.knowsAbout) && data.knowsAbout.length > 0) {
-			structuredData.knowsAbout = data.knowsAbout.filter(skill => 
-				typeof skill === 'string' && skill.trim() !== ''
-			).map(skill => skill.trim());
+			structuredData.knowsAbout = data.knowsAbout
+				.filter((skill) => typeof skill === 'string' && skill.trim() !== '')
+				.map((skill) => skill.trim());
 		}
 
 		if (data.alumniOf && Array.isArray(data.alumniOf) && data.alumniOf.length > 0) {
 			structuredData.alumniOf = data.alumniOf
-				.filter(education => education && education.name && typeof education.name === 'string')
-				.map(education => {
+				.filter((education) => education && education.name && typeof education.name === 'string')
+				.map((education) => {
 					const org: Record<string, any> = {
 						'@type': 'EducationalOrganization',
 						name: education.name.trim(),
@@ -176,20 +176,25 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 
 		if (data.hasCredential && Array.isArray(data.hasCredential) && data.hasCredential.length > 0) {
 			structuredData.hasCredential = data.hasCredential
-				.filter(credential => 
-					credential && 
-					credential.name && 
-					credential.credentialCategory &&
-					typeof credential.name === 'string' &&
-					typeof credential.credentialCategory === 'string'
+				.filter(
+					(credential) =>
+						credential &&
+						credential.name &&
+						credential.credentialCategory &&
+						typeof credential.name === 'string' &&
+						typeof credential.credentialCategory === 'string',
 				)
-				.map(credential => {
+				.map((credential) => {
 					const cred: Record<string, any> = {
 						'@type': 'EducationalOccupationalCredential',
 						name: credential.name.trim(),
 						credentialCategory: credential.credentialCategory.trim(),
 					};
-					if (credential.recognizedBy && credential.recognizedBy.name && typeof credential.recognizedBy.name === 'string') {
+					if (
+						credential.recognizedBy &&
+						credential.recognizedBy.name &&
+						typeof credential.recognizedBy.name === 'string'
+					) {
 						cred.recognizedBy = {
 							'@type': 'Organization',
 							name: credential.recognizedBy.name.trim(),
@@ -202,7 +207,9 @@ export function generatePersonStructuredData(data: PersonStructuredData) {
 		return structuredData;
 	} catch (error) {
 		console.error('Error generating person structured data:', error);
-		throw new Error(`Failed to generate person structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate person structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -217,27 +224,31 @@ export function generateArticleStructuredData(data: ArticleStructuredData) {
 	if (!data || typeof data !== 'object') {
 		throw new Error('Article data is required and must be an object');
 	}
-	
+
 	if (!data.headline || typeof data.headline !== 'string' || data.headline.trim() === '') {
 		throw new Error('Article headline is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('Article description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.author || typeof data.author !== 'object') {
 		throw new Error('Article author is required and must be an object');
 	}
-	
+
 	if (!data.publisher || !data.publisher.name || !data.publisher.url) {
 		throw new Error('Article publisher with name and URL is required');
 	}
-	
-	if (!data.datePublished || typeof data.datePublished !== 'string' || data.datePublished.trim() === '') {
+
+	if (
+		!data.datePublished ||
+		typeof data.datePublished !== 'string' ||
+		data.datePublished.trim() === ''
+	) {
 		throw new Error('Article datePublished is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('Article URL is required and must be a non-empty string');
 	}
@@ -260,11 +271,19 @@ export function generateArticleStructuredData(data: ArticleStructuredData) {
 		};
 
 		// Add optional fields only if they exist and are valid
-		if (data.publisher.logo && typeof data.publisher.logo === 'string' && data.publisher.logo.trim() !== '') {
+		if (
+			data.publisher.logo &&
+			typeof data.publisher.logo === 'string' &&
+			data.publisher.logo.trim() !== ''
+		) {
 			structuredData.publisher.logo = data.publisher.logo.trim();
 		}
 
-		if (data.dateModified && typeof data.dateModified === 'string' && data.dateModified.trim() !== '') {
+		if (
+			data.dateModified &&
+			typeof data.dateModified === 'string' &&
+			data.dateModified.trim() !== ''
+		) {
 			structuredData.dateModified = data.dateModified.trim();
 		}
 
@@ -272,18 +291,26 @@ export function generateArticleStructuredData(data: ArticleStructuredData) {
 			structuredData.image = data.image.trim();
 		}
 
-		if (data.mainEntityOfPage && typeof data.mainEntityOfPage === 'string' && data.mainEntityOfPage.trim() !== '') {
+		if (
+			data.mainEntityOfPage &&
+			typeof data.mainEntityOfPage === 'string' &&
+			data.mainEntityOfPage.trim() !== ''
+		) {
 			structuredData.mainEntityOfPage = data.mainEntityOfPage.trim();
 		}
 
-		if (data.articleSection && typeof data.articleSection === 'string' && data.articleSection.trim() !== '') {
+		if (
+			data.articleSection &&
+			typeof data.articleSection === 'string' &&
+			data.articleSection.trim() !== ''
+		) {
 			structuredData.articleSection = data.articleSection.trim();
 		}
 
 		if (data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0) {
 			const validKeywords = data.keywords
-				.filter(keyword => typeof keyword === 'string' && keyword.trim() !== '')
-				.map(keyword => keyword.trim());
+				.filter((keyword) => typeof keyword === 'string' && keyword.trim() !== '')
+				.map((keyword) => keyword.trim());
 			if (validKeywords.length > 0) {
 				structuredData.keywords = validKeywords.join(', ');
 			}
@@ -292,7 +319,9 @@ export function generateArticleStructuredData(data: ArticleStructuredData) {
 		return structuredData;
 	} catch (error) {
 		console.error('Error generating article structured data:', error);
-		throw new Error(`Failed to generate article structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate article structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -307,19 +336,19 @@ export function generateServiceStructuredData(data: ServiceStructuredData) {
 	if (!data || typeof data !== 'object') {
 		throw new Error('Service data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('Service name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('Service description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.provider || typeof data.provider !== 'object') {
 		throw new Error('Service provider is required and must be an object');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('Service URL is required and must be a non-empty string');
 	}
@@ -341,19 +370,25 @@ export function generateServiceStructuredData(data: ServiceStructuredData) {
 		}
 
 		if (data.areaServed && Array.isArray(data.areaServed) && data.areaServed.length > 0) {
-			structuredData.areaServed = data.areaServed.filter(area => 
-				typeof area === 'string' && area.trim() !== ''
-			).map(area => area.trim());
+			structuredData.areaServed = data.areaServed
+				.filter((area) => typeof area === 'string' && area.trim() !== '')
+				.map((area) => area.trim());
 		}
 
-		if (data.serviceType && typeof data.serviceType === 'string' && data.serviceType.trim() !== '') {
+		if (
+			data.serviceType &&
+			typeof data.serviceType === 'string' &&
+			data.serviceType.trim() !== ''
+		) {
 			structuredData.serviceType = data.serviceType.trim();
 		}
 
 		return structuredData;
 	} catch (error) {
 		console.error('Error generating service structured data:', error);
-		throw new Error(`Failed to generate service structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate service structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -368,15 +403,15 @@ export function generateLocalBusinessStructuredData(data: LocalBusinessStructure
 	if (!data || typeof data !== 'object') {
 		throw new Error('LocalBusiness data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('LocalBusiness name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('LocalBusiness description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('LocalBusiness URL is required and must be a non-empty string');
 	}
@@ -408,12 +443,14 @@ export function generateLocalBusinessStructuredData(data: LocalBusinessStructure
 			structuredData.email = data.email.trim();
 		}
 
-		if (data.address && 
-			data.address.streetAddress && 
-			data.address.addressLocality && 
-			data.address.addressRegion && 
-			data.address.postalCode && 
-			data.address.addressCountry) {
+		if (
+			data.address &&
+			data.address.streetAddress &&
+			data.address.addressLocality &&
+			data.address.addressRegion &&
+			data.address.postalCode &&
+			data.address.addressCountry
+		) {
 			structuredData.address = {
 				'@type': 'PostalAddress',
 				streetAddress: data.address.streetAddress.trim(),
@@ -433,9 +470,9 @@ export function generateLocalBusinessStructuredData(data: LocalBusinessStructure
 		}
 
 		if (data.openingHours && Array.isArray(data.openingHours) && data.openingHours.length > 0) {
-			structuredData.openingHours = data.openingHours.filter(hours => 
-				typeof hours === 'string' && hours.trim() !== ''
-			).map(hours => hours.trim());
+			structuredData.openingHours = data.openingHours
+				.filter((hours) => typeof hours === 'string' && hours.trim() !== '')
+				.map((hours) => hours.trim());
 		}
 
 		if (data.priceRange && typeof data.priceRange === 'string' && data.priceRange.trim() !== '') {
@@ -443,21 +480,23 @@ export function generateLocalBusinessStructuredData(data: LocalBusinessStructure
 		}
 
 		if (data.servedArea && Array.isArray(data.servedArea) && data.servedArea.length > 0) {
-			structuredData.areaServed = data.servedArea.filter(area => 
-				typeof area === 'string' && area.trim() !== ''
-			).map(area => area.trim());
+			structuredData.areaServed = data.servedArea
+				.filter((area) => typeof area === 'string' && area.trim() !== '')
+				.map((area) => area.trim());
 		}
 
 		if (data.sameAs && Array.isArray(data.sameAs) && data.sameAs.length > 0) {
-			structuredData.sameAs = data.sameAs.filter(url => 
-				typeof url === 'string' && url.trim() !== ''
-			).map(url => url.trim());
+			structuredData.sameAs = data.sameAs
+				.filter((url) => typeof url === 'string' && url.trim() !== '')
+				.map((url) => url.trim());
 		}
 
 		return structuredData;
 	} catch (error) {
 		console.error('Error generating local business structured data:', error);
-		throw new Error(`Failed to generate local business structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate local business structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -472,15 +511,15 @@ export function generateOrganizationStructuredData(data: OrganizationStructuredD
 	if (!data || typeof data !== 'object') {
 		throw new Error('Organization data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('Organization name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('Organization description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('Organization URL is required and must be a non-empty string');
 	}
@@ -501,9 +540,9 @@ export function generateOrganizationStructuredData(data: OrganizationStructuredD
 		}
 
 		if (data.sameAs && Array.isArray(data.sameAs) && data.sameAs.length > 0) {
-			structuredData.sameAs = data.sameAs.filter(url => 
-				typeof url === 'string' && url.trim() !== ''
-			).map(url => url.trim());
+			structuredData.sameAs = data.sameAs
+				.filter((url) => typeof url === 'string' && url.trim() !== '')
+				.map((url) => url.trim());
 		}
 
 		if (data.contactPoint && data.contactPoint.telephone && data.contactPoint.contactType) {
@@ -512,18 +551,24 @@ export function generateOrganizationStructuredData(data: OrganizationStructuredD
 				telephone: data.contactPoint.telephone.trim(),
 				contactType: data.contactPoint.contactType.trim(),
 			};
-			if (data.contactPoint.email && typeof data.contactPoint.email === 'string' && data.contactPoint.email.trim() !== '') {
+			if (
+				data.contactPoint.email &&
+				typeof data.contactPoint.email === 'string' &&
+				data.contactPoint.email.trim() !== ''
+			) {
 				contactPoint.email = data.contactPoint.email.trim();
 			}
 			structuredData.contactPoint = contactPoint;
 		}
 
-		if (data.address && 
-			data.address.streetAddress && 
-			data.address.addressLocality && 
-			data.address.addressRegion && 
-			data.address.postalCode && 
-			data.address.addressCountry) {
+		if (
+			data.address &&
+			data.address.streetAddress &&
+			data.address.addressLocality &&
+			data.address.addressRegion &&
+			data.address.postalCode &&
+			data.address.addressCountry
+		) {
 			structuredData.address = {
 				'@type': 'PostalAddress',
 				streetAddress: data.address.streetAddress.trim(),
@@ -537,7 +582,9 @@ export function generateOrganizationStructuredData(data: OrganizationStructuredD
 		return structuredData;
 	} catch (error) {
 		console.error('Error generating organization structured data:', error);
-		throw new Error(`Failed to generate organization structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate organization structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -545,14 +592,16 @@ export function generateWebSiteStructuredData() {
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
-		name: 'John Schibelli - Senior Front-End Developer',
-		description: 'Senior Front-End Developer with 15+ years of experience building scalable, high-performance web applications.',
+		name: 'John Schibelli - Senior Software Engineer',
+		description:
+			'Senior Software Engineer. Front-end and full-stack systems, APIs, integrations, automation, and modernization.',
 		url: 'https://johnschibelli.com',
 		author: generatePersonStructuredData({
 			name: 'John Schibelli',
-			description: 'Senior Front-End Developer with expertise in React, Next.js, TypeScript, and modern web technologies.',
+			description:
+				'Senior Software Engineer with experience in front-end and full-stack engineering, APIs, integrations, automation, and testing.',
 			url: 'https://johnschibelli.com',
-			jobTitle: 'Senior Front-End Developer',
+			jobTitle: 'Senior Software Engineer',
 			knowsAbout: [
 				'JavaScript (ES6+)',
 				'TypeScript',
@@ -616,7 +665,7 @@ export function generateBreadcrumbStructuredData(items: Array<{ name: string; ur
 	if (!Array.isArray(items)) {
 		throw new Error('Breadcrumb items must be an array');
 	}
-	
+
 	if (items.length === 0) {
 		throw new Error('Breadcrumb items array cannot be empty');
 	}
@@ -655,7 +704,9 @@ export function generateBreadcrumbStructuredData(items: Array<{ name: string; ur
 		};
 	} catch (error) {
 		console.error('Error generating breadcrumb structured data:', error);
-		throw new Error(`Failed to generate breadcrumb structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate breadcrumb structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -706,23 +757,23 @@ export function generateCreativeWorkStructuredData(data: CreativeWorkStructuredD
 	if (!data || typeof data !== 'object') {
 		throw new Error('CreativeWork data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('CreativeWork name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('CreativeWork description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('CreativeWork URL is required and must be a non-empty string');
 	}
-	
+
 	if (!data.author || typeof data.author !== 'object') {
 		throw new Error('CreativeWork author is required and must be an object');
 	}
-	
+
 	if (!data.publisher || !data.publisher.name || !data.publisher.url) {
 		throw new Error('CreativeWork publisher with name and URL is required');
 	}
@@ -741,15 +792,21 @@ export function generateCreativeWorkStructuredData(data: CreativeWorkStructuredD
 				name: data.publisher.name.trim(),
 				url: data.publisher.url.trim(),
 			},
-			...(data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0 && { 
-				keywords: data.keywords.filter(k => typeof k === 'string' && k.trim() !== '').join(', ') 
-			}),
+			...(data.keywords &&
+				Array.isArray(data.keywords) &&
+				data.keywords.length > 0 && {
+					keywords: data.keywords
+						.filter((k) => typeof k === 'string' && k.trim() !== '')
+						.join(', '),
+				}),
 			...(data.dateCreated && { dateCreated: data.dateCreated }),
 			...(data.dateModified && { dateModified: data.dateModified }),
 		};
 	} catch (error) {
 		console.error('Error generating creative work structured data:', error);
-		throw new Error(`Failed to generate creative work structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate creative work structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }
 
@@ -764,35 +821,47 @@ export function generateSoftwareApplicationStructuredData(data: SoftwareApplicat
 	if (!data || typeof data !== 'object') {
 		throw new Error('SoftwareApplication data is required and must be an object');
 	}
-	
+
 	if (!data.name || typeof data.name !== 'string' || data.name.trim() === '') {
 		throw new Error('SoftwareApplication name is required and must be a non-empty string');
 	}
-	
+
 	if (!data.description || typeof data.description !== 'string' || data.description.trim() === '') {
 		throw new Error('SoftwareApplication description is required and must be a non-empty string');
 	}
-	
+
 	if (!data.url || typeof data.url !== 'string' || data.url.trim() === '') {
 		throw new Error('SoftwareApplication URL is required and must be a non-empty string');
 	}
-	
-	if (!data.applicationCategory || typeof data.applicationCategory !== 'string' || data.applicationCategory.trim() === '') {
-		throw new Error('SoftwareApplication applicationCategory is required and must be a non-empty string');
+
+	if (
+		!data.applicationCategory ||
+		typeof data.applicationCategory !== 'string' ||
+		data.applicationCategory.trim() === ''
+	) {
+		throw new Error(
+			'SoftwareApplication applicationCategory is required and must be a non-empty string',
+		);
 	}
-	
-	if (!data.operatingSystem || typeof data.operatingSystem !== 'string' || data.operatingSystem.trim() === '') {
-		throw new Error('SoftwareApplication operatingSystem is required and must be a non-empty string');
+
+	if (
+		!data.operatingSystem ||
+		typeof data.operatingSystem !== 'string' ||
+		data.operatingSystem.trim() === ''
+	) {
+		throw new Error(
+			'SoftwareApplication operatingSystem is required and must be a non-empty string',
+		);
 	}
-	
+
 	if (!data.offers || !data.offers.price || !data.offers.priceCurrency) {
 		throw new Error('SoftwareApplication offers with price and priceCurrency is required');
 	}
-	
+
 	if (!data.author || typeof data.author !== 'object') {
 		throw new Error('SoftwareApplication author is required and must be an object');
 	}
-	
+
 	if (!data.publisher || !data.publisher.name || !data.publisher.url) {
 		throw new Error('SoftwareApplication publisher with name and URL is required');
 	}
@@ -818,14 +887,20 @@ export function generateSoftwareApplicationStructuredData(data: SoftwareApplicat
 				name: data.publisher.name.trim(),
 				url: data.publisher.url.trim(),
 			},
-			...(data.keywords && Array.isArray(data.keywords) && data.keywords.length > 0 && { 
-				keywords: data.keywords.filter(k => typeof k === 'string' && k.trim() !== '').join(', ') 
-			}),
+			...(data.keywords &&
+				Array.isArray(data.keywords) &&
+				data.keywords.length > 0 && {
+					keywords: data.keywords
+						.filter((k) => typeof k === 'string' && k.trim() !== '')
+						.join(', '),
+				}),
 			...(data.dateCreated && { dateCreated: data.dateCreated }),
 			...(data.dateModified && { dateModified: data.dateModified }),
 		};
 	} catch (error) {
 		console.error('Error generating software application structured data:', error);
-		throw new Error(`Failed to generate software application structured data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+		throw new Error(
+			`Failed to generate software application structured data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
 	}
 }

@@ -1,19 +1,18 @@
+import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
+import { format } from 'date-fns';
+import { Calendar, Clock, Tag, User } from 'lucide-react';
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { AppProvider } from '../../../components/contexts/appContext';
-import dynamic from 'next/dynamic';
 import ModernHeader from '../../../components/features/navigation/modern-header';
 import { Footer } from '../../../components/shared/footer';
-import { notFound } from "next/navigation";
-import { format } from "date-fns";
-import { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, Calendar, User, Clock, Eye, Tag } from "lucide-react";
-import { fetchPostBySlug, fetchPublication, getAllPostSlugs, UnifiedPublication } from '../../../lib/content-api';
-import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
-
-// Lazy load chatbot for better performance
-const Chatbot = dynamic(() => import('../../../components/features/chatbot/Chatbot'), {
-  loading: () => null,
-});
+import {
+	UnifiedPublication,
+	fetchPostBySlug,
+	fetchPublication,
+	getAllPostSlugs,
+} from '../../../lib/content-api';
+import { typeRole } from '../../../lib/typography';
 
 // Enable dynamic rendering for new posts not generated at build time
 export const dynamicParams = true;
@@ -22,9 +21,9 @@ export const dynamicParams = true;
 export const revalidate = 60;
 
 interface BlogPostPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+	params: Promise<{
+		slug: string;
+	}>;
 }
 
 /**
@@ -33,297 +32,301 @@ interface BlogPostPageProps {
  * Uses timeout-based fetching to prevent build hanging
  */
 export async function generateStaticParams() {
-  try {
-    console.log('[Build] Fetching blog post slugs for static generation');
-    const slugs = await getAllPostSlugs();
-    
-    if (slugs.length === 0) {
-      console.warn('[Build] No blog post slugs fetched, static generation will be skipped');
-      return [];
-    }
-    
-    console.log(`[Build] Generating static pages for ${slugs.length} blog posts`);
-    return slugs.map((slug: string) => ({ slug }));
-  } catch (error) {
-    console.error('[Build] Error fetching post slugs for static generation:', error);
-    return [];
-  }
+	try {
+		console.log('[Build] Fetching blog post slugs for static generation');
+		const slugs = await getAllPostSlugs();
+
+		if (slugs.length === 0) {
+			console.warn('[Build] No blog post slugs fetched, static generation will be skipped');
+			return [];
+		}
+
+		console.log(`[Build] Generating static pages for ${slugs.length} blog posts`);
+		return slugs.map((slug: string) => ({ slug }));
+	} catch (error) {
+		console.error('[Build] Error fetching post slugs for static generation:', error);
+		return [];
+	}
 }
 
 // Default publication object for fallback - matches PublicationFragment
 const defaultPublication: UnifiedPublication = {
-  id: 'fallback-blog-post',
-  title: 'John Schibelli',
-  description: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
-  url: 'https://johnschibelli.dev',
-  favicon: '',
-  logo: '',
-  isTeam: false,
-  preferences: {
-    logo: '',
-    darkMode: {
-      logo: '',
-    },
-    navbarItems: [],
-    layout: {
-      navbarStyle: 'default',
-      footerStyle: 'default',
-      showBranding: true,
-    },
-    members: [],
-  },
-  displayTitle: 'John Schibelli',
-  descriptionSEO: 'Senior Front-End Engineer | React · Next.js · TypeScript | Automation · AI Workflows · Accessibility',
-  posts: {
-    totalDocuments: 0,
-  },
-  author: {
-    name: 'John Schibelli',
-    profilePicture: null,
-  },
-  followersCount: 0,
-  ogMetaData: {
-    image: null,
-  },
+	id: 'fallback-blog-post',
+	title: 'John Schibelli',
+	description: 'Senior Software Engineer',
+	url: 'https://johnschibelli.dev',
+	favicon: '',
+	logo: '',
+	isTeam: false,
+	preferences: {
+		logo: '',
+		darkMode: {
+			logo: '',
+		},
+		navbarItems: [],
+		layout: {
+			navbarStyle: 'default',
+			footerStyle: 'default',
+			showBranding: true,
+		},
+		members: [],
+	},
+	displayTitle: 'John Schibelli',
+	descriptionSEO: 'Senior Software Engineer',
+	posts: {
+		totalDocuments: 0,
+	},
+	author: {
+		name: 'John Schibelli',
+		profilePicture: null,
+	},
+	followersCount: 0,
+	ogMetaData: {
+		image: null,
+	},
 };
 
 export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
-  const params = await props.params;
-  
-  // Skip API calls during build - metadata will be generated at runtime
-  return {
-    title: "Blog Post | John Schibelli",
-    description: "Read the latest blog post",
-  };
+	const params = await props.params;
+
+	// Skip API calls during build - metadata will be generated at runtime
+	return {
+		title: 'Blog Post | John Schibelli',
+		description: 'Read the latest blog post',
+	};
 }
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
-  const params = await props.params;
-  
-  // Production builds prefer local markdown via content-api (NEXT_PHASE)
-  let post = null;
-  let currentPublication = defaultPublication;
-  
-  try {
-    const [fetchedPost, fetchedPublication] = await Promise.all([
-      fetchPostBySlug(params.slug),
-      fetchPublication()
-    ]);
-    post = fetchedPost;
-    currentPublication = fetchedPublication || defaultPublication;
-  } catch (error) {
-    console.error(
-      `[Blog Post] Error fetching "${params.slug}":`,
-      error instanceof Error ? error.message : error
-    );
-  }
+	const params = await props.params;
 
-  if (!post) {
-    notFound();
-  }
+	// Production builds prefer local markdown via content-api (NEXT_PHASE)
+	let post = null;
+	let currentPublication = defaultPublication;
 
-  function stripHtmlTags(input: string) {
-    return input.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  }
+	try {
+		const [fetchedPost, fetchedPublication] = await Promise.all([
+			fetchPostBySlug(params.slug),
+			fetchPublication(),
+		]);
+		post = fetchedPost;
+		currentPublication = fetchedPublication || defaultPublication;
+	} catch (error) {
+		console.error(
+			`[Blog Post] Error fetching "${params.slug}":`,
+			error instanceof Error ? error.message : error,
+		);
+	}
 
-  function deriveSubtitleFromHtml(html: string) {
-    // Hashnode often renders article HTML with leading whitespace and/or non-<p> nodes
-    // (e.g., figures/embeds). We want the first real paragraph that appears in the content.
-    const match = html.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
-    if (!match) return null;
+	if (!post) {
+		notFound();
+	}
 
-    const fullParagraphHtml = match[0] ?? '';
-    const rawInner = match[1] ?? '';
-    if (/<img\b/i.test(rawInner)) return null;
+	function stripHtmlTags(input: string) {
+		return input
+			.replace(/<[^>]*>/g, '')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
 
-    const text = stripHtmlTags(rawInner);
-    if (!text) return null;
+	function deriveSubtitleFromHtml(html: string) {
+		// Hashnode often renders article HTML with leading whitespace and/or non-<p> nodes
+		// (e.g., figures/embeds). We want the first real paragraph that appears in the content.
+		const match = html.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
+		if (!match) return null;
 
-    // Heuristic: treat as subtitle if it reads like an excerpt (Hashnode-style)
-    if (text.length < 10 || text.length > 320) return null;
+		const fullParagraphHtml = match[0] ?? '';
+		const rawInner = match[1] ?? '';
+		if (/<img\b/i.test(rawInner)) return null;
 
-    const htmlWithoutFirstParagraph = html.replace(fullParagraphHtml, '').trimStart();
-    return { subtitle: text, html: htmlWithoutFirstParagraph };
-  }
+		const text = stripHtmlTags(rawInner);
+		if (!text) return null;
 
-  function deriveSubtitleFromMarkdown(markdown: string) {
-    // Find the first "paragraph-like" block that isn't a heading/list/code fence.
-    const trimmed = markdown.trimStart();
-    const blocks = trimmed.split(/\r?\n\r?\n/).map((b) => b.trim()).filter(Boolean);
-    if (blocks.length < 2) return null;
+		// Heuristic: treat as subtitle if it reads like an excerpt (Hashnode-style)
+		if (text.length < 10 || text.length > 320) return null;
 
-    const isNotSubtitleBlock = (block: string) =>
-      /^#{1,6}\s/.test(block) || // heading
-      /^```/.test(block) || // code fence
-      /^[-*+]\s/.test(block) || // list
-      /^>\s/.test(block); // blockquote
+		const htmlWithoutFirstParagraph = html.replace(fullParagraphHtml, '').trimStart();
+		return { subtitle: text, html: htmlWithoutFirstParagraph };
+	}
 
-    let subtitleBlockIdx = -1;
-    for (let i = 0; i < Math.min(blocks.length, 6); i++) {
-      const b = blocks[i];
-      if (!b) continue;
-      if (isNotSubtitleBlock(b)) continue;
-      subtitleBlockIdx = i;
-      break;
-    }
+	function deriveSubtitleFromMarkdown(markdown: string) {
+		// Find the first "paragraph-like" block that isn't a heading/list/code fence.
+		const trimmed = markdown.trimStart();
+		const blocks = trimmed
+			.split(/\r?\n\r?\n/)
+			.map((b) => b.trim())
+			.filter(Boolean);
+		if (blocks.length < 2) return null;
 
-    if (subtitleBlockIdx === -1) return null;
+		const isNotSubtitleBlock = (block: string) =>
+			/^#{1,6}\s/.test(block) || // heading
+			/^```/.test(block) || // code fence
+			/^[-*+]\s/.test(block) || // list
+			/^>\s/.test(block); // blockquote
 
-    const subtitleText = blocks[subtitleBlockIdx].replace(/\s+/g, ' ').trim();
-    if (!subtitleText) return null;
-    if (subtitleText.length < 10 || subtitleText.length > 320) return null;
+		let subtitleBlockIdx = -1;
+		for (let i = 0; i < Math.min(blocks.length, 6); i++) {
+			const b = blocks[i];
+			if (!b) continue;
+			if (isNotSubtitleBlock(b)) continue;
+			subtitleBlockIdx = i;
+			break;
+		}
 
-    const restBlocks = blocks.filter((_b, idx) => idx !== subtitleBlockIdx);
-    const rest = restBlocks.join('\n\n').trimStart();
-    return { subtitle: subtitleText, markdown: rest };
-  }
+		if (subtitleBlockIdx === -1) return null;
 
-  const explicitBrief = (post as any).brief ? String((post as any).brief).trim() : '';
-  let subtitle: string | null = explicitBrief || null;
+		const subtitleText = blocks[subtitleBlockIdx].replace(/\s+/g, ' ').trim();
+		if (!subtitleText) return null;
+		if (subtitleText.length < 10 || subtitleText.length > 320) return null;
 
-  let contentHtml: string | null = post.content?.html ?? null;
-  let contentMarkdown: string | null = post.content?.markdown ?? null;
+		const restBlocks = blocks.filter((_b, idx) => idx !== subtitleBlockIdx);
+		const rest = restBlocks.join('\n\n').trimStart();
+		return { subtitle: subtitleText, markdown: rest };
+	}
 
-  // If there's no explicit brief, derive one from the beginning of the article (and remove it from body).
-  if (!subtitle) {
-    if (contentHtml) {
-      const derived = deriveSubtitleFromHtml(contentHtml);
-      if (derived) {
-        subtitle = derived.subtitle;
-        contentHtml = derived.html;
-      }
-    } else if (contentMarkdown) {
-      const derived = deriveSubtitleFromMarkdown(contentMarkdown);
-      if (derived) {
-        subtitle = derived.subtitle;
-        contentMarkdown = derived.markdown;
-      }
-    }
-  }
+	const explicitBrief = (post as any).brief ? String((post as any).brief).trim() : '';
+	let subtitle: string | null = explicitBrief || null;
 
-  const publishedAtMs = post.publishedAt ? Date.parse(post.publishedAt) : 0;
-  const updatedAtIso = (post as any).updatedAt ? String((post as any).updatedAt) : '';
-  const updatedAtMs = updatedAtIso ? Date.parse(updatedAtIso) : 0;
-  const showUpdated = Boolean(updatedAtMs && updatedAtMs > publishedAtMs);
-  const displayDateIso = showUpdated ? updatedAtIso : post.publishedAt;
-  const displayDateLabel = showUpdated ? 'Updated' : 'Published';
+	let contentHtml: string | null = post.content?.html ?? null;
+	let contentMarkdown: string | null = post.content?.markdown ?? null;
 
-  return (
-    <AppProvider publication={currentPublication}>
-      {/* Navigation */}
-      <ModernHeader publication={currentPublication} />
+	// If there's no explicit brief, derive one from the beginning of the article (and remove it from body).
+	if (!subtitle) {
+		if (contentHtml) {
+			const derived = deriveSubtitleFromHtml(contentHtml);
+			if (derived) {
+				subtitle = derived.subtitle;
+				contentHtml = derived.html;
+			}
+		} else if (contentMarkdown) {
+			const derived = deriveSubtitleFromMarkdown(contentMarkdown);
+			if (derived) {
+				subtitle = derived.subtitle;
+				contentMarkdown = derived.markdown;
+			}
+		}
+	}
 
-      <article className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <header className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-stone-900 dark:text-stone-100 mb-4">
-              {post.title}
-            </h1>
+	const publishedAtMs = post.publishedAt ? Date.parse(post.publishedAt) : 0;
+	const updatedAtIso = (post as any).updatedAt ? String((post as any).updatedAt) : '';
+	const updatedAtMs = updatedAtIso ? Date.parse(updatedAtIso) : 0;
+	const showUpdated = Boolean(updatedAtMs && updatedAtMs > publishedAtMs);
+	const displayDateIso = showUpdated ? updatedAtIso : post.publishedAt;
+	const displayDateLabel = showUpdated ? 'Updated' : 'Published';
 
-            {subtitle ? (
-              <p className="text-lg md:text-xl text-stone-700 dark:text-stone-300 leading-relaxed mb-6">
-                {subtitle}
-              </p>
-            ) : null}
+	return (
+		<AppProvider publication={currentPublication}>
+			{/* Navigation */}
+			<ModernHeader publication={currentPublication} />
 
-            <div className="flex flex-wrap items-center gap-6 text-sm text-stone-600 dark:text-stone-400 mb-6">
-              {post.author?.name && (
-                <div className="flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  <span>{post.author.name}</span>
-                </div>
-              )}
-              {displayDateIso ? (
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span className="sr-only">{displayDateLabel}:</span>
-                  <time dateTime={new Date(displayDateIso).toISOString()}>
-                    {displayDateLabel} {format(new Date(displayDateIso), "MMMM d, yyyy")}
-                  </time>
-                </div>
-              ) : null}
-              {post.readTimeInMinutes && (
-                <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span>{post.readTimeInMinutes} min read</span>
-                </div>
-              )}
-            </div>
+			<article className="container mx-auto px-4 py-8">
+				<div className="mx-auto max-w-4xl">
+					{/* Header */}
+					<header className="mb-8">
+						<h1 className={`mb-4 text-stone-900 dark:text-stone-100 ${typeRole.articleH1}`}>
+							{post.title}
+						</h1>
 
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag: any) => (
-                  <span
-                    key={tag.slug}
-                    className="inline-flex items-center px-3 py-1 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-full text-sm"
-                  >
-                    <Tag className="h-3 w-3 mr-1" />
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
-            )}
+						{subtitle ? (
+							<p className={`mb-6 text-stone-700 dark:text-stone-300 ${typeRole.heroSupport}`}>
+								{subtitle}
+							</p>
+						) : null}
 
-            {/* Match Hashnode: cover image appears after the title/subtitle/meta */}
-            {post.coverImage && (
-              <div className="mt-8">
-                <img
-                  src={post.coverImage.url}
-                  alt={post.title}
-                  className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-                  loading="lazy"
-                />
-              </div>
-            )}
-          </header>
+						<div
+							className={`mb-6 flex flex-wrap items-center gap-6 text-stone-600 dark:text-stone-400 ${typeRole.metadata}`}
+						>
+							{post.author?.name && (
+								<div className="flex items-center">
+									<User className="mr-2 h-4 w-4" />
+									<span>{post.author.name}</span>
+								</div>
+							)}
+							{displayDateIso ? (
+								<div className="flex items-center">
+									<Calendar className="mr-2 h-4 w-4" />
+									<span className="sr-only">{displayDateLabel}:</span>
+									<time dateTime={new Date(displayDateIso).toISOString()}>
+										{displayDateLabel} {format(new Date(displayDateIso), 'MMMM d, yyyy')}
+									</time>
+								</div>
+							) : null}
+							{post.readTimeInMinutes && (
+								<div className="flex items-center">
+									<Clock className="mr-2 h-4 w-4" />
+									<span>{post.readTimeInMinutes} min read</span>
+								</div>
+							)}
+						</div>
 
-          {/* Content */}
-          <div className="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-200 dark:border-stone-700 p-8">
-            <div className="hashnode-content-style">
-              {contentHtml ? (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: contentHtml,
-                  }}
-                />
-              ) : contentMarkdown ? (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: markdownToHtml(contentMarkdown),
-                  }}
-                />
-              ) : (
-                <p className="text-stone-600 dark:text-stone-400 italic">
-                  No content available for this article.
-                </p>
-              )}
-            </div>
-          </div>
+						{post.tags && post.tags.length > 0 && (
+							<div className="flex flex-wrap gap-2">
+								{post.tags.map((tag: any) => (
+									<span
+										key={tag.slug}
+										className={`inline-flex items-center rounded-full bg-stone-100 px-3 py-1 text-stone-700 dark:bg-stone-700 dark:text-stone-300 ${typeRole.small}`}
+									>
+										<Tag className="mr-1 h-3 w-3" />
+										{tag.name}
+									</span>
+								))}
+							</div>
+						)}
 
-          {/* Footer */}
-          <footer className="mt-12 pt-8 border-t border-stone-200 dark:border-stone-700">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-stone-600 dark:text-stone-400">
-                {post.author?.name && (
-                  <p>Written by {post.author.name}</p>
-                )}
-              </div>
+						{/* Match Hashnode: cover image appears after the title/subtitle/meta */}
+						{post.coverImage && (
+							<div className="mt-8">
+								<img
+									src={post.coverImage.url}
+									alt={post.title}
+									className="h-64 w-full rounded-lg object-cover shadow-lg md:h-96"
+									loading="lazy"
+								/>
+							</div>
+						)}
+					</header>
 
-              <div className="text-sm text-stone-600 dark:text-stone-400">
-                <p>
-                  {displayDateLabel}: {format(new Date(displayDateIso || post.publishedAt), "MMM d, yyyy")}
-                </p>
-              </div>
-            </div>
-          </footer>
-        </div>
-      </article>
+					{/* Content */}
+					<div className="rounded-lg border border-stone-200 bg-white p-8 shadow-sm dark:border-stone-700 dark:bg-stone-800">
+						<div className={`hashnode-content-style ${typeRole.articleBody}`}>
+							{contentHtml ? (
+								<div
+									dangerouslySetInnerHTML={{
+										__html: contentHtml,
+									}}
+								/>
+							) : contentMarkdown ? (
+								<div
+									dangerouslySetInnerHTML={{
+										__html: markdownToHtml(contentMarkdown),
+									}}
+								/>
+							) : (
+								<p className="italic text-stone-600 dark:text-stone-400">
+									No content available for this article.
+								</p>
+							)}
+						</div>
+					</div>
 
-      <Chatbot />
-      <Footer publication={currentPublication} />
-    </AppProvider>
-  );
+					{/* Footer */}
+					<footer className="mt-12 border-t border-stone-200 pt-8 dark:border-stone-700">
+						<div className="flex items-center justify-between">
+							<div className={`text-stone-600 dark:text-stone-400 ${typeRole.metadata}`}>
+								{post.author?.name && <p>Written by {post.author.name}</p>}
+							</div>
+
+							<div className={`text-stone-600 dark:text-stone-400 ${typeRole.metadata}`}>
+								<p>
+									{displayDateLabel}:{' '}
+									{format(new Date(displayDateIso || post.publishedAt), 'MMM d, yyyy')}
+								</p>
+							</div>
+						</div>
+					</footer>
+				</div>
+			</article>
+
+			<Footer publication={currentPublication} />
+		</AppProvider>
+	);
 }
-
-

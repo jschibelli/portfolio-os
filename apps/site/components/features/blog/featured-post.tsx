@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '../../ui';
 import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { PostFragment } from '../../../generated/graphql';
+import { typeRole } from '../../../lib/typography';
 import { useState, useEffect } from 'react';
 
 interface FeaturedPostProps {
@@ -43,7 +44,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
           className="mb-8"
         >
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Featured Post</h2>
+            <p className={`text-stone-900 dark:text-stone-100 ${typeRole.eyebrow}`}>Featured Post</p>
             <Badge
               variant="secondary"
               className="bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300"
@@ -102,7 +103,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
           {/* Right Section - Content */}
           <div className="space-y-6">
             {/* Metadata */}
-            <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+            <div className={`flex items-center gap-4 text-stone-500 dark:text-stone-400 ${typeRole.metadata}`}>
               <div className="flex items-center gap-1">
                 <CalendarIcon className="h-4 w-4" />
                 <span>{formatDate(post.publishedAt)}</span>
@@ -114,12 +115,12 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             </div>
 
             {/* Title */}
-            <h3 className="text-3xl font-bold leading-tight text-stone-900 lg:text-4xl dark:text-stone-100">
+            <h2 className={`text-stone-900 dark:text-stone-100 ${typeRole.sectionH2}`}>
               {post.title}
-            </h3>
+            </h2>
 
             {/* Excerpt */}
-            <p className="text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+            <p className={`text-stone-600 dark:text-stone-400 ${typeRole.heroSupport}`}>
               {post.brief}
             </p>
 
@@ -139,7 +140,7 @@ export default function FeaturedPost({ post, coverImage, readTime, tags }: Featu
             {/* Call to Action */}
             <Link
               href={`/blog/${post.slug}`}
-              className="group inline-flex items-center gap-2 text-lg font-semibold text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+              className={`group inline-flex items-center gap-2 text-stone-700 transition-colors hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 ${typeRole.button}`}
             >
               Read full article
               <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />

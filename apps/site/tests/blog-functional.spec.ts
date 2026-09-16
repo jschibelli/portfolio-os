@@ -19,8 +19,7 @@ test.describe('Blog Page Functional Tests', () => {
     // Check for latest posts section
     await expect(page.locator('text=Latest Posts')).toBeVisible();
     
-    // Check for newsletter section
-    await expect(page.locator('text=Stay updated with our newsletter')).toBeVisible();
+    await expect(page.locator('text=Stay updated with our newsletter')).toHaveCount(0);
     
     // Check if there are any posts (either featured or latest)
     const hasPosts = await page.locator('article, .post-card, a[href*="/blog/"]').count() > 0;
@@ -58,30 +57,11 @@ test.describe('Blog Page Functional Tests', () => {
     await expect(page.locator('text=Latest Posts')).toBeVisible();
   });
 
-  test('newsletter form should be functional', async ({ page }) => {
+  test('newsletter section is retired', async ({ page }) => {
     await page.goto('/blog', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    
-    // Wait for page to load
     await page.waitForLoadState('networkidle', { timeout: 10000 });
-    
-    // Scroll to newsletter section
-    await page.locator('text=Stay updated with our newsletter').scrollIntoViewIfNeeded();
-    
-    // Check for email input in newsletter section
-    const emailInput = page.locator('section:has-text("Stay updated with our newsletter") input[type="email"]');
-    if (await emailInput.count() > 0) {
-      await expect(emailInput).toBeVisible();
-      
-      // Test email input
-      await emailInput.fill('test@example.com');
-      await expect(emailInput).toHaveValue('test@example.com');
-      
-      // Check for subscribe button in newsletter section (more specific selector)
-      const subscribeButton = page.locator('section:has-text("Stay updated with our newsletter") button:has-text("Subscribe")');
-      if (await subscribeButton.count() > 0) {
-        await expect(subscribeButton).toBeVisible();
-      }
-    }
+
+    await expect(page.locator('text=Stay updated with our newsletter')).toHaveCount(0);
   });
 
   test('theme toggle should work', async ({ page }) => {

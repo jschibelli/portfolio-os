@@ -20,7 +20,7 @@ test.describe('Contact Form - Page Structure', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify page heading
-    const heading = page.locator('h1:has-text("Let\'s Work")');
+    const heading = page.locator('h1:has-text("Get in Touch")');
     await expect(heading).toBeVisible();
   });
 
@@ -29,22 +29,15 @@ test.describe('Contact Form - Page Structure', () => {
     await page.waitForTimeout(2000); // Wait for content to load
     
     // Verify form description
-    await expect(page.locator('text=Ready to Transform Your Vision?')).toBeVisible();
+    await expect(page.locator('text=Send me a message')).toBeVisible();
   });
 
-  test('should display contact information badges', async ({ page }) => {
+  test('should display other ways to connect', async ({ page }) => {
     await page.goto('/contact', { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await page.waitForTimeout(2000); // Wait for content to load
-    
-    // Verify badges (use more specific selectors to avoid strict mode violations)
-    await expect(page.locator('text=Free Consultation').first()).toBeVisible();
-    await expect(page.locator('text=No Commitment').first()).toBeVisible();
-    
-    // Quick Response might appear in multiple places, find it in the badge context
-    const quickResponseBadge = page.locator('div:has-text("Quick Response")').first();
-    if (await quickResponseBadge.count() > 0) {
-      await expect(quickResponseBadge).toBeVisible();
-    }
+    await page.waitForTimeout(2000);
+
+    await expect(page.locator('text=Other ways to connect').first()).toBeVisible();
+    await expect(page.locator('a[href="mailto:john@schibelli.dev"]')).toBeVisible();
   });
 });
 
