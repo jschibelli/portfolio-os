@@ -8,6 +8,7 @@ import {
 	generateCreativeWorkStructuredData,
 	generateSoftwareApplicationStructuredData,
 } from '../../../lib/structured-data';
+import { getMetadataBase, getSiteUrl } from '../../../config/site';
 import { ProjectContent } from '../_components/project-content';
 import { ProjectHeader } from '../_components/project-header';
 import { ProjectLinks } from '../_components/project-links';
@@ -32,10 +33,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 	const title = `${project.title} | John Schibelli Portfolio`;
 	const description = project.description;
-	const canonical = `https://johnschibelli.dev/projects/${project.slug}`;
+	const canonical = getSiteUrl(`/projects/${project.slug}`);
 
 	return {
-		metadataBase: new URL('https://johnschibelli.dev'),
+		metadataBase: getMetadataBase(),
 		title,
 		description,
 		keywords: project.tags,
@@ -127,7 +128,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 		? generateSoftwareApplicationStructuredData({
 				name: project.title,
 				description: project.description,
-				url: `https://johnschibelli.dev/projects/${project.slug}`,
+				url: getSiteUrl(`/projects/${project.slug}`),
 				image: project.image,
 				applicationCategory: 'WebApplication',
 				operatingSystem: 'Web Browser',
@@ -138,29 +139,29 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 				author: {
 					name: 'John Schibelli',
 					description: 'Senior Software Engineer.',
-					url: 'https://johnschibelli.dev',
+					url: getSiteUrl('/'),
 					jobTitle: 'Senior Software Engineer',
 				},
 				publisher: {
 					name: 'John Schibelli',
-					url: 'https://johnschibelli.dev',
+					url: getSiteUrl('/'),
 				},
 				keywords: project.tags,
 			})
 		: generateCreativeWorkStructuredData({
 				name: project.title,
 				description: project.description,
-				url: `https://johnschibelli.dev/projects/${project.slug}`,
+				url: getSiteUrl(`/projects/${project.slug}`),
 				image: project.image,
 				author: {
 					name: 'John Schibelli',
 					description: 'Senior Software Engineer.',
-					url: 'https://johnschibelli.dev',
+					url: getSiteUrl('/'),
 					jobTitle: 'Senior Software Engineer',
 				},
 				publisher: {
 					name: 'John Schibelli',
-					url: 'https://johnschibelli.dev',
+					url: getSiteUrl('/'),
 				},
 				keywords: project.tags,
 			});
@@ -170,7 +171,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 		title: 'John Schibelli',
 		displayTitle: 'John Schibelli',
 		descriptionSEO: 'Senior Software Engineer',
-		url: 'https://johnschibelli.dev',
+		url: getSiteUrl('/'),
 		author: {
 			name: 'John Schibelli',
 		},

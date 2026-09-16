@@ -24,7 +24,7 @@ export const imagealt = "Portfolio OS Documentation"
 export const twitterhandle = "@jschibelli"
 
 export const companyname = "John Schibelli"
-export const companylink = "https://johnschibelli.dev"
+export const companylink = "https://www.schibelli.com"
 
 export const branding = true
 export const rightsidebar = true

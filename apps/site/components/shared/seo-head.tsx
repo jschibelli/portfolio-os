@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { ReactNode } from 'react';
+import { getSiteOrigin } from '../../config/site';
 
 export interface SEOHeadProps {
 	title: string;
@@ -36,7 +37,7 @@ export function SEOHead({
 	noIndex = false,
 	children,
 }: SEOHeadProps) {
-	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://johnschibelli.com';
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || getSiteOrigin();
 	const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
 	const fullOgImage = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og.png`;
 

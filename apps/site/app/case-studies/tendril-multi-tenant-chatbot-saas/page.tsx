@@ -36,6 +36,7 @@ import {
 	CardTitle,
 } from '../../../components/ui/card';
 import { typeRole } from '../../../lib/typography';
+import { siteConfig } from '../../../config/site';
 
 // Case study data
 const caseStudyData = {
@@ -466,7 +467,7 @@ export default function TendrilCaseStudy() {
 				title: 'John Schibelli',
 				displayTitle: 'John Schibelli',
 				descriptionSEO: 'Senior Software Engineer',
-				url: 'https://schibelli.dev',
+				url: siteConfig.url,
 				author: { name: 'John Schibelli' },
 				preferences: { logo: null as any },
 			}}

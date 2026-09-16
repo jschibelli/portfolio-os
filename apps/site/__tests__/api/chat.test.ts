@@ -58,7 +58,7 @@ const createMockRequest = (body: any, method: string = 'POST', headers: any = {}
   body,
   headers: {
     'user-agent': 'test-agent',
-    'origin': 'https://johnschibelli.dev',
+    'origin': 'https://www.schibelli.com',
     ...headers
   },
   query: {},
@@ -558,7 +558,7 @@ describe('Chat Security', () => {
       const req = createMockRequest(
         { message: 'Hello' },
         'POST',
-        { origin: 'https://johnschibelli.dev' }
+        { origin: 'https://www.schibelli.com' }
       );
       
       const result = validateRequestOrigin(req);

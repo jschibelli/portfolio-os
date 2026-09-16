@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { CANONICAL_HOST } from './config/site';
 
 // Environment variables for maintenance mode control
 const UC = process.env.NEXT_PUBLIC_UNDER_CONSTRUCTION === 'true';
@@ -8,8 +9,8 @@ const IS_PROD = process.env.VERCEL_ENV === 'production';
 // Live production domains where maintenance mode should be enforced
 // Only these domains will trigger maintenance mode in production
 const LIVE = new Set([
-  'johnschibelli.dev',
-  'www.johnschibelli.dev',
+  'schibelli.com',
+  CANONICAL_HOST,
 ]);
 
 export function middleware(req: NextRequest) {
@@ -18,15 +19,14 @@ export function middleware(req: NextRequest) {
   // Debug logging
   console.log(`[middleware] Processing request: ${hostname}${pathname}`);
 
-  // Canonical host redirect - enforce apex domain (johnschibelli.dev)
+  // Canonical host redirect — enforce https://www.schibelli.com
   // TEMPORARILY DISABLED - investigating redirect loop issue
-  const canonicalHost = 'johnschibelli.dev';
-  if (hostname === `www.${canonicalHost}`) {
-    console.log(`[middleware] Would redirect www.${canonicalHost} to ${canonicalHost} but disabled for debugging`);
+  const canonicalHost = CANONICAL_HOST;
+  if (hostname === 'schibelli.com' && canonicalHost === 'www.schibelli.com') {
+    console.log(`[middleware] Would redirect ${hostname} to ${canonicalHost} but disabled for debugging`);
     // const url = req.nextUrl.clone();
     // url.hostname = canonicalHost;
-    // url.protocol = 'https:'; // Ensure HTTPS
-    // console.log(`[middleware] Redirecting www.${canonicalHost} to ${canonicalHost}`);
+    // url.protocol = 'https:';
     // return NextResponse.redirect(url, 301);
   }
 

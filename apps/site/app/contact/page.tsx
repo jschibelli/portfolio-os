@@ -19,7 +19,7 @@ const defaultPublication = {
 	displayTitle: 'John Schibelli',
 	descriptionSEO:
 		'Senior Software Engineer. Open to engineering roles and contract engineering work.',
-	url: 'https://schibelli.dev',
+	url: siteConfig.url,
 	posts: { totalDocuments: 0 },
 	preferences: { logo: null },
 	author: { name: 'John Schibelli', profilePicture: null },

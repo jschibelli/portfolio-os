@@ -218,7 +218,7 @@ export default function ModernHeader({ publication }: ModernHeaderProps) {
 												{/* RSS Feed */}
 												<Link
 													prefetch={false}
-													href={`/rss.xml`}
+													href={`/blog/rss.xml`}
 													target="_blank"
 													rel="noopener noreferrer"
 													aria-label="Open blog XML Feed, opens in new tab"

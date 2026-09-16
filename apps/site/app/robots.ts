@@ -1,36 +1,41 @@
 import { MetadataRoute } from 'next'
+import { getSiteOrigin } from '../config/site'
+
+const publicAllow = [
+  '/',
+  '/about',
+  '/projects',
+  '/projects/*',
+  '/blog',
+  '/blog/*',
+  '/case-studies',
+  '/case-studies/*',
+  '/contact',
+  '/sitemap.xml',
+]
+
+const protectedDisallow = [
+  '/admin',
+  '/admin/*',
+  '/api',
+  '/api/*',
+  '/login',
+  '/under-construction',
+  '/maintenance',
+  '/_next',
+  '/_next/*',
+  '*.json',
+]
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://johnschibelli.dev'
-  
+  const baseUrl = getSiteOrigin()
+
   return {
     rules: [
       {
         userAgent: '*',
-        allow: [
-          '/',
-          '/about',
-          '/projects',
-          '/projects/*',
-          '/blog',
-          '/blog/*',
-          '/case-studies',
-          '/case-studies/*',
-          '/contact',
-        ],
-        disallow: [
-          '/admin',
-          '/admin/*',
-          '/api',
-          '/api/*',
-          '/login',
-          '/under-construction',
-          '/maintenance',
-          '/_next',
-          '/_next/*',
-          '*.json',
-          '*.xml',
-        ],
+        allow: publicAllow,
+        disallow: protectedDisallow,
       },
       {
         userAgent: 'GPTBot',
@@ -42,7 +47,13 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'ChatGPT-User',
-        disallow: '/',
+        allow: publicAllow,
+        disallow: protectedDisallow,
+      },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: publicAllow,
+        disallow: protectedDisallow,
       },
       {
         userAgent: 'CCBot',

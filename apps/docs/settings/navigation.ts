@@ -7,7 +7,7 @@ export const Navigations = [
   },
   {
     title: "Portfolio",
-    href: "https://johnschibelli.dev",
+    href: "https://www.schibelli.com",
     external: true,
   },
   {

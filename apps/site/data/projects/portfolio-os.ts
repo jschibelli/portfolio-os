@@ -3,7 +3,7 @@ import { ProjectMeta } from './types';
 /**
  * Portfolio OS Project Metadata
  * All URLs are validated and point to correct destinations:
- * - liveUrl: Main portfolio site (https://johnschibelli.dev)
+ * - liveUrl: Main portfolio site (https://www.schibelli.com)
  * - githubUrl: GitHub repository (https://github.com/jschibelli/portfolio-os)
  * - documentationUrl: Documentation site (https://docs.johnschibelli.dev)
  * - caseStudyUrl: Internal case study page
@@ -28,7 +28,7 @@ export const portfolioOS: ProjectMeta = {
 		'Monorepo',
 		'CI/CD',
 	],
-	liveUrl: 'https://johnschibelli.dev',
+	liveUrl: 'https://www.schibelli.com',
 	caseStudyUrl: '/case-studies/portfolio-os',
 	githubUrl: 'https://github.com/jschibelli/portfolio-os',
 	documentationUrl: 'https://docs.johnschibelli.dev',
