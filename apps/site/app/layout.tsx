@@ -32,9 +32,6 @@ export const metadata: Metadata = {
 		telephone: false,
 	},
 	metadataBase: getMetadataBase(),
-	alternates: {
-		canonical: getSiteUrl('/'),
-	},
 	openGraph: {
 		title: 'John Schibelli - Senior Software Engineer',
 		description:

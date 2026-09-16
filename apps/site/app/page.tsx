@@ -40,6 +40,9 @@ const defaultPublication = {
 export default function HomePage() {
 	return (
 		<AppProvider publication={defaultPublication as any}>
+			<head>
+				<link rel="canonical" href={getSiteUrl('/')} />
+			</head>
 			{/* Navigation */}
 			<ModernHeader publication={defaultPublication} />
 
