@@ -6,7 +6,7 @@
 		"description": "A revolutionary self-documenting development platform that transforms a personal portfolio into a production-grade monorepo. Features enterprise-level automation with 100+ PowerShell scripts, multi-agent AI workflows, intelligent CI/CD pipelines, and comprehensive testing infrastructure.",
 		"image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop",
 		"tags": ["Next.js", "TypeScript", "Turborepo", "Automation", "DevOps", "Multi-Agent", "Monorepo", "CI/CD"],
-		"liveUrl": "https://johnschibelli.dev",
+		"liveUrl": "https://www.schibelli.com",
 		"caseStudyUrl": "/case-studies/portfolio-os",
 		"metrics": {
 			"performance": {
@@ -90,7 +90,7 @@
 		"description": "A modern, responsive portfolio website built with Next.js, TypeScript, and Tailwind CSS. Features a blog, case studies, and interactive components showcasing my development skills and projects.",
 		"image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
 		"tags": ["Next.js", "TypeScript", "Tailwind CSS", "React"],
-		"liveUrl": "https://johnschibelli.dev/blog",
+		"liveUrl": "https://www.schibelli.com/blog",
 		"caseStudyUrl": "/case-studies/portfolio-site",
 		"metrics": {
 			"performance": {
