@@ -155,7 +155,7 @@ jobs:
         run: |
           ./scripts/pr-management/configure-pr-auto.ps1 -PRNumber $env:PR_NUMBER -Status "In progress" -Priority "P1" -Size "M" -Estimate 3 -App "Portfolio Site" -Area "Frontend" -Assign "jschibelli"
 
-      # Build/lint/typecheck/test are owned by the CI workflow (turbo --affected).
+      # Build/lint/typecheck/test are owned by the CI workflow (detect-affected + one app per job).
       # Re-running an unfiltered full monorepo build here duplicated 10–30+ minutes
       # per PR event and fought with CI concurrency. Rely on required status checks.
 

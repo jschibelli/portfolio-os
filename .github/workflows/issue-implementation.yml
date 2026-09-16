@@ -1,7 +1,7 @@
 name: Issue Implementation Automation
 
 # Analyzes issues labeled for implementation. Does NOT build the monorepo —
-# CI (ci.yml) owns lint/typecheck/test/build with turbo --affected.
+# CI (ci.yml) owns lint/typecheck/test/build with detect-affected + one app per job.
 #
 # Note: scripts/issue-analyzer.ps1 is not present in this repo; analysis steps
 # are continue-on-error and will no-op until that script is restored/relocated.
@@ -86,7 +86,7 @@ jobs:
           ### Next Steps
           1. Review the issue acceptance criteria
           2. Implement on a branch targeting \`develop\`
-          3. Let CI (\`ci.yml\`) validate with \`turbo --affected\`
+          3. Let CI (\`ci.yml\`) validate affected apps (one job per app)
           4. Open a PR — do not rely on this workflow for builds
 
           **Status**: Analysis job finished (script may be absent — see job logs)."

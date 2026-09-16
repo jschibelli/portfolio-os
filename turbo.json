@@ -1,7 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "package.json",
+    "turbo.json"
   ],
   "remoteCache": {
     "enabled": true,

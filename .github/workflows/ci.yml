@@ -34,18 +34,35 @@ env:
   TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
 
 jobs:
-  build-and-test:
+  detect-affected:
+    name: Detect affected apps
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 15
+    outputs:
+      apps: ${{ steps.detect.outputs.apps }}
+      has_apps: ${{ steps.detect.outputs.has_apps }}
+      has_playwright: ${{ steps.detect.outputs.has_playwright }}
+      mode: ${{ steps.detect.outputs.mode }}
+      base: ${{ steps.detect.outputs.base }}
+      reason: ${{ steps.detect.outputs.reason }}
     env:
       FULL_REPO: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.full_repo == 'true') }}
-
+      PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      GITHUB_EVENT_BEFORE: ${{ github.event.before }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Required for turbo --affected merge-base detection
+          # Full history so turbo --affected / merge-base can see the PR base
+          # and the previous push SHA. Shallow clones make affected detection
+          # silently wrong.
           fetch-depth: 0
+
+      - name: Ensure PR base ref is present
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags origin "${{ github.event.pull_request.base.sha }}" || \
+            git fetch --no-tags origin "${{ github.base_ref }}" || true
 
       - name: Setup Node + pnpm
         uses: ./.github/actions/setup-node-pnpm
@@ -59,177 +76,115 @@ jobs:
           echo "Running security audit (non-blocking)..."
           pnpm audit --audit-level=high || true
 
-      - name: Resolve turbo scope
-        id: scope
+      - name: Test affected-app detector
+        run: pnpm run ci:affected:test
+
+      - name: Resolve affected deployable apps
+        id: detect
         run: |
-          if [ "${{ env.FULL_REPO }}" = "true" ]; then
-            echo "mode=full" >> "$GITHUB_OUTPUT"
-            echo "Using full-repo verification (schedule / manual)."
-            exit 0
+          extras=()
+          if [ "${FULL_REPO}" = "true" ]; then
+            extras+=(--full)
           fi
+          node .github/scripts/affected-apps.mjs --github "${extras[@]}"
 
-          echo "mode=affected" >> "$GITHUB_OUTPUT"
-
-          # Prefer PR base SHA; on push use previous commit; fall back to origin/main.
-          ZERO="0000000000000000000000000000000000000000"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE="${{ github.event.pull_request.base.sha }}"
-          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "$ZERO" ]; then
-            BASE="${{ github.event.before }}"
-          else
-            BASE="origin/main"
-          fi
-
-          echo "TURBO_SCM_BASE=$BASE" >> "$GITHUB_ENV"
-          echo "Using turbo --affected with TURBO_SCM_BASE=$BASE"
-
-      # Lint + typecheck share one turbo invocation (single graph walk).
-      - name: Lint & typecheck (affected)
-        if: steps.scope.outputs.mode == 'affected'
-        continue-on-error: true
-        run: pnpm exec turbo run lint typecheck --affected --continue
-
-      - name: Test (affected)
-        if: steps.scope.outputs.mode == 'affected'
-        continue-on-error: true
-        run: pnpm exec turbo run test --affected --continue -- --ci --passWithNoTests
-
-      - name: Build (affected)
-        if: steps.scope.outputs.mode == 'affected'
-        run: pnpm exec turbo run build --affected
-
-      - name: Lint & typecheck (full repo)
-        if: steps.scope.outputs.mode == 'full'
-        continue-on-error: true
-        run: pnpm exec turbo run lint typecheck --continue
-
-      - name: Test (full repo)
-        if: steps.scope.outputs.mode == 'full'
-        continue-on-error: true
-        run: pnpm exec turbo run test --continue -- --ci --passWithNoTests
-
-      - name: Build (full repo)
-        if: steps.scope.outputs.mode == 'full'
-        run: pnpm exec turbo run build
-
-      - name: Verify site artifacts when built
-        run: |
-          if [ ! -d "apps/site/.next" ]; then
-            echo "Site was not in this run's build graph (unaffected) — skipping artifact check."
-            exit 0
-          fi
-          echo "Site .next present"
-          test -f apps/site/.next/BUILD_ID
-          echo "BUILD_ID=$(cat apps/site/.next/BUILD_ID)"
-
-      - name: Workflow summary
-        if: always()
-        run: |
-          {
-            echo "## CI Summary"
-            echo ""
-            echo "- Mode: \`${{ steps.scope.outputs.mode }}\`"
-            echo "- Affected base: \`${TURBO_SCM_BASE:-default}\`"
-            echo "- Remote cache: $([ -n \"${TURBO_TOKEN:-}\" ] && echo enabled || echo 'disabled — set TURBO_TOKEN/TURBO_TEAM/TURBO_REMOTE_CACHE_SIGNATURE_KEY secrets')"
-            echo "- Site artifacts: $([ -d apps/site/.next ] && echo present || echo not built this run)"
-            echo "- Dashboard artifacts: $([ -d apps/dashboard/.next ] && echo present || echo not built this run)"
-            echo "- Docs artifacts: $([ -d apps/docs/.next ] && echo present || echo not built this run)"
-            echo ""
-            if [ "${{ steps.scope.outputs.mode }}" = "full" ]; then
-              echo "Full-repo verification run (schedule / manual dispatch)."
-            else
-              echo "PR/branch run used \`turbo run … --affected\` so unrelated apps were skipped."
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
-
-  build-storybook:
+  build-app:
+    name: ${{ matrix.app.id }}
+    needs: detect-affected
+    if: needs.detect-affected.outputs.has_apps == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # Skip Storybook entirely when the event cannot touch the site package.
-    # Schedule/full-repo still runs so Storybook stays green weekly.
-    if: |
-      github.event_name == 'schedule' ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      github.event_name == 'pull_request'
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Detect site changes (cheap path filter)
-        id: paths
-        if: github.event_name == 'pull_request' || github.event_name == 'push'
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            site:
-              - 'apps/site/**'
-              - 'packages/chatbot/**'
-              - 'packages/db/**'
-              - 'packages/emails/**'
-              - 'packages/lib/**'
-              - 'packages/ui/**'
-              - 'packages/utils/**'
-              - 'pnpm-lock.yaml'
-              - 'turbo.json'
-              - 'package.json'
 
       - name: Setup Node + pnpm
-        if: >
-          github.event_name == 'schedule' ||
-          github.event_name == 'workflow_dispatch' ||
-          steps.paths.outputs.site == 'true'
         uses: ./.github/actions/setup-node-pnpm
         with:
           node-version: "20"
           pnpm-version: "10.14.0"
 
-      - name: Configure affected base
-        if: >
-          github.event_name == 'schedule' ||
-          github.event_name == 'workflow_dispatch' ||
-          steps.paths.outputs.site == 'true'
-        run: |
-          ZERO="0000000000000000000000000000000000000000"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE="${{ github.event.pull_request.base.sha }}"
-          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "$ZERO" ]; then
-            BASE="${{ github.event.before }}"
-          else
-            BASE="origin/main"
-          fi
-          echo "TURBO_SCM_BASE=$BASE" >> "$GITHUB_ENV"
-
-      - name: Build Storybook when site is affected
-        id: storybook
-        if: >
-          github.event_name == 'schedule' ||
-          github.event_name == 'workflow_dispatch' ||
-          steps.paths.outputs.site == 'true'
+      - name: Lint
+        if: ${{ matrix.app.lint }}
         continue-on-error: true
-        run: |
-          if [ "${{ github.event_name }}" = "schedule" ] || { [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.full_repo }}" = "true" ]; }; then
-            pnpm exec turbo run build-storybook --filter=@mindware-blog/site
-            echo "skipped=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+        run: pnpm exec turbo run lint --filter="${{ matrix.app.filter }}" --continue
 
-          AFFECTED_JSON=$(pnpm exec turbo run build --filter=@mindware-blog/site --affected --dry=json)
-          if ! echo "$AFFECTED_JSON" | grep -q '"@mindware-blog/site#build"'; then
-            echo "Site unaffected; skipping Storybook."
-            echo "skipped=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          pnpm exec turbo run build-storybook --filter=@mindware-blog/site
-          echo "skipped=false" >> "$GITHUB_OUTPUT"
+      - name: Typecheck
+        if: ${{ matrix.app.typecheck }}
+        continue-on-error: true
+        run: pnpm exec turbo run typecheck --filter="${{ matrix.app.filter }}" --continue
+
+      - name: Test
+        if: ${{ matrix.app.test }}
+        continue-on-error: true
+        run: pnpm exec turbo run test --filter="${{ matrix.app.filter }}" --continue -- --ci --passWithNoTests
+
+      - name: Build
+        if: ${{ matrix.app.build }}
+        run: pnpm exec turbo run build --filter="${{ matrix.app.filter }}"
+
+      - name: Verify Next.js artifacts
+        if: ${{ matrix.app.build }}
+        run: |
+          test -d "${{ matrix.app.dir }}/.next"
+          test -f "${{ matrix.app.dir }}/.next/BUILD_ID"
+          echo "BUILD_ID=$(cat "${{ matrix.app.dir }}/.next/BUILD_ID")"
+
+      - name: Storybook
+        id: storybook
+        if: ${{ matrix.app.storybook }}
+        continue-on-error: true
+        run: pnpm exec turbo run build-storybook --filter="${{ matrix.app.filter }}"
 
       - name: Upload Storybook artifact
-        if: steps.storybook.outcome == 'success' && steps.storybook.outputs.skipped != 'true'
+        if: ${{ matrix.app.storybook && steps.storybook.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
-          name: storybook
-          path: apps/site/storybook-static
+          name: storybook-${{ matrix.app.id }}
+          path: ${{ matrix.app.dir }}/storybook-static
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## ${{ matrix.app.id }}"
+            echo ""
+            echo "- Package: \`${{ matrix.app.package }}\`"
+            echo "- Filter: \`turbo run <task> --filter=\"${{ matrix.app.filter }}\"`"
+            echo "- Lint: \`${{ matrix.app.lint }}\`"
+            echo "- Typecheck: \`${{ matrix.app.typecheck }}\`"
+            echo "- Test: \`${{ matrix.app.test }}\`"
+            echo "- Build: \`${{ matrix.app.build }}\`"
+            echo "- Storybook: \`${{ matrix.app.storybook }}\`"
+            echo "- Playwright: \`${{ matrix.app.playwright }}\` (e2e-optimized.yml when true)"
+            echo "- Remote cache: $([ -n "${TURBO_TOKEN:-}" ] && echo enabled || echo 'disabled — set TURBO_TOKEN/TURBO_TEAM/TURBO_REMOTE_CACHE_SIGNATURE_KEY secrets')"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  ci-summary:
+    name: CI summary
+    needs: [detect-affected, build-app]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow summary
+        run: |
+          {
+            echo "## CI Summary"
+            echo ""
+            echo "- Mode: \`${{ needs.detect-affected.outputs.mode }}\`"
+            echo "- Affected base: \`${{ needs.detect-affected.outputs.base }}\`"
+            echo "- Reason: \`${{ needs.detect-affected.outputs.reason }}\`"
+            echo "- Matrix: \`${{ needs.detect-affected.outputs.apps }}\`"
+            echo "- App jobs: ${{ needs.build-app.result }}"
+            echo "- Playwright requested: \`${{ needs.detect-affected.outputs.has_playwright }}\` (e2e-optimized.yml)"
+            echo ""
+            echo "PR/push runs detect affected deployable apps via \`turbo ls --affected\`, then one job per app with \`--filter=\"<pkg>...\"\`."
+            echo "\`--filter\` is never combined with \`--affected\` (Turbo 2.5.8 rejects that pairing)."
+            echo "Unrelated apps are not built. Shared-package changes still fan out through Turbo's dependency graph."
+          } >> "$GITHUB_STEP_SUMMARY"
