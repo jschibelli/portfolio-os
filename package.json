@@ -18,7 +18,9 @@
     "test:affected": "turbo run test --affected --continue",
     "typecheck": "turbo run typecheck",
     "typecheck:affected": "turbo run typecheck --affected",
-    "check:affected": "turbo run lint typecheck test build --affected --continue"
+    "check:affected": "turbo run lint typecheck test build --affected --continue",
+    "ci:affected": "node .github/scripts/affected-apps.mjs",
+    "ci:affected:test": "node --test .github/scripts/affected-apps.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
