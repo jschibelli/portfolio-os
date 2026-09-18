@@ -8,18 +8,18 @@ import { BasePage } from './BasePage';
  */
 export class CaseStudyPage extends BasePage {
   // Case study specific elements
-  private heroTitle: Locator;
-  private tableOfContents: Locator;
-  private problemStatement: Locator;
-  private researchAnalysis: Locator;
-  private solutionDesign: Locator;
-  private implementation: Locator;
-  private resultsMetrics: Locator;
-  private lessonsLearned: Locator;
-  private nextSteps: Locator;
-  private ctaButtons: Locator;
-  private charts: Locator;
-  private tables: Locator;
+  private heroTitle!: Locator;
+  private tableOfContents!: Locator;
+  private problemStatement!: Locator;
+  private researchAnalysis!: Locator;
+  private solutionDesign!: Locator;
+  private implementation!: Locator;
+  private resultsMetrics!: Locator;
+  private lessonsLearned!: Locator;
+  private nextSteps!: Locator;
+  private ctaButtons!: Locator;
+  private charts!: Locator;
+  private tables!: Locator;
 
   constructor(page: Page) {
     super(page);
